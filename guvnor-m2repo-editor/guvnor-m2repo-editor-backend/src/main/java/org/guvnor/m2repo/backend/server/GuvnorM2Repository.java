@@ -546,24 +546,12 @@ public class GuvnorM2Repository {
         return null;
     }
 
-    public static InputStream loadPOMStreamFromJar( final InputStream jarInputStream ) throws IOException {
-        ZipInputStream zis = new ZipInputStream( jarInputStream );
-        ZipEntry entry;
-
-        while ( ( entry = zis.getNextEntry() ) != null ) {
-            if ( entry.getName().startsWith( "META-INF/maven" ) && entry.getName().endsWith( "pom.xml" ) ) {
-                return new ReaderInputStream( new InputStreamReader( zis,
-                                                                     "UTF-8" ) );
-            }
-        }
-
-        throw new FileNotFoundException( "Could not find pom.xml from the jar." );
-    }
-
     public static String loadPOMFromJar( final InputStream jarInputStream ) {
         try {
 
-            InputStream is = loadPOMStreamFromJar( jarInputStream );
+            InputStream is = getInputStreamFromJar( jarInputStream,
+                                                    "META-INF/maven",
+                                                    "pom.xml" );
             StringBuilder sb = new StringBuilder();
             for ( int c = is.read(); c != -1; c = is.read() ) {
                 sb.append( (char) c );
@@ -574,6 +562,41 @@ public class GuvnorM2Repository {
         }
 
         return null;
+    }
+
+    public static String loadPOMPropertiesFromJar( final InputStream jarInputStream ) {
+        try {
+
+            InputStream is = getInputStreamFromJar( jarInputStream,
+                                                    "META-INF/maven",
+                                                    "pom.properties" );
+            StringBuilder sb = new StringBuilder();
+            for ( int c = is.read(); c != -1; c = is.read() ) {
+                sb.append( (char) c );
+            }
+            return sb.toString();
+        } catch ( IOException e ) {
+            log.error( e.getMessage() );
+        }
+
+        return null;
+    }
+
+    private static InputStream getInputStreamFromJar( final InputStream jarInputStream,
+                                                      final String prefix,
+                                                      final String suffix ) throws IOException {
+        ZipInputStream zis = new ZipInputStream( jarInputStream );
+        ZipEntry entry;
+
+        while ( ( entry = zis.getNextEntry() ) != null ) {
+            final String entryName = entry.getName();
+            if ( entryName.startsWith( prefix ) && entryName.endsWith( suffix ) ) {
+                return new ReaderInputStream( new InputStreamReader( zis,
+                                                                     "UTF-8" ) );
+            }
+        }
+
+        throw new FileNotFoundException( "Could not find '" + prefix + "/*/" + suffix + "' in the jar." );
     }
 
     private File appendPOMToJar( final String pom,

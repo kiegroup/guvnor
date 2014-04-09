@@ -21,8 +21,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -35,16 +37,22 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
+import org.kie.api.builder.ReleaseId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
  */
 //TODO: Basic authentication
 public class FileServlet extends HttpServlet {
+
+    private static final Logger log = LoggerFactory.getLogger( FileServlet.class );
 
     private static final long serialVersionUID = 510l;
 
@@ -57,7 +65,7 @@ public class FileServlet extends HttpServlet {
 
     /**
      * Posting accepts content of various types -
-     * may be an attachement for an asset, or perhaps a repository import to process.
+     * may be an attachment for an asset, or perhaps a repository import to process.
      */
     protected void doPost( HttpServletRequest request,
                            HttpServletResponse response ) throws ServletException,
@@ -71,7 +79,7 @@ public class FileServlet extends HttpServlet {
             return;
         }
 
-        response.getWriter().write("NO-SCRIPT-DATA");
+        response.getWriter().write( "NO-SCRIPT-DATA" );
     }
 
     private String processUpload( FormData uploadItem ) throws IOException {
@@ -129,8 +137,8 @@ public class FileServlet extends HttpServlet {
 
             return data;
         } catch ( FileUploadException e ) {
-            //TODO
-            //throw new RulesRepositoryException( e );
+            log.error( e.getMessage(),
+                       e );
         }
 
         return null;
@@ -146,24 +154,51 @@ public class FileServlet extends HttpServlet {
                     fileData = new BufferedInputStream( fileData );
                 }
 
-                fileData.mark( fileData.available() ); // is available() safe?
+                // is available() safe?
+                fileData.mark( fileData.available() );
 
-                String pomContent = GuvnorM2Repository.loadPOMFromJar(fileData);
+                //Attempt to load JAR's POM information from it's pom.xml file
                 PomModel pomModel = null;
-                if ( pomContent != null ) {
-                    pomModel = PomModel.Parser.parse("pom.xml", new ByteArrayInputStream(pomContent.getBytes()));
+                try {
+                    String pomXML = GuvnorM2Repository.loadPOMFromJar( fileData );
+                    if ( pomXML != null ) {
+                        pomModel = PomModel.Parser.parse( "pom.xml",
+                                                          new ByteArrayInputStream( pomXML.getBytes() ) );
+                    }
+                } catch ( Exception e ) {
+                    log.info( "Failed to parse pom.xml for GAV information. Falling back to pom.properties.",
+                              e );
                 }
 
-                if ( pomModel != null ) {
+                //Attempt to load JAR's POM information from it's pom.properties file
+                if ( pomModel == null ) {
+                    try {
+                        fileData.reset();
+                        String pomProperties = GuvnorM2Repository.loadPOMPropertiesFromJar( fileData );
+                        if ( pomProperties != null ) {
+                            final ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString( pomProperties );
+                            if ( releaseId != null ) {
+                                pomModel = new PomModel();
+                                pomModel.setReleaseId( releaseId );
+                            }
+                        }
+                    } catch ( Exception e ) {
+                        log.info( "Failed to parse pom.properties for GAV information." );
+                    }
+                }
 
+                //If we were able to get a POM model we can get the GAV
+                if ( pomModel != null ) {
                     String groupId = pomModel.getReleaseId().getGroupId();
                     String artifactId = pomModel.getReleaseId().getArtifactId();
                     String version = pomModel.getReleaseId().getVersion();
 
-                    if (isNullOrEmpty(groupId) || isNullOrEmpty(artifactId) || isNullOrEmpty(version)) {
+                    if ( isNullOrEmpty( groupId ) || isNullOrEmpty( artifactId ) || isNullOrEmpty( version ) ) {
                         return NO_VALID_POM;
                     } else {
-                        gav = new GAV(groupId, artifactId, version);
+                        gav = new GAV( groupId,
+                                       artifactId,
+                                       version );
                     }
 
                 } else {
@@ -177,11 +212,13 @@ public class FileServlet extends HttpServlet {
 
             return "OK";
         } catch ( IOException ioe ) {
+            log.error( ioe.getMessage(),
+                       ioe );
             throw ExceptionUtilities.handleException( ioe );
         }
     }
 
-    private boolean isNullOrEmpty(String groupId) {
+    private boolean isNullOrEmpty( String groupId ) {
         return groupId == null || groupId.isEmpty();
     }
 
