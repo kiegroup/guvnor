@@ -16,17 +16,20 @@
 package org.guvnor.m2repo.client.widgets;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.Range;
+import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.paging.PageRequest;
 import org.uberfire.paging.PageResponse;
+import org.uberfire.workbench.events.NotificationEvent;
 
 public class ArtifactListPresenterImpl
         implements ArtifactListPresenter {
@@ -36,6 +39,9 @@ public class ArtifactListPresenterImpl
 
     @Inject
     private Caller<M2RepoService> m2RepoService;
+
+    @Inject
+    private Event<NotificationEvent> notification;
 
     private AsyncDataProvider<JarListPageRow> dataProvider;
 
@@ -59,6 +65,7 @@ public class ArtifactListPresenterImpl
                                         response.isTotalRowSizeExact() );
                         updateRowData( response.getStartRowIndex(),
                                        response.getPageRowList() );
+                        notification.fire(new NotificationEvent(M2RepoEditorConstants.INSTANCE.RefreshedSuccessfully()));
                     }
                 } ).listJars( request, view.getCurrentFilter() );
             }

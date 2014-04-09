@@ -112,6 +112,8 @@ public interface M2RepoEditorConstants
 
     String UploadedSuccessfully();
 
+    String RefreshedSuccessfully();
+
     String InvalidJarNotPom();
 
     String UploadFailed();
