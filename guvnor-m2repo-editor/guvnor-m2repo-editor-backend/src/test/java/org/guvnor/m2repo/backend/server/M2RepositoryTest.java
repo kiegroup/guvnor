@@ -115,7 +115,8 @@ public class M2RepositoryTest {
 
         InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
         repo.deployArtifact( is,
-                             gav );
+                             gav,
+                             false );
 
         Collection<File> files = repo.listFiles();
 
@@ -146,14 +147,16 @@ public class M2RepositoryTest {
 
         InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
         repo.deployArtifact( is,
-                             gav );
+                             gav,
+                             false );
 
         gav = new GAV( "org.jboss.arquillian.core",
                        "arquillian-core-api",
                        "1.0.2.Final" );
         is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
         repo.deployArtifact( is,
-                             gav );
+                             gav,
+                             false );
 
         Collection<File> files = repo.listFiles();
 
@@ -185,14 +188,16 @@ public class M2RepositoryTest {
                            "0.0.1-SNAPSHOT" );
         InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
         repo.deployArtifact( is,
-                             gav );
+                             gav,
+                             false );
 
         gav = new GAV( "org.jboss.arquillian.core",
                        "arquillian-core-api",
                        "1.0.2.Final" );
         is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
         repo.deployArtifact( is,
-                             gav );
+                             gav,
+                             false );
 
         //filter with version number
         Collection<File> files = repo.listFiles( "1.0.2" );
@@ -231,42 +236,9 @@ public class M2RepositoryTest {
     }
 
     @Test
-    public void testLoadPom() throws Exception {
-        GuvnorM2Repository repo = new GuvnorM2Repository();
-        repo.init();
-
-        GAV gav = new GAV( "org.kie.guvnor",
-                           "guvnor-m2repo-editor-backend",
-                           "0.0.1-SNAPSHOT" );
-        InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
-        repo.deployArtifact( is, gav );
-        
-/*        String pom = repo.loadPOM("repository"+ File.separator + "org"+ File.separator + "kie"+ File.separator + "guvnor"+ File.separator + "guvnor-m2repo-editor-backend"+ File.separator + "6.0.0-SNAPSHOT"+ File.separator + "guvnor-m2repo-editor-backend-test.jar");
-        
-        assertNotNull(pom);
-        assertTrue(pom.length() > 0);*/
-    }
-
-    @Test
-    public void testLoadPomFromInputStream() throws Exception {
-        GuvnorM2Repository repo = new GuvnorM2Repository();
-        repo.init();
-
-        GAV gav = new GAV( "org.kie.guvnor",
-                           "guvnor-m2repo-editor-backend",
-                           "0.0.1-SNAPSHOT" );
-        InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
-        
-/*        String pom = repo.loadPOM(is);
-        
-        assertNotNull(pom);
-        assertTrue(pom.length() > 0);*/
-    }
-
-    @Test
     public void testUploadFileWithGAV() throws Exception {
 
-        //Creat a mock FileItem setting an InputStream to test with
+        //Create a mock FileItem setting an InputStream to test with
         @SuppressWarnings("serial")
         class TestFileItem implements FileItem {
 
@@ -337,14 +309,16 @@ public class M2RepositoryTest {
         M2RepoServiceImpl service = new M2RepoServiceImpl();
         java.lang.reflect.Field repositoryField = M2RepoServiceImpl.class.getDeclaredField( "repository" );
         repositoryField.setAccessible( true );
-        repositoryField.set( service, new GuvnorM2Repository() );
+        repositoryField.set( service,
+                             new GuvnorM2Repository() );
 
         FileServlet servlet = new FileServlet();
 
         //Set the repository service created above in the FileServlet
         java.lang.reflect.Field m2RepoServiceField = FileServlet.class.getDeclaredField( "m2RepoService" );
         m2RepoServiceField.setAccessible( true );
-        m2RepoServiceField.set( servlet, service );
+        m2RepoServiceField.set( servlet,
+                                service );
 
         FormData uploadItem = new FormData();
         GAV gav = new GAV( "org.kie.guvnor",

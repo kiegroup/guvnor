@@ -119,7 +119,8 @@ public class GuvnorM2Repository {
     }
 
     public void deployArtifact( final InputStream inputStream,
-                                final GAV gav ) {
+                                final GAV gav,
+                                final boolean includeAdditionalRepositories ) {
         //Write JAR to temporary file for deployment
         File jarFile = new File( System.getProperty( "java.io.tmpdir" ),
                                  toFileName( gav,
@@ -163,12 +164,24 @@ public class GuvnorM2Repository {
 
         deployArtifact( gav,
                         pomXML,
-                        jarFile );
+                        jarFile,
+                        includeAdditionalRepositories );
+    }
+
+    /**
+     * Convenience method for unit tests - to avoid deploying to additional (possibly external) repositories
+     * @param is InputStream holding JAR
+     * @param gav GAV representing the JAR
+     */
+    public void deployArtifactInternal( InputStream is,
+                                        GAV gav ) {
+
     }
 
     private void deployArtifact( final GAV gav,
                                  final String pomXML,
-                                 final File jarFile ) {
+                                 final File jarFile,
+                                 final boolean includeAdditionalRepositories ) {
         //Write pom.xml to temporary file for deployment
         final File pomXMLFile = new File( System.getProperty( "java.io.tmpdir" ),
                                           toFileName( gav,
@@ -229,6 +242,11 @@ public class GuvnorM2Repository {
 
         } catch ( DeploymentException e ) {
             throw new RuntimeException( e );
+        }
+
+        //Only deploy to additional repositories if required. This flag is principally for Unit Tests
+        if ( !includeAdditionalRepositories ) {
+            return;
         }
 
         //Deploy into remote repository defined in <distributionManagement>

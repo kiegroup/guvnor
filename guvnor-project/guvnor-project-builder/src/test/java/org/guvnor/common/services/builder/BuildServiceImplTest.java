@@ -83,7 +83,6 @@ public class BuildServiceImplTest {
     }
 
     @Test
-//    @Ignore("//TODO {manstis}")
     public void testBuilderKProjectHasDependency() throws Exception {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
@@ -115,7 +114,6 @@ public class BuildServiceImplTest {
     }
 
     @Test
-//    @Ignore("//TODO {manstis}")
     public void testBuilderKProjectHasSnapshotDependency() throws Exception {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
@@ -147,7 +145,6 @@ public class BuildServiceImplTest {
     }
 
     @Test
-//    @Ignore("//TODO {manstis}")
     public void testBuilderKProjectHasDependencyMetaData() throws Exception {
         IOService ioService = getReference( IOService.class );
         ProjectService projectService = getReference( ProjectService.class );
@@ -260,8 +257,8 @@ public class BuildServiceImplTest {
                            "1.0" );
 
         InputStream is = this.getClass().getResourceAsStream( "/dependency-test1-1.0.jar" );
-        m2RepoService.deployJar( is,
-                                 gav );
+        m2RepoService.deployJarInternal( is,
+                                         gav );
 
         //Deploy a SNAPSHOT version of guvnor-m2repo-dependency-example1-snapshot kjar
         GAV gav2 = new GAV( "org.kie.workbench.common.services.builder.tests",
@@ -269,7 +266,7 @@ public class BuildServiceImplTest {
                             "1.0-SNAPSHOT" );
 
         InputStream is2 = this.getClass().getResourceAsStream( "/dependency-test1-snapshot-1.0-SNAPSHOT.jar" );
-        m2RepoService.deployJar( is2,
-                                 gav2 );
+        m2RepoService.deployJarInternal( is2,
+                                         gav2 );
     }
 }

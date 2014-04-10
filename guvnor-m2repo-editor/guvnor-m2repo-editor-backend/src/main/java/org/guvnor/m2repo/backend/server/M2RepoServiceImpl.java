@@ -47,39 +47,49 @@ public class M2RepoServiceImpl implements M2RepoService,
     private POMContentHandler pomContentHandler;
 
     @Override
-    public void deployJar( InputStream is,
-                           GAV gav ) {
-        repository.deployArtifact( is, gav );
+    public void deployJar( final InputStream is,
+                           final GAV gav ) {
+        repository.deployArtifact( is,
+                                   gav,
+                                   true );
     }
 
     @Override
-    public InputStream loadJar( String path ) {
+    public void deployJarInternal( final InputStream is,
+                                   final GAV gav ) {
+        repository.deployArtifact( is,
+                                   gav,
+                                   false );
+    }
+
+    @Override
+    public InputStream loadJar( final String path ) {
         return repository.loadFile( path );
     }
 
     @Override
-    public String getJarName( String path ) {
+    public String getJarName( final String path ) {
         return repository.getFileName( path );
     }
 
     @Override
-    public String loadPOMStringFromJar( String path ) {
+    public String loadPOMStringFromJar( final String path ) {
         return repository.loadPOMFromJar( path );
     }
 
     @Override
-    public GAV loadGAVFromJar( String path ) {
+    public GAV loadGAVFromJar( final String path ) {
         final GAV gav = repository.loadGAVFromJar( path );
         return gav;
     }
 
     @Override
-    public PageResponse<JarListPageRow> listJars( PageRequest pageRequest,
-                                                  String filters ) {
-        Collection<File> files = repository.listFiles( filters );
+    public PageResponse<JarListPageRow> listJars( final PageRequest pageRequest,
+                                                  final String filters ) {
+        final Collection<File> files = repository.listFiles( filters );
 
-        PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
-        List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
+        final PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
+        final List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
 
         int i = 0;
         for ( File file : files ) {
@@ -90,7 +100,7 @@ public class M2RepoServiceImpl implements M2RepoService,
                 JarListPageRow jarListPageRow = new JarListPageRow();
                 jarListPageRow.setName( file.getName() );
                 //stripe the prefix of "repository"
-                String jarPath = file.getPath().substring( GuvnorM2Repository.M2_REPO_DIR.length() + 1 );
+                final String jarPath = file.getPath().substring( GuvnorM2Repository.M2_REPO_DIR.length() + 1 );
                 jarListPageRow.setPath( jarPath );
                 jarListPageRow.setLastModified( new Date( file.lastModified() ) );
                 tradeRatePageRowList.add( jarListPageRow );
@@ -113,7 +123,7 @@ public class M2RepoServiceImpl implements M2RepoService,
      * @return String
      */
     @Override
-    public String getRepositoryURL( String baseURL ) {
+    public String getRepositoryURL( final String baseURL ) {
         if ( baseURL == null || baseURL.isEmpty() ) {
             return repository.getRepositoryURL();
         } else {
