@@ -34,7 +34,6 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.project.events.RuleNameUpdateEvent;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -59,9 +58,6 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
     @Inject
     @Any
     private Instance<BuildValidationHelper> anyValidators;
-
-    @Inject
-    private Event<RuleNameUpdateEvent> ruleNameUpdateEvent;
 
     private final List<BuildValidationHelper> validators = new ArrayList<BuildValidationHelper>();
 
@@ -89,12 +85,10 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
         if ( builder == null ) {
             final Path pathToPom = project.getPomXMLPath();
             final POM pom = pomService.load( pathToPom );
-            builder = new Builder( project,
-                                   Paths.convert( project.getRootPath() ),
+            builder = new Builder( Paths.convert( project.getRootPath() ),
                                    pom.getGav(),
                                    ioService,
                                    projectService,
-                                   ruleNameUpdateEvent,
                                    validators );
             setEntry( project,
                       builder );
