@@ -23,9 +23,29 @@ import org.guvnor.common.services.project.model.GAV;
 
 public interface ExtendedM2RepoService extends M2RepoService {
 
+    /**
+     * Deploy JAR to all repositories (this includes Guvnor's internal Maven Repository,
+     * external Repositories configured by Distribution Management in the JAR's pom.xml
+     * and external Repositories configured by active Profiles in settings.xml).
+     * @param is InputStream holding JAR
+     * @param gav GAV representing the JAR
+     */
     public void deployJar( InputStream is,
                            GAV gav );
 
+    /**
+     * Convenience method for unit tests - to avoid deploying to additional (possibly external) repositories
+     * @param is InputStream holding JAR
+     * @param gav GAV representing the JAR
+     */
+    public void deployJarInternal( InputStream is,
+                                   GAV gav );
+
+    /**
+     * Load JAR from Guvnor's internal Maven Repository.
+     * @param path Path for JAR relative to Guvnor's Repository root
+     * @return
+     */
     public InputStream loadJar( String path );
 
 }
