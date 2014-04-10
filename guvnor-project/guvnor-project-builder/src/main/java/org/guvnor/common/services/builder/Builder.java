@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.enterprise.event.Event;
 
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
@@ -37,10 +36,8 @@ import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
-import org.guvnor.common.services.project.events.RuleNameUpdateEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -79,10 +76,7 @@ public class Builder {
     private final static String ERROR_CLASS_NOT_FOUND = "Definition of class \"{0}\" was not found.\n" +
             "Please check the necessary external dependencies for this project are configured correctly.";
 
-    private final static String DEFAULTPKG = "defaultpkg";
-
     private KieBuilder kieBuilder;
-    private final Project project;
     private final KieServices kieServices;
     private final KieFileSystem kieFileSystem;
     private final Path moduleDirectory;
@@ -94,7 +88,6 @@ public class Builder {
 
     private Map<String, org.uberfire.backend.vfs.Path> handles = new HashMap<String, org.uberfire.backend.vfs.Path>();
 
-    private final Event<RuleNameUpdateEvent> ruleNameUpdateEvent;
     private final List<BuildValidationHelper> buildValidationHelpers;
     private final Map<Path, BuildValidationHelper> nonKieResourceValidationHelpers = new HashMap<Path, BuildValidationHelper>();
     private final Map<Path, List<ValidationMessage>> nonKieResourceValidationHelperMessages = new HashMap<Path, List<ValidationMessage>>();
@@ -106,19 +99,15 @@ public class Builder {
 
     private KieContainer kieContainer;
 
-    public Builder( final Project project,
-                    final Path moduleDirectory,
+    public Builder( final Path moduleDirectory,
                     final GAV gav,
                     final IOService ioService,
                     final ProjectService projectService,
-                    final Event<RuleNameUpdateEvent> ruleNameUpdateEvent,
                     final List<BuildValidationHelper> buildValidationHelpers ) {
-        this.project = project;
         this.moduleDirectory = moduleDirectory;
         this.gav = gav;
         this.ioService = ioService;
         this.projectService = projectService;
-        this.ruleNameUpdateEvent = ruleNameUpdateEvent;
         this.buildValidationHelpers = buildValidationHelpers;
 
         projectPrefix = moduleDirectory.toUri().toString();
@@ -221,8 +210,6 @@ public class Builder {
                 }
             }
 
-            fireRuleNameUpdateEvent();
-
             return results;
         }
     }
@@ -315,25 +302,8 @@ public class Builder {
                 results.addAddedMessage( makeErrorMessage( msg ) );
             }
 
-            fireRuleNameUpdateEvent();
-
             return results;
         }
-    }
-
-    private void fireRuleNameUpdateEvent() {
-        KieModuleMetaData kieModuleMetaData = getKieModuleMetaData();
-        HashMap<String, Collection<String>> ruleNames = new HashMap<String, Collection<String>>();
-        for ( String packageName : kieModuleMetaData.getPackages() ) {
-            if ( packageName.isEmpty() ) {
-                packageName = DEFAULTPKG;
-            }
-            ruleNames.put( packageName, kieModuleMetaData.getRuleNamesInPackage( packageName ) );
-        }
-
-        ruleNames.put( DEFAULTPKG, kieModuleMetaData.getRuleNamesInPackage( DEFAULTPKG ) );
-
-        ruleNameUpdateEvent.fire( new RuleNameUpdateEvent( project, ruleNames ) );
     }
 
     public IncrementalBuildResults deleteResource( final Path resource ) {
@@ -390,8 +360,6 @@ public class Builder {
                 logger.error( msg );
                 results.addAddedMessage( makeErrorMessage( msg ) );
             }
-
-            fireRuleNameUpdateEvent();
 
             return results;
         }
