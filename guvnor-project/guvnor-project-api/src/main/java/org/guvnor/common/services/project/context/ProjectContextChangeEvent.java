@@ -17,12 +17,14 @@ package org.guvnor.common.services.project.context;
 
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 
 /**
  * An event raised when the Project Context changes
  */
+@Portable
 public class ProjectContextChangeEvent {
 
     private final OrganizationalUnit ou;
