@@ -16,10 +16,7 @@
 
 package org.guvnor.m2repo.backend.server;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,8 +27,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemHeaders;
 import org.guvnor.common.services.project.model.GAV;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -41,41 +36,7 @@ import static org.junit.Assert.*;
 
 public class M2RepositoryTest {
 
-    private static final String CUSTOM_SETTINGS_PROPERTY = "kie.maven.settings.custom";
-
     private static final Logger log = LoggerFactory.getLogger( M2RepositoryTest.class );
-
-    private static String userSettingsSystemPropertyValue;
-
-    @BeforeClass
-    public static void setupUserSettings() {
-        userSettingsSystemPropertyValue = System.getProperty( CUSTOM_SETTINGS_PROPERTY );
-
-        try {
-            final File userSettingsFile = new File( System.getProperty( "java.io.tmpdir" ),
-                                                    "settings.xml" );
-            final BufferedWriter bw = new BufferedWriter( new FileWriter( userSettingsFile.getAbsoluteFile() ) );
-            bw.write( "<settings/>" );
-            bw.newLine();
-            bw.close();
-
-            System.setProperty( CUSTOM_SETTINGS_PROPERTY,
-                                userSettingsFile.getAbsolutePath() );
-
-        } catch ( FileNotFoundException e ) {
-            System.out.println( "Unable to create mock settings.xml file. Tests may fail." );
-        } catch ( IOException e ) {
-            //Swallow
-        }
-    }
-
-    @AfterClass
-    public static void restoreUserSettingsSystemProperty() {
-        if ( userSettingsSystemPropertyValue != null ) {
-            System.setProperty( CUSTOM_SETTINGS_PROPERTY,
-                                userSettingsSystemPropertyValue );
-        }
-    }
 
     @After
     public void tearDown() throws Exception {
