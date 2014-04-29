@@ -38,6 +38,7 @@
     <module>guvnor-workingset</module>
     <module>guvnor-inbox</module>
     <module>guvnor-m2repo-editor</module>
+    <module>guvnor-usage-data</module>
   </modules>
 
   <repositories>
