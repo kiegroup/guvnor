@@ -17,3 +17,6 @@
 # Created by Zanata
 /org.guvnor
 
+# Modules that don't exist in master anymore
+/guvnor-bulk-importer/
+/guvnor-webapp/
