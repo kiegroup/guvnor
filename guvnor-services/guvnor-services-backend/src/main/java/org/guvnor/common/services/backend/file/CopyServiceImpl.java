@@ -5,6 +5,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -58,7 +59,7 @@ public class CopyServiceImpl implements CopyService {
 
                 ioService.copy( Paths.convert( path ),
                                 Paths.convert( targetPath ),
-                                new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+                                new CommentedOption( getSessionInfo().getId(), identity.getName(), null, comment ) );
 
                 //Delegate additional changes required for a copy to applicable Helpers
                 for ( CopyHelper helper : helpers ) {
@@ -75,7 +76,7 @@ public class CopyServiceImpl implements CopyService {
 
             resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
                                                                targetPath,
-                                                               sessionInfo ) );
+                                                               getSessionInfo() ) );
 
             return targetPath;
 
@@ -84,4 +85,7 @@ public class CopyServiceImpl implements CopyService {
         }
     }
 
+    protected SessionInfo getSessionInfo() {
+        return new SafeSessionInfo(sessionInfo);
+    }
 }

@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.KModuleModel;
 import org.guvnor.common.services.project.service.KModuleService;
@@ -58,7 +59,7 @@ public class KModuleServiceImpl
         this.metadataService = metadataService;
         this.moduleContentHandler = moduleContentHandler;
         this.identity = identity;
-        this.sessionInfo = sessionInfo;
+        this.sessionInfo = new SafeSessionInfo(sessionInfo);
     }
 
     @Override

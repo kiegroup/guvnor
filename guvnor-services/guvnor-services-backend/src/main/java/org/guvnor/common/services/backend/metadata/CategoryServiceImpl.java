@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.metadata.CategoriesService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
@@ -73,7 +74,7 @@ public class CategoryServiceImpl
     private CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        return new CommentedOption( sessionInfo.getId(),
+        return new CommentedOption( getSessionInfo().getId(),
                 name,
                 null,
                 commitMessage,
@@ -127,5 +128,7 @@ public class CategoryServiceImpl
             throw ExceptionUtilities.handleException(e);
         }
     }
-
+    protected SessionInfo getSessionInfo() {
+        return new SafeSessionInfo(sessionInfo);
+    }
 }

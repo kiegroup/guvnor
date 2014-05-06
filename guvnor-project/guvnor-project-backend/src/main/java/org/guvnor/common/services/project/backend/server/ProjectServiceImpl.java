@@ -30,6 +30,7 @@ import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.drools.workbench.models.datamodel.imports.Import;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
@@ -66,6 +67,7 @@ import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
+import org.uberfire.security.impl.IdentityImpl;
 
 @Service
 @ApplicationScoped
@@ -139,7 +141,7 @@ public class ProjectServiceImpl
         this.deleteProjectEvent = deleteProjectEvent;
         this.invalidateDMOCache = invalidateDMOCache;
         this.identity = identity;
-        this.sessionInfo = sessionInfo;
+        this.sessionInfo = new SafeSessionInfo(sessionInfo);
     }
 
     @Override
@@ -773,6 +775,8 @@ public class ProjectServiceImpl
             return sessionInfo.getId();
         } catch ( ContextNotActiveException e ) {
             return "--";
+        }  catch ( Exception e ) {
+            return "--";
         }
     }
 
@@ -924,5 +928,4 @@ public class ProjectServiceImpl
         }
         return null;
     }
-
 }

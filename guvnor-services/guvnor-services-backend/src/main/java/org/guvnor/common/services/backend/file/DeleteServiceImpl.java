@@ -3,6 +3,7 @@ package org.guvnor.common.services.backend.file;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -37,11 +38,14 @@ public class DeleteServiceImpl implements DeleteService {
             LOGGER.info( "User:" + identity.getName() + " deleting file [" + path.getFileName() + "]" );
 
             ioService.delete( Paths.convert( path ),
-                              new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+                              new CommentedOption( getSessionInfo().getId(), identity.getName(), null, comment ) );
 
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
     }
 
+    protected SessionInfo getSessionInfo() {
+        return new SafeSessionInfo(sessionInfo);
+    }
 }

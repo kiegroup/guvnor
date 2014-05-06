@@ -4,6 +4,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -53,7 +54,7 @@ public class RenameServiceImpl implements RenameService {
 
                 ioService.move( _path,
                                 _target,
-                                new CommentedOption( sessionInfo.getId(),
+                                new CommentedOption( getSessionInfo().getId(),
                                                      identity.getName(),
                                                      null,
                                                      comment ) );
@@ -78,4 +79,7 @@ public class RenameServiceImpl implements RenameService {
         }
     }
 
+    protected SessionInfo getSessionInfo() {
+        return new SafeSessionInfo(sessionInfo);
+    }
 }

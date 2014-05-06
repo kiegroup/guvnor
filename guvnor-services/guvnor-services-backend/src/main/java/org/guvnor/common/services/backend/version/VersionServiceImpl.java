@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.version.VersionService;
 import org.guvnor.common.services.shared.version.model.PortableVersionRecord;
@@ -77,10 +78,14 @@ public class VersionServiceImpl implements VersionService {
 
             final org.uberfire.java.nio.file.Path target = path.getFileSystem().getPath( path.toString() );
 
-            return Paths.convert( ioService.copy( path, target, REPLACE_EXISTING, new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) ) );
+            return Paths.convert( ioService.copy( path, target, REPLACE_EXISTING, new CommentedOption( getSessionInfo().getId(), identity.getName(), null, comment ) ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    protected SessionInfo getSessionInfo() {
+        return new SafeSessionInfo(sessionInfo);
     }
 }
