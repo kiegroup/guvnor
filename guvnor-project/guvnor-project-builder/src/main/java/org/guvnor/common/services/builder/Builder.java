@@ -16,17 +16,6 @@
 
 package org.guvnor.common.services.builder;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
@@ -61,7 +50,18 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ResourceChange;
 import org.uberfire.workbench.events.ResourceChangeType;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class Builder {
 
@@ -138,7 +138,7 @@ public class Builder {
                     kieContainer = null;
                 }
 
-            } catch ( NoClassDefFoundError e ) {
+            } catch ( LinkageError e ) {
                 final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                          e.getLocalizedMessage() );
                 logger.warn( msg );
@@ -196,7 +196,7 @@ public class Builder {
                         if ( TypeSource.JAVA_DEPENDENCY == typeSource ) {
                             verifyExternalClass( clazz );
                         }
-                    } catch ( NoClassDefFoundError e ) {
+                    } catch ( LinkageError e ) {
                         final String msg = MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON,
                                                                  fullyQualifiedClassName );
                         logger.warn( msg );
@@ -291,7 +291,7 @@ public class Builder {
                     handles.remove( RESOURCE_PATH + "/" + message.getPath() );
                 }
 
-            } catch ( NoClassDefFoundError e ) {
+            } catch ( LinkageError e ) {
                 final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                          e.getLocalizedMessage() );
                 logger.warn( msg );
@@ -350,7 +350,7 @@ public class Builder {
                     handles.remove( RESOURCE_PATH + "/" + message.getPath() );
                 }
 
-            } catch ( NoClassDefFoundError e ) {
+            } catch ( LinkageError e ) {
                 final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                          e.getLocalizedMessage() );
                 logger.warn( msg );
@@ -475,7 +475,7 @@ public class Builder {
                     handles.remove( RESOURCE_PATH + "/" + message.getPath() );
                 }
 
-            } catch ( NoClassDefFoundError e ) {
+            } catch ( LinkageError e ) {
                 final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                          e.getLocalizedMessage() );
                 logger.warn( msg );
