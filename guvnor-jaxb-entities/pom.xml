@@ -11,7 +11,39 @@
   <artifactId>guvnor-jaxb-entities</artifactId>
   <name>Guvnor Jaxb Entities</name>
   <packaging>jar</packaging>
-
+  <build>
+     <plugins>
+       <plugin>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>maven-bundle-plugin</artifactId>
+         <executions>
+           <execution>
+             <id>bundle-manifest</id>
+             <phase>process-classes</phase>
+             <goals>
+               <goal>manifest</goal>
+             </goals>
+           </execution>
+           <execution>
+             <id>wrap-my-dependency</id>
+             <goals>
+               <goal>wrap</goal>
+             </goals>
+             <configuration>
+               <wrapImportPackage>;</wrapImportPackage>
+             </configuration>
+           </execution>
+         </executions>
+         <extensions>true</extensions>
+         <configuration>
+           <instructions>
+             <Export-Package>org.drools.guvnor.server.jaxrs.*</Export-Package>
+             <Private-Package>org.drools.guvnor.server.jaxrs.*</Private-Package>
+           </instructions>
+         </configuration>
+       </plugin>
+     </plugins>
+   </build>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
