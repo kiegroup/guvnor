@@ -18,32 +18,23 @@
          <artifactId>maven-bundle-plugin</artifactId>
          <executions>
            <execution>
-             <id>bundle-manifest</id>
-             <phase>process-classes</phase>
+             <id>wrap-dependency</id>
              <goals>
-               <goal>manifest</goal>
-             </goals>
-           </execution>
-           <execution>
-             <id>wrap-my-dependency</id>
-             <goals>
-               <goal>wrap</goal>
+               <goal>bundle</goal>
              </goals>
              <configuration>
-               <wrapImportPackage>;</wrapImportPackage>
+               <instructions>
+                 <Embed-Dependency>*</Embed-Dependency>
+                 <Export-Package>org.drools.guvnor.server.jaxrs.*</Export-Package>
+               </instructions>
              </configuration>
            </execution>
          </executions>
-         <extensions>true</extensions>
-         <configuration>
-           <instructions>
-             <Export-Package>org.drools.guvnor.server.jaxrs.*</Export-Package>
-             <Private-Package>org.drools.guvnor.server.jaxrs.*</Private-Package>
-           </instructions>
-         </configuration>
        </plugin>
+
      </plugins>
    </build>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
