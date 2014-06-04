@@ -18,5 +18,5 @@ package org.guvnor.inbox.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface IsInboxIncomingPagedTable extends IsWidget {
+public interface InboxView extends IsWidget {
 }

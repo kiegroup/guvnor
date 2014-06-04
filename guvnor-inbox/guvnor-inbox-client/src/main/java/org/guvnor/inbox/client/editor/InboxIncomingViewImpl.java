@@ -24,40 +24,26 @@ import org.guvnor.inbox.model.InboxIncomingPageRow;
 import org.guvnor.inbox.model.InboxPageRow;
 import org.guvnor.inbox.service.InboxService;
 import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.client.tables.ColumnPicker;
-import org.uberfire.client.tables.SortableHeader;
-import org.uberfire.client.tables.SortableHeaderGroup;
 
 /**
  * Widget with a table of inbox entries results.
  */
-public class InboxIncomingPagedTable extends InboxPagedTable implements IsInboxIncomingPagedTable {
+public class InboxIncomingViewImpl extends InboxViewImpl implements InboxIncomingView {
 
-    public InboxIncomingPagedTable( final Caller<InboxService> inboxService,
-                                    final String inboxName,
-                                    final InboxPresenter presenter ) {
-        super( inboxService, inboxName, presenter );
-    }
-
-    @Override
-    protected void addAncillaryColumns( ColumnPicker<InboxPageRow> columnPicker,
-                                        SortableHeaderGroup<InboxPageRow> sortableHeaderGroup ) {
-
-        // Include general "Inbox" columns
-        super.addAncillaryColumns( columnPicker,
-                                   sortableHeaderGroup );
-
+    public InboxIncomingViewImpl( final Caller<InboxService> inboxService,
+                                  final String inboxName,
+                                  final InboxPresenter presenter ) {
+        super( inboxService,
+               inboxName,
+               presenter );
         Column<InboxPageRow, String> fromColumn = new TextColumn<InboxPageRow>() {
             public String getValue( InboxPageRow row ) {
                 return ( (InboxIncomingPageRow) row ).getFrom();
             }
         };
-        columnPicker.addColumn( fromColumn,
-                                new SortableHeader<InboxPageRow, String>(
-                                        sortableHeaderGroup,
-                                        InboxConstants.INSTANCE.from(),
-                                        fromColumn ),
-                                true );
+        addColumn( fromColumn,
+                   InboxConstants.INSTANCE.from() );
+
     }
 
 }

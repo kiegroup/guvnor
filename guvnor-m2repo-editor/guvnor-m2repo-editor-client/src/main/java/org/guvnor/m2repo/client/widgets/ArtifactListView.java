@@ -21,8 +21,9 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.HasData;
 import org.guvnor.m2repo.model.JarListPageRow;
+import org.uberfire.client.mvp.UberView;
 
-public interface ArtifactListView extends IsWidget {
+public interface ArtifactListView extends UberView<ArtifactListPresenter> {
 
     String getCurrentFilter();
 
@@ -31,8 +32,7 @@ public interface ArtifactListView extends IsWidget {
     void setContentHeight( String s );
 
     void addColumn( final Column<JarListPageRow, ?> column,
-                    final Comparator<JarListPageRow> comparable,
-                    final String name );
+                    final String caption );
 
     HasData<JarListPageRow> getDisplay();
 

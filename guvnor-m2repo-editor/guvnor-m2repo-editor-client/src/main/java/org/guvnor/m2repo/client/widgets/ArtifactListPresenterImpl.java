@@ -65,7 +65,7 @@ public class ArtifactListPresenterImpl
                                         response.isTotalRowSizeExact() );
                         updateRowData( response.getStartRowIndex(),
                                        response.getPageRowList() );
-                        notification.fire(new NotificationEvent(M2RepoEditorConstants.INSTANCE.RefreshedSuccessfully()));
+                        notification.fire( new NotificationEvent( M2RepoEditorConstants.INSTANCE.RefreshedSuccessfully() ) );
                     }
                 } ).listJars( request, view.getCurrentFilter() );
             }

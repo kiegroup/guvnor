@@ -12,6 +12,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.client.widgets.ArtifactListPresenter;
 import org.guvnor.m2repo.model.JarListPageRow;
@@ -32,8 +33,8 @@ public class MavenRepositoryPagedJarTable
 
     @Override
     public void onResize() {
-        if ( ( getParent().getOffsetHeight() - 120 ) > 0 ) {
-            presenter.getView().setContentHeight( getParent().getOffsetHeight() - 120 + "px" );
+        if ( ( getParent().getOffsetHeight() - 148 ) > 0 ) {
+            presenter.getView().setContentHeight( getParent().getOffsetHeight() - 148 + "px" );
         }
     }
 
@@ -59,7 +60,8 @@ public class MavenRepositoryPagedJarTable
                 }
             } );
 
-            presenter.getView().addColumn( downloadColumn, null, M2RepoEditorConstants.INSTANCE.Download() );
+            presenter.getView().addColumn( downloadColumn,
+                                           M2RepoEditorConstants.INSTANCE.Download() );
         }
 
         initWidget( presenter.getView().asWidget() );
