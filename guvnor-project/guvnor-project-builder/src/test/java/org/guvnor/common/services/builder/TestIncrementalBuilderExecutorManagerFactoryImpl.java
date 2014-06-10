@@ -8,22 +8,40 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
+import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.service.ProjectService;
 
 /**
  * Producer for Executor services so we can plug-in a different implementation in tests
  */
 @Alternative
 @ApplicationScoped
-public class TestExecutorServiceFactoryImpl implements BuildExecutorServiceFactory {
+public class TestIncrementalBuilderExecutorManagerFactoryImpl implements IncrementalBuilderExecutorManagerFactory {
 
-    private ExecutorService service;
+    @Inject
+    private ProjectService projectService;
 
-    @PostConstruct
-    public void setup() {
-        service = new ExecutorService() {
+    @Inject
+    private BuildService buildService;
+
+    @Inject
+    private Event<BuildResults> buildResultsEvent;
+
+    @Inject
+    private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
+
+    @Override
+    public IncrementalBuilderExecutorManager getExecutorManager() {
+        final IncrementalBuilderExecutorManager manager = new IncrementalBuilderExecutorManager();
+        manager.setServices( projectService, buildService, buildResultsEvent, incrementalBuildResultsEvent );
+        manager.setExecutorService( new ExecutorService() {
             @Override
             public void shutdown() {
             }
@@ -93,12 +111,21 @@ public class TestExecutorServiceFactoryImpl implements BuildExecutorServiceFacto
             public void execute( Runnable command ) {
                 command.run();
             }
-        };
+        } );
+
+        return manager;
     }
 
-    @Override
-    public ExecutorService getExecutorService() {
-        return service;
-    }
+//    private ExecutorService service;
+//
+//    @PostConstruct
+//    public void setup() {
+//    service=;
+//    }
+//
+//    @Override
+//    public ExecutorService getExecutorService() {
+//        return service;
+//    }
 
 }

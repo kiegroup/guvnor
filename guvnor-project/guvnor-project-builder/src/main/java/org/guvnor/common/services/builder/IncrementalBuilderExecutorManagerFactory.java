@@ -15,17 +15,11 @@
  */
 package org.guvnor.common.services.builder;
 
-import java.util.concurrent.ExecutorService;
-
 /**
- * Producer of ExecutorServices
+ * Producer of IncrementalBuilderExecutorManager
  */
-public interface BuildExecutorServiceFactory {
+public interface IncrementalBuilderExecutorManagerFactory {
 
-    /**
-     * Return an ExecutorService
-     * @return
-     */
-    ExecutorService getExecutorService();
+    IncrementalBuilderExecutorManager getExecutorManager();
 
 }
