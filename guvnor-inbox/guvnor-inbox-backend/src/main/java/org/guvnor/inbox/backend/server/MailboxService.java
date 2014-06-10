@@ -20,14 +20,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.naming.InitialContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +44,7 @@ public class MailboxService {
 
     private static final Logger log = LoggerFactory.getLogger( MailboxService.class );
 
-    private ExecutorService executor = null;
+    private MailboxProcessOutgoingExecutorManager executorManager = null;
     public static final String MAIL_MAN = "mailman";
 
     @Inject
@@ -65,9 +63,8 @@ public class MailboxService {
             bootstrapFS = fsIterator.next();
         }
 
-        executor = Executors.newSingleThreadExecutor();
         log.info( "mailbox service is up" );
-        wakeUp();
+        processOutgoing();
     }
 
     @PreDestroy
@@ -75,31 +72,10 @@ public class MailboxService {
         stopExecutor();
     }
 
-    public void stopExecutor() {
+    private void stopExecutor() {
         log.info( "Shutting down mailbox service" );
-        executor.shutdown();
-
-        try {
-            if ( !executor.awaitTermination( 10, TimeUnit.SECONDS ) ) {
-                executor.shutdownNow();
-                if ( !executor.awaitTermination( 10, TimeUnit.SECONDS ) ) {
-                    System.err.println( "executor did not terminate" );
-                }
-            }
-        } catch ( InterruptedException e ) {
-            executor.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
+        getExecutor().shutdown();
         log.info( "Mailbox service is shutdown." );
-    }
-
-    public void wakeUp() {
-        log.debug( "Waking up" );
-        executor.execute( new Runnable() {
-            public void run() {
-                processOutgoing();
-            }
-        } );
     }
 
     /**
@@ -110,8 +86,14 @@ public class MailboxService {
      * Process any waiting messages
      */
     void processOutgoing() {
-        executor.execute( new Runnable() {
-            public void run() {
+        getExecutor().execute( new AsyncMailboxProcessOutgoing() {
+            @Override
+            public String getDescription() {
+                return "Mailbox Outgoing Processing";
+            }
+
+            @Override
+            public void execute( InboxBackend inboxBackend ) {
                 final List<InboxEntry> es = inboxBackend.loadIncoming( MAIL_MAN );
                 log.debug( "Outgoing messages size " + es.size() );
                 //wipe out inbox for mailman here...
@@ -135,7 +117,25 @@ public class MailboxService {
                 }
             }
         } );
+    }
 
+    private MailboxProcessOutgoingExecutorManager getExecutor() {
+        if ( executorManager == null ) {
+            MailboxProcessOutgoingExecutorManager _executorManager = null;
+            try {
+                _executorManager = InitialContext.doLookup( "java:module/MailboxProcessOutgoingExecutorManager" );
+            } catch ( final Exception ignored ) {
+            }
+
+            if ( _executorManager == null ) {
+                executorManager = new MailboxProcessOutgoingExecutorManager();
+                executorManager.setInboxBackend( inboxBackend );
+            } else {
+                executorManager = _executorManager;
+            }
+        }
+
+        return executorManager;
     }
 
     private Set<String> makeSetOf( List<InboxEntry> inboxEntries ) {

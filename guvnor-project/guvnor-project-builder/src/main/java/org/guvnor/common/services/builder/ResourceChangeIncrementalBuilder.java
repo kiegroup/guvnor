@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -38,8 +36,8 @@ import org.guvnor.common.services.shared.config.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.workbench.events.ResourceChange;
 import org.uberfire.commons.services.cdi.ApplicationStarted;
+import org.uberfire.workbench.events.ResourceChange;
 
 /**
  * Listener for changes to project resources to handle incremental builds
@@ -55,30 +53,21 @@ public class ResourceChangeIncrementalBuilder {
     private ProjectService projectService;
 
     @Inject
-    private BuildService buildService;
-
-    @Inject
     private AppConfigService appConfigService;
 
     @Inject
-    private Event<BuildResults> buildResultsEvent;
+    private IncrementalBuilderExecutorManagerFactory executorManagerProducer;
 
-    @Inject
-    private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
-
-    @Inject
-    private BuildExecutorServiceFactory executorServiceProducer;
-    private ExecutorService executor;
+    private IncrementalBuilderExecutorManager executorManager = null;
 
     private boolean isIncrementalEnabled = false;
 
     @PostConstruct
     private void setup() {
-        executor = executorServiceProducer.getExecutorService();
         isIncrementalEnabled = isIncrementalBuildEnabled();
     }
 
-    public void configureOnEvent(@Observes ApplicationStarted applicationStartedEvent) {
+    public void configureOnEvent( @Observes ApplicationStarted applicationStartedEvent ) {
         isIncrementalEnabled = isIncrementalBuildEnabled();
     }
 
@@ -89,20 +78,14 @@ public class ResourceChangeIncrementalBuilder {
 
     @PreDestroy
     private void destroyExecutorService() {
-        try {
-            executor.shutdown();
-            if ( !executor.awaitTermination( 10,
-                                             TimeUnit.SECONDS ) ) {
-                executor.shutdownNow();
-                if ( !executor.awaitTermination( 10,
-                                                 TimeUnit.SECONDS ) ) {
-                    logger.error( "executor did not terminate" );
-                }
-            }
-        } catch ( InterruptedException e ) {
-            executor.shutdownNow();
-            Thread.currentThread().interrupt();
+        getExecutor().shutdown();
+    }
+
+    private IncrementalBuilderExecutorManager getExecutor() {
+        if ( executorManager == null ) {
+            executorManager = executorManagerProducer.getExecutorManager();
         }
+        return executorManager;
     }
 
     public void addResource( final Path resource ) {
@@ -120,10 +103,13 @@ public class ResourceChangeIncrementalBuilder {
         }
 
         //Schedule an incremental build
-        executor.execute( new Runnable() {
+        getExecutor().execute( new AsyncIncrementalBuilder() {
 
             @Override
-            public void run() {
+            public void execute( final ProjectService projectService,
+                                 final BuildService buildService,
+                                 final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
+                                 final Event<BuildResults> buildResultsEvent ) {
                 try {
                     logger.info( "Incremental build request being processed: " + resource.toURI() + " (added)." );
                     final Project project = projectService.resolveProject( resource );
@@ -141,6 +127,11 @@ public class ResourceChangeIncrementalBuilder {
                     logger.error( e.getMessage(),
                                   e );
                 }
+            }
+
+            @Override
+            public String getDescription() {
+                return "Incremental Build [" + resource.toURI() + " (added)]";
             }
         } );
     }
@@ -160,10 +151,13 @@ public class ResourceChangeIncrementalBuilder {
         }
 
         //Schedule an incremental build
-        executor.execute( new Runnable() {
+        getExecutor().execute( new AsyncIncrementalBuilder() {
 
             @Override
-            public void run() {
+            public void execute( final ProjectService projectService,
+                                 final BuildService buildService,
+                                 final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
+                                 final Event<BuildResults> buildResultsEvent ) {
                 try {
                     logger.info( "Incremental build request being processed: " + resource.toURI() + " (deleted)." );
                     final Project project = projectService.resolveProject( resource );
@@ -181,6 +175,11 @@ public class ResourceChangeIncrementalBuilder {
                     logger.error( e.getMessage(),
                                   e );
                 }
+            }
+
+            @Override
+            public String getDescription() {
+                return "Incremental Build [" + resource.toURI() + " (deleted)]";
             }
         } );
     }
@@ -211,10 +210,13 @@ public class ResourceChangeIncrementalBuilder {
     //Schedule a re-build of a Project (changes to pom.xml or kmodule.xml require a full build)
     private void scheduleProjectResourceUpdate( final Path resource ) {
         final Project project = projectService.resolveProject( resource );
-        executor.execute( new Runnable() {
+        getExecutor().execute( new AsyncIncrementalBuilder() {
 
             @Override
-            public void run() {
+            public void execute( final ProjectService projectService,
+                                 final BuildService buildService,
+                                 final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
+                                 final Event<BuildResults> buildResultsEvent ) {
                 try {
                     logger.info( "Incremental build request being processed: " + project.getRootPath() + " (updated)." );
                     final BuildResults results = buildService.build( project );
@@ -225,15 +227,23 @@ public class ResourceChangeIncrementalBuilder {
                                   e );
                 }
             }
+
+            @Override
+            public String getDescription() {
+                return "Incremental Build [" + resource.toURI() + " (updated)]";
+            }
         } );
     }
 
     //Schedule an incremental build for a package resource
     private void schedulePackageResourceUpdate( final Path resource ) {
-        executor.execute( new Runnable() {
+        getExecutor().execute( new AsyncIncrementalBuilder() {
 
             @Override
-            public void run() {
+            public void execute( final ProjectService projectService,
+                                 final BuildService buildService,
+                                 final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
+                                 final Event<BuildResults> buildResultsEvent ) {
                 try {
                     logger.info( "Incremental build request being processed: " + resource.toURI() + " (updated)." );
                     final Project project = projectService.resolveProject( resource );
@@ -251,6 +261,11 @@ public class ResourceChangeIncrementalBuilder {
                     logger.error( e.getMessage(),
                                   e );
                 }
+            }
+
+            @Override
+            public String getDescription() {
+                return "Incremental Build [" + resource.toURI() + " (updated)]";
             }
         } );
     }
@@ -290,10 +305,13 @@ public class ResourceChangeIncrementalBuilder {
 
         //Schedule an incremental build for each Project
         for ( final Map.Entry<Project, Map<Path, Collection<ResourceChange>>> e : projectBatchChanges.entrySet() ) {
-            executor.execute( new Runnable() {
+            getExecutor().execute( new AsyncIncrementalBuilder() {
 
                 @Override
-                public void run() {
+                public void execute( final ProjectService projectService,
+                                     final BuildService buildService,
+                                     final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
+                                     final Event<BuildResults> buildResultsEvent ) {
                     try {
                         logger.info( "Batch incremental build request being processed." );
                         final Project project = e.getKey();
@@ -313,6 +331,11 @@ public class ResourceChangeIncrementalBuilder {
                         logger.error( e.getMessage(),
                                       e );
                     }
+                }
+
+                @Override
+                public String getDescription() {
+                    return "Batch incremental build [" + e.getKey().getProjectName() + "]";
                 }
             } );
         }

@@ -127,7 +127,6 @@ public class InboxBackendImpl implements InboxBackend {
         //deliver messages to users inboxes (ie., the edited item is the itme that the current logged in user has edited in the past, or commented on)
         addToIncoming( itemPath, itemName, userName, MailboxService.MAIL_MAN );
         mailboxService.processOutgoing();
-        mailboxService.wakeUp();
     }
 
     /**
