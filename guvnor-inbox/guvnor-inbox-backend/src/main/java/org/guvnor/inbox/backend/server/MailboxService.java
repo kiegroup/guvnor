@@ -73,9 +73,11 @@ public class MailboxService {
     }
 
     private void stopExecutor() {
-        log.info( "Shutting down mailbox service" );
-        getExecutor().shutdown();
-        log.info( "Mailbox service is shutdown." );
+        if ( executorManager != null ) {
+            log.info( "Shutting down mailbox service" );
+            executorManager.shutdown();
+            log.info( "Mailbox service is shutdown." );
+        }
     }
 
     /**
@@ -119,7 +121,7 @@ public class MailboxService {
         } );
     }
 
-    private MailboxProcessOutgoingExecutorManager getExecutor() {
+    private synchronized MailboxProcessOutgoingExecutorManager getExecutor() {
         if ( executorManager == null ) {
             MailboxProcessOutgoingExecutorManager _executorManager = null;
             try {

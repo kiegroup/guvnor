@@ -28,7 +28,7 @@ public class IncrementalBuilderExecutorManagerFactoryImpl implements Incremental
     private IncrementalBuilderExecutorManager executorManager = null;
 
     @Override
-    public IncrementalBuilderExecutorManager getExecutorManager() {
+    public synchronized IncrementalBuilderExecutorManager getExecutorManager() {
         if ( executorManager == null ) {
             IncrementalBuilderExecutorManager _executorManager = null;
             try {

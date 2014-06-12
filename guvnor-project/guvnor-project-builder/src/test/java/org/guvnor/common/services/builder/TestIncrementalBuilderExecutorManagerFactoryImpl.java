@@ -115,17 +115,4 @@ public class TestIncrementalBuilderExecutorManagerFactoryImpl implements Increme
 
         return manager;
     }
-
-//    private ExecutorService service;
-//
-//    @PostConstruct
-//    public void setup() {
-//    service=;
-//    }
-//
-//    @Override
-//    public ExecutorService getExecutorService() {
-//        return service;
-//    }
-
 }

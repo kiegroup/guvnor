@@ -78,10 +78,12 @@ public class ResourceChangeIncrementalBuilder {
 
     @PreDestroy
     private void destroyExecutorService() {
-        getExecutor().shutdown();
+        if ( executorManager != null ) {
+            executorManager.shutdown();
+        }
     }
 
-    private IncrementalBuilderExecutorManager getExecutor() {
+    private synchronized IncrementalBuilderExecutorManager getExecutor() {
         if ( executorManager == null ) {
             executorManager = executorManagerProducer.getExecutorManager();
         }
