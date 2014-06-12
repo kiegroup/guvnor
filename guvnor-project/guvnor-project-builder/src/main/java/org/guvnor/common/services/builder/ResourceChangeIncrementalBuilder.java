@@ -69,6 +69,7 @@ public class ResourceChangeIncrementalBuilder {
 
     public void configureOnEvent( @Observes ApplicationStarted applicationStartedEvent ) {
         isIncrementalEnabled = isIncrementalBuildEnabled();
+        getExecutor();
     }
 
     private boolean isIncrementalBuildEnabled() {
