@@ -42,7 +42,7 @@ public class MailboxProcessOutgoingExecutorManager {
         }
     }
 
-    private ExecutorService getExecutorService() {
+    private synchronized ExecutorService getExecutorService() {
         if ( executorService == null ) {
             executorService = Executors.newCachedThreadPool( new DescriptiveThreadFactory() );
         }
