@@ -141,11 +141,11 @@ public class Builder {
             } catch ( NoClassDefFoundError e ) {
                 final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                          e.getLocalizedMessage() );
-                logger.warn( msg );
+                logger.warn( msg, e );
                 results.addBuildMessage( makeWarningMessage( msg ) );
             } catch ( Throwable e ) {
                 final String msg = e.getLocalizedMessage();
-                logger.error( msg );
+                logger.error( msg, e );
                 results.addBuildMessage( makeErrorMessage( msg ) );
             }
 
@@ -173,7 +173,7 @@ public class Builder {
                     try {
                         Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
                     } catch ( ClassNotFoundException cnfe ) {
-                        logger.error( cnfe.getMessage() );
+                        logger.error( cnfe.getMessage(), cnfe );
                         final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                                  fullyQualifiedClassName );
                         results.addBuildMessage( makeWarningMessage( msg ) );
@@ -191,21 +191,22 @@ public class Builder {
                     try {
                         final Class clazz = kieModuleMetaData.getClass( packageName,
                                                                         className );
-                        final TypeSource typeSource = getClassSource( kieModuleMetaData,
-                                                                      clazz );
-                        if ( TypeSource.JAVA_DEPENDENCY == typeSource ) {
-                            verifyExternalClass( clazz );
+                        if (clazz != null) {
+                            final TypeSource typeSource = getClassSource( kieModuleMetaData,
+                                                                          clazz );
+                            if ( TypeSource.JAVA_DEPENDENCY == typeSource ) {
+                                verifyExternalClass( clazz );
+                            }
+                        } else {
+                            final String msg = MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON,
+                                                                     fullyQualifiedClassName );
+                            logger.warn( msg );
                         }
-                    } catch ( NoClassDefFoundError e ) {
-                        final String msg = MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON,
-                                                                 fullyQualifiedClassName );
-                        logger.warn( msg );
-                        results.addBuildMessage( makeWarningMessage( msg ) );
                     } catch ( Throwable e ) {
                         final String msg = MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON,
                                                                  fullyQualifiedClassName );
-                        logger.error( msg );
-                        results.addBuildMessage( makeErrorMessage( msg ) );
+                        logger.warn( msg, e );
+                        results.addBuildMessage( makeWarningMessage( msg ) );
                     }
                 }
             }
@@ -294,11 +295,11 @@ public class Builder {
             } catch ( NoClassDefFoundError e ) {
                 final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                          e.getLocalizedMessage() );
-                logger.warn( msg );
+                logger.warn( msg, e );
                 results.addAddedMessage( makeWarningMessage( msg ) );
             } catch ( Throwable e ) {
                 final String msg = e.getLocalizedMessage();
-                logger.error( msg );
+                logger.error( msg, e );
                 results.addAddedMessage( makeErrorMessage( msg ) );
             }
 
@@ -353,11 +354,11 @@ public class Builder {
             } catch ( NoClassDefFoundError e ) {
                 final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                          e.getLocalizedMessage() );
-                logger.warn( msg );
+                logger.warn( msg, e );
                 results.addAddedMessage( makeWarningMessage( msg ) );
             } catch ( Throwable e ) {
                 final String msg = e.getLocalizedMessage();
-                logger.error( msg );
+                logger.error( msg, e );
                 results.addAddedMessage( makeErrorMessage( msg ) );
             }
 
@@ -478,11 +479,11 @@ public class Builder {
             } catch ( NoClassDefFoundError e ) {
                 final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                          e.getLocalizedMessage() );
-                logger.warn( msg );
+                logger.warn( msg, e );
                 results.addAddedMessage( makeWarningMessage( msg ) );
             } catch ( Throwable e ) {
                 final String msg = e.getLocalizedMessage();
-                logger.error( msg );
+                logger.error( msg, e );
                 results.addAddedMessage( makeErrorMessage( msg ) );
             }
 
