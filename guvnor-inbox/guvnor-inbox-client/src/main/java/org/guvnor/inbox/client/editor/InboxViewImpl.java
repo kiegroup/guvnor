@@ -126,7 +126,7 @@ public class InboxViewImpl extends PagedTable<InboxPageRow> implements InboxView
                 refresh();
             }
         } );
-        addButton( refreshButton );
+        getToolbar().add( refreshButton );
     }
 
 }
