@@ -17,19 +17,14 @@ package org.guvnor.inbox.client;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.inbox.client.editor.InboxViewImpl;
 import org.guvnor.inbox.service.InboxService;
 import org.jboss.errai.common.client.api.Caller;
 
 public class InboxWidget
         extends VerticalPanel
-        implements InboxPresenter.View,
-                   ProvidesResize,
-                   RequiresResize {
+        implements InboxPresenter.View {
 
     private InboxViewImpl table;
 
@@ -48,26 +43,4 @@ public class InboxWidget
         add( table );
     }
 
-    @Override
-    public void onResize() {
-        final Widget parent = getParent();
-        if ( parent == null ) {
-            return;
-        }
-        final int width = parent.getOffsetWidth();
-        final int height = parent.getOffsetHeight();
-        if ( width < 0 ) {
-            return;
-        }
-        if ( height < 0 ) {
-            return;
-        }
-        setPixelSize( width,
-                      height );
-
-        if ( table == null ) {
-            return;
-        }
-        table.onResize();
-    }
 }
