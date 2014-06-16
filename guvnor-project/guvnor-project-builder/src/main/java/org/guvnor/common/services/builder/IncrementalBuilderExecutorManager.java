@@ -2,6 +2,7 @@ package org.guvnor.common.services.builder;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -80,8 +81,22 @@ public class IncrementalBuilderExecutorManager {
     }
 
     public void shutdown() {
-        if ( useExecService.get() ) {
-            executorService.shutdownNow();
-        }
+        if ( useExecService.get() && executorService != null ) {
+            executorService.shutdown(); // Disable new tasks from being submitted
+            try {
+                // Wait a while for existing tasks to terminate
+                if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
+                    executorService.shutdownNow(); // Cancel currently executing tasks
+                    // Wait a while for tasks to respond to being cancelled
+                    if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
+                        System.err.println( "Pool did not terminate" );
+                    }
+                }
+            } catch ( InterruptedException ie ) {
+                // (Re-)Cancel if current thread also interrupted
+                executorService.shutdownNow();
+                // Preserve interrupt status
+                Thread.currentThread().interrupt();
+            }        }
     }
 }
