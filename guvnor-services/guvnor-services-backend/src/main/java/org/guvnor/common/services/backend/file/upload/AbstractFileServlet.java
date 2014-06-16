@@ -46,7 +46,7 @@ import org.uberfire.backend.vfs.Path;
 //TODO: Basic authentication
 public abstract class AbstractFileServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractFileServlet.class);
+    private static final Logger log = LoggerFactory.getLogger( AbstractFileServlet.class );
 
     private static final long serialVersionUID = 510l;
 
@@ -104,7 +104,6 @@ public abstract class AbstractFileServlet extends HttpServlet {
      */
     protected void doPost( final HttpServletRequest request,
                            final HttpServletResponse response ) throws ServletException, IOException {
-
         response.setContentType( "text/html" );
         final FormData item = getFormData( request );
 
@@ -126,6 +125,9 @@ public abstract class AbstractFileServlet extends HttpServlet {
         final ServletFileUpload upload = new ServletFileUpload( factory );
         upload.setHeaderEncoding( "UTF-8" );
 
+        //See https://code.google.com/p/google-web-toolkit/issues/detail?id=4682
+        request.setCharacterEncoding( "UTF-8" );
+
         final FormData data = new FormData();
         try {
             final List items = upload.parseRequest( request );
@@ -141,17 +143,17 @@ public abstract class AbstractFileServlet extends HttpServlet {
                 if ( !item.isFormField() ) {
                     data.setFile( item );
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_PATH ) ) {
-                    log.debug("path:" + item.getString());
-                    contextPath = item.getString();
+                    contextPath = item.getString( "UTF-8" );
+                    log.debug( "path:" + contextPath );
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_NAME ) ) {
-                    log.debug("name:" + item.getString());
-                    fileName = item.getString();
+                    fileName = item.getString( "UTF-8" );
+                    log.debug( "name:" + fileName );
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_FULL_PATH ) ) {
-                    log.debug("full path:" + item.getString());
-                    fullPath = item.getString();
+                    fullPath = item.getString( "UTF-8" );
+                    log.debug( "full path:" + fullPath );
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_OPERATION ) ) {
-                    log.debug("operation:" + item.getString());
-                    operation = FileOperation.valueOf( item.getString() );
+                    operation = FileOperation.valueOf( item.getString( "UTF-8" ) );
+                    log.debug( "operation:" + operation );
                 }
             }
 
@@ -245,7 +247,6 @@ public abstract class AbstractFileServlet extends HttpServlet {
      */
     protected void doGet( final HttpServletRequest request,
                           final HttpServletResponse response ) throws ServletException, IOException {
-
         final String path = request.getParameter( FileManagerFields.FORM_FIELD_PATH );
 
         if ( path != null ) {
@@ -257,21 +258,24 @@ public abstract class AbstractFileServlet extends HttpServlet {
         }
     }
 
-    protected void processAttachmentDownload( final String path,
+    protected void processAttachmentDownload( final String url,
                                               final HttpServletRequest request,
                                               final HttpServletResponse response ) throws IOException {
         final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         try {
-            final Path sourcePath = convertPath( path );
+            final Path sourcePath = convertPath( url );
             IOUtils.copy( doLoad( sourcePath,
                                   request ),
                           output );
-            // String fileName = m2RepoService.getJarName(path);
-            final String fileName = sourcePath.getFileName();
+            //Use the encoded form from in the URL (rather than encode/decode for fun!)
+            //See http://tools.ietf.org/html/rfc6266 for details of filename* content-disposition usage
+            final String fileName = url.substring( url.lastIndexOf( "/" ) + 1 );
 
             response.setContentType( "application/x-download" );
-            response.setHeader( "Content-Disposition", "attachment; filename=\"" + fileName + "\";" );
+            response.setHeader( "Content-Disposition",
+                                "attachment; filename*=utf-8''" + fileName );
+
             response.setContentLength( output.size() );
             response.getOutputStream().write( output.toByteArray() );
             response.getOutputStream().flush();
