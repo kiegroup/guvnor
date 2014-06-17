@@ -16,6 +16,17 @@
 
 package org.guvnor.common.services.builder;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
@@ -50,18 +61,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ResourceChange;
 import org.uberfire.workbench.events.ResourceChangeType;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class Builder {
 
@@ -191,7 +191,7 @@ public class Builder {
                     try {
                         final Class clazz = kieModuleMetaData.getClass( packageName,
                                                                         className );
-                        if (clazz != null) {
+                        if ( clazz != null ) {
                             final TypeSource typeSource = getClassSource( kieModuleMetaData,
                                                                           clazz );
                             if ( TypeSource.JAVA_DEPENDENCY == typeSource ) {
@@ -274,7 +274,7 @@ public class Builder {
             kieFileSystem.write( destinationPath,
                                  KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
             addJavaClass( resource );
-            handles.put( destinationPath,
+            handles.put( getBaseFileName( destinationPath ),
                          Paths.convert( resource ) );
 
             //Incremental build
@@ -289,7 +289,7 @@ public class Builder {
 
                 //Tidy-up removed message handles
                 for ( Message message : incrementalResults.getRemovedMessages() ) {
-                    handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+                    handles.remove( RESOURCE_PATH + "/" + getBaseFileName( message.getPath() ) );
                 }
 
             } catch ( LinkageError e ) {
@@ -348,7 +348,7 @@ public class Builder {
 
                 //Tidy-up removed message handles
                 for ( Message message : incrementalResults.getRemovedMessages() ) {
-                    handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+                    handles.remove( RESOURCE_PATH + "/" + getBaseFileName( message.getPath() ) );
                 }
 
             } catch ( LinkageError e ) {
@@ -434,7 +434,7 @@ public class Builder {
                             kieFileSystem.write( destinationPath,
                                                  KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
                             addJavaClass( resource );
-                            handles.put( destinationPath,
+                            handles.put( getBaseFileName( destinationPath ),
                                          Paths.convert( resource ) );
 
                             break;
@@ -473,7 +473,7 @@ public class Builder {
 
                 //Tidy-up removed message handles
                 for ( Message message : incrementalResults.getRemovedMessages() ) {
-                    handles.remove( RESOURCE_PATH + "/" + message.getPath() );
+                    handles.remove( RESOURCE_PATH + "/" + getBaseFileName( message.getPath() ) );
                 }
 
             } catch ( LinkageError e ) {
@@ -551,7 +551,7 @@ public class Builder {
                     final BufferedInputStream bis = new BufferedInputStream( is );
                     kieFileSystem.write( destinationPath,
                                          KieServices.Factory.get().getResources().newInputStreamResource( bis ) );
-                    handles.put( destinationPath,
+                    handles.put( getBaseFileName( destinationPath ),
                                  Paths.convert( path ) );
 
                     //Java classes are handled by KIE so we can safely post-process them here
@@ -578,7 +578,7 @@ public class Builder {
         m.setId( message.getId() );
         m.setLine( message.getLine() );
         if ( message.getPath() != null && !message.getPath().isEmpty() ) {
-            m.setPath( handles.get( RESOURCE_PATH + "/" + message.getPath() ) );
+            m.setPath( handles.get( RESOURCE_PATH + "/" + getBaseFileName( message.getPath() ) ) );
         }
         m.setColumn( message.getColumn() );
         m.setText( message.getText() );
@@ -680,6 +680,14 @@ public class Builder {
             }
         }
         return null;
+    }
+
+    //We need to strip extension, as some source artifacts are converted to a different format before KieBuilder
+    //For example Guided Decision Tables have a source format of .gdst but become .drl when added to KieBuilder
+    //The build messages returned from KieBuilder contain the target source format; i.e. .drl
+    private String getBaseFileName( final String path ) {
+        return path.substring( 0,
+                               path.lastIndexOf( "." ) );
     }
 
 }
