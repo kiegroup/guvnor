@@ -73,11 +73,19 @@ public class MailboxService {
     }
 
     private void stopExecutor() {
-        if ( executorManager != null ) {
+        if ( executorManager != null && !isEjb(executorManager, MailboxProcessOutgoingExecutorManager.class)) {
             log.info( "Shutting down mailbox service" );
             executorManager.shutdown();
             log.info( "Mailbox service is shutdown." );
         }
+    }
+
+    private boolean isEjb(Object o, Class<?> expected) {
+        if (o.getClass() != expected) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
