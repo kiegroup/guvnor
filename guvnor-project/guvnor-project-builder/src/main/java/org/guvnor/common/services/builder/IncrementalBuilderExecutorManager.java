@@ -5,7 +5,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -19,7 +20,8 @@ import org.uberfire.commons.async.DescriptiveThreadFactory;
 
 import static javax.ejb.TransactionAttributeType.*;
 
-@Stateless
+@Singleton
+@Startup
 @TransactionAttribute(NOT_SUPPORTED)
 public class IncrementalBuilderExecutorManager {
 

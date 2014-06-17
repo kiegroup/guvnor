@@ -79,9 +79,17 @@ public class ResourceChangeIncrementalBuilder {
 
     @PreDestroy
     private void destroyExecutorService() {
-        if ( executorManager != null ) {
+        if ( executorManager != null && !isEjb(executorManager, IncrementalBuilderExecutorManager.class)) {
             executorManager.shutdown();
         }
+    }
+
+    private boolean isEjb(Object o, Class<?> expected) {
+        if (o.getClass() != expected) {
+            return true;
+        }
+
+        return false;
     }
 
     private synchronized IncrementalBuilderExecutorManager getExecutor() {
