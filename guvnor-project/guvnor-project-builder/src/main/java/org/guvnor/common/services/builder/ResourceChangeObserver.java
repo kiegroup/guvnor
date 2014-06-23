@@ -152,12 +152,6 @@ public class ResourceChangeObserver {
                     || path.getFileName().equals( "kmodule.xml" )
                     || path.getFileName().equals( "project.imports" )
                     || path.getFileName().endsWith( "import.suggestions" )
-                // The following are here just to update the rule names list in rule service
-                    || path.getFileName().endsWith( ".drl" )
-                    || path.getFileName().endsWith( ".gdst" )
-                    || path.getFileName().endsWith( ".rdrl" )
-                    || path.getFileName().endsWith( ".rdslr" )
-                    || path.getFileName().endsWith( ".template" )
                 );
     }
 
