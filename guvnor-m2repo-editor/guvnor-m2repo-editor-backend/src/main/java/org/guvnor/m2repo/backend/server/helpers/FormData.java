@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.m2repo.backend.server;
+package org.guvnor.m2repo.backend.server.helpers;
 
 import org.apache.commons.fileupload.FileItem;
 import org.guvnor.common.services.project.model.GAV;
