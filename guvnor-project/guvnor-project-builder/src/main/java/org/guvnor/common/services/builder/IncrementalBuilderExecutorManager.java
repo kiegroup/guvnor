@@ -99,6 +99,7 @@ public class IncrementalBuilderExecutorManager {
                 executorService.shutdownNow();
                 // Preserve interrupt status
                 Thread.currentThread().interrupt();
-            }        }
+            }
+        }
     }
 }
