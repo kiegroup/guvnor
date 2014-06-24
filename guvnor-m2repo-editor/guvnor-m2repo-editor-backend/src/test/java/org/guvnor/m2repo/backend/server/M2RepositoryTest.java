@@ -26,6 +26,8 @@ import java.util.Collection;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemHeaders;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.m2repo.backend.server.helpers.FormData;
+import org.guvnor.m2repo.backend.server.helpers.HttpPostHelper;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -273,12 +275,15 @@ public class M2RepositoryTest {
         repositoryField.set( service,
                              new GuvnorM2Repository() );
 
-        FileServlet servlet = new FileServlet();
+        //Make private method accessible for testing
+        HttpPostHelper helper = new HttpPostHelper();
+        java.lang.reflect.Method helperMethod = HttpPostHelper.class.getDeclaredMethod( "uploadFile", FormData.class );
+        helperMethod.setAccessible( true );
 
-        //Set the repository service created above in the FileServlet
-        java.lang.reflect.Field m2RepoServiceField = FileServlet.class.getDeclaredField( "m2RepoService" );
+        //Set the repository service created above in the HttpPostHelper
+        java.lang.reflect.Field m2RepoServiceField = HttpPostHelper.class.getDeclaredField( "m2RepoService" );
         m2RepoServiceField.setAccessible( true );
-        m2RepoServiceField.set( servlet,
+        m2RepoServiceField.set( helper,
                                 service );
 
         FormData uploadItem = new FormData();
@@ -289,6 +294,7 @@ public class M2RepositoryTest {
         FileItem file = new TestFileItem();
         uploadItem.setFile( file );
 
-        assert ( servlet.uploadFile( uploadItem ).equals( "OK" ) );
+        assert ( helperMethod.invoke( helper,
+                                      uploadItem ).equals( "OK" ) );
     }
 }

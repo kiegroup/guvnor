@@ -70,7 +70,7 @@ public class UploadForm
                 }
             } );
         }} ) );
-        popup.setTitle(M2RepoEditorConstants.INSTANCE.ArtifactUpload() );
+        popup.setTitle( M2RepoEditorConstants.INSTANCE.ArtifactUpload() );
         popup.add( doUploadForm() );
     }
 
@@ -85,7 +85,7 @@ public class UploadForm
 
     public WellForm doUploadForm() {
         form = new WellForm();
-        form.setAction( GWT.getModuleBaseURL() + "m2repo/file" );
+        form.setAction( getWebContext() + "/maven2" );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
@@ -126,7 +126,7 @@ public class UploadForm
                     hide();
                 } else if ( "NO VALID POM".equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
-                    Window.alert( M2RepoEditorConstants.INSTANCE.InvalidJarNotPom());
+                    Window.alert( M2RepoEditorConstants.INSTANCE.InvalidJarNotPom() );
                     hiddenFieldsPanel.setVisible( true );
 
                 } else {
@@ -169,6 +169,14 @@ public class UploadForm
         form.add( allFields );
 
         return form;
+    }
+
+    private String getWebContext() {
+        String context = GWT.getModuleBaseURL().replace( GWT.getModuleName() + "/", "" );
+        if ( context.endsWith( "/" ) ) {
+            context = context.substring( 0, context.length() - 1 );
+        }
+        return context;
     }
 
     protected void showUploadingBusy() {

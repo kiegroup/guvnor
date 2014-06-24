@@ -103,7 +103,7 @@ public class GuvnorM2Repository {
         Aether.getAether().getRepositories().add( getGuvnorM2Repository() );
     }
 
-    protected String getM2RepositoryRootDir() {
+    public String getM2RepositoryRootDir() {
         if ( !M2_REPO_DIR.endsWith( File.separator ) ) {
             return M2_REPO_DIR + File.separator;
         } else {
