@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package org.guvnor.m2repo.backend.server;
+package org.guvnor.m2repo.backend.server.helpers;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,40 +32,36 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.IOUtils;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
+import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.kie.api.builder.ReleaseId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
- */
-//TODO: Basic authentication
-public class FileServlet extends HttpServlet {
+public class HttpPostHelper {
 
-    private static final Logger log = LoggerFactory.getLogger( FileServlet.class );
+    private static final Logger log = LoggerFactory.getLogger( HttpPostHelper.class );
 
-    private static final long serialVersionUID = 510l;
+    private final static String NO_VALID_POM = "NO VALID POM";
+
+    private final static String NO_SCRIPT_DATA = "NO-SCRIPT-DATA";
+
+    private final static String OK = "OK";
 
     @Inject
     private ExtendedM2RepoService m2RepoService;
-
-    @Inject
-    private GuvnorM2Repository repository;
-    private final static String NO_VALID_POM = "NO VALID POM";
 
     /**
      * Posting accepts content of various types -
      * may be an attachment for an asset, or perhaps a repository import to process.
      */
-    protected void doPost( HttpServletRequest request,
-                           HttpServletResponse response ) throws ServletException,
-            IOException {
+    public void handle( final HttpServletRequest request,
+                        final HttpServletResponse response ) throws ServletException, IOException {
 
         response.setContentType( "text/html" );
         FormData uploadItem = getFormData( request );
@@ -79,10 +71,10 @@ public class FileServlet extends HttpServlet {
             return;
         }
 
-        response.getWriter().write( "NO-SCRIPT-DATA" );
+        response.getWriter().write( NO_SCRIPT_DATA );
     }
 
-    private String processUpload( FormData uploadItem ) throws IOException {
+    private String processUpload( final FormData uploadItem ) throws IOException {
 
         // If the file it doesn't exist.
         if ( "".equals( uploadItem.getFile().getName() ) ) {
@@ -95,11 +87,8 @@ public class FileServlet extends HttpServlet {
         return processResult;
     }
 
-    /**
-     * Get the form data from the inbound request.
-     */
     @SuppressWarnings("rawtypes")
-    public static FormData getFormData( HttpServletRequest request ) throws IOException {
+    private FormData getFormData( final HttpServletRequest request ) throws IOException {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload( factory );
         upload.setHeaderEncoding( "UTF-8" );
@@ -144,7 +133,7 @@ public class FileServlet extends HttpServlet {
         return null;
     }
 
-    public String uploadFile( FormData uploadItem ) throws IOException {
+    private String uploadFile( final FormData uploadItem ) throws IOException {
         InputStream fileData = uploadItem.getFile().getInputStream();
         GAV gav = uploadItem.getGav();
 
@@ -210,7 +199,8 @@ public class FileServlet extends HttpServlet {
             m2RepoService.deployJar( fileData, gav );
             uploadItem.getFile().getInputStream().close();
 
-            return "OK";
+            return OK;
+
         } catch ( IOException ioe ) {
             log.error( ioe.getMessage(),
                        ioe );
@@ -220,38 +210,6 @@ public class FileServlet extends HttpServlet {
 
     private boolean isNullOrEmpty( String groupId ) {
         return groupId == null || groupId.isEmpty();
-    }
-
-    /**
-     * doGet acting like a dispatcher.
-     */
-    protected void doGet( HttpServletRequest req,
-                          HttpServletResponse res ) throws ServletException,
-            IOException {
-
-        String path = req.getParameter( HTMLFileManagerFields.FORM_FIELD_PATH );
-
-        if ( path != null ) {
-            processAttachmentDownload( path,
-                                       res );
-        } else {
-            res.sendError( HttpServletResponse.SC_BAD_REQUEST );
-        }
-    }
-
-    protected void processAttachmentDownload( String path,
-                                              HttpServletResponse response ) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        IOUtils.copy( m2RepoService.loadJar( path ), output );
-
-        String fileName = m2RepoService.getJarName( path );
-
-        response.setContentType( "application/x-download" );
-        response.setHeader( "Content-Disposition",
-                            "attachment; filename=" + fileName + ";" );
-        response.setContentLength( output.size() );
-        response.getOutputStream().write( output.toByteArray() );
-        response.getOutputStream().flush();
     }
 
 }
