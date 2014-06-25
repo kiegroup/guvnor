@@ -33,6 +33,7 @@
   <description>Guvnor - Generic Management framework</description>
 
   <modules>
+    <module>guvnor-structure</module>
     <module>guvnor-services</module>
     <module>guvnor-project</module>
     <module>guvnor-workingset</module>

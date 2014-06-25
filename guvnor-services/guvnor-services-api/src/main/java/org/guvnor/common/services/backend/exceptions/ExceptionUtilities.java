@@ -29,6 +29,7 @@ public class ExceptionUtilities {
      * @return
      */
     public static RuntimeException handleException( final Exception e ) {
+        e.printStackTrace();
         if ( EnvUtil.isPortableType( e.getClass() ) ) {
             if ( e instanceof RuntimeException ) {
                 return (RuntimeException) e;

@@ -26,7 +26,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
-import org.uberfire.client.common.popups.footers.ModalFooterOKButton;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKButton;
 
 /**
  * A popup that shows an error message

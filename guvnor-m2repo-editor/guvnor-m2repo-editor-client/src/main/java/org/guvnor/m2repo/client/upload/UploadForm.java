@@ -38,10 +38,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
-import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.FileUpload;
-import org.uberfire.client.common.FormStyleLayout;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.FileUpload;
+import org.kie.uberfire.client.common.FormStyleLayout;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.mvp.Command;
 
 @Dependent

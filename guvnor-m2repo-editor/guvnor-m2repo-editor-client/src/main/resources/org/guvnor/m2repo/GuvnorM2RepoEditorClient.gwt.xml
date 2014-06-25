@@ -28,4 +28,6 @@
   <inherits name="org.uberfire.UberfireClient"/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
 
+  <inherits name='org.kie.uberfire.KIEUberfireWidgetsCommons'/>
+
 </module>

@@ -17,7 +17,6 @@ package org.guvnor.inbox.backend.server;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
@@ -29,11 +28,10 @@ import javax.naming.InitialContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.io.SystemFS;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
-
-import static org.uberfire.io.FileSystemType.Bootstrap.*;
 
 /**
  * This service the "delivery" of messages to users inboxes for events.
@@ -54,15 +52,12 @@ public class MailboxService {
     @Named("configIO")
     private IOService ioService;
 
-    private FileSystem bootstrapFS = null;
+    @Inject
+    @SystemFS
+    private FileSystem bootstrapFS;
 
     @PostConstruct
     public void setup() {
-        final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
-        if ( fsIterator.hasNext() ) {
-            bootstrapFS = fsIterator.next();
-        }
-
         log.info( "mailbox service is up" );
         processOutgoing();
     }
@@ -73,15 +68,16 @@ public class MailboxService {
     }
 
     private void stopExecutor() {
-        if ( executorManager != null && !isEjb(executorManager, MailboxProcessOutgoingExecutorManager.class)) {
+        if ( executorManager != null && !isEjb( executorManager, MailboxProcessOutgoingExecutorManager.class ) ) {
             log.info( "Shutting down mailbox service" );
             executorManager.shutdown();
             log.info( "Mailbox service is shutdown." );
         }
     }
 
-    private boolean isEjb(Object o, Class<?> expected) {
-        if (o.getClass() != expected) {
+    private boolean isEjb( Object o,
+                           Class<?> expected ) {
+        if ( o.getClass() != expected ) {
             return true;
         }
 

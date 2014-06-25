@@ -25,8 +25,8 @@ import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.file.SupportsRead;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.guvnor.common.services.workingset.client.model.WorkingSetSettings;
+import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 
 /**
