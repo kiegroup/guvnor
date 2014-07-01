@@ -28,7 +28,6 @@ import javax.naming.InitialContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.io.SystemFS;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
@@ -53,7 +52,7 @@ public class MailboxService {
     private IOService ioService;
 
     @Inject
-    @SystemFS
+    @Named("systemFS")
     private FileSystem bootstrapFS;
 
     @PostConstruct

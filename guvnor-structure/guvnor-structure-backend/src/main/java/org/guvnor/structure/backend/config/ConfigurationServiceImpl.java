@@ -29,7 +29,6 @@ import org.guvnor.structure.backend.config.watch.ConfigServiceWatchServiceExecut
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
-import org.uberfire.backend.server.io.SystemFS;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
@@ -95,7 +94,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
     private WatchService watchService = null;
 
     @Inject
-    @SystemFS
+    @Named("systemFS")
     private FileSystem fs;
 
     @PostConstruct
