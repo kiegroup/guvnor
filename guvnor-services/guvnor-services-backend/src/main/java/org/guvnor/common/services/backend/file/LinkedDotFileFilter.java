@@ -1,5 +1,6 @@
 package org.guvnor.common.services.backend.file;
 
+import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 import org.uberfire.java.nio.file.Path;
 
 /**
@@ -8,6 +9,18 @@ import org.uberfire.java.nio.file.Path;
 public class LinkedDotFileFilter implements LinkedFilter {
 
     private LinkedFilter next = null;
+
+    public LinkedDotFileFilter() {
+    }
+
+    /**
+     * Constructor that automatically chains the next filter
+     * @param filter
+     */
+    public LinkedDotFileFilter( final LinkedFilter filter ) {
+        setNextFilter( PortablePreconditions.checkNotNull( "filter",
+                                                           filter ) );
+    }
 
     @Override
     public boolean accept( final Path path ) {
