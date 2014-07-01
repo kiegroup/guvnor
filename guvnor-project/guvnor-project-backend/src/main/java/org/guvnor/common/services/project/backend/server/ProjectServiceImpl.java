@@ -32,6 +32,8 @@ import org.apache.commons.lang.StringUtils;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.file.LinkedDirectoryFilter;
+import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
@@ -140,7 +142,7 @@ public class ProjectServiceImpl
         this.deleteProjectEvent = deleteProjectEvent;
         this.invalidateDMOCache = invalidateDMOCache;
         this.identity = identity;
-        this.sessionInfo = new SafeSessionInfo(sessionInfo);
+        this.sessionInfo = new SafeSessionInfo( sessionInfo );
     }
 
     @Override
@@ -399,22 +401,23 @@ public class ProjectServiceImpl
             return packageNames;
         }
 
+        //We're only interested in Directories (and not META-INF) so set-up appropriate filters
         final LinkedMetaInfFolderFilter metaDataFileFilter = new LinkedMetaInfFolderFilter();
-        final DirectoryStream<org.uberfire.java.nio.file.Path> nioChildPackageSrcPaths = ioService.newDirectoryStream( nioPackageSrcPath,
-                                                                                                                       metaDataFileFilter );
-        for ( org.uberfire.java.nio.file.Path nioChildPackageSrcPath : nioChildPackageSrcPaths ) {
-            if ( Files.isDirectory( nioChildPackageSrcPath ) ) {
-                if ( recursive ) {
-                    packageNames.addAll( getPackageNames( nioProjectRootPath,
-                                                          nioChildPackageSrcPath,
-                                                          includeDefault,
-                                                          includeChild,
-                                                          recursive ) );
-                } else {
-                    packageNames.add( getPackagePathSuffix( nioProjectRootPath,
-                                                            nioChildPackageSrcPath ) );
-                }
+        final LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter( metaDataFileFilter );
+        final LinkedDirectoryFilter directoryFilter = new LinkedDirectoryFilter( dotFileFilter );
 
+        final DirectoryStream<org.uberfire.java.nio.file.Path> nioChildPackageSrcPaths = ioService.newDirectoryStream( nioPackageSrcPath,
+                                                                                                                       directoryFilter );
+        for ( org.uberfire.java.nio.file.Path nioChildPackageSrcPath : nioChildPackageSrcPaths ) {
+            if ( recursive ) {
+                packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                                      nioChildPackageSrcPath,
+                                                      includeDefault,
+                                                      includeChild,
+                                                      recursive ) );
+            } else {
+                packageNames.add( getPackagePathSuffix( nioProjectRootPath,
+                                                        nioChildPackageSrcPath ) );
             }
         }
 
@@ -774,7 +777,7 @@ public class ProjectServiceImpl
             return sessionInfo.getId();
         } catch ( ContextNotActiveException e ) {
             return "--";
-        }  catch ( Exception e ) {
+        } catch ( Exception e ) {
             return "--";
         }
     }
