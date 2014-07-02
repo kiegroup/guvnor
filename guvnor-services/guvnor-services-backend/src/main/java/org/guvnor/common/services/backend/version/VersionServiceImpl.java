@@ -16,6 +16,7 @@
 
 package org.guvnor.common.services.backend.version;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -68,6 +69,13 @@ public class VersionServiceImpl implements VersionService {
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    @Override
+    public Path getPathToPreviousVersion(String uri) {
+        URI uri1 = URI.create(uri);
+        org.uberfire.java.nio.file.Path path = ioService.get(uri1);
+        return Paths.convert(path);
     }
 
     @Override

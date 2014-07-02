@@ -30,6 +30,8 @@ public interface VersionService {
 
     List<VersionRecord> getVersion( final Path path );
 
+    Path getPathToPreviousVersion( String uri );
+
     Path restore( final Path path,
                   final String comment );
 
