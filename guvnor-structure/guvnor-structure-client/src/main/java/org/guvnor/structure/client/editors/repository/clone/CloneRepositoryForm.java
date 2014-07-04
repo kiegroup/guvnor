@@ -42,6 +42,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
@@ -51,10 +52,12 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.uberfire.client.resources.i18n.CoreConstants;
-import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.util.URIUtil;
@@ -130,7 +133,7 @@ public class CloneRepositoryForm
 
     @PostConstruct
     public void init() {
-        mandatoryOU = UberFirePreferences.getProperty( "org.uberfire.client.workbench.clone.ou.mandatory.disable" ) == null;
+        mandatoryOU = isOUMandatory();
 
         setWidget( uiBinder.createAndBindUi( this ) );
 
@@ -172,12 +175,21 @@ public class CloneRepositoryForm
                                             @Override
                                             public boolean error( final Message message,
                                                                   final Throwable throwable ) {
-                                                ErrorPopup.showMessage(CoreConstants.INSTANCE.CantLoadOrganizationalUnits()+" \n" + throwable.getMessage() );
+                                                ErrorPopup.showMessage( CoreConstants.INSTANCE.CantLoadOrganizationalUnits() + " \n" + throwable.getMessage() );
 
                                                 return false;
                                             }
                                         }
                                       ).getOrganizationalUnits();
+    }
+
+    private boolean isOUMandatory() {
+        try {
+            final IOCBeanDef<RepositoryPreferences> beanDef = IOC.getBeanManager().lookupBean( RepositoryPreferences.class );
+            return beanDef == null || beanDef.getInstance().isOUMandatory();
+        } catch ( IOCResolutionException exception ) {
+        }
+        return true;
     }
 
     @UiHandler("clone")
@@ -212,7 +224,7 @@ public class CloneRepositoryForm
                 @Override
                 public void callback( String normalizedName ) {
                     if ( !nameTextBox.getText().equals( normalizedName ) ) {
-                        if ( !Window.confirm( CoreConstants.INSTANCE.RepositoryNameInvalid()+" \"" + normalizedName + "\". "+CoreConstants.INSTANCE.DoYouAgree() ) ) {
+                        if ( !Window.confirm( CoreConstants.INSTANCE.RepositoryNameInvalid() + " \"" + normalizedName + "\". " + CoreConstants.INSTANCE.DoYouAgree() ) ) {
                             return;
                         }
                         nameTextBox.setText( normalizedName );
@@ -248,7 +260,7 @@ public class CloneRepositoryForm
                                                     } catch ( RepositoryAlreadyExistsException ex ) {
                                                         ErrorPopup.showMessage( CoreConstants.INSTANCE.RepoAlreadyExists() );
                                                     } catch ( Throwable ex ) {
-                                                        ErrorPopup.showMessage( CoreConstants.INSTANCE.RepoCloneFail()+" \n" + throwable.getMessage() );
+                                                        ErrorPopup.showMessage( CoreConstants.INSTANCE.RepoCloneFail() + " \n" + throwable.getMessage() );
                                                     }
                                                     unlockScreen();
                                                     return true;
