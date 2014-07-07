@@ -39,6 +39,7 @@
     <module>guvnor-workingset</module>
     <module>guvnor-inbox</module>
     <module>guvnor-m2repo-editor</module>
+    <module>guvnor-message-console</module>
   </modules>
 
   <repositories>
