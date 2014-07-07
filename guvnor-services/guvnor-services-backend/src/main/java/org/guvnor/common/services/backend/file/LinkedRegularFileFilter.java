@@ -15,7 +15,7 @@
  */
 package org.guvnor.common.services.backend.file;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 
