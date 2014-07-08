@@ -54,7 +54,8 @@ public class MessageConsoleService {
 
     private ListDataProvider<MessageConsoleServiceRow> dataProvider = new ListDataProvider<MessageConsoleServiceRow>();
 
-    private static final String MESSAGE_CONSOLE = "org.guvnor.messageconsole.MessageConsole";
+    //The identifier has been preserved from kie-wb-common so existing .niogit System repositories are not broken
+    private static final String MESSAGE_CONSOLE = "org.kie.workbench.common.screens.messageconsole.MessageConsole";
 
     private String currentPerspective;
 

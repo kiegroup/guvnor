@@ -44,7 +44,8 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = "org.guvnor.messageconsole.MessageConsole")
+//The identifier has been preserved from kie-wb-common so existing .niogit System repositories are not broken
+@WorkbenchScreen(identifier = "org.kie.workbench.common.screens.messageconsole.MessageConsole")
 public class MessageConsoleScreen {
 
     @Inject
