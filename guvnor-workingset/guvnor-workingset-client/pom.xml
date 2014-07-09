@@ -28,8 +28,8 @@
   <artifactId>guvnor-workingset-client</artifactId>
   <packaging>jar</packaging>
 
-  <name>Guvnor - Workingset API</name>
-  <description>Guvnor - Workingset API</description>
+  <name>Guvnor - Workingset Client</name>
+  <description>Guvnor - Workingset Client</description>
 
   <dependencies>
 
@@ -41,7 +41,20 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-api</artifactId>
-    </dependency>
+      <exclusions>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-workbench-models-datamodel-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.guvnor</groupId>
+          <artifactId>guvnor-services-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.guvnor</groupId>
+          <artifactId>guvnor-structure-api</artifactId>
+        </exclusion>
+      </exclusions>    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>

@@ -35,11 +35,6 @@
 
     <dependency>
       <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-message-console-api</artifactId>
     </dependency>
 
