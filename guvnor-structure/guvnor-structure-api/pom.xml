@@ -11,8 +11,8 @@
   <artifactId>guvnor-structure-api</artifactId>
   <packaging>jar</packaging>
 
-  <name>Guvnor - Composition API</name>
-  <description>Guvnor - Composition API</description>
+  <name>Guvnor - Structure API</name>
+  <description>Guvnor - Structure API</description>
 
   <dependencies>
     <dependency>
