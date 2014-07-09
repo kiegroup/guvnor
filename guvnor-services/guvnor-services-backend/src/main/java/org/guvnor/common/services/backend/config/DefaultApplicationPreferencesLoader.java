@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.shared.config.ApplicationPreferences;
+import org.guvnor.common.services.backend.preferences.ApplicationPreferencesLoader;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
@@ -29,15 +29,16 @@ import org.guvnor.structure.server.config.ConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ApplicationPreferencesLoader {
+public class DefaultApplicationPreferencesLoader implements ApplicationPreferencesLoader {
 
     @Inject
     private ConfigurationService configurationService;
 
-    private static final Logger log = LoggerFactory.getLogger( ApplicationPreferencesLoader.class );
+    private static final Logger log = LoggerFactory.getLogger( DefaultApplicationPreferencesLoader.class );
 
+    @Override
     public Map<String, String> load() {
-        final Map<String, String> preferences = getSystemProperties();
+        final Map<String, String> preferences = new HashMap<String, String>();
         final List<ConfigGroup> configs = configurationService.getConfiguration( ConfigType.GLOBAL );
         for ( ConfigGroup config : configs ) {
             for ( ConfigItem item : config.getItems() ) {
@@ -51,31 +52,4 @@ public class ApplicationPreferencesLoader {
         return preferences;
     }
 
-    private Map<String, String> getSystemProperties() {
-        final Map<String, String> preferences = new HashMap<String, String>();
-        addSystemProperty( preferences,
-                           ApplicationPreferences.DATE_FORMAT );
-        addSystemProperty( preferences,
-                           ApplicationPreferences.DATE_TIME_FORMAT );
-        addSystemProperty( preferences,
-                           ApplicationPreferences.DEFAULT_LANGUAGE );
-        addSystemProperty( preferences,
-                           ApplicationPreferences.DEFAULT_COUNTRY );
-
-        // For security Serialization we DO NOT want to set any default
-        // as those can be set through other means and we don't want
-        // to override or mess with that
-
-        return preferences;
-    }
-
-    private void addSystemProperty( final Map<String, String> preferences,
-                                    final String key ) {
-        final String value = System.getProperty( key );
-        if ( value != null ) {
-            log.info( "Setting preference '" + key + "' to '" + value + "'." );
-            preferences.put( key,
-                             value );
-        }
-    }
 }

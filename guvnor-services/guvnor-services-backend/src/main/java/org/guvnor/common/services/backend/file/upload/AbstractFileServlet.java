@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +34,6 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
-import org.drools.core.util.DateUtils;
 import org.guvnor.common.services.shared.file.upload.FileManagerFields;
 import org.guvnor.common.services.shared.file.upload.FileOperation;
 import org.slf4j.Logger;
@@ -47,6 +47,8 @@ import org.uberfire.backend.vfs.Path;
 public abstract class AbstractFileServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger( AbstractFileServlet.class );
+
+    private static final SimpleDateFormat sdf = new SimpleDateFormat( "dd-MMM-yyyy HH:mm:ss" );
 
     private static final long serialVersionUID = 510l;
 
@@ -232,13 +234,7 @@ public abstract class AbstractFileServlet extends HttpServlet {
     private String getTimestamp() {
         final Calendar now = Calendar.getInstance();
         final StringBuilder sb = new StringBuilder();
-        sb.append( DateUtils.format( now.getTime() ) );
-        sb.append( " " );
-        sb.append( now.get( Calendar.HOUR_OF_DAY ) );
-        sb.append( ":" );
-        sb.append( now.get( Calendar.MINUTE ) );
-        sb.append( ":" );
-        sb.append( now.get( Calendar.SECOND ) );
+        sb.append( sdf.format( now.getTime() ) );
         return sb.toString();
     }
 

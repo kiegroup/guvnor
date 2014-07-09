@@ -17,12 +17,17 @@
 package org.guvnor.common.services.backend.config;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.preferences.ApplicationPreferencesLoader;
+import org.guvnor.common.services.backend.preferences.SystemPropertiesInitializer;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.commons.services.cdi.ApplicationStarted;
@@ -34,18 +39,36 @@ public class AppConfigServiceImpl implements AppConfigService {
     private Map<String, String> preferences;
 
     @Inject
-    private ApplicationPreferencesLoader preferencesLoader;
+    @Any
+    private Instance<ApplicationPreferencesLoader> preferencesLoaders;
 
-    public void configureOnEvent(@Observes ApplicationStarted applicationStartedEvent) {
+    @Inject
+    @Any
+    private Instance<SystemPropertiesInitializer> systemPropertiesInitializers;
+
+    public void configureOnEvent( @Observes ApplicationStarted applicationStartedEvent ) {
         loadPreferences();
     }
 
     @Override
-    public Map<String, String> loadPreferences() {
+    public synchronized Map<String, String> loadPreferences() {
         try {
             if ( preferences == null ) {
-                preferences = preferencesLoader.load();
-                ApplicationPreferencesInitializer.setSystemProperties( preferences );
+                preferences = new HashMap<String, String>();
+
+                //Load preferences from all stores
+                if ( preferencesLoaders != null ) {
+                    for ( ApplicationPreferencesLoader loader : preferencesLoaders ) {
+                        preferences.putAll( loader.load() );
+                    }
+                }
+
+                //Perform any post-load handling of preferences
+                if ( systemPropertiesInitializers != null ) {
+                    for ( SystemPropertiesInitializer initializer : systemPropertiesInitializers ) {
+                        initializer.setSystemProperties( preferences );
+                    }
+                }
             }
             return preferences;
 
