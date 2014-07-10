@@ -85,7 +85,7 @@ public class GuvnorM2Repository {
     }
 
     private void setM2Repos() {
-        final String meReposDir = System.getProperty( "org.guvnor.m2repo.dir" );
+         final String meReposDir = System.getProperty( "org.guvnor.m2repo.dir" );
 
         if ( meReposDir == null || meReposDir.trim().isEmpty() ) {
             M2_REPO_DIR = M2_REPO_ROOT;
@@ -101,7 +101,7 @@ public class GuvnorM2Repository {
             root.mkdirs();
         }
 
-        Aether.getAether().getRepositories().add( getGuvnorM2Repository() );
+        Aether.getAether().getRepositories().add(getGuvnorM2Repository());
     }
 
     public String getM2RepositoryRootDir() {
@@ -299,12 +299,12 @@ public class GuvnorM2Repository {
             return new RemoteRepository.Builder( "guvnor-m2-repo",
                                          "default",
                                          localRepositoryUrl )
-                    .setPolicy( new RepositoryPolicy( true,
+                    .setSnapshotPolicy( new RepositoryPolicy( true,
                                                       RepositoryPolicy.UPDATE_POLICY_DAILY,
                                                       RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
-                    .setPolicy( new RepositoryPolicy( true,
-                                                      RepositoryPolicy.UPDATE_POLICY_ALWAYS,
-                                                      RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
+                    .setReleasePolicy(new RepositoryPolicy(true,
+                            RepositoryPolicy.UPDATE_POLICY_ALWAYS,
+                            RepositoryPolicy.CHECKSUM_POLICY_WARN))
                     .build();
 
         } catch ( MalformedURLException e ) {
@@ -317,12 +317,12 @@ public class GuvnorM2Repository {
     private RemoteRepository getRemoteRepoFromDeployment( DeploymentRepository repo ) {
 
         RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder( repo.getId(), repo.getLayout(), repo.getUrl() )
-                .setPolicy( new RepositoryPolicy( true,
-                                                  RepositoryPolicy.UPDATE_POLICY_DAILY,
-                                                  RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
-                .setPolicy( new RepositoryPolicy( true,
-                                                  RepositoryPolicy.UPDATE_POLICY_ALWAYS,
-                                                  RepositoryPolicy.CHECKSUM_POLICY_WARN ) );
+                .setSnapshotPolicy(new RepositoryPolicy(true,
+                        RepositoryPolicy.UPDATE_POLICY_DAILY,
+                        RepositoryPolicy.CHECKSUM_POLICY_WARN))
+                .setReleasePolicy(new RepositoryPolicy(true,
+                        RepositoryPolicy.UPDATE_POLICY_ALWAYS,
+                        RepositoryPolicy.CHECKSUM_POLICY_WARN));
 
         Settings settings = MavenSettings.getSettings();
         Server server = settings.getServer( repo.getId() );
