@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
+@Ignore
 public class M2RepositoryTest {
 
     private static final Logger log = LoggerFactory.getLogger( M2RepositoryTest.class );
