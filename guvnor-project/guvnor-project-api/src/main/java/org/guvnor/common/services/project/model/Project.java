@@ -22,7 +22,6 @@ import java.util.Collections;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.authz.RuntimeResource;
 
 /**
@@ -31,11 +30,9 @@ import org.uberfire.security.authz.RuntimeResource;
 @Portable
 public class Project implements RuntimeResource {
 
-    private Path rootPath;
-    private Path pomXMLPath;
-    private Path kmoduleXMLPath;
-    private Path importsPath;
-    private String projectName;
+    protected Path rootPath;
+    protected Path pomXMLPath;
+    protected String projectName;
 
     private Collection<String> roles = new ArrayList<String>();
 
@@ -45,17 +42,11 @@ public class Project implements RuntimeResource {
 
     public Project( final Path rootPath,
                     final Path pomXMLPath,
-                    final Path kmoduleXMLPath,
-                    final Path importsPath,
                     final String projectName ) {
         this.rootPath = PortablePreconditions.checkNotNull( "rootPath",
                                                             rootPath );
         this.pomXMLPath = PortablePreconditions.checkNotNull( "pomXMLPath",
                                                               pomXMLPath );
-        this.kmoduleXMLPath = PortablePreconditions.checkNotNull( "kmoduleXMLPath",
-                                                                  kmoduleXMLPath );
-        this.importsPath = PortablePreconditions.checkNotNull( "importsPath",
-                                                               importsPath );
         this.projectName = PortablePreconditions.checkNotNull( "projectName",
                                                                projectName );
     }
@@ -68,13 +59,6 @@ public class Project implements RuntimeResource {
         return this.pomXMLPath;
     }
 
-    public Path getKModuleXMLPath() {
-        return this.kmoduleXMLPath;
-    }
-
-    public Path getImportsPath() {
-        return this.importsPath;
-    }
 
     public String getProjectName() {
         return this.projectName;
@@ -112,12 +96,6 @@ public class Project implements RuntimeResource {
         if ( !pomXMLPath.equals( project.pomXMLPath ) ) {
             return false;
         }
-        if ( !kmoduleXMLPath.equals( project.kmoduleXMLPath ) ) {
-            return false;
-        }
-        if ( !importsPath.equals( project.importsPath ) ) {
-            return false;
-        }
         if ( !projectName.equals( project.projectName ) ) {
             return false;
         }
@@ -129,8 +107,6 @@ public class Project implements RuntimeResource {
     public int hashCode() {
         int result = rootPath.hashCode();
         result = 31 * result + pomXMLPath.hashCode();
-        result = 31 * result + kmoduleXMLPath.hashCode();
-        result = 31 * result + importsPath.hashCode();
         result = 31 * result + projectName.hashCode();
         return result;
     }

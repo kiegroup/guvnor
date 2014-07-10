@@ -47,10 +47,9 @@ public class ResourceChangeIncrementalBuilder {
 
     private static final String INCREMENTAL_BUILD_PROPERTY_NAME = "build.enable-incremental";
 
-    private static final Logger logger = LoggerFactory.getLogger( ResourceChangeIncrementalBuilder.class );
+    protected static final Logger logger = LoggerFactory.getLogger( ResourceChangeIncrementalBuilder.class );
 
-    @Inject
-    private ProjectService projectService;
+    @Inject protected ProjectService projectService;
 
     @Inject
     private AppConfigService appConfigService;
@@ -60,7 +59,7 @@ public class ResourceChangeIncrementalBuilder {
 
     private IncrementalBuilderExecutorManager executorManager = null;
 
-    private boolean isIncrementalEnabled = false;
+    protected boolean isIncrementalEnabled = false;
 
     @PostConstruct
     private void setup() {
@@ -203,10 +202,8 @@ public class ResourceChangeIncrementalBuilder {
 
         logger.info( "Incremental build request received for: " + resource.toURI() + " (updated)." );
 
-        //The pom.xml or kmodule.xml cannot be processed incrementally
-        final boolean isPomFile = projectService.isPom( resource );
-        final boolean isKModuleFile = projectService.isKModule( resource );
-        if ( isPomFile || isKModuleFile ) {
+        //The pom.xml cannot be processed incrementally
+        if ( isProjectResourceUpdateNeeded( resource ) ) {
             scheduleProjectResourceUpdate( resource );
         } else {
             //If resource is not within a Package it cannot be used for an incremental build
@@ -218,8 +215,12 @@ public class ResourceChangeIncrementalBuilder {
         }
     }
 
+    protected boolean isProjectResourceUpdateNeeded(Path resource) {
+        return projectService.isPom(resource);
+    }
+
     //Schedule a re-build of a Project (changes to pom.xml or kmodule.xml require a full build)
-    private void scheduleProjectResourceUpdate( final Path resource ) {
+    protected void scheduleProjectResourceUpdate(final Path resource) {
         final Project project = projectService.resolveProject( resource );
         getExecutor().execute( new AsyncIncrementalBuilder() {
 
@@ -247,7 +248,7 @@ public class ResourceChangeIncrementalBuilder {
     }
 
     //Schedule an incremental build for a package resource
-    private void schedulePackageResourceUpdate( final Path resource ) {
+    protected void schedulePackageResourceUpdate(final Path resource) {
         getExecutor().execute( new AsyncIncrementalBuilder() {
 
             @Override

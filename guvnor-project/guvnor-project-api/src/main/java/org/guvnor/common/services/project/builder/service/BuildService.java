@@ -27,26 +27,26 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
 
 @Remote
-public interface BuildService {
+public interface BuildService<P extends Project> {
 
     /**
      * Full build without deployment
      * @param project
      */
-    BuildResults build( final Project project );
+    BuildResults build( final P project );
 
     /**
      * Full build with deployment
      * @param project
      */
-    BuildResults buildAndDeploy( final Project project );
+    BuildResults buildAndDeploy( final P project );
 
     /**
      * Check whether a Project has been built
      * @param project
      * @return
      */
-    boolean isBuilt( final Project project );
+    boolean isBuilt( final P project );
 
     /**
      * Add a Package resource to the build.
@@ -71,7 +71,7 @@ public interface BuildService {
      * @param project
      * @param changes
      */
-    IncrementalBuildResults applyBatchResourceChanges( final Project project,
+    IncrementalBuildResults applyBatchResourceChanges( final P project,
                                                        final Map<Path, Collection<ResourceChange>> changes );
 
 }

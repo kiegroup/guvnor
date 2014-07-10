@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.project.service;
+package org.guvnor.common.services.project.project;
 
-import org.guvnor.common.services.project.model.KModuleModel;
-import org.guvnor.common.services.shared.file.SupportsRead;
-import org.guvnor.common.services.shared.file.SupportsUpdate;
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.vfs.Path;
+import org.guvnor.common.services.project.model.Project;
 
-@Remote
-public interface KModuleService extends SupportsRead<KModuleModel>,
-                                        SupportsUpdate<KModuleModel> {
+public interface ProjectFactory<T extends Project> {
 
-    public Path setUpKModuleStructure( final Path projectRoot );
+    T simpleProjectInstance(org.uberfire.java.nio.file.Path parent);
 
 }

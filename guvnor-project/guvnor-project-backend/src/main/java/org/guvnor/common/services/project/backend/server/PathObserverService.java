@@ -11,6 +11,7 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.project.ProjectFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
@@ -28,7 +29,7 @@ public class PathObserverService {
     private IOService ioService;
 
     @Inject
-    private ProjectServiceImpl projectService;
+    private ProjectFactory projectFactory;
 
     @Inject
     private Event<DeleteProjectEvent> deleteProjectEvent;
@@ -58,7 +59,7 @@ public class PathObserverService {
 
     private void fireDeleteEvent( final org.uberfire.backend.vfs.Path _path ) {
         final Path path = ioService.get( URI.create( _path.toURI() ) );
-        final Project project = projectService.simpleProjectInstance( path.getParent() );
+        final Project project = projectFactory.simpleProjectInstance( path.getParent() );
         deleteProjectEvent.fire( new DeleteProjectEvent( project ) );
     }
 }

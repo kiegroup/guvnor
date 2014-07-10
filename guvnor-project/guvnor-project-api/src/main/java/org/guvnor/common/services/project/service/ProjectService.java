@@ -21,9 +21,6 @@ import java.util.Set;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.shared.file.SupportsRead;
-import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.guvnor.common.services.workingset.client.model.WorkingSetSettings;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -33,8 +30,7 @@ import org.uberfire.backend.vfs.Path;
  *
  */
 @Remote
-public interface ProjectService extends SupportsRead<ProjectImports>,
-                                        SupportsUpdate<ProjectImports> {
+public interface ProjectService<T extends Project>  {
 
     WorkingSetSettings loadWorkingSetConfig( final Path project );
 
@@ -43,7 +39,7 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
      * @param resource
      * @return Path to the folder containing the Project's pom.xml file or null if the resource was not in a Project
      */
-    Project resolveProject( final Path resource );
+    T resolveProject( final Path resource );
 
     /**
      * Given a Resource path resolve it to the containing Package Path. A Package path is the folder containing the resource.
@@ -75,13 +71,6 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
     boolean isPom( Path resource );
 
     /**
-     * Return true if the file is the Project's kmodule.xml file
-     * @param resource
-     * @return
-     */
-    boolean isKModule( Path resource );
-
-    /**
      * Creates a new project to the given path.
      * @param repository
      * @param name
@@ -89,7 +78,7 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
      * @param baseURL the base URL where the Guvnor is hosted in web container
      * @return
      */
-    Project newProject( final Repository repository,
+    T newProject( final Repository repository,
                         final String name,
                         final POM pom,
                         final String baseURL );
@@ -129,4 +118,5 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
     void copy( final Path pathToPomXML,
                final String newName,
                final String comment );
+
 }
