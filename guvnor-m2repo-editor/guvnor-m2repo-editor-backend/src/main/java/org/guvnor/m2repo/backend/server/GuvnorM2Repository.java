@@ -52,21 +52,22 @@ import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.drools.core.io.impl.ReaderInputStream;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.deployment.DeployRequest;
+import org.eclipse.aether.deployment.DeploymentException;
+import org.eclipse.aether.installation.InstallRequest;
+import org.eclipse.aether.installation.InstallationException;
+import org.eclipse.aether.repository.Authentication;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
+import org.eclipse.aether.util.artifact.SubArtifact;
+import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.guvnor.common.services.project.model.GAV;
 import org.kie.scanner.Aether;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.deployment.DeployRequest;
-import org.sonatype.aether.deployment.DeploymentException;
-import org.sonatype.aether.installation.InstallRequest;
-import org.sonatype.aether.installation.InstallationException;
-import org.sonatype.aether.repository.Authentication;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.repository.RepositoryPolicy;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.sonatype.aether.util.artifact.SubArtifact;
 
 @ApplicationScoped
 public class GuvnorM2Repository {
@@ -295,17 +296,16 @@ public class GuvnorM2Repository {
 
         try {
             String localRepositoryUrl = m2RepoDir.toURI().toURL().toExternalForm();
-            return new RemoteRepository( "guvnor-m2-repo",
+            return new RemoteRepository.Builder( "guvnor-m2-repo",
                                          "default",
                                          localRepositoryUrl )
-                    .setPolicy( true,
-                                new RepositoryPolicy( true,
+                    .setPolicy( new RepositoryPolicy( true,
                                                       RepositoryPolicy.UPDATE_POLICY_DAILY,
                                                       RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
-                    .setPolicy( false,
-                                new RepositoryPolicy( true,
+                    .setPolicy( new RepositoryPolicy( true,
                                                       RepositoryPolicy.UPDATE_POLICY_ALWAYS,
-                                                      RepositoryPolicy.CHECKSUM_POLICY_WARN ) );
+                                                      RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
+                    .build();
 
         } catch ( MalformedURLException e ) {
             log.error( e.getMessage(),
@@ -316,13 +316,11 @@ public class GuvnorM2Repository {
 
     private RemoteRepository getRemoteRepoFromDeployment( DeploymentRepository repo ) {
 
-        RemoteRepository remoteRepo = new RemoteRepository( repo.getId(), repo.getLayout(), repo.getUrl() )
-                .setPolicy( true,
-                            new RepositoryPolicy( true,
+        RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder( repo.getId(), repo.getLayout(), repo.getUrl() )
+                .setPolicy( new RepositoryPolicy( true,
                                                   RepositoryPolicy.UPDATE_POLICY_DAILY,
                                                   RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
-                .setPolicy( false,
-                            new RepositoryPolicy( true,
+                .setPolicy( new RepositoryPolicy( true,
                                                   RepositoryPolicy.UPDATE_POLICY_ALWAYS,
                                                   RepositoryPolicy.CHECKSUM_POLICY_WARN ) );
 
@@ -330,10 +328,14 @@ public class GuvnorM2Repository {
         Server server = settings.getServer( repo.getId() );
 
         if ( server != null ) {
-            remoteRepo.setAuthentication( new Authentication( server.getUsername(), server.getPassword() ) );
+            remoteRepoBuilder.setAuthentication(
+                    new AuthenticationBuilder()
+                            .addUsername(server.getUsername())
+                            .addPassword(server.getPassword())
+                            .build());
         }
 
-        return remoteRepo;
+        return remoteRepoBuilder.build();
     }
 
     /**
