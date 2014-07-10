@@ -35,6 +35,7 @@
   <modules>
     <module>guvnor-structure</module>
     <module>guvnor-services</module>
+    <module>guvnor-rest</module>
     <module>guvnor-project</module>
     <module>guvnor-workingset</module>
     <module>guvnor-inbox</module>
