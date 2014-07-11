@@ -1,6 +1,0 @@
-<beans>
-  <alternatives>
-    <class>org.guvnor.common.services.builder.TestAppSetup</class>
-    <class>org.guvnor.common.services.builder.TestIncrementalBuilderExecutorManagerFactoryImpl</class>
-  </alternatives>
-</beans>

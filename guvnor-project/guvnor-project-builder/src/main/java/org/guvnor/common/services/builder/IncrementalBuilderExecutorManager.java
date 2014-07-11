@@ -59,7 +59,8 @@ public class IncrementalBuilderExecutorManager {
         }
     }
 
-    void setExecutorService( final ExecutorService executorService ) {
+    //Public so we can set the ExecutorService for tests not within guvnor
+    public void setExecutorService( final ExecutorService executorService ) {
         this.executorService = executorService;
         this.useExecService.set( true );
     }
