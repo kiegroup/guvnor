@@ -54,20 +54,10 @@
       <artifactId>guvnor-m2repo-editor-backend</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
-    </dependency>
-
     <!-- Needed by kie-api if KieModules are to be built -->
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-ci</artifactId>
     </dependency>
 
     <dependency>
