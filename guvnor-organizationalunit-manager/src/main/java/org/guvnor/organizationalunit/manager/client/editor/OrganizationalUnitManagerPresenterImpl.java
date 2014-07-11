@@ -44,7 +44,7 @@ import org.uberfire.lifecycle.OnStartup;
 
 @ApplicationScoped
 //The identifier has been preserved from kie-wb-common so existing .niogit System repositories are not broken
-@WorkbenchScreen(identifier = "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager")
+@WorkbenchScreen(identifier = "org.guvnor.organizationalunit.manager.OrganizationalUnitManager")
 public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUnitManagerPresenter {
 
     @Inject
