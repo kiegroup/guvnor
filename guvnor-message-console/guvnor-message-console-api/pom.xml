@@ -52,10 +52,6 @@
           <artifactId>guvnor-workingset-api</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-workbench-models-datamodel-api</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.guvnor</groupId>
           <artifactId>guvnor-services-api</artifactId>
         </exclusion>
