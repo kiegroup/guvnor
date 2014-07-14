@@ -18,13 +18,13 @@ package org.guvnor.messageconsole.client.console;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
+import org.guvnor.messageconsole.whitelist.MessageConsoleWhiteList;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.PublishMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
@@ -50,7 +50,8 @@ public class MessageConsoleService {
     @Inject
     private Identity identity;
 
-    private List<String> allowedPerspectives = new ArrayList<String>();
+    @Inject
+    private MessageConsoleWhiteList whiteList;
 
     private ListDataProvider<MessageConsoleServiceRow> dataProvider = new ListDataProvider<MessageConsoleServiceRow>();
 
@@ -59,19 +60,12 @@ public class MessageConsoleService {
 
     private String currentPerspective;
 
-    @PostConstruct
-    protected void init() {
-        allowedPerspectives.add( "org.kie.workbench.drools.client.perspectives.DroolsAuthoringPerspective" );
-        allowedPerspectives.add( "org.kie.workbench.client.perspectives.DroolsAuthoringPerspective" );
-        allowedPerspectives.add( "org.drools.workbench.client.perspectives.AuthoringPerspective" );
-    }
-
     public void publishMessages( final @Observes PublishMessagesEvent publishEvent ) {
         publishMessages( publishEvent.getSessionId(),
                          publishEvent.getUserId(),
                          publishEvent.getPlace(),
                          publishEvent.getMessagesToPublish() );
-        if ( publishEvent.isShowSystemConsole() && allowedPerspectives.contains( currentPerspective ) ) {
+        if ( publishEvent.isShowSystemConsole() && whiteList.contains( currentPerspective ) ) {
             placeManager.goTo( MESSAGE_CONSOLE );
         }
     }
@@ -81,7 +75,7 @@ public class MessageConsoleService {
                            unpublishEvent.getUserId(),
                            unpublishEvent.getMessageType(),
                            unpublishEvent.getMessagesToUnpublish() );
-        if ( unpublishEvent.isShowSystemConsole() && allowedPerspectives.contains( currentPerspective ) ) {
+        if ( unpublishEvent.isShowSystemConsole() && whiteList.contains( currentPerspective ) ) {
             placeManager.goTo( MESSAGE_CONSOLE );
         }
     }
@@ -100,7 +94,7 @@ public class MessageConsoleService {
                          publishBatchEvent.getUserId(),
                          publishBatchEvent.getPlace(),
                          publishBatchEvent.getMessagesToPublish() );
-        if ( publishBatchEvent.isShowSystemConsole() && allowedPerspectives.contains( currentPerspective ) ) {
+        if ( publishBatchEvent.isShowSystemConsole() && whiteList.contains( currentPerspective ) ) {
             placeManager.goTo( MESSAGE_CONSOLE );
         }
     }
