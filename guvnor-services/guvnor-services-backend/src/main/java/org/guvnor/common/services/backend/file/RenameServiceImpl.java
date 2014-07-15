@@ -50,7 +50,7 @@ public class RenameServiceImpl implements RenameService {
             final Path targetPath = Paths.convert( _target );
 
             try {
-                ioService.startBatch();
+                ioService.startBatch( _target.getFileSystem() );
 
                 ioService.move( _path,
                                 _target,
@@ -69,7 +69,7 @@ public class RenameServiceImpl implements RenameService {
             } catch ( final Exception e ) {
                 throw e;
             } finally {
-                ioService.endBatch();
+                ioService.endBatch( _target.getFileSystem() );
             }
 
             return Paths.convert( _target );
@@ -80,6 +80,6 @@ public class RenameServiceImpl implements RenameService {
     }
 
     protected SessionInfo getSessionInfo() {
-        return new SafeSessionInfo(sessionInfo);
+        return new SafeSessionInfo( sessionInfo );
     }
 }

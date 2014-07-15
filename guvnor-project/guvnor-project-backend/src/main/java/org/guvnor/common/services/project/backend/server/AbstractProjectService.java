@@ -42,7 +42,6 @@ import org.guvnor.common.services.project.project.ProjectFactory;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.PackageAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.workingset.client.model.WorkingSetSettings;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
@@ -55,6 +54,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
@@ -522,11 +522,12 @@ public abstract class AbstractProjectService<T extends Project>
         final Path testResourcesPath = parentPackage.getPackageTestResourcesPath();
 
         Path pkgPath = null;
+        final FileSystem fs = Paths.convert( parentPackage.getPackageMainSrcPath() ).getFileSystem();
 
         try {
 
             if (startBatch) {
-                ioService.startBatch(makeCommentedOption("New package [" + packageName + "]"));
+                ioService.startBatch(fs, makeCommentedOption( "New package [" + packageName + "]" ));
             }
 
             final org.uberfire.java.nio.file.Path nioMainSrcPackagePath = Paths.convert(mainSrcPath).resolve(newPackageName);
@@ -559,7 +560,7 @@ public abstract class AbstractProjectService<T extends Project>
             throw ExceptionUtilities.handleException(e);
         } finally {
             if (startBatch) {
-                ioService.endBatch();
+                ioService.endBatch(fs);
             }
         }
     }
@@ -666,13 +667,13 @@ public abstract class AbstractProjectService<T extends Project>
             content.setName(newName);
             final Path newPathToPomXML = Paths.convert(newProjectPath.resolve("pom.xml"));
             try {
-                ioService.startBatch();
+                ioService.startBatch(newProjectPath.getFileSystem());
                 ioService.move(projectDirectory, newProjectPath, makeCommentedOption(comment));
                 pomService.save(newPathToPomXML, content, null, comment);
             } catch (final Exception e) {
                 throw e;
             } finally {
-                ioService.endBatch();
+                ioService.endBatch(newProjectPath.getFileSystem());
             }
             final Project newProject = resolveProject(Paths.convert(newProjectPath));
             invalidateDMOCache.fire(new InvalidateDMOProjectCacheEvent(sessionInfo, oldProject, oldProjectDir));
@@ -719,13 +720,13 @@ public abstract class AbstractProjectService<T extends Project>
             content.setName(newName);
             final Path newPathToPomXML = Paths.convert(newProjectPath.resolve("pom.xml"));
             try {
-                ioService.startBatch();
+                ioService.startBatch(newProjectPath.getFileSystem());
                 ioService.copy(projectDirectory, newProjectPath, makeCommentedOption(comment));
                 pomService.save(newPathToPomXML, content, null, comment);
             } catch (final Exception e) {
                 throw e;
             } finally {
-                ioService.endBatch();
+                ioService.endBatch(newProjectPath.getFileSystem());
             }
             final Project newProject = resolveProject(Paths.convert(newProjectPath));
             newProjectEvent.fire(new NewProjectEvent(newProject, sessionInfo));

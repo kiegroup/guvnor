@@ -40,6 +40,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
@@ -118,12 +119,13 @@ class ProjectServiceImpl
             final String projectName,
             final POM pom,
             final String baseUrl) {
+        final FileSystem fs = Paths.convert(repository.getRoot()).getFileSystem();
         try {
             //Projects are always created in the FS root
             final Path fsRoot = repository.getRoot();
             final Path projectRootPath = Paths.convert(Paths.convert(fsRoot).resolve(projectName));
 
-            ioService.startBatch(makeCommentedOption("New project [" + projectName + "]"));
+            ioService.startBatch(fs, makeCommentedOption("New project [" + projectName + "]"));
 
             //Create POM.xml
             pomService.create(projectRootPath,
@@ -157,7 +159,7 @@ class ProjectServiceImpl
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         } finally {
-            ioService.endBatch();
+            ioService.endBatch(fs);
         }
     }
 
