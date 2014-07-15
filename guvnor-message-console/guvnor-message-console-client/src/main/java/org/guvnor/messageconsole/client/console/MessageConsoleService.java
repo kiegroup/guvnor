@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import com.google.gwt.view.client.HasData;
@@ -65,7 +66,7 @@ public class MessageConsoleService {
                          publishEvent.getUserId(),
                          publishEvent.getPlace(),
                          publishEvent.getMessagesToPublish() );
-        if ( publishEvent.isShowSystemConsole() && whiteList.contains( currentPerspective ) ) {
+        if ( publishEvent.isShowSystemConsole() && checkWhiteList()) {
             placeManager.goTo( MESSAGE_CONSOLE );
         }
     }
@@ -75,7 +76,7 @@ public class MessageConsoleService {
                            unpublishEvent.getUserId(),
                            unpublishEvent.getMessageType(),
                            unpublishEvent.getMessagesToUnpublish() );
-        if ( unpublishEvent.isShowSystemConsole() && whiteList.contains( currentPerspective ) ) {
+        if ( unpublishEvent.isShowSystemConsole() && checkWhiteList()) {
             placeManager.goTo( MESSAGE_CONSOLE );
         }
     }
@@ -94,7 +95,7 @@ public class MessageConsoleService {
                          publishBatchEvent.getUserId(),
                          publishBatchEvent.getPlace(),
                          publishBatchEvent.getMessagesToPublish() );
-        if ( publishBatchEvent.isShowSystemConsole() && whiteList.contains( currentPerspective ) ) {
+        if ( publishBatchEvent.isShowSystemConsole() && checkWhiteList()) {
             placeManager.goTo( MESSAGE_CONSOLE );
         }
     }
@@ -205,4 +206,13 @@ public class MessageConsoleService {
         }
         return result;
     }
+
+    private boolean checkWhiteList() {
+        if (whiteList == null) {
+            return true;
+        } else {
+            return whiteList.contains(currentPerspective);
+        }
+    }
+
 }
