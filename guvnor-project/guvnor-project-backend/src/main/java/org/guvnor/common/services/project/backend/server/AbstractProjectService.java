@@ -61,7 +61,8 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
 public abstract class AbstractProjectService<T extends Project>
-        implements ProjectService<T>, ProjectFactory<T> {
+        implements ProjectService<T>,
+                   ProjectFactory<T> {
 
     protected static final String SOURCE_FILENAME = "src";
 
@@ -72,7 +73,7 @@ public abstract class AbstractProjectService<T extends Project>
     protected static final String MAIN_RESOURCES_PATH = "src/main/resources";
     private static final String TEST_RESOURCES_PATH = "src/test/resources";
 
-    private static String[] sourcePaths = {MAIN_SRC_PATH, MAIN_RESOURCES_PATH, TEST_SRC_PATH, TEST_RESOURCES_PATH};
+    private static String[] sourcePaths = { MAIN_SRC_PATH, MAIN_RESOURCES_PATH, TEST_SRC_PATH, TEST_RESOURCES_PATH };
 
     protected IOService ioService;
 
@@ -96,19 +97,18 @@ public abstract class AbstractProjectService<T extends Project>
     protected AbstractProjectService() {
     }
 
-    public AbstractProjectService(
-            final IOService ioService,
-            final POMService pomService,
-            final ProjectConfigurationContentHandler projectConfigurationContentHandler,
-            final ConfigurationService configurationService,
-            final ConfigurationFactory configurationFactory,
-            final Event<NewProjectEvent> newProjectEvent,
-            final Event<NewPackageEvent> newPackageEvent,
-            final Event<RenameProjectEvent> renameProjectEvent,
-            final Event<DeleteProjectEvent> deleteProjectEvent,
-            final Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
-            final Identity identity,
-            final SessionInfo sessionInfo) {
+    public AbstractProjectService( final IOService ioService,
+                                   final POMService pomService,
+                                   final ProjectConfigurationContentHandler projectConfigurationContentHandler,
+                                   final ConfigurationService configurationService,
+                                   final ConfigurationFactory configurationFactory,
+                                   final Event<NewProjectEvent> newProjectEvent,
+                                   final Event<NewPackageEvent> newPackageEvent,
+                                   final Event<RenameProjectEvent> renameProjectEvent,
+                                   final Event<DeleteProjectEvent> deleteProjectEvent,
+                                   final Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
+                                   final Identity identity,
+                                   final SessionInfo sessionInfo ) {
         this.ioService = ioService;
         this.pomService = pomService;
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
@@ -120,94 +120,94 @@ public abstract class AbstractProjectService<T extends Project>
         this.deleteProjectEvent = deleteProjectEvent;
         this.invalidateDMOCache = invalidateDMOCache;
         this.identity = identity;
-        this.sessionInfo = new SafeSessionInfo(sessionInfo);
+        this.sessionInfo = new SafeSessionInfo( sessionInfo );
     }
 
-    public WorkingSetSettings loadWorkingSetConfig(final Path project) {
+    public WorkingSetSettings loadWorkingSetConfig( final Path project ) {
         //TODO {porcelli}
         return new WorkingSetSettings();
     }
 
-    protected T makeProject(final org.uberfire.java.nio.file.Path nioProjectRootPath) {
-        final T project = simpleProjectInstance(nioProjectRootPath);
+    protected T makeProject( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
+        final T project = simpleProjectInstance( nioProjectRootPath );
 
-        addSecurityRoles(project);
+        addSecurityRoles( project );
 
         return project;
     }
 
-    protected void addSecurityRoles(T project) {
+    protected void addSecurityRoles( final T project ) {
         //Copy in Security Roles required to access this resource
-        final ConfigGroup projectConfiguration = findProjectConfig(project.getRootPath());
-        if (projectConfiguration != null) {
-            ConfigItem<List<String>> roles = projectConfiguration.getConfigItem("security:roles");
-            if (roles != null) {
-                for (String role : roles.getValue()) {
-                    project.getRoles().add(role);
+        final ConfigGroup projectConfiguration = findProjectConfig( project.getRootPath() );
+        if ( projectConfiguration != null ) {
+            ConfigItem<List<String>> roles = projectConfiguration.getConfigItem( "security:roles" );
+            if ( roles != null ) {
+                for ( String role : roles.getValue() ) {
+                    project.getRoles().add( role );
                 }
             }
         }
     }
 
-    public abstract T simpleProjectInstance(final org.uberfire.java.nio.file.Path nioProjectRootPath);
+    public abstract T simpleProjectInstance( final org.uberfire.java.nio.file.Path nioProjectRootPath );
 
     @Override
-    public org.guvnor.common.services.project.model.Package resolvePackage(final Path resource) {
+    public org.guvnor.common.services.project.model.Package resolvePackage( final Path resource ) {
         try {
             //Null resource paths cannot resolve to a Project
-            if (resource == null) {
+            if ( resource == null ) {
                 return null;
             }
 
             //If Path is not within a Project we cannot resolve a package
-            final Project project = resolveProject(resource);
-            if (project == null) {
+            final Project project = resolveProject( resource );
+            if ( project == null ) {
                 return null;
             }
 
             //pom.xml is not inside a package
-            if (isPom(resource)) {
+            if ( isPom( resource ) ) {
                 return null;
             }
 
-            return makePackage(project,
-                    resource);
+            return makePackage( project,
+                                resource );
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
-    public abstract T resolveProject(Path resource);
+    public abstract T resolveProject( final Path resource );
 
     @Override
-    public Set<Package> resolvePackages(final Project project) {
+    public Set<Package> resolvePackages( final Project project ) {
         final Set<Package> packages = new HashSet<Package>();
         final Set<String> packageNames = new HashSet<String>();
-        if (project == null) {
+        if ( project == null ) {
             return packages;
         }
         //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
         //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
         final Path projectRoot = project.getRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert(projectRoot);
-        for (String src : sourcePaths) {
-            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve(src);
-            packageNames.addAll(getPackageNames(nioProjectRootPath,
-                    nioPackageRootSrcPath,
-                    true,
-                    true,
-                    true));
+        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert( projectRoot );
+        for ( String src : sourcePaths ) {
+            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src );
+            packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                                  nioPackageRootSrcPath,
+                                                  true,
+                                                  true,
+                                                  true ) );
         }
 
         //Construct Package objects for each package name
         final java.util.Set<String> resolvedPackages = new java.util.HashSet<String>();
-        for (String packagePathSuffix : packageNames) {
-            for (String src : sourcePaths) {
-                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve(src).resolve(packagePathSuffix);
-                if (Files.exists(nioPackagePath) && !resolvedPackages.contains(packagePathSuffix)) {
-                    packages.add(resolvePackage(Paths.convert(nioPackagePath)));
-                    resolvedPackages.add(packagePathSuffix);
+        for ( String packagePathSuffix : packageNames ) {
+            for ( String src : sourcePaths ) {
+                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
+                if ( Files.exists( nioPackagePath ) && !resolvedPackages.contains( packagePathSuffix ) ) {
+                    packages.add( resolvePackage( Paths.convert( nioPackagePath ) ) );
+                    resolvedPackages.add( packagePathSuffix );
                 }
             }
         }
@@ -216,10 +216,10 @@ public abstract class AbstractProjectService<T extends Project>
     }
 
     @Override
-    public Set<Package> resolvePackages(final Package pkg) {
+    public Set<Package> resolvePackages( final Package pkg ) {
         final Set<Package> packages = new HashSet<Package>();
         final Set<String> packageNames = new HashSet<String>();
-        if (pkg == null) {
+        if ( pkg == null ) {
             return packages;
         }
 
@@ -227,25 +227,25 @@ public abstract class AbstractProjectService<T extends Project>
         //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
 
         final Path projectRoot = pkg.getProjectRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert(projectRoot);
+        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert( projectRoot );
 
-        for (String src : sourcePaths) {
-            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve(src).resolve(resolvePkgName(pkg.getCaption()));
-            packageNames.addAll(getPackageNames(nioProjectRootPath,
-                    nioPackageRootSrcPath,
-                    false,
-                    true,
-                    false));
+        for ( String src : sourcePaths ) {
+            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src ).resolve( resolvePkgName( pkg.getCaption() ) );
+            packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                                  nioPackageRootSrcPath,
+                                                  false,
+                                                  true,
+                                                  false ) );
         }
 
         //Construct Package objects for each package name
         final java.util.Set<String> resolvedPackages = new java.util.HashSet<String>();
-        for (String packagePathSuffix : packageNames) {
-            for (String src : sourcePaths) {
-                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve(src).resolve(packagePathSuffix);
-                if (Files.exists(nioPackagePath) && !resolvedPackages.contains(packagePathSuffix)) {
-                    packages.add(resolvePackage(Paths.convert(nioPackagePath)));
-                    resolvedPackages.add(packagePathSuffix);
+        for ( String packagePathSuffix : packageNames ) {
+            for ( String src : sourcePaths ) {
+                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
+                if ( Files.exists( nioPackagePath ) && !resolvedPackages.contains( packagePathSuffix ) ) {
+                    packages.add( resolvePackage( Paths.convert( nioPackagePath ) ) );
+                    resolvedPackages.add( packagePathSuffix );
                 }
             }
         }
@@ -254,31 +254,31 @@ public abstract class AbstractProjectService<T extends Project>
     }
 
     @Override
-    public Package resolveDefaultPackage(final Project project) {
+    public Package resolveDefaultPackage( final Project project ) {
         final Set<String> packageNames = new HashSet<String>();
-        if (project == null) {
+        if ( project == null ) {
             return null;
         }
         //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
         //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
         final Path projectRoot = project.getRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert(projectRoot);
-        for (String src : sourcePaths) {
-            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve(src);
-            packageNames.addAll(getPackageNames(nioProjectRootPath,
-                    nioPackageRootSrcPath,
-                    true,
-                    true,
-                    false));
+        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert( projectRoot );
+        for ( String src : sourcePaths ) {
+            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve( src );
+            packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                                  nioPackageRootSrcPath,
+                                                  true,
+                                                  true,
+                                                  false ) );
         }
 
         //Construct Package objects for each package name
         final java.util.Set<String> resolvedPackages = new java.util.HashSet<String>();
-        for (String packagePathSuffix : packageNames) {
-            for (String src : sourcePaths) {
-                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve(src).resolve(packagePathSuffix);
-                if (Files.exists(nioPackagePath) && !resolvedPackages.contains(packagePathSuffix)) {
-                    return resolvePackage(Paths.convert(nioPackagePath));
+        for ( String packagePathSuffix : packageNames ) {
+            for ( String src : sourcePaths ) {
+                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
+                if ( Files.exists( nioPackagePath ) && !resolvedPackages.contains( packagePathSuffix ) ) {
+                    return resolvePackage( Paths.convert( nioPackagePath ) );
                 }
             }
         }
@@ -287,21 +287,21 @@ public abstract class AbstractProjectService<T extends Project>
     }
 
     @Override
-    public Package resolveParentPackage(final Package pkg) {
+    public Package resolveParentPackage( final Package pkg ) {
         final Set<String> packageNames = new HashSet<String>();
 
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert(pkg.getProjectRootPath());
-        packageNames.addAll(getPackageNames(nioProjectRootPath, Paths.convert(pkg.getPackageMainSrcPath()).getParent(), true, false, false));
+        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert( pkg.getProjectRootPath() );
+        packageNames.addAll( getPackageNames( nioProjectRootPath, Paths.convert( pkg.getPackageMainSrcPath() ).getParent(), true, false, false ) );
 
         //Construct Package objects for each package name
-        for (String packagePathSuffix : packageNames) {
-            for (String src : sourcePaths) {
-                if (packagePathSuffix == null) {
+        for ( String packagePathSuffix : packageNames ) {
+            for ( String src : sourcePaths ) {
+                if ( packagePathSuffix == null ) {
                     return null;
                 }
-                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve(src).resolve(packagePathSuffix);
-                if (Files.exists(nioPackagePath)) {
-                    return resolvePackage(Paths.convert(nioPackagePath));
+                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve( src ).resolve( packagePathSuffix );
+                if ( Files.exists( nioPackagePath ) ) {
+                    return resolvePackage( Paths.convert( nioPackagePath ) );
                 }
             }
         }
@@ -309,172 +309,172 @@ public abstract class AbstractProjectService<T extends Project>
         return null;
     }
 
-    private String resolvePkgName(final String caption) {
-        if (caption.equals("<default>")) {
+    private String resolvePkgName( final String caption ) {
+        if ( caption.equals( "<default>" ) ) {
             return "";
         }
-        return caption.replaceAll("\\.", "/");
+        return caption.replaceAll( "\\.", "/" );
     }
 
-    private Set<String> getPackageNames(final org.uberfire.java.nio.file.Path nioProjectRootPath,
-            final org.uberfire.java.nio.file.Path nioPackageSrcPath,
-            final boolean includeDefault,
-            final boolean includeChild,
-            final boolean recursive) {
+    private Set<String> getPackageNames( final org.uberfire.java.nio.file.Path nioProjectRootPath,
+                                         final org.uberfire.java.nio.file.Path nioPackageSrcPath,
+                                         final boolean includeDefault,
+                                         final boolean includeChild,
+                                         final boolean recursive ) {
         final Set<String> packageNames = new HashSet<String>();
-        if (!Files.exists(nioPackageSrcPath)) {
+        if ( !Files.exists( nioPackageSrcPath ) ) {
             return packageNames;
         }
-        if (includeDefault || recursive) {
-            packageNames.add(getPackagePathSuffix(nioProjectRootPath,
-                    nioPackageSrcPath));
+        if ( includeDefault || recursive ) {
+            packageNames.add( getPackagePathSuffix( nioProjectRootPath,
+                                                    nioPackageSrcPath ) );
 
         }
 
-        if (!includeChild) {
+        if ( !includeChild ) {
             return packageNames;
         }
 
         //We're only interested in Directories (and not META-INF) so set-up appropriate filters
         final LinkedMetaInfFolderFilter metaDataFileFilter = new LinkedMetaInfFolderFilter();
-        final LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter(metaDataFileFilter);
-        final LinkedDirectoryFilter directoryFilter = new LinkedDirectoryFilter(dotFileFilter);
+        final LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter( metaDataFileFilter );
+        final LinkedDirectoryFilter directoryFilter = new LinkedDirectoryFilter( dotFileFilter );
 
-        final DirectoryStream<org.uberfire.java.nio.file.Path> nioChildPackageSrcPaths = ioService.newDirectoryStream(nioPackageSrcPath,
-                directoryFilter);
-        for (org.uberfire.java.nio.file.Path nioChildPackageSrcPath : nioChildPackageSrcPaths) {
-            if (recursive) {
-                packageNames.addAll(getPackageNames(nioProjectRootPath,
-                        nioChildPackageSrcPath,
-                        includeDefault,
-                        includeChild,
-                        recursive));
+        final DirectoryStream<org.uberfire.java.nio.file.Path> nioChildPackageSrcPaths = ioService.newDirectoryStream( nioPackageSrcPath,
+                                                                                                                       directoryFilter );
+        for ( org.uberfire.java.nio.file.Path nioChildPackageSrcPath : nioChildPackageSrcPaths ) {
+            if ( recursive ) {
+                packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                                      nioChildPackageSrcPath,
+                                                      includeDefault,
+                                                      includeChild,
+                                                      recursive ) );
             } else {
-                packageNames.add(getPackagePathSuffix(nioProjectRootPath,
-                        nioChildPackageSrcPath));
+                packageNames.add( getPackagePathSuffix( nioProjectRootPath,
+                                                        nioChildPackageSrcPath ) );
             }
         }
 
         return packageNames;
     }
 
-    private String getPackagePathSuffix(final org.uberfire.java.nio.file.Path nioProjectRootPath,
-            final org.uberfire.java.nio.file.Path nioPackagePath) {
-        final org.uberfire.java.nio.file.Path nioMainSrcPath = nioProjectRootPath.resolve(MAIN_SRC_PATH);
-        final org.uberfire.java.nio.file.Path nioTestSrcPath = nioProjectRootPath.resolve(TEST_SRC_PATH);
-        final org.uberfire.java.nio.file.Path nioMainResourcesPath = nioProjectRootPath.resolve(MAIN_RESOURCES_PATH);
-        final org.uberfire.java.nio.file.Path nioTestResourcesPath = nioProjectRootPath.resolve(TEST_RESOURCES_PATH);
+    private String getPackagePathSuffix( final org.uberfire.java.nio.file.Path nioProjectRootPath,
+                                         final org.uberfire.java.nio.file.Path nioPackagePath ) {
+        final org.uberfire.java.nio.file.Path nioMainSrcPath = nioProjectRootPath.resolve( MAIN_SRC_PATH );
+        final org.uberfire.java.nio.file.Path nioTestSrcPath = nioProjectRootPath.resolve( TEST_SRC_PATH );
+        final org.uberfire.java.nio.file.Path nioMainResourcesPath = nioProjectRootPath.resolve( MAIN_RESOURCES_PATH );
+        final org.uberfire.java.nio.file.Path nioTestResourcesPath = nioProjectRootPath.resolve( TEST_RESOURCES_PATH );
 
         String packageName = null;
         org.uberfire.java.nio.file.Path packagePath = null;
-        if (nioPackagePath.startsWith(nioMainSrcPath)) {
-            packagePath = nioMainSrcPath.relativize(nioPackagePath);
+        if ( nioPackagePath.startsWith( nioMainSrcPath ) ) {
+            packagePath = nioMainSrcPath.relativize( nioPackagePath );
             packageName = packagePath.toString();
-        } else if (nioPackagePath.startsWith(nioTestSrcPath)) {
-            packagePath = nioTestSrcPath.relativize(nioPackagePath);
+        } else if ( nioPackagePath.startsWith( nioTestSrcPath ) ) {
+            packagePath = nioTestSrcPath.relativize( nioPackagePath );
             packageName = packagePath.toString();
-        } else if (nioPackagePath.startsWith(nioMainResourcesPath)) {
-            packagePath = nioMainResourcesPath.relativize(nioPackagePath);
+        } else if ( nioPackagePath.startsWith( nioMainResourcesPath ) ) {
+            packagePath = nioMainResourcesPath.relativize( nioPackagePath );
             packageName = packagePath.toString();
-        } else if (nioPackagePath.startsWith(nioTestResourcesPath)) {
-            packagePath = nioTestResourcesPath.relativize(nioPackagePath);
+        } else if ( nioPackagePath.startsWith( nioTestResourcesPath ) ) {
+            packagePath = nioTestResourcesPath.relativize( nioPackagePath );
             packageName = packagePath.toString();
         }
 
         return packageName;
     }
 
-    protected Package makePackage(final Project project,
-            final Path resource) {
+    protected Package makePackage( final Project project,
+                                   final Path resource ) {
         final Path projectRoot = project.getRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRoot = Paths.convert(projectRoot);
-        final org.uberfire.java.nio.file.Path nioMainSrcPath = nioProjectRoot.resolve(MAIN_SRC_PATH);
-        final org.uberfire.java.nio.file.Path nioTestSrcPath = nioProjectRoot.resolve(TEST_SRC_PATH);
-        final org.uberfire.java.nio.file.Path nioMainResourcesPath = nioProjectRoot.resolve(MAIN_RESOURCES_PATH);
-        final org.uberfire.java.nio.file.Path nioTestResourcesPath = nioProjectRoot.resolve(TEST_RESOURCES_PATH);
+        final org.uberfire.java.nio.file.Path nioProjectRoot = Paths.convert( projectRoot );
+        final org.uberfire.java.nio.file.Path nioMainSrcPath = nioProjectRoot.resolve( MAIN_SRC_PATH );
+        final org.uberfire.java.nio.file.Path nioTestSrcPath = nioProjectRoot.resolve( TEST_SRC_PATH );
+        final org.uberfire.java.nio.file.Path nioMainResourcesPath = nioProjectRoot.resolve( MAIN_RESOURCES_PATH );
+        final org.uberfire.java.nio.file.Path nioTestResourcesPath = nioProjectRoot.resolve( TEST_RESOURCES_PATH );
 
-        org.uberfire.java.nio.file.Path nioResource = Paths.convert(resource);
+        org.uberfire.java.nio.file.Path nioResource = Paths.convert( resource );
 
-        if (Files.isRegularFile(nioResource)) {
+        if ( Files.isRegularFile( nioResource ) ) {
             nioResource = nioResource.getParent();
         }
 
         String packageName = null;
         org.uberfire.java.nio.file.Path packagePath = null;
-        if (nioResource.startsWith(nioMainSrcPath)) {
-            packagePath = nioMainSrcPath.relativize(nioResource);
-            packageName = packagePath.toString().replaceAll("/",
-                    ".");
-        } else if (nioResource.startsWith(nioTestSrcPath)) {
-            packagePath = nioTestSrcPath.relativize(nioResource);
-            packageName = packagePath.toString().replaceAll("/",
-                    ".");
-        } else if (nioResource.startsWith(nioMainResourcesPath)) {
-            packagePath = nioMainResourcesPath.relativize(nioResource);
-            packageName = packagePath.toString().replaceAll("/",
-                    ".");
-        } else if (nioResource.startsWith(nioTestResourcesPath)) {
-            packagePath = nioTestResourcesPath.relativize(nioResource);
-            packageName = packagePath.toString().replaceAll("/",
-                    ".");
+        if ( nioResource.startsWith( nioMainSrcPath ) ) {
+            packagePath = nioMainSrcPath.relativize( nioResource );
+            packageName = packagePath.toString().replaceAll( "/",
+                                                             "." );
+        } else if ( nioResource.startsWith( nioTestSrcPath ) ) {
+            packagePath = nioTestSrcPath.relativize( nioResource );
+            packageName = packagePath.toString().replaceAll( "/",
+                                                             "." );
+        } else if ( nioResource.startsWith( nioMainResourcesPath ) ) {
+            packagePath = nioMainResourcesPath.relativize( nioResource );
+            packageName = packagePath.toString().replaceAll( "/",
+                                                             "." );
+        } else if ( nioResource.startsWith( nioTestResourcesPath ) ) {
+            packagePath = nioTestResourcesPath.relativize( nioResource );
+            packageName = packagePath.toString().replaceAll( "/",
+                                                             "." );
         }
 
         //Resource was not inside a package
-        if (packageName == null) {
+        if ( packageName == null ) {
             return null;
         }
 
-        final Path mainSrcPath = Paths.convert(nioMainSrcPath.resolve(packagePath));
-        final Path testSrcPath = Paths.convert(nioTestSrcPath.resolve(packagePath));
-        final Path mainResourcesPath = Paths.convert(nioMainResourcesPath.resolve(packagePath));
-        final Path testResourcesPath = Paths.convert(nioTestResourcesPath.resolve(packagePath));
+        final Path mainSrcPath = Paths.convert( nioMainSrcPath.resolve( packagePath ) );
+        final Path testSrcPath = Paths.convert( nioTestSrcPath.resolve( packagePath ) );
+        final Path mainResourcesPath = Paths.convert( nioMainResourcesPath.resolve( packagePath ) );
+        final Path testResourcesPath = Paths.convert( nioTestResourcesPath.resolve( packagePath ) );
 
-        final String displayName = getPackageDisplayName(packageName);
+        final String displayName = getPackageDisplayName( packageName );
 
-        final Package pkg = new Package(project.getRootPath(),
-                mainSrcPath,
-                testSrcPath,
-                mainResourcesPath,
-                testResourcesPath,
-                packageName,
-                displayName,
-                getPackageRelativeCaption(displayName, resource.getFileName()));
+        final Package pkg = new Package( project.getRootPath(),
+                                         mainSrcPath,
+                                         testSrcPath,
+                                         mainResourcesPath,
+                                         testResourcesPath,
+                                         packageName,
+                                         displayName,
+                                         getPackageRelativeCaption( displayName, resource.getFileName() ) );
         return pkg;
     }
 
-    private String getPackageDisplayName(final String packageName) {
+    private String getPackageDisplayName( final String packageName ) {
         return packageName.isEmpty() ? "<default>" : packageName;
     }
 
-    private String getPackageRelativeCaption(final String displayName,
-            final String relativeName) {
-        return displayName.equals("<default>") ? "<default>" : relativeName;
+    private String getPackageRelativeCaption( final String displayName,
+                                              final String relativeName ) {
+        return displayName.equals( "<default>" ) ? "<default>" : relativeName;
     }
 
     @Override
-    public boolean isPom(final Path resource) {
+    public boolean isPom( final Path resource ) {
         try {
             //Null resource paths cannot resolve to a Project
-            if (resource == null) {
+            if ( resource == null ) {
                 return false;
             }
 
             //Check if path equals pom.xml
-            final Project project = resolveProject(resource);
+            final Project project = resolveProject( resource );
 
             //It's possible that the Incremental Build attempts to act on a Project file before the project has been fully created.
             //This should be a short-term issue that will be resolved when saving a project batches pom.xml, kmodule.xml and project.imports
             //etc into a single git-batch. At present they are saved individually leading to multiple Incremental Build requests.
-            if (project == null) {
+            if ( project == null ) {
                 return false;
             }
 
-            final org.uberfire.java.nio.file.Path path = Paths.convert(resource).normalize();
-            final org.uberfire.java.nio.file.Path pomFilePath = Paths.convert(project.getPomXMLPath());
-            return path.startsWith(pomFilePath);
+            final org.uberfire.java.nio.file.Path path = Paths.convert( resource ).normalize();
+            final org.uberfire.java.nio.file.Path pomFilePath = Paths.convert( project.getPomXMLPath() );
+            return path.startsWith( pomFilePath );
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
@@ -483,36 +483,36 @@ public abstract class AbstractProjectService<T extends Project>
             final org.guvnor.structure.repositories.Repository repository,
             final String projectName,
             final POM pom,
-            final String baseUrl);
+            final String baseUrl );
 
     @Override
-    public Package newPackage(final Package parentPackage,
-            final String packageName) {
+    public Package newPackage( final Package parentPackage,
+                               final String packageName ) {
         try {
             //Make new Package
-            final Package newPackage = doNewPackage(parentPackage,
-                    packageName,
-                    true);
+            final Package newPackage = doNewPackage( parentPackage,
+                                                     packageName,
+                                                     true );
 
             //Raise an event for the new package
-            newPackageEvent.fire(new NewPackageEvent(newPackage));
+            newPackageEvent.fire( new NewPackageEvent( newPackage ) );
 
             //Return the new package
             return newPackage;
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
-    protected Package doNewPackage(final Package parentPackage,
-            final String packageName,
-            final boolean startBatch) {
+    protected Package doNewPackage( final Package parentPackage,
+                                    final String packageName,
+                                    final boolean startBatch ) {
         //If the package name contains separators, create sub-folders
         String newPackageName = packageName.toLowerCase();
-        if (newPackageName.contains(".")) {
-            newPackageName = newPackageName.replace(".",
-                    "/");
+        if ( newPackageName.contains( "." ) ) {
+            newPackageName = newPackageName.replace( ".",
+                                                     "/" );
         }
 
         //Return new package
@@ -526,65 +526,65 @@ public abstract class AbstractProjectService<T extends Project>
 
         try {
 
-            if (startBatch) {
-                ioService.startBatch(fs, makeCommentedOption( "New package [" + packageName + "]" ));
+            if ( startBatch ) {
+                ioService.startBatch( fs, makeCommentedOption( "New package [" + packageName + "]" ) );
             }
 
-            final org.uberfire.java.nio.file.Path nioMainSrcPackagePath = Paths.convert(mainSrcPath).resolve(newPackageName);
-            if (!Files.exists(nioMainSrcPackagePath)) {
-                pkgPath = Paths.convert(ioService.createDirectory(nioMainSrcPackagePath));
+            final org.uberfire.java.nio.file.Path nioMainSrcPackagePath = Paths.convert( mainSrcPath ).resolve( newPackageName );
+            if ( !Files.exists( nioMainSrcPackagePath ) ) {
+                pkgPath = Paths.convert( ioService.createDirectory( nioMainSrcPackagePath ) );
             }
-            final org.uberfire.java.nio.file.Path nioTestSrcPackagePath = Paths.convert(testSrcPath).resolve(newPackageName);
-            if (!Files.exists(nioTestSrcPackagePath)) {
-                pkgPath = Paths.convert(ioService.createDirectory(nioTestSrcPackagePath));
+            final org.uberfire.java.nio.file.Path nioTestSrcPackagePath = Paths.convert( testSrcPath ).resolve( newPackageName );
+            if ( !Files.exists( nioTestSrcPackagePath ) ) {
+                pkgPath = Paths.convert( ioService.createDirectory( nioTestSrcPackagePath ) );
             }
-            final org.uberfire.java.nio.file.Path nioMainResourcesPackagePath = Paths.convert(mainResourcesPath).resolve(newPackageName);
-            if (!Files.exists(nioMainResourcesPackagePath)) {
-                pkgPath = Paths.convert(ioService.createDirectory(nioMainResourcesPackagePath));
+            final org.uberfire.java.nio.file.Path nioMainResourcesPackagePath = Paths.convert( mainResourcesPath ).resolve( newPackageName );
+            if ( !Files.exists( nioMainResourcesPackagePath ) ) {
+                pkgPath = Paths.convert( ioService.createDirectory( nioMainResourcesPackagePath ) );
             }
-            final org.uberfire.java.nio.file.Path nioTestResourcesPackagePath = Paths.convert(testResourcesPath).resolve(newPackageName);
-            if (!Files.exists(nioTestResourcesPackagePath)) {
-                pkgPath = Paths.convert(ioService.createDirectory(nioTestResourcesPackagePath));
+            final org.uberfire.java.nio.file.Path nioTestResourcesPackagePath = Paths.convert( testResourcesPath ).resolve( newPackageName );
+            if ( !Files.exists( nioTestResourcesPackagePath ) ) {
+                pkgPath = Paths.convert( ioService.createDirectory( nioTestResourcesPackagePath ) );
             }
 
             //If pkgPath is null the package already existed in src/main/java, scr/main/resources, src/test/java and src/test/resources
-            if (pkgPath == null) {
-                throw new PackageAlreadyExistsException(packageName);
+            if ( pkgPath == null ) {
+                throw new PackageAlreadyExistsException( packageName );
             }
 
             //Return new package
-            final Package newPackage = resolvePackage(pkgPath);
+            final Package newPackage = resolvePackage( pkgPath );
             return newPackage;
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         } finally {
-            if (startBatch) {
-                ioService.endBatch(fs);
+            if ( startBatch ) {
+                ioService.endBatch( fs );
             }
         }
     }
 
-    protected boolean hasPom(final org.uberfire.java.nio.file.Path path) {
-        final org.uberfire.java.nio.file.Path pomPath = path.resolve(POM_PATH);
-        return Files.exists(pomPath);
+    protected boolean hasPom( final org.uberfire.java.nio.file.Path path ) {
+        final org.uberfire.java.nio.file.Path pomPath = path.resolve( POM_PATH );
+        return Files.exists( pomPath );
     }
 
-    protected CommentedOption makeCommentedOption(final String commitMessage) {
+    protected CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = getIdentityName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption(getSessionId(),
-                name,
-                null,
-                commitMessage,
-                when);
+        final CommentedOption co = new CommentedOption( getSessionId(),
+                                                        name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
         return co;
     }
 
     protected String getIdentityName() {
         try {
             return identity.getName();
-        } catch (ContextNotActiveException e) {
+        } catch ( ContextNotActiveException e ) {
             return "unknown";
         }
     }
@@ -592,155 +592,155 @@ public abstract class AbstractProjectService<T extends Project>
     protected String getSessionId() {
         try {
             return sessionInfo.getId();
-        } catch (ContextNotActiveException e) {
+        } catch ( ContextNotActiveException e ) {
             return "--";
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             return "--";
         }
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void addRole(final Project project,
-            final String role) {
-        ConfigGroup thisProjectConfig = findProjectConfig(project.getRootPath());
+    public void addRole( final Project project,
+                         final String role ) {
+        ConfigGroup thisProjectConfig = findProjectConfig( project.getRootPath() );
 
-        if (thisProjectConfig == null) {
-            thisProjectConfig = configurationFactory.newConfigGroup(ConfigType.PROJECT,
-                    project.getRootPath().toURI(),
-                    "Project '" + project.getProjectName() + "' configuration");
-            thisProjectConfig.addConfigItem(configurationFactory.newConfigItem("security:roles",
-                    new ArrayList<String>()));
-            configurationService.addConfiguration(thisProjectConfig);
+        if ( thisProjectConfig == null ) {
+            thisProjectConfig = configurationFactory.newConfigGroup( ConfigType.PROJECT,
+                                                                     project.getRootPath().toURI(),
+                                                                     "Project '" + project.getProjectName() + "' configuration" );
+            thisProjectConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
+                                                                                 new ArrayList<String>() ) );
+            configurationService.addConfiguration( thisProjectConfig );
         }
 
-        if (thisProjectConfig != null) {
-            final ConfigItem<List> roles = thisProjectConfig.getConfigItem("security:roles");
-            roles.getValue().add(role);
+        if ( thisProjectConfig != null ) {
+            final ConfigItem<List> roles = thisProjectConfig.getConfigItem( "security:roles" );
+            roles.getValue().add( role );
 
-            configurationService.updateConfiguration(thisProjectConfig);
+            configurationService.updateConfiguration( thisProjectConfig );
 
         } else {
-            throw new IllegalArgumentException("Project " + project.getProjectName() + " not found");
+            throw new IllegalArgumentException( "Project " + project.getProjectName() + " not found" );
         }
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void removeRole(final Project project,
-            final String role) {
-        final ConfigGroup thisProjectConfig = findProjectConfig(project.getRootPath());
+    public void removeRole( final Project project,
+                            final String role ) {
+        final ConfigGroup thisProjectConfig = findProjectConfig( project.getRootPath() );
 
-        if (thisProjectConfig != null) {
-            final ConfigItem<List> roles = thisProjectConfig.getConfigItem("security:roles");
-            roles.getValue().remove(role);
+        if ( thisProjectConfig != null ) {
+            final ConfigItem<List> roles = thisProjectConfig.getConfigItem( "security:roles" );
+            roles.getValue().remove( role );
 
-            configurationService.updateConfiguration(thisProjectConfig);
+            configurationService.updateConfiguration( thisProjectConfig );
 
         } else {
-            throw new IllegalArgumentException("Project " + project.getProjectName() + " not found");
+            throw new IllegalArgumentException( "Project " + project.getProjectName() + " not found" );
         }
     }
 
     @Override
-    public Path rename(final Path pathToPomXML,
-            final String newName,
-            final String comment) {
+    public Path rename( final Path pathToPomXML,
+                        final String newName,
+                        final String comment ) {
 
         try {
-            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert(pathToPomXML).getParent();
-            final org.uberfire.java.nio.file.Path newProjectPath = projectDirectory.resolveSibling(newName);
+            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
+            final org.uberfire.java.nio.file.Path newProjectPath = projectDirectory.resolveSibling( newName );
 
-            final POM content = pomService.load(pathToPomXML);
+            final POM content = pomService.load( pathToPomXML );
 
-            if (newProjectPath.equals(projectDirectory)) {
+            if ( newProjectPath.equals( projectDirectory ) ) {
                 return pathToPomXML;
             }
 
-            if (ioService.exists(newProjectPath)) {
-                throw new FileAlreadyExistsException(newProjectPath.toString());
+            if ( ioService.exists( newProjectPath ) ) {
+                throw new FileAlreadyExistsException( newProjectPath.toString() );
             }
 
-            final Path oldProjectDir = Paths.convert(projectDirectory);
-            final Project oldProject = resolveProject(oldProjectDir);
+            final Path oldProjectDir = Paths.convert( projectDirectory );
+            final Project oldProject = resolveProject( oldProjectDir );
 
-            content.setName(newName);
-            final Path newPathToPomXML = Paths.convert(newProjectPath.resolve("pom.xml"));
+            content.setName( newName );
+            final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
             try {
-                ioService.startBatch(newProjectPath.getFileSystem());
-                ioService.move(projectDirectory, newProjectPath, makeCommentedOption(comment));
-                pomService.save(newPathToPomXML, content, null, comment);
-            } catch (final Exception e) {
+                ioService.startBatch( newProjectPath.getFileSystem() );
+                ioService.move( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
+                pomService.save( newPathToPomXML, content, null, comment );
+            } catch ( final Exception e ) {
                 throw e;
             } finally {
-                ioService.endBatch(newProjectPath.getFileSystem());
+                ioService.endBatch( newProjectPath.getFileSystem() );
             }
-            final Project newProject = resolveProject(Paths.convert(newProjectPath));
-            invalidateDMOCache.fire(new InvalidateDMOProjectCacheEvent(sessionInfo, oldProject, oldProjectDir));
-            renameProjectEvent.fire(new RenameProjectEvent(oldProject, newProject));
+            final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
+            invalidateDMOCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, oldProject, oldProjectDir ) );
+            renameProjectEvent.fire( new RenameProjectEvent( oldProject, newProject ) );
 
             return newPathToPomXML;
-        } catch (final Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( final Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
     @Override
-    public void delete(final Path pathToPomXML,
-            final String comment) {
+    public void delete( final Path pathToPomXML,
+                        final String comment ) {
         try {
-            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert(pathToPomXML).getParent();
-            final Project project2Delete = resolveProject(Paths.convert(projectDirectory));
+            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
+            final Project project2Delete = resolveProject( Paths.convert( projectDirectory ) );
 
-            ioService.delete(projectDirectory, StandardDeleteOption.NON_EMPTY_DIRECTORIES, new CommentedOption(getSessionId(), getIdentityName(), null, comment));
-            deleteProjectEvent.fire(new DeleteProjectEvent(project2Delete));
-        } catch (final Exception e) {
-            throw ExceptionUtilities.handleException(e);
+            ioService.delete( projectDirectory, StandardDeleteOption.NON_EMPTY_DIRECTORIES, new CommentedOption( getSessionId(), getIdentityName(), null, comment ) );
+            deleteProjectEvent.fire( new DeleteProjectEvent( project2Delete ) );
+        } catch ( final Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
     @Override
-    public void copy(final Path pathToPomXML,
-            final String newName,
-            final String comment) {
+    public void copy( final Path pathToPomXML,
+                      final String newName,
+                      final String comment ) {
         try {
-            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert(pathToPomXML).getParent();
-            final org.uberfire.java.nio.file.Path newProjectPath = projectDirectory.resolveSibling(newName);
+            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
+            final org.uberfire.java.nio.file.Path newProjectPath = projectDirectory.resolveSibling( newName );
 
-            final POM content = pomService.load(pathToPomXML);
+            final POM content = pomService.load( pathToPomXML );
 
-            if (newProjectPath.equals(projectDirectory)) {
+            if ( newProjectPath.equals( projectDirectory ) ) {
                 return;
             }
 
-            if (ioService.exists(newProjectPath)) {
-                throw new FileAlreadyExistsException(newProjectPath.toString());
+            if ( ioService.exists( newProjectPath ) ) {
+                throw new FileAlreadyExistsException( newProjectPath.toString() );
             }
 
-            content.setName(newName);
-            final Path newPathToPomXML = Paths.convert(newProjectPath.resolve("pom.xml"));
+            content.setName( newName );
+            final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
             try {
-                ioService.startBatch(newProjectPath.getFileSystem());
-                ioService.copy(projectDirectory, newProjectPath, makeCommentedOption(comment));
-                pomService.save(newPathToPomXML, content, null, comment);
-            } catch (final Exception e) {
+                ioService.startBatch( newProjectPath.getFileSystem() );
+                ioService.copy( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
+                pomService.save( newPathToPomXML, content, null, comment );
+            } catch ( final Exception e ) {
                 throw e;
             } finally {
-                ioService.endBatch(newProjectPath.getFileSystem());
+                ioService.endBatch( newProjectPath.getFileSystem() );
             }
-            final Project newProject = resolveProject(Paths.convert(newProjectPath));
-            newProjectEvent.fire(new NewProjectEvent(newProject, sessionInfo));
+            final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
+            newProjectEvent.fire( new NewProjectEvent( newProject, sessionInfo ) );
 
-        } catch (final Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( final Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
-    protected ConfigGroup findProjectConfig(final Path projectRoot) {
-        final Collection<ConfigGroup> groups = configurationService.getConfiguration(ConfigType.PROJECT);
-        if (groups != null) {
-            for (ConfigGroup groupConfig : groups) {
-                if (groupConfig.getName().equals(projectRoot.toURI())) {
+    protected ConfigGroup findProjectConfig( final Path projectRoot ) {
+        final Collection<ConfigGroup> groups = configurationService.getConfiguration( ConfigType.PROJECT );
+        if ( groups != null ) {
+            for ( ConfigGroup groupConfig : groups ) {
+                if ( groupConfig.getName().equals( projectRoot.toURI() ) ) {
                     return groupConfig;
                 }
             }

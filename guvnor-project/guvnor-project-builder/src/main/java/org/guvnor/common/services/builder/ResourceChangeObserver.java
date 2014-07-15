@@ -30,7 +30,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.workbench.events.*;
+import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceBatchChangesEvent;
+import org.uberfire.workbench.events.ResourceChange;
+import org.uberfire.workbench.events.ResourceChangeType;
+import org.uberfire.workbench.events.ResourceCopiedEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceRenamedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 /**
  * Server side component that observes for the different resource add/delete/update events related to
@@ -43,7 +50,7 @@ public class ResourceChangeObserver {
     private static final Logger logger = LoggerFactory.getLogger( ResourceChangeObserver.class );
 
     @Inject
-    private ProjectService projectService;
+    private ProjectService<? extends Project> projectService;
 
     @Inject
     private ResourceChangeIncrementalBuilder incrementalBuilder;
@@ -147,12 +154,12 @@ public class ResourceChangeObserver {
     private boolean isObservableResource( Path path ) {
         return path != null
                 && ( path.getFileName().endsWith( ".java" )
-                    || path.getFileName().endsWith( ".class" )
-                    || path.getFileName().equals( "pom.xml" )
-                    || path.getFileName().equals( "kmodule.xml" )
-                    || path.getFileName().equals( "project.imports" )
-                    || path.getFileName().endsWith( "import.suggestions" )
-                );
+                || path.getFileName().endsWith( ".class" )
+                || path.getFileName().equals( "pom.xml" )
+                || path.getFileName().equals( "kmodule.xml" )
+                || path.getFileName().equals( "project.imports" )
+                || path.getFileName().endsWith( "import.suggestions" )
+        );
     }
 
 }

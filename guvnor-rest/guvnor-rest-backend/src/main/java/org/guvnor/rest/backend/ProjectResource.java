@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -38,8 +37,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Variant;
 
-import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.rest.client.AddRepositoryToOrganizationalUnitRequest;
 import org.guvnor.rest.client.BuildConfig;
 import org.guvnor.rest.client.CompileProjectRequest;
@@ -81,12 +78,6 @@ public class ProjectResource {
     protected UriInfo uriInfo;
 
     @Inject
-    protected ProjectService projectService;
-
-    @Inject
-    protected BuildService buildService;
-
-    @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
@@ -103,14 +94,14 @@ public class ProjectResource {
     private JobResultManager jobManager;
 
     private AtomicLong counter = new AtomicLong( 0 );
-   
-    private void addAcceptedJobResult(String jobId) { 
+
+    private void addAcceptedJobResult( String jobId ) {
         JobResult jobResult = new JobResult();
         jobResult.setJobId( jobId );
         jobResult.setStatus( JobStatus.ACCEPTED );
         jobManager.putJob( jobResult );
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/jobs/{jobId}")
@@ -167,18 +158,18 @@ public class ProjectResource {
         }
         return result;
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}")
-    public RepositoryResponse getRepository(@PathParam("repositoryName") String repositoryName ) {
-        logger.debug( "-----getRepository---, repository name: {}",  repositoryName);
-        org.guvnor.structure.repositories.Repository origRepo = checkRepositoryExistence(repositoryName);
-        
+    public RepositoryResponse getRepository( @PathParam("repositoryName") String repositoryName ) {
+        logger.debug( "-----getRepository---, repository name: {}", repositoryName );
+        org.guvnor.structure.repositories.Repository origRepo = checkRepositoryExistence( repositoryName );
+
         RepositoryResponse repo = new RepositoryResponse();
         repo.setGitURL( origRepo.getUri() );
         repo.setName( origRepo.getAlias() );
-        
+
         return repo;
     }
 
@@ -195,17 +186,17 @@ public class ProjectResource {
         jobRequest.setJobId( id );
         jobRequest.setRepository( repository );
 
-        addAcceptedJobResult(id);
+        addAcceptedJobResult( id );
 
-        jobRequestObserver.createOrCloneRepositoryRequest(jobRequest);
+        jobRequestObserver.createOrCloneRepositoryRequest( jobRequest );
 
-        return createAcceptedStatusResponse(jobRequest);
+        return createAcceptedStatusResponse( jobRequest );
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}")
-    public Response removeRepository(@PathParam("repositoryName") String repositoryName ) {
+    public Response removeRepository( @PathParam("repositoryName") String repositoryName ) {
         logger.debug( "-----removeRepository--- , repositoryName: {}", repositoryName );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -215,11 +206,11 @@ public class ProjectResource {
         jobRequest.setJobId( id );
         jobRequest.setRepositoryName( repositoryName );
 
-        addAcceptedJobResult(id);
+        addAcceptedJobResult( id );
 
-        jobRequestObserver.removeRepositoryRequest(jobRequest);
+        jobRequestObserver.removeRepositoryRequest( jobRequest );
 
-        return createAcceptedStatusResponse(jobRequest);
+        return createAcceptedStatusResponse( jobRequest );
     }
 
     @POST
@@ -230,8 +221,8 @@ public class ProjectResource {
             @PathParam("repositoryName") String repositoryName,
             Entity project ) {
         logger.debug( "-----createProject--- , repositoryName: {} , project name: {}", repositoryName, project.getName() );
-        checkRepositoryExistence(repositoryName);
-        
+        checkRepositoryExistence( repositoryName );
+
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         CreateProjectRequest jobRequest = new CreateProjectRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
@@ -240,11 +231,11 @@ public class ProjectResource {
         jobRequest.setProjectName( project.getName() );
         jobRequest.setDescription( project.getDescription() );
 
-        addAcceptedJobResult(id);
+        addAcceptedJobResult( id );
 
-        jobRequestObserver.createProjectRequest(jobRequest);
+        jobRequestObserver.createProjectRequest( jobRequest );
 
-        return createAcceptedStatusResponse(jobRequest);
+        return createAcceptedStatusResponse( jobRequest );
     }
 
     @DELETE
@@ -254,7 +245,7 @@ public class ProjectResource {
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         logger.debug( "-----deleteProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
-        checkRepositoryExistence(repositoryName);
+        checkRepositoryExistence( repositoryName );
 
         throw new WebApplicationException( Response.status( Response.Status.NOT_ACCEPTABLE )
                                                    .entity( "UNIMPLEMENTED" ).build() );
@@ -285,7 +276,7 @@ public class ProjectResource {
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         logger.debug( "-----compileProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
-        checkRepositoryExistence(repositoryName);
+        checkRepositoryExistence( repositoryName );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         CompileProjectRequest jobRequest = new CompileProjectRequest();
@@ -294,11 +285,11 @@ public class ProjectResource {
         jobRequest.setRepositoryName( repositoryName );
         jobRequest.setProjectName( projectName );
 
-        addAcceptedJobResult(id);
+        addAcceptedJobResult( id );
 
-        jobRequestObserver.compileProjectRequest(jobRequest);
+        jobRequestObserver.compileProjectRequest( jobRequest );
 
-        return createAcceptedStatusResponse(jobRequest);
+        return createAcceptedStatusResponse( jobRequest );
     }
 
     @POST
@@ -307,8 +298,8 @@ public class ProjectResource {
     public Response installProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
-        logger.debug( "-----installProject--- , repositoryName: {}, project name: {}" , repositoryName, projectName );
-        checkRepositoryExistence(repositoryName);
+        logger.debug( "-----installProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
+        checkRepositoryExistence( repositoryName );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         InstallProjectRequest jobRequest = new InstallProjectRequest();
@@ -317,11 +308,11 @@ public class ProjectResource {
         jobRequest.setRepositoryName( repositoryName );
         jobRequest.setProjectName( projectName );
 
-        addAcceptedJobResult(id);
+        addAcceptedJobResult( id );
 
-        jobRequestObserver.installProjectRequest(jobRequest);
+        jobRequestObserver.installProjectRequest( jobRequest );
 
-        return createAcceptedStatusResponse(jobRequest);
+        return createAcceptedStatusResponse( jobRequest );
     }
 
     @POST
@@ -333,7 +324,7 @@ public class ProjectResource {
             @PathParam("projectName") String projectName,
             BuildConfig mavenConfig ) {
         logger.debug( "-----testProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
-        checkRepositoryExistence(repositoryName);
+        checkRepositoryExistence( repositoryName );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         TestProjectRequest jobRequest = new TestProjectRequest();
@@ -343,11 +334,11 @@ public class ProjectResource {
         jobRequest.setProjectName( projectName );
         jobRequest.setBuildConfig( mavenConfig );
 
-        addAcceptedJobResult(id);
+        addAcceptedJobResult( id );
 
-        jobRequestObserver.testProjectRequest(jobRequest);
+        jobRequestObserver.testProjectRequest( jobRequest );
 
-        return createAcceptedStatusResponse(jobRequest);
+        return createAcceptedStatusResponse( jobRequest );
     }
 
     @POST
@@ -357,7 +348,7 @@ public class ProjectResource {
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         logger.debug( "-----deployProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
-        checkRepositoryExistence(repositoryName);
+        checkRepositoryExistence( repositoryName );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         DeployProjectRequest jobRequest = new DeployProjectRequest();
@@ -366,11 +357,11 @@ public class ProjectResource {
         jobRequest.setRepositoryName( repositoryName );
         jobRequest.setProjectName( projectName );
 
-        addAcceptedJobResult(id);
+        addAcceptedJobResult( id );
 
-        jobRequestObserver.deployProjectRequest(jobRequest);
+        jobRequestObserver.deployProjectRequest( jobRequest );
 
-        return createAcceptedStatusResponse(jobRequest);
+        return createAcceptedStatusResponse( jobRequest );
     }
 
     @GET
@@ -400,11 +391,11 @@ public class ProjectResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}")
-    public OrganizationalUnit getOrganizationalUnit(@PathParam("organizationalUnitName") String organizationalUnitName) { 
+    public OrganizationalUnit getOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName ) {
         logger.debug( "-----getOrganizationalUnit ---, OrganizationalUnit name: {}", organizationalUnitName );
         org.guvnor.structure.organizationalunit.OrganizationalUnit origOrgUnit
-            = checkOrganizationalUnitExistence(organizationalUnitName);
-        
+                = checkOrganizationalUnitExistence( organizationalUnitName );
+
         OrganizationalUnit orgUnit = new OrganizationalUnit();
         orgUnit.setName( origOrgUnit.getName() );
         orgUnit.setOwner( origOrgUnit.getOwner() );
@@ -416,7 +407,7 @@ public class ProjectResource {
 
         return orgUnit;
     }
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -432,21 +423,21 @@ public class ProjectResource {
         jobRequest.setOwner( organizationalUnit.getOwner() );
         jobRequest.setRepositories( organizationalUnit.getRepositories() );
 
-        addAcceptedJobResult(id);
+        addAcceptedJobResult( id );
 
-        jobRequestObserver.createOrganizationalUnitRequest(jobRequest);
+        jobRequestObserver.createOrganizationalUnitRequest( jobRequest );
 
-        return createAcceptedStatusResponse(jobRequest);
+        return createAcceptedStatusResponse( jobRequest );
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}/repositories/{repositoryName}")
     public Response addRepositoryToOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
-                                                         @PathParam("repositoryName") String repositoryName ) {
+                                                       @PathParam("repositoryName") String repositoryName ) {
         logger.debug( "-----addRepositoryToOrganizationalUnit--- , OrganizationalUnit name: {}, Repository name: {}", organizationalUnitName, repositoryName );
-        checkOrganizationalUnitExistence(organizationalUnitName);
-        checkRepositoryExistence(repositoryName);
+        checkOrganizationalUnitExistence( organizationalUnitName );
+        checkRepositoryExistence( repositoryName );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         AddRepositoryToOrganizationalUnitRequest jobRequest = new AddRepositoryToOrganizationalUnitRequest();
@@ -455,22 +446,22 @@ public class ProjectResource {
         jobRequest.setOrganizationalUnitName( organizationalUnitName );
         jobRequest.setRepositoryName( repositoryName );
 
-        addAcceptedJobResult(id);
+        addAcceptedJobResult( id );
 
-        jobRequestObserver.addRepositoryToOrganizationalUnitRequest(jobRequest);
+        jobRequestObserver.addRepositoryToOrganizationalUnitRequest( jobRequest );
 
-        return createAcceptedStatusResponse(jobRequest);
+        return createAcceptedStatusResponse( jobRequest );
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}/repositories/{repositoryName}")
     public Response removeRepositoryFromOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
-                                                              @PathParam("repositoryName") String repositoryName ) {
+                                                            @PathParam("repositoryName") String repositoryName ) {
         logger.debug( "-----removeRepositoryFromOrganizationalUnit--- , OrganizationalUnit name: {}, Repository name: {}", organizationalUnitName, repositoryName );
-        checkOrganizationalUnitExistence(organizationalUnitName);
-        checkRepositoryExistence(repositoryName);
-        
+        checkOrganizationalUnitExistence( organizationalUnitName );
+        checkRepositoryExistence( repositoryName );
+
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         RemoveRepositoryFromOrganizationalUnitRequest jobRequest = new RemoveRepositoryFromOrganizationalUnitRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
@@ -478,11 +469,11 @@ public class ProjectResource {
         jobRequest.setOrganizationalUnitName( organizationalUnitName );
         jobRequest.setRepositoryName( repositoryName );
 
-        addAcceptedJobResult(id);
+        addAcceptedJobResult( id );
 
-        jobRequestObserver.removeRepositoryFromOrganizationalUnitRequest(jobRequest);
+        jobRequestObserver.removeRepositoryFromOrganizationalUnitRequest( jobRequest );
 
-        return createAcceptedStatusResponse(jobRequest);
+        return createAcceptedStatusResponse( jobRequest );
     }
 
     @DELETE
@@ -490,43 +481,43 @@ public class ProjectResource {
     @Path("/organizationalunits/{organizationalUnitName}")
     public Response deleteOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName ) {
         logger.debug( "-----deleteOrganizationalUnit--- , OrganizationalUnit name: {}", organizationalUnitName );
-        checkOrganizationalUnitExistence(organizationalUnitName);
-        
+        checkOrganizationalUnitExistence( organizationalUnitName );
+
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         RemoveOrganizationalUnitRequest jobRequest = new RemoveOrganizationalUnitRequest();
-        jobRequest.setStatus(JobStatus.ACCEPTED);
-        jobRequest.setJobId(id);
-        jobRequest.setOrganizationalUnitName(organizationalUnitName);
+        jobRequest.setStatus( JobStatus.ACCEPTED );
+        jobRequest.setJobId( id );
+        jobRequest.setOrganizationalUnitName( organizationalUnitName );
 
-        addAcceptedJobResult(id);
-        
-        jobRequestObserver.removeOrganizationalUnitRequest(jobRequest);
-        
-        return createAcceptedStatusResponse(jobRequest);
+        addAcceptedJobResult( id );
+
+        jobRequestObserver.removeOrganizationalUnitRequest( jobRequest );
+
+        return createAcceptedStatusResponse( jobRequest );
     }
-    
-    private org.guvnor.structure.repositories.Repository checkRepositoryExistence(String repoName) { 
-        org.guvnor.structure.repositories.Repository repo = repositoryService.getRepository(repoName);
-        if( repo == null ) { 
-            throw RestOperationException.notFound("Repository " + repoName + " does not exist.");
+
+    private org.guvnor.structure.repositories.Repository checkRepositoryExistence( String repoName ) {
+        org.guvnor.structure.repositories.Repository repo = repositoryService.getRepository( repoName );
+        if ( repo == null ) {
+            throw RestOperationException.notFound( "Repository " + repoName + " does not exist." );
         }
         return repo;
     }
-    
-    private org.guvnor.structure.organizationalunit.OrganizationalUnit checkOrganizationalUnitExistence(String orgUnitName) { 
+
+    private org.guvnor.structure.organizationalunit.OrganizationalUnit checkOrganizationalUnitExistence( String orgUnitName ) {
         org.guvnor.structure.organizationalunit.OrganizationalUnit origOrgUnit
-            = organizationalUnitService.getOrganizationalUnit(orgUnitName);
-        
-        if( origOrgUnit == null ) { 
-            throw RestOperationException.notFound("Organizational unit " + orgUnitName + " does not exist.");
+                = organizationalUnitService.getOrganizationalUnit( orgUnitName );
+
+        if ( origOrgUnit == null ) {
+            throw RestOperationException.notFound( "Organizational unit " + orgUnitName + " does not exist." );
         }
         return origOrgUnit;
     }
-   
-    private static Variant defaultVariant = Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE).add().build().get(0);
-    
-    private Response createAcceptedStatusResponse(JobRequest jobRequest) { 
-        return Response.status(Status.ACCEPTED).entity(jobRequest).variant(defaultVariant).build();
+
+    private static Variant defaultVariant = Variant.mediaTypes( MediaType.APPLICATION_JSON_TYPE ).add().build().get( 0 );
+
+    private Response createAcceptedStatusResponse( JobRequest jobRequest ) {
+        return Response.status( Status.ACCEPTED ).entity( jobRequest ).variant( defaultVariant ).build();
     }
 
 }

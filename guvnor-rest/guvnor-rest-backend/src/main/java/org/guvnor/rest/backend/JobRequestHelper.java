@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -63,14 +62,14 @@ public class JobRequestHelper {
     private RepositoryService repositoryService;
 
     @Inject
-    private ProjectService projectService;
+    private ProjectService<? extends Project> projectService;
+
+    @Inject
+    private BuildService buildService;
 
     @Inject
     @Named("ioStrategy")
     private IOService ioSystemService;
-
-    @Inject
-    private BuildService buildService;
 
     @Inject
     private OrganizationalUnitService organizationalUnitService;
@@ -78,7 +77,8 @@ public class JobRequestHelper {
     @Inject
     private ScenarioTestService scenarioTestService;
 
-    public JobResult createOrCloneRepository( final String jobId, final RepositoryRequest repository ) {
+    public JobResult createOrCloneRepository( final String jobId,
+                                              final RepositoryRequest repository ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -145,7 +145,8 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult removeRepository( final String jobId, final String repositoryName ) {
+    public JobResult removeRepository( final String jobId,
+                                       final String repositoryName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -161,7 +162,9 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult createProject( final String jobId, final String repositoryName, final String projectName ) {
+    public JobResult createProject( final String jobId,
+                                    final String repositoryName,
+                                    final String projectName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -204,7 +207,9 @@ public class JobRequestHelper {
         };
     }
 
-    public JobResult compileProject( final String jobId, final String repositoryName, final String projectName ) {
+    public JobResult compileProject( final String jobId,
+                                     final String repositoryName,
+                                     final String projectName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -242,7 +247,9 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult installProject( final String jobId, final String repositoryName, final String projectName ) {
+    public JobResult installProject( final String jobId,
+                                     final String repositoryName,
+                                     final String projectName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -287,7 +294,10 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult testProject( final String jobId, final String repositoryName, final String projectName, final BuildConfig config ) {
+    public JobResult testProject( final String jobId,
+                                  final String repositoryName,
+                                  final String projectName,
+                                  final BuildConfig config ) {
         final JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -321,7 +331,8 @@ public class JobRequestHelper {
                 }
 
                 @Override
-                public <U extends TestResultMessage> Event<U> select(Class<U> subtype, Annotation... qualifiers) {
+                public <U extends TestResultMessage> Event<U> select( Class<U> subtype,
+                                                                      Annotation... qualifiers ) {
                     // not used
                     return null;
                 }
@@ -331,7 +342,9 @@ public class JobRequestHelper {
         }
     }
 
-    public JobResult deployProject( final String jobId, final String repositoryName, final String projectName ) {
+    public JobResult deployProject( final String jobId,
+                                    final String repositoryName,
+                                    final String projectName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -358,31 +371,34 @@ public class JobRequestHelper {
         }
     }
 
-    public JobResult removeOrganizationalUnit( final String jobId, final String organizationalUnitName) {
+    public JobResult removeOrganizationalUnit( final String jobId,
+                                               final String organizationalUnitName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
-        if ( organizationalUnitName == null ) { 
+        if ( organizationalUnitName == null ) {
             result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "OrganizationalUnit name must be provided" );
             return result;
         }
 
-        try { 
-            organizationalUnitService.removeOrganizationalUnit(organizationalUnitName);
+        try {
+            organizationalUnitService.removeOrganizationalUnit( organizationalUnitName );
             result.setStatus( JobStatus.SUCCESS );
-        } catch(Exception e) { 
+        } catch ( Exception e ) {
             result.setStatus( JobStatus.FAIL );
             String errMsg = e.getClass().getSimpleName() + " thrown when trying to remove '" + organizationalUnitName + "': " + e.getMessage();
-            result.setResult(errMsg);
-            logger.error(errMsg, e);
+            result.setResult( errMsg );
+            logger.error( errMsg, e );
         }
 
         return result;
     }
 
-    public JobResult createOrganizationalUnit( final String jobId, final String organizationalUnitName,
-            final String organizationalUnitOwner, final List<String> repositoryNameList ) {
+    public JobResult createOrganizationalUnit( final String jobId,
+                                               final String organizationalUnitName,
+                                               final String organizationalUnitOwner,
+                                               final List<String> repositoryNameList ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -423,7 +439,9 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult addRepositoryToOrganizationalUnit( final String jobId, final String organizationalUnitName, final String repositoryName ) {
+    public JobResult addRepositoryToOrganizationalUnit( final String jobId,
+                                                        final String organizationalUnitName,
+                                                        final String repositoryName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -457,14 +475,16 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult removeRepositoryFromOrganizationalUnit( final String jobId, final String organizationalUnitName, final String repositoryName ) {
+    public JobResult removeRepositoryFromOrganizationalUnit( final String jobId,
+                                                             final String organizationalUnitName,
+                                                             final String repositoryName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         if ( organizationalUnitName == null || repositoryName == null ) {
             result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "OrganizationalUnit name and Repository name must be provided" );
-            
+
             return result;
         }
 
@@ -497,4 +517,5 @@ public class JobRequestHelper {
         }
         return Paths.convert( repo.getRoot() );
     }
+
 }

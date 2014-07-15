@@ -49,7 +49,8 @@ public class ResourceChangeIncrementalBuilder {
 
     protected static final Logger logger = LoggerFactory.getLogger( ResourceChangeIncrementalBuilder.class );
 
-    @Inject protected ProjectService projectService;
+    @Inject
+    protected ProjectService<? extends Project> projectService;
 
     @Inject
     private AppConfigService appConfigService;
@@ -78,13 +79,14 @@ public class ResourceChangeIncrementalBuilder {
 
     @PreDestroy
     private void destroyExecutorService() {
-        if ( executorManager != null && !isEjb(executorManager, IncrementalBuilderExecutorManager.class)) {
+        if ( executorManager != null && !isEjb( executorManager, IncrementalBuilderExecutorManager.class ) ) {
             executorManager.shutdown();
         }
     }
 
-    private boolean isEjb(Object o, Class<?> expected) {
-        if (o.getClass() != expected) {
+    private boolean isEjb( Object o,
+                           Class<?> expected ) {
+        if ( o.getClass() != expected ) {
             return true;
         }
 
@@ -215,12 +217,12 @@ public class ResourceChangeIncrementalBuilder {
         }
     }
 
-    protected boolean isProjectResourceUpdateNeeded(Path resource) {
-        return projectService.isPom(resource);
+    protected boolean isProjectResourceUpdateNeeded( Path resource ) {
+        return projectService.isPom( resource );
     }
 
     //Schedule a re-build of a Project (changes to pom.xml or kmodule.xml require a full build)
-    protected void scheduleProjectResourceUpdate(final Path resource) {
+    protected void scheduleProjectResourceUpdate( final Path resource ) {
         final Project project = projectService.resolveProject( resource );
         getExecutor().execute( new AsyncIncrementalBuilder() {
 
@@ -248,7 +250,7 @@ public class ResourceChangeIncrementalBuilder {
     }
 
     //Schedule an incremental build for a package resource
-    protected void schedulePackageResourceUpdate(final Path resource) {
+    protected void schedulePackageResourceUpdate( final Path resource ) {
         getExecutor().execute( new AsyncIncrementalBuilder() {
 
             @Override

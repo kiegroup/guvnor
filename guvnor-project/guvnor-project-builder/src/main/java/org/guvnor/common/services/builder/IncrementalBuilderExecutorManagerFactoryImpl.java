@@ -8,13 +8,14 @@ import javax.naming.InitialContext;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 
 @ApplicationScoped
 public class IncrementalBuilderExecutorManagerFactoryImpl implements IncrementalBuilderExecutorManagerFactory {
 
     @Inject
-    private ProjectService projectService;
+    private ProjectService<? extends Project> projectService;
 
     @Inject
     private BuildService buildService;
@@ -38,7 +39,10 @@ public class IncrementalBuilderExecutorManagerFactoryImpl implements Incremental
 
             if ( _executorManager == null ) {
                 executorManager = new IncrementalBuilderExecutorManager();
-                executorManager.setServices( projectService, buildService, buildResultsEvent, incrementalBuildResultsEvent );
+                executorManager.setServices( projectService,
+                                             buildService,
+                                             buildResultsEvent,
+                                             incrementalBuildResultsEvent );
             } else {
                 executorManager = _executorManager;
             }

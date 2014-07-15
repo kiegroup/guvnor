@@ -27,15 +27,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.workingset.client.events.OnWorkingSetApplied;
-import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
-import org.guvnor.common.services.workingset.client.factconstraints.helper.CustomFormsContainer;
-import org.jboss.errai.common.client.api.Caller;
 import org.guvnor.common.services.workingset.client.events.OnWorkingSetDisabled;
 import org.guvnor.common.services.workingset.client.factconstraints.ConstraintConfiguration;
+import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
+import org.guvnor.common.services.workingset.client.factconstraints.helper.CustomFormsContainer;
 import org.guvnor.common.services.workingset.client.model.WorkingSetConfigData;
 import org.guvnor.common.services.workingset.client.model.WorkingSetSettings;
+import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
 
 //import org.uberfire.commons.data.Pair;
@@ -46,7 +47,7 @@ public class WorkingSetManager {
     private Map<Path, WorkingSetSettings> projectSettings = new HashMap<Path, WorkingSetSettings>();
 
     @Inject
-    private Caller<ProjectService> projectService;
+    private Caller<ProjectService<? super Project>> projectService;
 
     /**
      * This attribute should be sever side. Maybe in some FactConstraintConfig

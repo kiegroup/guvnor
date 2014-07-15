@@ -47,10 +47,8 @@ import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
-public
-abstract // Making this abstract for now. Since we always use the one in kie-wb-common
-class ProjectServiceImpl
-        extends AbstractProjectService<Project>
+// Making this abstract for now. Since we always use the one in kie-wb-common
+public abstract class ProjectServiceImpl extends AbstractProjectService<Project>
         implements ProjectService<Project> {
 
     public ProjectServiceImpl() {
@@ -58,119 +56,117 @@ class ProjectServiceImpl
     }
 
     @Inject
-    public ProjectServiceImpl(
-            @Named("ioStrategy") IOService ioService,
-            POMService pomService,
-            ProjectConfigurationContentHandler projectConfigurationContentHandler,
-            ConfigurationService configurationService,
-            ConfigurationFactory configurationFactory,
-            Event<NewProjectEvent> newProjectEvent,
-            Event<NewPackageEvent> newPackageEvent,
-            Event<RenameProjectEvent> renameProjectEvent,
-            Event<DeleteProjectEvent> deleteProjectEvent,
-            Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
-            Identity identity,
-            SessionInfo sessionInfo) {
-        super(ioService, pomService, projectConfigurationContentHandler, configurationService,
-                configurationFactory, newProjectEvent, newPackageEvent, renameProjectEvent, deleteProjectEvent,
-                invalidateDMOCache, identity, sessionInfo);
+    public ProjectServiceImpl( @Named("ioStrategy") IOService ioService,
+                               POMService pomService,
+                               ProjectConfigurationContentHandler projectConfigurationContentHandler,
+                               ConfigurationService configurationService,
+                               ConfigurationFactory configurationFactory,
+                               Event<NewProjectEvent> newProjectEvent,
+                               Event<NewPackageEvent> newPackageEvent,
+                               Event<RenameProjectEvent> renameProjectEvent,
+                               Event<DeleteProjectEvent> deleteProjectEvent,
+                               Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
+                               Identity identity,
+                               SessionInfo sessionInfo ) {
+        super( ioService, pomService, projectConfigurationContentHandler, configurationService,
+               configurationFactory, newProjectEvent, newPackageEvent, renameProjectEvent, deleteProjectEvent,
+               invalidateDMOCache, identity, sessionInfo );
     }
 
     @Override
-    public Project resolveProject(final Path resource) {
+    public Project resolveProject( final Path resource ) {
         try {
             //Null resource paths cannot resolve to a Project
-            if (resource == null) {
+            if ( resource == null ) {
                 return null;
             }
 
             //Check if resource is the project root
-            org.uberfire.java.nio.file.Path path = Paths.convert(resource).normalize();
+            org.uberfire.java.nio.file.Path path = Paths.convert( resource ).normalize();
 
             //A project root is the folder containing the pom.xml file. This will be the parent of the "src" folder
-            if (Files.isRegularFile(path)) {
+            if ( Files.isRegularFile( path ) ) {
                 path = path.getParent();
             }
-            if (hasPom(path)) {
-                return makeProject(path);
+            if ( hasPom( path ) ) {
+                return makeProject( path );
             }
-            while (path.getNameCount() > 0 && !path.getFileName().toString().equals(SOURCE_FILENAME)) {
+            while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) ) {
                 path = path.getParent();
             }
-            if (path.getNameCount() == 0) {
+            if ( path.getNameCount() == 0 ) {
                 return null;
             }
             path = path.getParent();
-            if (path.getNameCount() == 0 || path == null) {
+            if ( path.getNameCount() == 0 || path == null ) {
                 return null;
             }
-            if (!hasPom(path)) {
+            if ( !hasPom( path ) ) {
                 return null;
             }
-            return makeProject(path);
+            return makeProject( path );
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
     @Override
-    public Project newProject(final org.guvnor.structure.repositories.Repository repository,
-            final String projectName,
-            final POM pom,
-            final String baseUrl) {
-        final FileSystem fs = Paths.convert(repository.getRoot()).getFileSystem();
+    public Project newProject( final org.guvnor.structure.repositories.Repository repository,
+                               final String projectName,
+                               final POM pom,
+                               final String baseUrl ) {
+        final FileSystem fs = Paths.convert( repository.getRoot() ).getFileSystem();
         try {
             //Projects are always created in the FS root
             final Path fsRoot = repository.getRoot();
-            final Path projectRootPath = Paths.convert(Paths.convert(fsRoot).resolve(projectName));
+            final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( projectName ) );
 
-            ioService.startBatch(fs, makeCommentedOption("New project [" + projectName + "]"));
+            ioService.startBatch( fs, makeCommentedOption( "New project [" + projectName + "]" ) );
 
             //Create POM.xml
-            pomService.create(projectRootPath,
-                    baseUrl,
-                    pom);
+            pomService.create( projectRootPath,
+                               baseUrl,
+                               pom );
 
             //Raise an event for the new project
-            final Project project = resolveProject(projectRootPath);
-            newProjectEvent.fire(new NewProjectEvent(project, sessionInfo));
+            final Project project = resolveProject( projectRootPath );
+            newProjectEvent.fire( new NewProjectEvent( project, sessionInfo ) );
 
             //Create a default workspace based on the GAV
-            final String legalJavaGroupId[] = IdentifierUtils.convertMavenIdentifierToJavaIdentifier(pom.getGav().getGroupId().split("\\.",
-                    -1));
-            final String legalJavaArtifactId[] = IdentifierUtils.convertMavenIdentifierToJavaIdentifier(pom.getGav().getArtifactId().split("\\.",
-                    -1));
-            final String defaultWorkspacePath = StringUtils.join(legalJavaGroupId,
-                    "/") + "/" + StringUtils.join(legalJavaArtifactId,
-                    "/");
-            final Path defaultPackagePath = Paths.convert(Paths.convert(projectRootPath).resolve(MAIN_RESOURCES_PATH));
-            final org.guvnor.common.services.project.model.Package defaultPackage = resolvePackage(defaultPackagePath);
-            final Package defaultWorkspacePackage = doNewPackage(defaultPackage,
-                    defaultWorkspacePath,
-                    false);
+            final String legalJavaGroupId[] = IdentifierUtils.convertMavenIdentifierToJavaIdentifier( pom.getGav().getGroupId().split( "\\.",
+                                                                                                                                       -1 ) );
+            final String legalJavaArtifactId[] = IdentifierUtils.convertMavenIdentifierToJavaIdentifier( pom.getGav().getArtifactId().split( "\\.",
+                                                                                                                                             -1 ) );
+            final String defaultWorkspacePath = StringUtils.join( legalJavaGroupId,
+                                                                  "/" ) + "/" + StringUtils.join( legalJavaArtifactId,
+                                                                                                  "/" );
+            final Path defaultPackagePath = Paths.convert( Paths.convert( projectRootPath ).resolve( MAIN_RESOURCES_PATH ) );
+            final org.guvnor.common.services.project.model.Package defaultPackage = resolvePackage( defaultPackagePath );
+            final Package defaultWorkspacePackage = doNewPackage( defaultPackage,
+                                                                  defaultWorkspacePath,
+                                                                  false );
 
             //Raise an event for the new project's default workspace
-            newPackageEvent.fire(new NewPackageEvent(defaultWorkspacePackage));
+            newPackageEvent.fire( new NewPackageEvent( defaultWorkspacePackage ) );
 
             //Return new project
             return project;
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         } finally {
-            ioService.endBatch(fs);
+            ioService.endBatch( fs );
         }
     }
 
     @Override
-    public Project simpleProjectInstance(org.uberfire.java.nio.file.Path nioProjectRootPath) {
-        final Path projectRootPath = Paths.convert(nioProjectRootPath);
+    public Project simpleProjectInstance( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
+        final Path projectRootPath = Paths.convert( nioProjectRootPath );
 
-        return new Project(
-                projectRootPath,
-                Paths.convert(nioProjectRootPath.resolve(POM_PATH)),
-                projectRootPath.getFileName());
+        return new Project( projectRootPath,
+                            Paths.convert( nioProjectRootPath.resolve( POM_PATH ) ),
+                            projectRootPath.getFileName() );
 
     }
 }

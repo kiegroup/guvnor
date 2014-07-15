@@ -30,7 +30,7 @@ import org.uberfire.backend.vfs.Path;
  *
  */
 @Remote
-public interface ProjectService<T extends Project>  {
+public interface ProjectService<T extends Project> {
 
     WorkingSetSettings loadWorkingSetConfig( final Path project );
 
@@ -79,9 +79,9 @@ public interface ProjectService<T extends Project>  {
      * @return
      */
     T newProject( final Repository repository,
-                        final String name,
-                        final POM pom,
-                        final String baseURL );
+                  final String name,
+                  final POM pom,
+                  final String baseURL );
 
     /**
      * Creates a new package as a child of the provide package.

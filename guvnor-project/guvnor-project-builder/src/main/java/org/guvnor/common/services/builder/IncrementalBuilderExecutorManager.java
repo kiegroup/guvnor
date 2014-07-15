@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
@@ -26,7 +27,7 @@ import static javax.ejb.TransactionAttributeType.*;
 public class IncrementalBuilderExecutorManager {
 
     @Inject
-    private ProjectService projectService;
+    private ProjectService<? extends Project> projectService;
 
     @Inject
     private BuildService buildService;
@@ -46,7 +47,10 @@ public class IncrementalBuilderExecutorManager {
             getExecutorService().execute( new DescriptiveRunnable() {
                 @Override
                 public void run() {
-                    incrementalBuilder.execute( projectService, buildService, incrementalBuildResultsEvent, buildResultsEvent );
+                    incrementalBuilder.execute( projectService,
+                                                buildService,
+                                                incrementalBuildResultsEvent,
+                                                buildResultsEvent );
                 }
 
                 @Override
@@ -55,7 +59,10 @@ public class IncrementalBuilderExecutorManager {
                 }
             } );
         } else {
-            incrementalBuilder.execute( projectService, buildService, incrementalBuildResultsEvent, buildResultsEvent );
+            incrementalBuilder.execute( projectService,
+                                        buildService,
+                                        incrementalBuildResultsEvent,
+                                        buildResultsEvent );
         }
     }
 

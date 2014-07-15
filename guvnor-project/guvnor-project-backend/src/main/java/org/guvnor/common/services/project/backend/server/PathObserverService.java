@@ -29,7 +29,7 @@ public class PathObserverService {
     private IOService ioService;
 
     @Inject
-    private ProjectFactory projectFactory;
+    private ProjectFactory<? extends Project> projectFactory;
 
     @Inject
     private Event<DeleteProjectEvent> deleteProjectEvent;
