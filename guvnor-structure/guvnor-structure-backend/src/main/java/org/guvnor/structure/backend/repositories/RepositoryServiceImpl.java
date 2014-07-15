@@ -158,7 +158,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME, scheme ) );
         }
 
-        if ( !env.containsKey( BRANCH ) ) {
+        if ( env.containsKey( BRANCH ) ) {
             repositoryConfig.addConfigItem( configurationFactory.newConfigItem( BRANCH, env.get( BRANCH ) ) );
         }
         for ( final Map.Entry<String, Object> entry : env.entrySet() ) {
