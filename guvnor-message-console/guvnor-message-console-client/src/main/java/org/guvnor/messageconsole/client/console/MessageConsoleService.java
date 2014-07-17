@@ -21,6 +21,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.google.gwt.view.client.HasData;
@@ -51,8 +52,8 @@ public class MessageConsoleService {
     @Inject
     private Identity identity;
 
-    @Inject
-    private MessageConsoleWhiteList whiteList;
+    @Inject @Any
+    private Instance<MessageConsoleWhiteList> whiteList;
 
     private ListDataProvider<MessageConsoleServiceRow> dataProvider = new ListDataProvider<MessageConsoleServiceRow>();
 
@@ -208,10 +209,10 @@ public class MessageConsoleService {
     }
 
     private boolean checkWhiteList() {
-        if (whiteList == null) {
+        if (whiteList.isUnsatisfied()) {
             return true;
         } else {
-            return whiteList.contains(currentPerspective);
+            return whiteList.get().contains(currentPerspective);
         }
     }
 

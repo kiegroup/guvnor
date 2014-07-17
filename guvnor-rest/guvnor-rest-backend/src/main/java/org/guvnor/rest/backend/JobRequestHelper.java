@@ -32,7 +32,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.test.ScenarioTestService;
+import org.guvnor.common.services.shared.test.TestService;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.rest.client.BuildConfig;
 import org.guvnor.rest.client.JobResult;
@@ -75,7 +75,7 @@ public class JobRequestHelper {
     private OrganizationalUnitService organizationalUnitService;
 
     @Inject
-    private ScenarioTestService scenarioTestService;
+    private TestService testService;
 
     public JobResult createOrCloneRepository( final String jobId,
                                               final RepositoryRequest repository ) {
@@ -317,15 +317,15 @@ public class JobRequestHelper {
             }
 
             //TODO: Get session from BuildConfig or create a default session for testing if no session is provided.
-            scenarioTestService.runAllScenarios( project.getPomXMLPath(), new Event<TestResultMessage>() {
+            testService.runAllTests(project.getPomXMLPath(), new Event<TestResultMessage>() {
                 @Override
-                public void fire( TestResultMessage event ) {
-                    result.setDetailedResult( event.getResultStrings() );
-                    result.setStatus( event.wasSuccessful() ? JobStatus.SUCCESS : JobStatus.FAIL );
+                public void fire(TestResultMessage event) {
+                    result.setDetailedResult(event.getResultStrings());
+                    result.setStatus(event.wasSuccessful() ? JobStatus.SUCCESS : JobStatus.FAIL);
                 }
 
                 @Override
-                public Event<TestResultMessage> select( Annotation... qualifiers ) {
+                public Event<TestResultMessage> select(Annotation... qualifiers) {
                     // not used
                     return null;
                 }
@@ -337,7 +337,7 @@ public class JobRequestHelper {
                     return null;
                 }
 
-            } );
+            });
             return result;
         }
     }

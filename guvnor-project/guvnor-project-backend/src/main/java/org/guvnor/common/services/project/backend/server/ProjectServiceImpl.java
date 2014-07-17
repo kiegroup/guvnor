@@ -47,8 +47,8 @@ import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
-// Making this abstract for now. Since we always use the one in kie-wb-common
-public abstract class ProjectServiceImpl extends AbstractProjectService<Project>
+public class ProjectServiceImpl
+        extends AbstractProjectService<Project>
         implements ProjectService<Project> {
 
     public ProjectServiceImpl() {

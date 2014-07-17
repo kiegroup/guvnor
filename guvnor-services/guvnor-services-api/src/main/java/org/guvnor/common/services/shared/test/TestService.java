@@ -23,9 +23,9 @@ import org.uberfire.backend.vfs.Path;
 /**
  * Service definition for Scenario Test Editor
  */
-public interface ScenarioTestService {
+public interface TestService {
 
-    void runAllScenarios( Path path );
+    void runAllTests(Path path);
     
-    void runAllScenarios( Path path, Event<TestResultMessage> customTestResultEvent );
+    void runAllTests(Path path, Event<TestResultMessage> customTestResultEvent);
 }
