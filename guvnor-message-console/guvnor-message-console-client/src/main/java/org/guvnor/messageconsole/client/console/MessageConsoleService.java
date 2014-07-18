@@ -17,11 +17,10 @@
 package org.guvnor.messageconsole.client.console;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.google.gwt.view.client.HasData;
@@ -31,6 +30,9 @@ import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.PublishMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.rpc.SessionInfo;
@@ -44,6 +46,9 @@ import org.uberfire.security.Identity;
 public class MessageConsoleService {
 
     @Inject
+    private SyncBeanManager iocManager;
+
+    @Inject
     private PlaceManager placeManager;
 
     @Inject
@@ -51,10 +56,6 @@ public class MessageConsoleService {
 
     @Inject
     private Identity identity;
-
-    @Inject
-    private MessageConsoleWhiteList whiteList;
-//    @Any private Instance<MessageConsoleWhiteList> whiteList;
 
     private ListDataProvider<MessageConsoleServiceRow> dataProvider = new ListDataProvider<MessageConsoleServiceRow>();
 
@@ -210,13 +211,22 @@ public class MessageConsoleService {
     }
 
     private boolean checkWhiteList() {
-        return whiteList.contains(currentPerspective);
 
-//        if (whiteList.isUnsatisfied()) {
-//            return true;
-//        } else {
-//            return whiteList.get().contains(currentPerspective);
-//        }
+        // I herd you like lists so I put a list into your list
+        Collection<IOCBeanDef<MessageConsoleWhiteList>> whiteListList = getAvailableWhiteLists();
+
+        if (whiteListList.isEmpty()) {
+            return true;
+        } else {
+            return reLookupBean(whiteListList.iterator().next()).getInstance().contains(currentPerspective);
+        }
     }
 
+    private IOCBeanDef<MessageConsoleWhiteList> reLookupBean( IOCBeanDef<MessageConsoleWhiteList> baseBean ) {
+        return (IOCBeanDef<MessageConsoleWhiteList>) iocManager.lookupBean( baseBean.getBeanClass() );
+    }
+
+    private Collection<IOCBeanDef<MessageConsoleWhiteList>> getAvailableWhiteLists() {
+        return iocManager.lookupBeans(MessageConsoleWhiteList.class);
+    }
 }
