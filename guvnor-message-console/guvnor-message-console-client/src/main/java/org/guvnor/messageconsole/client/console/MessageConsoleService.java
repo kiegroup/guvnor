@@ -52,8 +52,9 @@ public class MessageConsoleService {
     @Inject
     private Identity identity;
 
-    @Inject @Any
-    private Instance<MessageConsoleWhiteList> whiteList;
+    @Inject
+    private MessageConsoleWhiteList whiteList;
+//    @Any private Instance<MessageConsoleWhiteList> whiteList;
 
     private ListDataProvider<MessageConsoleServiceRow> dataProvider = new ListDataProvider<MessageConsoleServiceRow>();
 
@@ -209,11 +210,13 @@ public class MessageConsoleService {
     }
 
     private boolean checkWhiteList() {
-        if (whiteList.isUnsatisfied()) {
-            return true;
-        } else {
-            return whiteList.get().contains(currentPerspective);
-        }
+        return whiteList.contains(currentPerspective);
+
+//        if (whiteList.isUnsatisfied()) {
+//            return true;
+//        } else {
+//            return whiteList.get().contains(currentPerspective);
+//        }
     }
 
 }
