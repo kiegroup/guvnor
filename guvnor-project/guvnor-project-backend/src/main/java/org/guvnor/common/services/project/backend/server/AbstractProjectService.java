@@ -527,7 +527,7 @@ public abstract class AbstractProjectService<T extends Project>
         try {
 
             if ( startBatch ) {
-                ioService.startBatch( fs, makeCommentedOption( "New package [" + packageName + "]" ) );
+                ioService.startBatch( new FileSystem[]{fs}, makeCommentedOption( "New package [" + packageName + "]" ) );
             }
 
             final org.uberfire.java.nio.file.Path nioMainSrcPackagePath = Paths.convert( mainSrcPath ).resolve( newPackageName );
@@ -560,7 +560,7 @@ public abstract class AbstractProjectService<T extends Project>
             throw ExceptionUtilities.handleException( e );
         } finally {
             if ( startBatch ) {
-                ioService.endBatch( fs );
+                ioService.endBatch();
             }
         }
     }
@@ -667,13 +667,13 @@ public abstract class AbstractProjectService<T extends Project>
             content.setName( newName );
             final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
             try {
-                ioService.startBatch( newProjectPath.getFileSystem() );
+                ioService.startBatch( new FileSystem[]{newProjectPath.getFileSystem()} );
                 ioService.move( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
                 pomService.save( newPathToPomXML, content, null, comment );
             } catch ( final Exception e ) {
                 throw e;
             } finally {
-                ioService.endBatch( newProjectPath.getFileSystem() );
+                ioService.endBatch();
             }
             final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
             invalidateDMOCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, oldProject, oldProjectDir ) );
@@ -720,13 +720,13 @@ public abstract class AbstractProjectService<T extends Project>
             content.setName( newName );
             final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
             try {
-                ioService.startBatch( newProjectPath.getFileSystem() );
+                ioService.startBatch( new FileSystem[]{newProjectPath.getFileSystem()} );
                 ioService.copy( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
                 pomService.save( newPathToPomXML, content, null, comment );
             } catch ( final Exception e ) {
                 throw e;
             } finally {
-                ioService.endBatch( newProjectPath.getFileSystem() );
+                ioService.endBatch();
             }
             final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
             newProjectEvent.fire( new NewProjectEvent( newProject, sessionInfo ) );

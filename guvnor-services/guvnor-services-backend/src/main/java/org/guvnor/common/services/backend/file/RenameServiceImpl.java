@@ -14,6 +14,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
@@ -50,7 +51,7 @@ public class RenameServiceImpl implements RenameService {
             final Path targetPath = Paths.convert( _target );
 
             try {
-                ioService.startBatch( _target.getFileSystem() );
+                ioService.startBatch( new FileSystem[]{_target.getFileSystem()} );
 
                 ioService.move( _path,
                                 _target,
@@ -69,7 +70,7 @@ public class RenameServiceImpl implements RenameService {
             } catch ( final Exception e ) {
                 throw e;
             } finally {
-                ioService.endBatch( _target.getFileSystem() );
+                ioService.endBatch();
             }
 
             return Paths.convert( _target );
