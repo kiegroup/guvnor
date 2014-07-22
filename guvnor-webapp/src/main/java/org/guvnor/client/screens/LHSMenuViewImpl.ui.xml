@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2014 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+    >
+
+  <ui:style type="org.guvnor.client.screens.LHSMenuViewImpl.LHSMenuStyle">
+    .base {
+      width: 248px;
+      /*height: 100%;*/
+      background-color: #f5f5f5;
+      padding-left: 50px;
+      padding-top: 50px;
+    }
+
+    .normal {
+      margin: 5px 0px 5px 0px;
+      padding-left: 15px;
+      color: grey;
+      background-color: inherit;
+    }
+
+    .selected {
+      margin: 5px 0px 5px 0px;
+      padding-left: 15px;
+      border: solid #0ba4ff 1px;
+      font-weight: bold;
+      color: black;
+      background-color: rgba(20, 185, 255, 0.2);
+      width: 233px;
+    }
+
+    .arrow {
+      float: right;
+      padding-right: 5px;
+    }
+  </ui:style>
+
+  <gwt:SimplePanel styleName='{style.base}'>
+    <gwt:VerticalPanel width="100%">
+      <gwt:HTMLPanel ui:field="settingsPanel" styleName='{style.normal}'>
+        <div style="float:left;">
+          <gwt:Label ui:field="settings">Settings</gwt:Label>
+        </div>
+        <div class='{style.arrow}'>
+          <gwt:Label ui:field="settingsArrow" text=">" visible="false"/>
+        </div>
+        <div style="clear:both;"></div>
+      </gwt:HTMLPanel>
+      <gwt:HTMLPanel ui:field="usersPanel" styleName='{style.normal}'>
+        <div style="float:left;">
+          <gwt:Label ui:field="users">Users</gwt:Label>
+        </div>
+        <div class='{style.arrow}'>
+          <gwt:Label ui:field="usersArrow" text=">" visible="false"/>
+        </div>
+        <div style="clear:both;"></div>
+      </gwt:HTMLPanel>
+      <gwt:HTMLPanel ui:field="applicationsPanel" styleName='{style.normal}'>
+        <div style="float:left;">
+          <gwt:Label ui:field="applications">Applications</gwt:Label>
+        </div>
+        <div class='{style.arrow}'>
+          <gwt:Label ui:field="applicationsArrow" text=">" visible="false"/>
+        </div>
+        <div style="clear:both;"></div>
+      </gwt:HTMLPanel>
+      <gwt:HTMLPanel ui:field="clientsPanel" styleName='{style.normal}'>
+        <div style="float:left;">
+          <gwt:Label ui:field="clients">OAuth Clients</gwt:Label>
+        </div>
+        <div class='{style.arrow}'>
+          <gwt:Label ui:field="clientsArrow" text=">" visible="false"/>
+        </div>
+        <div style="clear:both;"></div>
+      </gwt:HTMLPanel>
+    </gwt:VerticalPanel>
+  </gwt:SimplePanel>
+
+</ui:UiBinder>

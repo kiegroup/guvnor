@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2014 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+
+             xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
+
+  <gwt:VerticalPanel ui:field="base">
+    <bootstrap:Breadcrumbs ui:field="bread1">
+      <bootstrap:NavLink>Demo</bootstrap:NavLink>
+      <bootstrap:NavLink>Settings</bootstrap:NavLink>
+      <bootstrap:NavLink>General</bootstrap:NavLink>
+    </bootstrap:Breadcrumbs>
+
+    <gwt:HorizontalPanel>
+      <bootstrap:Heading size="2" text="demo"/>
+      <bootstrap:Heading size="2" text="General Settings"/>
+    </gwt:HorizontalPanel>
+
+    <bootstrap:Accordion>
+      <bootstrap:AccordionGroup heading="Required Settings" defaultOpen="true">
+        <bootstrap:Row>
+          <bootstrap:Column size="3">
+            <gwt:Label text="Name"/>
+          </bootstrap:Column>
+          <bootstrap:Column size="3">
+            <bootstrap:TextArea>demo</bootstrap:TextArea>
+          </bootstrap:Column>
+        </bootstrap:Row>
+        <bootstrap:Row>
+          <bootstrap:Column size="3">
+            <gwt:Label text="Enabled"/>
+          </bootstrap:Column>
+          <bootstrap:Column size="3">
+            <bootstrap:ButtonGroup toggle="radio">
+              <bootstrap:Button text="ON"/>
+              <bootstrap:Button text="OFF"/>
+            </bootstrap:ButtonGroup>
+          </bootstrap:Column>
+        </bootstrap:Row>
+        <bootstrap:Paragraph>Required Settings</bootstrap:Paragraph>
+      </bootstrap:AccordionGroup>
+    </bootstrap:Accordion>
+    <bootstrap:AccordionGroup heading="Login Options" defaultOpen="true">
+      <bootstrap:Paragraph>Login Options</bootstrap:Paragraph>
+    </bootstrap:AccordionGroup>
+  </gwt:VerticalPanel>
+
+</ui:UiBinder>
