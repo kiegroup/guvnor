@@ -19,7 +19,6 @@ package org.guvnor.client.screens;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -30,7 +29,7 @@ public class ApplicationsScreenPresenter {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return new Label("applications");
+        return new Empty( "applications");
     }
 
     @WorkbenchPartTitle

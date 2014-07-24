@@ -20,6 +20,12 @@
 
              xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
 
+  <ui:style>
+    .column {
+      padding: 2px 0px 0px 2px;
+    }
+  </ui:style>
+
   <gwt:VerticalPanel ui:field="base">
     <bootstrap:Breadcrumbs ui:field="bread1">
       <bootstrap:NavLink>Demo</bootstrap:NavLink>
@@ -28,13 +34,17 @@
     </bootstrap:Breadcrumbs>
 
     <gwt:HorizontalPanel>
-      <bootstrap:Heading size="2" text="demo"/>
-      <bootstrap:Heading size="2" text="General Settings"/>
+      <bootstrap:Column size="1">
+        <bootstrap:Heading size="2" text="demo"/>
+      </bootstrap:Column>
+      <bootstrap:Column size="3">
+        <bootstrap:Heading size="2" text="General Settings"/>
+      </bootstrap:Column>
     </gwt:HorizontalPanel>
 
     <bootstrap:Accordion>
       <bootstrap:AccordionGroup heading="Required Settings" defaultOpen="true">
-        <bootstrap:Row>
+        <bootstrap:Row addStyleNames='{style.column}'>
           <bootstrap:Column size="3">
             <gwt:Label text="Name"/>
           </bootstrap:Column>
@@ -48,7 +58,7 @@
           </bootstrap:Column>
           <bootstrap:Column size="3">
             <bootstrap:ButtonGroup toggle="radio">
-              <bootstrap:Button text="ON"/>
+              <bootstrap:Button text="ON" active="true"/>
               <bootstrap:Button text="OFF"/>
             </bootstrap:ButtonGroup>
           </bootstrap:Column>
@@ -57,7 +67,91 @@
       </bootstrap:AccordionGroup>
     </bootstrap:Accordion>
     <bootstrap:AccordionGroup heading="Login Options" defaultOpen="true">
-      <bootstrap:Paragraph>Login Options</bootstrap:Paragraph>
+
+      <bootstrap:Row>
+        <bootstrap:Column size="3">
+          <gwt:Label text="Social login"/>
+        </bootstrap:Column>
+        <bootstrap:Column size="3">
+          <bootstrap:ButtonGroup toggle="radio">
+            <bootstrap:Button text="ON" active="true"/>
+            <bootstrap:Button text="OFF"/>
+          </bootstrap:ButtonGroup>
+        </bootstrap:Column>
+      </bootstrap:Row>
+
+      <bootstrap:Row>
+        <bootstrap:Column size="3" addStyleNames='{style.column}'>
+          <gwt:Label text="User registration"/>
+        </bootstrap:Column>
+        <bootstrap:Column size="3" addStyleNames='{style.column}'>
+          <bootstrap:ButtonGroup toggle="radio">
+            <bootstrap:Button text="ON" active="true"/>
+            <bootstrap:Button text="OFF"/>
+          </bootstrap:ButtonGroup>
+        </bootstrap:Column>
+      </bootstrap:Row>
+
+      <bootstrap:Row>
+        <bootstrap:Column size="3">
+          <gwt:Label text="Reset password"/>
+        </bootstrap:Column>
+        <bootstrap:Column size="3">
+          <bootstrap:ButtonGroup toggle="radio">
+            <bootstrap:Button text="ON"/>
+            <bootstrap:Button text="OFF" active="true"/>
+          </bootstrap:ButtonGroup>
+        </bootstrap:Column>
+      </bootstrap:Row>
+
+      <bootstrap:Row>
+        <bootstrap:Column size="3">
+          <gwt:Label text="Verify email"/>
+        </bootstrap:Column>
+        <bootstrap:Column size="3">
+          <bootstrap:ButtonGroup toggle="radio">
+            <bootstrap:Button text="ON"/>
+            <bootstrap:Button text="OFF" active="true"/>
+          </bootstrap:ButtonGroup>
+        </bootstrap:Column>
+      </bootstrap:Row>
+
+      <bootstrap:Row>
+        <bootstrap:Column size="3">
+          <gwt:Label text="User account management"/>
+        </bootstrap:Column>
+        <bootstrap:Column size="3">
+          <bootstrap:ButtonGroup toggle="radio">
+            <bootstrap:Button text="ON" active="true"/>
+            <bootstrap:Button text="OFF"/>
+          </bootstrap:ButtonGroup>
+        </bootstrap:Column>
+      </bootstrap:Row>
+
+      <bootstrap:Row>
+        <bootstrap:Column size="3">
+          <gwt:Label text="Require SSL"/>
+        </bootstrap:Column>
+        <bootstrap:Column size="3">
+          <bootstrap:ButtonGroup toggle="radio">
+            <bootstrap:Button text="ON"/>
+            <bootstrap:Button text="OFF" active="true"/>
+          </bootstrap:ButtonGroup>
+        </bootstrap:Column>
+      </bootstrap:Row>
+
+      <bootstrap:Row>
+        <bootstrap:Column size="3">
+          <gwt:Label text="Cookie login allowed"/>
+        </bootstrap:Column>
+        <bootstrap:Column size="3">
+          <bootstrap:ButtonGroup toggle="radio">
+            <bootstrap:Button text="ON" active="true"/>
+            <bootstrap:Button text="OFF"/>
+          </bootstrap:ButtonGroup>
+        </bootstrap:Column>
+      </bootstrap:Row>
+
     </bootstrap:AccordionGroup>
   </gwt:VerticalPanel>
 

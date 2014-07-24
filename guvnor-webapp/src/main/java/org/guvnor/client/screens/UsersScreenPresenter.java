@@ -30,7 +30,7 @@ public class UsersScreenPresenter {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return new Label("users");
+        return new Empty("users");
     }
 
     @WorkbenchPartTitle

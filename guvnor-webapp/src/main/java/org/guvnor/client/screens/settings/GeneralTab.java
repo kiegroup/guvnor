@@ -1,8 +1,6 @@
 package org.guvnor.client.screens.settings;
 
-import com.github.gwtbootstrap.client.ui.Divider;
 import com.github.gwtbootstrap.client.ui.Tab;
-import com.github.gwtbootstrap.client.ui.constants.ToggleType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
