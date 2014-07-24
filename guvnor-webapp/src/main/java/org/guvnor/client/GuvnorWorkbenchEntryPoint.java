@@ -97,9 +97,6 @@ public class GuvnorWorkbenchEntryPoint {
                     }
                 } )
                 .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.Perspectives() )
-                .withItems( getPerspectives() )
-                .endMenu()
                 .newTopLevelMenu( AppConstants.INSTANCE.Logout() )
                 .respondsWith( new Command() {
                     @Override
@@ -122,25 +119,6 @@ public class GuvnorWorkbenchEntryPoint {
                 .build();
 
         menubar.addMenus( menus );
-    }
-
-    private List<MenuItem> getPerspectives() {
-        final List<MenuItem> perspectives = new ArrayList<MenuItem>();
-        for ( final AbstractWorkbenchPerspectiveActivity perspective : getPerspectiveActivities() ) {
-            final String name = perspective.getPerspective().getName();
-            final Command cmd = new Command() {
-
-                @Override
-                public void execute() {
-                    placeManager.goTo( new DefaultPlaceRequest( perspective.getIdentifier() ) );
-                }
-
-            };
-            final MenuItem item = newSimpleItem( name ).respondsWith( cmd ).endMenu().build().getItems().get( 0 );
-            perspectives.add( item );
-        }
-
-        return perspectives;
     }
 
     private AbstractWorkbenchPerspectiveActivity getDefaultPerspectiveActivity() {
