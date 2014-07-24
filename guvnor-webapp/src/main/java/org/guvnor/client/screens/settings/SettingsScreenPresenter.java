@@ -21,7 +21,7 @@ import javax.enterprise.context.Dependent;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
+import org.guvnor.client.screens.Empty;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -50,7 +50,7 @@ public class SettingsScreenPresenter {
     private void addPage(final String text) {
         Tab tab = new Tab();
         tab.setHeading(text);
-        tab.add(new Label(text));
+        tab.add(new Empty(text));
         multiPage.add(tab);
     }
 

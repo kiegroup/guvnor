@@ -32,18 +32,6 @@
   <name>Guvnor</name>
   <description>Guvnor - Generic Management framework</description>
 
-  <modules>
-    <module>guvnor-structure</module>
-    <module>guvnor-services</module>
-    <module>guvnor-rest</module>
-    <module>guvnor-project</module>
-    <module>guvnor-workingset</module>
-    <module>guvnor-inbox</module>
-    <module>guvnor-m2repo-editor</module>
-    <module>guvnor-message-console</module>
-    <module>guvnor-organizationalunit-manager</module>
-    <!--<module>guvnor-webapp</module>-->
-  </modules>
 
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
@@ -62,6 +50,34 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <modules>
+    <module>guvnor-structure</module>
+    <module>guvnor-services</module>
+    <module>guvnor-rest</module>
+    <module>guvnor-project</module>
+    <module>guvnor-workingset</module>
+    <module>guvnor-inbox</module>
+    <module>guvnor-m2repo-editor</module>
+    <module>guvnor-message-console</module>
+    <module>guvnor-organizationalunit-manager</module>
+  </modules>
+
+  <profiles>
+
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <modules>
+        <module>guvnor-webapp</module>
+      </modules>
+    </profile>
+
+  </profiles>
 
   <build>
 

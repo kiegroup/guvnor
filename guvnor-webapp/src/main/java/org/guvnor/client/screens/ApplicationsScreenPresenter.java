@@ -19,21 +19,33 @@ package org.guvnor.client.screens;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
 @WorkbenchScreen(identifier = "applicationsScreen")
-public class ApplicationsScreenPresenter {
+public class ApplicationsScreenPresenter
+        implements RequiresResize {
+
+    private Empty widget = new Empty("applications");
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return new Empty( "applications");
+        return widget;
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
         return "Applications";
+    }
+
+    @Override
+    public void onResize() {
+        int height = widget.getParent().getOffsetHeight();
+        int width = widget.getParent().getOffsetWidth();
+        widget.setPixelSize(width, height);
+
     }
 }
