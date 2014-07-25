@@ -17,6 +17,7 @@
 package org.guvnor.client.screens.settings;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
@@ -33,9 +34,12 @@ public class SettingsScreenPresenter {
 
     private TabPanel multiPage = new TabPanel();
 
+    @Inject
+    private GeneralTab generalTab;
+
     @OnStartup
     public void onStartUp() {
-        multiPage.add(new GeneralTab());
+        multiPage.add(generalTab);
         addPage("Social");
         addPage("Registration");
         addPage("Roles");
@@ -45,6 +49,7 @@ public class SettingsScreenPresenter {
         addPage("SMTP");
 
         multiPage.selectTab(0);
+        generalTab.load();
     }
 
     private void addPage(final String text) {

@@ -41,6 +41,7 @@
 
   <!-- Specify the paths for translatable code -->
   <source path='client'/>
+  <source path='shared'/>
 
   <!-- i18n -->
   <extend-property name="locale" values="es_ES"/>
