@@ -26,14 +26,14 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.version.VersionService;
-import org.guvnor.common.services.shared.version.model.PortableVersionRecord;
+import org.guvnor.structure.repositories.impl.PortableVersionRecord;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
@@ -41,7 +41,8 @@ import static org.uberfire.java.nio.file.StandardCopyOption.*;
 
 @Service
 @ApplicationScoped
-public class VersionServiceImpl implements VersionService {
+public class VersionServiceImpl
+        implements VersionService {
 
     @Inject
     @Named("ioStrategy")
@@ -56,12 +57,14 @@ public class VersionServiceImpl implements VersionService {
     @Override
     public List<VersionRecord> getVersion( final Path path ) {
         try {
-            final List<VersionRecord> records = ioService.getFileAttributeView( Paths.convert( path ), VersionAttributeView.class ).readAttributes().history().records();
+            final List<VersionRecord> records = ioService.getFileAttributeView( Paths.convert( path ),
+                                                                                VersionAttributeView.class ).readAttributes().history().records();
 
             final List<VersionRecord> result = new ArrayList<VersionRecord>( records.size() );
 
             for ( final VersionRecord record : records ) {
-                result.add( new PortableVersionRecord( record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri() ) );
+                result.add( new PortableVersionRecord( record.id(), record.author(), record.email(), record.comment(),
+                                                       record.date(), record.uri() ) );
             }
 
             return result;
@@ -72,10 +75,10 @@ public class VersionServiceImpl implements VersionService {
     }
 
     @Override
-    public Path getPathToPreviousVersion(String uri) {
-        URI uri1 = URI.create(uri);
-        org.uberfire.java.nio.file.Path path = ioService.get(uri1);
-        return Paths.convert(path);
+    public Path getPathToPreviousVersion( String uri ) {
+        URI uri1 = URI.create( uri );
+        org.uberfire.java.nio.file.Path path = ioService.get( uri1 );
+        return Paths.convert( path );
     }
 
     @Override
@@ -83,10 +86,11 @@ public class VersionServiceImpl implements VersionService {
                          final String comment ) {
         try {
             final org.uberfire.java.nio.file.Path path = Paths.convert( _path );
-
             final org.uberfire.java.nio.file.Path target = path.getFileSystem().getPath( path.toString() );
 
-            return Paths.convert( ioService.copy( path, target, REPLACE_EXISTING, new CommentedOption( getSessionInfo().getId(), identity.getName(), null, comment ) ) );
+            return Paths.convert( ioService.copy( path, target, REPLACE_EXISTING,
+                                                  new CommentedOption( getSessionInfo().getId(), identity.getName(),
+                                                                       null, comment ) ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -94,6 +98,6 @@ public class VersionServiceImpl implements VersionService {
     }
 
     protected SessionInfo getSessionInfo() {
-        return new SafeSessionInfo(sessionInfo);
+        return new SafeSessionInfo( sessionInfo );
     }
 }
