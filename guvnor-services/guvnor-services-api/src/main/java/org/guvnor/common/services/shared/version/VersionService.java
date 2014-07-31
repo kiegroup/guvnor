@@ -16,11 +16,11 @@
 
 package org.guvnor.common.services.shared.version;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.backend.vfs.Path;
-
 import java.util.List;
+
+import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.base.version.VersionRecord;
 
 /**
  *
@@ -28,11 +28,11 @@ import java.util.List;
 @Remote
 public interface VersionService {
 
-    List<VersionRecord> getVersion( final Path path );
+    List<VersionRecord> getVersion(final Path path);
 
-    Path getPathToPreviousVersion( String uri );
+    Path getPathToPreviousVersion(String uri);
 
-    Path restore( final Path path,
-                  final String comment );
+    Path restore(final Path path,
+            final String comment);
 
 }

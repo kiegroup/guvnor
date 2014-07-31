@@ -28,7 +28,9 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.version.VersionService;
 import org.guvnor.structure.repositories.impl.PortableVersionRecord;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -88,9 +90,12 @@ public class VersionServiceImpl
             final org.uberfire.java.nio.file.Path path = Paths.convert( _path );
             final org.uberfire.java.nio.file.Path target = path.getFileSystem().getPath( path.toString() );
 
-            return Paths.convert( ioService.copy( path, target, REPLACE_EXISTING,
-                                                  new CommentedOption( getSessionInfo().getId(), identity.getName(),
-                                                                       null, comment ) ) );
+            return Paths.convert(ioService.copy(path, target, REPLACE_EXISTING,
+                    new CommentedOption(
+                            getSessionInfo().getId(),
+                            identity.getName(),
+                            null,
+                            comment)));
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

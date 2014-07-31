@@ -16,17 +16,17 @@
 
 package org.guvnor.common.services.shared.version.events;
 
-import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.ObservablePath;
 
 public class RestoreEvent {
 
-    private Path path;
+    private ObservablePath path;
 
-    public RestoreEvent( final Path path ) {
+    public RestoreEvent( final ObservablePath path ) {
         this.path = path;
     }
 
-    public Path getPath() {
+    public ObservablePath getPath() {
         return path;
     }
 }
