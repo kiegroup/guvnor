@@ -15,23 +15,21 @@
  */
 package org.guvnor.m2repo.client.editor;
 
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKButton;
 
 /**
  * A popup that shows an error message
  */
-public class JarDetailPopup extends Modal {
+public class JarDetailPopup extends KieBaseModal {
 
     interface JarDetailPopupWidgetBinder
             extends
@@ -46,11 +44,6 @@ public class JarDetailPopup extends Modal {
 
     public JarDetailPopup( final String details ) {
         setTitle( M2RepoEditorConstants.INSTANCE.JarDetails() );
-        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
         setHideOthers( false );
 
         add( uiBinder.createAndBindUi( this ) );

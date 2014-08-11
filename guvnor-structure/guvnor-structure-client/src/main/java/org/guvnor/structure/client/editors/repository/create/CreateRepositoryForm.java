@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
@@ -57,6 +56,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.client.mvp.PlaceManager;
@@ -106,7 +106,7 @@ public class CreateRepositoryForm
     InlineHTML isOUMandatory;
 
     @UiField
-    Modal popup;
+    KieBaseModal popup;
 
     private Map<String, OrganizationalUnit> availableOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
     private boolean mandatoryOU = true;

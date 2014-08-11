@@ -18,9 +18,7 @@ package org.guvnor.organizationalunit.manager.client.editor.popups;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -31,10 +29,11 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.organizationalunit.manager.client.editor.OrganizationalUnitManagerPresenter;
 import org.guvnor.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.client.mvp.UberView;
 
-public class AddOrganizationalUnitPopup extends Modal implements UberView<OrganizationalUnitManagerPresenter> {
+public class AddOrganizationalUnitPopup extends KieBaseModal implements UberView<OrganizationalUnitManagerPresenter> {
 
     interface AddOrganizationalUnitPopupBinder
             extends
@@ -77,10 +76,6 @@ public class AddOrganizationalUnitPopup extends Modal implements UberView<Organi
 
     public AddOrganizationalUnitPopup() {
         setTitle( OrganizationalUnitManagerConstants.INSTANCE.AddOrganizationalUnitPopupTitle() );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
 
         add( uiBinder.createAndBindUi( this ) );
         add( footer );

@@ -41,6 +41,7 @@ import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.uberfire.client.common.FileUpload;
 import org.kie.uberfire.client.common.FormStyleLayout;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.mvp.Command;
 
@@ -51,7 +52,7 @@ public class UploadForm
     @Inject
     private Event<M2RepoSearchEvent> searchEvent;
 
-    private Modal popup = new Modal();
+    private Modal popup = new KieBaseModal();
     private WellForm form;
 
     private final TextBox hiddenGroupIdField = new TextBox();

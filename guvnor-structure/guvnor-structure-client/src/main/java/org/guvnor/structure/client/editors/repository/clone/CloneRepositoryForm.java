@@ -27,7 +27,6 @@ import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
@@ -56,6 +55,7 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.client.mvp.PlaceManager;
@@ -123,7 +123,7 @@ public class CloneRepositoryForm
     PasswordTextBox passwordTextBox;
 
     @UiField
-    Modal popup;
+    KieBaseModal popup;
 
     @UiField
     InlineHTML isOUMandatory;

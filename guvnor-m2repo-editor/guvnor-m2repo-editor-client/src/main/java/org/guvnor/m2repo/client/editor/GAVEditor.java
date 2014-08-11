@@ -24,7 +24,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.guvnor.m2repo.client.resources.images.M2RepoEditorImageResources;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
-import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 
 public class GAVEditor extends FormStylePopup {
 
