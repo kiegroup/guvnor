@@ -13,6 +13,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.CategoriesModelContent;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -102,7 +103,6 @@ public class CategoryServiceImpl
 
     @Override
     public CategoriesModelContent getContentByRoot(Path pathToRoot) {
-        CategoriesModelContent categoriesModelContent = new CategoriesModelContent();
 
         org.uberfire.java.nio.file.Path path = Paths.convert(pathToRoot).resolve("categories.xml");
         if (!ioService.exists(path)) {
@@ -111,10 +111,18 @@ public class CategoryServiceImpl
 
         Path categoriesPath = Paths.convert(path);
 
-        categoriesModelContent.setPath(categoriesPath);
-        categoriesModelContent.setCategories(load(categoriesPath));
+        return new CategoriesModelContent(categoriesPath, load(categoriesPath), loadOverview(categoriesPath));
+    }
 
-        return categoriesModelContent;
+    protected Overview loadOverview(Path path) {
+
+        Overview overview = new Overview();
+
+        overview.setMetadata(metadataService.getMetadata(path));
+        overview.setPreview("");
+        overview.setProjectName("");
+
+        return overview;
     }
 
     @Override

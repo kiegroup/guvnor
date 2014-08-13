@@ -16,6 +16,7 @@
 package org.guvnor.common.services.shared.metadata.model;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class CategoriesModelContent {
 
@@ -23,19 +24,26 @@ public class CategoriesModelContent {
 
     private Categories categories;
 
-    public Path getPath() {
-        return path;
+    private Overview overview;
+
+    public CategoriesModelContent() {
     }
 
-    public void setPath(Path path) {
-        this.path = path;
+    public CategoriesModelContent(Path path, Categories categories, Overview overview) {
+        this.path = PortablePreconditions.checkNotNull("path",path);
+        this.categories = PortablePreconditions.checkNotNull("categories",categories);
+        this.overview = PortablePreconditions.checkNotNull("overview", overview);
+    }
+
+    public Path getPath() {
+        return path;
     }
 
     public Categories getCategories() {
         return categories;
     }
 
-    public void setCategories(Categories categories) {
-        this.categories = categories;
+    public Overview getOverview() {
+        return overview;
     }
 }
