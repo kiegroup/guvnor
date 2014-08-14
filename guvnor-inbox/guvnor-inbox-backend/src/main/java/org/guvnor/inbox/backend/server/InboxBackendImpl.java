@@ -94,12 +94,12 @@ public class InboxBackendImpl implements InboxBackend {
     public void recordOpeningEvent( @Observes final ResourceOpenedEvent event ) {
         checkNotNull( "event", event );
         final org.uberfire.backend.vfs.Path resourcePath = event.getPath();
-        recordOpeningEvent( resourcePath.toURI(), resourcePath.getFileName().toString(), event.getSessionInfo().getIdentity().getName() );
+        recordOpeningEvent( resourcePath.toURI(), resourcePath.getFileName().toString(), event.getSessionInfo().getIdentity().getIdentifier() );
     }
 
     public void recordUserEditEvent( @Observes final ResourceUpdatedEvent event ) {
         checkNotNull( "event", event );
-        recordUserEditEvent( event.getPath().toURI(), event.getPath().getFileName(), event.getSessionInfo().getIdentity().getName() );
+        recordUserEditEvent( event.getPath().toURI(), event.getPath().getFileName(), event.getSessionInfo().getIdentity().getIdentifier() );
     }
 
     /**

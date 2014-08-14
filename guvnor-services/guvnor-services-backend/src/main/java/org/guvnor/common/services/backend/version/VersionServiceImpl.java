@@ -28,16 +28,14 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.version.VersionService;
 import org.guvnor.structure.repositories.impl.PortableVersionRecord;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 import static org.uberfire.java.nio.file.StandardCopyOption.*;
 
@@ -51,7 +49,7 @@ public class VersionServiceImpl
     private IOService ioService;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     private SessionInfo sessionInfo;
@@ -93,7 +91,7 @@ public class VersionServiceImpl
             return Paths.convert(ioService.copy(path, target, REPLACE_EXISTING,
                     new CommentedOption(
                             getSessionInfo().getId(),
-                            identity.getName(),
+                            identity.getIdentifier(),
                             null,
                             comment)));
 

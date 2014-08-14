@@ -29,6 +29,7 @@ import org.guvnor.structure.backend.config.watch.ConfigServiceWatchServiceExecut
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
@@ -42,7 +43,6 @@ import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
-import org.uberfire.security.Identity;
 
 import static org.uberfire.backend.server.util.Paths.*;
 
@@ -63,7 +63,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
     private ConfigGroupMarshaller marshaller;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     //Cache of ConfigGroups to avoid reloading them from file
     private final Map<ConfigType, List<ConfigGroup>> configuration = new ConcurrentHashMap<ConfigType, List<ConfigGroup>>();
@@ -204,7 +204,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
         final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
                                                                      "Created config " + filePath.getFileName() );
         try {
-            ioService.startBatch( new FileSystem[]{filePath.getFileSystem()} );
+            ioService.startBatch( filePath.getFileSystem() );
             ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
 
             updateLastModified();
@@ -228,7 +228,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
         final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
                                                                      "Updated config " + filePath.getFileName() );
         try {
-            ioService.startBatch( new FileSystem[]{filePath.getFileSystem()} );
+            ioService.startBatch( filePath.getFileSystem() );
             ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
 
             updateLastModified();
@@ -257,7 +257,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
         }
         boolean result;
         try {
-            ioService.startBatch( new FileSystem[]{filePath.getFileSystem()} );
+            ioService.startBatch( filePath.getFileSystem() );
             result = ioService.deleteIfExists( filePath );
             if ( result ) {
                 updateLastModified();
@@ -273,7 +273,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
     protected String getIdentityName() {
         try {
-            return identity.getName();
+            return identity.getIdentifier();
         } catch ( ContextNotActiveException e ) {
             return "unknown";
         }

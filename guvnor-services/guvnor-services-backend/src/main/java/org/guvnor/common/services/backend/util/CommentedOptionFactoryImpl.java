@@ -5,9 +5,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 @ApplicationScoped
 public class CommentedOptionFactoryImpl implements CommentedOptionFactory {
@@ -17,7 +17,7 @@ public class CommentedOptionFactoryImpl implements CommentedOptionFactory {
     private static final String UNKNOWN_SESSION = "--";
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     private SessionInfo sessionInfo;
@@ -28,7 +28,7 @@ public class CommentedOptionFactoryImpl implements CommentedOptionFactory {
     }
 
     @Override
-    public CommentedOption makeCommentedOption( final String commitMessage, final Identity identity, final SessionInfo sessionInfo ) {
+    public CommentedOption makeCommentedOption( final String commitMessage, final User identity, final SessionInfo sessionInfo ) {
         final Date when = new Date();
         final CommentedOption co = new CommentedOption( getSessionId( sessionInfo ),
                 getIdentityName( identity ),
@@ -38,9 +38,9 @@ public class CommentedOptionFactoryImpl implements CommentedOptionFactory {
         return co;
     }
 
-    protected String getIdentityName( Identity identity ) {
+    protected String getIdentityName( User identity ) {
         try {
-            return identity != null ? identity.getName() : UNKNOWN_IDENTITY;
+            return identity != null ? identity.getIdentifier() : UNKNOWN_IDENTITY;
         } catch ( ContextNotActiveException e ) {
             return UNKNOWN_IDENTITY;
         }

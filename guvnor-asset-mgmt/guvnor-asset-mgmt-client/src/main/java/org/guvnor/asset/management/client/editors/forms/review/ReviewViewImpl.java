@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.client.forms.FormDisplayerView;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.security.Identity;
 
 @Dependent
 public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewView, FormDisplayerView {
@@ -47,8 +46,6 @@ public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewV
     }
 
     private static Binder uiBinder = GWT.create(Binder.class);
-    @Inject
-    private Identity identity;
 
     @Inject
     private PlaceManager placeManager;

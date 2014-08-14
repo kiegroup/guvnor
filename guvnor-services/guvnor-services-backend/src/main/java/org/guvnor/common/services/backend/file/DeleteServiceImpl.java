@@ -7,6 +7,7 @@ import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -14,7 +15,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 @Service
 public class DeleteServiceImpl implements DeleteService {
@@ -26,7 +26,7 @@ public class DeleteServiceImpl implements DeleteService {
     private IOService ioService;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     private SessionInfo sessionInfo;
@@ -35,10 +35,10 @@ public class DeleteServiceImpl implements DeleteService {
     public void delete( final Path path,
                         final String comment ) {
         try {
-            LOGGER.info( "User:" + identity.getName() + " deleting file [" + path.getFileName() + "]" );
+            LOGGER.info( "User:" + identity.getIdentifier() + " deleting file [" + path.getFileName() + "]" );
 
             ioService.delete( Paths.convert( path ),
-                              new CommentedOption( getSessionInfo().getId(), identity.getName(), null, comment ) );
+                              new CommentedOption( getSessionInfo().getId(), identity.getIdentifier(), null, comment ) );
 
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );

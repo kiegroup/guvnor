@@ -15,15 +15,16 @@
  */
 package org.guvnor.asset.management.client.editors.conf;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.google.gwt.core.client.GWT;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.TextBox;
+import com.google.gwt.core.client.GWT;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.model.ProjectStructureModel;
 import org.guvnor.asset.management.service.AssetManagementService;
@@ -44,7 +45,6 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopup;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Identity;
 
 @Dependent
 @WorkbenchScreen(identifier = "Repository Configuration")
@@ -72,9 +72,6 @@ public class RepositoryConfigurationPresenter {
 
   @Inject
   RepositoryConfigurationView view;
-
-  @Inject
-  Identity identity;
 
   @Inject
   Caller<AssetManagementService> assetManagementServices;
@@ -179,7 +176,4 @@ public class RepositoryConfigurationPresenter {
 
   }
 
-  public void close() {
-    closePlaceEvent.fire(new BeforeClosePlaceEvent(this.place));
-  }
 }

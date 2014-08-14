@@ -20,9 +20,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.service.AssetManagementService;
@@ -36,24 +33,20 @@ import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Identity;
 
 @Dependent
 @WorkbenchScreen(identifier = "DisplayError Form")
 public class DisplayErrorPresenter {
 
-    private Constants constants = GWT.create(Constants.class);
+    private Constants constants = GWT.create( Constants.class );
 
     public interface DisplayErrorView extends UberView<DisplayErrorPresenter> {
 
-        void displayNotification(String text);
+        void displayNotification( String text );
     }
 
     @Inject
     DisplayErrorView view;
-
-    @Inject
-    Identity identity;
 
     @Inject
     Caller<AssetManagementService> assetManagementServices;
@@ -67,11 +60,9 @@ public class DisplayErrorPresenter {
     private PlaceManager placeManager;
 
     @OnStartup
-    public void onStartup(final PlaceRequest place) {
+    public void onStartup( final PlaceRequest place ) {
         this.place = place;
     }
-    
-   
 
     @WorkbenchPartTitle
     public String getTitle() {
@@ -92,11 +83,7 @@ public class DisplayErrorPresenter {
 
     @OnOpen
     public void onOpen() {
-        
 
     }
 
-    public void close() {
-        closePlaceEvent.fire(new BeforeClosePlaceEvent(this.place));
-    }
 }

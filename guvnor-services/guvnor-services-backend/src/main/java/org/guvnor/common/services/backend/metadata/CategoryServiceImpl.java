@@ -15,12 +15,12 @@ import org.guvnor.common.services.shared.metadata.model.CategoriesModelContent;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -37,7 +37,7 @@ public class CategoryServiceImpl
     private MetadataService metadataService;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     private SessionInfo sessionInfo;
@@ -73,7 +73,7 @@ public class CategoryServiceImpl
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
+        final String name = identity.getIdentifier();
         final Date when = new Date();
         return new CommentedOption( getSessionInfo().getId(),
                 name,

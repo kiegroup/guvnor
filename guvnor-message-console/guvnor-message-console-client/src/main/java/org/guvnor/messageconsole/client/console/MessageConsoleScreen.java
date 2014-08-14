@@ -39,6 +39,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -101,7 +102,7 @@ public class MessageConsoleScreen {
 
     @DefaultPosition
     public Position getDefaultPosition() {
-        return Position.SOUTH;
+        return CompassPosition.SOUTH;
     }
 
     @WorkbenchPartTitle

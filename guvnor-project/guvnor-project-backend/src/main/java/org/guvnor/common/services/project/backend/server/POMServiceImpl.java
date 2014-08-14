@@ -23,7 +23,6 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -38,8 +37,6 @@ public class POMServiceImpl
     @Inject
     private CommentedOptionFactory optionsFactory;
 
-    private Identity identity;
-
     private SessionInfo sessionInfo;
 
     public POMServiceImpl() {
@@ -51,13 +48,11 @@ public class POMServiceImpl
                            final POMContentHandler pomContentHandler,
                            final M2RepoService m2RepoService,
                            final MetadataService metadataService,
-                           final Identity identity,
                            final SessionInfo sessionInfo ) {
         this.ioService = ioService;
         this.pomContentHandler = pomContentHandler;
         this.m2RepoService = m2RepoService;
         this.metadataService = metadataService;
-        this.identity = identity;
         this.sessionInfo = new SafeSessionInfo(sessionInfo);
     }
 

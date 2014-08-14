@@ -15,9 +15,12 @@
  */
 package org.guvnor.asset.management.client.editors.build;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
@@ -33,27 +36,20 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
 
 public class BuildConfigurationViewImpl extends Composite implements BuildConfigurationPresenter.BuildConfigurationView {
 
-     interface Binder
+    interface Binder
             extends UiBinder<Widget, BuildConfigurationViewImpl> {
 
     }
 
     private static Binder uiBinder = GWT.create(Binder.class);
-    
-    @Inject
-    private Identity identity;
 
     @Inject
     private PlaceManager placeManager;
@@ -65,20 +61,20 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
 
     @UiField
     public ListBox chooseBranchBox;
-    
+
     @UiField
     public ListBox chooseProjectBox;
-    
+
     @UiField
     public Button buildButton;
 
     @UiField
     public TextBox userNameText;
-    
-  
+
+
     @UiField
     public PasswordTextBox passwordText;
-  
+
     @UiField
     public TextBox serverURLText;
 
@@ -105,14 +101,14 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
     public BuildConfigurationViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
-    
-    
+
+
 
     @Override
     public void init(final BuildConfigurationPresenter presenter) {
         this.presenter = presenter;
         presenter.loadServerSetting();
-       chooseRepositoryBox.addChangeHandler(new ChangeHandler() {
+        chooseRepositoryBox.addChangeHandler(new ChangeHandler() {
 
             @Override
             public void onChange(ChangeEvent event) {
@@ -174,11 +170,11 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
     @UiHandler("buildButton")
     public void buildButton(ClickEvent e) {
         presenter.buildProject(chooseRepositoryBox.getValue(), chooseBranchBox.getValue(), chooseProjectBox.getValue(),
-                            userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue());
-       
+                               userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue());
+
     }
 
-   
+
 
     @Override
     public void displayNotification(String text) {
@@ -204,7 +200,7 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
         return buildButton;
     }
 
-    
-   
+
+
 
 }

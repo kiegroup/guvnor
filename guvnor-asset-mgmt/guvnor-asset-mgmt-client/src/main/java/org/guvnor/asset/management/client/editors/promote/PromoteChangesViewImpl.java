@@ -15,6 +15,10 @@
  */
 package org.guvnor.asset.management.client.editors.promote;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
@@ -26,12 +30,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -44,9 +44,6 @@ public class PromoteChangesViewImpl extends Composite implements PromoteChangesP
 
     private static Binder uiBinder = GWT.create(Binder.class);
     
-    @Inject
-    private Identity identity;
-
     @Inject
     private PlaceManager placeManager;
 

@@ -30,13 +30,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.client.forms.FormDisplayerView;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.security.Identity;
 
 @Dependent
-public class ApproveOperationViewImpl extends Composite implements ApproveOperationPresenter.ApproveOperationView, FormDisplayerView {
+public class ApproveOperationViewImpl extends Composite implements ApproveOperationPresenter.ApproveOperationView,
+                                                                   FormDisplayerView {
 
     @Override
-    public void displayNotification(String text) {
+    public void displayNotification( String text ) {
 
     }
 
@@ -45,9 +45,7 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
-    @Inject
-    private Identity identity;
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @Inject
     private PlaceManager placeManager;
@@ -88,18 +86,18 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
 
     public ApproveOperationViewImpl() {
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
 
     }
 
     public Map<String, Object> getOutputMap() {
         Map<String, Object> outputMap = new HashMap<String, Object>();
-        outputMap.put("out_approved", approvedCheckBox.getValue());
+        outputMap.put( "out_approved", approvedCheckBox.getValue() );
         return outputMap;
     }
 
     @Override
-    public void init(ApproveOperationPresenter presenter) {
+    public void init( ApproveOperationPresenter presenter ) {
         this.presenter = presenter;
 
     }
@@ -110,11 +108,10 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
         operationTextBox.setText((String) params.get("in_operation"));
         repositoryTextBox.setText((String) params.get("in_repository"));
         projectTextBox.setText((String) params.get("in_project"));
-
     }
 
     @Override
-    public void setReadOnly(boolean b) {
+    public void setReadOnly( boolean b ) {
         this.readOnly = b;
     }
 

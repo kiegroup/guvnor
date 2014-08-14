@@ -16,32 +16,20 @@
 package org.guvnor.asset.management.client.editors.forms.error;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.ControlLabel;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.asset.management.client.editors.forms.promote.SelectAssetsToPromotePresenter;
 import org.kie.uberfire.client.forms.FormDisplayerView;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
 public class DisplayErrorViewImpl extends Composite implements DisplayErrorPresenter.DisplayErrorView, FormDisplayerView {
@@ -57,8 +45,6 @@ public class DisplayErrorViewImpl extends Composite implements DisplayErrorPrese
     }
 
     private static Binder uiBinder = GWT.create(Binder.class);
-    @Inject
-    private Identity identity;
 
     @Inject
     private PlaceManager placeManager;

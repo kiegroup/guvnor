@@ -27,10 +27,10 @@ import javax.inject.Named;
 import org.guvnor.inbox.model.InboxIncomingPageRow;
 import org.guvnor.inbox.model.InboxPageRequest;
 import org.guvnor.inbox.model.InboxPageRow;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.security.Identity;
 
 public class InboxPageRowBuilder
         implements
@@ -42,7 +42,7 @@ public class InboxPageRowBuilder
 
     private InboxPageRequest pageRequest;
     private Iterator<InboxEntry> iterator;
-    private Identity identity;
+    private User identity;
 
     public List<InboxPageRow> build() {
         validate();
@@ -109,7 +109,7 @@ public class InboxPageRowBuilder
         return this;
     }
 
-    public InboxPageRowBuilder withIdentity( Identity identity ) {
+    public InboxPageRowBuilder withIdentity( User identity ) {
         this.identity = identity;
         return this;
     }

@@ -15,9 +15,8 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.client.widgets.ArtifactListPresenter;
 import org.guvnor.m2repo.model.JarListPageRow;
-import org.uberfire.security.Identity;
-
-import static org.guvnor.m2repo.security.AppRole.*;
+import org.jboss.errai.security.shared.api.RoleImpl;
+import org.jboss.errai.security.shared.api.identity.User;
 
 @Dependent
 public class MavenRepositoryPagedJarTable
@@ -28,7 +27,7 @@ public class MavenRepositoryPagedJarTable
     private ArtifactListPresenter presenter;
 
     @Inject
-    protected Identity identity;
+    protected User identity;
 
     @Override
     public void onResize() {
@@ -40,7 +39,7 @@ public class MavenRepositoryPagedJarTable
     @PostConstruct
     public void init() {
         //If the current user is not an Administrator do not include the download button
-        if ( identity.hasRole( ADMIN ) ) {
+        if ( identity.getRoles().contains( new RoleImpl( "admin" ) ) ) {
             final Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>( new ButtonCell() {{
                 setSize( ButtonSize.MINI );
             }} ) {

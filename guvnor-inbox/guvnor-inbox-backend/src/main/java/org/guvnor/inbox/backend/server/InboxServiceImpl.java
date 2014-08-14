@@ -25,8 +25,8 @@ import org.guvnor.inbox.model.InboxPageRequest;
 import org.guvnor.inbox.model.InboxPageRow;
 import org.guvnor.inbox.service.InboxService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.paging.PageResponse;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -35,7 +35,7 @@ public class InboxServiceImpl
 
     @Inject
     @SessionScoped
-    private Identity identity;
+    private User identity;
 
     @Inject
     private InboxBackend inboxBackend;
@@ -87,17 +87,17 @@ public class InboxServiceImpl
     }
 
     private List<InboxEntry> loadRecentEdited() {
-        return inboxBackend.readEntries( identity.getName(),
+        return inboxBackend.readEntries( identity.getIdentifier(),
                                          RECENT_EDITED_ID );
     }
 
     private List<InboxEntry> loadRecentOpened() {
-        return inboxBackend.readEntries( identity.getName(),
+        return inboxBackend.readEntries( identity.getIdentifier(),
                                          RECENT_VIEWED_ID );
     }
 
     private List<InboxEntry> loadIncoming() {
-        return inboxBackend.readEntries( identity.getName(),
+        return inboxBackend.readEntries( identity.getIdentifier(),
                                          INCOMING_ID );
     }
 

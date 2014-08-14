@@ -8,15 +8,14 @@ import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 @Service
 public class RenameServiceImpl implements RenameService {
@@ -28,7 +27,7 @@ public class RenameServiceImpl implements RenameService {
     private IOService ioService;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     private SessionInfo sessionInfo;
@@ -41,7 +40,7 @@ public class RenameServiceImpl implements RenameService {
                         final String newName,
                         final String comment ) {
         try {
-            LOGGER.info( "User:" + identity.getName() + " renaming file [" + path.getFileName() + "] to [" + newName + "]" );
+            LOGGER.info( "User:" + identity.getIdentifier() + " renaming file [" + path.getFileName() + "] to [" + newName + "]" );
 
             final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
 
@@ -51,12 +50,12 @@ public class RenameServiceImpl implements RenameService {
             final Path targetPath = Paths.convert( _target );
 
             try {
-                ioService.startBatch( new FileSystem[]{_target.getFileSystem()} );
+                ioService.startBatch( _target.getFileSystem() );
 
                 ioService.move( _path,
                                 _target,
                                 new CommentedOption( getSessionInfo().getId(),
-                                                     identity.getName(),
+                                                     identity.getIdentifier(),
                                                      null,
                                                      comment ) );
 

@@ -51,6 +51,7 @@ import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -61,9 +62,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.server.cdi.AppResourcesAuthz;
 
 public abstract class AbstractProjectService<T extends Project>
         implements ProjectService<T>,
@@ -100,10 +99,11 @@ public abstract class AbstractProjectService<T extends Project>
     private CommentedOptionFactory optionsFactory;
 
     @Inject
-    @AppResourcesAuthz
     private AuthorizationManager authorizationManager;
 
-    private Identity identity;
+    @Inject
+    private User identity;
+
     protected SessionInfo sessionInfo;
 
     protected AbstractProjectService() {
@@ -119,7 +119,7 @@ public abstract class AbstractProjectService<T extends Project>
                                    final Event<RenameProjectEvent> renameProjectEvent,
                                    final Event<DeleteProjectEvent> deleteProjectEvent,
                                    final Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
-                                   final Identity identity,
+                                   final User identity,
                                    final SessionInfo sessionInfo ) {
         this.ioService = ioService;
         this.pomService = pomService;
@@ -539,7 +539,7 @@ public abstract class AbstractProjectService<T extends Project>
         try {
 
             if ( startBatch ) {
-                ioService.startBatch( new FileSystem[]{fs}, makeCommentedOption( "New package [" + packageName + "]" ) );
+                ioService.startBatch( fs, makeCommentedOption( "New package [" + packageName + "]" ) );
             }
 
             final org.uberfire.java.nio.file.Path nioMainSrcPackagePath = Paths.convert( mainSrcPath ).resolve( newPackageName );
@@ -595,7 +595,7 @@ public abstract class AbstractProjectService<T extends Project>
 
     protected String getIdentityName() {
         try {
-            return identity.getName();
+            return identity.getIdentifier();
         } catch ( ContextNotActiveException e ) {
             return "unknown";
         }
@@ -679,7 +679,7 @@ public abstract class AbstractProjectService<T extends Project>
             content.setName( newName );
             final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
             try {
-                ioService.startBatch( new FileSystem[]{newProjectPath.getFileSystem()} );
+                ioService.startBatch( newProjectPath.getFileSystem() );
                 ioService.move( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
                 pomService.save( newPathToPomXML, content, null, comment );
             } catch ( final Exception e ) {
@@ -699,7 +699,7 @@ public abstract class AbstractProjectService<T extends Project>
 
     @Override
     public void delete( final Path pathToPomXML,
-            final String comment ) {
+                        final String comment ) {
         try {
             final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
             final Project project2Delete = resolveProject( Paths.convert( projectDirectory ) );
@@ -716,7 +716,7 @@ public abstract class AbstractProjectService<T extends Project>
             if ( parent != null ) {
                 parent.setMultiModule( true );
                 parent.getModules().remove( project2Delete.getProjectName() );
-                pomService.save( Paths.convert( parentPom), parent, null, "Removing child module " + project2Delete.getProjectName() );
+                pomService.save( Paths.convert( parentPom ), parent, null, "Removing child module " + project2Delete.getProjectName() );
             }
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -744,7 +744,7 @@ public abstract class AbstractProjectService<T extends Project>
             content.setName( newName );
             final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
             try {
-                ioService.startBatch( new FileSystem[]{newProjectPath.getFileSystem()} );
+                ioService.startBatch( newProjectPath.getFileSystem() );
                 ioService.copy( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
                 pomService.save( newPathToPomXML, content, null, comment );
             } catch ( final Exception e ) {
@@ -772,20 +772,21 @@ public abstract class AbstractProjectService<T extends Project>
         return null;
     }
 
-    public Set<Project> getProjects(final Repository repository, String branch) {
+    public Set<Project> getProjects( final Repository repository,
+                                     String branch ) {
         final Set<Project> authorizedProjects = new HashSet<Project>();
-        if (repository == null) {
+        if ( repository == null ) {
             return authorizedProjects;
         }
-        final Path repositoryRoot = repository.getBranchRoot(branch);
-        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream(Paths.convert(repositoryRoot));
-        for (org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths) {
-            if (Files.isDirectory(nioRepositoryPath)) {
-                final org.uberfire.backend.vfs.Path projectPath = Paths.convert(nioRepositoryPath);
-                final Project project = resolveProject(projectPath);
-                if (project != null) {
-                    if (authorizationManager.authorize(project, identity)) {
-                        authorizedProjects.add(project);
+        final Path repositoryRoot = repository.getBranchRoot( branch );
+        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( Paths.convert( repositoryRoot ) );
+        for ( org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
+            if ( Files.isDirectory( nioRepositoryPath ) ) {
+                final org.uberfire.backend.vfs.Path projectPath = Paths.convert( nioRepositoryPath );
+                final Project project = resolveProject( projectPath );
+                if ( project != null ) {
+                    if ( authorizationManager.authorize( project, identity ) ) {
+                        authorizedProjects.add( project );
                     }
                 }
             }

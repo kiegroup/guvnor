@@ -38,7 +38,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -52,9 +51,6 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
 
     private static Binder uiBinder = GWT.create(Binder.class);
     
-    @Inject
-    private Identity identity;
-
     @Inject
     private PlaceManager placeManager;
 

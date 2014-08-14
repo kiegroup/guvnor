@@ -25,18 +25,17 @@ import javax.inject.Inject;
 
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
-import org.guvnor.messageconsole.whitelist.MessageConsoleWhiteList;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.PublishMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
+import org.guvnor.messageconsole.whitelist.MessageConsoleWhiteList;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.mvp.Activity;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 /**
  * Service for Message Console, the Console is a screen that shows compile time errors.
@@ -55,7 +54,7 @@ public class MessageConsoleService {
     private SessionInfo sessionInfo;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     private ListDataProvider<MessageConsoleServiceRow> dataProvider = new ListDataProvider<MessageConsoleServiceRow>();
 
@@ -137,7 +136,7 @@ public class MessageConsoleService {
                                     final List<SystemMessage> messages ) {
 
         String currentSessionId = sessionInfo != null ? sessionInfo.getId() : null;
-        String currentUserId = identity != null ? identity.getName() : null;
+        String currentUserId = identity != null ? identity.getIdentifier() : null;
 
         List<MessageConsoleServiceRow> rowsToDelete = new ArrayList<MessageConsoleServiceRow>();
         for ( MessageConsoleServiceRow row : dataProvider.getList() ) {
@@ -183,7 +182,7 @@ public class MessageConsoleService {
         List<SystemMessage> result = new ArrayList<SystemMessage>();
 
         String currentSessionId = sessionInfo != null ? sessionInfo.getId() : null;
-        String currentUserId = identity != null ? identity.getName() : null;
+        String currentUserId = identity != null ? identity.getIdentifier() : null;
 
         if ( messages != null ) {
             for ( SystemMessage message : messages ) {

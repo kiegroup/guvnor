@@ -15,6 +15,13 @@
  */
 package org.guvnor.asset.management.client.editors.forms.promote;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -27,17 +34,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
-import org.guvnor.asset.management.client.i18n.Constants;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.client.forms.FormDisplayerView;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -50,7 +49,7 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
 
     private static Binder uiBinder = GWT.create(Binder.class);
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     private PlaceManager placeManager;

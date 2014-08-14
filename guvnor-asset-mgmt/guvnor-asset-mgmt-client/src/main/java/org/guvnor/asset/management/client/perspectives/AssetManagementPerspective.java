@@ -15,104 +15,88 @@
  */
 package org.guvnor.asset.management.client.perspectives;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 /**
  * A Perspective
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "Asset Management", isDefault = false)
+@WorkbenchPerspective(identifier = "Asset Management")
 public class AssetManagementPerspective {
-
 
     @Inject
     private PlaceManager placeManager;
 
-    private Menus menus;
-
     @Perspective
     public PerspectiveDefinition getPerspective() {
-        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(PanelType.ROOT_TAB);
-        perspective.setName("Asset Management");
+        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiTabWorkbenchPanelPresenter.class.getName() );
+        perspective.setName( "Asset Management" );
 
-        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("Repository Configuration")));
-        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("Promote Changes")));
-        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("Build Management")));
-        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("Release Management")));
+        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Repository Configuration" ) ) );
+        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Promote Changes" ) ) );
+        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Build Management" ) ) );
+        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Release Management" ) ) );
 
-        perspective.setTransient(true);
         return perspective;
-    }
-
-    @PostConstruct
-    public void init() {
-        buildMenuBar();
     }
 
     @WorkbenchMenu
     public Menus getMenus() {
-        return this.menus;
-    }
-
-    private void buildMenuBar() {
-        this.menus = MenuFactory
-                .newTopLevelMenu("Screens")
+        return MenuFactory
+                .newTopLevelMenu( "Screens" )
                 .menus()
-                .menu("Repository Configuration")
+                .menu( "Repository Configuration" )
                 .respondsWith(
                         new Command() {
                             @Override
                             public void execute() {
-                                placeManager.goTo("Repository Configuration");
+                                placeManager.goTo( "Repository Configuration" );
                             }
-                        })
+                        } )
                 .endMenu()
-                .menu("Promote Changes")
+                .menu( "Promote Changes" )
                 .respondsWith(
                         new Command() {
                             @Override
                             public void execute() {
-                                placeManager.goTo("Promote Changes");
+                                placeManager.goTo( "Promote Changes" );
                             }
-                        })
+                        } )
                 .endMenu()
-                .menu("Build Management")
+                .menu( "Build Management" )
                 .respondsWith(
                         new Command() {
                             @Override
                             public void execute() {
-                                placeManager.goTo("Build Management");
+                                placeManager.goTo( "Build Management" );
                             }
-                        })
+                        } )
                 .endMenu()
-                .menu("Release Management")
+                .menu( "Release Management" )
                 .respondsWith(
                         new Command() {
                             @Override
                             public void execute() {
-                                placeManager.goTo("Release Management");
+                                placeManager.goTo( "Release Management" );
                             }
-                        })
+                        } )
                 .endMenu()
                 .endMenus()
                 .endMenu()
                 .build();
-
     }
 }

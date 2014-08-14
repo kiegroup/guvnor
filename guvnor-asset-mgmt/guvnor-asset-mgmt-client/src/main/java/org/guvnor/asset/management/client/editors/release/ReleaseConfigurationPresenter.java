@@ -46,7 +46,6 @@ import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Identity;
 
 @Dependent
 @WorkbenchScreen(identifier = "Release Management")
@@ -71,9 +70,6 @@ public class ReleaseConfigurationPresenter {
 
     @Inject
     ReleaseConfigurationView view;
-
-    @Inject
-    Identity identity;
 
     @Inject
     Caller<AssetManagementService> assetManagementServices;
@@ -209,7 +205,4 @@ public class ReleaseConfigurationPresenter {
 
     }
 
-    public void close() {
-        closePlaceEvent.fire(new BeforeClosePlaceEvent(this.place));
-    }
 }

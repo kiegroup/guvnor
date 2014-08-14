@@ -15,10 +15,6 @@
  */
 package org.guvnor.asset.management.client.editors.build;
 
-
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.google.gwt.core.client.GWT;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,15 +24,17 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.ListBox;
+import com.google.gwt.core.client.GWT;
+import org.guvnor.asset.management.client.i18n.Constants;
+import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.guvnor.asset.management.client.i18n.Constants;
-import org.guvnor.asset.management.service.AssetManagementService;
-
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -47,19 +45,16 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopup;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Identity;
-import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
 
 @Dependent
 @WorkbenchScreen(identifier = "Build Management")
 public class BuildConfigurationPresenter {
 
-    private Constants constants = GWT.create(Constants.class);
+    private Constants constants = GWT.create( Constants.class );
 
     public interface BuildConfigurationView extends UberView<BuildConfigurationPresenter> {
 
-        void displayNotification(String text);
+        void displayNotification( String text );
 
         ListBox getChooseRepositoryBox();
 
@@ -67,15 +62,12 @@ public class BuildConfigurationPresenter {
 
         ListBox getChooseProjectBox();
 
-        void showHideDeployToRuntimeSection(boolean show);
+        void showHideDeployToRuntimeSection( boolean show );
 
     }
 
     @Inject
     BuildConfigurationView view;
-
-    @Inject
-    Identity identity;
 
     @Inject
     Caller<AssetManagementService> assetManagementServices;
@@ -94,7 +86,7 @@ public class BuildConfigurationPresenter {
     private Map<String, Repository> repositories = new HashMap<String, Repository>();
 
     @OnStartup
-    public void onStartup(final PlaceRequest place) {
+    public void onStartup( final PlaceRequest place ) {
         this.place = place;
     }
 
@@ -116,83 +108,84 @@ public class BuildConfigurationPresenter {
 
     }
 
-    public void buildProject(String repository, String branch, String project,
-            String userName, String password, String serverURL, Boolean deployToMaven) {
-        assetManagementServices.call(new RemoteCallback<Long>() {
+    public void buildProject( String repository,
+                              String branch,
+                              String project,
+                              String userName,
+                              String password,
+                              String serverURL,
+                              Boolean deployToMaven ) {
+        assetManagementServices.call( new RemoteCallback<Long>() {
             @Override
-            public void callback(Long taskId) {
-                view.displayNotification("Building Process Started");
+            public void callback( Long taskId ) {
+                view.displayNotification( "Building Process Started" );
             }
         }, new ErrorCallback<Message>() {
             @Override
-            public boolean error(Message message, Throwable throwable) {
-                ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
+            public boolean error( Message message,
+                                  Throwable throwable ) {
+                ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
                 return true;
             }
-        }).buildProject(repository, branch, project, userName, password, serverURL, deployToMaven);
+        } ).buildProject( repository, branch, project, userName, password, serverURL, deployToMaven );
 
     }
 
     public void loadServerSetting() {
-        assetManagementServices.call(new RemoteCallback<Boolean>() {
+        assetManagementServices.call( new RemoteCallback<Boolean>() {
             @Override
-            public void callback(Boolean supportRuntimeDeployment) {
-                view.showHideDeployToRuntimeSection(supportRuntimeDeployment);
+            public void callback( Boolean supportRuntimeDeployment ) {
+                view.showHideDeployToRuntimeSection( supportRuntimeDeployment );
             }
-        }).supportRuntimeDeployment();
+        } ).supportRuntimeDeployment();
     }
 
     public void loadRepositories() {
-        repositoryServices.call(new RemoteCallback<List<Repository>>() {
+        repositoryServices.call( new RemoteCallback<List<Repository>>() {
 
             @Override
-            public void callback(final List<Repository> repositoriesResults) {
-                view.getChooseRepositoryBox().addItem(constants.Select_Repository());
-                for (Repository r : repositoriesResults) {
-                    repositories.put(r.getAlias(), r);
-                    view.getChooseRepositoryBox().addItem(r.getAlias(), r.getAlias());
+            public void callback( final List<Repository> repositoriesResults ) {
+                view.getChooseRepositoryBox().addItem( constants.Select_Repository() );
+                for ( Repository r : repositoriesResults ) {
+                    repositories.put( r.getAlias(), r );
+                    view.getChooseRepositoryBox().addItem( r.getAlias(), r.getAlias() );
                 }
 
             }
-        }).getRepositories();
+        } ).getRepositories();
 
     }
 
-    public void loadBranches(String repository) {
-        Repository r = repositories.get(repository);
-        if (r != null) {
-            view.getChooseBranchBox().addItem(constants.Select_A_Branch());
-            for (String branch : r.getBranches()) {
-                view.getChooseBranchBox().addItem(branch, branch);
+    public void loadBranches( String repository ) {
+        Repository r = repositories.get( repository );
+        if ( r != null ) {
+            view.getChooseBranchBox().addItem( constants.Select_A_Branch() );
+            for ( String branch : r.getBranches() ) {
+                view.getChooseBranchBox().addItem( branch, branch );
             }
         }
     }
 
-    public void loadProjects(String repository, String branch) {
-        Repository r = repositories.get(repository);
+    public void loadProjects( String repository,
+                              String branch ) {
+        Repository r = repositories.get( repository );
 
-        assetManagementServices.call(new RemoteCallback<Set<Project>>() {
+        assetManagementServices.call( new RemoteCallback<Set<Project>>() {
 
             @Override
-            public void callback(final Set<Project> projectSetResults) {
+            public void callback( final Set<Project> projectSetResults ) {
 
-                view.getChooseProjectBox().addItem(constants.Select_Project());
-                for (Project project : projectSetResults) {
-                    view.getChooseProjectBox().addItem(project.getProjectName(), project.getProjectName());
+                view.getChooseProjectBox().addItem( constants.Select_Project() );
+                for ( Project project : projectSetResults ) {
+                    view.getChooseProjectBox().addItem( project.getProjectName(), project.getProjectName() );
                 }
 
             }
-        }).getProjects(r, branch);
-
+        } ).getProjects( r, branch );
     }
 
     @OnOpen
     public void onOpen() {
-        view.getChooseRepositoryBox().setFocus(true);
-
-    }
-
-    public void close() {
-        closePlaceEvent.fire(new BeforeClosePlaceEvent(this.place));
+        view.getChooseRepositoryBox().setFocus( true );
     }
 }

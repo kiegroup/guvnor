@@ -1,13 +1,13 @@
 package org.guvnor.common.services.backend.util;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 public interface CommentedOptionFactory {
 
     CommentedOption makeCommentedOption( final String commitMessage );
 
-    CommentedOption makeCommentedOption( final String commitMessage, final Identity identity, final SessionInfo sessionInfo );
+    CommentedOption makeCommentedOption( final String commitMessage, final User identity, final SessionInfo sessionInfo );
 
 }

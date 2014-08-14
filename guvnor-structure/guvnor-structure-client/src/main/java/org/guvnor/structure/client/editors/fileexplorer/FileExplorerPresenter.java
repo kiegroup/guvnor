@@ -50,6 +50,7 @@ import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
 @Dependent
@@ -156,7 +157,7 @@ public class FileExplorerPresenter {
 
     @DefaultPosition
     public Position getDefaultPosition() {
-        return Position.WEST;
+        return CompassPosition.WEST;
     }
 
     public void redirect( final Path path ) {

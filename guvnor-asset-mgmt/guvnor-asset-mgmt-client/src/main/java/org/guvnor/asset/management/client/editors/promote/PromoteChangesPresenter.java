@@ -15,23 +15,22 @@
  */
 package org.guvnor.asset.management.client.editors.promote;
 
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.google.gwt.core.client.GWT;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
+
+import com.github.gwtbootstrap.client.ui.ListBox;
+import com.google.gwt.core.client.GWT;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
-
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -42,7 +41,6 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopup;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Identity;
 
 @Dependent
 @WorkbenchScreen(identifier = "Promote Changes")
@@ -64,9 +62,6 @@ public class PromoteChangesPresenter {
 
   @Inject
   PromoteChangesView view;
-
-  @Inject
-  Identity identity;
 
   @Inject
   Caller<AssetManagementService> assetManagementServices;
@@ -158,7 +153,4 @@ public class PromoteChangesPresenter {
 
   }
 
-  public void close() {
-    closePlaceEvent.fire(new BeforeClosePlaceEvent(this.place));
-  }
 }

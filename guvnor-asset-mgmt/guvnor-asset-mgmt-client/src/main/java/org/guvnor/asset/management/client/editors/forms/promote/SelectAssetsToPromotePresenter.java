@@ -15,19 +15,18 @@
  */
 package org.guvnor.asset.management.client.editors.forms.promote;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.google.gwt.core.client.GWT;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import org.jboss.errai.common.client.api.Caller;
+
+import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.TextBox;
+import com.google.gwt.core.client.GWT;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.service.AssetManagementService;
-
+import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -37,7 +36,6 @@ import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Identity;
 
 @Dependent
 @WorkbenchScreen(identifier = "SelectAssetsToPromote Form")
@@ -60,9 +58,6 @@ public class SelectAssetsToPromotePresenter  {
 
     @Inject
     SelectAssetsToPromoteView view;
-
-    @Inject
-    Identity identity;
 
     @Inject
     Caller<AssetManagementService> assetManagementServices;
@@ -105,7 +100,4 @@ public class SelectAssetsToPromotePresenter  {
 
     }
 
-    public void close() {
-        closePlaceEvent.fire(new BeforeClosePlaceEvent(this.place));
-    }
 }
