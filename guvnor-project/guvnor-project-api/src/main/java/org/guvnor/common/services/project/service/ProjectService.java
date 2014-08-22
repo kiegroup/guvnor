@@ -40,6 +40,10 @@ public interface ProjectService<T extends Project> {
      * @return Path to the folder containing the Project's pom.xml file or null if the resource was not in a Project
      */
     T resolveProject( final Path resource );
+    
+    Project resolveParentProject( final Path resource );
+    
+    Project resolveToParentProject( final Path resource );
 
     /**
      * Given a Resource path resolve it to the containing Package Path. A Package path is the folder containing the resource.
