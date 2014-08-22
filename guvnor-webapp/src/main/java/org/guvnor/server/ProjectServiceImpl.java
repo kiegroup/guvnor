@@ -171,4 +171,14 @@ public class ProjectServiceImpl
                             projectRootPath.getFileName() );
 
     }
+
+  @Override
+  public Project resolveParentProject(Path resource) {
+    return null;
+  }
+
+  @Override
+  public Project resolveToParentProject(Path resource) {
+    return null;
+  }
 }
