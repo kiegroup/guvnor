@@ -26,12 +26,16 @@ public class POM {
 
     private static final String MODEL_VERSION = "4.0.0";
 
+    private POM parent;
     private GAV gav;
     private String name;
     private String description;
+    
+    private boolean multiModule;
 
     private List<Dependency> dependencies = new ArrayList<Dependency>();
     private List<Repository> repositories = new ArrayList<Repository>();
+    private List<String> modules = new ArrayList<String>();
 
     public POM() {
         this.gav = new GAV();
@@ -47,6 +51,15 @@ public class POM {
         this.name = name;
         this.description = description;
         this.gav = gav;
+        this.multiModule = false;
+    }
+    
+    public POM(String name, String description, GAV gav, boolean multiModule) {
+        super();
+        this.name = name;
+        this.description = description;
+        this.gav = gav;
+        this.multiModule = multiModule;
     }
 
     public GAV getGav() {
@@ -84,4 +97,29 @@ public class POM {
     public void setDescription( String description ) {
         this.description = description;
     }
+
+    public POM getParent() {
+      return parent;
+    }
+
+    public void setParent(POM parent) {
+      this.parent = parent;
+    }
+
+    public List<String> getModules() {
+      return modules;
+    }
+
+    public void setModules(List<String> modules) {
+      this.modules = modules;
+    }
+
+    public boolean isMultiModule() {
+      return multiModule;
+    }
+
+    public void setMultiModule(boolean multiModule) {
+      this.multiModule = multiModule;
+    }
+
 }
