@@ -308,47 +308,41 @@ public class RepositoryServiceImpl implements RepositoryService {
                 }
             }
         }
-
-        final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( convert( repo.getRoot() ), VersionAttributeView.class );
-        final List<VersionRecord> records = versionAttributeView.readAttributes().history().records();
-        Collections.reverse( records );
-
-        return new RepositoryInfo( alias, ouName, repo.getRoot(), repo.getPublicURIs(), new ArrayList<VersionRecord>( HISTORY_PAGE_SIZE ) {{
-            int size = 0;
-            for ( final VersionRecord record : records ) {
-                add( new PortableVersionRecord( record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri() ) );
-                size++;
-                if ( size > HISTORY_PAGE_SIZE ) {
-                    break;
-                }
-            }
-        }} );
+        List<VersionRecord> initialRecordList = getRepositoryHistory( alias, 0, HISTORY_PAGE_SIZE);
+        return new RepositoryInfo( alias, ouName, repo.getRoot(), repo.getPublicURIs(), initialRecordList);
     }
 
     @Override
-    public List<VersionRecord> getRepositoryHistory( final String alias,
-                                                     final int startIndex ) {
+    public List<VersionRecord> getRepositoryHistory( String alias, int startIndex ) {
+        return getRepositoryHistory(alias, startIndex, startIndex + HISTORY_PAGE_SIZE);
+    }
+
+    @Override
+    public List<VersionRecord> getRepositoryHistoryAll( String alias ) {
+        return getRepositoryHistory(alias, 0, -1);
+    }
+
+    @Override
+    public List<VersionRecord> getRepositoryHistory( String alias, int startIndex, int endIndex ) {
         final Repository repo = getRepository( alias );
-
         final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( convert( repo.getRoot() ), VersionAttributeView.class );
-
         final List<VersionRecord> records = versionAttributeView.readAttributes().history().records();
 
-        if ( records.size() <= startIndex ) {
+        if ( startIndex < 0 ) {
+            startIndex = 0;
+        }
+        if ( endIndex < 0 || endIndex > records.size()) {
+            endIndex = records.size();
+        }
+        if ( startIndex >= records.size() || startIndex >= endIndex) {
             return Collections.emptyList();
         }
 
         Collections.reverse( records );
-        final List<VersionRecord> result = new ArrayList<VersionRecord>( HISTORY_PAGE_SIZE );
 
-        int size = 0;
-
-        for ( final VersionRecord record : records.subList( startIndex, records.size() > startIndex + HISTORY_PAGE_SIZE ? startIndex + HISTORY_PAGE_SIZE : records.size() ) ) {
+        List<VersionRecord> result = new ArrayList<VersionRecord>( endIndex - startIndex );
+        for ( VersionRecord record : records.subList( startIndex, endIndex ) ) {
             result.add( new PortableVersionRecord( record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri() ) );
-            size++;
-            if ( size > HISTORY_PAGE_SIZE ) {
-                break;
-            }
         }
 
         return result;

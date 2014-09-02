@@ -17,6 +17,12 @@ public interface RepositoryService {
     List<VersionRecord> getRepositoryHistory( final String alias,
                                               final int startIndex );
 
+    List<VersionRecord> getRepositoryHistory( final String alias,
+                                              final int startIndex,
+                                              final int endIndex );
+
+    List<VersionRecord> getRepositoryHistoryAll( final String alias );
+
     Repository getRepository( final String alias );
 
     Repository getRepository( final Path root );
