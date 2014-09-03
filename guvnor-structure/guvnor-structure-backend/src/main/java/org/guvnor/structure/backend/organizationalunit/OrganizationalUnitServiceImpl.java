@@ -17,6 +17,8 @@ import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
+import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationaUnitEvent;
+import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -45,6 +47,12 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @Inject
     private Event<RemoveOrganizationalUnitEvent> removeOrganizationalUnitEvent;
+
+    @Inject
+    private Event<RepoAddedToOrganizationaUnitEvent> repoAddedToOrgUnitEvent;
+
+    @Inject
+    private Event<RepoRemovedFromOrganizationalUnitEvent> repoRemovedFromOrgUnitEvent;
 
     private Map<String, OrganizationalUnit> registeredOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
 
@@ -158,6 +166,8 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
             registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
                                                updatedOrganizationalUnit );
+
+            repoAddedToOrgUnitEvent.fire(new RepoAddedToOrganizationaUnitEvent(organizationalUnit, repository));
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
         }
@@ -178,6 +188,8 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
             registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
                                                updatedOrganizationalUnit );
+
+            repoRemovedFromOrgUnitEvent.fire(new RepoRemovedFromOrganizationalUnitEvent(organizationalUnit, repository));
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
         }
