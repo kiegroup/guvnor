@@ -56,7 +56,7 @@ public class CopyServiceImpl implements CopyService {
             final Path targetPath = Paths.convert( _target );
 
             try {
-                ioService.startBatch( new FileSystem[]{_target.getFileSystem()} );
+                ioService.startBatch( new FileSystem[]{ _target.getFileSystem() } );
 
                 ioService.copy( Paths.convert( path ),
                                 Paths.convert( targetPath ),
@@ -77,6 +77,7 @@ public class CopyServiceImpl implements CopyService {
 
             resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
                                                                targetPath,
+                                                               comment,
                                                                getSessionInfo() ) );
 
             return targetPath;
