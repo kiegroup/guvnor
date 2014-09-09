@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -59,7 +60,6 @@ import org.guvnor.rest.client.TestProjectRequest;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.kie.remote.common.exception.RestOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
@@ -499,7 +499,7 @@ public class ProjectResource {
     private org.guvnor.structure.repositories.Repository checkRepositoryExistence( String repoName ) {
         org.guvnor.structure.repositories.Repository repo = repositoryService.getRepository( repoName );
         if ( repo == null ) {
-            throw RestOperationException.notFound( "Repository " + repoName + " does not exist." );
+            throw new IllegalStateException( "Repository " + repoName + " does not exist." );
         }
         return repo;
     }
@@ -509,7 +509,7 @@ public class ProjectResource {
                 = organizationalUnitService.getOrganizationalUnit( orgUnitName );
 
         if ( origOrgUnit == null ) {
-            throw RestOperationException.notFound( "Organizational unit " + orgUnitName + " does not exist." );
+            throw new IllegalStateException( "Organizational unit " + orgUnitName + " does not exist." );
         }
         return origOrgUnit;
     }
