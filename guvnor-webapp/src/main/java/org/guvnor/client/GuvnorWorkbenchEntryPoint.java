@@ -29,10 +29,15 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.guvnor.client.resources.i18n.AppConstants;
 import org.guvnor.common.services.shared.config.AppConfigService;
+import org.guvnor.structure.client.editors.repository.clone.CloneRepositoryForm;
+import org.guvnor.structure.client.editors.repository.create.CreateRepositoryForm;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
@@ -74,12 +79,52 @@ public class GuvnorWorkbenchEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
+    private Command newRepoCommand = null;
+    private Command cloneRepoCommand = null;
+
     @AfterInitialization
     public void startApp() {
+        buildCommands();
         setupMenu();
         hideLoadingPopup();
     }
 
+
+    private void buildCommands() {
+        this.cloneRepoCommand = new Command() {
+
+            @Override
+            public void execute() {
+                final CloneRepositoryForm cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryForm.class ).getInstance();
+                //When pop-up is closed destroy bean to avoid memory leak
+                cloneRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
+
+                    @Override
+                    public void onClose( CloseEvent<PopupPanel> event ) {
+                        iocManager.destroyBean( cloneRepositoryWizard );
+                    }
+
+                } );
+                cloneRepositoryWizard.show();
+            }
+
+        };
+
+        this.newRepoCommand = new Command() {
+            @Override
+            public void execute() {
+                final CreateRepositoryForm newRepositoryWizard = iocManager.lookupBean( CreateRepositoryForm.class ).getInstance();
+                //When pop-up is closed destroy bean to avoid memory leak
+                newRepositoryWizard.addCloseHandler( new CloseHandler<CreateRepositoryForm>() {
+                    @Override
+                    public void onClose( CloseEvent<CreateRepositoryForm> event ) {
+                        iocManager.destroyBean( newRepositoryWizard );
+                    }
+                } );
+                newRepositoryWizard.show();
+            }
+        };
+    }
 
     private void setupMenu() {
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
@@ -93,6 +138,49 @@ public class GuvnorWorkbenchEntryPoint {
                             placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
                         } else {
                             Window.alert( "Default perspective not found." );
+                        }
+                    }
+                } )
+                .endMenu()
+                .newTopLevelMenu( AppConstants.INSTANCE.MenuOrganizationalUnits() )
+
+                .menus()
+                .menu( AppConstants.INSTANCE.MenuManageOrganizationalUnits() )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager" );
+                    }
+                } )
+                .endMenu()
+                .endMenus()
+                .endMenu()
+                .newTopLevelMenu( "Repositories" )
+
+                .menus()
+                .menu( "Repositories List" )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( "RepositoriesEditor" );
+                    }
+                } )
+                .endMenu()
+                .menu( "Clone repository" )
+                .respondsWith( cloneRepoCommand )
+                .endMenu()
+                .menu( "New repository" )
+                .respondsWith( newRepoCommand )
+                .endMenu()
+                .endMenus()
+                .endMenu()
+                .newTopLevelMenu( "Authoring" ).respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        if ( defaultPerspective != null ) {
+                            placeManager.goTo(new DefaultPlaceRequest("org.guvnor.AuthoringPerspective"));
+                        } else {
+                            Window.alert( " perspective not found." );
                         }
                     }
                 } )

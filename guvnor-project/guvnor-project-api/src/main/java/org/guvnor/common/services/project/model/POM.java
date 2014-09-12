@@ -26,7 +26,7 @@ public class POM {
 
     private static final String MODEL_VERSION = "4.0.0";
 
-    private POM parent;
+    private GAV parent;
     private GAV gav;
     private String name;
     private String description;
@@ -98,11 +98,11 @@ public class POM {
         this.description = description;
     }
 
-    public POM getParent() {
+    public GAV getParent() {
       return parent;
     }
 
-    public void setParent(POM parent) {
+    public void setParent(GAV parent) {
       this.parent = parent;
     }
 
@@ -122,4 +122,7 @@ public class POM {
       this.multiModule = multiModule;
     }
 
+    public boolean hasParent() {
+        return parent != null;
+    }
 }

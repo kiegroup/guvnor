@@ -692,8 +692,18 @@ public abstract class AbstractProjectService<T extends Project>
             final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
             final Project project2Delete = resolveProject( Paths.convert( projectDirectory ) );
 
+            Path parentPom = Paths.convert( projectDirectory.getParent().resolve( "pom.xml" )  );
+            POM parent = pomService.load(parentPom);
+
+
             ioService.delete( projectDirectory, StandardDeleteOption.NON_EMPTY_DIRECTORIES, new CommentedOption( getSessionId(), getIdentityName(), null, comment ) );
             deleteProjectEvent.fire( new DeleteProjectEvent( project2Delete ) );
+
+            if(parent != null){
+              parent.setMultiModule(true);
+              parent.getModules().remove(project2Delete.getProjectName());
+              pomService.save(parentPom, parent, null, "Removing child module "+project2Delete.getProjectName());
+            }
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }

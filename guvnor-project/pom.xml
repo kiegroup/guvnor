@@ -33,5 +33,6 @@
     <module>guvnor-project-api</module>
     <module>guvnor-project-backend</module>
     <module>guvnor-project-builder</module>
+    <module>guvnor-project-client</module>
   </modules>
 </project>

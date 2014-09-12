@@ -16,13 +16,14 @@
 
 package org.guvnor.common.services.project.model;
 
-/**
- *
- * @author salaboy
- */
+import  org.uberfire.client.callbacks.Callback;
+
 public interface ProjectWizard {
-  
-  void setContent( final String projectName, final String groupId, final String version );
-  public void start();
-  
+
+    void setContent(final String projectName, final String groupId, final String version);
+
+    void start();
+
+    void start( Callback<Project> callback );
+
 }

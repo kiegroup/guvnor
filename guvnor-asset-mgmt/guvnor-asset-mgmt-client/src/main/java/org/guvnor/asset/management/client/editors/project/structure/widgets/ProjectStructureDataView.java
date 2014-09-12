@@ -1,0 +1,65 @@
+package org.guvnor.asset.management.client.editors.project.structure.widgets;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.backend.vfs.Path;
+
+public interface ProjectStructureDataView extends IsWidget {
+
+    enum ViewMode {
+        CREATE_STRUCTURE,
+        EDIT_SINGLE_MODULE_PROJECT,
+        EDIT_MULTI_MODULE_PROJECT
+    }
+
+    interface Presenter {
+
+        void onProjectModeChange( boolean isSingle );
+
+        void onGroupIdChange( String groupId );
+
+        void onArtifactIdChange( String artifactId );
+
+        void onVersionChange( String version );
+
+        void onInitProjectStructure();
+
+        void onSaveProjectStructure();
+
+        void onConvertToMultiModule();
+
+        void onOpenSingleProject();
+    }
+
+    void setMode( ViewMode mode );
+
+    void setPresenter( Presenter presenter );
+
+    void setGroupId( String id );
+
+    String getGroupId();
+
+    void setArtifactId( String id );
+
+    String getArtifactId();
+
+    void setVersion( String version );
+
+    String getVersionId();
+
+    void setSingleProjectGroupId( String groupId );
+
+    void setSingleProjectArtifactId( String artifactId );
+
+    void setSingleProjectVersion( String version );
+
+    void setMultiModule();
+
+    void setSingleModule();
+
+    boolean isSingleModule();
+
+    boolean isMultiModule();
+
+    void clear();
+
+}

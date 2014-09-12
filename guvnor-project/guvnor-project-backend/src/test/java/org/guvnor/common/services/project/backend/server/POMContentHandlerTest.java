@@ -22,6 +22,8 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.junit.Assert.*;
 
 public class POMContentHandlerTest {
@@ -46,7 +48,7 @@ public class POMContentHandlerTest {
     public void testPOMContentHandlerNewProject() throws IOException {
         final POMContentHandler handler = new POMContentHandler();
         final GAV gav = new GAV();
-        gav.setGroupId( "org.guvnor" );
+        gav.setGroupId("org.guvnor");
         gav.setArtifactId( "test" );
         gav.setVersion( "0.0.1" );
         final POM pom = new POM( "name",
@@ -148,6 +150,41 @@ public class POMContentHandlerTest {
                                         enrichedXml );
         assertContainsIgnoreWhitespace( EXISTING_PLUGIN_XML,
                                         enrichedXml );
+    }
+
+    @Test
+    public void testParent() throws Exception {
+        final POMContentHandler handler = new POMContentHandler();
+        final String xml =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                        "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" +
+                        "  <modelVersion>4.0.0</modelVersion>" +
+                        "  <parent>" +
+                        "    <groupId>org.tadaa</groupId>" +
+                        "    <artifactId>tadaa</artifactId>" +
+                        "    <version>1.2.3</version>" +
+                        "  </parent>" +
+                        "  <artifactId>myproject</artifactId>" +
+                        "  <packaging>kjar</packaging>" +
+                        "  <name>myproject</name>" +
+                        "  <build>" +
+                        "    <plugins>" +
+                        "      <plugin>" +
+                        "        <groupId>org.kie</groupId>" +
+                        "        <artifactId>kie-maven-plugin</artifactId>" +
+                        "        <version>6.2.0-SNAPSHOT</version>" +
+                        "        <extensions>true</extensions>" +
+                        "      </plugin>" +
+                        "    </plugins>" +
+                        "  </build>" +
+                        "</project>";
+
+        final POM pom = handler.toModel(xml);
+
+        assertNotNull(pom.getParent());
+        assertEquals("org.tadaa", pom.getParent().getGroupId());
+        assertEquals("tadaa", pom.getParent().getArtifactId());
+        assertEquals("1.2.3", pom.getParent().getVersion());
     }
 
     private void assertContainsIgnoreWhitespace( final String expected,

@@ -1,0 +1,64 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:with field="i18n"
+           type="org.guvnor.asset.management.client.i18n.Constants"/>
+  <ui:with field="resources"
+           type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
+
+  <b:Well>
+    <b:Fieldset>
+      <b:Legend>
+        <small>
+          <b:Label ui:field="projectTypeLabel"/>
+        </small>
+      </b:Legend>
+      <b:Controls>
+        <b:RadioButton name="moduleType" b:id="isSingleModule" ui:field="isSingleModuleRadioButton"/>
+        <b:HelpInline ui:field="isSingleModuleRadioButtonHelpInline"/>
+      </b:Controls>
+
+      <b:ControlLabel for="singleProjectGroupIdTextBox" ><g:Label ui:field="singleProjectGroupId" text="Project Group"  /></b:ControlLabel>
+      <b:Controls>
+        <b:TextBox b:id="singleProjectGroupId" ui:field="singleProjectGroupIdTextBox" />
+      </b:Controls>
+
+      <b:ControlLabel for="singleProjectArtifactIdTextBox" ><g:Label ui:field="singleProjectArtifactId" text="Artifact"  /></b:ControlLabel>
+      <b:Controls>
+        <b:TextBox b:id="singleProjectArtifactId" ui:field="singleProjectArtifactIdTextBox" />
+      </b:Controls>
+
+      <b:ControlLabel for="singleProjectVersionTextBox" ><g:Label ui:field="singleProjectVersion" text="Version"  /></b:ControlLabel>
+      <b:Controls>
+        <b:TextBox b:id="singleProjectVersion" ui:field="singleProjectVersionTextBox" />
+      </b:Controls>
+
+      <b:Controls>
+        <b:RadioButton name="moduleType" b:id="isMultiModule" ui:field="isMultiModuleRadioButton"/>
+        <b:HelpInline ui:field="isMultiModuleRadioButtonHelpInline"/>
+      </b:Controls>
+
+      <b:Controls>
+        <b:TextBox b:id="groupId" ui:field="groupIdTextBox" placeholder="{i18n.GroupIdHolder}"/>
+        <b:HelpInline ui:field="groupIdTextBoxHelpInline"/>
+      </b:Controls>
+      <b:Controls>
+        <b:TextBox b:id="artifactId" ui:field="artifactIdTextBox" placeholder="{i18n.ArtifactIdHolder}"/>
+        <b:HelpInline ui:field="artifactIdTextBoxHelpInline"/>
+      </b:Controls>
+      <b:Controls>
+        <b:TextBox b:id="version" ui:field="versionTextBox" placeholder="{i18n.VersionHolder}"/>
+        <b:HelpInline ui:field="versionTextBoxHelpInline"/>
+      </b:Controls>
+    </b:Fieldset>
+    <g:HTML>
+      <br/>
+    </g:HTML>
+    <b:Button type="PRIMARY" ui:field="initProjectStructureButton">
+      <ui:text from="{i18n.InitProjectStructure}"/>
+    </b:Button>
+  </b:Well>
+
+</ui:UiBinder>

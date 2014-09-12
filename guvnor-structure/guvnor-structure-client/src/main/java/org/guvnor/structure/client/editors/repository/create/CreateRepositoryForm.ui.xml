@@ -57,6 +57,7 @@
               <b:ListBox b:id="ou" ui:field="organizationalUnitDropdown"/>
               <b:HelpInline ui:field="organizationalUnitHelpInline"/>
             </b:Controls>
+
           </b:ControlGroup>
         </b:Fieldset>
       </b:Well>

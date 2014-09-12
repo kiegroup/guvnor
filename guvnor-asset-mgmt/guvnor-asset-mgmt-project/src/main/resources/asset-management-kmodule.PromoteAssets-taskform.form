@@ -1,0 +1,55 @@
+<form id="72220496">
+<property name="name" value="asset-management-kmodule.PromoteAssets-taskform.form"/>
+<property name="displayMode" value="default"/>
+<property name="status" value="0"/>
+<field position="0" name="GitRepositoryName" type="InputText" id="158340345">
+<property name="fieldRequired" value="true"/>
+<property name="label" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;Repository namequot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+<property name="errorMessage" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+<property name="title" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+<property name="readonly" value="false"/>
+<property name="isHTML" value="false"/>
+<property name="hideContent" value="false"/>
+<property name="outputBinding" value="GitRepositoryName"/>
+<property name="fieldClass" value="java.lang.String"/>
+</field>
+<field position="1" name="SourceBranchName" type="InputText" id="1421028096">
+<property name="fieldRequired" value="true"/>
+<property name="groupWithPrevious" value="false"/>
+<property name="label" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;Source branch namequot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+<property name="errorMessage" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+<property name="title" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+<property name="readonly" value="false"/>
+<property name="isHTML" value="false"/>
+<property name="hideContent" value="false"/>
+<property name="outputBinding" value="SourceBranchName"/>
+<property name="fieldClass" value="java.lang.String"/>
+</field>
+<field position="2" name="TargetBranchName" type="InputText" id="474913154">
+<property name="fieldRequired" value="true"/>
+<property name="groupWithPrevious" value="true"/>
+<property name="label" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;Target branch namequot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+<property name="errorMessage" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+<property name="title" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+<property name="readonly" value="false"/>
+<property name="isHTML" value="false"/>
+<property name="hideContent" value="false"/>
+<property name="outputBinding" value="TargetBranchName"/>
+<property name="fieldClass" value="java.lang.String"/>
+</field>
+<field position="3" name="RequiresReview" type="CheckBox" id="949904470">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;RequiresReview (RequiresReview)quot;"/>
+<property name="readonly" value="false"/>
+<property name="outputBinding" value="RequiresReview"/>
+<property name="fieldClass" value="java.lang.Boolean"/>
+</field>
+<dataHolder inputId="" name="#B29FE4" type="basicType" outId="CommitsToPromote" value="java.lang.String" id="CommitsToPromote"/>
+<dataHolder inputId="" name="#0000A0" type="basicType" outId="GitRepositoryName" value="java.lang.String" id="GitRepositoryName"/>
+<dataHolder inputId="" name="#FBB767" type="basicType" outId="ListOfCommits" value="java.lang.String" id="ListOfCommits"/>
+<dataHolder inputId="" name="#BBBBBB" type="basicType" outId="ListOfFiles" value="java.lang.String" id="ListOfFiles"/>
+<dataHolder inputId="" name="#FF8881" type="basicType" outId="RequiresReview" value="java.lang.Boolean" id="RequiresReview"/>
+<dataHolder inputId="" name="#9BCAFA" type="basicType" outId="Reviewed" value="java.lang.Boolean" id="Reviewed"/>
+<dataHolder inputId="" name="#FF54A7" type="basicType" outId="SourceBranchName" value="java.lang.String" id="SourceBranchName"/>
+<dataHolder inputId="" name="#A7E690" type="basicType" outId="TargetBranchName" value="java.lang.String" id="TargetBranchName"/>
+</form>

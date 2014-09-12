@@ -177,6 +177,62 @@ public class GuvnorM2Repository {
 
     }
 
+    public void deployParentPom(final GAV gav){
+      //Write pom.xml to temporary file for deployment
+        final File pomXMLFile = new File( System.getProperty( "java.io.tmpdir" ),
+                                          toFileName( gav,
+                                                      "pom.xml" ) );
+        String pomXML = generateParentPOM(gav);
+        try {
+            if ( !pomXMLFile.exists() ) {
+                pomXMLFile.getParentFile().mkdirs();
+                pomXMLFile.createNewFile();
+            }
+
+            FileOutputStream fos = new FileOutputStream( pomXMLFile );
+            IOUtils.write( pomXML,
+                           fos );
+
+            fos.flush();
+            fos.close();
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
+        //pom.xml Artifact
+        Artifact pomXMLArtifact = new DefaultArtifact( gav.getGroupId(),
+                                                    gav.getArtifactId(),
+                                                    "pom",
+                                                    gav.getVersion() );
+        pomXMLArtifact = pomXMLArtifact.setFile( pomXMLFile );
+
+        try {
+            //Install into local repository
+            final InstallRequest installRequest = new InstallRequest();
+            installRequest
+                    .addArtifact( pomXMLArtifact );
+
+            Aether.getAether().getSystem().install( Aether.getAether().getSession(),
+                                                    installRequest );
+        } catch ( InstallationException e ) {
+            throw new RuntimeException( e );
+        }
+
+        //Deploy into Workbench's default remote repository
+        try {
+            final DeployRequest deployRequest = new DeployRequest();
+            deployRequest
+                    .addArtifact( pomXMLArtifact )
+                    .setRepository( getGuvnorM2Repository() );
+
+            Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
+                                                   deployRequest );
+
+        } catch ( DeploymentException e ) {
+            throw new RuntimeException( e );
+        }
+
+    }
+
     private void deployArtifact( final GAV gav,
                                  final String pomXML,
                                  final File jarFile,
@@ -682,6 +738,31 @@ public class GuvnorM2Repository {
 
     public String getPomPropertiesPath( final GAV gav ) {
         return "META-INF/maven/" + gav.getGroupId() + "/" + gav.getArtifactId() + "/pom.properties";
+    }
+
+    public String generateParentPOM( final GAV gav ) {
+        Model model = new Model();
+        model.setGroupId( gav.getGroupId() );
+        model.setArtifactId( gav.getArtifactId() );
+        model.setVersion( gav.getVersion() );
+        model.setPackaging( "pom" );
+        model.setModelVersion( "4.0.0" );
+
+/*        Repository repo = new Repository();
+        repo.setId("guvnor-m2-repo");
+        repo.setName("Guvnor M2 Repo");
+        repo.setUrl(getRepositoryURL());
+        model.addRepository(repo);*/
+
+        StringWriter stringWriter = new StringWriter();
+        try {
+            new MavenXpp3Writer().write( stringWriter,
+                                         model );
+        } catch ( IOException e ) {
+            log.error( e.getMessage() );
+        }
+
+        return stringWriter.toString();
     }
 }
 
