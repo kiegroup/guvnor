@@ -28,7 +28,7 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 @Remote
 public interface VersionService {
 
-    List<VersionRecord> getVersion(final Path path);
+    List<VersionRecord> getVersions(final Path path);
 
     Path getPathToPreviousVersion(String uri);
 

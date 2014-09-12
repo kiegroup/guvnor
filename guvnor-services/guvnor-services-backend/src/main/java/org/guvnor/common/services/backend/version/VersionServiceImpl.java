@@ -57,7 +57,7 @@ public class VersionServiceImpl
     private SessionInfo sessionInfo;
 
     @Override
-    public List<VersionRecord> getVersion( final Path path ) {
+    public List<VersionRecord> getVersions(final Path path) {
         try {
             final List<VersionRecord> records = ioService.getFileAttributeView( Paths.convert( path ),
                                                                                 VersionAttributeView.class ).readAttributes().history().records();
