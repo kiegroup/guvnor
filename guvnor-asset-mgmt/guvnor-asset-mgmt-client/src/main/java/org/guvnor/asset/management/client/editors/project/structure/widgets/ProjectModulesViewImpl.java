@@ -78,7 +78,7 @@ public class ProjectModulesViewImpl extends Composite
         };
         modulesTable.addColumn( column, "Module" );
         modulesTable.setColumnWidth( column,
-                80,
+                70,
                 Style.Unit.PCT );
 
     }
@@ -107,7 +107,7 @@ public class ProjectModulesViewImpl extends Composite
 
         modulesTable.addColumn( deleteModuleColumn, "" );
         modulesTable.setColumnWidth( deleteModuleColumn,
-                10,
+                15,
                 Style.Unit.PCT );
 
     }
@@ -136,7 +136,7 @@ public class ProjectModulesViewImpl extends Composite
 
         modulesTable.addColumn( editModuleColumn, "" );
         modulesTable.setColumnWidth( editModuleColumn,
-                10,
+                15,
                 Style.Unit.PCT );
     }
 

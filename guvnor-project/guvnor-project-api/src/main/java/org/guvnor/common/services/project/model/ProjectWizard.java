@@ -24,6 +24,6 @@ public interface ProjectWizard {
 
     void start();
 
-    void start( Callback<Project> callback );
+    void start( Callback<Project> callback, boolean openEditor );
 
 }

@@ -19,6 +19,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.HasData;
@@ -42,6 +44,8 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.uberfire.client.common.popups.YesNoCancelPopup;
+import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -52,6 +56,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -99,6 +104,8 @@ public class ProjectStructurePresenter
 
     private Project project;
 
+    private Project lastAddedModule;
+
     private Repository repository;
 
     private ObservablePath pathToProjectStructure;
@@ -144,6 +151,12 @@ public class ProjectStructurePresenter
         }
     }
 
+    @OnFocus
+    public void onFocus() {
+        dataProvider.flush();
+        dataProvider.refresh();
+    }
+
     private void onContextChange( @Observes final ProjectContextChangeEvent event ) {
         processContextChange( event.getRepository(), event.getProject() );
     }
@@ -155,7 +168,12 @@ public class ProjectStructurePresenter
 
             this.repository = repository;
             this.project = project;
-            init();
+
+            if ( lastAddedModule == null || !lastAddedModule.equals( project ) ) {
+                init();
+            } else {
+                lastAddedModule = null;
+            }
         }
     }
 
@@ -204,7 +222,7 @@ public class ProjectStructurePresenter
                         for ( String module : model.getModules() ) {
                             dataProvider.getList().add( new ProjectModuleRow( module ) );
                         }
-                        dataProvider.refresh();
+                        //dataProvider.refresh();
                     }
 
                 } else if ( model.isSingleProject() ) {
@@ -377,9 +395,10 @@ public class ProjectStructurePresenter
                 view.getDataView().getVersionId() );
         wizzard.start( new Callback<Project>() {
             @Override public void callback( Project result ) {
+                lastAddedModule = result;
                 init();
             }
-        } );
+        }, false );
     }
 
     @Override
@@ -473,18 +492,50 @@ public class ProjectStructurePresenter
     }
 
     private void deleteSelectedModule( String module ) {
-        Project project = model.getModulesProject() != null ? model.getModulesProject().get( module ) : null;
+        final Project project = model.getModulesProject() != null ? model.getModulesProject().get( module ) : null;
         if ( project != null ) {
-            //TODO add confirmation dialog and read the commit message.
-            view.showBusyIndicator( "Deleting" );
-            projectStructureService.call( new RemoteCallback<Void>() {
-                @Override
-                public void callback( Void response ) {
-                    view.hideBusyIndicator();
-                    //TODO avoid reloading every time.
-                    init();
-                }
-            }, new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( project.getPomXMLPath(), "" );
+
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                    "Are you sure that you want to remove module: " + module + " from project?",
+                    new Command() {
+                        @Override
+                        public void execute() {
+
+                            view.showBusyIndicator( "Deleting" );
+                            projectStructureService.call( new RemoteCallback<Void>() {
+                                @Override
+                                public void callback( Void response ) {
+                                    view.hideBusyIndicator();
+                                    //TODO avoid reloading every time.
+                                    init();
+                                }
+                            }, new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( project.getPomXMLPath(), "Module removed" );
+                        }
+                    },
+                    CommonConstants.INSTANCE.YES(),
+                    ButtonType.DANGER,
+                    IconType.MINUS_SIGN,
+                    new Command() {
+                        @Override public void execute() {
+                            //do nothing
+                        }
+                    },
+                    null,
+                    ButtonType.DEFAULT,
+                    null,
+                    new Command() {
+                        @Override public void execute() {
+                            //do nothing.
+                        }
+                    },
+                    null,
+                    ButtonType.DEFAULT,
+                    null
+            );
+
+            yesNoCancelPopup.setCloseVisible( false );
+            yesNoCancelPopup.show();
+
         }
     }
 }
