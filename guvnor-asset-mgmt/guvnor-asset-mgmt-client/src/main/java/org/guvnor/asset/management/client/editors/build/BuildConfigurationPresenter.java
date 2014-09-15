@@ -15,9 +15,10 @@
  */
 package org.guvnor.asset.management.client.editors.build;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.TextBox;
+
+import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -40,6 +41,8 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.Identity;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 
 @Dependent
 @WorkbenchScreen(identifier = "Build Configuration")
@@ -51,12 +54,11 @@ public class BuildConfigurationPresenter {
 
         void displayNotification(String text);
 
-//      ListBox getChooseRepositoryBox();
-        TextBox getChooseRepositoryBox();
+        ListBox getChooseRepositoryBox();
 
-        Button getBuildButton();
-
-      
+       
+        
+        ListBox getChooseBranchBox();
 
     }
 
@@ -76,6 +78,11 @@ public class BuildConfigurationPresenter {
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    Caller<RepositoryService> repositoryServices;
+
+    private List<Repository> repositories;
 
     @OnStartup
     public void onStartup(final PlaceRequest place) {
@@ -100,7 +107,7 @@ public class BuildConfigurationPresenter {
     }
 
     public void buildProject(String repository, String branch, String project,
-                            String userName, String password, String serverURL, Boolean deployToMaven) {
+            String userName, String password, String serverURL, Boolean deployToMaven) {
         assetManagementServices.call(new RemoteCallback<Long>() {
             @Override
             public void callback(Long taskId) {
@@ -114,6 +121,34 @@ public class BuildConfigurationPresenter {
             }
         }).buildProject(repository, branch, project, userName, password, serverURL, deployToMaven);
 
+    }
+
+    public void loadRepositories() {
+        repositoryServices.call(new RemoteCallback<List<Repository>>() {
+
+            @Override
+            public void callback(final List<Repository> repositoriesResults) {
+                repositories = repositoriesResults;
+                view.getChooseRepositoryBox().addItem(constants.Select_Repository());
+                for (Repository r : repositories) {
+                    view.getChooseRepositoryBox().addItem(r.getAlias(), r.getAlias());
+                }
+
+            }
+        }).getRepositories();
+
+    }
+
+    public void loadBranches(String repository) {
+        for (Repository r : repositories) {
+            if ((r.getAlias()).equals(repository)) {
+                view.getChooseBranchBox().addItem(constants.Select_A_Branch());
+                for (String branch : r.getBranches()) {
+                    view.getChooseBranchBox().addItem(branch, branch);
+                }
+                
+            }
+        }
     }
 
     @OnOpen

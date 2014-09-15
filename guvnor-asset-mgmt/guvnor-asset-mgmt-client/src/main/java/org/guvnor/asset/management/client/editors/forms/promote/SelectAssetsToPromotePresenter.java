@@ -54,8 +54,6 @@ public class SelectAssetsToPromotePresenter  {
         ListBox getFilesInTheBranchList();
 
         ListBox getFilesToPromoteList();
-
-        TextBox getTaskIdBox();
         
         CheckBox getRequiresReviewCheckBox();
     }

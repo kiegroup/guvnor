@@ -17,27 +17,36 @@ package org.guvnor.asset.management.client.editors.build;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-@Templated(value = "BuildConfigurationViewImpl.html")
+
 public class BuildConfigurationViewImpl extends Composite implements BuildConfigurationPresenter.BuildConfigurationView {
 
+     interface Binder
+            extends UiBinder<Widget, BuildConfigurationViewImpl> {
+
+    }
+
+    private static Binder uiBinder = GWT.create(Binder.class);
+    
     @Inject
     private Identity identity;
 
@@ -46,81 +55,32 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
 
     private BuildConfigurationPresenter presenter;
 
-    @Inject
-    @DataField
-    public Label accordionLabel;
-    
-    @Inject
-    @DataField
-    public Label chooseRepositoryLabel;
-    
-//    @Inject
-//    @DataField
-//    public ListBox chooseRepositoryBox;
-    
-    @Inject
-    @DataField
-    public TextBox chooseRepositoryBox;
-    
-    @Inject
-    @DataField
-    public Label chooseBranchLabel;
-    
-//    @Inject
-//    @DataField
-//    public ListBox chooseBranchBox;
-    
-    @Inject
-    @DataField
-    public TextBox chooseBranchBox;
-    
-    @Inject
-    @DataField
-    public Label chooseProjectLabel;
-    
-//    @Inject
-//    @DataField
+    @UiField
+    public ListBox chooseRepositoryBox;
+
+    @UiField
+    public ListBox chooseBranchBox;
+
+
 //    public ListBox chooseProjectBox;
     
-    @Inject
-    @DataField
+    @UiField
     public TextBox chooseProjectBox;
     
-    @Inject
-    @DataField
+    @UiField
     public Button buildButton;
 
-    @Inject
-    @DataField
-    public Label userNameLabel;
-    
-    @Inject
-    @DataField
+    @UiField
     public TextBox userNameText;
     
-    @Inject
-    @DataField
-    public Label passwordLabel;
-    
-    @Inject
-    @DataField
+  
+    @UiField
     public TextBox passwordText;
-    
-    @Inject
-    @DataField
-    public Label serverURLLabel;
-    
-    @Inject
-    @DataField
+  
+    @UiField
     public TextBox serverURLText;
-    
-    
-    @Inject
-    @DataField
-    public Label deployToRuntimeLabel;
-    
-    @Inject
-    @DataField
+
+    @UiField
     public CheckBox deployToRuntimeCheck;
 
     @Inject
@@ -128,26 +88,33 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
 
     private Constants constants = GWT.create(Constants.class);
 
+    public BuildConfigurationViewImpl() {
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+    
+    
+
     @Override
-    public void init(BuildConfigurationPresenter presenter) {
+    public void init(final BuildConfigurationPresenter presenter) {
         this.presenter = presenter;
-        accordionLabel.setText(constants.Build_Configuration());
-        chooseRepositoryLabel.setText(constants.Choose_Repository());
-        chooseBranchLabel.setText(constants.Choose_Branch());
-        chooseProjectLabel.setText(constants.Choose_Project());
-        userNameLabel.setText(constants.User_Name());
-        passwordLabel.setText(constants.Password());
-        serverURLLabel.setText(constants.Server_URL());
-        deployToRuntimeLabel.setText(constants.Deploy_To_Runtime());
-        buildButton.setText(constants.Build_Project());
+       chooseRepositoryBox.addChangeHandler(new ChangeHandler() {
+
+            @Override
+            public void onChange(ChangeEvent event) {
+                String value = chooseRepositoryBox.getValue();
+
+                presenter.loadBranches(value);
+            }
+        });
+        presenter.loadRepositories();
     }
 
     
 
-    @EventHandler("buildButton")
+    @UiHandler("buildButton")
     public void buildButton(ClickEvent e) {
-        presenter.buildProject(chooseRepositoryBox.getText(), chooseBranchBox.getText(), chooseProjectBox.getText(),
-                            userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue());
+//        presenter.buildProject(chooseRepositoryBox.getText(), chooseBranchBox.getText(), chooseProjectBox.getText(),
+//                            userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue());
        
     }
 
@@ -158,13 +125,13 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
         notification.fire(new NotificationEvent(text));
     }
 
-//    public ListBox getChooseRepositoryBox() {
-//        return chooseRepositoryBox;
-//    }
+    public ListBox getChooseBranchBox() {
+        return chooseBranchBox;
+    }
 
-   
+
     @Override
-    public TextBox getChooseRepositoryBox() {
+    public ListBox getChooseRepositoryBox() {
         return chooseRepositoryBox;
     }
 

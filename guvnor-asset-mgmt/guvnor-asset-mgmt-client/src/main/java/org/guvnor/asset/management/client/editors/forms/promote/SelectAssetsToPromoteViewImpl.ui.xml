@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+~ Copyright 2012 JBoss Inc
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~       http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
+             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
+
+  <ui:with field="i18n"
+           type="org.guvnor.asset.management.client.i18n.Constants"/>
+  
+
+  <gwt:HTMLPanel>
+    <bootstrap:WellForm type="INLINE">
+     
+      
+      <bootstrap:FluidRow>
+        <bootstrap:Column size="2">
+          <bootstrap:ControlLabel for="sourceBranchBox">
+            <ui:text from="{i18n.Source_Branch}"/>
+          </bootstrap:ControlLabel>
+        </bootstrap:Column>
+        <bootstrap:Column size="2">
+          <bootstrap:Controls>
+            <bootstrap:TextBox ui:field="sourceBranchBox" placeholder="{i18n.Source_Branch}"/>
+          </bootstrap:Controls>
+        </bootstrap:Column>
+       
+      </bootstrap:FluidRow>
+      
+      <bootstrap:FluidRow>
+        <bootstrap:Column size="2">
+          <bootstrap:ControlLabel for="filesInTheBranchList">
+            <ui:text from="{i18n.Files_In_The_Branch}"/>
+          </bootstrap:ControlLabel>
+        </bootstrap:Column>
+        <bootstrap:Column size="2">
+          <bootstrap:Controls>
+            <bootstrap:ListBox ui:field="filesInTheBranchList"/>
+          </bootstrap:Controls>
+        </bootstrap:Column>
+      </bootstrap:FluidRow>
+      
+      <bootstrap:FluidRow>
+        <bootstrap:Column size="4">
+          <bootstrap:Button type="PRIMARY" ui:field='promoteFilesButton'>
+            {i18n.Promote_Assets}
+          </bootstrap:Button>
+        </bootstrap:Column>
+        
+      </bootstrap:FluidRow>
+      
+      <bootstrap:FluidRow>
+        <bootstrap:Column size="2">
+          <bootstrap:ControlLabel for="filesToPromoteList">
+            <ui:text from="{i18n.Files_To_Promote}"/>
+          </bootstrap:ControlLabel>
+        </bootstrap:Column>
+        <bootstrap:Column size="2">
+          <bootstrap:Controls>
+            <bootstrap:ListBox ui:field="filesToPromoteList"/>
+          </bootstrap:Controls>
+        </bootstrap:Column>
+      </bootstrap:FluidRow>
+
+      <bootstrap:FluidRow>
+        <bootstrap:Column size="2">
+          <bootstrap:ControlLabel for="requiresReviewCheckBox">
+            <ui:text from="{i18n.Requires_Review}"/>
+          </bootstrap:ControlLabel>
+        </bootstrap:Column>
+        <bootstrap:Column size="2">
+          <bootstrap:Controls>
+            <bootstrap:CheckBox ui:field="requiresReviewCheckBox" />
+          </bootstrap:Controls>
+        </bootstrap:Column>
+       
+      </bootstrap:FluidRow>
+      
+    </bootstrap:WellForm>
+  </gwt:HTMLPanel>
+</ui:UiBinder>

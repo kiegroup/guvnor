@@ -23,23 +23,29 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.guvnor.asset.management.client.i18n.Constants;
-
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-@Templated(value = "RepositoryConfigurationViewImpl.html")
 public class RepositoryConfigurationViewImpl extends Composite implements RepositoryConfigurationPresenter.RepositoryConfigurationView {
 
+    interface Binder
+            extends UiBinder<Widget, RepositoryConfigurationViewImpl> {
+
+    }
+
+    private static Binder uiBinder = GWT.create(Binder.class);
+    
     @Inject
     private Identity identity;
 
@@ -48,60 +54,25 @@ public class RepositoryConfigurationViewImpl extends Composite implements Reposi
 
     private RepositoryConfigurationPresenter presenter;
 
-    @Inject
-    @DataField
-    public Label accordionLabel;
-
-    @Inject
-    @DataField
-    public Label chooseRepositoryLabel;
-
-    @Inject
-    @DataField
+    @UiField
     public ListBox chooseRepositoryBox;
 
-    @Inject
-    @DataField
+    @UiField
     public Button configureButton;
 
-    @Inject
-    @DataField
-    public Label sourceBranchLabel;
-
-    @Inject
-    @DataField
+    @UiField
     public TextBox sourceBranchText;
 
-    @Inject
-    @DataField
-    public Label releaseBranchLabel;
-
-    @Inject
-    @DataField
+    @UiField
     public TextBox releaseBranchText;
 
-    @Inject
-    @DataField
-    public Label devBranchLabel;
-
-    @Inject
-    @DataField
+    @UiField
     public TextBox devBranchText;
 
-    @Inject
-    @DataField
-    public Label versionLabel;
-
-    @Inject
-    @DataField
+    @UiField
     public TextBox versionText;
 
-    @Inject
-    @DataField
-    public Label currentVersionLabel;
-
-    @Inject
-    @DataField
+    @UiField
     public TextBox currentVersionText;
 
     @Inject
@@ -109,17 +80,17 @@ public class RepositoryConfigurationViewImpl extends Composite implements Reposi
 
     private Constants constants = GWT.create(Constants.class);
 
+    public RepositoryConfigurationViewImpl() {
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+    
+    
+
     @Override
     public void init(final RepositoryConfigurationPresenter presenter) {
         this.presenter = presenter;
-        accordionLabel.setText(constants.Repository_Configuration());
-        chooseRepositoryLabel.setText(constants.Choose_Repository());
-        sourceBranchLabel.setText(constants.Source_Branch());
-        releaseBranchLabel.setText(constants.Release_Branch());
-        devBranchLabel.setText(constants.Dev_Branch());
+        
         configureButton.setText(constants.Configure_Repository());
-        versionLabel.setText(constants.Version());
-        currentVersionLabel.setText(constants.Current_Version());
         sourceBranchText.setText("master");
         devBranchText.setText("dev");
         releaseBranchText.setText("release");
@@ -137,7 +108,7 @@ public class RepositoryConfigurationViewImpl extends Composite implements Reposi
         presenter.loadRepositories();
     }
 
-    @EventHandler("configureButton")
+    @UiHandler("configureButton")
     public void configureButton(ClickEvent e) {
 
         presenter.configureRepository(chooseRepositoryBox.getValue(), sourceBranchText.getText(), devBranchText.getText(), releaseBranchText.getText(), versionText.getText());

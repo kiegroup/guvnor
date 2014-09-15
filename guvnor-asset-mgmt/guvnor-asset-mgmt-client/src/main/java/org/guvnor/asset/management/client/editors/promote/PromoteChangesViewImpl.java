@@ -16,28 +16,34 @@
 package org.guvnor.asset.management.client.editors.promote;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-@Templated(value = "PromoteChangesViewImpl.html")
 public class PromoteChangesViewImpl extends Composite implements PromoteChangesPresenter.PromoteChangesView {
 
+    interface Binder
+            extends UiBinder<Widget, PromoteChangesViewImpl> {
+
+    }
+
+    private static Binder uiBinder = GWT.create(Binder.class);
+    
     @Inject
     private Identity identity;
 
@@ -46,36 +52,18 @@ public class PromoteChangesViewImpl extends Composite implements PromoteChangesP
 
     private PromoteChangesPresenter presenter;
 
-    @Inject
-    @DataField
-    public Label accordionLabel;
+ 
 
-    @Inject
-    @DataField
-    public Label chooseRepositoryLabel;
-
-    @Inject
-    @DataField
+    @UiField
     public ListBox chooseRepositoryBox;
 
-    @Inject
-    @DataField
-    public Label chooseSourceBranchLabel;
-
-    @Inject
-    @DataField
+    @UiField
     public ListBox chooseSourceBranchBox;
 
-    @Inject
-    @DataField
-    public Label chooseTargetBranchLabel;
-
-    @Inject
-    @DataField
+    @UiField
     public ListBox chooseTargetBranchBox;
 
-    @Inject
-    @DataField
+    @UiField
     public Button promoteButton;
 
     @Inject
@@ -83,15 +71,16 @@ public class PromoteChangesViewImpl extends Composite implements PromoteChangesP
 
     private Constants constants = GWT.create(Constants.class);
 
+    public PromoteChangesViewImpl() {
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+    
+    
+
     @Override
     public void init(final PromoteChangesPresenter presenter) {
         this.presenter = presenter;
-        accordionLabel.setText(constants.Promote_Assets());
-        chooseRepositoryLabel.setText(constants.Choose_Repository());
-        chooseSourceBranchLabel.setText(constants.Choose_Source_Branch());
-        chooseTargetBranchLabel.setText(constants.Choose_Destination_Branch());
-        promoteButton.setText(constants.Promote_Assets());
-
+        
         chooseRepositoryBox.addChangeHandler(new ChangeHandler() {
 
             @Override
@@ -106,7 +95,7 @@ public class PromoteChangesViewImpl extends Composite implements PromoteChangesP
         presenter.loadRepositories();
     }
 
-    @EventHandler("promoteButton")
+    @UiHandler("promoteButton")
     public void promoteButton(ClickEvent e) {
         presenter.promoteChanges(chooseRepositoryBox.getValue(), chooseSourceBranchBox.getValue(), chooseTargetBranchBox.getValue());
 

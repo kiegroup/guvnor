@@ -124,7 +124,7 @@ public class RepositoryConfigurationPresenter {
           projectStructureServices.call(new RemoteCallback<ProjectStructureModel>() {
             @Override
             public void callback(ProjectStructureModel model) {
-              if(model != null){
+              if(model != null && model.getPOM() != null){
                 view.getCurrentVersionText().setText(model.getPOM().getGav().getVersion());
                 view.getVersionText().setText(model.getPOM().getGav().getVersion());
               }else{
