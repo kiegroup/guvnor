@@ -69,7 +69,7 @@
       <bootstrap:FluidRow>
         <bootstrap:Column size="5">
           <bootstrap:Button type="PRIMARY" ui:field='promoteButton'>
-            {i18n.Promote_Assets}
+            <ui:text from="{i18n.Promote_Assets}"/>
           </bootstrap:Button>
         </bootstrap:Column>
         

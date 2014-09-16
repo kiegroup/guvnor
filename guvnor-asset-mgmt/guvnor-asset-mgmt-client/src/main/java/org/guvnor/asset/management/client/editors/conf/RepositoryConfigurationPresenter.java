@@ -160,7 +160,7 @@ public class RepositoryConfigurationPresenter {
     assetManagementServices.call(new RemoteCallback<Long>() {
       @Override
       public void callback(Long taskId) {
-        view.displayNotification("");
+        view.displayNotification("Repository Configuration Started!");
       }
     }, new ErrorCallback<Message>() {
       @Override

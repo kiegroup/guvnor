@@ -56,9 +56,10 @@
       </bootstrap:FluidRow>
       
       <bootstrap:FluidRow>
-        <bootstrap:Column size="4">
+        <bootstrap:Column size="2" offset="2">
           <bootstrap:Button type="PRIMARY" ui:field='promoteFilesButton'>
-            {i18n.Promote_Assets}
+            <ui:text from="{i18n.Promote_Assets}"/>
+            
           </bootstrap:Button>
         </bootstrap:Column>
         

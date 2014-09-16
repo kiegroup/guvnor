@@ -113,8 +113,8 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
 
     @UiHandler("buildButton")
     public void buildButton(ClickEvent e) {
-//        presenter.buildProject(chooseRepositoryBox.getText(), chooseBranchBox.getText(), chooseProjectBox.getText(),
-//                            userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue());
+        presenter.buildProject(chooseRepositoryBox.getValue(), chooseBranchBox.getValue(), chooseProjectBox.getText(),
+                            userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue());
        
     }
 

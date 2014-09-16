@@ -124,7 +124,7 @@
       <bootstrap:FluidRow>
         <bootstrap:Column size="5">
           <bootstrap:Button type="PRIMARY" ui:field='buildButton'>
-            {i18n.Build_Project}
+            <ui:text from="{i18n.Build_Project}"/>
           </bootstrap:Button>
         </bootstrap:Column>
         

@@ -111,7 +111,7 @@ public class BuildConfigurationPresenter {
         assetManagementServices.call(new RemoteCallback<Long>() {
             @Override
             public void callback(Long taskId) {
-                view.displayNotification("");
+                view.displayNotification("Building Process Started");
             }
         }, new ErrorCallback<Message>() {
             @Override

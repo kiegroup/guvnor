@@ -140,7 +140,7 @@ public class PromoteChangesPresenter {
     assetManagementServices.call(new RemoteCallback<Long>() {
       @Override
       public void callback(Long taskId) {
-        view.displayNotification("");
+        view.displayNotification("Promote Changes Process Started!");
       }
     }, new ErrorCallback<Message>() {
       @Override
