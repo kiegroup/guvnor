@@ -15,6 +15,7 @@
  */
 package org.guvnor.asset.management.client.editors.project.structure;
 
+import java.util.List;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -153,6 +154,7 @@ public class ProjectStructurePresenter
 
     @OnFocus
     public void onFocus() {
+        //workaround.
         dataProvider.flush();
         dataProvider.refresh();
     }
@@ -205,6 +207,7 @@ public class ProjectStructurePresenter
 
                     ProjectStructurePresenter.this.model = new ProjectStructureModel();
                     view.getDataView().setMode( ProjectStructureDataView.ViewMode.CREATE_STRUCTURE );
+                    view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
                     view.setModel( ProjectStructurePresenter.this.model );
                     view.setModulesViewVisible( false );
                     pathToProjectStructure = null;
@@ -212,35 +215,31 @@ public class ProjectStructurePresenter
                 } else if ( model.isMultiModule() ) {
 
                     view.getDataView().setMode( ProjectStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT );
+                    view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
                     view.setModel( model );
                     view.setModulesViewVisible( true );
 
                     pathToProjectStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getPathToPOM() );
 
-                    //TODO refactor this modules loading.
-                    if ( model.getModules() != null ) {
-                        for ( String module : model.getModules() ) {
-                            dataProvider.getList().add( new ProjectModuleRow( module ) );
-                        }
-                        //dataProvider.refresh();
-                    }
+                    updateModulesList( model.getModules() );
 
                 } else if ( model.isSingleProject() ) {
 
                     view.getDataView().setMode( ProjectStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT );
+                    view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
                     view.setModel( model );
                     view.setModulesViewVisible( false );
 
+                    pathToProjectStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getOrphanProjects().get( 0 ).getPomXMLPath() );
+
                 } else {
-                    //TODO, define backward compatibility
-                    //we are opening the project structure for a repository with N > 1 orphan projects.
-                    //likely this repository is from a previous version.
-                    String message = "Current repository seems to be a Repository created with a KIE workbench previous version.\n";
-                    message += "The following projects where found.\n\n:";
-                    for ( Project project : model.getOrphanProjects() ) {
-                        message += ( project.getProjectName() + "\n" );
-                    }
-                    Window.alert( message );
+
+                    view.getDataView().setMode( ProjectStructureDataView.ViewMode.EDIT_UNMANAGED_REPOSITORY );
+                    view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
+                    view.setModulesViewVisible( true );
+
+                    view.setModel( model );
+                    updateProjectsList( model.getOrphanProjects() );
                 }
 
                 addStructureChangeListeners();
@@ -255,11 +254,10 @@ public class ProjectStructurePresenter
     }
 
     private void initProjectStructure() {
-        //TODO add parameters validation, and a callback or event observer in order to
-        //know when a project was created.
+        //TODO add parameters validation
 
         if ( view.getDataView().isMultiModule() ) {
-            view.showBusyIndicator( "Creating project structure" );
+            view.showBusyIndicator( Constants.INSTANCE.CreatingProjectStructure() );
             projectStructureService.call( new RemoteCallback<Path>() {
 
                 @Override
@@ -273,56 +271,56 @@ public class ProjectStructurePresenter
                     view.getDataView().getVersionId() ),
                     this.repository );
         } else {
-            //TODO, in order to know the project creation status a callback could be added to the wizzard.
-            //this will let us know if the wizzard was canceled or if the project was successfully created.
-            //at the moment if the single project was created the ProjectCreation event will be raized anyway,
-            //and the ProjectContext will be automatically updated.
-            //So we can still reload the ProjectStructure data when a project change is detected.
             wizzard.setContent( null, null, null);
-            wizzard.start();
+            wizzard.start( new Callback<Project>() {
+                @Override public void callback( Project result ) {
+                    lastAddedModule = result;
+                    if ( result != null ) {
+                        init();
+                    }
+                }
+            }, false);
         }
     }
 
     private void updateEditorTitle() {
-        //TODO create missing constants.
+
         if ( repository == null ) {
 
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                    "A repository has not been selected." ) );
+                    Constants.INSTANCE.RepositoryNotSelected() ) );
 
         } else if ( model == null ) {
 
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.ProjectStructureWithName( this.repository.getAlias() ) ) );
+                    Constants.INSTANCE.ProjectStructureWithName( repository.getAlias() ) ) );
 
         } else if ( model.isMultiModule() ) {
 
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.ProjectStructureWithName( this.repository.getAlias() + "- > " +
+                    Constants.INSTANCE.ProjectStructureWithName( repository.getAlias() + "- > " +
                             model.getPOM().getGav().getArtifactId() + ":"
                             + model.getPOM().getGav().getGroupId() + ":"
                             + model.getPOM().getGav().getVersion() ) ) );
 
         } else if ( model.isSingleProject() ) {
-            //TODO, review screen naming for this case.
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.ProjectStructureWithName( this.repository.getAlias() + "- > " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
+                    Constants.INSTANCE.ProjectStructureWithName( repository.getAlias() + "- > " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
 
         } else {
-            //TODO, review screen naming for this case.
-            //it's a repository in the old format, just print the repository name.
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.ProjectStructureWithName( this.repository.getAlias() ) ) );
+                    Constants.INSTANCE.UnmanagedRepository( repository.getAlias() ) ) );
         }
     }
 
     private void addStructureChangeListeners() {
 
         if ( pathToProjectStructure != null ) {
+
             pathToProjectStructure.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
                 @Override
                 public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
@@ -339,7 +337,7 @@ public class ProjectStructurePresenter
                             new Command() {
                                 @Override
                                 public void execute() {
-                                    disableMenus();
+                                    enableActions( false );
                                 }
                             },
                             new Command() {
@@ -360,7 +358,7 @@ public class ProjectStructurePresenter
                             new Command() {
                                 @Override
                                 public void execute() {
-                                    disableMenus();
+                                    enableActions( false );
                                 }
                             },
                             new Command() {
@@ -375,13 +373,31 @@ public class ProjectStructurePresenter
         }
     }
 
-    private void disableMenus() {
+    private void updateModulesList( List<String> modules ) {
+        if ( modules != null ) {
+            for ( String module : model.getModules() ) {
+                dataProvider.getList().add( new ProjectModuleRow( module ) );
+            }
+        }
+    }
 
+    private void updateProjectsList( List<Project> projects ) {
+        if ( projects != null ) {
+            for ( Project project : projects ) {
+                dataProvider.getList().add( new ProjectModuleRow( project.getProjectName() ) );
+            }
+        }
+    }
+
+    private void enableActions( boolean value ) {
+        view.getDataView().enableActions( value );
+        view.getModulesView().enableActions( value );
     }
 
     private void clearView() {
         view.getDataView().clear();
         dataProvider.getList().clear();
+        enableActions( true );
     }
 
     /**
@@ -390,13 +406,23 @@ public class ProjectStructurePresenter
 
     @Override
     public void onAddModule() {
-        wizzard.setContent( null,
-                view.getDataView().getGroupId(),
-                view.getDataView().getVersionId() );
+        if ( model.isSingleProject() || model.isMultiModule() ) {
+            wizzard.setContent( null,
+                    view.getDataView().getGroupId(),
+                    view.getDataView().getVersionId() );
+        } else if ( model.isOrphanProjects() ) {
+            wizzard.setContent( null,
+                    null,
+                    null );
+
+        }
+
         wizzard.start( new Callback<Project>() {
             @Override public void callback( Project result ) {
                 lastAddedModule = result;
-                init();
+                if ( result != null ) {
+                    init();
+                }
             }
         }, false );
     }
@@ -414,13 +440,11 @@ public class ProjectStructurePresenter
     @Override
     public void onEditModule( ProjectModuleRow moduleRow ) {
 
-        Project module;
-        if ( model != null &&
-                model.getModulesProject() != null &&
-                (( module = model.getModulesProject().get( moduleRow.getName() )) != null ) ) {
-                //TODO check if there's a better implementation for this projectScreen opening.
-                contextChangeEvent.fire( new ProjectContextChangeEvent( workbenchContext.getActiveOrganizationalUnit(), repository, module ) );
-                placeManager.goTo( "projectScreen" );
+        Project project = getSelectedModule( moduleRow.getName() );
+        if ( project != null ) {
+            //TODO check if there's a better implementation for this projectScreen opening.
+            contextChangeEvent.fire( new ProjectContextChangeEvent( workbenchContext.getActiveOrganizationalUnit(), repository, project ) );
+            placeManager.goTo( "projectScreen" );
         }
     }
 
@@ -451,13 +475,52 @@ public class ProjectStructurePresenter
 
     @Override
     public void onSaveProjectStructure() {
+
+        if ( model.getPOM() != null ) {
+
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                    Constants.INSTANCE.ConfirmSaveProjectStructure(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            saveProjectStructure();
+                        }
+                    },
+                    CommonConstants.INSTANCE.YES(),
+                    ButtonType.PRIMARY,
+                    IconType.SAVE,
+                    new Command() {
+                        @Override public void execute() {
+                            //do nothing
+                        }
+                    },
+                    null,
+                    ButtonType.DEFAULT,
+                    null,
+                    new Command() {
+                        @Override public void execute() {
+                            //do nothing.
+                        }
+                    },
+                    null,
+                    ButtonType.DEFAULT,
+                    null
+            );
+
+            yesNoCancelPopup.setCloseVisible( false );
+            yesNoCancelPopup.show();
+        }
+    }
+
+    private void saveProjectStructure() {
+
         if ( model.getPOM() != null ) {
 
             model.getPOM().getGav().setGroupId( view.getDataView().getGroupId() );
             model.getPOM().getGav().setArtifactId( view.getDataView().getArtifactId() );
             model.getPOM().getGav().setVersion( view.getDataView().getVersionId() );
 
-            view.showBusyIndicator( "Saving" );
+            view.showBusyIndicator( Constants.INSTANCE.Saving() );
             projectStructureService.call( new RemoteCallback<Void>() {
                 @Override
                 public void callback( Void response ) {
@@ -470,11 +533,47 @@ public class ProjectStructurePresenter
 
     @Override
     public void onConvertToMultiModule() {
+
+        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                Constants.INSTANCE.ConfirmConvertToMultiModuleStructure(),
+                new Command() {
+                    @Override
+                    public void execute() {
+                        convertToMultiModule();
+                    }
+                },
+                CommonConstants.INSTANCE.YES(),
+                ButtonType.PRIMARY,
+                IconType.SAVE,
+                new Command() {
+                    @Override public void execute() {
+                        //do nothing
+                    }
+                },
+                null,
+                ButtonType.DEFAULT,
+                null,
+                new Command() {
+                    @Override public void execute() {
+                        //do nothing.
+                    }
+                },
+                null,
+                ButtonType.DEFAULT,
+                null
+        );
+
+        yesNoCancelPopup.setCloseVisible( false );
+        yesNoCancelPopup.show();
+
+    }
+
+    private void convertToMultiModule() {
         Project project = model.getOrphanProjects().get( 0 );
         POM pom = model.getOrphanProjectsPOM().get( project.getSignatureId() );
         GAV gav = new GAV( view.getDataView().getGroupId(), view.getDataView().getArtifactId(), view.getDataView().getVersionId() );
 
-        view.showBusyIndicator( "Converting to multi module project" );
+        view.showBusyIndicator( Constants.INSTANCE.ConvertingToMultiModuleProject() );
         projectStructureService.call( new RemoteCallback<Path>() {
             @Override
             public void callback( Path response ) {
@@ -492,16 +591,25 @@ public class ProjectStructurePresenter
     }
 
     private void deleteSelectedModule( String module ) {
-        final Project project = model.getModulesProject() != null ? model.getModulesProject().get( module ) : null;
+
+        final Project project = getSelectedModule( module );
+        String message = null;
+
         if ( project != null ) {
 
+            if ( model.isSingleProject() || model.isMultiModule() ) {
+                message = Constants.INSTANCE.ConfirmModuleDeletion( module );
+            } else if ( model.isOrphanProjects() ) {
+                message = Constants.INSTANCE.ConfirmProjectDeletion( module );
+            }
+
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                    "Are you sure that you want to remove module: " + module + " from project?",
+                    message,
                     new Command() {
                         @Override
                         public void execute() {
 
-                            view.showBusyIndicator( "Deleting" );
+                            view.showBusyIndicator( Constants.INSTANCE.Deleting() );
                             projectStructureService.call( new RemoteCallback<Void>() {
                                 @Override
                                 public void callback( Void response ) {
@@ -535,7 +643,23 @@ public class ProjectStructurePresenter
 
             yesNoCancelPopup.setCloseVisible( false );
             yesNoCancelPopup.show();
-
         }
+    }
+
+    private Project getSelectedModule( String name ) {
+        Project project = null;
+        if ( model != null && name != null ) {
+            if ( model.isSingleProject() || model.isMultiModule() ) {
+                project = model.getModulesProject() != null ? model.getModulesProject().get( name ) : null;
+            } else if ( model.isOrphanProjects() ) {
+                for ( Project _project : model.getOrphanProjects() ) {
+                    if ( name.equals( _project.getProjectName() ) ) {
+                        project = _project;
+                        break;
+                    }
+                }
+            }
+        }
+        return project;
     }
 }

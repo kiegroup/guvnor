@@ -77,6 +77,10 @@ public class ProjectStructureModel {
         return orphanProjects != null && orphanProjects.size() == 1;
     }
 
+    public boolean isOrphanProjects() {
+        return orphanProjects != null && orphanProjects.size() > 1;
+    }
+
     public List<Project> getOrphanProjects() {
         return orphanProjects;
     }

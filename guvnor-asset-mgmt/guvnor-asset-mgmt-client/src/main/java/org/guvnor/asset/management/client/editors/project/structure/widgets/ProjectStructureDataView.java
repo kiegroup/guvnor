@@ -8,7 +8,8 @@ public interface ProjectStructureDataView extends IsWidget {
     enum ViewMode {
         CREATE_STRUCTURE,
         EDIT_SINGLE_MODULE_PROJECT,
-        EDIT_MULTI_MODULE_PROJECT
+        EDIT_MULTI_MODULE_PROJECT,
+        EDIT_UNMANAGED_REPOSITORY
     }
 
     interface Presenter {
@@ -61,5 +62,7 @@ public interface ProjectStructureDataView extends IsWidget {
     boolean isMultiModule();
 
     void clear();
+
+    void enableActions( boolean value );
 
 }

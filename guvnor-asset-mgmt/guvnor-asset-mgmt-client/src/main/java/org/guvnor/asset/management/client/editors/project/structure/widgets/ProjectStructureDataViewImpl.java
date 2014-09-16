@@ -166,16 +166,17 @@ public class ProjectStructureDataViewImpl extends Composite
 
         if ( mode == ViewMode.CREATE_STRUCTURE ) {
 
-            projectTypeLabel.setText( "Project Structure wasn't initialized for current repository." );
+            projectTypeLabel.setText( Constants.INSTANCE.Project_structure_view_create_projectTypeLabel() );
 
-            isSingleModuleRadioButton.setText( "Create a Single Project Structure." );
-            isSingleModuleRadioButtonHelpInline.setText( "A single project structure will permit one project per repository." );
+            isSingleModuleRadioButton.setText( Constants.INSTANCE.Project_structure_view_create_isSingleModuleRadioButton() );
+            isSingleModuleRadioButtonHelpInline.setText( Constants.INSTANCE.Project_structure_view_create_isSingleModuleRadioButtonHelpInline() );
 
-            isMultiModuleRadioButton.setText( "Create a Multi Module Project Structure." );
-            isMultiModuleRadioButtonHelpInline.setText( "A multi module project structure will create a parent pom.xml file that could contain multiple modules." );
-            groupIdTextBoxHelpInline.setText( "GroupId for the parent pom.xml." );
-            artifactIdTextBoxHelpInline.setText( "ArtifactId for the parent pom.xml." );
-            versionTextBoxHelpInline.setText( "Version number for the parent pom.xml." );
+            isMultiModuleRadioButton.setText( Constants.INSTANCE.Project_structure_view_create_isMultiModuleRadioButton() );
+            isMultiModuleRadioButtonHelpInline.setText( Constants.INSTANCE.Project_structure_view_create_isMultiModuleRadioButtonHelpInline() );
+
+            groupIdTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_create_groupIdTextBoxHelpInline() );
+            artifactIdTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_create_artifactIdTextBoxHelpInline() );
+            versionTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_create_versionTextBoxHelpInline() );
 
             initProjectStructureButton.setText( Constants.INSTANCE.InitProjectStructure() );
             initProjectStructureButton.setVisible( true );
@@ -185,44 +186,64 @@ public class ProjectStructureDataViewImpl extends Composite
 
         } else if ( mode == ViewMode.EDIT_SINGLE_MODULE_PROJECT ) {
 
-            projectTypeLabel.setText( "Project Structure was initialized as Single Project Structure." );
+            projectTypeLabel.setText( Constants.INSTANCE.Project_structure_view_edit_single_projectTypeLabel() );
 
-            isSingleModuleRadioButton.setText( "Single Project Structure is selected." );
-            isSingleModuleRadioButtonHelpInline.setText( "A single project structure will permit one project per repository." );
+            isSingleModuleRadioButton.setText( Constants.INSTANCE.Project_structure_view_edit_single_isSingleModuleRadioButton() );
+            isSingleModuleRadioButtonHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_single_isSingleModuleRadioButtonHelpInline() );
 
-            isMultiModuleRadioButton.setText( "Convert to a Multi Module Project Structure." );
-            isMultiModuleRadioButtonHelpInline.setText( "A multi module project structure will create a parent pom.xml file that could contain multiple modules." );
-            groupIdTextBoxHelpInline.setText( "GroupId for the parent pom.xml." );
-            artifactIdTextBoxHelpInline.setText( "ArtifactId for the parent pom.xml." );
-            versionTextBoxHelpInline.setText( "Version number for the parent pom.xml." );
+            isMultiModuleRadioButton.setText( Constants.INSTANCE.Project_structure_view_edit_single_isMultiModuleRadioButton() );
+            isMultiModuleRadioButtonHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_single_isMultiModuleRadioButtonHelpInline() );
+            groupIdTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_single_groupIdTextBoxHelpInline() );
+            artifactIdTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_single_artifactIdTextBoxHelpInline() );
+            versionTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_single_versionTextBoxHelpInline() );
 
             enableSingleModeParams();
 
-            initProjectStructureButton.setText( "Edit project" );
+            initProjectStructureButton.setText( Constants.INSTANCE.EditProject() );
             initProjectStructureButton.setVisible( true );
 
             setCurrentSingleProjectInfoVisible( true );
 
-        } else {
+        } else if ( mode == ViewMode.EDIT_MULTI_MODULE_PROJECT ) {
 
-            projectTypeLabel.setText( "Project Structure was initialized as Multi Module Project Structure." );
+            projectTypeLabel.setText( Constants.INSTANCE.Project_structure_view_edit_multi_projectTypeLabel() );
 
             enableMultiModeParams();
 
             isSingleModuleRadioButton.setVisible( false );
             isSingleModuleRadioButtonHelpInline.setVisible( false );
 
-            isMultiModuleRadioButton.setText( "Multi Module Project Structure." );
-            isMultiModuleRadioButtonHelpInline.setText( "A multi module project structure will create a parent pom.xml file that could contain multiple modules." );
-            groupIdTextBoxHelpInline.setText( "GroupId for the parent pom.xml." );
-            artifactIdTextBoxHelpInline.setText( "ArtifactId for the parent pom.xml." );
-            versionTextBoxHelpInline.setText( "Version number for the parent pom.xml." );
+            isMultiModuleRadioButton.setText( Constants.INSTANCE.Project_structure_view_edit_multi_isMultiModuleRadioButton() );
+            isMultiModuleRadioButtonHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_multi_isMultiModuleRadioButtonHelpInline() );
+            groupIdTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_multi_groupIdTextBoxHelpInline() );
+            artifactIdTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_multi_artifactIdTextBoxHelpInline() );
+            versionTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_multi_versionTextBoxHelpInline() );
 
-            initProjectStructureButton.setText( "Save Changes" );
+            initProjectStructureButton.setText( Constants.INSTANCE.SaveChanges() );
 
             setCurrentSingleProjectInfoVisible( false );
-        }
 
+        } else if ( mode == ViewMode.EDIT_UNMANAGED_REPOSITORY ) {
+
+            projectTypeLabel.setText( Constants.INSTANCE.Project_structure_view_edit_unmanaged_projectTypeLabel() );
+
+            //disable single mode fields
+            isSingleModuleRadioButton.setVisible( false );
+            isSingleModuleRadioButtonHelpInline.setVisible( false );
+            setCurrentSingleProjectInfoVisible( false );
+
+            //disable multi mode fields.
+            isMultiModuleRadioButton.setVisible( false );
+            isMultiModuleRadioButtonHelpInline.setVisible( false );
+            groupIdTextBox.setVisible( false );
+            groupIdTextBoxHelpInline.setVisible( false );
+            artifactIdTextBox.setVisible( false );
+            artifactIdTextBoxHelpInline.setVisible( false );
+            versionTextBox.setVisible( false );
+            versionTextBoxHelpInline.setVisible( false );
+
+            initProjectStructureButton.setVisible( false );
+        }
     }
 
     public void enableMultiModeParams() {
@@ -240,6 +261,13 @@ public class ProjectStructureDataViewImpl extends Composite
         groupIdTextBox.setText( null );
         artifactIdTextBox.setText( null );
         versionTextBox.setText( null );
+    }
+
+    @Override
+    public void enableActions( boolean value ) {
+        isSingleModuleRadioButton.setEnabled( value );
+        isMultiModuleRadioButton.setEnabled( value );
+        initProjectStructureButton.setEnabled( value );
     }
 
     private void enableModeParams( boolean isSingle ) {
@@ -297,7 +325,7 @@ public class ProjectStructureDataViewImpl extends Composite
         enableMultiModeParams();
         if ( mode == ViewMode.EDIT_SINGLE_MODULE_PROJECT ) {
             initProjectStructureButton.setVisible( true );
-            initProjectStructureButton.setText( "Convert to Multi Module Project" );
+            initProjectStructureButton.setText( Constants.INSTANCE.ConvertToMultiModule() );
 
             groupIdTextBox.setText( singleProjectGroupIdTextBox.getText() );
             versionTextBox.setText( singleProjectVersionTextBox.getText() );
@@ -310,7 +338,7 @@ public class ProjectStructureDataViewImpl extends Composite
         enableSingleModeParams();
         if ( mode == ViewMode.EDIT_SINGLE_MODULE_PROJECT ) {
             initProjectStructureButton.setVisible( true );
-            initProjectStructureButton.setText( "Edit project" );
+            initProjectStructureButton.setText( Constants.INSTANCE.EditProject() );
         }
     }
 }

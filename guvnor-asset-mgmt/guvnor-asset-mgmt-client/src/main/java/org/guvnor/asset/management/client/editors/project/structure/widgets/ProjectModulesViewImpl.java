@@ -33,6 +33,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.client.tables.SimpleTable;
+import org.guvnor.asset.management.client.i18n.Constants;
 
 public class ProjectModulesViewImpl extends Composite
         implements ProjectModulesView {
@@ -50,7 +51,11 @@ public class ProjectModulesViewImpl extends Composite
     @UiField
     Button addModuleButton;
 
+    private Column<ProjectModuleRow, ?> modulesColumn;
+
     private Presenter presenter;
+
+    private boolean actionsEnabled = true;
 
     public ProjectModulesViewImpl() {
         addModuleColumn();
@@ -67,17 +72,38 @@ public class ProjectModulesViewImpl extends Composite
         presenter.addDataDisplay( modulesTable );
     }
 
+    @Override
+    public void setMode( ViewMode mode ) {
+        if ( mode == ViewMode.PROJECTS_VIEW ) {
+            addModuleButton.setText( Constants.INSTANCE.NewProject() );
+            if ( modulesColumn != null ) {
+                modulesColumn.setDataStoreName( Constants.INSTANCE.Project() );
+            }
+        } else {
+            addModuleButton.setText( Constants.INSTANCE.AddModule() );
+            if ( modulesColumn != null ) {
+                modulesColumn.setDataStoreName( Constants.INSTANCE.Module() );
+            }
+        }
+    }
+
+    @Override
+    public void enableActions( boolean value ) {
+        addModuleButton.setEnabled( value );
+        actionsEnabled = value;
+    }
+
     private void addModuleColumn() {
 
-        //TODO add i18n constants.
-        Column<ProjectModuleRow, ?> column = new Column<ProjectModuleRow, String>( new TextCell() ) {
+        //Column<ProjectModuleRow, ?> column
+        modulesColumn = new Column<ProjectModuleRow, String>( new TextCell() ) {
             @Override
             public String getValue( ProjectModuleRow row ) {
                 return row.getName();
             }
         };
-        modulesTable.addColumn( column, "Module" );
-        modulesTable.setColumnWidth( column,
+        modulesTable.addColumn( modulesColumn, Constants.INSTANCE.Module() );
+        modulesTable.setColumnWidth( modulesColumn,
                 70,
                 Style.Unit.PCT );
 
@@ -92,14 +118,14 @@ public class ProjectModulesViewImpl extends Composite
         final Column<ProjectModuleRow, String> deleteModuleColumn = new Column<ProjectModuleRow, String>( deleteModuleButton ) {
             @Override
             public String getValue( final ProjectModuleRow moduleRow ) {
-                return "Delete";
+                return Constants.INSTANCE.DeleteModule();
             }
         };
         deleteModuleColumn.setFieldUpdater( new FieldUpdater<ProjectModuleRow, String>() {
             public void update( final int index,
                     final ProjectModuleRow moduleRow,
                     final String value ) {
-                if ( presenter != null ) {
+                if ( presenter != null && actionsEnabled ) {
                     presenter.onDeleteModule( moduleRow );
                 }
             }
@@ -114,21 +140,21 @@ public class ProjectModulesViewImpl extends Composite
 
     private void addEditModuleColumn() {
 
-        //TODO add i18n constants
+
         final ButtonCell editModuleButton = new ButtonCell( ButtonSize.SMALL );
         editModuleButton.setType( ButtonType.PRIMARY );
         editModuleButton.setIcon( IconType.EDIT );
         final Column<ProjectModuleRow, String> editModuleColumn = new Column<ProjectModuleRow, String>( editModuleButton ) {
             @Override
             public String getValue( final ProjectModuleRow moduleRow ) {
-                return "Edit";
+                return Constants.INSTANCE.EditModule();
             }
         };
         editModuleColumn.setFieldUpdater( new FieldUpdater<ProjectModuleRow, String>() {
             public void update( final int index,
                     final ProjectModuleRow moduleRow,
                     final String value ) {
-                if ( presenter != null ) {
+                if ( presenter != null && actionsEnabled ) {
                     presenter.onEditModule( moduleRow );
                 }
             }

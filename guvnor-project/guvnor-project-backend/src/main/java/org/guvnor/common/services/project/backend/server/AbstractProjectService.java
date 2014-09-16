@@ -24,12 +24,14 @@ import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.LinkedDirectoryFilter;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
@@ -90,6 +92,9 @@ public abstract class AbstractProjectService<T extends Project>
     private Event<DeleteProjectEvent> deleteProjectEvent;
 
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache;
+
+    @Inject
+    private CommentedOptionFactory optionsFactory;
 
     private Identity identity;
     protected SessionInfo sessionInfo;
@@ -687,22 +692,24 @@ public abstract class AbstractProjectService<T extends Project>
 
     @Override
     public void delete( final Path pathToPomXML,
-                        final String comment ) {
+            final String comment ) {
         try {
             final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
             final Project project2Delete = resolveProject( Paths.convert( projectDirectory ) );
 
-            Path parentPom = Paths.convert( projectDirectory.getParent().resolve( "pom.xml" )  );
-            POM parent = pomService.load(parentPom);
+            final org.uberfire.java.nio.file.Path parentPom = projectDirectory.getParent().resolve( "pom.xml" );
+            POM parent = null;
+            if ( ioService.exists( parentPom ) ) {
+                parent = pomService.load( Paths.convert( parentPom ) );
+            }
 
-
-            ioService.delete( projectDirectory, StandardDeleteOption.NON_EMPTY_DIRECTORIES, new CommentedOption( getSessionId(), getIdentityName(), null, comment ) );
+            ioService.delete( projectDirectory, StandardDeleteOption.NON_EMPTY_DIRECTORIES, optionsFactory.makeCommentedOption( comment, identity, sessionInfo ) );
             deleteProjectEvent.fire( new DeleteProjectEvent( project2Delete ) );
 
-            if(parent != null){
-              parent.setMultiModule(true);
-              parent.getModules().remove(project2Delete.getProjectName());
-              pomService.save(parentPom, parent, null, "Removing child module "+project2Delete.getProjectName());
+            if ( parent != null ) {
+                parent.setMultiModule( true );
+                parent.getModules().remove( project2Delete.getProjectName() );
+                pomService.save( Paths.convert( parentPom), parent, null, "Removing child module " + project2Delete.getProjectName() );
             }
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );

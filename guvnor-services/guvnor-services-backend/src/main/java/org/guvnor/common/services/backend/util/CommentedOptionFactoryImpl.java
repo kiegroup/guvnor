@@ -12,6 +12,10 @@ import org.uberfire.security.Identity;
 @ApplicationScoped
 public class CommentedOptionFactoryImpl implements CommentedOptionFactory {
 
+    private static final String UNKNOWN_IDENTITY = "unknown";
+
+    private static final String UNKNOWN_SESSION = "--";
+
     @Inject
     private Identity identity;
 
@@ -20,29 +24,33 @@ public class CommentedOptionFactoryImpl implements CommentedOptionFactory {
 
     @Override
     public CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = getIdentityName();
+        return makeCommentedOption( commitMessage, identity, sessionInfo );
+    }
+
+    @Override
+    public CommentedOption makeCommentedOption( final String commitMessage, final Identity identity, final SessionInfo sessionInfo ) {
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( getSessionId(),
-                name,
+        final CommentedOption co = new CommentedOption( getSessionId( sessionInfo ),
+                getIdentityName( identity ),
                 null,
                 commitMessage,
                 when );
         return co;
     }
 
-    protected String getIdentityName() {
+    protected String getIdentityName( Identity identity ) {
         try {
-            return identity.getName();
+            return identity != null ? identity.getName() : UNKNOWN_IDENTITY;
         } catch ( ContextNotActiveException e ) {
-            return "unknown";
+            return UNKNOWN_IDENTITY;
         }
     }
 
-    protected String getSessionId() {
+    protected String getSessionId( SessionInfo sessionInfo ) {
         try {
-            return sessionInfo.getId();
+            return sessionInfo != null ? sessionInfo.getId() : UNKNOWN_SESSION;
         } catch ( ContextNotActiveException e ) {
-            return "--";
+            return UNKNOWN_SESSION;
         }
     }
 

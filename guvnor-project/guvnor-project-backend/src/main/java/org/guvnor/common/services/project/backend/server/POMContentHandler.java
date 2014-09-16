@@ -85,10 +85,10 @@ public class POMContentHandler {
                 parent.setArtifactId(pom.getParent().getArtifactId());
                 parent.setVersion(pom.getParent().getVersion());
                 model.setParent(parent);
-            } else {
-                model.setGroupId(pom.getGav().getGroupId());
-                model.setVersion(pom.getGav().getVersion());
             }
+            model.setGroupId(pom.getGav().getGroupId());
+            model.setVersion(pom.getGav().getVersion());
+
             Build build = model.getBuild();
             if (build == null) {
                 build = new Build();

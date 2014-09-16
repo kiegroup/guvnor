@@ -74,7 +74,13 @@ public interface Constants extends Messages {
     
     String ProjectStructureWithName(String string);
 
+    String UnmanagedRepository(String repository);
+
     String Save();
+
+    String Saving();
+
+    String Deleting();
 
     String ProjectStructure();
     
@@ -83,12 +89,80 @@ public interface Constants extends Messages {
     String ArtifactIdHolder();
     
     String GroupIdHolder();
-    
-    String InitProjectStructure();
+
+    String CreatingProjectStructure();
+
+    String ConvertingToMultiModuleProject();
     
     String AddModule();
+
+    String DeleteModule();
+
+    String EditModule();
     
     String Modules();
+
+    String Module();
+
+    String NewProject();
+
+    String Projects();
+
+    String Project();
+
+    String RepositoryNotSelected();
+
+    String ConfirmModuleDeletion(String module);
+
+    String ConfirmProjectDeletion(String project);
+
+    String ConfirmSaveProjectStructure();
+
+    String ConfirmConvertToMultiModuleStructure();
+
+
+    //Project structure data widget constants
+
+    String InitProjectStructure();
+
+    String EditProject();
+
+    String SaveChanges();
+
+    String ConvertToMultiModule();
+
+    //create
+    String Project_structure_view_create_projectTypeLabel();
+    String Project_structure_view_create_isSingleModuleRadioButton();
+    String Project_structure_view_create_isSingleModuleRadioButtonHelpInline();
+    String Project_structure_view_create_isMultiModuleRadioButton();
+    String Project_structure_view_create_isMultiModuleRadioButtonHelpInline();
+    String Project_structure_view_create_groupIdTextBoxHelpInline();
+    String Project_structure_view_create_artifactIdTextBoxHelpInline();
+    String Project_structure_view_create_versionTextBoxHelpInline();
+
+    //single module
+    String Project_structure_view_edit_single_projectTypeLabel();
+    String Project_structure_view_edit_single_isSingleModuleRadioButton();
+    String Project_structure_view_edit_single_isSingleModuleRadioButtonHelpInline();
+    String Project_structure_view_edit_single_isMultiModuleRadioButton();
+    String Project_structure_view_edit_single_isMultiModuleRadioButtonHelpInline();
+    String Project_structure_view_edit_single_groupIdTextBoxHelpInline();
+    String Project_structure_view_edit_single_artifactIdTextBoxHelpInline();
+    String Project_structure_view_edit_single_versionTextBoxHelpInline();
+
+    //multi module
+    String Project_structure_view_edit_multi_projectTypeLabel();
+    String Project_structure_view_edit_multi_isMultiModuleRadioButton();
+    String Project_structure_view_edit_multi_isMultiModuleRadioButtonHelpInline();
+    String Project_structure_view_edit_multi_groupIdTextBoxHelpInline();
+    String Project_structure_view_edit_multi_artifactIdTextBoxHelpInline();
+    String Project_structure_view_edit_multi_versionTextBoxHelpInline();
+
+    //unmanaged repo
+    String Project_structure_view_edit_unmanaged_projectTypeLabel();
+
+    //End of Project structure data widget constants
 
     String Current_Version();
 
