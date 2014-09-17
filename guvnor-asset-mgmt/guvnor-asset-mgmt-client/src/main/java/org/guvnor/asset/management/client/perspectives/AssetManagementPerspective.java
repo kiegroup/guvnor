@@ -39,26 +39,12 @@ public class AssetManagementPerspective {
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( PanelType.ROOT_LIST );
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( PanelType.ROOT_TAB );
         p.setName( "Asset Management" );
         p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Repository Configuration" ) ) );
-        
-        final PanelDefinition south = new PanelDefinitionImpl( PanelType.SIMPLE );
-        south.setHeight(300);
-        south.setMinHeight(200);
-        south.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Build Configuration" ) ) );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Promote Changes" ) ) );
+        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Build Management" ) ) );
 
-        p.getRoot().insertChild( Position.SOUTH, south );
-        
-        final PanelDefinition east = new PanelDefinitionImpl( PanelType.SIMPLE );
-        east.setHeight(400);
-        east.setWidth(400);
-        east.setMinWidth(200);
-        east.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Promote Changes" ) ) );
-
-        p.getRoot().insertChild( Position.EAST, east );
-        
-        
         p.setTransient( true );
         return p;
     }
