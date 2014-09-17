@@ -1,10 +1,12 @@
 package org.guvnor.asset.management.backend.command;
 
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,11 +41,22 @@ public class ListCommitsCommand extends AbstractCommand {
 	// remove dot files from sorted commits per file
 	private static final String DEFAULT_FILER_REGEX = ".*\\/\\..*";
 
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     @Override
     public ExecutionResults execute(CommandContext commandContext) throws Exception {
         ExecutionResults results = new ExecutionResults();
         String gitRepo = (String) getParameter(commandContext, "GitRepository");
         String branchName = (String) getParameter(commandContext, "BranchName");
+        String compareToBranchName = (String) getParameter(commandContext, "CompareToBranchName");
+        String fromDate = (String) getParameter(commandContext, "FromDate");
+
+        Date startCommitDate = null;
+        if (fromDate != null) {
+            startCommitDate = dateFormat.parse(fromDate);
+        }
+
+        Set<String> existingCommits = new LinkedHashSet<String>();
 
         BeanManager beanManager = CDIUtils.lookUpBeanManager(commandContext);
         logger.debug("BeanManager " + beanManager);
@@ -54,6 +67,19 @@ public class ListCommitsCommand extends AbstractCommand {
 
         Path branchPath = ioService.get(URI.create("git://" + branchName + "@" + gitRepo));
 
+        if (compareToBranchName != null) {
+            Path compareToBranchPath = ioService.get(URI.create("git://" + compareToBranchName + "@" + gitRepo));
+            VersionAttributeView compareView = ioService.getFileAttributeView( compareToBranchPath, VersionAttributeView.class );
+            List<VersionRecord> compareLogs = compareView.readAttributes().history().records();
+
+            for (VersionRecord ccommit : compareLogs) {
+                if (startCommitDate != null && startCommitDate.after(ccommit.date())) {
+                    break;
+                }
+                existingCommits.add(ccommit.id());
+            }
+        }
+
         VersionAttributeView vinit = ioService.getFileAttributeView( branchPath, VersionAttributeView.class );
         List<VersionRecord> logs = vinit.readAttributes().history().records();
 
@@ -63,8 +89,16 @@ public class ListCommitsCommand extends AbstractCommand {
 
         for (VersionRecord commit : logs) {
 
+            // check if there are already commits in compare to branch
+            if (existingCommits.contains(commit.id())) {
+                continue;
+            }
             String shortMessage = commit.comment();
             Date commitDate = commit.date();
+
+            if (startCommitDate != null && startCommitDate.after(commitDate)) {
+                break;
+            }
 
             List<String> files = getFilesInCommit(fs.gitRepo().getRepository(), JGitUtil.resolveObjectId(fs.gitRepo(), commit.id()));
             CommitInfo commitInfo = new CommitInfo(commit.id(), shortMessage, commit.author(), commitDate, files);
