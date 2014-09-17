@@ -23,6 +23,9 @@ public interface ProjectStructureService {
 
     ProjectStructureModel load( final Repository repository );
 
+
+    ProjectStructureModel load( final Repository repository, boolean includeModules );
+
     void save( final Path pathToPomXML,
             final ProjectStructureModel model,
             final String comment );

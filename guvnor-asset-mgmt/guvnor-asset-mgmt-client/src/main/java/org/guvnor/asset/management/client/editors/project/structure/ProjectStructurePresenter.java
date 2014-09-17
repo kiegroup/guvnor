@@ -40,6 +40,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
+import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -76,6 +77,9 @@ public class ProjectStructurePresenter
 
     @Inject
     private Caller<ProjectStructureService> projectStructureService;
+
+    @Inject
+    private Caller<POMService> pomService;
 
     @Inject
     private Caller<BuildService> buildServiceCaller;
@@ -417,14 +421,50 @@ public class ProjectStructurePresenter
 
         }
 
-        wizzard.start( new Callback<Project>() {
-            @Override public void callback( Project result ) {
-                lastAddedModule = result;
-                if ( result != null ) {
-                    init();
+        wizzard.start( getModuleAddedSuccessCallback(), false );
+    }
+
+    private Callback<Project> getModuleAddedSuccessCallback() {
+        //optimization to avoid reloading the complete model when a module is added.
+        return new Callback<Project>() {
+            @Override
+            public void callback( final Project _project ) {
+                lastAddedModule = _project;
+                if ( _project != null ) {
+                    //A new module was added.
+                    if ( model.isMultiModule() ) {
+                        view.showBusyIndicator( Constants.INSTANCE.Loading() );
+                        projectStructureService.call( new RemoteCallback<ProjectStructureModel>() {
+                            @Override
+                            public void callback( ProjectStructureModel _model ) {
+                                view.hideBusyIndicator();
+                                if ( _model != null ) {
+                                    model.setPOM( _model.getPOM() );
+                                    model.setPOMMetaData( _model.getPOMMetaData() );
+                                    model.setModules( _model.getModules() );
+                                    model.getModulesProject().put( _project.getProjectName(), _project );
+                                    addToModulesList( _project );
+                                }
+                            }
+                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository, false );
+
+                    } else if ( model.isOrphanProjects() ) {
+                        view.showBusyIndicator( Constants.INSTANCE.Loading() );
+                        pomService.call( new RemoteCallback<POM>() {
+                            @Override
+                            public void callback( POM _pom ) {
+                                view.hideBusyIndicator();
+                                model.getOrphanProjects().add( _project );
+                                model.getOrphanProjectsPOM().put( _project.getSignatureId(), _pom );
+                                addToModulesList( _project );
+                            }
+                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( _project.getPomXMLPath() );
+                    } else {
+                        init();
+                    }
                 }
             }
-        }, false );
+        };
     }
 
     @Override
@@ -434,7 +474,99 @@ public class ProjectStructurePresenter
 
     @Override
     public void onDeleteModule( ProjectModuleRow moduleRow ) {
-        deleteSelectedModule( moduleRow.getName() );
+
+        final Project project = getSelectedModule( moduleRow.getName() );
+        String message = null;
+
+        if ( project != null ) {
+
+            if ( model.isSingleProject() || model.isMultiModule() ) {
+                message = Constants.INSTANCE.ConfirmModuleDeletion( moduleRow.getName() );
+            } else if ( model.isOrphanProjects() ) {
+                message = Constants.INSTANCE.ConfirmProjectDeletion( moduleRow.getName() );
+            }
+
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                    message,
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            deleteSelectedModule( project );
+                        }
+                    },
+                    CommonConstants.INSTANCE.YES(),
+                    ButtonType.DANGER,
+                    IconType.MINUS_SIGN,
+                    new Command() {
+                        @Override public void execute() {
+                            //do nothing
+                        }
+                    },
+                    null,
+                    ButtonType.DEFAULT,
+                    null,
+                    new Command() {
+                        @Override public void execute() {
+                            //do nothing.
+                        }
+                    },
+                    null,
+                    ButtonType.DEFAULT,
+                    null
+            );
+
+            yesNoCancelPopup.setCloseVisible( false );
+            yesNoCancelPopup.show();
+        }
+    }
+
+    private void deleteSelectedModule( final Project project ) {
+
+        view.showBusyIndicator( Constants.INSTANCE.Deleting() );
+        projectStructureService.call( getModuleDeletedSuccessCallback( project )
+                , new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( project.getPomXMLPath(), "Module removed" );
+    }
+
+    private RemoteCallback<Void> getModuleDeletedSuccessCallback( final Project _project ) {
+        //optimization to avoid reloading the complete model when a module is added.
+        return new RemoteCallback<Void>() {
+            @Override
+            public void callback( Void response ) {
+                if ( _project != null ) {
+                    //A project was deleted
+                    if ( model.isMultiModule() ) {
+                        view.showBusyIndicator( Constants.INSTANCE.Loading() );
+                        projectStructureService.call( new RemoteCallback<ProjectStructureModel>() {
+                            @Override
+                            public void callback( ProjectStructureModel _model ) {
+                                view.hideBusyIndicator();
+                                if ( _model != null ) {
+                                    model.setPOM( _model.getPOM() );
+                                    model.setPOMMetaData( _model.getPOMMetaData() );
+                                    model.setModules( _model.getModules() );
+                                    model.getModulesProject().remove( _project.getProjectName() );
+                                    removeFromModulesList( _project.getProjectName() );
+                                }
+                            }
+                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository, false );
+
+                    } else if ( model.isOrphanProjects() ) {
+                        view.showBusyIndicator( Constants.INSTANCE.Loading() );
+                        pomService.call( new RemoteCallback<POM>() {
+                            @Override
+                            public void callback( POM _pom ) {
+                                view.hideBusyIndicator();
+                                model.getOrphanProjects().remove( _project );
+                                model.getOrphanProjectsPOM().remove( _project.getSignatureId() );
+                                removeFromModulesList( _project.getProjectName() );
+                            }
+                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( _project.getPomXMLPath() );
+                    } else {
+                        init();
+                    }
+                }
+            }
+        };
     }
 
     @Override
@@ -450,17 +582,17 @@ public class ProjectStructurePresenter
 
     @Override
     public void onArtifactIdChange( String artifactId ) {
-        Window.alert( "onArtifactIdChange: " + artifactId );
+        //Window.alert( "onArtifactIdChange: " + artifactId );
     }
 
     @Override
     public void onGroupIdChange( String groupId ) {
-        Window.alert( "onGroupIdChange: " + groupId );
+        //Window.alert( "onGroupIdChange: " + groupId );
     }
 
     @Override
     public void onVersionChange( String version ) {
-        Window.alert( "onVersionChange: " + version );
+        //Window.alert( "onVersionChange: " + version );
     }
 
     @Override
@@ -590,62 +722,6 @@ public class ProjectStructurePresenter
         }
     }
 
-    private void deleteSelectedModule( String module ) {
-
-        final Project project = getSelectedModule( module );
-        String message = null;
-
-        if ( project != null ) {
-
-            if ( model.isSingleProject() || model.isMultiModule() ) {
-                message = Constants.INSTANCE.ConfirmModuleDeletion( module );
-            } else if ( model.isOrphanProjects() ) {
-                message = Constants.INSTANCE.ConfirmProjectDeletion( module );
-            }
-
-            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                    message,
-                    new Command() {
-                        @Override
-                        public void execute() {
-
-                            view.showBusyIndicator( Constants.INSTANCE.Deleting() );
-                            projectStructureService.call( new RemoteCallback<Void>() {
-                                @Override
-                                public void callback( Void response ) {
-                                    view.hideBusyIndicator();
-                                    //TODO avoid reloading every time.
-                                    init();
-                                }
-                            }, new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( project.getPomXMLPath(), "Module removed" );
-                        }
-                    },
-                    CommonConstants.INSTANCE.YES(),
-                    ButtonType.DANGER,
-                    IconType.MINUS_SIGN,
-                    new Command() {
-                        @Override public void execute() {
-                            //do nothing
-                        }
-                    },
-                    null,
-                    ButtonType.DEFAULT,
-                    null,
-                    new Command() {
-                        @Override public void execute() {
-                            //do nothing.
-                        }
-                    },
-                    null,
-                    ButtonType.DEFAULT,
-                    null
-            );
-
-            yesNoCancelPopup.setCloseVisible( false );
-            yesNoCancelPopup.show();
-        }
-    }
-
     private Project getSelectedModule( String name ) {
         Project project = null;
         if ( model != null && name != null ) {
@@ -661,5 +737,24 @@ public class ProjectStructurePresenter
             }
         }
         return project;
+    }
+
+    private void removeFromModulesList( String module ) {
+        if ( module != null ) {
+            int index = -1;
+            for ( ProjectModuleRow row : dataProvider.getList() ) {
+                index++;
+                if ( module.equals( row.getName() ) ) {
+                    break;
+                }
+            }
+            if ( index >= 0 && ( index == 0 || index < dataProvider.getList().size() ) ) {
+                dataProvider.getList().remove( index );
+            }
+        }
+    }
+
+    private void addToModulesList( final Project project ) {
+        dataProvider.getList().add( new ProjectModuleRow( project.getProjectName() ) );
     }
 }

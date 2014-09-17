@@ -127,6 +127,11 @@ public class ProjectStructureServiceImpl
 
     @Override
     public ProjectStructureModel load( final Repository repository ) {
+        return load( repository, true );
+    }
+
+    @Override
+    public ProjectStructureModel load( final Repository repository, boolean includeModules ) {
 
         ProjectStructureModel model = new ProjectStructureModel();
         Path path = repository.getRoot();
@@ -137,7 +142,7 @@ public class ProjectStructureServiceImpl
             model.setPOMMetaData( metadataService.getMetadata( project.getPomXMLPath() ) );
             model.setPathToPOM( project.getPomXMLPath() );
             model.setModules( new ArrayList<String>( project.getModules() ) );
-            if ( project.getModules() != null ) {
+            if ( includeModules && project.getModules() != null ) {
                 org.uberfire.java.nio.file.Path parentPath = Paths.convert( project.getRootPath() );
                 Project moduleProject;
                 for ( String module : project.getModules() ) {
