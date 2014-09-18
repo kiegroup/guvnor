@@ -1,15 +1,5 @@
 package org.guvnor.structure.backend.repositories.git;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.guvnor.structure.backend.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
@@ -25,111 +15,142 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
 
-import static org.guvnor.structure.repositories.impl.git.GitRepository.*;
-import static org.uberfire.backend.server.util.Paths.*;
-import static org.uberfire.commons.validation.Preconditions.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.net.URI;
+import java.util.*;
+
+import static org.guvnor.structure.repositories.impl.git.GitRepository.SCHEME;
+import static org.uberfire.backend.server.util.Paths.convert;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
 
 @ApplicationScoped
 public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
 
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
     private PasswordService secureService;
 
-    @Override
-    public boolean accept( final ConfigGroup repoConfig ) {
-        checkNotNull( "repoConfig", repoConfig );
-        final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem( EnvironmentParameters.SCHEME );
-        checkNotNull( "schemeConfigItem", schemeConfigItem );
-        return SCHEME.equals( schemeConfigItem.getValue() );
+
+    public GitRepositoryFactoryHelper() {
+    }
+
+    @Inject
+    public GitRepositoryFactoryHelper(@Named("ioStrategy") IOService ioService) {
+        this.ioService = ioService;
     }
 
     @Override
-    public Repository newRepository( final ConfigGroup repoConfig ) {
-        checkNotNull( "repoConfig", repoConfig );
-        final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem( EnvironmentParameters.SCHEME );
-        checkNotNull( "schemeConfigItem", schemeConfigItem );
+    public boolean accept(final ConfigGroup repoConfig) {
+        checkNotNull("repoConfig", repoConfig);
+        final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem(EnvironmentParameters.SCHEME);
+        checkNotNull("schemeConfigItem", schemeConfigItem);
+        return SCHEME.equals(schemeConfigItem.getValue());
+    }
 
-        String branch = repoConfig.getConfigItemValue( EnvironmentParameters.BRANCH );
-        if ( branch == null ) {
+    @Override
+    public Repository newRepository(final ConfigGroup repoConfig) {
+        validate(repoConfig);
+
+        String branch = repoConfig.getConfigItemValue(EnvironmentParameters.BRANCH);
+        if (branch == null) {
             branch = "master";
         }
 
-        final GitRepository repo = new GitRepository( repoConfig.getName() );
-        repo.setCurrentBranch( branch );
+        return newRepository(repoConfig, branch);
+    }
 
-        for ( final ConfigItem item : repoConfig.getItems() ) {
-            if ( item instanceof SecureConfigItem ) {
-                repo.addEnvironmentParameter( item.getName(), secureService.decrypt( item.getValue().toString() ) );
+    public Repository newRepository(ConfigGroup repoConfig, String branch) {
+        validate(repoConfig);
+        checkNotNull("branch", branch);
+
+        final GitRepository repo = new GitRepository(repoConfig.getName());
+        repo.setCurrentBranch(branch);
+
+        for (final ConfigItem item : repoConfig.getItems()) {
+            if (item instanceof SecureConfigItem) {
+                repo.addEnvironmentParameter(item.getName(), secureService.decrypt(item.getValue().toString()));
             } else {
-                repo.addEnvironmentParameter( item.getName(), item.getValue() );
+                repo.addEnvironmentParameter(item.getName(), item.getValue());
             }
         }
 
-        if ( !repo.isValid() ) {
-            throw new IllegalStateException( "Repository " + repoConfig.getName() + " not valid" );
+        if (!repo.isValid()) {
+            throw new IllegalStateException("Repository " + repoConfig.getName() + " not valid");
         }
 
         FileSystem fs = null;
         URI uri = null;
         try {
-            uri = URI.create( repo.getUri() );
-            fs = ioService.newFileSystem( uri, new HashMap<String, Object>( repo.getEnvironment() ) {{
-                if ( !repo.getEnvironment().containsKey( "origin" ) ) {
-                    put( "init", true );
+            uri = URI.create(repo.getUri());
+            fs = ioService.newFileSystem(uri, new HashMap<String, Object>(repo.getEnvironment()) {{
+                if (!repo.getEnvironment().containsKey("origin")) {
+                    put("init", true);
                 }
-            }} );
-        } catch ( final FileSystemAlreadyExistsException e ) {
-            fs = ioService.getFileSystem( uri );
-        } catch ( final Throwable ex ) {
-            throw new RuntimeException( ex.getCause().getMessage(), ex );
+            }});
+        } catch (final FileSystemAlreadyExistsException e) {
+            fs = ioService.getFileSystem(uri);
+        } catch (final Throwable ex) {
+            throw new RuntimeException(ex.getCause().getMessage(), ex);
         }
 
-        Path defaultRoot = fs.getRootDirectories().iterator().next();
-        for ( final Path path : fs.getRootDirectories() ) {
-            String gitBranch = getBranchName( path );
-            if ( gitBranch.equals( branch ) ) {
-                defaultRoot = path;
-                break;
-            }
+        org.uberfire.backend.vfs.Path defaultRoot = convert(fs.getRootDirectories().iterator().next());
+        Map<String, org.uberfire.backend.vfs.Path> branches = getBranches(fs);
+        if (branches.containsKey(branch)) {
+            defaultRoot = branches.get(branch);
         }
-        Set<String> branches = new HashSet<String>();
-        // collect all branches
-        for ( final Path path : fs.getRootDirectories() ) {
-            String gitBranch = getBranchName( path );
-            branches.add( gitBranch );
-        }
-        repo.setBranches( branches );
+        repo.setBranches(branches);
 
-        repo.setRoot( convert( defaultRoot ) );
-        final String[] uris = fs.toString().split( "\\r?\\n" );
-        final List<PublicURI> publicURIs = new ArrayList<PublicURI>( uris.length );
+        repo.setRoot(defaultRoot);
+        final String[] uris = fs.toString().split("\\r?\\n");
+        final List<PublicURI> publicURIs = new ArrayList<PublicURI>(uris.length);
 
-        for ( final String s : uris ) {
-            final int protocolStart = s.indexOf( "://" );
+        for (final String s : uris) {
+            final int protocolStart = s.indexOf("://");
             final PublicURI publicURI;
-            if ( protocolStart > 0 ) {
-                publicURI = new DefaultPublicURI( s.substring( 0, protocolStart ), s );
+            if (protocolStart > 0) {
+                publicURI = new DefaultPublicURI(s.substring(0, protocolStart), s);
             } else {
-                publicURI = new DefaultPublicURI( s );
+                publicURI = new DefaultPublicURI(s);
             }
-            publicURIs.add( publicURI );
+            publicURIs.add(publicURI);
         }
-        repo.setPublicURIs( publicURIs );
+        repo.setPublicURIs(publicURIs);
 
         return repo;
     }
 
-    protected String getBranchName( final Path path ) {
-        String gitBranch = path.toUri().getAuthority();
+    /**
+     * collect all branches
+     *
+     * @param fs
+     * @return
+     */
+    private Map<String, org.uberfire.backend.vfs.Path> getBranches(FileSystem fs) {
+        Map<String, org.uberfire.backend.vfs.Path> branches = new HashMap<String, org.uberfire.backend.vfs.Path>();
+        for (final Path path : fs.getRootDirectories()) {
+            String gitBranch = getBranchName(path);
+            branches.put(gitBranch, convert(path));
+        }
+        return branches;
+    }
 
-        if ( gitBranch.indexOf( "@" ) != -1 ) {
-            return gitBranch.split( "@" )[ 0 ];
+    protected String getBranchName(final Path path) {
+        URI uri = path.toUri();
+        String gitBranch = uri.getAuthority();
+
+        if (gitBranch.indexOf("@") != -1) {
+            return gitBranch.split("@")[0];
         }
 
         return gitBranch;
+    }
+
+    private void validate(ConfigGroup repoConfig) {
+        checkNotNull("repoConfig", repoConfig);
+        final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem(EnvironmentParameters.SCHEME);
+        checkNotNull("schemeConfigItem", schemeConfigItem);
     }
 }

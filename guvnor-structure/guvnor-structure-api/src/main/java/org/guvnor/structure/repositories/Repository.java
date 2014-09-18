@@ -10,6 +10,12 @@ import org.uberfire.commons.data.Cacheable;
 
 public interface Repository extends RuntimeResource, Cacheable {
 
+    /**
+     * Most of the time, this can not be used as an unique ID.
+     * If the Repository has branches each branch has the same alias.
+     *
+     * @return short name for the repository
+     */
     String getAlias();
 
     String getScheme();
@@ -42,4 +48,5 @@ public interface Repository extends RuntimeResource, Cacheable {
      * @return
      */
     String getCurrentBranch();
+
 }

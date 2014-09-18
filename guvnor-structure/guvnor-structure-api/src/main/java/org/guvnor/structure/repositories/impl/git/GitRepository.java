@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -28,7 +26,7 @@ public class GitRepository implements Repository {
     private Collection<String> roles = new ArrayList<String>();
 
     private boolean requiresRefresh = true;
-    private final Set<String> branches = new HashSet<String>();
+    private final Map<String, Path> branches = new HashMap<String, Path>();
     private String currentBranch;
 
     public GitRepository() {
@@ -68,13 +66,16 @@ public class GitRepository implements Repository {
     }
 
     public void setRoot( final Path root ) {
+
+        // TODO: This should also change branch if needed.
+
         this.root = root;
     }
 
 
-    public void setBranches( final Collection<String> branches ) {
+    public void setBranches( final Map<String, Path> branches ) {
         this.branches.clear();
-        this.branches.addAll(branches);
+        this.branches.putAll(branches);
     }
 
     public void setCurrentBranch(String currentBranch) {
@@ -83,7 +84,7 @@ public class GitRepository implements Repository {
 
     @Override
     public Collection<String> getBranches() {
-        return Collections.unmodifiableSet(branches);
+        return Collections.unmodifiableSet(branches.keySet());
     }
 
     @Override
@@ -201,5 +202,10 @@ public class GitRepository implements Repository {
     @Override
     public boolean requiresRefresh() {
         return requiresRefresh;
+    }
+
+    public void changeBranch(String branch) {
+        setCurrentBranch(branch);
+        setRoot(branches.get(branch));
     }
 }
