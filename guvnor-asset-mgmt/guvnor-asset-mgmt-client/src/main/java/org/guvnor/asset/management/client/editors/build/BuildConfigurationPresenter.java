@@ -45,7 +45,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 
 @Dependent
-@WorkbenchScreen(identifier = "Build Configuration")
+@WorkbenchScreen(identifier = "Build Management")
 public class BuildConfigurationPresenter {
 
     private Constants constants = GWT.create(Constants.class);
