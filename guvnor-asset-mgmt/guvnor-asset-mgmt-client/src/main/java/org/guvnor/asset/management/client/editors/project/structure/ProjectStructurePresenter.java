@@ -111,6 +111,8 @@ public class ProjectStructurePresenter
 
     private Project lastAddedModule;
 
+    private Project lastDeletedModule;
+
     private Repository repository;
 
     private ObservablePath pathToProjectStructure;
@@ -175,11 +177,11 @@ public class ProjectStructurePresenter
             this.repository = repository;
             this.project = project;
 
-            if ( lastAddedModule == null || !lastAddedModule.equals( project ) ) {
+            if ( (lastAddedModule == null || !lastAddedModule.equals( project )) && lastDeletedModule == null ) {
                 init();
-            } else {
-                lastAddedModule = null;
             }
+            lastAddedModule = null;
+            lastDeletedModule = null;
         }
     }
 
@@ -523,6 +525,7 @@ public class ProjectStructurePresenter
     private void deleteSelectedModule( final Project project ) {
 
         view.showBusyIndicator( Constants.INSTANCE.Deleting() );
+        lastDeletedModule = project;
         projectStructureService.call( getModuleDeletedSuccessCallback( project )
                 , new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( project.getPomXMLPath(), "Module removed" );
     }
