@@ -16,11 +16,7 @@ import javax.inject.Named;
 import org.guvnor.structure.backend.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.guvnor.structure.repositories.NewRepositoryEvent;
-import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
-import org.guvnor.structure.repositories.RepositoryInfo;
-import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.*;
 import org.guvnor.structure.repositories.impl.PortableVersionRecord;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
@@ -139,7 +135,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                                         final String scheme,
                                         final String alias,
                                         final Map<String, Object> env ) throws RepositoryAlreadyExistsException {
-        final Repository repository = createRepository( scheme, alias, env );
+        final Repository repository = createRepository(scheme, alias, env);
         if ( organizationalUnit != null ) {
             organizationalUnitService.addRepository( organizationalUnit, repository );
         }
@@ -183,7 +179,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     //Save the definition
     private Repository createRepository( final ConfigGroup repositoryConfig ) {
-        final Repository repository = repositoryFactory.newRepository( repositoryConfig );
+        final Repository repository = repositoryFactory.newRepository(repositoryConfig);
         configurationService.addConfiguration( repositoryConfig );
         configuredRepositories.put( repository.getAlias(), repository );
         rootToRepo.put( repository.getRoot(), repository );
@@ -199,7 +195,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public void addRole( Repository repository,
                          String role ) {
-        final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(repository.getAlias());
 
         if ( thisRepositoryConfig != null ) {
             final ConfigItem<List> roles = thisRepositoryConfig.getConfigItem( "security:roles" );
@@ -236,7 +232,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     protected ConfigGroup findRepositoryConfig( final String alias ) {
-        final Collection<ConfigGroup> groups = configurationService.getConfiguration( ConfigType.REPOSITORY );
+        final Collection<ConfigGroup> groups = configurationService.getConfiguration(ConfigType.REPOSITORY);
         if ( groups != null ) {
             for ( ConfigGroup groupConfig : groups ) {
                 if ( groupConfig.getName().equals( alias ) ) {
@@ -249,7 +245,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     @Override
     public void removeRepository( String alias ) {
-        final ConfigGroup thisRepositoryConfig = findRepositoryConfig( alias );
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(alias);
 
         if ( thisRepositoryConfig != null ) {
             configurationService.removeConfiguration( thisRepositoryConfig );
@@ -352,6 +348,14 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     public void updateRegisteredRepositories( @Observes @org.guvnor.structure.backend.config.Repository SystemRepositoryChangedEvent changedEvent ) {
+        flush();
+    }
+
+    public void updateRegisteredRepositories2( @Observes NewBranchEvent changedEvent ) {
+        flush();
+    }
+
+    private void flush() {
         configuredRepositories.clear();
         loadRepositories();
     }
