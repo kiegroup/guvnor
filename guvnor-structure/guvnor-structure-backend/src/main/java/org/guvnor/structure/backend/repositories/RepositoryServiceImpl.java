@@ -31,6 +31,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.workbench.events.ResourceAddedEvent;
 
 import static org.guvnor.structure.backend.repositories.EnvironmentParameters.*;
 import static org.guvnor.structure.server.config.ConfigType.*;
@@ -67,6 +68,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     private Map<String, Repository> configuredRepositories = new HashMap<String, Repository>();
     private Map<Path, Repository> rootToRepo = new HashMap<Path, Repository>();
+
+    @Inject
+    private Event<NewBranchEvent> newBranchEvent;
 
     @SuppressWarnings("unchecked")
     @PostConstruct
@@ -351,8 +355,20 @@ public class RepositoryServiceImpl implements RepositoryService {
         flush();
     }
 
+
     public void updateRegisteredRepositories2( @Observes NewBranchEvent changedEvent ) {
         flush();
+    }
+
+    public void updateRegisteredRepositories3(@Observes ResourceAddedEvent event1) {
+        String uri = event1.getPath().toURI();
+        if (uri.contains("@")) {
+            String alias = uri.substring(uri.indexOf("@") + 1);
+            if (configuredRepositories.containsKey(alias)) {
+                newBranchEvent.fire(new NewBranchEvent());
+//                flush();
+            }
+        }
     }
 
     private void flush() {
