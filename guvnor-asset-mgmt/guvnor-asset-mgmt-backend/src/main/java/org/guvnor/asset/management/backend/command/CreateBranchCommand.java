@@ -6,8 +6,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.guvnor.asset.management.backend.utils.CDIUtils;
 import org.guvnor.asset.management.backend.utils.NamedLiteral;
 import org.guvnor.structure.repositories.NewBranchEvent;
-import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
 import org.slf4j.Logger;
@@ -34,10 +32,6 @@ public class CreateBranchCommand extends AbstractCommand {
         BeanManager beanManager = CDIUtils.lookUpBeanManager(commandContext);
         logger.debug("BeanManager " + beanManager);
 
-        RepositoryService repositoryService = CDIUtils.createBean( RepositoryService.class, beanManager );
-        logger.debug("RepositoryService " + repositoryService );
-        Repository repository = repositoryService.getRepository( gitRepo );
-
         IOService ioService = CDIUtils.createBean(IOService.class, beanManager, new NamedLiteral("ioStrategy"));
         logger.debug("IoService " + ioService);
 
@@ -46,7 +40,7 @@ public class CreateBranchCommand extends AbstractCommand {
 
         ioService.copy(branchOriginPath, branchPath);
 
-        beanManager.fireEvent( new NewBranchEvent( repository, Paths.convert( branchPath ), branchName ) );
+        beanManager.fireEvent( new NewBranchEvent( gitRepo, branchName, Paths.convert(branchPath) ) );
 
         ExecutionResults results = new ExecutionResults();
         return results;

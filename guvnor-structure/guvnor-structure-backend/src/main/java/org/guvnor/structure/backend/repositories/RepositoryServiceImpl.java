@@ -18,6 +18,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.*;
 import org.guvnor.structure.repositories.impl.PortableVersionRecord;
+import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
@@ -25,13 +26,13 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.server.util.TextUtil;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.workbench.events.ResourceAddedEvent;
 
 import static org.guvnor.structure.backend.repositories.EnvironmentParameters.*;
 import static org.guvnor.structure.server.config.ConfigType.*;
@@ -356,20 +357,16 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
 
-    public void updateRegisteredRepositories2( @Observes NewBranchEvent changedEvent ) {
-        flush();
-    }
+    public void updateBranch(@Observes NewBranchEvent changedEvent) {
+        if (configuredRepositories.containsKey(changedEvent.getAlias())) {
 
-    public void updateRegisteredRepositories3(@Observes ResourceAddedEvent event1) {
-        String uri = event1.getPath().toURI();
-        if (uri.contains("@")) {
-            String alias = uri.substring(uri.indexOf("@") + 1);
-            if (configuredRepositories.containsKey(alias)) {
-                newBranchEvent.fire(new NewBranchEvent());
-//                flush();
+            Repository repository = configuredRepositories.get(changedEvent.getAlias());
+            if (repository instanceof GitRepository) {
+                ((GitRepository) repository).addBranch(changedEvent.getBranchName(), changedEvent.getBranchPath());
             }
         }
     }
+
 
     private void flush() {
         configuredRepositories.clear();

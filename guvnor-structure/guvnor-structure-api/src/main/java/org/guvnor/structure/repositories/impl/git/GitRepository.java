@@ -208,4 +208,8 @@ public class GitRepository implements Repository {
         setCurrentBranch(branch);
         setRoot(branches.get(branch));
     }
+
+    public void addBranch(String branchName, Path path) {
+        branches.put(branchName, path);
+    }
 }

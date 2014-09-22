@@ -6,43 +6,30 @@ import org.uberfire.backend.vfs.Path;
 @Portable
 public class NewBranchEvent {
 
-    private Repository repository;
+    private String branchName;
+    private Path branchPath;
 
-    private String name;
-
-    private Path path;
+    private String alias;
 
 
     public NewBranchEvent() {
     }
 
-    public NewBranchEvent( Repository repository, Path path, String name ) {
-        this.repository = repository;
-        this.path = path;
-        this.name = name;
+    public NewBranchEvent(String alias, String branchName, Path branchPath) {
+        this.alias = alias;
+        this.branchName = branchName;
+        this.branchPath = branchPath;
     }
 
-    public Repository getRepository() {
-        return repository;
+    public String getBranchName() {
+        return branchName;
     }
 
-    public void setRepository( Repository repository ) {
-        this.repository = repository;
+    public String getAlias() {
+        return alias;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName( String name ) {
-        this.name = name;
-    }
-
-    public Path getPath() {
-        return path;
-    }
-
-    public void setPath( Path path ) {
-        this.path = path;
+    public Path getBranchPath() {
+        return branchPath;
     }
 }
