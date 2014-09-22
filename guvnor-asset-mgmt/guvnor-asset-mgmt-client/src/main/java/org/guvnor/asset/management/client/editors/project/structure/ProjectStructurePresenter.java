@@ -172,14 +172,15 @@ public class ProjectStructurePresenter
     }
 
     private void processContextChange( final Repository repository, final Project project ) {
+        boolean repoOrBranchChanged = false;
 
-        if ( repositoryOrBranchChanged( repository ) || (project != null && !project.equals( this.project ) ) ) {
+        if ( ( repoOrBranchChanged = repositoryOrBranchChanged( repository ) ) || (project != null && !project.equals( this.project ) ) ) {
 
             this.repository = repository;
             this.branch = repository != null ? repository.getCurrentBranch() : null;
             this.project = project;
 
-            if ( (lastAddedModule == null || !lastAddedModule.equals( project )) && lastDeletedModule == null ) {
+            if ( repoOrBranchChanged || (lastAddedModule == null || !lastAddedModule.equals( project )) && lastDeletedModule == null) {
                 init();
             }
             lastAddedModule = null;
