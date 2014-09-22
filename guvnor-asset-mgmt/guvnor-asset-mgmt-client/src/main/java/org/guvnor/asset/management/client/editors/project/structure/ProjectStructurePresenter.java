@@ -115,6 +115,8 @@ public class ProjectStructurePresenter
 
     private Repository repository;
 
+    private String branch;
+
     private ObservablePath pathToProjectStructure;
 
     private PlaceRequest placeRequest;
@@ -171,10 +173,10 @@ public class ProjectStructurePresenter
 
     private void processContextChange( final Repository repository, final Project project ) {
 
-        if ( ( repository != null && !repository.equals( this.repository ) )  ||
-                (project != null && !project.equals( this.project ) ) ) {
+        if ( repositoryOrBranchChanged( repository ) || (project != null && !project.equals( this.project ) ) ) {
 
             this.repository = repository;
+            this.branch = repository != null ? repository.getCurrentBranch() : null;
             this.project = project;
 
             if ( (lastAddedModule == null || !lastAddedModule.equals( project )) && lastDeletedModule == null ) {
@@ -300,13 +302,13 @@ public class ProjectStructurePresenter
 
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.ProjectStructureWithName( repository.getAlias() ) ) );
+                    Constants.INSTANCE.ProjectStructureWithName( getRepositoryLabel( repository ) ) ) );
 
         } else if ( model.isMultiModule() ) {
 
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.ProjectStructureWithName( repository.getAlias() + "- > " +
+                    Constants.INSTANCE.ProjectStructureWithName( getRepositoryLabel( repository ) + "- > " +
                             model.getPOM().getGav().getArtifactId() + ":"
                             + model.getPOM().getGav().getGroupId() + ":"
                             + model.getPOM().getGav().getVersion() ) ) );
@@ -314,13 +316,17 @@ public class ProjectStructurePresenter
         } else if ( model.isSingleProject() ) {
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.ProjectStructureWithName( repository.getAlias() + "- > " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
+                    Constants.INSTANCE.ProjectStructureWithName( getRepositoryLabel( repository ) + "- > " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
 
         } else {
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.UnmanagedRepository( repository.getAlias() ) ) );
+                    Constants.INSTANCE.UnmanagedRepository( getRepositoryLabel( repository ) ) ) );
         }
+    }
+
+    private String getRepositoryLabel(Repository repository) {
+        return repository != null ? ( repository.getAlias() + " (" + repository.getCurrentBranch() + ") " ) : "";
     }
 
     private void addStructureChangeListeners() {
@@ -759,5 +765,12 @@ public class ProjectStructurePresenter
 
     private void addToModulesList( final Project project ) {
         dataProvider.getList().add( new ProjectModuleRow( project.getProjectName() ) );
+    }
+
+    private boolean repositoryOrBranchChanged( Repository selectedRepository ) {
+        return selectedRepository != null &&
+                ( !selectedRepository.equals( this.repository ) ||
+                  !selectedRepository.getCurrentBranch().equals( this.branch )
+                );
     }
 }
