@@ -20,5 +20,7 @@ import org.kie.uberfire.social.activities.model.SocialEventType;
 
 public enum AssetManagementEventTypes
         implements SocialEventType {
-    BRANCH_CREATED
+    BRANCH_CREATED,
+    PROCESS_START,
+    PROCESS_END
 }

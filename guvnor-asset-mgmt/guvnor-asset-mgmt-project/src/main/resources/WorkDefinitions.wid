@@ -5,14 +5,14 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 
   [
     "name" : "AssetMgmtStart",
-    "parameters" : ,
+    "parameters" : [
     "displayName" : "Asset Mgmt Process Start",
     "icon" : "defaultlogicon.gif"
   ],
 
   [
     "name" : "AssetMgmtEnd",
-    "parameters" : ,
+    "parameters" : [
     "displayName" : "Asset Mgmt Process End",
     "icon" : "defaultlogicon.gif"
   ],

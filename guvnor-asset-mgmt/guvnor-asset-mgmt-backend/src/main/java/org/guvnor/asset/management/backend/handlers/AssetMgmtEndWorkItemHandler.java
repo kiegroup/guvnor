@@ -16,23 +16,13 @@
 
 package org.guvnor.asset.management.backend.handlers;
 
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
-
-public class AssetMgmtEndWorkItemHandler implements WorkItemHandler {
+public class AssetMgmtEndWorkItemHandler extends AssetMgmtStartEndBaseWorkItemHandler {
 
     public AssetMgmtEndWorkItemHandler() {
     }
 
-    @Override public void executeWorkItem( WorkItem workItem, WorkItemManager manager ) {
-        System.out.println( "End Process: " + new java.util.Date() );
-        //TODO send the social event.
-        if ( manager != null ) {
-            manager.completeWorkItem( workItem.getId(), null );
-        }
-    }
-
-    @Override public void abortWorkItem( WorkItem workItem, WorkItemManager manager ) {
+    @Override
+    protected boolean isStart() {
+        return false;
     }
 }
