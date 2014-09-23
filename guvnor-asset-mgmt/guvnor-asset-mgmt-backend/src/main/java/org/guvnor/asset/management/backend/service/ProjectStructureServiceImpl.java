@@ -13,12 +13,12 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -40,7 +40,7 @@ public class ProjectStructureServiceImpl
     private POMService pomService;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Inject
     private MetadataService metadataService;

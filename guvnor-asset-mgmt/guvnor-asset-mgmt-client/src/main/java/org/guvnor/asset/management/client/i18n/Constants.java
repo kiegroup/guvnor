@@ -181,6 +181,14 @@ public interface Constants extends Messages {
     String Files_In_The_Branch();
 
     String Files_To_Promote();
+    
+    String Promote_All();
+    
+    String Promote_Selected();
+    
+    String Release_Project();
+    
+    String Release_Configuration();
 
     String AssetManagementLog();
 
