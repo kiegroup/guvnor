@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
-public class AssetManagementEventAdapter
+public class NewBranchEventAdapter
         implements SocialAdapter<NewBranchEvent> {
 
     @Override
