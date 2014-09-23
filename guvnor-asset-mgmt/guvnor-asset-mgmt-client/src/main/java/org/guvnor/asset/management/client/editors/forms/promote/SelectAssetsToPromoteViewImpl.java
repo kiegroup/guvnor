@@ -72,12 +72,14 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
     public ListBox filesToPromoteList;
 
     @UiField
-    public Button promoteFilesButton;
+    public Button promoteAllFilesButton;
+    
+    @UiField
+    public Button promoteSelectedFilesButton;
 
     @Inject
     private Event<NotificationEvent> notification;
 
-    private Constants constants = GWT.create(Constants.class);
 
     private Map<String, List<String>> commitsPerFile;
 
@@ -136,12 +138,23 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
         return sourceBranchBox;
     }
 
-    @UiHandler("promoteFilesButton")
-    public void promoteFilesButton(ClickEvent e) {
+    @UiHandler("promoteSelectedFilesButton")
+    public void promoteSelectedFilesButton(ClickEvent e) {
         int selectedIndex = filesInTheBranchList.getSelectedIndex();
         String value = filesInTheBranchList.getValue(selectedIndex);
         filesToPromoteList.addItem(value);
         filesInTheBranchList.removeItem(selectedIndex);
+
+    }
+    
+    @UiHandler("promoteAllFilesButton")
+    public void promoteAllFilesButton(ClickEvent e) {
+        int itemCount = filesInTheBranchList.getItemCount();
+        for(int i = 0; i < itemCount; i ++){
+            String value = filesInTheBranchList.getValue(i);
+            filesToPromoteList.addItem(value);
+            filesInTheBranchList.removeItem(i);
+        }
 
     }
 
@@ -175,7 +188,6 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
             getFilesInTheBranchList().addItem(file);
         }
 
-//        this.taskId = (String)params.get("taskId");
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -183,13 +195,15 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
         if (isReadOnly) {
             getFilesInTheBranchList().setEnabled(false);
             getFilesToPromoteList().setEnabled(false);
-            promoteFilesButton.setEnabled(false);
+            promoteSelectedFilesButton.setEnabled(false);
+            promoteAllFilesButton.setEnabled(false);
             requiresReviewCheckBox.setEnabled(false);
             sourceBranchBox.setEnabled(false);
         } else {
             getFilesInTheBranchList().setEnabled(true);
             getFilesToPromoteList().setEnabled(true);
-            promoteFilesButton.setEnabled(true);
+            promoteSelectedFilesButton.setEnabled(true);
+            promoteAllFilesButton.setEnabled(true);
             requiresReviewCheckBox.setEnabled(true);
             sourceBranchBox.setEnabled(true);
         }
