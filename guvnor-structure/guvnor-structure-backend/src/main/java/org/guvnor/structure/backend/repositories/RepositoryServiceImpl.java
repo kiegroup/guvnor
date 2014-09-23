@@ -69,9 +69,6 @@ public class RepositoryServiceImpl implements RepositoryService {
     private Map<String, Repository> configuredRepositories = new HashMap<String, Repository>();
     private Map<Path, Repository> rootToRepo = new HashMap<Path, Repository>();
 
-    @Inject
-    private Event<NewBranchEvent> newBranchEvent;
-
     @SuppressWarnings("unchecked")
     @PostConstruct
     public void loadRepositories() {
