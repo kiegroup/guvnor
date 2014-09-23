@@ -10,12 +10,28 @@
     <task-event-listeners/>
     <globals/>
     <work-item-handlers>
+
       <work-item-handler>
         <resolver>mvel</resolver>
         <identifier>new org.jbpm.process.workitem.rest.RESTWorkItemHandler("", "")</identifier>
         <parameters/>
         <name>Rest</name>
       </work-item-handler>
+
+      <work-item-handler>
+        <resolver>mvel</resolver>
+        <identifier>new org.guvnor.asset.management.backend.handlers.AssetMgmtStartWorkItemHandler()</identifier>
+        <parameters/>
+        <name>AssetMgmtStart</name>
+      </work-item-handler>
+
+      <work-item-handler>
+        <resolver>mvel</resolver>
+        <identifier>new org.guvnor.asset.management.backend.handlers.AssetMgmtEndWorkItemHandler()</identifier>
+        <parameters/>
+        <name>AssetMgmtEnd</name>
+      </work-item-handler>
+
     </work-item-handlers>
     <environment-entries/>
     <configurations/>

@@ -2,6 +2,21 @@ import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 
 [
+
+  [
+    "name" : "AssetMgmtStart",
+    "parameters" : ,
+    "displayName" : "Asset Mgmt Process Start",
+    "icon" : "defaultlogicon.gif"
+  ],
+
+  [
+    "name" : "AssetMgmtEnd",
+    "parameters" : ,
+    "displayName" : "Asset Mgmt Process End",
+    "icon" : "defaultlogicon.gif"
+  ],
+
   [
     "name" : "Email",
     "parameters" : [
