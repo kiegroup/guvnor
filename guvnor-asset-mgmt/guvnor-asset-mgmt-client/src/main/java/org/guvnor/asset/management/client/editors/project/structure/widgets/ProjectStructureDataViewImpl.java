@@ -270,6 +270,18 @@ public class ProjectStructureDataViewImpl extends Composite
         initProjectStructureButton.setEnabled( value );
     }
 
+    @Override public void setReadonly( boolean readonly ) {
+
+        groupIdTextBox.setReadOnly( readonly );
+        artifactIdTextBox.setReadOnly( readonly );
+        versionTextBox.setReadOnly( readonly );
+        singleProjectGroupIdTextBox.setReadOnly( readonly );
+        singleProjectArtifactIdTextBox.setReadOnly( readonly );
+        singleProjectVersionTextBox.setReadOnly( readonly );
+
+        enableActions( !readonly );
+    }
+
     private void enableModeParams( boolean isSingle ) {
 
         //single mode fields

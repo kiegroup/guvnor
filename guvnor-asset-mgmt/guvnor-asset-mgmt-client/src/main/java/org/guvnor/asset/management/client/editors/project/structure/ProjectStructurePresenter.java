@@ -174,12 +174,18 @@ public class ProjectStructurePresenter
     private void processContextChange( final Repository repository, final Project project ) {
         boolean repoOrBranchChanged = false;
 
-        if ( ( repoOrBranchChanged = repositoryOrBranchChanged( repository ) ) || (project != null && !project.equals( this.project ) ) ) {
+        if ( repository == null ) {
+            clearView();
+            view.setReadonly( true );
+            view.setModulesViewVisible( false );
+            enableActions( false );
+        } else if ( ( repoOrBranchChanged = repositoryOrBranchChanged( repository ) ) || (project != null && !project.equals( this.project ) ) ) {
 
             this.repository = repository;
             this.branch = repository != null ? repository.getCurrentBranch() : null;
             this.project = project;
 
+            view.setReadonly( false );
             if ( repoOrBranchChanged || (lastAddedModule == null || !lastAddedModule.equals( project )) && lastDeletedModule == null) {
                 init();
             }

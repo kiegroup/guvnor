@@ -133,6 +133,8 @@ public class ProjectStructureServiceImpl
     @Override
     public ProjectStructureModel load( final Repository repository, boolean includeModules ) {
 
+        if ( repository == null ) return null;
+
         ProjectStructureModel model = new ProjectStructureModel();
         Path path = repository.getRoot();
         final Project project = projectService.resolveToParentProject( path );

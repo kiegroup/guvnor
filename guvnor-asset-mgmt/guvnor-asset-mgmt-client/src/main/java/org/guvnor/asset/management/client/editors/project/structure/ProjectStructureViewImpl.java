@@ -122,4 +122,10 @@ public class ProjectStructureViewImpl
     public void clear() {
         getDataView().clear();
     }
+
+    @Override
+    public void setReadonly( boolean readonly ) {
+        getDataView().setReadonly( readonly );
+    }
+
 }

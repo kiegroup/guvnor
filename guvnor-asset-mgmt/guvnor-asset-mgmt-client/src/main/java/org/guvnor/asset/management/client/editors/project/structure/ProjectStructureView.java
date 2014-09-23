@@ -42,4 +42,6 @@ public interface ProjectStructureView
 
     void clear();
 
+    void setReadonly( boolean readonly );
+
 }

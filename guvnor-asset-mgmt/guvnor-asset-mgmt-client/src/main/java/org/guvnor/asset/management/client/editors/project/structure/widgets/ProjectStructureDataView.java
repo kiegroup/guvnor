@@ -65,4 +65,6 @@ public interface ProjectStructureDataView extends IsWidget {
 
     void enableActions( boolean value );
 
+    void setReadonly( boolean readonly );
+
 }
