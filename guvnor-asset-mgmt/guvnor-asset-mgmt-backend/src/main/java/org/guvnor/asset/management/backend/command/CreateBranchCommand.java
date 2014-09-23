@@ -8,6 +8,7 @@ import org.guvnor.asset.management.backend.utils.NamedLiteral;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
+import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -40,7 +41,7 @@ public class CreateBranchCommand extends AbstractCommand {
 
         ioService.copy(branchOriginPath, branchPath);
 
-        beanManager.fireEvent( new NewBranchEvent( gitRepo, branchName, Paths.convert(branchPath) ) );
+        beanManager.fireEvent( new NewBranchEvent( gitRepo, branchName, Paths.convert(branchPath), System.currentTimeMillis() ) );
 
         ExecutionResults results = new ExecutionResults();
         return results;

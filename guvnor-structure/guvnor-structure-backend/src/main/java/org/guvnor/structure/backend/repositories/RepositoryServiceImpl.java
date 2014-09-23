@@ -26,7 +26,6 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.server.util.TextUtil;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -358,9 +357,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 
 
     public void updateBranch(@Observes NewBranchEvent changedEvent) {
-        if (configuredRepositories.containsKey(changedEvent.getAlias())) {
+        if (configuredRepositories.containsKey(changedEvent.getRepositoryAlias())) {
 
-            Repository repository = configuredRepositories.get(changedEvent.getAlias());
+            Repository repository = configuredRepositories.get(changedEvent.getRepositoryAlias());
             if (repository instanceof GitRepository) {
                 ((GitRepository) repository).addBranch(changedEvent.getBranchName(), changedEvent.getBranchPath());
             }

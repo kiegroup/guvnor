@@ -182,4 +182,6 @@ public interface Constants extends Messages {
 
     String Files_To_Promote();
 
+    String AssetManagementLog();
+
 }
