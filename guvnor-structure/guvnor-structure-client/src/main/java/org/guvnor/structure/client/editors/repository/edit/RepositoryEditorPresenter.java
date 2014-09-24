@@ -18,12 +18,10 @@ package org.guvnor.structure.client.editors.repository.edit;
 
 import java.util.List;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.structure.repositories.PublicURI;
-import org.guvnor.structure.repositories.RepositoryInfo;
-import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.RepositoryServiceEditor;
+import org.guvnor.structure.repositories.*;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.resources.i18n.CoreConstants;
@@ -31,6 +29,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.lifecycle.OnStartup;
@@ -46,8 +45,12 @@ public class RepositoryEditorPresenter {
     @Inject
     private Caller<RepositoryServiceEditor> repositoryServiceEditor;
 
+    @Inject
+    private PlaceManager placeManager;
+
     private String alias = null;
     private Path root = null;
+    private PlaceRequest place;
 
     public interface View
             extends UberView<RepositoryEditorPresenter> {
@@ -73,6 +76,7 @@ public class RepositoryEditorPresenter {
 
     @OnStartup
     public void onStartup( final PlaceRequest place ) {
+        this.place = place;
         this.alias = place.getParameters().get( "alias" );
 
         repositoryService.call( new RemoteCallback<RepositoryInfo>() {
@@ -121,4 +125,9 @@ public class RepositoryEditorPresenter {
         return view;
     }
 
+    public void onRepositoryRemovedEvent(@Observes RepositoryRemovedEvent event) {
+        if (alias.equals(event.getRepository().getAlias())) {
+            placeManager.closePlace(place);
+        }
+    }
 }
