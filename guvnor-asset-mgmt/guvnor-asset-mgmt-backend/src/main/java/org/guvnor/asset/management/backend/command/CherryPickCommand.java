@@ -1,14 +1,17 @@
 package org.guvnor.asset.management.backend.command;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 import javax.enterprise.inject.spi.BeanManager;
 import org.guvnor.asset.management.backend.model.CommitInfo;
 
 import org.guvnor.asset.management.backend.utils.CDIUtils;
 import org.guvnor.asset.management.backend.utils.NamedLiteral;
+import org.guvnor.asset.management.social.AssetsPromotedEvent;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
 import org.slf4j.Logger;
@@ -30,6 +33,8 @@ public class CherryPickCommand extends AbstractCommand {
         List<CommitInfo> commitsInfos = (List<CommitInfo>) getParameter(commandContext, "CommitsInfos");
         String commitsString = (String) getParameter(commandContext, "CommitsString");
         String[] commits = commitsString.split(",");
+        AssetsPromotedEvent event;
+
 
         Collections.sort(commitsInfos, new Comparator<CommitInfo>() {
 
@@ -65,19 +70,57 @@ public class CherryPickCommand extends AbstractCommand {
 
         CherryPickCopyOption copyOption = new CherryPickCopyOption(orderedCommits);
         String outcome = "unknown";
+        event = getSocialEvent( gitRepo, fromBranchName, toBranchName, commitsInfos, "salaboy" );
+
         try {
             logger.debug("Cherry pick command execution");
             ioService.copy(fromBranchPath, toBranchPath, copyOption);
 
             outcome = "success";
+
         } catch (Exception e) {
             outcome = "failure : " + e.getMessage();
+            event.setError( outcome );
             logger.error("Error when cherry picking commits from {} to {}", fromBranchName, toBranchName, e);
+        } finally {
+            if (beanManager != null && event != null) {
+                beanManager.fireEvent( event );
+            }
         }
 
         ExecutionResults results = new ExecutionResults();
         results.setData("CherryPickResult", outcome);
 
         return results;
+    }
+
+    private AssetsPromotedEvent getSocialEvent(String repository,
+            String sourceBranch,
+            String targetBranch,
+            List<CommitInfo> commitsInfos,
+            String user) {
+
+        TreeSet<String> files = new TreeSet<String>(  );
+        if ( commitsInfos != null ) {
+            for ( CommitInfo commitInfo : commitsInfos ) {
+                List<String> currentFiles = commitInfo.getFiles();
+                if ( currentFiles != null ) {
+                    for ( String currentFile : currentFiles ) {
+                        files.add( currentFile );
+                    }
+                }
+            }
+
+        }
+        List<String> promotedFiles = new ArrayList<String>(  );
+        promotedFiles.addAll( files );
+
+        return new AssetsPromotedEvent( "PromoteAssets",
+                repository,
+                sourceBranch,
+                targetBranch,
+                promotedFiles,
+                user,
+                System.currentTimeMillis());
     }
 }

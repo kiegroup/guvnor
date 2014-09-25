@@ -22,5 +22,6 @@ public enum AssetManagementEventTypes
         implements SocialEventType {
     BRANCH_CREATED,
     PROCESS_START,
-    PROCESS_END
+    PROCESS_END,
+    ASSETS_PROMOTED
 }
