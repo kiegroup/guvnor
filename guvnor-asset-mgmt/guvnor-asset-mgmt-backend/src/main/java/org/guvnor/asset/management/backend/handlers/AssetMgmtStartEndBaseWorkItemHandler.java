@@ -16,6 +16,8 @@
 
 package org.guvnor.asset.management.backend.handlers;
 
+import java.util.List;
+import java.util.Map;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.guvnor.asset.management.backend.utils.CDIUtils;
@@ -37,32 +39,70 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
 
         String _ProcessName = ( String ) workItem.getParameter( "ProcessName" );
         String _Owner = ( String ) workItem.getParameter( "Owner" );
+        String user = "salaboy";
 
+        //ConfigureRepository variables
         String _CB_RepositoryName;
+        /* don't remove.
         String _CB_SourceBranchName;
         String _CB_DevBranchName;
         String _CB_RelBranchName;
         String _CB_Version;
+        */
 
+        //PromoteAssets variables
+        String _PA_GitRepositoryName;
+        /* don't remove
+        String _PA_SourceBranchName;
+        String _PA_TargetBranchName;
+        String _PA_CommitsToPromote;
+        Boolean _PA_Reviewed;
+        Boolean _PA_RequiresReview;
+        String _PA_ListOfCommits;
+        String _PA_ListOfFiles;
+        Map _PA_CommitsPerFile;
+        List _PA_Commits;
+        */
+
+        //BuildProcess variables
         String _BP_ProjectURI;
+        /* don't remove
         String _BP_BranchName;
+        String _BP_BuildOutcome;
+        List _BP_Errors;
+        List _BP_Warnings;
+        List _BP_Infos;
+        String _BP_GAV;
+        String _BP_MavenDeployOutcome;
+        String _BP_ExecServerURL;
         String _BP_Username;
         String _BP_Password;
-        String _BP_ExecServerURL;
-        String _BP_DeployToRuntime;
+        Boolean _BP_DeployToRuntime;
+        Exception _BP_Exception;
+        */
 
-        String _PC_GitRepositoryName;
-        String _PC_SourceBranchName;
-        String _PC_TargetBranchName;
+        //ReleaseProject variables
+        String _RP_RepositoryName;
+        /* don't remove
+        String _RP_Version;
+        Boolean _RP_ValidForRelease;
+        String _RP_ProjectURI;
+        String _RP_DevBranchName;
+        String _RP_RelBranchName;
+        String _RP_ToReleaseDevBranch;
+        String _RP_ToReleaseRelBranch;
+        String _RP_ToReleaseVersion;
+        Exception _RP_Exception;
+        */
 
         BeanManager beanManager = null;
 
         if ( isStart() ) {
-            logger.debug( "Start process: " + _ProcessName + "  " + new java.util.Date() );
-            System.out.println( "Start process: " + _ProcessName + "  " + new java.util.Date() );
+            logger.debug( "Start assets management process: " + _ProcessName + "  " + new java.util.Date() );
+            System.out.println( "Start assets management process: " + _ProcessName + "  " + new java.util.Date() );
         } else {
-            logger.debug( "End process: " + _ProcessName + "  " + new java.util.Date() );
-            System.out.println( "End process: " + _ProcessName + "  " + new java.util.Date() );
+            logger.debug( "End assets management process: " + _ProcessName + "  " + new java.util.Date() );
+            System.out.println( "End assets management process: " + _ProcessName + "  " + new java.util.Date() );
         }
 
         try {
@@ -72,22 +112,54 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
         }
 
         if ( beanManager != null && "ConfigureRepository".equals( _ProcessName ) ) {
+
             _CB_RepositoryName = ( String ) workItem.getParameter( "CB_RepositoryName" );
-            _CB_SourceBranchName = ( String ) workItem.getParameter( "CB_SourceBranchName" );
-            _CB_DevBranchName = ( String ) workItem.getParameter( "CB_DevBranchName" );
-            _CB_RelBranchName = ( String ) workItem.getParameter( "CB_RelBranchName" );
-            _CB_Version = ( String ) workItem.getParameter( "CB_Version" );
 
             if ( isStart() ) {
-                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _CB_RepositoryName, null, System.currentTimeMillis() );
+                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _CB_RepositoryName, user, System.currentTimeMillis() );
                 beanManager.fireEvent( event );
             } else {
-                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _CB_RepositoryName, null, System.currentTimeMillis() );
+                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _CB_RepositoryName, user, System.currentTimeMillis() );
                 beanManager.fireEvent( event );
             }
-        }
 
-        //TODO, configure the other processes.
+        } else if ( beanManager != null && "PromoteAssets".equals( _ProcessName ) ) {
+
+            _PA_GitRepositoryName = ( String ) workItem.getParameter( "PA_GitRepositoryName" );
+
+            if ( isStart() ) {
+                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _PA_GitRepositoryName, user, System.currentTimeMillis() );
+                beanManager.fireEvent( event );
+            } else {
+                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _PA_GitRepositoryName, user, System.currentTimeMillis() );
+                beanManager.fireEvent( event );
+            }
+
+        } else if ( beanManager != null && "BuildProject".equals( _ProcessName ) ) {
+
+            _BP_ProjectURI = ( String ) workItem.getParameter( "BP_ProjectURI" );
+
+            if ( isStart() ) {
+                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _BP_ProjectURI, user, System.currentTimeMillis() );
+                beanManager.fireEvent( event );
+            } else {
+                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _BP_ProjectURI, user, System.currentTimeMillis() );
+                beanManager.fireEvent( event );
+            }
+
+        } else if ( beanManager != null && "ReleaseProject".equals( _ProcessName ) ) {
+
+            _RP_RepositoryName = ( String ) workItem.getParameter( "RP_RepositoryName" );
+
+            if ( isStart() ) {
+                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _RP_RepositoryName, user, System.currentTimeMillis() );
+                beanManager.fireEvent( event );
+            } else {
+                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _RP_RepositoryName, user, System.currentTimeMillis() );
+                beanManager.fireEvent( event );
+            }
+
+        }
 
         if ( manager != null ) {
             manager.completeWorkItem( workItem.getId(), null );

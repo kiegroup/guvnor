@@ -57,7 +57,7 @@ public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent
 
         //TODO verify this info.
         return new SocialActivitiesEvent(
-                new SocialUser("Mr. Process"),
+                new SocialUser(event.getUser()),
                 AssetManagementEventTypes.PROCESS_START.name(),
                 new Date(event.getTimestamp())
         ).withAdicionalInfo("Process: " + event.getProcessName() + " started on: " + event.getRepositoryAlias());

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_J9dxkEMhEeSq9MJCfxd0TA" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_LBexAESaEeSn8sM7NXMr2A" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
   <bpmn2:itemDefinition id="_GitRepositoryNameItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_SourceBranchNameItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_TargetBranchNameItem" structureRef="String"/>
@@ -10,6 +10,7 @@
   <bpmn2:itemDefinition id="_ListOfFilesItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_CommitsPerFileItem" structureRef="java.util.Map"/>
   <bpmn2:itemDefinition id="_CommitsItem" structureRef="java.util.List"/>
+  <bpmn2:itemDefinition id="__ProcessNameItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_source_branch_nameInputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__9735E9B2-29F9-41C2-ADA9-BD5802E7C066_GroupIdInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_list_of_commitsInputXItem" structureRef="String"/>
@@ -33,6 +34,28 @@
   <bpmn2:itemDefinition id="__0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsPerFileStringOutputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsPerFileMapOutputXItem" structureRef="java.util.Map"/>
   <bpmn2:itemDefinition id="__0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsOutputXItem" structureRef="java.util.List"/>
+  <bpmn2:itemDefinition id="__8B497337-9D37-4344-8BCD-92AECC1054FE_ProcessNameInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_GitRepositoryNameInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_SourceBranchNameInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_TargetBranchNameInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsToPromoteInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ReviewedInputXItem" structureRef="Boolean"/>
+  <bpmn2:itemDefinition id="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_RequiresReviewInputXItem" structureRef="Boolean"/>
+  <bpmn2:itemDefinition id="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ListOfCommitsInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ListOfFilesInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsPerFileInputXItem" structureRef="java.util.Map"/>
+  <bpmn2:itemDefinition id="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsInputXItem" structureRef="java.util.List"/>
+  <bpmn2:itemDefinition id="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_ProcessNameInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_GitRepositoryNameInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_SourceBranchNameInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_TargetBranchNameInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsToPromoteInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ReviewedInputXItem" structureRef="Boolean"/>
+  <bpmn2:itemDefinition id="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_RequiresReviewInputXItem" structureRef="Boolean"/>
+  <bpmn2:itemDefinition id="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ListOfCommitsInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ListOfFilesInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsPerFileInputXItem" structureRef="java.util.Map"/>
+  <bpmn2:itemDefinition id="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsInputXItem" structureRef="java.util.List"/>
   <bpmn2:process id="asset-management-kmodule.PromoteAssets" drools:packageName="org.jbpm" drools:version="1.0" name="PromoteAssets" isExecutable="true">
     <bpmn2:property id="GitRepositoryName" itemSubjectRef="_GitRepositoryNameItem"/>
     <bpmn2:property id="SourceBranchName" itemSubjectRef="_SourceBranchNameItem"/>
@@ -44,28 +67,17 @@
     <bpmn2:property id="ListOfFiles" itemSubjectRef="_ListOfFilesItem"/>
     <bpmn2:property id="CommitsPerFile" itemSubjectRef="_CommitsPerFileItem"/>
     <bpmn2:property id="Commits" itemSubjectRef="_CommitsItem"/>
+    <bpmn2:property id="_ProcessName" itemSubjectRef="__ProcessNameItem"/>
     <bpmn2:startEvent id="_C1384A34-4473-4A91-99EA-A3996A27F9E7" drools:bgcolor="#9acd32" drools:selectable="true" name="">
-      <bpmn2:outgoing>_A66F1F53-9530-480B-B48C-4364CE42228C</bpmn2:outgoing>
+      <bpmn2:outgoing>_4F7A1C17-ACA0-4EA3-A755-7586AFEE18AD</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:endEvent id="_3AA36656-B03C-41B5-8B9D-93FDA2156CE9" drools:bgcolor="#ff6347" drools:selectable="true" name="">
-      <bpmn2:incoming>_C36BCF02-2F8E-4147-9083-32E4D96B9EE5</bpmn2:incoming>
+      <bpmn2:incoming>_50BC6465-E573-4DD3-B2DA-678ACD7841FB</bpmn2:incoming>
     </bpmn2:endEvent>
-    <bpmn2:scriptTask id="_E3DB1A21-CFEA-44D8-A3FD-67AAB54AD29B" drools:selectable="true" name="Log start" scriptFormat="http://www.java.com/java">
-      <bpmn2:incoming>_A66F1F53-9530-480B-B48C-4364CE42228C</bpmn2:incoming>
-      <bpmn2:outgoing>_65DF60E0-DD38-40F2-A8A4-4A04AAF9A8B6</bpmn2:outgoing>
-      <bpmn2:script><![CDATA[System.out.println("KIE-MGMT: Starting Assets Promotion at " + new java.util.Date());]]></bpmn2:script>
-    </bpmn2:scriptTask>
-    <bpmn2:sequenceFlow id="_A66F1F53-9530-480B-B48C-4364CE42228C" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_C1384A34-4473-4A91-99EA-A3996A27F9E7" targetRef="_E3DB1A21-CFEA-44D8-A3FD-67AAB54AD29B"/>
-    <bpmn2:scriptTask id="_BD343DF4-A957-4AF8-8092-6AA2370BD86F" drools:selectable="true" name="Log end" scriptFormat="http://www.java.com/java">
-      <bpmn2:incoming>_FC4496CF-6640-4D2F-A232-A838CCB43745</bpmn2:incoming>
-      <bpmn2:outgoing>_C36BCF02-2F8E-4147-9083-32E4D96B9EE5</bpmn2:outgoing>
-      <bpmn2:script><![CDATA[System.out.println("KIE-MGMT: Completed asset promotiton at " + new java.util.Date());]]></bpmn2:script>
-    </bpmn2:scriptTask>
-    <bpmn2:sequenceFlow id="_C36BCF02-2F8E-4147-9083-32E4D96B9EE5" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_BD343DF4-A957-4AF8-8092-6AA2370BD86F" targetRef="_3AA36656-B03C-41B5-8B9D-93FDA2156CE9"/>
     <bpmn2:userTask id="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" name="Select Assets To Promote">
       <bpmn2:incoming>_FC4F435A-3622-414E-8AFE-5BF925B48B41</bpmn2:incoming>
       <bpmn2:outgoing>_D77765DB-9274-472A-A133-8DBED863C5F3</bpmn2:outgoing>
-      <bpmn2:ioSpecification id="_J9eYoEMhEeSq9MJCfxd0TA">
+      <bpmn2:ioSpecification id="_LBexAUSaEeSn8sM7NXMr2A">
         <bpmn2:dataInput id="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_TaskNameInputX" name="TaskName"/>
         <bpmn2:dataInput id="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_source_branch_nameInputX" drools:dtype="String" itemSubjectRef="__9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_source_branch_nameInputXItem" name="in_source_branch_name"/>
         <bpmn2:dataInput id="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_GroupIdInputX" drools:dtype="Object" itemSubjectRef="__9735E9B2-29F9-41C2-ADA9-BD5802E7C066_GroupIdInputXItem" name="GroupId"/>
@@ -74,7 +86,7 @@
         <bpmn2:dataInput id="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_commits_per_fileInputX" drools:dtype="java.util.Map" itemSubjectRef="__9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_commits_per_fileInputXItem" name="in_commits_per_file"/>
         <bpmn2:dataOutput id="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_out_commitsOutputX" drools:dtype="String" itemSubjectRef="__9735E9B2-29F9-41C2-ADA9-BD5802E7C066_out_commitsOutputXItem" name="out_commits"/>
         <bpmn2:dataOutput id="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_out_requires_reviewOutputX" drools:dtype="Boolean" itemSubjectRef="__9735E9B2-29F9-41C2-ADA9-BD5802E7C066_out_requires_reviewOutputXItem" name="out_requires_review"/>
-        <bpmn2:inputSet id="_J9eYoUMhEeSq9MJCfxd0TA">
+        <bpmn2:inputSet id="_LBexAkSaEeSn8sM7NXMr2A">
           <bpmn2:dataInputRefs>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_source_branch_nameInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_GroupIdInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_list_of_commitsInputX</bpmn2:dataInputRefs>
@@ -82,46 +94,46 @@
           <bpmn2:dataInputRefs>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_commits_per_fileInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_TaskNameInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
-        <bpmn2:outputSet id="_J9eYokMhEeSq9MJCfxd0TA">
+        <bpmn2:outputSet id="_LBexA0SaEeSn8sM7NXMr2A">
           <bpmn2:dataOutputRefs>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_out_commitsOutputX</bpmn2:dataOutputRefs>
           <bpmn2:dataOutputRefs>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_out_requires_reviewOutputX</bpmn2:dataOutputRefs>
         </bpmn2:outputSet>
       </bpmn2:ioSpecification>
-      <bpmn2:dataInputAssociation id="_J9eYo0MhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBexBESaEeSn8sM7NXMr2A">
         <bpmn2:targetRef>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_TaskNameInputX</bpmn2:targetRef>
-        <bpmn2:assignment id="_J9eYpEMhEeSq9MJCfxd0TA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_J9eYpUMhEeSq9MJCfxd0TA">SelectAssetsToPromote</bpmn2:from>
-          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_J9eYpkMhEeSq9MJCfxd0TA">_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_TaskNameInputX</bpmn2:to>
+        <bpmn2:assignment id="_LBexBUSaEeSn8sM7NXMr2A">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_LBexBkSaEeSn8sM7NXMr2A">SelectAssetsToPromote</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_LBexB0SaEeSn8sM7NXMr2A">_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_TaskNameInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9eYp0MhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBexCESaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>SourceBranchName</bpmn2:sourceRef>
         <bpmn2:targetRef>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_source_branch_nameInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9eYqEMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBexCUSaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>ListOfCommits</bpmn2:sourceRef>
         <bpmn2:targetRef>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_list_of_commitsInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9eYqUMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBexCkSaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>ListOfFiles</bpmn2:sourceRef>
         <bpmn2:targetRef>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_list_of_filesInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9eYqkMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBexC0SaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>CommitsPerFile</bpmn2:sourceRef>
         <bpmn2:targetRef>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_in_commits_per_fileInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9eYq0MhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBexDESaEeSn8sM7NXMr2A">
         <bpmn2:targetRef>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_GroupIdInputX</bpmn2:targetRef>
-        <bpmn2:assignment id="_J9eYrEMhEeSq9MJCfxd0TA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_J9eYrUMhEeSq9MJCfxd0TA"><![CDATA[kiemgmt]]></bpmn2:from>
-          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_J9eYrkMhEeSq9MJCfxd0TA">_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_GroupIdInputX</bpmn2:to>
+        <bpmn2:assignment id="_LBexDUSaEeSn8sM7NXMr2A">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_LBexDkSaEeSn8sM7NXMr2A"><![CDATA[kiemgmt]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_LBexD0SaEeSn8sM7NXMr2A">_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_GroupIdInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataOutputAssociation id="_J9eYr0MhEeSq9MJCfxd0TA">
+      <bpmn2:dataOutputAssociation id="_LBfYEESaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_out_commitsOutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>CommitsToPromote</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
-      <bpmn2:dataOutputAssociation id="_J9eYsEMhEeSq9MJCfxd0TA">
+      <bpmn2:dataOutputAssociation id="_LBfYEUSaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>_9735E9B2-29F9-41C2-ADA9-BD5802E7C066_out_requires_reviewOutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>RequiresReview</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
@@ -135,37 +147,37 @@
     <bpmn2:userTask id="_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" name="Review">
       <bpmn2:incoming>_2AEE79F4-4082-47B2-BA60-1DDFA22D46D7</bpmn2:incoming>
       <bpmn2:outgoing>_4C530C0A-3FF1-4416-A4C4-6EDB3E4B862B</bpmn2:outgoing>
-      <bpmn2:ioSpecification id="_J9eYsUMhEeSq9MJCfxd0TA">
+      <bpmn2:ioSpecification id="_LBfYEkSaEeSn8sM7NXMr2A">
         <bpmn2:dataInput id="_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473_TaskNameInputX" name="TaskName"/>
         <bpmn2:dataInput id="_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473_GroupIdInputX" drools:dtype="Object" itemSubjectRef="__34E1B788-4B6A-42AD-9C2A-25A8FA7EB473_GroupIdInputXItem" name="GroupId"/>
-        <bpmn2:inputSet id="_J9eYskMhEeSq9MJCfxd0TA">
+        <bpmn2:inputSet id="_LBfYE0SaEeSn8sM7NXMr2A">
           <bpmn2:dataInputRefs>_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473_GroupIdInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473_TaskNameInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
-        <bpmn2:outputSet id="_J9eYs0MhEeSq9MJCfxd0TA"/>
+        <bpmn2:outputSet id="_LBfYFESaEeSn8sM7NXMr2A"/>
       </bpmn2:ioSpecification>
-      <bpmn2:dataInputAssociation id="_J9eYtEMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYFUSaEeSn8sM7NXMr2A">
         <bpmn2:targetRef>_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473_TaskNameInputX</bpmn2:targetRef>
-        <bpmn2:assignment id="_J9eYtUMhEeSq9MJCfxd0TA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_J9eYtkMhEeSq9MJCfxd0TA">Review</bpmn2:from>
-          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_J9eYt0MhEeSq9MJCfxd0TA">_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473_TaskNameInputX</bpmn2:to>
+        <bpmn2:assignment id="_LBfYFkSaEeSn8sM7NXMr2A">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_LBfYF0SaEeSn8sM7NXMr2A">Review</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_LBfYGESaEeSn8sM7NXMr2A">_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473_TaskNameInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9eYuEMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYGUSaEeSn8sM7NXMr2A">
         <bpmn2:targetRef>_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473_GroupIdInputX</bpmn2:targetRef>
-        <bpmn2:assignment id="_J9eYuUMhEeSq9MJCfxd0TA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_J9eYukMhEeSq9MJCfxd0TA"><![CDATA[kiemgmt]]></bpmn2:from>
-          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_J9e_sEMhEeSq9MJCfxd0TA">_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473_GroupIdInputX</bpmn2:to>
+        <bpmn2:assignment id="_LBfYGkSaEeSn8sM7NXMr2A">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_LBfYG0SaEeSn8sM7NXMr2A"><![CDATA[kiemgmt]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_LBfYHESaEeSn8sM7NXMr2A">_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473_GroupIdInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="_2AEE79F4-4082-47B2-BA60-1DDFA22D46D7" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_F1CB2358-BE01-41E0-A4AA-E72A2DDB335C" targetRef="_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="_J9e_sUMhEeSq9MJCfxd0TA" language="http://www.java.com/java"><![CDATA[return  KieFunctions.isTrue(RequiresReview);]]></bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="_LBfYHUSaEeSn8sM7NXMr2A" language="http://www.java.com/java"><![CDATA[return  KieFunctions.isTrue(RequiresReview);]]></bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:task id="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B" drools:selectable="true" drools:taskName="async" name="Promote Assets">
       <bpmn2:incoming>_0E355AE7-B680-40A7-BF90-A50F10A0C91C</bpmn2:incoming>
-      <bpmn2:outgoing>_FC4496CF-6640-4D2F-A232-A838CCB43745</bpmn2:outgoing>
-      <bpmn2:ioSpecification id="_J9e_skMhEeSq9MJCfxd0TA">
+      <bpmn2:outgoing>_8A1A07B8-1B44-4A80-9D4D-06DF9479FE01</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_LBfYHkSaEeSn8sM7NXMr2A">
         <bpmn2:dataInput id="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_TaskNameInputX" name="TaskName"/>
         <bpmn2:dataInput id="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommitsStringInputX" drools:dtype="String" itemSubjectRef="__5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommitsStringInputXItem" name="CommitsString"/>
         <bpmn2:dataInput id="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommandClassInputX" drools:dtype="String" itemSubjectRef="__5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommandClassInputXItem" name="CommandClass"/>
@@ -174,7 +186,7 @@
         <bpmn2:dataInput id="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_GitRepositoryInputX" drools:dtype="String" itemSubjectRef="__5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_GitRepositoryInputXItem" name="GitRepository"/>
         <bpmn2:dataInput id="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_ToBranchNameInputX" drools:dtype="String" itemSubjectRef="__5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_ToBranchNameInputXItem" name="ToBranchName"/>
         <bpmn2:dataInput id="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommitsInfosInputX" drools:dtype="java.util.List" itemSubjectRef="__5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommitsInfosInputXItem" name="CommitsInfos"/>
-        <bpmn2:inputSet id="_J9e_s0MhEeSq9MJCfxd0TA">
+        <bpmn2:inputSet id="_LBfYH0SaEeSn8sM7NXMr2A">
           <bpmn2:dataInputRefs>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommitsStringInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommandClassInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_RetriesInputX</bpmn2:dataInputRefs>
@@ -184,66 +196,64 @@
           <bpmn2:dataInputRefs>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommitsInfosInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_TaskNameInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
-        <bpmn2:outputSet id="_J9e_tEMhEeSq9MJCfxd0TA"/>
+        <bpmn2:outputSet id="_LBfYIESaEeSn8sM7NXMr2A"/>
       </bpmn2:ioSpecification>
-      <bpmn2:dataInputAssociation id="_J9e_tUMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYIUSaEeSn8sM7NXMr2A">
         <bpmn2:targetRef>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_TaskNameInputX</bpmn2:targetRef>
-        <bpmn2:assignment id="_J9e_tkMhEeSq9MJCfxd0TA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_J9e_t0MhEeSq9MJCfxd0TA">async</bpmn2:from>
-          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_J9e_uEMhEeSq9MJCfxd0TA">_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_TaskNameInputX</bpmn2:to>
+        <bpmn2:assignment id="_LBfYIkSaEeSn8sM7NXMr2A">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_LBfYI0SaEeSn8sM7NXMr2A">async</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_LBfYJESaEeSn8sM7NXMr2A">_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_TaskNameInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9e_uUMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYJUSaEeSn8sM7NXMr2A">
         <bpmn2:targetRef>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommandClassInputX</bpmn2:targetRef>
-        <bpmn2:assignment id="_J9e_ukMhEeSq9MJCfxd0TA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_J9e_u0MhEeSq9MJCfxd0TA"><![CDATA[org.guvnor.asset.management.backend.command.CherryPickCommand]]></bpmn2:from>
-          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_J9e_vEMhEeSq9MJCfxd0TA">_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommandClassInputX</bpmn2:to>
+        <bpmn2:assignment id="_LBfYJkSaEeSn8sM7NXMr2A">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_LBfYJ0SaEeSn8sM7NXMr2A"><![CDATA[org.guvnor.asset.management.backend.command.CherryPickCommand]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_LBfYKESaEeSn8sM7NXMr2A">_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommandClassInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9e_vUMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYKUSaEeSn8sM7NXMr2A">
         <bpmn2:targetRef>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_RetriesInputX</bpmn2:targetRef>
-        <bpmn2:assignment id="_J9e_vkMhEeSq9MJCfxd0TA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_J9e_v0MhEeSq9MJCfxd0TA"><![CDATA[0]]></bpmn2:from>
-          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_J9e_wEMhEeSq9MJCfxd0TA">_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_RetriesInputX</bpmn2:to>
+        <bpmn2:assignment id="_LBfYKkSaEeSn8sM7NXMr2A">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_LBfYK0SaEeSn8sM7NXMr2A"><![CDATA[0]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_LBfYLESaEeSn8sM7NXMr2A">_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_RetriesInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9e_wUMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYLUSaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>GitRepositoryName</bpmn2:sourceRef>
         <bpmn2:targetRef>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_GitRepositoryInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9e_wkMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYLkSaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>SourceBranchName</bpmn2:sourceRef>
         <bpmn2:targetRef>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_FromBranchNameInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9e_w0MhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYL0SaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>TargetBranchName</bpmn2:sourceRef>
         <bpmn2:targetRef>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_ToBranchNameInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9e_xEMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYMESaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>Commits</bpmn2:sourceRef>
         <bpmn2:targetRef>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommitsInfosInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9e_xUMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYMUSaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>CommitsToPromote</bpmn2:sourceRef>
         <bpmn2:targetRef>_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B_CommitsStringInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
     </bpmn2:task>
     <bpmn2:sequenceFlow id="_0E355AE7-B680-40A7-BF90-A50F10A0C91C" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_F1CB2358-BE01-41E0-A4AA-E72A2DDB335C" targetRef="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="_J9e_xkMhEeSq9MJCfxd0TA" language="http://www.java.com/java"><![CDATA[return  KieFunctions.isFalse(RequiresReview);]]></bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="_LBfYMkSaEeSn8sM7NXMr2A" language="http://www.java.com/java"><![CDATA[return  KieFunctions.isFalse(RequiresReview);]]></bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
-    <bpmn2:sequenceFlow id="_FC4496CF-6640-4D2F-A232-A838CCB43745" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B" targetRef="_BD343DF4-A957-4AF8-8092-6AA2370BD86F"/>
     <bpmn2:exclusiveGateway id="_DB3B9017-A807-4EE9-ADB8-F12407FEBD10" drools:bgcolor="#f0e68c" drools:selectable="true" drools:bordercolor="#a67f00" drools:dg="" name="" gatewayDirection="Converging">
-      <bpmn2:incoming>_65DF60E0-DD38-40F2-A8A4-4A04AAF9A8B6</bpmn2:incoming>
+      <bpmn2:incoming>_EF5E45A0-31D5-4C3C-B78B-6BB773071238</bpmn2:incoming>
       <bpmn2:incoming>_4C530C0A-3FF1-4416-A4C4-6EDB3E4B862B</bpmn2:incoming>
       <bpmn2:outgoing>_74CB3FBC-D9A7-4D54-9AB7-74BC76242C3A</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
-    <bpmn2:sequenceFlow id="_65DF60E0-DD38-40F2-A8A4-4A04AAF9A8B6" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_E3DB1A21-CFEA-44D8-A3FD-67AAB54AD29B" targetRef="_DB3B9017-A807-4EE9-ADB8-F12407FEBD10"/>
     <bpmn2:sequenceFlow id="_74CB3FBC-D9A7-4D54-9AB7-74BC76242C3A" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_DB3B9017-A807-4EE9-ADB8-F12407FEBD10" targetRef="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A"/>
     <bpmn2:sequenceFlow id="_4C530C0A-3FF1-4416-A4C4-6EDB3E4B862B" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473" targetRef="_DB3B9017-A807-4EE9-ADB8-F12407FEBD10"/>
     <bpmn2:task id="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A" drools:selectable="true" drools:taskName="async" name="get commits">
       <bpmn2:incoming>_74CB3FBC-D9A7-4D54-9AB7-74BC76242C3A</bpmn2:incoming>
       <bpmn2:outgoing>_FC4F435A-3622-414E-8AFE-5BF925B48B41</bpmn2:outgoing>
-      <bpmn2:ioSpecification id="_J9e_x0MhEeSq9MJCfxd0TA">
+      <bpmn2:ioSpecification id="_LBfYM0SaEeSn8sM7NXMr2A">
         <bpmn2:dataInput id="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_TaskNameInputX" name="TaskName"/>
         <bpmn2:dataInput id="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommandClassInputX" drools:dtype="String" itemSubjectRef="__0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommandClassInputXItem" name="CommandClass"/>
         <bpmn2:dataInput id="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_GitRepositoryInputX" drools:dtype="String" itemSubjectRef="__0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_GitRepositoryInputXItem" name="GitRepository"/>
@@ -253,164 +263,331 @@
         <bpmn2:dataOutput id="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsPerFileStringOutputX" drools:dtype="String" itemSubjectRef="__0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsPerFileStringOutputXItem" name="CommitsPerFileString"/>
         <bpmn2:dataOutput id="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsPerFileMapOutputX" drools:dtype="java.util.Map" itemSubjectRef="__0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsPerFileMapOutputXItem" name="CommitsPerFileMap"/>
         <bpmn2:dataOutput id="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsOutputX" drools:dtype="java.util.List" itemSubjectRef="__0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsOutputXItem" name="Commits"/>
-        <bpmn2:inputSet id="_J9e_yEMhEeSq9MJCfxd0TA">
+        <bpmn2:inputSet id="_LBfYNESaEeSn8sM7NXMr2A">
           <bpmn2:dataInputRefs>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommandClassInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_GitRepositoryInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_BranchNameInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CompareToBranchNameInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_TaskNameInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
-        <bpmn2:outputSet id="_J9e_yUMhEeSq9MJCfxd0TA">
+        <bpmn2:outputSet id="_LBfYNUSaEeSn8sM7NXMr2A">
           <bpmn2:dataOutputRefs>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsStringOutputX</bpmn2:dataOutputRefs>
           <bpmn2:dataOutputRefs>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsPerFileStringOutputX</bpmn2:dataOutputRefs>
           <bpmn2:dataOutputRefs>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsPerFileMapOutputX</bpmn2:dataOutputRefs>
           <bpmn2:dataOutputRefs>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsOutputX</bpmn2:dataOutputRefs>
         </bpmn2:outputSet>
       </bpmn2:ioSpecification>
-      <bpmn2:dataInputAssociation id="_J9fmwEMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYNkSaEeSn8sM7NXMr2A">
         <bpmn2:targetRef>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_TaskNameInputX</bpmn2:targetRef>
-        <bpmn2:assignment id="_J9fmwUMhEeSq9MJCfxd0TA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_J9fmwkMhEeSq9MJCfxd0TA">async</bpmn2:from>
-          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_J9fmw0MhEeSq9MJCfxd0TA">_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_TaskNameInputX</bpmn2:to>
+        <bpmn2:assignment id="_LBfYN0SaEeSn8sM7NXMr2A">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_LBfYOESaEeSn8sM7NXMr2A">async</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_LBfYOUSaEeSn8sM7NXMr2A">_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_TaskNameInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9fmxEMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYOkSaEeSn8sM7NXMr2A">
         <bpmn2:targetRef>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommandClassInputX</bpmn2:targetRef>
-        <bpmn2:assignment id="_J9fmxUMhEeSq9MJCfxd0TA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_J9fmxkMhEeSq9MJCfxd0TA"><![CDATA[org.guvnor.asset.management.backend.command.ListCommitsCommand]]></bpmn2:from>
-          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_J9fmx0MhEeSq9MJCfxd0TA">_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommandClassInputX</bpmn2:to>
+        <bpmn2:assignment id="_LBfYO0SaEeSn8sM7NXMr2A">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_LBfYPESaEeSn8sM7NXMr2A"><![CDATA[org.guvnor.asset.management.backend.command.ListCommitsCommand]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_LBfYPUSaEeSn8sM7NXMr2A">_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommandClassInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9fmyEMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYPkSaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>GitRepositoryName</bpmn2:sourceRef>
         <bpmn2:targetRef>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_GitRepositoryInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9fmyUMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYP0SaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>SourceBranchName</bpmn2:sourceRef>
         <bpmn2:targetRef>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_BranchNameInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_J9fmykMhEeSq9MJCfxd0TA">
+      <bpmn2:dataInputAssociation id="_LBfYQESaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>TargetBranchName</bpmn2:sourceRef>
         <bpmn2:targetRef>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CompareToBranchNameInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataOutputAssociation id="_J9fmy0MhEeSq9MJCfxd0TA">
+      <bpmn2:dataOutputAssociation id="_LBfYQUSaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsStringOutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>ListOfCommits</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
-      <bpmn2:dataOutputAssociation id="_J9fmzEMhEeSq9MJCfxd0TA">
+      <bpmn2:dataOutputAssociation id="_LBfYQkSaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsPerFileStringOutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>ListOfFiles</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
-      <bpmn2:dataOutputAssociation id="_J9fmzUMhEeSq9MJCfxd0TA">
+      <bpmn2:dataOutputAssociation id="_LBfYQ0SaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsPerFileMapOutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>CommitsPerFile</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
-      <bpmn2:dataOutputAssociation id="_J9fmzkMhEeSq9MJCfxd0TA">
+      <bpmn2:dataOutputAssociation id="_LBfYRESaEeSn8sM7NXMr2A">
         <bpmn2:sourceRef>_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A_CommitsOutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>Commits</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
     </bpmn2:task>
     <bpmn2:sequenceFlow id="_FC4F435A-3622-414E-8AFE-5BF925B48B41" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A" targetRef="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066"/>
+    <bpmn2:task id="_8B497337-9D37-4344-8BCD-92AECC1054FE" drools:selectable="true" drools:taskName="AssetMgmtStart" name="Asset Mgmt Process Start">
+      <bpmn2:extensionElements>
+        <drools:onEntry-script scriptFormat="http://www.java.com/java">
+          <drools:script><![CDATA[kcontext.setVariable("_ProcessName", "PromoteAssets");]]></drools:script>
+        </drools:onEntry-script>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_4F7A1C17-ACA0-4EA3-A755-7586AFEE18AD</bpmn2:incoming>
+      <bpmn2:outgoing>_EF5E45A0-31D5-4C3C-B78B-6BB773071238</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_LBfYRUSaEeSn8sM7NXMr2A">
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_TaskNameInputX" name="TaskName"/>
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_ProcessNameInputX" drools:dtype="String" itemSubjectRef="__8B497337-9D37-4344-8BCD-92AECC1054FE_ProcessNameInputXItem" name="ProcessName"/>
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_GitRepositoryNameInputX" drools:dtype="String" itemSubjectRef="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_GitRepositoryNameInputXItem" name="PA_GitRepositoryName"/>
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_SourceBranchNameInputX" drools:dtype="String" itemSubjectRef="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_SourceBranchNameInputXItem" name="PA_SourceBranchName"/>
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_TargetBranchNameInputX" drools:dtype="String" itemSubjectRef="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_TargetBranchNameInputXItem" name="PA_TargetBranchName"/>
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsToPromoteInputX" drools:dtype="String" itemSubjectRef="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsToPromoteInputXItem" name="PA_CommitsToPromote"/>
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ReviewedInputX" drools:dtype="Boolean" itemSubjectRef="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ReviewedInputXItem" name="PA_Reviewed"/>
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_RequiresReviewInputX" drools:dtype="Boolean" itemSubjectRef="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_RequiresReviewInputXItem" name="PA_RequiresReview"/>
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ListOfCommitsInputX" drools:dtype="String" itemSubjectRef="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ListOfCommitsInputXItem" name="PA_ListOfCommits"/>
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ListOfFilesInputX" drools:dtype="String" itemSubjectRef="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ListOfFilesInputXItem" name="PA_ListOfFiles"/>
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsPerFileInputX" drools:dtype="java.util.Map" itemSubjectRef="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsPerFileInputXItem" name="PA_CommitsPerFile"/>
+        <bpmn2:dataInput id="_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsInputX" drools:dtype="java.util.List" itemSubjectRef="__8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsInputXItem" name="PA_Commits"/>
+        <bpmn2:inputSet id="_LBfYRkSaEeSn8sM7NXMr2A">
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_ProcessNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_GitRepositoryNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_SourceBranchNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_TargetBranchNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsToPromoteInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ReviewedInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_RequiresReviewInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ListOfCommitsInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ListOfFilesInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsPerFileInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_8B497337-9D37-4344-8BCD-92AECC1054FE_TaskNameInputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="_LBfYR0SaEeSn8sM7NXMr2A"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_LBf_IESaEeSn8sM7NXMr2A">
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_TaskNameInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_LBf_IUSaEeSn8sM7NXMr2A">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_LBf_IkSaEeSn8sM7NXMr2A">AssetMgmtStart</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_LBf_I0SaEeSn8sM7NXMr2A">_8B497337-9D37-4344-8BCD-92AECC1054FE_TaskNameInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_JESaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>GitRepositoryName</bpmn2:sourceRef>
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_GitRepositoryNameInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_JUSaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>SourceBranchName</bpmn2:sourceRef>
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_SourceBranchNameInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_JkSaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>TargetBranchName</bpmn2:sourceRef>
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_TargetBranchNameInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_J0SaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>CommitsToPromote</bpmn2:sourceRef>
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsToPromoteInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_KESaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>Reviewed</bpmn2:sourceRef>
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ReviewedInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_KUSaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>RequiresReview</bpmn2:sourceRef>
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_RequiresReviewInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_KkSaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>ListOfCommits</bpmn2:sourceRef>
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ListOfCommitsInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_K0SaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>ListOfFiles</bpmn2:sourceRef>
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_ListOfFilesInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_LESaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>CommitsPerFile</bpmn2:sourceRef>
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsPerFileInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_LUSaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>Commits</bpmn2:sourceRef>
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_PA_CommitsInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_LkSaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>_ProcessName</bpmn2:sourceRef>
+        <bpmn2:targetRef>_8B497337-9D37-4344-8BCD-92AECC1054FE_ProcessNameInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="_4F7A1C17-ACA0-4EA3-A755-7586AFEE18AD" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_C1384A34-4473-4A91-99EA-A3996A27F9E7" targetRef="_8B497337-9D37-4344-8BCD-92AECC1054FE"/>
+    <bpmn2:sequenceFlow id="_EF5E45A0-31D5-4C3C-B78B-6BB773071238" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_8B497337-9D37-4344-8BCD-92AECC1054FE" targetRef="_DB3B9017-A807-4EE9-ADB8-F12407FEBD10"/>
+    <bpmn2:task id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0" drools:selectable="true" drools:taskName="AssetMgmtEnd" name="Asset Mgmt Process End">
+      <bpmn2:incoming>_8A1A07B8-1B44-4A80-9D4D-06DF9479FE01</bpmn2:incoming>
+      <bpmn2:outgoing>_50BC6465-E573-4DD3-B2DA-678ACD7841FB</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_LBf_L0SaEeSn8sM7NXMr2A">
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_TaskNameInputX" name="TaskName"/>
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_ProcessNameInputX" drools:dtype="String" itemSubjectRef="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_ProcessNameInputXItem" name="ProcessName"/>
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_GitRepositoryNameInputX" drools:dtype="String" itemSubjectRef="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_GitRepositoryNameInputXItem" name="PA_GitRepositoryName"/>
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_SourceBranchNameInputX" drools:dtype="String" itemSubjectRef="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_SourceBranchNameInputXItem" name="PA_SourceBranchName"/>
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_TargetBranchNameInputX" drools:dtype="String" itemSubjectRef="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_TargetBranchNameInputXItem" name="PA_TargetBranchName"/>
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsToPromoteInputX" drools:dtype="String" itemSubjectRef="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsToPromoteInputXItem" name="PA_CommitsToPromote"/>
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ReviewedInputX" drools:dtype="Boolean" itemSubjectRef="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ReviewedInputXItem" name="PA_Reviewed"/>
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_RequiresReviewInputX" drools:dtype="Boolean" itemSubjectRef="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_RequiresReviewInputXItem" name="PA_RequiresReview"/>
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ListOfCommitsInputX" drools:dtype="String" itemSubjectRef="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ListOfCommitsInputXItem" name="PA_ListOfCommits"/>
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ListOfFilesInputX" drools:dtype="String" itemSubjectRef="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ListOfFilesInputXItem" name="PA_ListOfFiles"/>
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsPerFileInputX" drools:dtype="java.util.Map" itemSubjectRef="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsPerFileInputXItem" name="PA_CommitsPerFile"/>
+        <bpmn2:dataInput id="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsInputX" drools:dtype="java.util.List" itemSubjectRef="__04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsInputXItem" name="PA_Commits"/>
+        <bpmn2:inputSet id="_LBf_MESaEeSn8sM7NXMr2A">
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_ProcessNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_GitRepositoryNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_SourceBranchNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_TargetBranchNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsToPromoteInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ReviewedInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_RequiresReviewInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ListOfCommitsInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ListOfFilesInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsPerFileInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_TaskNameInputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="_LBf_MUSaEeSn8sM7NXMr2A"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_LBf_MkSaEeSn8sM7NXMr2A">
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_TaskNameInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_LBf_M0SaEeSn8sM7NXMr2A">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_LBf_NESaEeSn8sM7NXMr2A">AssetMgmtEnd</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_LBf_NUSaEeSn8sM7NXMr2A">_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_TaskNameInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_NkSaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>GitRepositoryName</bpmn2:sourceRef>
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_GitRepositoryNameInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_N0SaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>SourceBranchName</bpmn2:sourceRef>
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_SourceBranchNameInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_OESaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>TargetBranchName</bpmn2:sourceRef>
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_TargetBranchNameInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_OUSaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>CommitsToPromote</bpmn2:sourceRef>
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsToPromoteInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_OkSaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>Reviewed</bpmn2:sourceRef>
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ReviewedInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_O0SaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>RequiresReview</bpmn2:sourceRef>
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_RequiresReviewInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_PESaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>ListOfCommits</bpmn2:sourceRef>
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ListOfCommitsInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_PUSaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>ListOfFiles</bpmn2:sourceRef>
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_ListOfFilesInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_PkSaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>CommitsPerFile</bpmn2:sourceRef>
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsPerFileInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_P0SaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>Commits</bpmn2:sourceRef>
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_PA_CommitsInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_LBf_QESaEeSn8sM7NXMr2A">
+        <bpmn2:sourceRef>_ProcessName</bpmn2:sourceRef>
+        <bpmn2:targetRef>_04C849AB-E39D-4C99-BC80-52B54C0D2BE0_ProcessNameInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="_8A1A07B8-1B44-4A80-9D4D-06DF9479FE01" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B" targetRef="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0"/>
+    <bpmn2:sequenceFlow id="_50BC6465-E573-4DD3-B2DA-678ACD7841FB" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0" targetRef="_3AA36656-B03C-41B5-8B9D-93FDA2156CE9"/>
   </bpmn2:process>
-  <bpmndi:BPMNDiagram id="_J9fmz0MhEeSq9MJCfxd0TA">
-    <bpmndi:BPMNPlane id="_J9fm0EMhEeSq9MJCfxd0TA" bpmnElement="asset-management-kmodule.PromoteAssets">
-      <bpmndi:BPMNShape id="_J9fm0UMhEeSq9MJCfxd0TA" bpmnElement="_C1384A34-4473-4A91-99EA-A3996A27F9E7">
+  <bpmndi:BPMNDiagram id="_LBf_QUSaEeSn8sM7NXMr2A">
+    <bpmndi:BPMNPlane id="_LBf_QkSaEeSn8sM7NXMr2A" bpmnElement="asset-management-kmodule.PromoteAssets">
+      <bpmndi:BPMNShape id="_LBf_Q0SaEeSn8sM7NXMr2A" bpmnElement="_C1384A34-4473-4A91-99EA-A3996A27F9E7">
         <dc:Bounds height="30.0" width="30.0" x="30.0" y="165.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_J9fm0kMhEeSq9MJCfxd0TA" bpmnElement="_3AA36656-B03C-41B5-8B9D-93FDA2156CE9">
-        <dc:Bounds height="28.0" width="28.0" x="832.0" y="258.0"/>
+      <bpmndi:BPMNShape id="_LBf_RESaEeSn8sM7NXMr2A" bpmnElement="_3AA36656-B03C-41B5-8B9D-93FDA2156CE9">
+        <dc:Bounds height="28.0" width="28.0" x="1005.0" y="281.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_J9fm00MhEeSq9MJCfxd0TA" bpmnElement="_E3DB1A21-CFEA-44D8-A3FD-67AAB54AD29B">
-        <dc:Bounds height="80.0" width="100.0" x="105.0" y="140.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="_J9fm1EMhEeSq9MJCfxd0TA" bpmnElement="_A66F1F53-9530-480B-B48C-4364CE42228C">
-        <di:waypoint xsi:type="dc:Point" x="45.0" y="180.0"/>
-        <di:waypoint xsi:type="dc:Point" x="155.0" y="180.0"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_J9fm1UMhEeSq9MJCfxd0TA" bpmnElement="_BD343DF4-A957-4AF8-8092-6AA2370BD86F">
-        <dc:Bounds height="80.0" width="100.0" x="720.0" y="255.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="_J9fm1kMhEeSq9MJCfxd0TA" bpmnElement="_C36BCF02-2F8E-4147-9083-32E4D96B9EE5">
-        <di:waypoint xsi:type="dc:Point" x="770.0" y="295.0"/>
-        <di:waypoint xsi:type="dc:Point" x="846.0" y="272.0"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_J9fm10MhEeSq9MJCfxd0TA" bpmnElement="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066">
+      <bpmndi:BPMNShape id="_LBf_RUSaEeSn8sM7NXMr2A" bpmnElement="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066">
         <dc:Bounds height="80.0" width="100.0" x="390.0" y="140.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_J9fm2EMhEeSq9MJCfxd0TA" bpmnElement="_F1CB2358-BE01-41E0-A4AA-E72A2DDB335C">
+      <bpmndi:BPMNShape id="_LBf_RkSaEeSn8sM7NXMr2A" bpmnElement="_F1CB2358-BE01-41E0-A4AA-E72A2DDB335C">
         <dc:Bounds height="40.0" width="40.0" x="525.0" y="160.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="_J9fm2UMhEeSq9MJCfxd0TA" bpmnElement="_D77765DB-9274-472A-A133-8DBED863C5F3">
+      <bpmndi:BPMNEdge id="_LBf_R0SaEeSn8sM7NXMr2A" bpmnElement="_D77765DB-9274-472A-A133-8DBED863C5F3">
         <di:waypoint xsi:type="dc:Point" x="440.0" y="180.0"/>
         <di:waypoint xsi:type="dc:Point" x="545.0" y="180.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_J9fm2kMhEeSq9MJCfxd0TA" bpmnElement="_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473">
+      <bpmndi:BPMNShape id="_LBf_SESaEeSn8sM7NXMr2A" bpmnElement="_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473">
         <dc:Bounds height="80.0" width="100.0" x="585.0" y="60.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="_J9fm20MhEeSq9MJCfxd0TA" bpmnElement="_2AEE79F4-4082-47B2-BA60-1DDFA22D46D7">
+      <bpmndi:BPMNEdge id="_LBf_SUSaEeSn8sM7NXMr2A" bpmnElement="_2AEE79F4-4082-47B2-BA60-1DDFA22D46D7">
         <di:waypoint xsi:type="dc:Point" x="545.0" y="180.0"/>
         <di:waypoint xsi:type="dc:Point" x="545.0" y="100.0"/>
         <di:waypoint xsi:type="dc:Point" x="635.0" y="100.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_J9fm3EMhEeSq9MJCfxd0TA" bpmnElement="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B">
+      <bpmndi:BPMNShape id="_LBf_SkSaEeSn8sM7NXMr2A" bpmnElement="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B">
         <dc:Bounds height="80.0" width="100.0" x="585.0" y="255.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="_J9fm3UMhEeSq9MJCfxd0TA" bpmnElement="_0E355AE7-B680-40A7-BF90-A50F10A0C91C">
+      <bpmndi:BPMNEdge id="_LBf_S0SaEeSn8sM7NXMr2A" bpmnElement="_0E355AE7-B680-40A7-BF90-A50F10A0C91C">
         <di:waypoint xsi:type="dc:Point" x="545.0" y="180.0"/>
         <di:waypoint xsi:type="dc:Point" x="545.0" y="295.0"/>
         <di:waypoint xsi:type="dc:Point" x="635.0" y="295.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="_J9fm3kMhEeSq9MJCfxd0TA" bpmnElement="_FC4496CF-6640-4D2F-A232-A838CCB43745">
-        <di:waypoint xsi:type="dc:Point" x="635.0" y="295.0"/>
-        <di:waypoint xsi:type="dc:Point" x="770.0" y="295.0"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_J9gN0EMhEeSq9MJCfxd0TA" bpmnElement="_DB3B9017-A807-4EE9-ADB8-F12407FEBD10">
+      <bpmndi:BPMNShape id="_LBf_TESaEeSn8sM7NXMr2A" bpmnElement="_DB3B9017-A807-4EE9-ADB8-F12407FEBD10">
         <dc:Bounds height="40.0" width="40.0" x="285.0" y="160.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="_J9gN0UMhEeSq9MJCfxd0TA" bpmnElement="_65DF60E0-DD38-40F2-A8A4-4A04AAF9A8B6">
-        <di:waypoint xsi:type="dc:Point" x="155.0" y="180.0"/>
-        <di:waypoint xsi:type="dc:Point" x="305.0" y="180.0"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="_J9gN0kMhEeSq9MJCfxd0TA" bpmnElement="_74CB3FBC-D9A7-4D54-9AB7-74BC76242C3A">
+      <bpmndi:BPMNEdge id="_LBf_TUSaEeSn8sM7NXMr2A" bpmnElement="_74CB3FBC-D9A7-4D54-9AB7-74BC76242C3A">
         <di:waypoint xsi:type="dc:Point" x="305.0" y="180.0"/>
         <di:waypoint xsi:type="dc:Point" x="365.0" y="310.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="_J9gN00MhEeSq9MJCfxd0TA" bpmnElement="_4C530C0A-3FF1-4416-A4C4-6EDB3E4B862B">
+      <bpmndi:BPMNEdge id="_LBf_TkSaEeSn8sM7NXMr2A" bpmnElement="_4C530C0A-3FF1-4416-A4C4-6EDB3E4B862B">
         <di:waypoint xsi:type="dc:Point" x="635.0" y="100.0"/>
         <di:waypoint xsi:type="dc:Point" x="635.0" y="46.0"/>
         <di:waypoint xsi:type="dc:Point" x="305.0" y="46.0"/>
         <di:waypoint xsi:type="dc:Point" x="305.0" y="180.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_J9gN1EMhEeSq9MJCfxd0TA" bpmnElement="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A">
+      <bpmndi:BPMNShape id="_LBf_T0SaEeSn8sM7NXMr2A" bpmnElement="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A">
         <dc:Bounds height="80.0" width="100.0" x="315.0" y="270.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="_J9gN1UMhEeSq9MJCfxd0TA" bpmnElement="_FC4F435A-3622-414E-8AFE-5BF925B48B41">
+      <bpmndi:BPMNEdge id="_LBf_UESaEeSn8sM7NXMr2A" bpmnElement="_FC4F435A-3622-414E-8AFE-5BF925B48B41">
         <di:waypoint xsi:type="dc:Point" x="365.0" y="310.0"/>
         <di:waypoint xsi:type="dc:Point" x="365.0" y="180.0"/>
         <di:waypoint xsi:type="dc:Point" x="440.0" y="180.0"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_LBf_UUSaEeSn8sM7NXMr2A" bpmnElement="_8B497337-9D37-4344-8BCD-92AECC1054FE">
+        <dc:Bounds height="80.0" width="100.0" x="135.0" y="135.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_LBf_UkSaEeSn8sM7NXMr2A" bpmnElement="_4F7A1C17-ACA0-4EA3-A755-7586AFEE18AD">
+        <di:waypoint xsi:type="dc:Point" x="45.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="97.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="97.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="185.0" y="175.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_LBf_U0SaEeSn8sM7NXMr2A" bpmnElement="_EF5E45A0-31D5-4C3C-B78B-6BB773071238">
+        <di:waypoint xsi:type="dc:Point" x="185.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="260.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="260.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="305.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_LBf_VESaEeSn8sM7NXMr2A" bpmnElement="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0">
+        <dc:Bounds height="80.0" width="100.0" x="765.0" y="255.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_LBf_VUSaEeSn8sM7NXMr2A" bpmnElement="_8A1A07B8-1B44-4A80-9D4D-06DF9479FE01">
+        <di:waypoint xsi:type="dc:Point" x="635.0" y="295.0"/>
+        <di:waypoint xsi:type="dc:Point" x="815.0" y="295.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_LBgmMESaEeSn8sM7NXMr2A" bpmnElement="_50BC6465-E573-4DD3-B2DA-678ACD7841FB">
+        <di:waypoint xsi:type="dc:Point" x="815.0" y="295.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1019.0" y="295.0"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-  <bpmn2:relationship id="_J9gN1kMhEeSq9MJCfxd0TA" type="BPSimData">
+  <bpmn2:relationship id="_LBgmMUSaEeSn8sM7NXMr2A" type="BPSimData">
     <bpmn2:extensionElements>
       <bpsim:BPSimData>
         <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
           <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters" baseTimeUnit="min"/>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_FC4496CF-6640-4D2F-A232-A838CCB43745" id="_J9iDAEMhEeSq9MJCfxd0TA">
-            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
-              <bpsim:Probability xsi:type="bpsim:Parameter">
-                <bpsim:FloatingParameter value="100.0"/>
-              </bpsim:Probability>
-            </bpsim:ControlParameters>
-          </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_C36BCF02-2F8E-4147-9083-32E4D96B9EE5" id="_J9iDAUMhEeSq9MJCfxd0TA">
-            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
-              <bpsim:Probability xsi:type="bpsim:Parameter">
-                <bpsim:FloatingParameter value="100.0"/>
-              </bpsim:Probability>
-            </bpsim:ControlParameters>
-          </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_C1384A34-4473-4A91-99EA-A3996A27F9E7" id="_J9iDAkMhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_C1384A34-4473-4A91-99EA-A3996A27F9E7" id="_LBgmMkSaEeSn8sM7NXMr2A">
             <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
               <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
                 <bpsim:UniformDistribution max="10.0" min="5.0"/>
@@ -422,28 +599,28 @@
               </bpsim:Probability>
             </bpsim:ControlParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_4C530C0A-3FF1-4416-A4C4-6EDB3E4B862B" id="_J9iDA0MhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_EF5E45A0-31D5-4C3C-B78B-6BB773071238" id="_LBgmM0SaEeSn8sM7NXMr2A">
             <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
               <bpsim:Probability xsi:type="bpsim:Parameter">
                 <bpsim:FloatingParameter value="100.0"/>
               </bpsim:Probability>
             </bpsim:ControlParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_3AA36656-B03C-41B5-8B9D-93FDA2156CE9" id="_J9iDBEMhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_4C530C0A-3FF1-4416-A4C4-6EDB3E4B862B" id="_LBgmNESaEeSn8sM7NXMr2A">
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_3AA36656-B03C-41B5-8B9D-93FDA2156CE9" id="_LBgmNUSaEeSn8sM7NXMr2A">
             <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
               <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
                 <bpsim:UniformDistribution max="10.0" min="5.0"/>
               </bpsim:ProcessingTime>
             </bpsim:TimeParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_A66F1F53-9530-480B-B48C-4364CE42228C" id="_J9iDBUMhEeSq9MJCfxd0TA">
-            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
-              <bpsim:Probability xsi:type="bpsim:Parameter">
-                <bpsim:FloatingParameter value="100.0"/>
-              </bpsim:Probability>
-            </bpsim:ControlParameters>
-          </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066" id="_J9iDBkMhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_9735E9B2-29F9-41C2-ADA9-BD5802E7C066" id="_LBgmNkSaEeSn8sM7NXMr2A">
             <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
               <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
                 <bpsim:UniformDistribution max="10.0" min="5.0"/>
@@ -463,7 +640,7 @@
               </bpsim:UnitCost>
             </bpsim:CostParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473" id="_J9iDB0MhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_34E1B788-4B6A-42AD-9C2A-25A8FA7EB473" id="_LBgmN0SaEeSn8sM7NXMr2A">
             <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
               <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
                 <bpsim:UniformDistribution max="10.0" min="5.0"/>
@@ -483,14 +660,7 @@
               </bpsim:UnitCost>
             </bpsim:CostParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_2AEE79F4-4082-47B2-BA60-1DDFA22D46D7" id="_J9iqEEMhEeSq9MJCfxd0TA">
-            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
-              <bpsim:Probability xsi:type="bpsim:Parameter">
-                <bpsim:FloatingParameter value="100.0"/>
-              </bpsim:Probability>
-            </bpsim:ControlParameters>
-          </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A" id="_J9iqEUMhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_8B497337-9D37-4344-8BCD-92AECC1054FE" id="_LBgmOESaEeSn8sM7NXMr2A">
             <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
               <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
                 <bpsim:UniformDistribution max="10.0" min="5.0"/>
@@ -502,7 +672,21 @@
               </bpsim:UnitCost>
             </bpsim:CostParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_BD343DF4-A957-4AF8-8092-6AA2370BD86F" id="_J9iqEkMhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_8A1A07B8-1B44-4A80-9D4D-06DF9479FE01" id="_LBgmOUSaEeSn8sM7NXMr2A">
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_2AEE79F4-4082-47B2-BA60-1DDFA22D46D7" id="_LBgmOkSaEeSn8sM7NXMr2A">
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_0CB8E93A-91E2-4C97-A8A7-C8F913CA626A" id="_LBgmO0SaEeSn8sM7NXMr2A">
             <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
               <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
                 <bpsim:UniformDistribution max="10.0" min="5.0"/>
@@ -514,21 +698,35 @@
               </bpsim:UnitCost>
             </bpsim:CostParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_FC4F435A-3622-414E-8AFE-5BF925B48B41" id="_J9iqE0MhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_FC4F435A-3622-414E-8AFE-5BF925B48B41" id="_LBgmPESaEeSn8sM7NXMr2A">
             <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
               <bpsim:Probability xsi:type="bpsim:Parameter">
                 <bpsim:FloatingParameter value="100.0"/>
               </bpsim:Probability>
             </bpsim:ControlParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_65DF60E0-DD38-40F2-A8A4-4A04AAF9A8B6" id="_J9iqFEMhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_50BC6465-E573-4DD3-B2DA-678ACD7841FB" id="_LBgmPUSaEeSn8sM7NXMr2A">
             <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
               <bpsim:Probability xsi:type="bpsim:Parameter">
                 <bpsim:FloatingParameter value="100.0"/>
               </bpsim:Probability>
             </bpsim:ControlParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_E3DB1A21-CFEA-44D8-A3FD-67AAB54AD29B" id="_J9iqFUMhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_0E355AE7-B680-40A7-BF90-A50F10A0C91C" id="_LBgmPkSaEeSn8sM7NXMr2A">
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_74CB3FBC-D9A7-4D54-9AB7-74BC76242C3A" id="_LBgmP0SaEeSn8sM7NXMr2A">
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B" id="_LBgmQESaEeSn8sM7NXMr2A">
             <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
               <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
                 <bpsim:UniformDistribution max="10.0" min="5.0"/>
@@ -540,21 +738,21 @@
               </bpsim:UnitCost>
             </bpsim:CostParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_0E355AE7-B680-40A7-BF90-A50F10A0C91C" id="_J9iqFkMhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_4F7A1C17-ACA0-4EA3-A755-7586AFEE18AD" id="_LBgmQUSaEeSn8sM7NXMr2A">
             <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
               <bpsim:Probability xsi:type="bpsim:Parameter">
                 <bpsim:FloatingParameter value="100.0"/>
               </bpsim:Probability>
             </bpsim:ControlParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_74CB3FBC-D9A7-4D54-9AB7-74BC76242C3A" id="_J9iqF0MhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_D77765DB-9274-472A-A133-8DBED863C5F3" id="_LBgmQkSaEeSn8sM7NXMr2A">
             <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
               <bpsim:Probability xsi:type="bpsim:Parameter">
                 <bpsim:FloatingParameter value="100.0"/>
               </bpsim:Probability>
             </bpsim:ControlParameters>
           </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_5E0B6F44-A02B-43E6-BAC7-3AD8AB17337B" id="_J9iqGEMhEeSq9MJCfxd0TA">
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_04C849AB-E39D-4C99-BC80-52B54C0D2BE0" id="_LBgmQ0SaEeSn8sM7NXMr2A">
             <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
               <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
                 <bpsim:UniformDistribution max="10.0" min="5.0"/>
@@ -565,18 +763,11 @@
                 <bpsim:FloatingParameter value="0.0"/>
               </bpsim:UnitCost>
             </bpsim:CostParameters>
-          </bpsim:ElementParameters>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_D77765DB-9274-472A-A133-8DBED863C5F3" id="_J9iqGUMhEeSq9MJCfxd0TA">
-            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
-              <bpsim:Probability xsi:type="bpsim:Parameter">
-                <bpsim:FloatingParameter value="100.0"/>
-              </bpsim:Probability>
-            </bpsim:ControlParameters>
           </bpsim:ElementParameters>
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_J9dxkEMhEeSq9MJCfxd0TA</bpmn2:source>
-    <bpmn2:target>_J9dxkEMhEeSq9MJCfxd0TA</bpmn2:target>
+    <bpmn2:source>_LBexAESaEeSn8sM7NXMr2A</bpmn2:source>
+    <bpmn2:target>_LBexAESaEeSn8sM7NXMr2A</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>

@@ -20,18 +20,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.guvnor.asset.management.social.ProcessStartEvent;
+import org.guvnor.asset.management.social.ProcessEndEvent;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
-public class ProcessEndEventAdapter implements SocialAdapter<ProcessStartEvent> {
+public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
 
     @Override
-    public Class<ProcessStartEvent> eventToIntercept() {
-        return ProcessStartEvent.class;
+    public Class<ProcessEndEvent> eventToIntercept() {
+        return ProcessEndEvent.class;
     }
 
     @Override
@@ -50,11 +50,11 @@ public class ProcessEndEventAdapter implements SocialAdapter<ProcessStartEvent> 
 
     @Override
     public SocialActivitiesEvent toSocial(Object object) {
-        ProcessStartEvent event = (ProcessStartEvent ) object;
+        ProcessEndEvent event = (ProcessEndEvent ) object;
 
         //TODO verify this info
         return new SocialActivitiesEvent(
-                new SocialUser("Mr. Process"),
+                new SocialUser(event.getUser()),
                 AssetManagementEventTypes.PROCESS_END.name(),
                 new Date(event.getTimestamp())
         ).withAdicionalInfo("Process: " + event.getProcessName() + " finished on: " + event.getRepositoryAlias());
