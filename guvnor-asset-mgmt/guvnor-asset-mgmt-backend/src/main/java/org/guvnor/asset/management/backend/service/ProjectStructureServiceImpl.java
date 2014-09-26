@@ -40,7 +40,7 @@ public class ProjectStructureServiceImpl
     private POMService pomService;
 
     @Inject
-    private ProjectService projectService;
+    private ProjectService<? extends Project> projectService;
 
     @Inject
     private MetadataService metadataService;
