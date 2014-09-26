@@ -42,6 +42,13 @@ public interface BuildService {
     BuildResults buildAndDeploy( final Project project );
 
     /**
+     * Full build with deployment with ability to suppress any post operations handlers to ensure
+     * that only build and deploy was invoked
+     * @param project
+     */
+    BuildResults buildAndDeploy( final Project project, boolean suppressHandlers );
+
+    /**
      * Check whether a Project has been built
      * @param project
      * @return

@@ -26,6 +26,7 @@ import org.guvnor.asset.management.model.BuildProjectStructureEvent;
 import org.guvnor.asset.management.model.ConfigureRepositoryEvent;
 import org.guvnor.asset.management.model.PromoteChangesEvent;
 
+import org.guvnor.asset.management.model.ReleaseProjectEvent;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.jboss.errai.bus.server.annotations.Service;
 
@@ -39,6 +40,9 @@ public class AssetManagementServiceImpl implements AssetManagementService {
     private Event<BuildProjectStructureEvent> buildProjectStructureEvent;
     @Inject
     private Event<PromoteChangesEvent> promoteChangesEvent;
+
+    @Inject
+    private Event<ReleaseProjectEvent> releaseProjectEvent;
 
     public AssetManagementServiceImpl() {
     }
@@ -67,7 +71,7 @@ public class AssetManagementServiceImpl implements AssetManagementService {
 	    params.put("Username", userName);
 	    params.put("Password", password);
 	    params.put("ExecServerURL", serverURL);
-	    params.put("DeployToRuntime", Boolean.TRUE.equals( deployToRuntime ));
+	    params.put("DeployToRuntime", Boolean.TRUE.equals(deployToRuntime));
         buildProjectStructureEvent.fire(new BuildProjectStructureEvent(params));
     }
 
@@ -79,10 +83,19 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         params.put("TargetBranchName", destBranch);
         promoteChangesEvent.fire(new PromoteChangesEvent(params));
     }
-    
-    
-    
 
-   
+    @Override
+    public void releaseProject(String repository, String branch, String project, String userName, String password, String serverURL, Boolean deployToRuntime, String version) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ProjectURI", repository+"/"+project);
+        params.put("BranchName", branch);
+        params.put("Username", userName);
+        params.put("Password", password);
+        params.put("ExecServerURL", serverURL);
+        params.put("ToReleaseVersion", version);
+        params.put("DeployToRuntime", Boolean.TRUE.equals(deployToRuntime));
+
+        releaseProjectEvent.fire(new ReleaseProjectEvent(params));
+    }
 
 }

@@ -26,4 +26,7 @@ public interface AssetManagementService {
                             String userName, String password, String serverURL, Boolean deployToRuntime);
     
     void promoteChanges(String repository, String sourceBranch, String destBranch);
+
+    void releaseProject(String repository, String branch, String project,
+            String userName, String password, String serverURL, Boolean deployToRuntime, String version);
 }

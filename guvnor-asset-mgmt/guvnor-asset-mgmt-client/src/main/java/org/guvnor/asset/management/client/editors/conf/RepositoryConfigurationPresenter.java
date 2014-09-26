@@ -125,8 +125,9 @@ public class RepositoryConfigurationPresenter {
             @Override
             public void callback(ProjectStructureModel model) {
               if(model != null && model.getPOM() != null){
-                view.getCurrentVersionText().setText(model.getPOM().getGav().getVersion());
-                view.getVersionText().setText(model.getPOM().getGav().getVersion());
+                // don't include snapshot for branch names
+                view.getCurrentVersionText().setText(model.getPOM().getGav().getVersion().replace("-SNAPSHOT", ""));
+                view.getVersionText().setText(model.getPOM().getGav().getVersion().replace("-SNAPSHOT", ""));
               }else{
                 view.getCurrentVersionText().setText(constants.No_Project_Structure_Available());
                 view.getVersionText().setText("1.0.0");

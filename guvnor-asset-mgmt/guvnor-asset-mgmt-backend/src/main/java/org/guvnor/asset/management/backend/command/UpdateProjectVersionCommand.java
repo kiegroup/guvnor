@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.guvnor.asset.management.backend.AssetManagementRuntimeException;
 import org.guvnor.asset.management.backend.utils.CDIUtils;
 import org.guvnor.asset.management.backend.utils.NamedLiteral;
 import org.guvnor.common.services.project.model.POM;
@@ -24,45 +25,49 @@ public class UpdateProjectVersionCommand extends AbstractCommand {
 
 	@Override
 	public ExecutionResults execute(CommandContext ctx) throws Exception {
-		ExecutionResults executionResults = new ExecutionResults();
-		
-		
-		String uri = (String) getParameter(ctx, "Uri");
-		String branchToUpdate = (String) getParameter(ctx, "BranchToUpdate");
-		String version = (String) getParameter(ctx, "Version");
-		
-		String projectUri = "default://"+branchToUpdate+"@"+uri;
-				
-		BeanManager beanManager = CDIUtils.lookUpBeanManager(ctx);
-		logger.debug("BeanManager " + beanManager);
-		
-		POMService pomService = CDIUtils.createBean(POMService.class, beanManager);
-		logger.debug("POMService " + pomService);
-				
-		IOService ioService = CDIUtils.createBean(IOService.class, beanManager, new NamedLiteral("ioStrategy"));
-		logger.debug("IoService " + ioService);
-		if (ioService != null) {
-			Path projectPath  = ioService.get(URI.create(projectUri));
-			logger.debug("Project path is " + projectPath);
-			
-			if (projectPath == null) {
-				throw new IllegalArgumentException("Unable to find project location " + projectUri);
-			}
-			
-			ProjectService projectService = CDIUtils.createBean(ProjectService.class, beanManager);
-			Project project = projectService.resolveProject(Paths.convert(projectPath));
-			
-			if (project == null) {
-				throw new IllegalArgumentException("Unable to find project " + projectUri);
-			}
-			
-			POM pom = pomService.load(project.getPomXMLPath());
-			pom.getGav().setVersion(version);
-			pomService.save(project.getPomXMLPath(), pom, null, "Update project version during release");
-			executionResults.setData("GAV", pom.getGav().toString());
-		}
+		try {
+            ExecutionResults executionResults = new ExecutionResults();
 
-		return executionResults;
+
+            String uri = (String) getParameter(ctx, "Uri");
+            String branchToUpdate = (String) getParameter(ctx, "BranchToUpdate");
+            String version = (String) getParameter(ctx, "Version");
+
+            String projectUri = "default://"+branchToUpdate+"@"+uri;
+
+            BeanManager beanManager = CDIUtils.lookUpBeanManager(ctx);
+            logger.debug("BeanManager " + beanManager);
+
+            POMService pomService = CDIUtils.createBean(POMService.class, beanManager);
+            logger.debug("POMService " + pomService);
+
+            IOService ioService = CDIUtils.createBean(IOService.class, beanManager, new NamedLiteral("ioStrategy"));
+            logger.debug("IoService " + ioService);
+            if (ioService != null) {
+                Path projectPath  = ioService.get(URI.create(projectUri));
+                logger.debug("Project path is " + projectPath);
+
+                if (projectPath == null) {
+                    throw new IllegalArgumentException("Unable to find project location " + projectUri);
+                }
+
+                ProjectService projectService = CDIUtils.createBean(ProjectService.class, beanManager);
+                Project project = projectService.resolveProject(Paths.convert(projectPath));
+
+                if (project == null) {
+                    throw new IllegalArgumentException("Unable to find project " + projectUri);
+                }
+
+                POM pom = pomService.load(project.getPomXMLPath());
+                pom.getGav().setVersion(version);
+                pomService.save(project.getPomXMLPath(), pom, null, "Update project version during release");
+                executionResults.setData("GAV", pom.getGav().toString());
+            }
+
+            return executionResults;
+        } catch (Throwable e) {
+            throw new AssetManagementRuntimeException(e);
+        }
 	}
 
 	

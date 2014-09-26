@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 import javax.enterprise.inject.spi.BeanManager;
+
+import org.guvnor.asset.management.backend.AssetManagementRuntimeException;
 import org.guvnor.asset.management.backend.model.CommitInfo;
 
 import org.guvnor.asset.management.backend.utils.CDIUtils;
@@ -28,75 +30,78 @@ public class CherryPickCommand extends AbstractCommand {
 
     @Override
     public ExecutionResults execute(CommandContext commandContext) throws Exception {
-
-        String gitRepo = (String) getParameter(commandContext, "GitRepository");
-        String toBranchName = (String) getParameter(commandContext, "ToBranchName");
-        String fromBranchName = (String) getParameter(commandContext, "FromBranchName");
-        List<CommitInfo> commitsInfos = (List<CommitInfo>) getParameter(commandContext, "CommitsInfos");
-        String commitsString = (String) getParameter(commandContext, "CommitsString");
-        String[] commits = commitsString.split(",");
-        AssetsPromotedEvent event;
-
-        Collections.sort(commitsInfos, new Comparator<CommitInfo>() {
-
-            @Override
-            public int compare(CommitInfo o1, CommitInfo o2) {
-                if (o1.getCommitDate().before(o2.getCommitDate())) {
-                    return -1;
-                } else if (o1.getCommitDate().after(o2.getCommitDate())) {
-                    return 1;
-                }
-                return 0;
-            }
-        });
-        String[] orderedCommits = new String[commits.length];
-        int count = 0;
-        for (CommitInfo c : commitsInfos) {
-            for (String s : commits) {
-                if(c.getCommitId().equals(s)){
-                    orderedCommits[count] = s;
-                    count++;
-                }
-            }
-        }
-
-        BeanManager beanManager = CDIUtils.lookUpBeanManager(commandContext);
-        logger.debug("BeanManager " + beanManager);
-
-        IOService ioService = CDIUtils.createBean(IOService.class, beanManager, new NamedLiteral("ioStrategy"));
-        logger.debug("IoService " + ioService);
-
-        Path fromBranchPath = ioService.get(URI.create("default://" + fromBranchName + "@" + gitRepo));
-        Path toBranchPath = ioService.get(URI.create("default://" + toBranchName + "@" + gitRepo));
-
-        CherryPickCopyOption copyOption = new CherryPickCopyOption(orderedCommits);
-        String outcome = "unknown";
-
-        RepositoryService repositoryService = CDIUtils.createBean( RepositoryService.class, beanManager );
-        String repositoryURI = readRepositoryURI( repositoryService, gitRepo );
-
-        event = getSocialEvent( gitRepo, repositoryURI, fromBranchName, toBranchName, commitsInfos, "system" );
-
         try {
-            logger.debug("Cherry pick command execution");
-            ioService.copy(fromBranchPath, toBranchPath, copyOption);
+            String gitRepo = (String) getParameter(commandContext, "GitRepository");
+            String toBranchName = (String) getParameter(commandContext, "ToBranchName");
+            String fromBranchName = (String) getParameter(commandContext, "FromBranchName");
+            List<CommitInfo> commitsInfos = (List<CommitInfo>) getParameter(commandContext, "CommitsInfos");
+            String commitsString = (String) getParameter(commandContext, "CommitsString");
+            String[] commits = commitsString.split(",");
+            AssetsPromotedEvent event;
 
-            outcome = "success";
+            Collections.sort(commitsInfos, new Comparator<CommitInfo>() {
 
-        } catch (Exception e) {
-            outcome = "failure : " + e.getMessage();
-            event.setError( outcome );
-            logger.error("Error when cherry picking commits from {} to {}", fromBranchName, toBranchName, e);
-        } finally {
-            if (beanManager != null && event != null) {
-                beanManager.fireEvent( event );
+                @Override
+                public int compare(CommitInfo o1, CommitInfo o2) {
+                    if (o1.getCommitDate().before(o2.getCommitDate())) {
+                        return -1;
+                    } else if (o1.getCommitDate().after(o2.getCommitDate())) {
+                        return 1;
+                    }
+                    return 0;
+                }
+            });
+            String[] orderedCommits = new String[commits.length];
+            int count = 0;
+            for (CommitInfo c : commitsInfos) {
+                for (String s : commits) {
+                    if(c.getCommitId().equals(s)){
+                        orderedCommits[count] = s;
+                        count++;
+                    }
+                }
             }
+
+            BeanManager beanManager = CDIUtils.lookUpBeanManager(commandContext);
+            logger.debug("BeanManager " + beanManager);
+
+            IOService ioService = CDIUtils.createBean(IOService.class, beanManager, new NamedLiteral("ioStrategy"));
+            logger.debug("IoService " + ioService);
+
+            Path fromBranchPath = ioService.get(URI.create("default://" + fromBranchName + "@" + gitRepo));
+            Path toBranchPath = ioService.get(URI.create("default://" + toBranchName + "@" + gitRepo));
+
+            CherryPickCopyOption copyOption = new CherryPickCopyOption(orderedCommits);
+            String outcome = "unknown";
+
+            RepositoryService repositoryService = CDIUtils.createBean( RepositoryService.class, beanManager );
+            String repositoryURI = readRepositoryURI( repositoryService, gitRepo );
+
+            event = getSocialEvent( gitRepo, repositoryURI, fromBranchName, toBranchName, commitsInfos, "system" );
+
+            try {
+                logger.debug("Cherry pick command execution");
+                ioService.copy(fromBranchPath, toBranchPath, copyOption);
+
+                outcome = "success";
+
+            } catch (Exception e) {
+                outcome = "failure : " + e.getMessage();
+                event.setError( outcome );
+                logger.error("Error when cherry picking commits from {} to {}", fromBranchName, toBranchName, e);
+            } finally {
+                if (beanManager != null && event != null) {
+                    beanManager.fireEvent( event );
+                }
+            }
+
+            ExecutionResults results = new ExecutionResults();
+            results.setData("CherryPickResult", outcome);
+
+            return results;
+        } catch (Throwable e) {
+            throw new AssetManagementRuntimeException(e);
         }
-
-        ExecutionResults results = new ExecutionResults();
-        results.setData("CherryPickResult", outcome);
-
-        return results;
     }
 
     private AssetsPromotedEvent getSocialEvent(String repository,

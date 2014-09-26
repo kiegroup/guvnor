@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_2gV1QENGEeSjFt3GEtEFog" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
   <bpmn2:itemDefinition id="_RepositoryNameItem" structureRef="String"/>
-  <bpmn2:itemDefinition id="_ExceptionItem" structureRef="java.lang.Exception"/>
+  <bpmn2:itemDefinition id="_ExceptionItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_DevBranchNameItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_RelBranchNameItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_VersionItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_SourceBranchNameItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__ProcessNameItem" structureRef="String"/>
-  <bpmn2:error id="_2gXDhENGEeSjFt3GEtEFog"/>
-  <bpmn2:itemDefinition id="__9A31C920-12B0-4F37-8E01-A09D5929539C_ErrorInputXItem" structureRef="java.lang.Exception"/>
+  <bpmn2:error id="_2gXDhENGEeSjFt3GEtEFog"  errorCode="org.guvnor.asset.management.backend.AssetManagementRuntimeException"/>
+  <bpmn2:itemDefinition id="__9A31C920-12B0-4F37-8E01-A09D5929539C_ErrorInputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__9A31C920-12B0-4F37-8E01-A09D5929539C_GroupIdInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__4E71F26C-7C3C-4976-928C-3C6256FF2B1E_CB_RepositoryNameInputXItem" structureRef="java.lang.String"/>
   <bpmn2:itemDefinition id="__4E71F26C-7C3C-4976-928C-3C6256FF2B1E_CB_SourceBranchNameInputXItem" structureRef="java.lang.String"/>
@@ -180,7 +180,7 @@
       <bpmn2:outgoing>_F716F9A9-4355-4375-A1C2-2A616C67E507</bpmn2:outgoing>
       <bpmn2:ioSpecification id="_2gWcdkNGEeSjFt3GEtEFog">
         <bpmn2:dataInput id="_9A31C920-12B0-4F37-8E01-A09D5929539C_TaskNameInputX" name="TaskName"/>
-        <bpmn2:dataInput id="_9A31C920-12B0-4F37-8E01-A09D5929539C_ErrorInputX" drools:dtype="java.lang.Exception" itemSubjectRef="__9A31C920-12B0-4F37-8E01-A09D5929539C_ErrorInputXItem" name="Error"/>
+        <bpmn2:dataInput id="_9A31C920-12B0-4F37-8E01-A09D5929539C_ErrorInputX" drools:dtype="String" itemSubjectRef="__9A31C920-12B0-4F37-8E01-A09D5929539C_ErrorInputXItem" name="Error"/>
         <bpmn2:dataInput id="_9A31C920-12B0-4F37-8E01-A09D5929539C_GroupIdInputX" drools:dtype="Object" itemSubjectRef="__9A31C920-12B0-4F37-8E01-A09D5929539C_GroupIdInputXItem" name="GroupId"/>
         <bpmn2:inputSet id="_2gWcd0NGEeSjFt3GEtEFog">
           <bpmn2:dataInputRefs>_9A31C920-12B0-4F37-8E01-A09D5929539C_ErrorInputX</bpmn2:dataInputRefs>
@@ -189,6 +189,10 @@
         </bpmn2:inputSet>
         <bpmn2:outputSet id="_2gWceENGEeSjFt3GEtEFog"/>
       </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_pYgnnUSfEeSn8sM7NXMr2A2">
+        <bpmn2:sourceRef>Exception</bpmn2:sourceRef>
+        <bpmn2:targetRef>_9A31C920-12B0-4F37-8E01-A09D5929539C_ErrorInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_2gWceUNGEeSjFt3GEtEFog">
         <bpmn2:targetRef>_9A31C920-12B0-4F37-8E01-A09D5929539C_TaskNameInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_2gXDYENGEeSjFt3GEtEFog">
@@ -332,6 +336,7 @@
       <bpmn2:dataOutputAssociation id="_2gXDgkNGEeSjFt3GEtEFog">
         <bpmn2:sourceRef>_3C1E7255-10E7-47EC-8254-5F5C48A5F020_error</bpmn2:sourceRef>
         <bpmn2:targetRef>Exception</bpmn2:targetRef>
+        <bpmn2:transformation language="http://www.mvel.org/2.0"><![CDATA[error.getMessage()]]></bpmn2:transformation>
       </bpmn2:dataOutputAssociation>
       <bpmn2:outputSet id="_2gXDgUNGEeSjFt3GEtEFog">
         <bpmn2:dataOutputRefs>_3C1E7255-10E7-47EC-8254-5F5C48A5F020_error</bpmn2:dataOutputRefs>
