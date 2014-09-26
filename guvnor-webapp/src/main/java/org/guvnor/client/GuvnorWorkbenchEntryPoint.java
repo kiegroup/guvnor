@@ -178,7 +178,7 @@ public class GuvnorWorkbenchEntryPoint {
                     @Override
                     public void execute() {
                         if ( defaultPerspective != null ) {
-                            placeManager.goTo(new DefaultPlaceRequest("org.guvnor.AuthoringPerspective"));
+                            placeManager.goTo(new DefaultPlaceRequest("AuthoringPerspective"));
                         } else {
                             Window.alert( " perspective not found." );
                         }

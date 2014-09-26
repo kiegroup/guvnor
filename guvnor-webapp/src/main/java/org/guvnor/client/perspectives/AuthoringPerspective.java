@@ -40,7 +40,7 @@ import org.uberfire.workbench.model.menu.Menus;
  * A Perspective to show M2_REPO related screen
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "org.guvnor.AuthoringPerspective", isDefault = false)
+@WorkbenchPerspective(identifier = "AuthoringPerspective", isDefault = false)
 public class AuthoringPerspective {
 
     @Inject
