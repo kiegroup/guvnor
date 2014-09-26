@@ -16,14 +16,16 @@
 
 package org.guvnor.asset.management.backend.social;
 
+import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
-import org.kie.uberfire.social.activities.model.SocialUser;
+import org.kie.uberfire.social.activities.repository.SocialUserRepository;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +33,9 @@ import java.util.List;
 @ApplicationScoped
 public class NewBranchEventAdapter
         implements SocialAdapter<NewBranchEvent> {
+
+    @Inject
+    private SocialUserRepository socialUserRepository;
 
     @Override
     public Class<NewBranchEvent> eventToIntercept() {
@@ -56,10 +61,12 @@ public class NewBranchEventAdapter
         NewBranchEvent event = (NewBranchEvent) object;
 
         return new SocialActivitiesEvent(
-                new SocialUser("Mr. Process"),
+                socialUserRepository.systemUser(),
                 AssetManagementEventTypes.BRANCH_CREATED.name(),
                 new Date(event.getTimestamp())
-        ).withAdicionalInfo("Branch " + event.getBranchName() + " created for repository " + event.getRepositoryAlias());
+        )
+                .withLink(event.getRepositoryAlias(), event.getBranchPath().toURI())
+                .withAdicionalInfo("Branch " + event.getBranchName() + " created for repository " + event.getRepositoryAlias());
     }
 
     @Override

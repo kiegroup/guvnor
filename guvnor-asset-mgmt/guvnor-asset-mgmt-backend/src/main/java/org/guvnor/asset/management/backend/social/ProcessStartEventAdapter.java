@@ -16,21 +16,25 @@
 
 package org.guvnor.asset.management.backend.social;
 
+import org.guvnor.asset.management.social.AssetManagementEventTypes;
+import org.guvnor.asset.management.social.ProcessStartEvent;
+import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.kie.uberfire.social.activities.model.SocialEventType;
+import org.kie.uberfire.social.activities.repository.SocialUserRepository;
+import org.kie.uberfire.social.activities.service.SocialAdapter;
+import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-
-import org.guvnor.asset.management.social.ProcessStartEvent;
-import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.kie.uberfire.social.activities.model.SocialEventType;
-import org.kie.uberfire.social.activities.model.SocialUser;
-import org.kie.uberfire.social.activities.service.SocialAdapter;
-import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
-
 @ApplicationScoped
 public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent> {
+
+    @Inject
+    private SocialUserRepository socialUserRepository;
 
     @Override
     public Class<ProcessStartEvent> eventToIntercept() {
@@ -53,11 +57,14 @@ public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent
 
     @Override
     public SocialActivitiesEvent toSocial(Object object) {
-        ProcessStartEvent event = (ProcessStartEvent ) object;
+        ProcessStartEvent event = (ProcessStartEvent) object;
 
-        //TODO verify this info.
         return new SocialActivitiesEvent(
+<<<<<<< Updated upstream
                 new SocialUser(event.getUser()),
+=======
+                socialUserRepository.systemUser(),
+>>>>>>> Stashed changes
                 AssetManagementEventTypes.PROCESS_START.name(),
                 new Date(event.getTimestamp())
         ).withAdicionalInfo("Process: " + event.getProcessName() + " started on: " + event.getRepositoryAlias());

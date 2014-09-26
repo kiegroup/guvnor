@@ -16,18 +16,37 @@
 
 package org.guvnor.asset.management.backend.social;
 
+<<<<<<< Updated upstream
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.guvnor.asset.management.social.ProcessEndEvent;
+=======
+import org.guvnor.asset.management.social.AssetManagementEventTypes;
+import org.guvnor.asset.management.social.ProcessStartEvent;
+>>>>>>> Stashed changes
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
-import org.kie.uberfire.social.activities.model.SocialUser;
+import org.kie.uberfire.social.activities.repository.SocialUserRepository;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
+<<<<<<< Updated upstream
 public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
+=======
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+@ApplicationScoped
+public class ProcessEndEventAdapter implements SocialAdapter<ProcessStartEvent> {
+>>>>>>> Stashed changes
+
+    @Inject
+    private SocialUserRepository socialUserRepository;
 
     @Override
     public Class<ProcessEndEvent> eventToIntercept() {
@@ -50,14 +69,22 @@ public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
 
     @Override
     public SocialActivitiesEvent toSocial(Object object) {
+<<<<<<< Updated upstream
         ProcessEndEvent event = (ProcessEndEvent ) object;
+=======
+        ProcessStartEvent event = (ProcessStartEvent) object;
+>>>>>>> Stashed changes
 
-        //TODO verify this info
         return new SocialActivitiesEvent(
+<<<<<<< Updated upstream
                 new SocialUser(event.getUser()),
+=======
+                socialUserRepository.systemUser(),
+>>>>>>> Stashed changes
                 AssetManagementEventTypes.PROCESS_END.name(),
                 new Date(event.getTimestamp())
-        ).withAdicionalInfo("Process: " + event.getProcessName() + " finished on: " + event.getRepositoryAlias());
+        )
+                .withAdicionalInfo("Process: " + event.getProcessName() + " finished on: " + event.getRepositoryAlias());
     }
 
     @Override

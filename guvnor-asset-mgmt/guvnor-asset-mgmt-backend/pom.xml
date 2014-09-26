@@ -33,7 +33,7 @@
 
         <dependency>
             <groupId>org.kie.uberfire</groupId>
-            <artifactId>kie-uberfire-social-activities-api</artifactId>
+            <artifactId>kie-uberfire-social-activities-backend</artifactId>
         </dependency>
 
         <dependency>

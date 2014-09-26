@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.asset.management.backend.social;
+package org.guvnor.asset.management.social;
 
 import org.kie.uberfire.social.activities.model.SocialEventType;
 
