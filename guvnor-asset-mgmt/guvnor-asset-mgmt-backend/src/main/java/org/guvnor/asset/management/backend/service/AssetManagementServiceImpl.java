@@ -67,7 +67,7 @@ public class AssetManagementServiceImpl implements AssetManagementService {
 	    params.put("Username", userName);
 	    params.put("Password", password);
 	    params.put("ExecServerURL", serverURL);
-	    params.put("DeployToRuntime", deployToRuntime.toString());
+	    params.put("DeployToRuntime", Boolean.TRUE.equals( deployToRuntime ));
         buildProjectStructureEvent.fire(new BuildProjectStructureEvent(params));
     }
 
