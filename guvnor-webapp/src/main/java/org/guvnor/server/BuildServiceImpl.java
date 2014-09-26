@@ -44,6 +44,11 @@ public class BuildServiceImpl
     }
 
     @Override
+    public BuildResults buildAndDeploy(final Project project, boolean suppressHandlers) {
+        return new BuildResults();
+    }
+
+    @Override
     public boolean isBuilt(final Project project) {
         return true;
     }
