@@ -63,7 +63,10 @@ public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent
                 socialUserRepository.systemUser(),
                 AssetManagementEventTypes.PROCESS_START.name(),
                 new Date(event.getTimestamp())
-        ).withAdicionalInfo("Process: " + event.getProcessName() + " started on: " + event.getRepositoryAlias());
+        )
+        .withLink(event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
+            event.getRootURI() != null ? event.getRootURI() : "<unknown>")
+        .withAdicionalInfo("Process: " + event.getProcessName() + " started on: " + event.getRepositoryAlias());
     }
 
     @Override

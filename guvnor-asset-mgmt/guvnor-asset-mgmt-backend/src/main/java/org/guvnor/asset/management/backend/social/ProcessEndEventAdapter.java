@@ -64,7 +64,11 @@ public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
                 socialUserRepository.systemUser(),
                 AssetManagementEventTypes.PROCESS_END.name(),
                 new Date(event.getTimestamp())
-        ).withAdicionalInfo("Process: " + event.getProcessName() + " finished on: " + event.getRepositoryAlias());
+        )
+        .withLink(event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
+            event.getRootURI() != null ? event.getRootURI() : "<unknown>")
+        .withAdicionalInfo("Process: " + event.getProcessName() + " finished on: " + event.getRepositoryAlias());
+
     }
 
     @Override

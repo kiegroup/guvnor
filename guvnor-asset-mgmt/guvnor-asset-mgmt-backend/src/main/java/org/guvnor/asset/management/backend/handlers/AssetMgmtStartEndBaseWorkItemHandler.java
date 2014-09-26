@@ -23,6 +23,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.guvnor.asset.management.backend.utils.CDIUtils;
 import org.guvnor.asset.management.social.ProcessEndEvent;
 import org.guvnor.asset.management.social.ProcessStartEvent;
+import org.guvnor.structure.repositories.RepositoryInfo;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -39,7 +41,8 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
 
         String _ProcessName = ( String ) workItem.getParameter( "ProcessName" );
         String _Owner = ( String ) workItem.getParameter( "Owner" );
-        String user = "salaboy";
+        String user = "system";
+        String repositoryURI = null;
 
         //ConfigureRepository variables
         String _CB_RepositoryName;
@@ -96,6 +99,8 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
         */
 
         BeanManager beanManager = null;
+        RepositoryService repositoryService = null;
+        RepositoryInfo repositoryInfo = null;
 
         if ( isStart() ) {
             logger.debug( "Start assets management process: " + _ProcessName + "  " + new java.util.Date() );
@@ -107,6 +112,8 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
 
         try {
             beanManager = CDIUtils.lookUpBeanManager( null );
+            repositoryService = CDIUtils.createBean( RepositoryService.class, beanManager );
+
         } catch ( Exception e ) {
             logger.debug( "BeanManager lookup error.", e );
         }
@@ -114,24 +121,26 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
         if ( beanManager != null && "ConfigureRepository".equals( _ProcessName ) ) {
 
             _CB_RepositoryName = ( String ) workItem.getParameter( "CB_RepositoryName" );
+            repositoryURI = readRepositoryURI( repositoryService, _CB_RepositoryName );
 
             if ( isStart() ) {
-                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _CB_RepositoryName, user, System.currentTimeMillis() );
+                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _CB_RepositoryName, repositoryURI, user, System.currentTimeMillis() );
                 beanManager.fireEvent( event );
             } else {
-                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _CB_RepositoryName, user, System.currentTimeMillis() );
+                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _CB_RepositoryName, repositoryURI, user, System.currentTimeMillis() );
                 beanManager.fireEvent( event );
             }
 
         } else if ( beanManager != null && "PromoteAssets".equals( _ProcessName ) ) {
 
             _PA_GitRepositoryName = ( String ) workItem.getParameter( "PA_GitRepositoryName" );
+            repositoryURI = readRepositoryURI( repositoryService, _PA_GitRepositoryName );
 
             if ( isStart() ) {
-                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _PA_GitRepositoryName, user, System.currentTimeMillis() );
+                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _PA_GitRepositoryName, repositoryURI, user, System.currentTimeMillis() );
                 beanManager.fireEvent( event );
             } else {
-                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _PA_GitRepositoryName, user, System.currentTimeMillis() );
+                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _PA_GitRepositoryName, repositoryURI, user, System.currentTimeMillis() );
                 beanManager.fireEvent( event );
             }
 
@@ -140,22 +149,23 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
             _BP_ProjectURI = ( String ) workItem.getParameter( "BP_ProjectURI" );
 
             if ( isStart() ) {
-                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _BP_ProjectURI, user, System.currentTimeMillis() );
+                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _BP_ProjectURI, _BP_ProjectURI, user, System.currentTimeMillis() );
                 beanManager.fireEvent( event );
             } else {
-                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _BP_ProjectURI, user, System.currentTimeMillis() );
+                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _BP_ProjectURI, _BP_ProjectURI, user, System.currentTimeMillis() );
                 beanManager.fireEvent( event );
             }
 
         } else if ( beanManager != null && "ReleaseProject".equals( _ProcessName ) ) {
 
             _RP_RepositoryName = ( String ) workItem.getParameter( "RP_RepositoryName" );
+            repositoryURI = readRepositoryURI( repositoryService, _RP_RepositoryName );
 
             if ( isStart() ) {
-                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _RP_RepositoryName, user, System.currentTimeMillis() );
+                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _RP_RepositoryName, repositoryURI, user, System.currentTimeMillis() );
                 beanManager.fireEvent( event );
             } else {
-                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _RP_RepositoryName, user, System.currentTimeMillis() );
+                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _RP_RepositoryName, repositoryURI, user, System.currentTimeMillis() );
                 beanManager.fireEvent( event );
             }
 
@@ -164,6 +174,15 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
         if ( manager != null ) {
             manager.completeWorkItem( workItem.getId(), null );
         }
+    }
+
+    String readRepositoryURI(RepositoryService repositoryService, String alias) {
+        String uri = null;
+        RepositoryInfo repositoryInfo = alias != null ? repositoryService.getRepositoryInfo( alias ) : null;
+        if ( repositoryInfo != null && repositoryInfo.getRoot() != null ) {
+            uri = repositoryInfo.getRoot().toURI();
+        }
+        return uri;
     }
 
     @Override public void abortWorkItem( WorkItem workItem, WorkItemManager manager ) {

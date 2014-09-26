@@ -14,6 +14,8 @@ public class AssetsPromotedEvent {
 
     private String repositoryAlias;
 
+    private String rootURI;
+
     private String sourceBranch;
 
     private String targetBranch;
@@ -29,6 +31,7 @@ public class AssetsPromotedEvent {
 
     public AssetsPromotedEvent( String processName,
             String repositoryAlias,
+            String rootURI,
             String sourceBranch,
             String targetBranch,
             List<String> assets,
@@ -36,6 +39,7 @@ public class AssetsPromotedEvent {
             Long timestamp ) {
         this.processName = processName;
         this.repositoryAlias = repositoryAlias;
+        this.rootURI = rootURI;
         this.sourceBranch = sourceBranch;
         this.targetBranch = targetBranch;
         this.assets = assets;
@@ -65,6 +69,14 @@ public class AssetsPromotedEvent {
 
     public void setRepositoryAlias( String repositoryAlias ) {
         this.repositoryAlias = repositoryAlias;
+    }
+
+    public String getRootURI() {
+        return rootURI;
+    }
+
+    public void setRootURI( String rootURI ) {
+        this.rootURI = rootURI;
     }
 
     public String getSourceBranch() {

@@ -27,14 +27,17 @@ public class ProcessStartEvent {
 
     private String repositoryAlias;
 
+    private String rootURI;
+
     private Long timestamp;
 
     public ProcessStartEvent() {
     }
 
-    public ProcessStartEvent( String processName, String repositoryAlias, String user, Long timestamp ) {
+    public ProcessStartEvent( String processName, String repositoryAlias, String rootURI, String user, Long timestamp ) {
         this.processName = processName;
         this.repositoryAlias = repositoryAlias;
+        this.rootURI = rootURI;
         this.user = user;
         this.timestamp = timestamp;
     }
@@ -61,6 +64,14 @@ public class ProcessStartEvent {
 
     public void setRepositoryAlias( String repositoryAlias ) {
         this.repositoryAlias = repositoryAlias;
+    }
+
+    public String getRootURI() {
+        return rootURI;
+    }
+
+    public void setRootURI( String rootURI ) {
+        this.rootURI = rootURI;
     }
 
     public Long getTimestamp() {

@@ -12,6 +12,8 @@ import org.guvnor.asset.management.backend.model.CommitInfo;
 import org.guvnor.asset.management.backend.utils.CDIUtils;
 import org.guvnor.asset.management.backend.utils.NamedLiteral;
 import org.guvnor.asset.management.social.AssetsPromotedEvent;
+import org.guvnor.structure.repositories.RepositoryInfo;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
 import org.slf4j.Logger;
@@ -34,7 +36,6 @@ public class CherryPickCommand extends AbstractCommand {
         String commitsString = (String) getParameter(commandContext, "CommitsString");
         String[] commits = commitsString.split(",");
         AssetsPromotedEvent event;
-
 
         Collections.sort(commitsInfos, new Comparator<CommitInfo>() {
 
@@ -70,7 +71,11 @@ public class CherryPickCommand extends AbstractCommand {
 
         CherryPickCopyOption copyOption = new CherryPickCopyOption(orderedCommits);
         String outcome = "unknown";
-        event = getSocialEvent( gitRepo, fromBranchName, toBranchName, commitsInfos, "salaboy" );
+
+        RepositoryService repositoryService = CDIUtils.createBean( RepositoryService.class, beanManager );
+        String repositoryURI = readRepositoryURI( repositoryService, gitRepo );
+
+        event = getSocialEvent( gitRepo, repositoryURI, fromBranchName, toBranchName, commitsInfos, "system" );
 
         try {
             logger.debug("Cherry pick command execution");
@@ -95,6 +100,7 @@ public class CherryPickCommand extends AbstractCommand {
     }
 
     private AssetsPromotedEvent getSocialEvent(String repository,
+            String repositoryURI,
             String sourceBranch,
             String targetBranch,
             List<CommitInfo> commitsInfos,
@@ -117,10 +123,20 @@ public class CherryPickCommand extends AbstractCommand {
 
         return new AssetsPromotedEvent( "PromoteAssets",
                 repository,
+                repositoryURI,
                 sourceBranch,
                 targetBranch,
                 promotedFiles,
                 user,
                 System.currentTimeMillis());
+    }
+
+    String readRepositoryURI(RepositoryService repositoryService, String alias) {
+        String uri = null;
+        RepositoryInfo repositoryInfo = alias != null ? repositoryService.getRepositoryInfo( alias ) : null;
+        if ( repositoryInfo != null && repositoryInfo.getRoot() != null ) {
+            uri = repositoryInfo.getRoot().toURI();
+        }
+        return uri;
     }
 }

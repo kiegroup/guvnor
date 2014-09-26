@@ -63,7 +63,10 @@ public class AssetsPromotedEventAdapter implements SocialAdapter<AssetsPromotedE
                 socialUserRepository.systemUser(),
                 AssetManagementEventTypes.ASSETS_PROMOTED.name(),
                 new Date( event.getTimestamp() )
-        ).withAdicionalInfo( createAdditionalInfo( event ) );
+        )
+        .withLink( event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
+                event.getRootURI() != null ? event.getRootURI() : "<unknown>")
+        .withAdicionalInfo( createAdditionalInfo( event ) );
     }
 
     @Override
