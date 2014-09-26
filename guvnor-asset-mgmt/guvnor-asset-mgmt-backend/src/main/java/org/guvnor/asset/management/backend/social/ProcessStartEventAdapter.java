@@ -60,11 +60,7 @@ public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent
         ProcessStartEvent event = (ProcessStartEvent) object;
 
         return new SocialActivitiesEvent(
-<<<<<<< Updated upstream
-                new SocialUser(event.getUser()),
-=======
                 socialUserRepository.systemUser(),
->>>>>>> Stashed changes
                 AssetManagementEventTypes.PROCESS_START.name(),
                 new Date(event.getTimestamp())
         ).withAdicionalInfo("Process: " + event.getProcessName() + " started on: " + event.getRepositoryAlias());

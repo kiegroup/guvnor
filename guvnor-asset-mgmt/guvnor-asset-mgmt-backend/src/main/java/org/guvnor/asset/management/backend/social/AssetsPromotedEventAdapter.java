@@ -20,14 +20,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.asset.management.social.AssetsPromotedEvent;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialUser;
+import org.kie.uberfire.social.activities.repository.SocialUserRepository;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
+import javax.inject.Inject;
+
 public class AssetsPromotedEventAdapter implements SocialAdapter<AssetsPromotedEvent> {
+
+    @Inject
+    private SocialUserRepository socialUserRepository;
 
     @Override
     public Class<AssetsPromotedEvent> eventToIntercept() {
@@ -53,7 +60,7 @@ public class AssetsPromotedEventAdapter implements SocialAdapter<AssetsPromotedE
         AssetsPromotedEvent event = ( AssetsPromotedEvent ) object;
 
         return new SocialActivitiesEvent(
-                new SocialUser( event.getUser() ),
+                socialUserRepository.systemUser(),
                 AssetManagementEventTypes.ASSETS_PROMOTED.name(),
                 new Date( event.getTimestamp() )
         ).withAdicionalInfo( createAdditionalInfo( event ) );
