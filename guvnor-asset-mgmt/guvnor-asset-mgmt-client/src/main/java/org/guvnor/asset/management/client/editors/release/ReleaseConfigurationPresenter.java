@@ -23,13 +23,17 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.model.ProjectStructureModel;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.ProjectStructureService;
 
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -111,19 +115,19 @@ public class ReleaseConfigurationPresenter {
     }
 
     public void releaseProject(String repository, String branch, String project,
-            String userName, String password, String serverURL, Boolean deployToMaven) {
-//        assetManagementServices.call(new RemoteCallback<Long>() {
-//            @Override
-//            public void callback(Long taskId) {
-//                view.displayNotification("Building Process Started");
-//            }
-//        }, new ErrorCallback<Message>() {
-//            @Override
-//            public boolean error(Message message, Throwable throwable) {
-//                ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
-//                return true;
-//            }
-//        }).buildProject(repository, branch, project, userName, password, serverURL, deployToMaven);
+            String userName, String password, String serverURL, Boolean deployToRuntime, String version) {
+        assetManagementServices.call(new RemoteCallback<Long>() {
+            @Override
+            public void callback(Long taskId) {
+                view.displayNotification("Release project process started");
+            }
+        }, new ErrorCallback<Message>() {
+            @Override
+            public boolean error(Message message, Throwable throwable) {
+                ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
+                return true;
+            }
+        }).releaseProject(repository, branch, project, userName, password, serverURL, deployToRuntime, version);
 
     }
 

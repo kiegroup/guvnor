@@ -6,7 +6,13 @@
     <persistence-mode>JPA</persistence-mode>
     <runtime-strategy>SINGLETON</runtime-strategy>
     <marshalling-strategies/>
-    <event-listeners/>
+    <event-listeners>
+      <event-listener>
+        <resolver>mvel</resolver>
+        <identifier>new org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister()</identifier>
+        <parameters/>
+      </event-listener>
+    </event-listeners>
     <task-event-listeners/>
     <globals/>
     <work-item-handlers>

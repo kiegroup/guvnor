@@ -1,0 +1,14 @@
+
+<form id="411535102">
+<property name="name" value="UnableToPerformRelease-taskform.form"/>
+<property name="displayMode" value="default"/>
+<property name="status" value="0"/>
+<field position="0" name="Exception" type="InputText" id="2100778220">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;Reason (Exception)quot;"/>
+<property name="readonly" value="false"/>
+<property name="inputBinding" value="Reason"/>
+<property name="fieldClass" value="java.lang.String"/>
+</field>
+<dataHolder inputId="Reason" name="#9BCAFA" type="basicType" outId="" value="java.lang.String" id="Exception"/>
+</form>

@@ -18,11 +18,14 @@ package org.guvnor.asset.management.client.editors.build;
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -75,7 +78,7 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
     
   
     @UiField
-    public TextBox passwordText;
+    public PasswordTextBox passwordText;
   
     @UiField
     public TextBox serverURLText;
@@ -107,6 +110,26 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
             }
         });
         presenter.loadRepositories();
+
+        // by default deploy to runtime inputs are disabled
+        userNameText.setEnabled(false);
+        passwordText.setEnabled(false);
+        serverURLText.setEnabled(false);
+
+        deployToRuntimeCheck.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                if (event.getValue()) {
+                    userNameText.setEnabled(true);
+                    passwordText.setEnabled(true);
+                    serverURLText.setEnabled(true);
+                } else {
+                    userNameText.setEnabled(false);
+                    passwordText.setEnabled(false);
+                    serverURLText.setEnabled(false);
+                }
+            }
+        });
     }
 
     

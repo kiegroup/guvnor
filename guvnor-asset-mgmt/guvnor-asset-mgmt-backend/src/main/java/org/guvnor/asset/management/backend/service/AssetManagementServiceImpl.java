@@ -88,11 +88,12 @@ public class AssetManagementServiceImpl implements AssetManagementService {
     public void releaseProject(String repository, String branch, String project, String userName, String password, String serverURL, Boolean deployToRuntime, String version) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ProjectURI", repository+"/"+project);
-        params.put("BranchName", branch);
+        params.put("ToReleaseBranch", branch);
+        params.put("ToReleaseVersion", version);
         params.put("Username", userName);
         params.put("Password", password);
         params.put("ExecServerURL", serverURL);
-        params.put("ToReleaseVersion", version);
+        params.put("ValidForRelease", Boolean.TRUE);
         params.put("DeployToRuntime", Boolean.TRUE.equals(deployToRuntime));
 
         releaseProjectEvent.fire(new ReleaseProjectEvent(params));

@@ -93,6 +93,20 @@
         </bootstrap:Column>
        
       </bootstrap:FluidRow>
+
+      <bootstrap:FluidRow>
+        <bootstrap:Column size="5">
+          <bootstrap:ControlLabel for="deployToRuntimeCheck">
+            <ui:text from="{i18n.Deploy_To_Runtime}"/>
+          </bootstrap:ControlLabel>
+        </bootstrap:Column>
+        <bootstrap:Column size="5">
+          <bootstrap:Controls>
+            <bootstrap:CheckBox ui:field="deployToRuntimeCheck"/>
+          </bootstrap:Controls>
+        </bootstrap:Column>
+
+      </bootstrap:FluidRow>
       
       <bootstrap:FluidRow>
         <bootstrap:Column size="5">
@@ -116,7 +130,7 @@
         </bootstrap:Column>
         <bootstrap:Column size="5">
           <bootstrap:Controls>
-            <bootstrap:TextBox ui:field="passwordText" placeholder="{i18n.Password}"/>
+            <bootstrap:PasswordTextBox ui:field="passwordText" placeholder="{i18n.Password}"/>
           </bootstrap:Controls>
         </bootstrap:Column>
        
