@@ -16,6 +16,7 @@
 
 package org.guvnor.asset.management.backend.social;
 
+import org.guvnor.asset.management.backend.social.i18n.Constants;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.asset.management.social.ProcessStartEvent;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
@@ -29,12 +30,16 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent> {
 
     @Inject
     private SocialUserRepository socialUserRepository;
+
+    @Inject
+    private Constants constants;
 
     @Override
     public Class<ProcessStartEvent> eventToIntercept() {
@@ -47,8 +52,8 @@ public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent
     }
 
     @Override
-    public boolean shouldInterceptThisEvent(Object event) {
-        if (event.getClass().getSimpleName().equals(eventToIntercept().getSimpleName())) {
+    public boolean shouldInterceptThisEvent( Object event ) {
+        if ( event.getClass().getSimpleName().equals( eventToIntercept().getSimpleName() ) ) {
             return true;
         } else {
             return false;
@@ -56,17 +61,17 @@ public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent
     }
 
     @Override
-    public SocialActivitiesEvent toSocial(Object object) {
-        ProcessStartEvent event = (ProcessStartEvent) object;
+    public SocialActivitiesEvent toSocial( Object object ) {
+        ProcessStartEvent event = ( ProcessStartEvent ) object;
 
         return new SocialActivitiesEvent(
                 socialUserRepository.systemUser(),
                 AssetManagementEventTypes.PROCESS_START.name(),
-                new Date(event.getTimestamp())
+                new Date( event.getTimestamp() )
         )
-        .withLink(event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
-            event.getRootURI() != null ? event.getRootURI() : "<unknown>")
-        .withAdicionalInfo("Process: " + event.getProcessName() + " started on: " + event.getRepositoryAlias());
+                .withLink( event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
+                        event.getRootURI() != null ? event.getRootURI() : "<unknown>" )
+                .withAdicionalInfo( getAdditionalInfo( event.getProcessName(), event.getRepositoryAlias(), event.getParams() ) );
     }
 
     @Override
@@ -77,5 +82,24 @@ public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent
     @Override
     public List<String> getTimelineFiltersNames() {
         return new ArrayList<String>();
+    }
+
+    private String getAdditionalInfo( String process, String repo, Map<String, String> params ) {
+        if ( Constants.CONFIGURE_REPOSITORY.equals( process ) ) {
+            return constants.configure_repository_start( repo );
+        }
+
+        if ( Constants.PROMOTE_ASSETS.equals( process ) ) {
+            return constants.promote_assets_start( repo );
+        }
+
+        if ( Constants.BUILD_PROJECT.equals( process ) ) {
+            return constants.build_project_start( params.get("project"), params.get( "branch" ), repo );
+        }
+
+        if ( Constants.RELEASE_PROJECT.equals( process ) ) {
+            return constants.release_project_start( repo );
+        }
+        return "";
     }
 }

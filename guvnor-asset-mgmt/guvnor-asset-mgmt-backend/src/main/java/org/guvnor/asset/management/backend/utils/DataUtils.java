@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package org.guvnor.asset.management.social;
+package org.guvnor.asset.management.backend.utils;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+import org.guvnor.structure.repositories.RepositoryInfo;
+import org.guvnor.structure.repositories.RepositoryService;
 
-@Portable
-public class ProcessStartEvent extends AssetManagementEvent {
+public class DataUtils {
 
-    public ProcessStartEvent() {
+    public static String readRepositoryURI(RepositoryService repositoryService, String alias) {
+        String uri = null;
+        RepositoryInfo repositoryInfo = alias != null ? repositoryService.getRepositoryInfo( alias ) : null;
+        if ( repositoryInfo != null && repositoryInfo.getRoot() != null ) {
+            uri = repositoryInfo.getRoot().toURI();
+        }
+        return uri;
     }
 
-    public ProcessStartEvent( String processName, String repositoryAlias, String rootURI, String user, Long timestamp ) {
-        super( processName, repositoryAlias, rootURI, user, timestamp );
-    }
 }

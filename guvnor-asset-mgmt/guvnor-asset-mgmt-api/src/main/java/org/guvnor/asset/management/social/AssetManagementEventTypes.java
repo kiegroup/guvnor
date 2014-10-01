@@ -23,5 +23,7 @@ public enum AssetManagementEventTypes
     BRANCH_CREATED,
     PROCESS_START,
     PROCESS_END,
-    ASSETS_PROMOTED
+    ASSETS_PROMOTED,
+    PROJECT_BUILT,
+    PROJECT_DEPLOYED
 }

@@ -19,22 +19,24 @@ package org.guvnor.asset.management.backend.social;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.inject.Inject;
 
+import org.guvnor.asset.management.backend.social.i18n.Constants;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.asset.management.social.AssetsPromotedEvent;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
-import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.repository.SocialUserRepository;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
-
-import javax.inject.Inject;
 
 public class AssetsPromotedEventAdapter implements SocialAdapter<AssetsPromotedEvent> {
 
     @Inject
     private SocialUserRepository socialUserRepository;
+
+    @Inject
+    private Constants constants;
 
     @Override
     public Class<AssetsPromotedEvent> eventToIntercept() {
@@ -64,9 +66,9 @@ public class AssetsPromotedEventAdapter implements SocialAdapter<AssetsPromotedE
                 AssetManagementEventTypes.ASSETS_PROMOTED.name(),
                 new Date( event.getTimestamp() )
         )
-        .withLink( event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
-                event.getRootURI() != null ? event.getRootURI() : "<unknown>")
-        .withAdicionalInfo( createAdditionalInfo( event ) );
+                .withLink( event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
+                        event.getRootURI() != null ? event.getRootURI() : "<unknown>" )
+                .withAdicionalInfo( getAdditionalInfo( event ) );
     }
 
     @Override
@@ -79,19 +81,25 @@ public class AssetsPromotedEventAdapter implements SocialAdapter<AssetsPromotedE
         return new ArrayList<String>();
     }
 
-    private String createAdditionalInfo( AssetsPromotedEvent event ) {
+    private String getAdditionalInfo( AssetsPromotedEvent event ) {
 
         StringBuilder info = new StringBuilder();
+        if ( !event.hasErrors() ) {
+            info.append( constants.promote_assets_assets_promoted(
+                    event.getRepositoryAlias(),
+                    event.getSourceBranch(),
+                    event.getTargetBranch() ) );
 
-        info.append( "Process: " + event.getProcessName() + " promoted the following assets.\n" );
-        info.append( "From repository: " + event.getRepositoryAlias() + "\n" );
-        info.append( "origin branch: " + event.getSourceBranch() + " destination branch: " + event.getTargetBranch() + "\n\n" );
 
-        List<String> assets = event.getAssets();
-        if ( assets != null ) {
-            for ( String asset : assets ) {
-                info.append( asset + "\n" );
+            info.append( "\n" );
+            List<String> assets = event.getAssets();
+            if ( assets != null ) {
+                for ( String asset : assets ) {
+                    info.append( asset + "\n" );
+                }
             }
+        } else {
+            info.append( constants.promote_assets_failed( event.getRepositoryAlias(), event.getErrors().get( 0 ) ) );
         }
 
         return info.toString();

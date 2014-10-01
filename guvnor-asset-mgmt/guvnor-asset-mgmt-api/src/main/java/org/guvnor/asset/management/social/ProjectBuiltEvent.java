@@ -19,12 +19,32 @@ package org.guvnor.asset.management.social;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class ProcessStartEvent extends AssetManagementEvent {
+public class ProjectBuiltEvent extends AssetManagementEvent {
 
-    public ProcessStartEvent() {
+    private String branchName;
+
+    private String projectName;
+
+    public ProjectBuiltEvent() {
     }
 
-    public ProcessStartEvent( String processName, String repositoryAlias, String rootURI, String user, Long timestamp ) {
+    public ProjectBuiltEvent( String processName, String repositoryAlias, String rootURI, String user, Long timestamp ) {
         super( processName, repositoryAlias, rootURI, user, timestamp );
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName( String branchName ) {
+        this.branchName = branchName;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName( String projectName ) {
+        this.projectName = projectName;
     }
 }

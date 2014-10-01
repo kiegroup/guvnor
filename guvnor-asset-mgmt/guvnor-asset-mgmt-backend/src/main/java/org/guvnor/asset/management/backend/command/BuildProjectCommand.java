@@ -6,12 +6,15 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.guvnor.asset.management.backend.AssetManagementRuntimeException;
 import org.guvnor.asset.management.backend.utils.CDIUtils;
+import org.guvnor.asset.management.backend.utils.DataUtils;
 import org.guvnor.asset.management.backend.utils.NamedLiteral;
+import org.guvnor.asset.management.social.ProjectBuiltEvent;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
 import org.slf4j.Logger;
@@ -43,6 +46,15 @@ public class BuildProjectCommand extends AbstractCommand {
 
             IOService ioService = CDIUtils.createBean(IOService.class, beanManager, new NamedLiteral("ioStrategy"));
             logger.debug("IoService " + ioService);
+
+            RepositoryService repositoryService = CDIUtils.createBean( RepositoryService.class, beanManager );
+            logger.debug( "RepositoryService " + repositoryService );
+
+            ProjectBuiltEvent event = getSocialEvent( (String)ctx.getData( "_ProcessName" ),
+                    uri,
+                    branchToBuild,
+                    repositoryService);
+
             if (ioService != null) {
                 Path projectPath  = ioService.get(URI.create(projectUri));
                 logger.debug("Project path is " + projectPath);
@@ -58,23 +70,27 @@ public class BuildProjectCommand extends AbstractCommand {
                     logger.debug("Errors " + results.getErrorMessages().size());
                     logger.debug("Warnings " + results.getWarningMessages().size());
                     logger.debug("Info " + results.getInformationMessages().size());
-                    for (BuildMessage msg : results.getErrorMessages()) {
-                        logger.debug("Error " + msg);
-                    }
                 }
                 if (results.getErrorMessages().isEmpty()) {
                     buildOutcome = "SUCCESSFUL";
                 } else {
                     buildOutcome = "FAILURE";
+                    for ( BuildMessage message : results.getMessages() ) {
+                        event.addError( message.getText() );
+                        if ( logger.isDebugEnabled() ) {
+                            logger.debug("Error " + message.getText());
+                        }
+                    }
                 }
                 executionResults.setData("Errors", results.getErrorMessages());
                 executionResults.setData("Warnings", results.getWarningMessages());
                 executionResults.setData("Info", results.getInformationMessages());
                 executionResults.setData("GAV", results.getGAV().toString());
+
+                beanManager.fireEvent( event );
             }
 
             executionResults.setData("BuildOutcome", buildOutcome);
-
 
             return executionResults;
         } catch (Throwable e) {
@@ -82,5 +98,27 @@ public class BuildProjectCommand extends AbstractCommand {
         }
 	}
 
+    private ProjectBuiltEvent getSocialEvent(String processName, String uriParam, String branchToBuild, RepositoryService repositoryService) {
+
+        String repository = null;
+        String projectName = null;
+        String repositoryURI = null;
+
+        if ( uriParam != null && uriParam.indexOf( "/" ) > 0 ) {
+            repository = uriParam.substring( 0, uriParam.indexOf( "/" ) );
+            projectName = uriParam.substring( uriParam.indexOf( "/" )+1, uriParam.length() );
+            repositoryURI = DataUtils.readRepositoryURI( repositoryService, repository );
+        }
+
+        ProjectBuiltEvent event = new ProjectBuiltEvent( processName,
+                repository,
+                repositoryURI,
+                "system",
+                System.currentTimeMillis());
+        event.setBranchName( branchToBuild );
+        event.setProjectName( projectName );
+
+        return event;
+    }
 	
 }

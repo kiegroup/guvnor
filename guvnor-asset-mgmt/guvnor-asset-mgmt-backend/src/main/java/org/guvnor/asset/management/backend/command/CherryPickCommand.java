@@ -87,7 +87,7 @@ public class CherryPickCommand extends AbstractCommand {
 
             } catch (Exception e) {
                 outcome = "failure : " + e.getMessage();
-                event.setError( outcome );
+                event.addError( outcome );
                 logger.error("Error when cherry picking commits from {} to {}", fromBranchName, toBranchName, e);
             } finally {
                 if (beanManager != null && event != null) {

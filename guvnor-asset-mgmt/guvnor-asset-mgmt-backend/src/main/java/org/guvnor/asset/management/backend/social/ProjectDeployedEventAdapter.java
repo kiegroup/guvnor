@@ -16,24 +16,21 @@
 
 package org.guvnor.asset.management.backend.social;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.inject.Inject;
+
 import org.guvnor.asset.management.backend.social.i18n.Constants;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
-import org.guvnor.structure.repositories.NewBranchEvent;
+import org.guvnor.asset.management.social.ProjectDeployedEvent;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.repository.SocialUserRepository;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-@ApplicationScoped
-public class NewBranchEventAdapter
-        implements SocialAdapter<NewBranchEvent> {
+public class ProjectDeployedEventAdapter implements SocialAdapter<ProjectDeployedEvent> {
 
     @Inject
     private SocialUserRepository socialUserRepository;
@@ -42,13 +39,13 @@ public class NewBranchEventAdapter
     private Constants constants;
 
     @Override
-    public Class<NewBranchEvent> eventToIntercept() {
-        return NewBranchEvent.class;
+    public Class<ProjectDeployedEvent> eventToIntercept() {
+        return ProjectDeployedEvent.class;
     }
 
     @Override
     public SocialEventType socialEventType() {
-        return AssetManagementEventTypes.BRANCH_CREATED;
+        return AssetManagementEventTypes.PROJECT_DEPLOYED;
     }
 
     @Override
@@ -62,15 +59,16 @@ public class NewBranchEventAdapter
 
     @Override
     public SocialActivitiesEvent toSocial( Object object ) {
-        NewBranchEvent event = ( NewBranchEvent ) object;
+        ProjectDeployedEvent event = ( ProjectDeployedEvent ) object;
 
         return new SocialActivitiesEvent(
                 socialUserRepository.systemUser(),
-                AssetManagementEventTypes.BRANCH_CREATED.name(),
+                AssetManagementEventTypes.PROJECT_DEPLOYED.name(),
                 new Date( event.getTimestamp() )
         )
-                .withLink( event.getRepositoryAlias(), event.getBranchPath().toURI() )
-                .withAdicionalInfo( getAdditionalInfo( event.getBranchName(), event.getRepositoryAlias() ) );
+                .withLink( event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
+                        event.getRootURI() != null ? event.getRootURI() : "<unknown>" )
+                .withAdicionalInfo( getAdditionalInfo( event ) );
     }
 
     @Override
@@ -83,9 +81,20 @@ public class NewBranchEventAdapter
         return new ArrayList<String>();
     }
 
-    private String getAdditionalInfo( String branch, String repository ) {
-        return constants.configure_repository_branch_created( branch, repository );
+    private String getAdditionalInfo( ProjectDeployedEvent event ) {
 
+        StringBuilder info = new StringBuilder();
+
+        if ( event.getDeployType() == ProjectDeployedEvent.DeployType.MAVEN ) {
+            if ( !event.hasErrors() ) {
+                info.append( constants.build_project_deploy_maven_success( event.getProjectName() ) );
+            } else {
+                info.append( constants.build_project_deploy_maven_failed( event.getProjectName() ) );
+            }
+        } else if ( event.getDeployType() == ProjectDeployedEvent.DeployType.RUNTIME ) {
+            //TODO COMPLETE this info.
+        }
+
+        return info.toString();
     }
-
 }

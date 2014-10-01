@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.guvnor.asset.management.backend.social.i18n.Constants;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.asset.management.social.ProcessEndEvent;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
@@ -36,6 +37,9 @@ public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
     @Inject
     private SocialUserRepository socialUserRepository;
 
+    @Inject
+    private Constants constants;
+
     @Override
     public Class<ProcessEndEvent> eventToIntercept() {
         return ProcessEndEvent.class;
@@ -47,8 +51,8 @@ public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
     }
 
     @Override
-    public boolean shouldInterceptThisEvent(Object event) {
-        if (event.getClass().getSimpleName().equals(eventToIntercept().getSimpleName())) {
+    public boolean shouldInterceptThisEvent( Object event ) {
+        if ( event.getClass().getSimpleName().equals( eventToIntercept().getSimpleName() ) ) {
             return true;
         } else {
             return false;
@@ -56,18 +60,18 @@ public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
     }
 
     @Override
-    public SocialActivitiesEvent toSocial(Object object) {
-        ProcessEndEvent event = (ProcessEndEvent ) object;
+    public SocialActivitiesEvent toSocial( Object object ) {
+        ProcessEndEvent event = ( ProcessEndEvent ) object;
 
         //TODO verify this info
         return new SocialActivitiesEvent(
                 socialUserRepository.systemUser(),
                 AssetManagementEventTypes.PROCESS_END.name(),
-                new Date(event.getTimestamp())
+                new Date( event.getTimestamp() )
         )
-        .withLink(event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
-            event.getRootURI() != null ? event.getRootURI() : "<unknown>")
-        .withAdicionalInfo("Process: " + event.getProcessName() + " finished on: " + event.getRepositoryAlias());
+                .withLink( event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
+                        event.getRootURI() != null ? event.getRootURI() : "<unknown>" )
+                .withAdicionalInfo( getAdditionalInfo( event.getProcessName(), event.getRepositoryAlias(), event ) );
 
     }
 
@@ -79,5 +83,29 @@ public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
     @Override
     public List<String> getTimelineFiltersNames() {
         return new ArrayList<String>();
+    }
+
+    private String getAdditionalInfo( String process, String repo, ProcessEndEvent event ) {
+
+        System.out.println("ProcessEndEventAdapter, process: " + process + ", repo: " + repo);
+
+        if ( Constants.CONFIGURE_REPOSITORY.equals( process ) ) {
+            return constants.configure_repository_end( repo );
+        }
+
+        if ( Constants.PROMOTE_ASSETS.equals( process ) ) {
+            return constants.promote_assets_end( repo );
+        }
+
+        if ( Constants.BUILD_PROJECT.equals( process ) ) {
+
+            //TODO CONTINUE HERE......
+            return constants.build_project_end( repo );
+        }
+
+        if ( Constants.RELEASE_PROJECT.equals( process ) ) {
+            return constants.release_project_end( repo );
+        }
+        return "";
     }
 }
