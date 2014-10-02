@@ -97,14 +97,17 @@ public class Constants {
         return getMessage( "BuildProject_deploy_maven_failed", project );
     }
 
-    public String build_project_end( String repo ) {
-        //TODO set message
-        return "build_project_end";
+    public String build_project_deploy_runtime_success( String project ) {
+        return getMessage( "BuildProject_deploy_runtime_success", project );
+    }
+
+    public String build_project_deploy_runtime_failed( String project ) {
+        return getMessage( "BuildProject_deploy_runtime_failed", project );
     }
 
     public String release_project_start( String repo ) {
         //TODO set message
-        return "release_project_start";
+        return "release_project_end";
     }
 
     public String release_project_end( String repo ) {

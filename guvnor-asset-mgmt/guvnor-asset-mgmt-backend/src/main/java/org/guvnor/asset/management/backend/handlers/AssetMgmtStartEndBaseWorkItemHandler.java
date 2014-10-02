@@ -187,6 +187,8 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
                 event.addParam( "BP_ExecServerURL", _BP_ExecServerURL );
                 event.addParam( "BP_Username", _BP_Username );
                 event.addParam( "BP_DeployToRuntime", _BP_DeployToRuntime.toString() );
+                event.addParam( "project", _BP_Project  );
+                event.addParam( "branch", _BP_BranchName );
 
                 beanManager.fireEvent( event );
             }
