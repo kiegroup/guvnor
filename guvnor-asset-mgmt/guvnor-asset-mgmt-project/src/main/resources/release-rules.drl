@@ -5,7 +5,7 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 
 rule "Project URI is not set" ruleflow-group "release-rules"
     when
-        $processInstance : WorkflowProcessInstance()
+        $processInstance : WorkflowProcessInstance(processId == "guvnor-asset-management.ReleaseProject")
         String(this.isEmpty()) from $processInstance.getVariable("ProjectURI");
     then
         String reason = "Not valid for release as project uri is not given " + $processInstance.getVariable("ProjectURI");
@@ -17,7 +17,7 @@ end
 
 rule "Release branch and version is not set" ruleflow-group "release-rules"
     when
-        $processInstance : WorkflowProcessInstance()
+        $processInstance : WorkflowProcessInstance(processId == "guvnor-asset-management.ReleaseProject")
         String(this.isEmpty()) from $processInstance.getVariable("ToReleaseBranch");
         String(this.isEmpty()) from $processInstance.getVariable("ToReleaseVersion");
     then
@@ -31,7 +31,7 @@ end
 
 rule "Release branch does not start with release" ruleflow-group "release-rules"
     when
-        $processInstance : WorkflowProcessInstance()
+        $processInstance : WorkflowProcessInstance(processId == "guvnor-asset-management.ReleaseProject")
         String(!this.startsWith('release')) from $processInstance.getVariable("ToReleaseBranch");
     then
         String reason = "Not valid for release as branch to release from does not start with release - given name is "
@@ -44,7 +44,7 @@ end
 
 rule "Check deployment to runtime details" ruleflow-group "release-rules"
     when
-        $processInstance : WorkflowProcessInstance()
+        $processInstance : WorkflowProcessInstance(processId == "guvnor-asset-management.ReleaseProject")
         Boolean(this == true) from $processInstance.getVariable("DeployToRuntime");
         String(this.isEmpty()) from $processInstance.getVariable("Username");
         String(this.isEmpty()) from $processInstance.getVariable("Password");
@@ -61,7 +61,7 @@ end
 
 rule "Release version ends with SNAPSHOT" ruleflow-group "release-rules"
     when
-        $processInstance : WorkflowProcessInstance()
+        $processInstance : WorkflowProcessInstance(processId == "guvnor-asset-management.ReleaseProject")
         String(this.endsWith('-SNAPSHOT')) from $processInstance.getVariable("ToReleaseVersion");
     then
         String reason = "Not valid for release as version for release is snapshot - given name is "

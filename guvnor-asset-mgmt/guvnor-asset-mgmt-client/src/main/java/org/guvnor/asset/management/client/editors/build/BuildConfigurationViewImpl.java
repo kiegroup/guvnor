@@ -17,6 +17,8 @@ package org.guvnor.asset.management.client.editors.build;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -63,12 +65,9 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
 
     @UiField
     public ListBox chooseBranchBox;
-
-
-//    public ListBox chooseProjectBox;
     
     @UiField
-    public TextBox chooseProjectBox;
+    public ListBox chooseProjectBox;
     
     @UiField
     public Button buildButton;
@@ -86,6 +85,18 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
     @UiField
     public CheckBox deployToRuntimeCheck;
 
+    @UiField
+    public FluidRow deployToRuntimeRow;
+
+    @UiField
+    public FluidRow usernameRow;
+
+    @UiField
+    public FluidRow passwordRow;
+
+    @UiField
+    public FluidRow serverURLRow;
+
     @Inject
     private Event<NotificationEvent> notification;
 
@@ -100,6 +111,7 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
     @Override
     public void init(final BuildConfigurationPresenter presenter) {
         this.presenter = presenter;
+        presenter.loadServerSetting();
        chooseRepositoryBox.addChangeHandler(new ChangeHandler() {
 
             @Override
@@ -109,34 +121,59 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
                 presenter.loadBranches(value);
             }
         });
-        presenter.loadRepositories();
 
-        // by default deploy to runtime inputs are disabled
-        userNameText.setEnabled(false);
-        passwordText.setEnabled(false);
-        serverURLText.setEnabled(false);
+        chooseBranchBox.addChangeHandler(new ChangeHandler() {
 
-        deployToRuntimeCheck.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-                if (event.getValue()) {
-                    userNameText.setEnabled(true);
-                    passwordText.setEnabled(true);
-                    serverURLText.setEnabled(true);
-                } else {
-                    userNameText.setEnabled(false);
-                    passwordText.setEnabled(false);
-                    serverURLText.setEnabled(false);
-                }
+            public void onChange(ChangeEvent event) {
+                String repo = chooseRepositoryBox.getValue();
+                String branch = chooseBranchBox.getValue();
+
+                presenter.loadProjects(repo, branch);
             }
         });
+
+        presenter.loadRepositories();
+
     }
 
-    
+    public void showHideDeployToRuntimeSection(boolean show) {
+        if (show) {
+            deployToRuntimeRow.setVisible(true);
+            usernameRow.setVisible(true);
+            passwordRow.setVisible(true);
+            serverURLRow.setVisible(true);
+
+            // by default deploy to runtime inputs are disabled
+            userNameText.setEnabled(false);
+            passwordText.setEnabled(false);
+            serverURLText.setEnabled(false);
+
+            deployToRuntimeCheck.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+                @Override
+                public void onValueChange(ValueChangeEvent<Boolean> event) {
+                    if (event.getValue()) {
+                        userNameText.setEnabled(true);
+                        passwordText.setEnabled(true);
+                        serverURLText.setEnabled(true);
+                    } else {
+                        userNameText.setEnabled(false);
+                        passwordText.setEnabled(false);
+                        serverURLText.setEnabled(false);
+                    }
+                }
+            });
+        } else {
+            deployToRuntimeRow.setVisible(false);
+            usernameRow.setVisible(false);
+            passwordRow.setVisible(false);
+            serverURLRow.setVisible(false);
+        }
+    }
 
     @UiHandler("buildButton")
     public void buildButton(ClickEvent e) {
-        presenter.buildProject(chooseRepositoryBox.getValue(), chooseBranchBox.getValue(), chooseProjectBox.getText(),
+        presenter.buildProject(chooseRepositoryBox.getValue(), chooseBranchBox.getValue(), chooseProjectBox.getValue(),
                             userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue());
        
     }
@@ -148,14 +185,19 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
         notification.fire(new NotificationEvent(text));
     }
 
+    @Override
     public ListBox getChooseBranchBox() {
         return chooseBranchBox;
     }
 
-
     @Override
     public ListBox getChooseRepositoryBox() {
         return chooseRepositoryBox;
+    }
+
+    @Override
+    public ListBox getChooseProjectBox() {
+        return chooseProjectBox;
     }
 
     public Button getBuildButton() {

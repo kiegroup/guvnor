@@ -99,6 +99,12 @@ public class GitRepository implements Repository {
     }
 
     @Override
+    public Path getBranchRoot(String branch) {
+        return branches.get(branch);
+
+    }
+
+    @Override
     public boolean isValid() {
         return alias != null;
     }

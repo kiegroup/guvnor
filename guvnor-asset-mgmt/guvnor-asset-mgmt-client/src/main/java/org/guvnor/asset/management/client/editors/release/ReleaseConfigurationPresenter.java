@@ -18,12 +18,18 @@ package org.guvnor.asset.management.client.editors.release;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -61,10 +67,13 @@ public class ReleaseConfigurationPresenter {
 
         ListBox getChooseBranchBox();
 
+        ListBox getChooseProjectBox();
+
         TextBox getCurrentVersionText();
 
         TextBox getVersionText();
 
+        void showHideDeployToRuntimeSection(boolean show);
     }
 
     @Inject
@@ -90,7 +99,9 @@ public class ReleaseConfigurationPresenter {
     @Inject
     Caller<RepositoryService> repositoryServices;
 
-    private List<Repository> repositories;
+    private Map<String, Repository> repositories = new HashMap<String, Repository>();
+
+    private boolean supportRuntimeDeployment;
 
     @OnStartup
     public void onStartup(final PlaceRequest place) {
@@ -112,6 +123,7 @@ public class ReleaseConfigurationPresenter {
 
     @PostConstruct
     public void init() {
+
     }
 
     public void releaseProject(String repository, String branch, String project,
@@ -131,14 +143,24 @@ public class ReleaseConfigurationPresenter {
 
     }
 
+    public void loadServerSetting() {
+        assetManagementServices.call(new RemoteCallback<Boolean>() {
+            @Override
+            public void callback(Boolean supportRuntimeDeployment) {
+                view.showHideDeployToRuntimeSection(supportRuntimeDeployment);
+            }
+        }).supportRuntimeDeployment();
+    }
+
     public void loadRepositories() {
         repositoryServices.call(new RemoteCallback<List<Repository>>() {
 
             @Override
             public void callback(final List<Repository> repositoriesResults) {
-                repositories = repositoriesResults;
+
                 view.getChooseRepositoryBox().addItem(constants.Select_Repository());
-                for (Repository r : repositories) {
+                for (Repository r : repositoriesResults) {
+                    repositories.put(r.getAlias(), r);
                     view.getChooseRepositoryBox().addItem(r.getAlias(), r.getAlias());
                 }
 
@@ -148,37 +170,62 @@ public class ReleaseConfigurationPresenter {
     }
 
     public void loadBranches(String repository) {
-        for (Repository r : repositories) {
-            if ((r.getAlias()).equals(repository)) {
-                view.getChooseBranchBox().addItem(constants.Select_A_Branch());
-                for (String branch : r.getBranches()) {
-                    view.getChooseBranchBox().addItem(branch, branch);
+        Repository r = repositories.get(repository);
+        if (r != null) {
+            view.getChooseBranchBox().addItem(constants.Select_A_Branch());
+            for (String branch : r.getBranches()) {
+                view.getChooseBranchBox().addItem(branch, branch);
+            }
+
+        }
+    }
+
+    public void loadProjects(String repository, String branch) {
+        Repository r = repositories.get(repository);
+
+        assetManagementServices.call(new RemoteCallback<Set<Project>>() {
+
+            @Override
+            public void callback(final Set<Project> projectSetResults) {
+
+                view.getChooseProjectBox().addItem(constants.Select_Project());
+                for (Project project : projectSetResults) {
+                    view.getChooseProjectBox().addItem(project.getProjectName(), project.getProjectName());
                 }
 
             }
-        }
+        }).getProjects(r, branch);
+
     }
 
     public void loadRepositoryProjectStructure(String value) {
         if (!value.equals(constants.Select_Repository())) {
-            for (Repository r : repositories) {
-                if ((r.getAlias()).equals(value)) {
-                    projectStructureServices.call(new RemoteCallback<ProjectStructureModel>() {
-                        @Override
-                        public void callback(ProjectStructureModel model) {
-                            if (model != null && model.getPOM() != null) {
-                                view.getCurrentVersionText().setText(model.getPOM().getGav().getVersion());
-                                view.getVersionText().setText(model.getPOM().getGav().getVersion());
-                            } else {
-                                view.getCurrentVersionText().setText(constants.No_Project_Structure_Available());
-                                view.getVersionText().setText("1.0.0");
-                            }
+            Repository r = repositories.get(value);
+            if (r != null) {
+                projectStructureServices.call(new RemoteCallback<ProjectStructureModel>() {
+                    @Override
+                    public void callback(ProjectStructureModel model) {
+                        if (model != null && model.getPOM() != null) {
+                            view.getCurrentVersionText().setText(model.getPOM().getGav().getVersion());
+                            view.getVersionText().setText(model.getPOM().getGav().getVersion());
+                        } else {
+                            view.getCurrentVersionText().setText(constants.No_Project_Structure_Available());
+                            view.getVersionText().setText("1.0.0");
                         }
-                    }).load(r);
-                    return;
-                }
+                    }
+                }).load(r);
+                return;
             }
+
         }
+    }
+
+    protected void setSupportRuntimeDeployment(boolean b) {
+        this.supportRuntimeDeployment = b;
+    }
+
+    public boolean getSupportRuntimeDeployment() {
+        return this.supportRuntimeDeployment;
     }
 
     @OnOpen

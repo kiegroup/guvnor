@@ -18,11 +18,18 @@ package org.guvnor.asset.management.client.editors.build;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -56,9 +63,11 @@ public class BuildConfigurationPresenter {
 
         ListBox getChooseRepositoryBox();
 
-       
-        
         ListBox getChooseBranchBox();
+
+        ListBox getChooseProjectBox();
+
+        void showHideDeployToRuntimeSection(boolean show);
 
     }
 
@@ -82,7 +91,7 @@ public class BuildConfigurationPresenter {
     @Inject
     Caller<RepositoryService> repositoryServices;
 
-    private List<Repository> repositories;
+    private Map<String, Repository> repositories = new HashMap<String, Repository>();
 
     @OnStartup
     public void onStartup(final PlaceRequest place) {
@@ -104,6 +113,7 @@ public class BuildConfigurationPresenter {
 
     @PostConstruct
     public void init() {
+
     }
 
     public void buildProject(String repository, String branch, String project,
@@ -123,14 +133,23 @@ public class BuildConfigurationPresenter {
 
     }
 
+    public void loadServerSetting() {
+        assetManagementServices.call(new RemoteCallback<Boolean>() {
+            @Override
+            public void callback(Boolean supportRuntimeDeployment) {
+                view.showHideDeployToRuntimeSection(supportRuntimeDeployment);
+            }
+        }).supportRuntimeDeployment();
+    }
+
     public void loadRepositories() {
         repositoryServices.call(new RemoteCallback<List<Repository>>() {
 
             @Override
             public void callback(final List<Repository> repositoriesResults) {
-                repositories = repositoriesResults;
                 view.getChooseRepositoryBox().addItem(constants.Select_Repository());
-                for (Repository r : repositories) {
+                for (Repository r : repositoriesResults) {
+                    repositories.put(r.getAlias(), r);
                     view.getChooseRepositoryBox().addItem(r.getAlias(), r.getAlias());
                 }
 
@@ -140,15 +159,31 @@ public class BuildConfigurationPresenter {
     }
 
     public void loadBranches(String repository) {
-        for (Repository r : repositories) {
-            if ((r.getAlias()).equals(repository)) {
-                view.getChooseBranchBox().addItem(constants.Select_A_Branch());
-                for (String branch : r.getBranches()) {
-                    view.getChooseBranchBox().addItem(branch, branch);
-                }
-                
+        Repository r = repositories.get(repository);
+        if (r != null) {
+            view.getChooseBranchBox().addItem(constants.Select_A_Branch());
+            for (String branch : r.getBranches()) {
+                view.getChooseBranchBox().addItem(branch, branch);
             }
         }
+    }
+
+    public void loadProjects(String repository, String branch) {
+        Repository r = repositories.get(repository);
+
+        assetManagementServices.call(new RemoteCallback<Set<Project>>() {
+
+            @Override
+            public void callback(final Set<Project> projectSetResults) {
+
+                view.getChooseProjectBox().addItem(constants.Select_Project());
+                for (Project project : projectSetResults) {
+                    view.getChooseProjectBox().addItem(project.getProjectName(), project.getProjectName());
+                }
+
+            }
+        }).getProjects(r, branch);
+
     }
 
     @OnOpen

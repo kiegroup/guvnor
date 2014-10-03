@@ -45,6 +45,8 @@ public interface ProjectService<T extends Project> {
     
     Project resolveToParentProject( final Path resource );
 
+    Set<Project> getProjects(final Repository repository, String branch);
+
     /**
      * Given a Resource path resolve it to the containing Package Path. A Package path is the folder containing the resource.
      * The folder must be within a valid Project structure and at least reference /src/main/java, /src/main/resources,

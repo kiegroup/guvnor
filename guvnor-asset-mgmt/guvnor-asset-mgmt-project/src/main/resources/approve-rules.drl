@@ -1,0 +1,51 @@
+package defaultPackge
+
+
+import org.kie.api.runtime.process.WorkflowProcessInstance;
+
+
+
+rule "Auto approve" ruleflow-group "approval-rules"
+no-loop
+lock-on-active
+    when
+        $processInstance : WorkflowProcessInstance(processId == "guvnor-asset-management.ApproveOperation")
+    then
+        System.out.println("Auto approve for user: " + $processInstance.getVariable("initiator"));
+        System.out.println("Operation : " + $processInstance.getVariable("Operation"));
+        System.out.println("Repository : " + $processInstance.getVariable("Repository"));
+        System.out.println("Project : " + $processInstance.getVariable("Project"));
+        $processInstance.setVariable("Approved", true);
+        $processInstance.setVariable("RequiresApproval", false);
+
+end
+/*
+sample rules to show how to force user based approval (Requires approval for john) and reject operation (Not approve for katy)
+
+rule "Requires approval for john" ruleflow-group "approval-rules"
+no-loop
+lock-on-active
+    when
+        $processInstance : WorkflowProcessInstance(processId == "guvnor-asset-management.ApproveOperation")
+        String(this == "john") from $processInstance.getVariable("initiator");
+    then
+        System.out.println("Approval required for user: " + $processInstance.getVariable("initiator"));
+
+        $processInstance.setVariable("RequiresApproval", true);
+
+end
+
+rule "Not approve for katy" ruleflow-group "approval-rules"
+no-loop
+lock-on-active
+    when
+        $processInstance : WorkflowProcessInstance(processId == "guvnor-asset-management.ApproveOperation")
+        String(this == "katy") from $processInstance.getVariable("initiator");
+    then
+        System.out.println("NOT approve for user: " + $processInstance.getVariable("initiator"));
+
+        $processInstance.setVariable("Approved", false);
+        $processInstance.setVariable("RequiresApproval", false);
+
+end
+  */

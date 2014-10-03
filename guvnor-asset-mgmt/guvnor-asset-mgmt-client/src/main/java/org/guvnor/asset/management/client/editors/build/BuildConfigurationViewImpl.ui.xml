@@ -60,13 +60,13 @@
         </bootstrap:Column>
         <bootstrap:Column size="5">
           <bootstrap:Controls>
-            <bootstrap:TextBox ui:field="chooseProjectBox" placeholder="{i18n.Choose_Project}"/>
+            <bootstrap:ListBox ui:field="chooseProjectBox"/>
           </bootstrap:Controls>
         </bootstrap:Column>
        
       </bootstrap:FluidRow>
 
-      <bootstrap:FluidRow>
+      <bootstrap:FluidRow ui:field="deployToRuntimeRow">
         <bootstrap:Column size="5">
           <bootstrap:ControlLabel for="deployToRuntimeCheck">
             <ui:text from="{i18n.Deploy_To_Runtime}"/>
@@ -79,8 +79,8 @@
         </bootstrap:Column>
 
       </bootstrap:FluidRow>
-      
-      <bootstrap:FluidRow>
+
+      <bootstrap:FluidRow ui:field="usernameRow">
         <bootstrap:Column size="5">
           <bootstrap:ControlLabel for="userNameText">
             <ui:text from="{i18n.User_Name}"/>
@@ -91,10 +91,10 @@
             <bootstrap:TextBox ui:field="userNameText" placeholder="{i18n.User_Name}"/>
           </bootstrap:Controls>
         </bootstrap:Column>
-       
+
       </bootstrap:FluidRow>
-      
-      <bootstrap:FluidRow>
+
+      <bootstrap:FluidRow ui:field="passwordRow">
         <bootstrap:Column size="5">
           <bootstrap:ControlLabel for="passwordText">
             <ui:text from="{i18n.Password}"/>
@@ -105,9 +105,9 @@
             <bootstrap:PasswordTextBox ui:field="passwordText" placeholder="{i18n.Password}"/>
           </bootstrap:Controls>
         </bootstrap:Column>
-       
+
       </bootstrap:FluidRow>
-      <bootstrap:FluidRow>
+      <bootstrap:FluidRow ui:field="serverURLRow">
         <bootstrap:Column size="5">
           <bootstrap:ControlLabel for="serverURLText">
             <ui:text from="{i18n.Server_URL}"/>
@@ -118,7 +118,7 @@
             <bootstrap:TextBox ui:field="serverURLText" placeholder="{i18n.Server_URL}"/>
           </bootstrap:Controls>
         </bootstrap:Column>
-       
+
       </bootstrap:FluidRow>
 
       <bootstrap:FluidRow>

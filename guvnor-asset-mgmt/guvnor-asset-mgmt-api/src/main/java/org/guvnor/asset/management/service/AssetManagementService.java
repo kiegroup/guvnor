@@ -16,6 +16,10 @@
 
 package org.guvnor.asset.management.service;
 
+import java.util.Set;
+
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
@@ -29,4 +33,8 @@ public interface AssetManagementService {
 
     void releaseProject(String repository, String branch, String project,
             String userName, String password, String serverURL, Boolean deployToRuntime, String version);
+
+    boolean supportRuntimeDeployment();
+
+    Set<Project> getProjects(Repository repository, String branch);
 }

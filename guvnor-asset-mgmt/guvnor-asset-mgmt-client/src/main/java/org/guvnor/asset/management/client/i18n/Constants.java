@@ -192,4 +192,22 @@ public interface Constants extends Messages {
 
     String AssetManagementLog();
 
+    String UnexpectedError();
+
+    String ProcessName();
+
+    String Select_Project();
+
+    String ApproveOperation();
+
+    String Requestor();
+
+    String Operation();
+
+    String Repository();
+
+    String IsApproved();
+
+    String RequiresRework();
+
 }

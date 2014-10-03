@@ -16,7 +16,9 @@
 package org.guvnor.asset.management.backend.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -28,6 +30,12 @@ import org.guvnor.asset.management.model.PromoteChangesEvent;
 
 import org.guvnor.asset.management.model.ReleaseProjectEvent;
 import org.guvnor.asset.management.service.AssetManagementService;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.server.config.ConfigGroup;
+import org.guvnor.structure.server.config.ConfigType;
+import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
 
 
@@ -40,15 +48,33 @@ public class AssetManagementServiceImpl implements AssetManagementService {
     private Event<BuildProjectStructureEvent> buildProjectStructureEvent;
     @Inject
     private Event<PromoteChangesEvent> promoteChangesEvent;
-
     @Inject
     private Event<ReleaseProjectEvent> releaseProjectEvent;
+
+    @Inject
+    private ConfigurationService configurationService;
+
+    @Inject
+    private ProjectService projectService;
+
+    private boolean supportRuntimeDeployment;
 
     public AssetManagementServiceImpl() {
     }
     
     @PostConstruct
     public void init(){
+        String supportRuntime = "true";
+        List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
+        boolean globalSettingsDefined = false;
+        for ( ConfigGroup globalConfigGroup : globalConfigGroups ) {
+            if ( "settings".equals( globalConfigGroup.getName() ) ) {
+                supportRuntime = globalConfigGroup.getConfigItemValue("support.runtime.deploy");
+                break;
+            }
+        }
+        supportRuntimeDeployment = Boolean.parseBoolean(supportRuntime);
+
     }
 
     @Override
@@ -97,6 +123,16 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         params.put("DeployToRuntime", Boolean.TRUE.equals(deployToRuntime));
 
         releaseProjectEvent.fire(new ReleaseProjectEvent(params));
+    }
+
+    @Override
+    public boolean supportRuntimeDeployment() {
+        return supportRuntimeDeployment;
+    }
+
+    @Override
+    public Set<Project> getProjects(Repository repository, String branch) {
+        return projectService.getProjects(repository, branch);
     }
 
 }

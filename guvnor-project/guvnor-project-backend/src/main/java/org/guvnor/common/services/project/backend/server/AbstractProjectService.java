@@ -45,6 +45,7 @@ import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.PackageAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.workingset.client.model.WorkingSetSettings;
+import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
@@ -61,6 +62,8 @@ import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.server.cdi.AppResourcesAuthz;
 
 public abstract class AbstractProjectService<T extends Project>
         implements ProjectService<T>,
@@ -95,6 +98,10 @@ public abstract class AbstractProjectService<T extends Project>
 
     @Inject
     private CommentedOptionFactory optionsFactory;
+
+    @Inject
+    @AppResourcesAuthz
+    private AuthorizationManager authorizationManager;
 
     private Identity identity;
     protected SessionInfo sessionInfo;
@@ -763,5 +770,26 @@ public abstract class AbstractProjectService<T extends Project>
             }
         }
         return null;
+    }
+
+    public Set<Project> getProjects(final Repository repository, String branch) {
+        final Set<Project> authorizedProjects = new HashSet<Project>();
+        if (repository == null) {
+            return authorizedProjects;
+        }
+        final Path repositoryRoot = repository.getBranchRoot(branch);
+        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream(Paths.convert(repositoryRoot));
+        for (org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths) {
+            if (Files.isDirectory(nioRepositoryPath)) {
+                final org.uberfire.backend.vfs.Path projectPath = Paths.convert(nioRepositoryPath);
+                final Project project = resolveProject(projectPath);
+                if (project != null) {
+                    if (authorizationManager.authorize(project, identity)) {
+                        authorizedProjects.add(project);
+                    }
+                }
+            }
+        }
+        return authorizedProjects;
     }
 }

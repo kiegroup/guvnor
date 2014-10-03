@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+~ Copyright 2012 JBoss Inc
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~       http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
+
+  <ui:with field="i18n"
+           type="org.guvnor.asset.management.client.i18n.Constants"/>
+
+  <ui:style>
+    .highlighted-field {
+      font-style:italic;
+      font-weight:bold
+    }
+  </ui:style>
+  <g:HTMLPanel>
+    <b:Well>
+      <b:Fieldset>
+        <b:Legend>
+          <ui:text from="{i18n.ApproveOperation}"/>
+        </b:Legend>
+
+        <b:ControlGroup ui:field="requestorGroup">
+          <b:ControlLabel for="requestor">
+            <span class="{style.highlighted-field}">
+              <ui:text from="{i18n.Requestor}"/>
+            </span>
+          </b:ControlLabel>
+          <b:Controls>
+            <b:TextBox b:id="requestor" ui:field="requestorTextBox" placeholder=""/>
+          </b:Controls>
+        </b:ControlGroup>
+
+        <b:ControlGroup ui:field="operationGroup">
+          <b:ControlLabel for="operation">
+            <span class="{style.highlighted-field}">
+              <ui:text from="{i18n.Operation}"/>
+            </span>
+          </b:ControlLabel>
+          <b:Controls>
+            <b:TextBox b:id="operation" ui:field="operationTextBox" placeholder=""/>
+          </b:Controls>
+        </b:ControlGroup>
+
+        <b:ControlGroup ui:field="repositoryGroup">
+          <b:ControlLabel for="repository">
+            <span class="{style.highlighted-field}">
+              <ui:text from="{i18n.Repository}"/>
+            </span>
+          </b:ControlLabel>
+          <b:Controls>
+            <b:TextBox b:id="repository" ui:field="repositoryTextBox" placeholder=""/>
+          </b:Controls>
+        </b:ControlGroup>
+
+        <b:ControlGroup ui:field="projectGroup">
+          <b:ControlLabel for="project">
+            <span class="{style.highlighted-field}">
+              <ui:text from="{i18n.Project}"/>
+            </span>
+          </b:ControlLabel>
+          <b:Controls>
+            <b:TextBox b:id="project" ui:field="projectTextBox" placeholder=""/>
+          </b:Controls>
+        </b:ControlGroup>
+
+        <b:ControlGroup ui:field="approvedGroup">
+          <b:ControlLabel for="approved">
+            <span class="{style.highlighted-field}">
+              <ui:text from="{i18n.IsApproved}"/>
+            </span>
+          </b:ControlLabel>
+          <b:Controls>
+            <b:CheckBox b:id="approved" ui:field="approvedCheckBox"/>
+          </b:Controls>
+        </b:ControlGroup>
+      </b:Fieldset>
+    </b:Well>
+  </g:HTMLPanel>
+</ui:UiBinder>

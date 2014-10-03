@@ -33,6 +33,8 @@ public interface Repository extends RuntimeResource, Cacheable {
 
     Path getRoot();
 
+    Path getBranchRoot(String branch);
+
     void setRoot( final Path root );
 
     /**
