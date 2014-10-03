@@ -16,15 +16,22 @@
 
 package org.guvnor.asset.management.social;
 
-import org.kie.uberfire.social.activities.model.SocialEventType;
+public class RepositoryChangeEvent extends AssetManagementEvent {
 
-public enum AssetManagementEventTypes
-        implements SocialEventType {
-    BRANCH_CREATED,
-    PROCESS_START,
-    PROCESS_END,
-    ASSETS_PROMOTED,
-    PROJECT_BUILT,
-    PROJECT_DEPLOYED,
-    REPOSITORY_CHANGE
+    public enum ChangeType { VERSION_CHANGED };
+
+    private ChangeType changeType;
+
+    public RepositoryChangeEvent( String processName, String repositoryAlias, String rootURI, String user, Long timestamp, ChangeType changeType ) {
+        super( processName, repositoryAlias, rootURI, user, timestamp );
+        this.changeType = changeType;
+    }
+
+    public ChangeType getChangeType() {
+        return changeType;
+    }
+
+    public void setChangeType( ChangeType changeType ) {
+        this.changeType = changeType;
+    }
 }

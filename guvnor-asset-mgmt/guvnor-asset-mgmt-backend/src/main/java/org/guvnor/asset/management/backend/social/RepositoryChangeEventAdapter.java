@@ -16,24 +16,21 @@
 
 package org.guvnor.asset.management.backend.social;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.inject.Inject;
+
 import org.guvnor.asset.management.backend.social.i18n.Constants;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
-import org.guvnor.asset.management.social.ProcessStartEvent;
+import org.guvnor.asset.management.social.RepositoryChangeEvent;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.repository.SocialUserRepository;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-@ApplicationScoped
-public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent> {
+public class RepositoryChangeEventAdapter implements SocialAdapter<RepositoryChangeEvent> {
 
     @Inject
     private SocialUserRepository socialUserRepository;
@@ -42,13 +39,13 @@ public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent
     private Constants constants;
 
     @Override
-    public Class<ProcessStartEvent> eventToIntercept() {
-        return ProcessStartEvent.class;
+    public Class<RepositoryChangeEvent> eventToIntercept() {
+        return RepositoryChangeEvent.class;
     }
 
     @Override
     public SocialEventType socialEventType() {
-        return AssetManagementEventTypes.PROCESS_START;
+        return AssetManagementEventTypes.REPOSITORY_CHANGE;
     }
 
     @Override
@@ -62,16 +59,16 @@ public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent
 
     @Override
     public SocialActivitiesEvent toSocial( Object object ) {
-        ProcessStartEvent event = ( ProcessStartEvent ) object;
+        RepositoryChangeEvent event = ( RepositoryChangeEvent ) object;
 
         return new SocialActivitiesEvent(
                 socialUserRepository.systemUser(),
-                AssetManagementEventTypes.PROCESS_START.name(),
+                AssetManagementEventTypes.REPOSITORY_CHANGE.name(),
                 new Date( event.getTimestamp() )
         )
                 .withLink( event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
                         event.getRootURI() != null ? event.getRootURI() : "<unknown>" )
-                .withAdicionalInfo( getAdditionalInfo( event.getProcessName(), event.getRepositoryAlias(), event.getParams() ) );
+                .withAdicionalInfo( getAdditionalInfo( event ) );
     }
 
     @Override
@@ -84,23 +81,16 @@ public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent
         return new ArrayList<String>();
     }
 
-    private String getAdditionalInfo( String process, String repo, Map<String, String> params ) {
-        if ( Constants.CONFIGURE_REPOSITORY.equals( process ) ) {
-            return constants.configure_repository_start( repo );
+    private String getAdditionalInfo( RepositoryChangeEvent event ) {
+
+        StringBuilder info = new StringBuilder();
+
+        if ( event.getChangeType() == RepositoryChangeEvent.ChangeType.VERSION_CHANGED ) {
+
+            info.append( constants.release_project_version_change_success( event.getRepositoryAlias(),
+                    event.getParams().get( "version" )));
         }
 
-        if ( Constants.PROMOTE_ASSETS.equals( process ) ) {
-            return constants.promote_assets_start( repo );
-        }
-
-        if ( Constants.BUILD_PROJECT.equals( process ) ) {
-            return constants.build_project_start( params.get("project"), params.get( "branch" ), repo );
-        }
-
-        if ( Constants.RELEASE_PROJECT.equals( process ) ) {
-            return constants.release_project_start( repo, params.get("project") );
-        }
-
-        return "";
+        return info.toString();
     }
 }

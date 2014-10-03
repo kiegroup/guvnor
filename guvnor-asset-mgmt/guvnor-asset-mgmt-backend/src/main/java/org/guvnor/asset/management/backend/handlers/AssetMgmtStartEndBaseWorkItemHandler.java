@@ -85,15 +85,17 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
 
         //ReleaseProject variables
         String _RP_RepositoryName;
+        String _RP_ToReleaseVersion;
+        String _RP_ProjectURI;
+
         /* don't remove
         String _RP_Version;
         Boolean _RP_ValidForRelease;
-        String _RP_ProjectURI;
         String _RP_DevBranchName;
         String _RP_RelBranchName;
         String _RP_ToReleaseDevBranch;
         String _RP_ToReleaseRelBranch;
-        String _RP_ToReleaseVersion;
+
         Exception _RP_Exception;
         */
 
@@ -195,17 +197,29 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
 
         } else if ( beanManager != null && "ReleaseProject".equals( _ProcessName ) ) {
 
-            _RP_RepositoryName = ( String ) workItem.getParameter( "RP_RepositoryName" );
-            repositoryURI = DataUtils.readRepositoryURI( repositoryService, _RP_RepositoryName );
+            _RP_ProjectURI = ( String ) workItem.getParameter( "RP_ProjectURI" );
+            _RP_ToReleaseVersion = (String ) workItem.getParameter( "RP_ToReleaseVersion" );
 
-            if ( isStart() ) {
-                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _RP_RepositoryName, repositoryURI, user, System.currentTimeMillis() );
-                beanManager.fireEvent( event );
-            } else {
-                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _RP_RepositoryName, repositoryURI, user, System.currentTimeMillis() );
-                beanManager.fireEvent( event );
+            String _RP_Repository = null;
+            String _RP_Project = null;
+
+            if ( _RP_ProjectURI != null && _RP_ProjectURI.indexOf( "/" ) > 0 ) {
+                _RP_Repository = _RP_ProjectURI.substring( 0, _RP_ProjectURI.indexOf( "/" ) );
+                _RP_Project = _RP_ProjectURI.substring( _RP_ProjectURI.indexOf( "/" )+1, _RP_ProjectURI.length() );
+
+                repositoryURI = DataUtils.readRepositoryURI( repositoryService, _RP_Repository );
             }
 
+            if ( isStart() ) {
+                ProcessStartEvent event = new ProcessStartEvent( _ProcessName, _RP_Repository, repositoryURI, user, System.currentTimeMillis() );
+                event.addParam( "project", _RP_Project  );
+                event.addParam( "version", _RP_ToReleaseVersion );
+
+                beanManager.fireEvent( event );
+            } else {
+                ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _RP_Repository, repositoryURI, user, System.currentTimeMillis() );
+                beanManager.fireEvent( event );
+            }
         }
 
         if ( manager != null ) {
