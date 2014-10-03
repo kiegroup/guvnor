@@ -67,12 +67,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Errai UI -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
