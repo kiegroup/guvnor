@@ -3,7 +3,6 @@ package org.guvnor.rest.backend.cmd;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
-import org.guvnor.rest.backend.JobRequestApprovalService;
 import org.guvnor.rest.backend.JobRequestHelper;
 import org.guvnor.rest.backend.JobResultManager;
 import org.guvnor.rest.client.JobRequest;
@@ -49,12 +48,7 @@ public abstract class AbstractJobCommand implements Command {
         return new ExecutionResults();
     }
     
-    // private helper methods 
-    
-    private JobRequestApprovalService getApprovalService(CommandContext ctx) throws Exception {
-        BeanManager beanManager = getBeanManager();
-        return CDIUtils.createBean(JobRequestApprovalService.class, beanManager);
-    }
+    // private helper methods
        
     private JobResultManager getJobManager(CommandContext ctx) throws Exception {
         BeanManager beanManager = getBeanManager();
