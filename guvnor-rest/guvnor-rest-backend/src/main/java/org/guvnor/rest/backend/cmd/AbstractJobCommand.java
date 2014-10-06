@@ -10,6 +10,7 @@ import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
 import org.jbpm.executor.cdi.CDIUtils;
+import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.executor.api.Command;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
@@ -21,6 +22,7 @@ public abstract class AbstractJobCommand implements Command {
     protected static final Logger logger = LoggerFactory.getLogger( AbstractJobCommand.class );
             
     public static final String JOB_REQUEST_KEY = "JobRequest";
+    public static final String WORKITEM_KEY = "workItem";
 
     // for command implementations
     
@@ -30,7 +32,17 @@ public abstract class AbstractJobCommand implements Command {
     }
 
     protected JobRequest getJobRequest(CommandContext ctx) {
-        return (JobRequest) ctx.getData(JOB_REQUEST_KEY);
+        JobRequest jobRequest = (JobRequest) ctx.getData(JOB_REQUEST_KEY);
+        if (jobRequest != null) {
+            return jobRequest;
+        }
+
+        WorkItem workItem = (WorkItem) ctx.getData(WORKITEM_KEY);
+        if (workItem != null) {
+            return (JobRequest) workItem.getParameter(JOB_REQUEST_KEY);
+        }
+
+        throw new RuntimeException("Unable to find JobRequest");
     }
 
     protected ExecutionResults getEmptyResult() {
@@ -55,36 +67,39 @@ public abstract class AbstractJobCommand implements Command {
     
     @Override
     public ExecutionResults execute(CommandContext ctx) throws Exception {
-        // approval
-        JobRequest request = getJobRequest(ctx);
-        JobResult result = createResult(request);
-        approveRequest(ctx, request, result);
-       
-        // save job
-        logger.debug( "--- job {} ---, status: {}",  result.getJobId(), result.getStatus());
-        JobResultManager jobMgr = getJobManager(ctx);
-        result.setLastModified(System.currentTimeMillis());
-        jobMgr.putJob(result);
-       
-        // if approved, process
-        if( JobStatus.APPROVED.equals(result.getStatus()) ) { 
-            try { 
-                result = internalExecute(ctx, request); 
-            } catch( Exception e ) { 
-                result.setStatus(JobStatus.SERVER_ERROR);
-                result.setResult("Request failed because of " + e.getClass().getSimpleName() + ": " + e.getMessage());
-                logger.error("{} [{}] failed because of thrown {}: {}", 
-                        request.getClass().getSimpleName(), request.getJobId(), 
-                        e.getClass().getSimpleName(), e.getMessage(), e);
-            }
+        try {
+            // approval
+            JobRequest request = getJobRequest(ctx);
+            JobResult result = createResult(request);
 
             // save job
             logger.debug( "--- job {} ---, status: {}",  result.getJobId(), result.getStatus());
+            JobResultManager jobMgr = getJobManager(ctx);
             result.setLastModified(System.currentTimeMillis());
             jobMgr.putJob(result);
+
+            // if approved, process
+            if( JobStatus.APPROVED.equals(request.getStatus()) ) {
+                try {
+                    result = internalExecute(ctx, request);
+                } catch( Exception e ) {
+                    result.setStatus(JobStatus.SERVER_ERROR);
+                    result.setResult("Request failed because of " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                    logger.error("{} [{}] failed because of thrown {}: {}",
+                            request.getClass().getSimpleName(), request.getJobId(),
+                            e.getClass().getSimpleName(), e.getMessage(), e);
+                }
+
+                // save job
+                logger.debug( "--- job {} ---, status: {}",  result.getJobId(), result.getStatus());
+                result.setLastModified(System.currentTimeMillis());
+                jobMgr.putJob(result);
+            }
+
+            return getEmptyResult();
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
         }
-            
-        return getEmptyResult();
     }
   
     private JobResult createResult(JobRequest jobRequest) { 
@@ -93,25 +108,7 @@ public abstract class AbstractJobCommand implements Command {
         jobResult.setStatus( jobRequest.getStatus() ); 
         return jobResult;
     }
-    
-    private void approveRequest(CommandContext ctx, JobRequest request, JobResult result) { 
-        JobRequestApprovalService approvalService = null;
-        try {
-            approvalService = getApprovalService(ctx);
-        } catch( Exception e) { 
-            logger.warn("Unable to retrieve {} bean: {}", 
-                    JobRequestApprovalService.class.getSimpleName(),
-                    e.getMessage(), 
-                    e);
-            result.setStatus(JobStatus.APPROVED);
-            return;
-        }
-        if( approvalService == null ) { 
-            result.setStatus(JobStatus.APPROVED);
-        } else { 
-            approvalService.requestApproval(request, result);
-        }
-    }
+
 
     protected abstract JobResult internalExecute(CommandContext ctx, JobRequest request) throws Exception;
    

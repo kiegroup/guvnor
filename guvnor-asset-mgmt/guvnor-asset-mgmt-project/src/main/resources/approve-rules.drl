@@ -3,8 +3,23 @@ package defaultPackge
 
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 
+import org.guvnor.rest.client.JobRequest;
+import org.guvnor.rest.client.JobResult;
+import org.guvnor.rest.client.JobStatus;
 
 
+//Approval all requests
+rule "Auto approve all requests" ruleflow-group "approval-rules"
+    when
+        $request : JobRequest( status == JobStatus.ACCEPTED )
+    then
+        System.out.println("Auto approve for request: " + $request );
+        modify( $request ) {
+            setStatus( JobStatus.APPROVED );
+        }
+end
+
+// general auto approve
 rule "Auto approve" ruleflow-group "approval-rules"
 no-loop
 lock-on-active
@@ -19,6 +34,7 @@ lock-on-active
         $processInstance.setVariable("RequiresApproval", false);
 
 end
+
 /*
 sample rules to show how to force user based approval (Requires approval for john) and reject operation (Not approve for katy)
 
