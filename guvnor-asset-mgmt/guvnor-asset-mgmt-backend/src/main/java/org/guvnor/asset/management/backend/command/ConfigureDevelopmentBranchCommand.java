@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.TypeLiteral;
 
 import org.guvnor.asset.management.backend.AssetManagementRuntimeException;
 import org.guvnor.asset.management.backend.utils.CDIUtils;
@@ -60,7 +61,7 @@ public class ConfigureDevelopmentBranchCommand extends AbstractCommand {
             if (ioService != null) {
 
 
-                ProjectService projectService = CDIUtils.createBean(ProjectService.class, beanManager);
+                ProjectService projectService = CDIUtils.createBean(new TypeLiteral<ProjectService<?>>() {}.getType(), beanManager);
 
                 RepositoryService repositoryService = CDIUtils.createBean(RepositoryService.class, beanManager);
                 logger.debug("RepositoryService " + repositoryService);

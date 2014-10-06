@@ -2,6 +2,7 @@ package org.guvnor.asset.management.backend.command;
 
 import java.net.URI;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.TypeLiteral;
 
 import org.guvnor.asset.management.backend.AssetManagementRuntimeException;
 import org.guvnor.asset.management.backend.utils.CDIUtils;
@@ -59,7 +60,7 @@ public class MavenDeployProjectCommand extends AbstractCommand {
                 Path projectPath  = ioService.get(URI.create(projectUri));
                 logger.debug("Project path is " + projectPath);
 
-                ProjectService projectService = CDIUtils.createBean(ProjectService.class, beanManager);
+                ProjectService projectService = CDIUtils.createBean(new TypeLiteral<ProjectService<?>>() {}.getType(), beanManager);
                 Project project = projectService.resolveProject(Paths.convert(projectPath));
 
                 // suppress handlers to avoid auto deploys to runtime

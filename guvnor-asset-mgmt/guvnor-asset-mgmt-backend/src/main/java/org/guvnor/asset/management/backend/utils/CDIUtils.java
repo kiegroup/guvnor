@@ -1,6 +1,7 @@
 package org.guvnor.asset.management.backend.utils;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
@@ -48,6 +49,20 @@ public class CDIUtils {
 	        return (T) beanManager.getReference(bean, beanType, beanManager.createCreationalContext(bean));
         }
         
+        throw new IllegalArgumentException("Unable to to find bean of type " + beanType);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T createBean(Type beanType, BeanManager beanManager, Annotation... bindings) throws Exception {
+
+        Set<Bean<?>> beans = beanManager.getBeans( beanType, bindings );
+
+        if (beans != null && !beans.isEmpty()) {
+            Bean<T> bean = (Bean<T>) beans.iterator().next();
+
+            return (T) beanManager.getReference(bean, beanType, beanManager.createCreationalContext(bean));
+        }
+
         throw new IllegalArgumentException("Unable to to find bean of type " + beanType);
     }
 }

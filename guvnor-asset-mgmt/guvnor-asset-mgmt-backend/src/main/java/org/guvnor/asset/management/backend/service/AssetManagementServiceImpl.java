@@ -55,7 +55,7 @@ public class AssetManagementServiceImpl implements AssetManagementService {
     private ConfigurationService configurationService;
 
     @Inject
-    private ProjectService projectService;
+    private ProjectService<?> projectService;
 
     private boolean supportRuntimeDeployment;
 
@@ -111,9 +111,9 @@ public class AssetManagementServiceImpl implements AssetManagementService {
     }
 
     @Override
-    public void releaseProject(String repository, String branch, String project, String userName, String password, String serverURL, Boolean deployToRuntime, String version) {
+    public void releaseProject(String repository, String branch, String userName, String password, String serverURL, Boolean deployToRuntime, String version) {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ProjectURI", repository+"/"+project);
+        params.put("ProjectURI", repository);
         params.put("ToReleaseBranch", branch);
         params.put("ToReleaseVersion", version);
         params.put("Username", userName);

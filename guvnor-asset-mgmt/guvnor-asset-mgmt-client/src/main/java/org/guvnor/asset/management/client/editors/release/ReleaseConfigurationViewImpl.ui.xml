@@ -54,20 +54,6 @@
       
       <bootstrap:FluidRow>
         <bootstrap:Column size="5">
-          <bootstrap:ControlLabel for="chooseProjectBox">
-            <ui:text from="{i18n.Choose_Project}"/>
-          </bootstrap:ControlLabel>
-        </bootstrap:Column>
-        <bootstrap:Column size="5">
-          <bootstrap:Controls>
-            <bootstrap:ListBox ui:field="chooseProjectBox"/>
-          </bootstrap:Controls>
-        </bootstrap:Column>
-       
-      </bootstrap:FluidRow>
-      
-      <bootstrap:FluidRow>
-        <bootstrap:Column size="5">
           <bootstrap:ControlLabel for="currentVersionText">
             <ui:text from="{i18n.Current_Version}"/>
           </bootstrap:ControlLabel>

@@ -15,30 +15,27 @@
  */
 package org.guvnor.asset.management.client.editors.release;
 
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.google.gwt.core.client.GWT;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
+import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.TextBox;
+import com.google.gwt.core.client.GWT;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.model.ProjectStructureModel;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.ProjectStructureService;
-
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -50,8 +47,6 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.Identity;
-import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
 
 @Dependent
 @WorkbenchScreen(identifier = "Release Management")
@@ -66,8 +61,6 @@ public class ReleaseConfigurationPresenter {
         ListBox getChooseRepositoryBox();
 
         ListBox getChooseBranchBox();
-
-        ListBox getChooseProjectBox();
 
         TextBox getCurrentVersionText();
 
@@ -126,7 +119,7 @@ public class ReleaseConfigurationPresenter {
 
     }
 
-    public void releaseProject(String repository, String branch, String project,
+    public void releaseProject(String repository, String branch,
             String userName, String password, String serverURL, Boolean deployToRuntime, String version) {
         assetManagementServices.call(new RemoteCallback<Long>() {
             @Override
@@ -139,7 +132,7 @@ public class ReleaseConfigurationPresenter {
                 ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
                 return true;
             }
-        }).releaseProject(repository, branch, project, userName, password, serverURL, deployToRuntime, version);
+        }).releaseProject(repository, branch, userName, password, serverURL, deployToRuntime, version);
 
     }
 
@@ -180,24 +173,6 @@ public class ReleaseConfigurationPresenter {
         }
     }
 
-    public void loadProjects(String repository, String branch) {
-        Repository r = repositories.get(repository);
-
-        assetManagementServices.call(new RemoteCallback<Set<Project>>() {
-
-            @Override
-            public void callback(final Set<Project> projectSetResults) {
-
-                view.getChooseProjectBox().addItem(constants.Select_Project());
-                for (Project project : projectSetResults) {
-                    view.getChooseProjectBox().addItem(project.getProjectName(), project.getProjectName());
-                }
-
-            }
-        }).getProjects(r, branch);
-
-    }
-
     public void loadRepositoryProjectStructure(String value) {
         if (!value.equals(constants.Select_Repository())) {
             Repository r = repositories.get(value);
@@ -207,7 +182,7 @@ public class ReleaseConfigurationPresenter {
                     public void callback(ProjectStructureModel model) {
                         if (model != null && model.getPOM() != null) {
                             view.getCurrentVersionText().setText(model.getPOM().getGav().getVersion());
-                            view.getVersionText().setText(model.getPOM().getGav().getVersion());
+                            view.getVersionText().setText(model.getPOM().getGav().getVersion().replaceFirst("-SNAPSHOT", ""));
                         } else {
                             view.getCurrentVersionText().setText(constants.No_Project_Structure_Available());
                             view.getVersionText().setText("1.0.0");

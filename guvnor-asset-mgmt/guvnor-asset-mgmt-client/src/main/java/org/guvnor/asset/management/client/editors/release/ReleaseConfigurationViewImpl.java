@@ -65,9 +65,6 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
 
     @UiField
     public ListBox chooseBranchBox;
-
-    @UiField
-    public ListBox chooseProjectBox;
     
     @UiField
     public Button releaseButton;
@@ -130,16 +127,6 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
                 
             }
         });
-        chooseBranchBox.addChangeHandler(new ChangeHandler() {
-
-            @Override
-            public void onChange(ChangeEvent event) {
-                String repo = chooseRepositoryBox.getValue();
-                String branch = chooseBranchBox.getValue();
-
-                presenter.loadProjects(repo, branch);
-            }
-        });
         
         presenter.loadRepositories();
 
@@ -183,7 +170,7 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
     @UiHandler("releaseButton")
     public void releaseButton(ClickEvent e) {
 
-        presenter.releaseProject(chooseRepositoryBox.getValue(), chooseBranchBox.getValue(), chooseProjectBox.getValue(),
+        presenter.releaseProject(chooseRepositoryBox.getValue(), chooseBranchBox.getValue(),
                 userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue(), versionText.getText());
     }
 
@@ -201,11 +188,6 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
     @Override
     public ListBox getChooseRepositoryBox() {
         return chooseRepositoryBox;
-    }
-
-    @Override
-    public ListBox getChooseProjectBox() {
-        return chooseProjectBox;
     }
     
      @Override
