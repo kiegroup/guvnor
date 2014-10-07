@@ -22,20 +22,43 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-backend-server</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+    </dependency>
 
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-services-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-asset-mgmt-api</artifactId>
     </dependency>
-    
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-builder</artifactId>
@@ -50,6 +73,12 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
 
     <!-- REST dependencies -->
     <dependency>
