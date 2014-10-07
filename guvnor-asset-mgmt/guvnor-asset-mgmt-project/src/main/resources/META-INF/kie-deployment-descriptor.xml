@@ -41,7 +41,5 @@
     </work-item-handlers>
     <environment-entries/>
     <configurations/>
-    <required-roles>
-    	<required-role>kiemgmt</required-role>
-    </required-roles>
+    <required-roles></required-roles>
 </deployment-descriptor>
