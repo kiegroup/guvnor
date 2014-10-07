@@ -29,31 +29,45 @@
 
     <name>Guvnor - Asset Managemenet API</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.guvnor</groupId>
-            <artifactId>guvnor-project-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-api</artifactId>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-services-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.uberfire</groupId>
-            <artifactId>kie-uberfire-social-activities-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.errai</groupId>
-            <artifactId>errai-bus</artifactId>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-social-activities-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+  </dependencies>
 
 
     <build>
