@@ -82,7 +82,7 @@ public class RequiresReworkViewImpl extends Composite implements RequiresReworkP
     }
 
     @Override
-    public void setInputMap(Map<String, Object> params) {
+    public void setInputMap(Map<String, String> params) {
         reviewCommentBox.setText((String) params.get("ReviewComment"));
 
     }

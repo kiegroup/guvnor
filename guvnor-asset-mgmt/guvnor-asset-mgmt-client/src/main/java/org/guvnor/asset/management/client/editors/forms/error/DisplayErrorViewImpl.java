@@ -98,7 +98,7 @@ public class DisplayErrorViewImpl extends Composite implements DisplayErrorPrese
     }
 
     @Override
-    public void setInputMap(Map<String, Object> params) {
+    public void setInputMap(Map<String, String> params) {
         processNameTextBox.setText((String) params.get("ProcessName"));
         errorBox.setText((String) params.get("Error"));
     }

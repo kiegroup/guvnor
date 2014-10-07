@@ -36,52 +36,55 @@ public class CherryPickCommand extends AbstractCommand {
             String fromBranchName = (String) getParameter(commandContext, "FromBranchName");
             List<CommitInfo> commitsInfos = (List<CommitInfo>) getParameter(commandContext, "CommitsInfos");
             String commitsString = (String) getParameter(commandContext, "CommitsString");
-            String[] commits = commitsString.split(",");
-            AssetsPromotedEvent event;
 
-            Collections.sort(commitsInfos, new Comparator<CommitInfo>() {
-
-                @Override
-                public int compare(CommitInfo o1, CommitInfo o2) {
-                    if (o1.getCommitDate().before(o2.getCommitDate())) {
-                        return -1;
-                    } else if (o1.getCommitDate().after(o2.getCommitDate())) {
-                        return 1;
-                    }
-                    return 0;
-                }
-            });
-            String[] orderedCommits = new String[commits.length];
-            int count = 0;
-            for (CommitInfo c : commitsInfos) {
-                for (String s : commits) {
-                    if(c.getCommitId().equals(s)){
-                        orderedCommits[count] = s;
-                        count++;
-                    }
-                }
-            }
+            String outcome = "unknown";
 
             BeanManager beanManager = CDIUtils.lookUpBeanManager(commandContext);
             logger.debug("BeanManager " + beanManager);
 
-            IOService ioService = CDIUtils.createBean(IOService.class, beanManager, new NamedLiteral("ioStrategy"));
-            logger.debug("IoService " + ioService);
-
-            Path fromBranchPath = ioService.get(URI.create("default://" + fromBranchName + "@" + gitRepo));
-            Path toBranchPath = ioService.get(URI.create("default://" + toBranchName + "@" + gitRepo));
-
-            CherryPickCopyOption copyOption = new CherryPickCopyOption(orderedCommits);
-            String outcome = "unknown";
-
             RepositoryService repositoryService = CDIUtils.createBean( RepositoryService.class, beanManager );
             String repositoryURI = readRepositoryURI( repositoryService, gitRepo );
 
-            event = getSocialEvent( gitRepo, repositoryURI, fromBranchName, toBranchName, commitsInfos, "system" );
+            AssetsPromotedEvent event = getSocialEvent( gitRepo, repositoryURI, fromBranchName, toBranchName, commitsInfos, "system" );
 
             try {
-                logger.debug("Cherry pick command execution");
-                ioService.copy(fromBranchPath, toBranchPath, copyOption);
+                if (commitsString != null && !commitsString.equals("")) {
+                    String[] commits = commitsString.split(",");
+
+                    Collections.sort(commitsInfos, new Comparator<CommitInfo>() {
+
+                        @Override
+                        public int compare(CommitInfo o1, CommitInfo o2) {
+                            if (o1.getCommitDate().before(o2.getCommitDate())) {
+                                return -1;
+                            } else if (o1.getCommitDate().after(o2.getCommitDate())) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    });
+                    String[] orderedCommits = new String[commits.length];
+                    int count = 0;
+                    for (CommitInfo c : commitsInfos) {
+                        for (String s : commits) {
+                            if(c.getCommitId().equals(s)){
+                                orderedCommits[count] = s;
+                                count++;
+                            }
+                        }
+                    }
+
+                    IOService ioService = CDIUtils.createBean(IOService.class, beanManager, new NamedLiteral("ioStrategy"));
+                    logger.debug("IoService " + ioService);
+
+                    Path fromBranchPath = ioService.get(URI.create("default://" + fromBranchName + "@" + gitRepo));
+                    Path toBranchPath = ioService.get(URI.create("default://" + toBranchName + "@" + gitRepo));
+
+                    CherryPickCopyOption copyOption = new CherryPickCopyOption(orderedCommits);
+
+                    logger.debug("Cherry pick command execution");
+                    ioService.copy(fromBranchPath, toBranchPath, copyOption);
+                }
 
                 outcome = "success";
 

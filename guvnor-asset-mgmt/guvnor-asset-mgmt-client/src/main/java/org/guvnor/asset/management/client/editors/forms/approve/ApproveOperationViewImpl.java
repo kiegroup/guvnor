@@ -105,7 +105,7 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
     }
 
     @Override
-    public void setInputMap(Map<String, Object> params) {
+    public void setInputMap(Map<String, String> params) {
         requestorTextBox.setText((String) params.get("in_requestor"));
         operationTextBox.setText((String) params.get("in_operation"));
         repositoryTextBox.setText((String) params.get("in_repository"));

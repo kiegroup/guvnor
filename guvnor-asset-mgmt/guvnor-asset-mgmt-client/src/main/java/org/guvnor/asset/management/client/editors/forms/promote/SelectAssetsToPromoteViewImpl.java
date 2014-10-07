@@ -81,7 +81,7 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
     private Event<NotificationEvent> notification;
 
 
-    private Map<String, List<String>> commitsPerFile;
+    private Map<String, String> commitsPerFile;
 
     public SelectAssetsToPromoteViewImpl() {
 
@@ -99,12 +99,10 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
         int filesToPromoteCount = getFilesToPromoteList().getItemCount();
         String out_commits = "";
         for (int i = 0; i < filesToPromoteCount; i++) {
-            List<String> commits = commitsPerFile.get(getFilesToPromoteList().getItemText(i));
-            for (String commit : commits) {
-                if (!out_commits.contains(commit)) {
-                    out_commits += commit + ",";
-                }
-            }
+            String commits = commitsPerFile.get(getFilesToPromoteList().getItemText(i));
+            if (commits == null || commits.length() == 0 || out_commits.contains(commits)) continue;
+            if (out_commits.length() > 0) out_commits += ",";
+            out_commits += commits;
         }
 
         outputMap.put("out_commits", out_commits);
@@ -174,14 +172,25 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
     }
 
     @Override
-    public void setInputMap(Map<String, Object> params) {
+    public void setInputMap(Map<String, String> params) {
 
-        String files = (String) params.get("in_list_of_files");
-        commitsPerFile = (Map<String, List<String>>) params.get("in_commits_per_file");
+        String files = params.get("in_list_of_files");
+        commitsPerFile = new HashMap<String, String>();
+
+        String in_commits_per_file = params.get("in_commits_per_file");
+
+        if (in_commits_per_file != null && in_commits_per_file.length() > 0) {
+            String[] commits_info = in_commits_per_file.split(";");
+
+            for (String commit : commits_info) {
+                String commits = commit.substring(commit.indexOf("=") + 1);
+                commitsPerFile.put(commit.substring(0, commit.indexOf("=")), commits);
+            }
+        }
 
         String[] filesArray = files.split(",");
 
-        getSourceBranchBox().setText((String) params.get("in_source_branch_name"));
+        getSourceBranchBox().setText(params.get("in_source_branch_name"));
 
         getFilesInTheBranchList().clear();
         for (String file : filesArray) {

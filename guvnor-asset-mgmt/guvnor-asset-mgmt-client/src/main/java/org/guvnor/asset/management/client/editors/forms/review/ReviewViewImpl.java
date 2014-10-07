@@ -108,7 +108,7 @@ public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewV
     }
 
     @Override
-    public void setInputMap(Map<String, Object> params) {
+    public void setInputMap(Map<String, String> params) {
         requestorTextBox.setText((String) params.get("in_requestor"));
         repositoryTextBox.setText((String) params.get("in_repository"));
         showCommitsBox.setText((String) params.get("in_commits"));
