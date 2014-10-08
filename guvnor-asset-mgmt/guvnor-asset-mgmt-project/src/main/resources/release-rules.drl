@@ -2,6 +2,10 @@ package defaultPackge
 
 
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.slf4j.Logger;
+
+
+global Logger logger;
 
 rule "Project URI is not set" ruleflow-group "release-rules"
     when
@@ -9,7 +13,7 @@ rule "Project URI is not set" ruleflow-group "release-rules"
         String(this.isEmpty()) from $processInstance.getVariable("ProjectURI");
     then
         String reason = "Not valid for release as project uri is not given " + $processInstance.getVariable("ProjectURI");
-        System.err.println(reason);
+        logger.error(reason);
         $processInstance.setVariable("ValidForRelease", Boolean.FALSE);
         $processInstance.setVariable("Exception", reason);
 
@@ -23,7 +27,7 @@ rule "Release branch and version is not set" ruleflow-group "release-rules"
     then
         String reason = "Not valid for release as branch [1] and/or version [2] is not given "
                                + $processInstance.getVariable("ToReleaseBranch") + ", " + $processInstance.getVariable("ToReleaseVersion");
-        System.err.println(reason);
+        logger.error(reason);
         $processInstance.setVariable("ValidForRelease", Boolean.FALSE);
         $processInstance.setVariable("Exception", reason);
 
@@ -36,7 +40,7 @@ rule "Release branch does not start with release" ruleflow-group "release-rules"
     then
         String reason = "Not valid for release as branch to release from does not start with release - given name is "
                                 + $processInstance.getVariable("ToReleaseBranch");
-        System.err.println(reason);
+        logger.error(reason);
         $processInstance.setVariable("ValidForRelease", Boolean.FALSE);
         $processInstance.setVariable("Exception", reason);
 
@@ -53,7 +57,7 @@ rule "Check deployment to runtime details" ruleflow-group "release-rules"
         String reason = "Not valid for release as deploy to runtime was selected but no details provided "
                                + $processInstance.getVariable("Username") + ", "+ $processInstance.getVariable("Password")
                                 + ", " + $processInstance.getVariable("ExecServerURL");
-        System.err.println(reason);
+        logger.error(reason);
         $processInstance.setVariable("ValidForRelease", Boolean.FALSE);
         $processInstance.setVariable("Exception", reason);
 
@@ -66,7 +70,7 @@ rule "Release version ends with SNAPSHOT" ruleflow-group "release-rules"
     then
         String reason = "Not valid for release as version for release is snapshot - given name is "
                                 + $processInstance.getVariable("ToReleaseVersion");
-        System.err.println(reason);
+        logger.error(reason);
         $processInstance.setVariable("ValidForRelease", Boolean.FALSE);
         $processInstance.setVariable("Exception", reason);
 

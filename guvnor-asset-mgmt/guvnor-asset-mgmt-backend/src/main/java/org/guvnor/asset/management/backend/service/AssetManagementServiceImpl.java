@@ -95,7 +95,7 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         params.put("ProjectURI", repository+"/"+project);
         params.put("BranchName", branch);
 	    params.put("Username", userName);
-	    params.put("Password", password);
+	    params.put("Password", encodePassword(password));
 	    params.put("ExecServerURL", serverURL);
 	    params.put("DeployToRuntime", Boolean.TRUE.equals(deployToRuntime));
         buildProjectStructureEvent.fire(new BuildProjectStructureEvent(params));
@@ -117,7 +117,7 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         params.put("ToReleaseBranch", branch);
         params.put("ToReleaseVersion", version);
         params.put("Username", userName);
-        params.put("Password", password);
+        params.put("Password", encodePassword(password));
         params.put("ExecServerURL", serverURL);
         params.put("ValidForRelease", Boolean.TRUE);
         params.put("DeployToRuntime", Boolean.TRUE.equals(deployToRuntime));
@@ -135,4 +135,11 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         return projectService.getProjects(repository, branch);
     }
 
+    private String encodePassword(String password) {
+        if (password == null) {
+            return null;
+        }
+
+        return new String(org.apache.commons.codec.binary.Base64.encodeBase64(password.getBytes()));
+    }
 }

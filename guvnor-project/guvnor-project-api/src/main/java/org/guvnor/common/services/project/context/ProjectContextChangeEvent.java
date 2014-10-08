@@ -31,12 +31,14 @@ public class ProjectContextChangeEvent {
     private final Repository repository;
     private final Project project;
     private final Package pkg;
+    private final String branch;
 
     public ProjectContextChangeEvent() {
         ou = null;
         repository = null;
         project = null;
         pkg = null;
+        branch = null;
     }
 
     public ProjectContextChangeEvent( final OrganizationalUnit ou ) {
@@ -57,17 +59,42 @@ public class ProjectContextChangeEvent {
         this( ou,
               repository,
               project,
-              null );
+              null,
+              null);
+    }
+
+    public ProjectContextChangeEvent( final OrganizationalUnit ou,
+                                      final Repository repository,
+                                      final Project project,
+                                      final String branch) {
+        this( ou,
+                repository,
+                project,
+                null,
+                branch);
     }
 
     public ProjectContextChangeEvent( final OrganizationalUnit ou,
                                       final Repository repository,
                                       final Project project,
                                       final Package pkg ) {
+        this(ou,
+             repository,
+             project,
+             pkg,
+             null);
+    }
+
+    public ProjectContextChangeEvent( final OrganizationalUnit ou,
+                                      final Repository repository,
+                                      final Project project,
+                                      final Package pkg,
+                                      final String branch) {
         this.ou = ou;
         this.repository = repository;
         this.project = project;
         this.pkg = pkg;
+        this.branch = branch;
     }
 
     public OrganizationalUnit getOrganizationalUnit() {
@@ -84,6 +111,10 @@ public class ProjectContextChangeEvent {
 
     public Package getPackage() {
         return pkg;
+    }
+
+    public String getBranch() {
+        return this.branch;
     }
 
 }

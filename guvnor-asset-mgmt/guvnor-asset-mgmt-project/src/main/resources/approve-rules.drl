@@ -6,14 +6,17 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
+import org.slf4j.Logger;
 
+
+global Logger logger;
 
 //Approval all requests
 rule "Auto approve all requests" ruleflow-group "approval-rules"
     when
         $request : JobRequest( status == JobStatus.ACCEPTED )
     then
-        System.out.println("Auto approve for request: " + $request );
+        logger.info("Auto approve for request: " + $request );
         modify( $request ) {
             setStatus( JobStatus.APPROVED );
         }
@@ -26,10 +29,10 @@ lock-on-active
     when
         $processInstance : WorkflowProcessInstance(processId == "guvnor-asset-management.ApproveOperation")
     then
-        System.out.println("Auto approve for user: " + $processInstance.getVariable("initiator"));
-        System.out.println("Operation : " + $processInstance.getVariable("Operation"));
-        System.out.println("Repository : " + $processInstance.getVariable("Repository"));
-        System.out.println("Project : " + $processInstance.getVariable("Project"));
+        logger.info("Auto approve for user: " + $processInstance.getVariable("initiator"));
+        logger.info("Operation : " + $processInstance.getVariable("Operation"));
+        logger.info("Repository : " + $processInstance.getVariable("Repository"));
+        logger.info("Project : " + $processInstance.getVariable("Project"));
         $processInstance.setVariable("Approved", true);
         $processInstance.setVariable("RequiresApproval", false);
 

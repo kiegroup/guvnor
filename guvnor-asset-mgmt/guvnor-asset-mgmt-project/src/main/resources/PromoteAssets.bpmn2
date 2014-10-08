@@ -70,7 +70,7 @@
   <bpmn2:itemDefinition id="__1DA5345A-EBE8-4177-A224-DEDC9F8D6506_RepositoryInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__1DA5345A-EBE8-4177-A224-DEDC9F8D6506_ApprovedOutputXItem" structureRef="Object"/>
   <bpmn2:process id="guvnor-asset-management.PromoteAssets" drools:packageName="org.jbpm" drools:version="1.0" name="PromoteAssets" isExecutable="true">
-    <bpmn2:property id="GitRepositoryName" itemSubjectRef="_GitRepositoryNameItem"/>
+    <bpmn2:property id="RepositoryName" itemSubjectRef="_GitRepositoryNameItem"/>
     <bpmn2:property id="SourceBranchName" itemSubjectRef="_SourceBranchNameItem"/>
     <bpmn2:property id="TargetBranchName" itemSubjectRef="_TargetBranchNameItem"/>
     <bpmn2:property id="CommitsToPromote" itemSubjectRef="_CommitsToPromoteItem"/>
@@ -195,7 +195,7 @@
         <bpmn2:targetRef>_1B3EE771-7EB1-44E9-97D8-946AEC7B24ED_in_commitsInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_JyNPmkpCEeS1sOr-ltSUgw">
-        <bpmn2:sourceRef>GitRepositoryName</bpmn2:sourceRef>
+        <bpmn2:sourceRef>RepositoryName</bpmn2:sourceRef>
         <bpmn2:targetRef>_1B3EE771-7EB1-44E9-97D8-946AEC7B24ED_in_repositoryInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_JyNPm0pCEeS1sOr-ltSUgw">
@@ -267,7 +267,7 @@
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_JyNPskpCEeS1sOr-ltSUgw">
-        <bpmn2:sourceRef>GitRepositoryName</bpmn2:sourceRef>
+        <bpmn2:sourceRef>RepositoryName</bpmn2:sourceRef>
         <bpmn2:targetRef>_02B80DE4-2903-43B8-A548-00DDDC9DDF94_GitRepositoryInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_JyNPs0pCEeS1sOr-ltSUgw">
@@ -338,7 +338,7 @@
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_JyNPw0pCEeS1sOr-ltSUgw">
-        <bpmn2:sourceRef>GitRepositoryName</bpmn2:sourceRef>
+        <bpmn2:sourceRef>RepositoryName</bpmn2:sourceRef>
         <bpmn2:targetRef>_C23F9850-16B7-4BFE-BF04-8EC4776F3361_GitRepositoryInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_JyNPxEpCEeS1sOr-ltSUgw">
@@ -412,7 +412,7 @@
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_JyNP0UpCEeS1sOr-ltSUgw">
-        <bpmn2:sourceRef>GitRepositoryName</bpmn2:sourceRef>
+        <bpmn2:sourceRef>RepositoryName</bpmn2:sourceRef>
         <bpmn2:targetRef>_2FF7C291-F068-4A2C-B693-42C1BA50851A_PA_GitRepositoryNameInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_JyNP0kpCEeS1sOr-ltSUgw">
@@ -498,7 +498,7 @@
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_JyN2lUpCEeS1sOr-ltSUgw">
-        <bpmn2:sourceRef>GitRepositoryName</bpmn2:sourceRef>
+        <bpmn2:sourceRef>RepositoryName</bpmn2:sourceRef>
         <bpmn2:targetRef>_4F693A6D-F18F-4229-A313-3B52577021BA_PA_GitRepositoryNameInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_JyN2lkpCEeS1sOr-ltSUgw">
@@ -621,7 +621,7 @@
         <bpmn2:targetRef>_1DA5345A-EBE8-4177-A224-DEDC9F8D6506_RequestorInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_JyN2tUpCEeS1sOr-ltSUgw">
-        <bpmn2:sourceRef>GitRepositoryName</bpmn2:sourceRef>
+        <bpmn2:sourceRef>RepositoryName</bpmn2:sourceRef>
         <bpmn2:targetRef>_1DA5345A-EBE8-4177-A224-DEDC9F8D6506_RepositoryInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataOutputAssociation id="_JyN2tkpCEeS1sOr-ltSUgw">
