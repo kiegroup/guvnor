@@ -128,6 +128,9 @@ public class ProjectStructurePresenter
     private ProjectWizard wizzard;
 
     @Inject
+    protected Event<ProjectContextChangeEvent> contextChangedEvent;
+
+    @Inject
     public ProjectStructurePresenter( ProjectStructureView view ) {
         this.view = view;
         view.setPresenter( this );
@@ -301,8 +304,11 @@ public class ProjectStructurePresenter
                             @Override
                             public void callback( Repository repository ) {
                                 view.hideBusyIndicator();
+                                ProjectContextChangeEvent event = new ProjectContextChangeEvent(workbenchContext.getActiveOrganizationalUnit(), repository, project, branch);
+                                contextChangedEvent.fire(event);
                                 ProjectStructurePresenter.this.repository = repository;
                                 init();
+
                             }
                         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepository( repository, true );
 
@@ -315,6 +321,8 @@ public class ProjectStructurePresenter
                 @Override
                 public void callback( Repository repository ) {
                     view.hideBusyIndicator();
+                    ProjectContextChangeEvent event = new ProjectContextChangeEvent(workbenchContext.getActiveOrganizationalUnit(), repository, project, branch);
+                    contextChangedEvent.fire(event);
                     ProjectStructurePresenter.this.repository = repository;
                     init();
                 }
