@@ -1,7 +1,9 @@
 package org.guvnor.asset.management.backend.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -18,6 +20,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +31,8 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
+
+import static org.guvnor.structure.backend.repositories.EnvironmentParameters.*;
 
 @Service
 @ApplicationScoped
@@ -41,6 +46,9 @@ public class ProjectStructureServiceImpl
 
     @Inject
     private ProjectService<? extends Project> projectService;
+
+    @Inject
+    private RepositoryService repositoryService;
 
     @Inject
     private MetadataService metadataService;
@@ -71,7 +79,21 @@ public class ProjectStructureServiceImpl
         // it needs to be deployed before the first child is created
         m2service.deployParentPom( gav );
 
+        updateManagedStatus( repo, true );
+
         return pathToPom;
+    }
+
+    @Override
+    public Repository initRepository( final Repository repo, boolean managed ) {
+        return updateManagedStatus( repo, managed );
+    }
+
+    private Repository updateManagedStatus( final Repository repo, final boolean managed) {
+        Map<String, Object> config = new HashMap<String, Object>( );
+
+        config.put( MANAGED, managed );
+        return repositoryService.updateRepository( repo, config );
     }
 
     @Override
@@ -134,12 +156,25 @@ public class ProjectStructureServiceImpl
     public ProjectStructureModel load( final Repository repository, boolean includeModules ) {
 
         if ( repository == null ) return null;
+        Repository _repository = repositoryService.getRepository( repository.getAlias() );
+
+        if ( _repository == null ) return null;
 
         ProjectStructureModel model = new ProjectStructureModel();
+        Boolean managedStatus = _repository.getEnvironment() != null ? (Boolean)_repository.getEnvironment().get( MANAGED ) : null;
+        if ( managedStatus != null) {
+            model.setManaged( managedStatus );
+        }
+
         Path path = repository.getRoot();
         final Project project = projectService.resolveToParentProject( path );
 
         if ( project != null ) {
+            if ( !model.isManaged() ) {
+                //uncommon case, the repository is managed. Update managed status.
+                updateManagedStatus( _repository, true );
+                model.setManaged( true );
+            }
             model.setPOM( pomService.load( project.getPomXMLPath() ) );
             model.setPOMMetaData( metadataService.getMetadata( project.getPomXMLPath() ) );
             model.setPathToPOM( project.getPomXMLPath() );
@@ -163,7 +198,13 @@ public class ProjectStructureServiceImpl
                     pom = pomService.load( orphanProject.getPomXMLPath() );
                     model.getOrphanProjectsPOM().put( orphanProject.getSignatureId(), pom );
                 }
-            } else {
+                if ( managedStatus == null && repositoryProjects.size() > 1 ) {
+                    //update managed status
+                    updateManagedStatus( _repository, false );
+                }
+
+            } else if ( managedStatus == null) {
+                //there are no projects and the managed attribute is not set, means the repository was never initialized.
                 model = null;
             }
         }

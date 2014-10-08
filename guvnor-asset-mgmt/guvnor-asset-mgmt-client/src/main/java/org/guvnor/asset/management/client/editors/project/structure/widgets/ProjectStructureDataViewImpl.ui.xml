@@ -42,14 +42,22 @@
         <b:TextBox b:id="groupId" ui:field="groupIdTextBox" placeholder="{i18n.GroupIdHolder}"/>
         <b:HelpInline ui:field="groupIdTextBoxHelpInline"/>
       </b:Controls>
+
       <b:Controls>
         <b:TextBox b:id="artifactId" ui:field="artifactIdTextBox" placeholder="{i18n.ArtifactIdHolder}"/>
         <b:HelpInline ui:field="artifactIdTextBoxHelpInline"/>
       </b:Controls>
+
       <b:Controls>
         <b:TextBox b:id="version" ui:field="versionTextBox" placeholder="{i18n.VersionHolder}"/>
         <b:HelpInline ui:field="versionTextBoxHelpInline"/>
       </b:Controls>
+
+      <b:Controls>
+        <b:RadioButton name="moduleType" b:id="isUnmanagedRepository" ui:field="isUnmanagedRepositoryRadioButton"/>
+        <b:HelpInline ui:field="isUnmanagedRepositoryButtonHelpInline"/>
+      </b:Controls>
+
     </b:Fieldset>
     <g:HTML>
       <br/>

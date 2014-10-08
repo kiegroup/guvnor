@@ -14,7 +14,7 @@ public interface ProjectStructureDataView extends IsWidget {
 
     interface Presenter {
 
-        void onProjectModeChange( boolean isSingle );
+        void onProjectModeChange( );
 
         void onGroupIdChange( String groupId );
 
@@ -60,6 +60,8 @@ public interface ProjectStructureDataView extends IsWidget {
     boolean isSingleModule();
 
     boolean isMultiModule();
+
+    boolean isUnmanagedRepository();
 
     void clear();
 

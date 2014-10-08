@@ -30,6 +30,8 @@ public class ProjectStructureModel {
 
     private Map<String, POM> orphanProjectsPOM = new HashMap<String, POM>( );
 
+    private Boolean managed;
+
     public ProjectStructureModel() {
     }
 
@@ -79,6 +81,18 @@ public class ProjectStructureModel {
 
     public boolean isOrphanProjects() {
         return orphanProjects != null && orphanProjects.size() > 1;
+    }
+
+    public Boolean isManaged() {
+        return managed != null && managed;
+    }
+
+    public void setManaged( Boolean managed ) {
+        this.managed = managed;
+    }
+
+    public Boolean getManaged() {
+        return managed;
     }
 
     public List<Project> getOrphanProjects() {

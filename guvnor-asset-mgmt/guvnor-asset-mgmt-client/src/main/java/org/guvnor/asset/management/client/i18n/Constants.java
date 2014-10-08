@@ -76,6 +76,8 @@ public interface Constants extends Messages {
 
     String UnmanagedRepository(String repository);
 
+    String UnInitializedStructure(String repository);
+
     String Save();
 
     String Saving();
@@ -140,6 +142,8 @@ public interface Constants extends Messages {
     String Project_structure_view_create_groupIdTextBoxHelpInline();
     String Project_structure_view_create_artifactIdTextBoxHelpInline();
     String Project_structure_view_create_versionTextBoxHelpInline();
+    String Project_structure_view_create_isUnmanagedRepositoryRadioButton();
+    String Project_structure_view_create_isUnmanagedRepositoryButtonHelpInline();
 
     //single module
     String Project_structure_view_edit_single_projectTypeLabel();
@@ -161,6 +165,8 @@ public interface Constants extends Messages {
 
     //unmanaged repo
     String Project_structure_view_edit_unmanaged_projectTypeLabel();
+    String Project_structure_view_edit_unmanaged_isUnmanagedRepositoryRadioButton();
+    String Project_structure_view_edit_unmanaged_isUnmanagedRepositoryButtonHelpInline();
 
     //End of Project structure data widget constants
 

@@ -28,7 +28,7 @@
     <b:FluidRow>
       <b:Legend>
         <small>
-          <b:Label text="{i18n.Modules}"/>
+          <b:Label ui:field="modulesLabel" text="{i18n.Modules}"/>
         </small>
       </b:Legend>
     </b:FluidRow>

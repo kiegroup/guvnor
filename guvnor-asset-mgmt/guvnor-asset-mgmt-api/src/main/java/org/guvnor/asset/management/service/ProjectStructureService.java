@@ -15,6 +15,8 @@ public interface ProjectStructureService {
 
     Path initProjectStructure( final GAV gav, final Repository repo);
 
+    Repository initRepository( final Repository repo, boolean managed );
+
     Path convertToMultiProjectStructure( final List<Project> projects,
             final GAV parentGav,
             final Repository repo,

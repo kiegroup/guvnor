@@ -9,4 +9,6 @@ public class EnvironmentParameters {
 
     public static final String BRANCH = "branch";
 
+    public static final String MANAGED = "managed";
+
 }

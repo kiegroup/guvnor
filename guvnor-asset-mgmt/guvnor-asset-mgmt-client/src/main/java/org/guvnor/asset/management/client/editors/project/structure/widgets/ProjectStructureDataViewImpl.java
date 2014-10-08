@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.guvnor.asset.management.client.editors.project.structure.widgets;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -78,6 +94,12 @@ public class ProjectStructureDataViewImpl extends Composite
     @UiField
     TextBox singleProjectVersionTextBox;
 
+    @UiField
+    RadioButton isUnmanagedRepositoryRadioButton;
+
+    @UiField
+    HelpInline isUnmanagedRepositoryButtonHelpInline;
+
     private Presenter presenter;
 
     private ViewMode mode;
@@ -146,6 +168,11 @@ public class ProjectStructureDataViewImpl extends Composite
     }
 
     @Override
+    public boolean isUnmanagedRepository() {
+        return isUnmanagedRepositoryRadioButton.getValue();
+    }
+
+    @Override
     public void setSingleProjectGroupId( String groupId ) {
         singleProjectGroupIdTextBox.setText( groupId );
     }
@@ -170,13 +197,19 @@ public class ProjectStructureDataViewImpl extends Composite
 
             isSingleModuleRadioButton.setText( Constants.INSTANCE.Project_structure_view_create_isSingleModuleRadioButton() );
             isSingleModuleRadioButtonHelpInline.setText( Constants.INSTANCE.Project_structure_view_create_isSingleModuleRadioButtonHelpInline() );
+            isSingleModuleRadioButton.setEnabled( true );
 
             isMultiModuleRadioButton.setText( Constants.INSTANCE.Project_structure_view_create_isMultiModuleRadioButton() );
             isMultiModuleRadioButtonHelpInline.setText( Constants.INSTANCE.Project_structure_view_create_isMultiModuleRadioButtonHelpInline() );
+            isMultiModuleRadioButton.setEnabled( true );
 
             groupIdTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_create_groupIdTextBoxHelpInline() );
             artifactIdTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_create_artifactIdTextBoxHelpInline() );
             versionTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_create_versionTextBoxHelpInline() );
+
+            isUnmanagedRepositoryRadioButton.setText( Constants.INSTANCE.Project_structure_view_create_isUnmanagedRepositoryRadioButton() );
+            isUnmanagedRepositoryButtonHelpInline.setText( Constants.INSTANCE.Project_structure_view_create_isUnmanagedRepositoryButtonHelpInline() );
+            isUnmanagedRepositoryRadioButton.setEnabled( true );
 
             initProjectStructureButton.setText( Constants.INSTANCE.InitProjectStructure() );
             initProjectStructureButton.setVisible( true );
@@ -190,14 +223,20 @@ public class ProjectStructureDataViewImpl extends Composite
 
             isSingleModuleRadioButton.setText( Constants.INSTANCE.Project_structure_view_edit_single_isSingleModuleRadioButton() );
             isSingleModuleRadioButtonHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_single_isSingleModuleRadioButtonHelpInline() );
+            isSingleModuleRadioButton.setEnabled( true );
 
             isMultiModuleRadioButton.setText( Constants.INSTANCE.Project_structure_view_edit_single_isMultiModuleRadioButton() );
             isMultiModuleRadioButtonHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_single_isMultiModuleRadioButtonHelpInline() );
+            isMultiModuleRadioButton.setEnabled( true );
+
             groupIdTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_single_groupIdTextBoxHelpInline() );
             artifactIdTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_single_artifactIdTextBoxHelpInline() );
             versionTextBoxHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_single_versionTextBoxHelpInline() );
 
             enableSingleModeParams();
+
+            isUnmanagedRepositoryButtonHelpInline.setVisible( false );
+            isUnmanagedRepositoryRadioButton.setVisible( false );
 
             initProjectStructureButton.setText( Constants.INSTANCE.EditProject() );
             initProjectStructureButton.setVisible( true );
@@ -210,6 +249,8 @@ public class ProjectStructureDataViewImpl extends Composite
 
             enableMultiModeParams();
 
+            isMultiModuleRadioButton.setEnabled( false );
+
             isSingleModuleRadioButton.setVisible( false );
             isSingleModuleRadioButtonHelpInline.setVisible( false );
 
@@ -221,11 +262,24 @@ public class ProjectStructureDataViewImpl extends Composite
 
             initProjectStructureButton.setText( Constants.INSTANCE.SaveChanges() );
 
+            isUnmanagedRepositoryRadioButton.setVisible( false );
+            isUnmanagedRepositoryButtonHelpInline.setVisible( false );
+
             setCurrentSingleProjectInfoVisible( false );
 
         } else if ( mode == ViewMode.EDIT_UNMANAGED_REPOSITORY ) {
 
             projectTypeLabel.setText( Constants.INSTANCE.Project_structure_view_edit_unmanaged_projectTypeLabel() );
+
+            //enable unmanaged mode fields
+            isUnmanagedRepositoryRadioButton.setVisible( true );
+            isUnmanagedRepositoryRadioButton.setValue( true );
+            isUnmanagedRepositoryRadioButton.setEnabled( false );
+            isUnmanagedRepositoryButtonHelpInline.setVisible( true );
+
+            isUnmanagedRepositoryRadioButton.setText( Constants.INSTANCE.Project_structure_view_edit_unmanaged_isUnmanagedRepositoryRadioButton() );
+            isUnmanagedRepositoryButtonHelpInline.setText( Constants.INSTANCE.Project_structure_view_edit_unmanaged_isUnmanagedRepositoryButtonHelpInline() );
+
 
             //disable single mode fields
             isSingleModuleRadioButton.setVisible( false );
@@ -247,11 +301,15 @@ public class ProjectStructureDataViewImpl extends Composite
     }
 
     public void enableMultiModeParams() {
-        enableModeParams( false );
+        enableModeParams( ViewMode.EDIT_MULTI_MODULE_PROJECT );
     }
 
     public void enableSingleModeParams() {
-        enableModeParams( true );
+        enableModeParams( ViewMode.EDIT_SINGLE_MODULE_PROJECT );
+    }
+
+    public void enableUnmanagedStructureMode() {
+        //TODO
     }
 
     public void clear() {
@@ -282,24 +340,28 @@ public class ProjectStructureDataViewImpl extends Composite
         enableActions( !readonly );
     }
 
-    private void enableModeParams( boolean isSingle ) {
+    private void enableModeParams( ViewMode mode ) {
 
         //single mode fields
         isSingleModuleRadioButton.setVisible( true );
         isSingleModuleRadioButtonHelpInline.setVisible( true );
-        isSingleModuleRadioButton.setValue( isSingle );
+        isSingleModuleRadioButton.setValue( mode == ViewMode.EDIT_SINGLE_MODULE_PROJECT );
 
         //multi mode fields.
         isMultiModuleRadioButton.setVisible( true );
         isMultiModuleRadioButtonHelpInline.setVisible( true );
-        isMultiModuleRadioButton.setValue( !isSingle );
+        isMultiModuleRadioButton.setValue( mode == ViewMode.EDIT_MULTI_MODULE_PROJECT );
 
-        groupIdTextBox.setVisible( !isSingle );
-        groupIdTextBoxHelpInline.setVisible( !isSingle );
-        artifactIdTextBox.setVisible( !isSingle );
-        artifactIdTextBoxHelpInline.setVisible( !isSingle );
-        versionTextBox.setVisible( !isSingle );
-        versionTextBoxHelpInline.setVisible( !isSingle );
+        isUnmanagedRepositoryRadioButton.setVisible( true );
+        isUnmanagedRepositoryButtonHelpInline.setVisible( true );
+        isUnmanagedRepositoryRadioButton.setValue( mode == ViewMode.EDIT_UNMANAGED_REPOSITORY );
+
+        groupIdTextBox.setVisible( mode == ViewMode.EDIT_MULTI_MODULE_PROJECT );
+        groupIdTextBoxHelpInline.setVisible( mode == ViewMode.EDIT_MULTI_MODULE_PROJECT );
+        artifactIdTextBox.setVisible( mode == ViewMode.EDIT_MULTI_MODULE_PROJECT );
+        artifactIdTextBoxHelpInline.setVisible( mode == ViewMode.EDIT_MULTI_MODULE_PROJECT );
+        versionTextBox.setVisible( mode == ViewMode.EDIT_MULTI_MODULE_PROJECT );
+        versionTextBoxHelpInline.setVisible( mode == ViewMode.EDIT_MULTI_MODULE_PROJECT );
     }
 
     private void setCurrentSingleProjectInfoVisible( boolean visible ) {
@@ -326,14 +388,13 @@ public class ProjectStructureDataViewImpl extends Composite
             } else {
                 presenter.onConvertToMultiModule();
             }
-        } else {
+        } else if ( mode == ViewMode.EDIT_MULTI_MODULE_PROJECT ) {
             presenter.onSaveProjectStructure();
         }
     }
 
     @UiHandler( "isMultiModuleRadioButton" )
     void multiModuleCheckBoxClicked( final ClickEvent event ) {
-        presenter.onProjectModeChange( false );
         enableMultiModeParams();
         if ( mode == ViewMode.EDIT_SINGLE_MODULE_PROJECT ) {
             initProjectStructureButton.setVisible( true );
@@ -341,16 +402,29 @@ public class ProjectStructureDataViewImpl extends Composite
 
             groupIdTextBox.setText( singleProjectGroupIdTextBox.getText() );
             versionTextBox.setText( singleProjectVersionTextBox.getText() );
+
+            isUnmanagedRepositoryRadioButton.setVisible( false );
+            isUnmanagedRepositoryButtonHelpInline.setVisible( false );
         }
+        presenter.onProjectModeChange();
     }
 
     @UiHandler( "isSingleModuleRadioButton" )
     void singleModuleCheckBoxClicked( final ClickEvent event ) {
-        presenter.onProjectModeChange( true );
         enableSingleModeParams();
         if ( mode == ViewMode.EDIT_SINGLE_MODULE_PROJECT ) {
             initProjectStructureButton.setVisible( true );
             initProjectStructureButton.setText( Constants.INSTANCE.EditProject() );
+
+            isUnmanagedRepositoryRadioButton.setVisible( false );
+            isUnmanagedRepositoryButtonHelpInline.setVisible( false );
         }
+        presenter.onProjectModeChange();
+    }
+
+    @UiHandler( "isUnmanagedRepositoryRadioButton" )
+    void setUnmanagedRepositoryRadioButtonClicked( final ClickEvent event ) {
+        enableModeParams( ViewMode.EDIT_UNMANAGED_REPOSITORY );
+        presenter.onProjectModeChange();
     }
 }

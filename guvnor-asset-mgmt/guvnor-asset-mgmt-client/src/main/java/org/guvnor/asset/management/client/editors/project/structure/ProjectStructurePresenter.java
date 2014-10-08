@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
@@ -212,6 +211,7 @@ public class ProjectStructurePresenter
                 view.hideBusyIndicator();
 
                 ProjectStructurePresenter.this.model = model;
+                boolean initialized = false;
                 dataProvider.getList().clear();
                 if ( pathToProjectStructure != null ) {
                     pathToProjectStructure.dispose();
@@ -222,7 +222,7 @@ public class ProjectStructurePresenter
 
                     ProjectStructurePresenter.this.model = new ProjectStructureModel();
                     view.getDataView().setMode( ProjectStructureDataView.ViewMode.CREATE_STRUCTURE );
-                    view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
+                    view.getModulesView().setMode( ProjectModulesView.ViewMode.MODULES_VIEW );
                     view.setModel( ProjectStructurePresenter.this.model );
                     view.setModulesViewVisible( false );
                     pathToProjectStructure = null;
@@ -230,20 +230,22 @@ public class ProjectStructurePresenter
                 } else if ( model.isMultiModule() ) {
 
                     view.getDataView().setMode( ProjectStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT );
-                    view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
+                    view.getModulesView().setMode( ProjectModulesView.ViewMode.MODULES_VIEW );
                     view.setModel( model );
                     view.setModulesViewVisible( true );
+                    initialized = true;
 
                     pathToProjectStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getPathToPOM() );
 
                     updateModulesList( model.getModules() );
 
-                } else if ( model.isSingleProject() ) {
+                } else if ( model.isSingleProject() && model.isManaged() ) {
 
                     view.getDataView().setMode( ProjectStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT );
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
                     view.setModel( model );
                     view.setModulesViewVisible( false );
+                    initialized = true;
 
                     pathToProjectStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getOrphanProjects().get( 0 ).getPomXMLPath() );
 
@@ -252,13 +254,14 @@ public class ProjectStructurePresenter
                     view.getDataView().setMode( ProjectStructureDataView.ViewMode.EDIT_UNMANAGED_REPOSITORY );
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
                     view.setModulesViewVisible( true );
+                    initialized = true;
 
                     view.setModel( model );
                     updateProjectsList( model.getOrphanProjects() );
                 }
 
                 addStructureChangeListeners();
-                updateEditorTitle();
+                updateEditorTitle( initialized );
             }
         };
     }
@@ -281,35 +284,56 @@ public class ProjectStructurePresenter
                     init();
                 }
 
-            } ).initProjectStructure( new GAV( view.getDataView().getGroupId(),
+            }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initProjectStructure(
+                    new GAV( view.getDataView().getGroupId(),
                     view.getDataView().getArtifactId(),
                     view.getDataView().getVersionId() ),
-                    this.repository );
-        } else {
+                    repository );
+
+        } else if ( view.getDataView().isSingleModule() ) {
             wizzard.setContent( null, null, null);
             wizzard.start( new Callback<Project>() {
                 @Override public void callback( Project result ) {
                     lastAddedModule = result;
                     if ( result != null ) {
-                        init();
+                        view.showBusyIndicator( Constants.INSTANCE.CreatingProjectStructure() );
+                        projectStructureService.call( new RemoteCallback<Repository>() {
+                            @Override
+                            public void callback( Repository repository ) {
+                                view.hideBusyIndicator();
+                                ProjectStructurePresenter.this.repository = repository;
+                                init();
+                            }
+                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepository( repository, true );
+
                     }
                 }
             }, false);
+        } else if ( view.getDataView().isUnmanagedRepository() ) {
+            view.showBusyIndicator( Constants.INSTANCE.CreatingProjectStructure() );
+            projectStructureService.call( new RemoteCallback<Repository>( ) {
+                @Override
+                public void callback( Repository repository ) {
+                    view.hideBusyIndicator();
+                    ProjectStructurePresenter.this.repository = repository;
+                    init();
+                }
+            }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepository( repository, false );
         }
     }
 
-    private void updateEditorTitle() {
+    private void updateEditorTitle( boolean initialized ) {
 
         if ( repository == null ) {
 
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
                     Constants.INSTANCE.RepositoryNotSelected() ) );
 
-        } else if ( model == null ) {
+        } else if ( !initialized ) {
 
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.ProjectStructureWithName( getRepositoryLabel( repository ) ) ) );
+                    Constants.INSTANCE.UnInitializedStructure( getRepositoryLabel( repository ) ) ) );
 
         } else if ( model.isMultiModule() ) {
 
@@ -320,7 +344,7 @@ public class ProjectStructurePresenter
                             + model.getPOM().getGav().getGroupId() + ":"
                             + model.getPOM().getGav().getVersion() ) ) );
 
-        } else if ( model.isSingleProject() ) {
+        } else if ( model.isSingleProject() && model.isManaged() ) {
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
                     Constants.INSTANCE.ProjectStructureWithName( getRepositoryLabel( repository ) + "- > " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
@@ -612,7 +636,7 @@ public class ProjectStructurePresenter
     }
 
     @Override
-    public void onProjectModeChange( boolean isSingle ) {
+    public void onProjectModeChange( ) {
 
     }
 

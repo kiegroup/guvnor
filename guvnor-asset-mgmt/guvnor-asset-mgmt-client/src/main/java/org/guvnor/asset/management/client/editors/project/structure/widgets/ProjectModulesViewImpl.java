@@ -18,6 +18,7 @@ package org.guvnor.asset.management.client.editors.project.structure.widgets;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonCell;
+import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
@@ -51,6 +52,9 @@ public class ProjectModulesViewImpl extends Composite
     @UiField
     Button addModuleButton;
 
+    @UiField
+    Label modulesLabel;
+
     private Column<ProjectModuleRow, ?> modulesColumn;
 
     private Presenter presenter;
@@ -76,11 +80,13 @@ public class ProjectModulesViewImpl extends Composite
     public void setMode( ViewMode mode ) {
         if ( mode == ViewMode.PROJECTS_VIEW ) {
             addModuleButton.setText( Constants.INSTANCE.NewProject() );
+            modulesLabel.setText( Constants.INSTANCE.Projects() );
             if ( modulesColumn != null ) {
                 modulesColumn.setDataStoreName( Constants.INSTANCE.Project() );
             }
         } else {
             addModuleButton.setText( Constants.INSTANCE.AddModule() );
+            modulesLabel.setText( Constants.INSTANCE.Modules() );
             if ( modulesColumn != null ) {
                 modulesColumn.setDataStoreName( Constants.INSTANCE.Module() );
             }
