@@ -76,11 +76,7 @@ public class ProjectStructureModel {
     }
 
     public boolean isSingleProject() {
-        return orphanProjects != null && orphanProjects.size() == 1;
-    }
-
-    public boolean isOrphanProjects() {
-        return orphanProjects != null && orphanProjects.size() > 1;
+        return isManaged() && orphanProjects != null && orphanProjects.size() == 1;
     }
 
     public Boolean isManaged() {

@@ -239,7 +239,7 @@ public class ProjectStructurePresenter
 
                     updateModulesList( model.getModules() );
 
-                } else if ( model.isSingleProject() && model.isManaged() ) {
+                } else if ( model.isSingleProject() ) {
 
                     view.getDataView().setMode( ProjectStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT );
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
@@ -344,7 +344,7 @@ public class ProjectStructurePresenter
                             + model.getPOM().getGav().getGroupId() + ":"
                             + model.getPOM().getGav().getVersion() ) ) );
 
-        } else if ( model.isSingleProject() && model.isManaged() ) {
+        } else if ( model.isSingleProject() ) {
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
                     Constants.INSTANCE.ProjectStructureWithName( getRepositoryLabel( repository ) + "- > " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
@@ -449,11 +449,11 @@ public class ProjectStructurePresenter
 
     @Override
     public void onAddModule() {
-        if ( model.isSingleProject() || model.isMultiModule() ) {
+        if ( model.isMultiModule() ) {
             wizzard.setContent( null,
                     view.getDataView().getGroupId(),
                     view.getDataView().getVersionId() );
-        } else if ( model.isOrphanProjects() ) {
+        } else {
             wizzard.setContent( null,
                     null,
                     null );
@@ -487,7 +487,7 @@ public class ProjectStructurePresenter
                             }
                         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository, false );
 
-                    } else if ( model.isOrphanProjects() ) {
+                    } else {
                         view.showBusyIndicator( Constants.INSTANCE.Loading() );
                         pomService.call( new RemoteCallback<POM>() {
                             @Override
@@ -498,8 +498,6 @@ public class ProjectStructurePresenter
                                 addToModulesList( _project );
                             }
                         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( _project.getPomXMLPath() );
-                    } else {
-                        init();
                     }
                 }
             }
@@ -519,9 +517,9 @@ public class ProjectStructurePresenter
 
         if ( project != null ) {
 
-            if ( model.isSingleProject() || model.isMultiModule() ) {
+            if ( model.isMultiModule() ) {
                 message = Constants.INSTANCE.ConfirmModuleDeletion( moduleRow.getName() );
-            } else if ( model.isOrphanProjects() ) {
+            } else {
                 message = Constants.INSTANCE.ConfirmProjectDeletion( moduleRow.getName() );
             }
 
@@ -590,19 +588,10 @@ public class ProjectStructurePresenter
                             }
                         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository, false );
 
-                    } else if ( model.isOrphanProjects() ) {
-                        view.showBusyIndicator( Constants.INSTANCE.Loading() );
-                        pomService.call( new RemoteCallback<POM>() {
-                            @Override
-                            public void callback( POM _pom ) {
-                                view.hideBusyIndicator();
-                                model.getOrphanProjects().remove( _project );
-                                model.getOrphanProjectsPOM().remove( _project.getSignatureId() );
-                                removeFromModulesList( _project.getProjectName() );
-                            }
-                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( _project.getPomXMLPath() );
                     } else {
-                        init();
+                        model.getOrphanProjects().remove( _project );
+                        model.getOrphanProjectsPOM().remove( _project.getSignatureId() );
+                        removeFromModulesList( _project.getProjectName() );
                     }
                 }
             }
@@ -765,9 +754,9 @@ public class ProjectStructurePresenter
     private Project getSelectedModule( String name ) {
         Project project = null;
         if ( model != null && name != null ) {
-            if ( model.isSingleProject() || model.isMultiModule() ) {
+            if ( model.isMultiModule() ) {
                 project = model.getModulesProject() != null ? model.getModulesProject().get( name ) : null;
-            } else if ( model.isOrphanProjects() ) {
+            } else if ( model.getOrphanProjects() != null ) {
                 for ( Project _project : model.getOrphanProjects() ) {
                     if ( name.equals( _project.getProjectName() ) ) {
                         project = _project;
