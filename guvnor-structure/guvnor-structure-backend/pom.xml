@@ -16,7 +16,7 @@
 
   <dependencies>
 
-    <!-- added because of illegal transitive dependency rule -->
+    <!-- dependencies added because of illegal transitive dependency check -->
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-model</artifactId>
@@ -46,8 +46,8 @@
       <artifactId>errai-bus</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-all</artifactId>
+      <groupId>org.jasypt</groupId>
+      <artifactId>jasypt</artifactId>
     </dependency>
     <dependency>
       <groupId>org.ocpsoft.prettytime</groupId>
