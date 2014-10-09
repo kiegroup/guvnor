@@ -98,7 +98,7 @@ public class ProcessStartEventAdapter implements SocialAdapter<ProcessStartEvent
         }
 
         if ( Constants.RELEASE_PROJECT.equals( process ) ) {
-            return constants.release_project_start( repo, params.get("project") );
+            return constants.release_project_start( repo );
         }
 
         return "";

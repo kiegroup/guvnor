@@ -105,8 +105,8 @@ public class Constants {
         return getMessage( "BuildProject_deploy_runtime_failed", project );
     }
 
-    public String release_project_start( String repo, String project ) {
-        return getMessage( "ReleaseProject_start", repo, project );
+    public String release_project_start( String repo ) {
+        return getMessage( "ReleaseProject_start", repo );
     }
 
     public String release_project_version_change_success( String repo, String version ) {
