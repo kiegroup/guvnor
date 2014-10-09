@@ -104,7 +104,7 @@ public class AssetManagementServiceImpl implements AssetManagementService {
     @Override
     public void promoteChanges(String repository, String sourceBranch, String destBranch) {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("GitRepositoryName", repository);
+        params.put("RepositoryName", repository);
         params.put("SourceBranchName", sourceBranch);
         params.put("TargetBranchName", destBranch);
         promoteChangesEvent.fire(new PromoteChangesEvent(params));
