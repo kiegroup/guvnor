@@ -105,15 +105,32 @@ public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
             String _BP_ExecServerURL = event.getParams().get( "BP_ExecServerURL" );
             String _BP_Username = event.getParams().get( "BP_Username" );
             String _BP_DeployToRuntime = event.getParams().get( "BP_DeployToRuntime" );
+            boolean deploySelected = _BP_DeployToRuntime != null && Boolean.parseBoolean( _BP_DeployToRuntime );
+
             String project = event.getParams().get( "project" );
             String branch = event.getParams().get( "branch" );
 
-            return constants.build_project_deploy_runtime_success( project );
+            if ( "FAILURE".equals( _BP_MavenDeployOutcome ) ) {
+                return constants.build_project_end_with_errors( project );
+            }
+
+            if ( "SUCCESSFUL".equals( _BP_MavenDeployOutcome ) && deploySelected ) {
+                return constants.build_project_deploy_runtime_success( project );
+            }
+
+            if ( "SUCCESSFUL".equals( _BP_MavenDeployOutcome ) && !deploySelected ) {
+                return constants.build_project_deploy_runtime_skipped( project );
+            }
+
+            //unexpected case
+            return constants.build_project_end( project );
+
         }
 
         if ( Constants.RELEASE_PROJECT.equals( process ) ) {
             return constants.release_project_end( repo );
         }
+
         return "";
     }
 }

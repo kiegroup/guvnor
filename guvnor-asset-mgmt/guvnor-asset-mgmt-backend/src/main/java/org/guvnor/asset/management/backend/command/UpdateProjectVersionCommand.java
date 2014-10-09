@@ -117,20 +117,15 @@ public class UpdateProjectVersionCommand extends AbstractCommand {
 
 
     private RepositoryChangeEvent getSocialEvent(String processName,
-            String uriParam,
+            String repository,
             String branch,
             String version,
             RepositoryService repositoryService) {
 
-        String repository = null;
         String projectName = null;
         String repositoryURI = null;
 
-        if ( uriParam != null && uriParam.indexOf( "/" ) > 0 ) {
-            repository = uriParam.substring( 0, uriParam.indexOf( "/" ) );
-            projectName = uriParam.substring( uriParam.indexOf( "/" )+1, uriParam.length() );
-            repositoryURI = DataUtils.readRepositoryURI( repositoryService, repository );
-        }
+        repositoryURI = DataUtils.readRepositoryURI( repositoryService, repository );
 
         RepositoryChangeEvent event = new RepositoryChangeEvent(processName,
                 repository,

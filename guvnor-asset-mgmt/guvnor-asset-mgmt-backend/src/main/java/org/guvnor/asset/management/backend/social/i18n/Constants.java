@@ -101,8 +101,20 @@ public class Constants {
         return getMessage( "BuildProject_deploy_runtime_success", project );
     }
 
+    public String build_project_deploy_runtime_skipped( String project ) {
+        return getMessage( "BuildProject_deploy_runtime_skipped", project );
+    }
+
     public String build_project_deploy_runtime_failed( String project ) {
         return getMessage( "BuildProject_deploy_runtime_failed", project );
+    }
+
+    public String build_project_end_with_errors( String project ) {
+        return getMessage( "BuildProject_end_with_errors", project );
+    }
+
+    public String build_project_end( String project ) {
+        return getMessage( "BuildProject_end", project );
     }
 
     public String release_project_start( String repo ) {

@@ -201,6 +201,8 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
             _RP_ToReleaseVersion = ( String ) workItem.getParameter( "RP_ToReleaseVersion" );
 
             String _RP_Repository = _RP_ProjectURI;
+
+
             repositoryURI = DataUtils.readRepositoryURI( repositoryService, _RP_Repository );
 
             if ( isStart() ) {
