@@ -19,18 +19,16 @@ package org.guvnor.asset.management.backend.social;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.inject.Inject;
 
 import org.guvnor.asset.management.backend.social.i18n.Constants;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.asset.management.social.ProcessEndEvent;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
-import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.repository.SocialUserRepository;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
-
-import javax.inject.Inject;
 
 public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
 
@@ -63,7 +61,6 @@ public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
     public SocialActivitiesEvent toSocial( Object object ) {
         ProcessEndEvent event = ( ProcessEndEvent ) object;
 
-        //TODO verify this info
         return new SocialActivitiesEvent(
                 socialUserRepository.systemUser(),
                 AssetManagementEventTypes.PROCESS_END.name(),
@@ -86,8 +83,6 @@ public class ProcessEndEventAdapter implements SocialAdapter<ProcessEndEvent> {
     }
 
     private String getAdditionalInfo( String process, String repo, ProcessEndEvent event ) {
-
-        System.out.println("ProcessEndEventAdapter, process: " + process + ", repo: " + repo);
 
         if ( Constants.CONFIGURE_REPOSITORY.equals( process ) ) {
             return constants.configure_repository_end( repo );

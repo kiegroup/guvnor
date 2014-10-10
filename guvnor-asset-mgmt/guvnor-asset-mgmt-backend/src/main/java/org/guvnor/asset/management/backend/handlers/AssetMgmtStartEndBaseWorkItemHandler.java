@@ -103,9 +103,6 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
         RepositoryService repositoryService = null;
         RepositoryInfo repositoryInfo = null;
 
-        //TODO REMOVE THIS LOG
-        logger.debug( "AssetMgmtStartEndBaseWorkItemHandler, process: " + _ProcessName);
-
 
         if ( isStart() ) {
             logger.debug( "Start assets management process: " + _ProcessName + "  " + new java.util.Date() );
@@ -199,9 +196,16 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
 
             _RP_ProjectURI = ( String ) workItem.getParameter( "RP_ProjectURI" );
             _RP_ToReleaseVersion = ( String ) workItem.getParameter( "RP_ToReleaseVersion" );
+            String _RP_Repository;
 
-            String _RP_Repository = _RP_ProjectURI;
-
+            if ( _RP_ProjectURI != null && _RP_ProjectURI.indexOf( "/" ) > 0 ) {
+                //when the release process finishes the ProjectURI has the uri of the last processed
+                //project e.g. repo1/project1, so we need to extract the repository name.
+                _RP_Repository = _RP_ProjectURI.substring( 0, _RP_ProjectURI.indexOf( "/" ) );
+            } else {
+                //when the release process starts, the ProjectURI has the repo name
+                _RP_Repository = _RP_ProjectURI;
+            }
 
             repositoryURI = DataUtils.readRepositoryURI( repositoryService, _RP_Repository );
 
