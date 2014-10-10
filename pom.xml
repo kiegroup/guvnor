@@ -64,11 +64,13 @@
     <module>guvnor-asset-mgmt</module>
   </modules>
 
+  <!-- These have been disabled for 6.2.0.CR1.. as it needs to be adapted for UF0.5 -->
+  <!--
   <profiles>
 
     <profile>
       <id>hostedModeProfile</id>
-      <!-- For hosted mode testing in Idea. To use this, activate it in View->Tool Windows->Maven Projects -->
+      &lt;!&ndash; For hosted mode testing in Idea. To use this, activate it in View->Tool Windows->Maven Projects &ndash;&gt;
       <activation>
         <property>
           <name>hostedMode</name>
@@ -92,6 +94,7 @@
     </profile>
 
   </profiles>
+  -->
 
   <build>
 
