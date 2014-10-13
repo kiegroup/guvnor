@@ -274,7 +274,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
     protected String getIdentityName() {
         try {
             return identity.getIdentifier();
-        } catch ( ContextNotActiveException e ) {
+        } catch ( Exception e ) {
             return "unknown";
         }
     }
