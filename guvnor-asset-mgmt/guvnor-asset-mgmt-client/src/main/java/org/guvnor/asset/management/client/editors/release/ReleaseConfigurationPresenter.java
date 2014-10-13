@@ -117,6 +117,11 @@ public class ReleaseConfigurationPresenter {
 
     public void releaseProject(String repository, String branch,
             String userName, String password, String serverURL, Boolean deployToRuntime, String version) {
+
+        if ( serverURL != null && !serverURL.isEmpty() && serverURL.endsWith( "/" ) ) {
+            serverURL = serverURL.substring( 0, serverURL.length()-1 );
+        }
+
         assetManagementServices.call(new RemoteCallback<Long>() {
             @Override
             public void callback(Long taskId) {

@@ -115,6 +115,11 @@ public class BuildConfigurationPresenter {
                               String password,
                               String serverURL,
                               Boolean deployToMaven ) {
+
+        if ( serverURL != null && !serverURL.isEmpty() && serverURL.endsWith( "/" ) ) {
+            serverURL = serverURL.substring( 0, serverURL.length()-1 );
+        }
+
         assetManagementServices.call( new RemoteCallback<Long>() {
             @Override
             public void callback( Long taskId ) {
