@@ -172,7 +172,7 @@ public class POMContentHandlerTest {
                         "      <plugin>" +
                         "        <groupId>org.kie</groupId>" +
                         "        <artifactId>kie-maven-plugin</artifactId>" +
-                        "        <version>6.2.0-SNAPSHOT</version>" +
+                        "        <version>6.3.0-SNAPSHOT</version>" +
                         "        <extensions>true</extensions>" +
                         "      </plugin>" +
                         "    </plugins>" +
