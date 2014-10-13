@@ -17,3 +17,9 @@
 # Created by Zanata
 /org.guvnor
 
+# Does not exist in the 6.0.x branch
+/guvnor-asset-mgmt/
+/guvnor-message-console/
+/guvnor-organizationalunit-manager/
+/guvnor-rest/
+/guvnor-structure/

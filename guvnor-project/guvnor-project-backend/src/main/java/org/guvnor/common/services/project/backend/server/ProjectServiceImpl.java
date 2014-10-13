@@ -22,8 +22,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,10 +46,13 @@ import org.guvnor.common.services.project.service.KModuleService;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.PackageAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.identity.RequestIdentityProvider;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.workingset.client.model.WorkingSetSettings;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;
@@ -72,6 +75,8 @@ import org.uberfire.security.Identity;
 public class ProjectServiceImpl
         implements ProjectService {
 
+    private static final Logger logger = LoggerFactory.getLogger( ProjectServiceImpl.class );
+    
     private static final String SOURCE_FILENAME = "src";
 
     private static final String POM_PATH = "pom.xml";
@@ -104,7 +109,7 @@ public class ProjectServiceImpl
 
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache;
 
-    private Identity identity;
+    private RequestIdentityProvider identity;
     private SessionInfo sessionInfo;
 
     public ProjectServiceImpl() {
@@ -124,7 +129,7 @@ public class ProjectServiceImpl
                                final Event<RenameProjectEvent> renameProjectEvent,
                                final Event<DeleteProjectEvent> deleteProjectEvent,
                                final Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
-                               final Identity identity,
+                               final RequestIdentityProvider identity,
                                final SessionInfo sessionInfo ) {
         this.ioService = ioService;
         this.pomService = pomService;
@@ -571,13 +576,13 @@ public class ProjectServiceImpl
                                final String projectName,
                                final POM pom,
                                final String baseUrl ) {
+        //Projects are always created in the FS root
+        final Path fsRoot = repository.getRoot();
+        final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( projectName ) );
+
+        CommentedOption comentedOption = makeCommentedOption( "New project [" + projectName + "]" );
+        ioService.startBatch(comentedOption);
         try {
-            //Projects are always created in the FS root
-            final Path fsRoot = repository.getRoot();
-            final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( projectName ) );
-
-            ioService.startBatch( makeCommentedOption( "New project [" + projectName + "]" ) );
-
             //Set-up project structure and KModule.xml
             kModuleService.setUpKModuleStructure( projectRootPath );
 
@@ -618,7 +623,6 @@ public class ProjectServiceImpl
 
             //Return new project
             return project;
-
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         } finally {
@@ -670,12 +674,11 @@ public class ProjectServiceImpl
 
         Path pkgPath = null;
 
+        CommentedOption commentedOption = makeCommentedOption( "New package [" + packageName + "]" ); 
+        if ( startBatch ) {
+            ioService.startBatch(commentedOption);
+        }
         try {
-
-            if ( startBatch ) {
-                ioService.startBatch( makeCommentedOption( "New package [" + packageName + "]" ) );
-            }
-
             final org.uberfire.java.nio.file.Path nioMainSrcPackagePath = Paths.convert( mainSrcPath ).resolve( newPackageName );
             if ( !Files.exists( nioMainSrcPackagePath ) ) {
                 pkgPath = Paths.convert( ioService.createDirectory( nioMainSrcPackagePath ) );
@@ -750,9 +753,10 @@ public class ProjectServiceImpl
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
+        final String sessionId = getSessionId();
         final String name = getIdentityName();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( getSessionId(),
+        final CommentedOption co = new CommentedOption( sessionId,
                                                         name,
                                                         null,
                                                         commitMessage,
@@ -763,20 +767,22 @@ public class ProjectServiceImpl
     protected String getIdentityName() {
         try {
             return identity.getName();
-        } catch ( ContextNotActiveException e ) {
+        } catch ( Exception e ) {
+            logger.debug( "Unable to retrieve identity; falling back to default 'unknown'", e );
             return "unknown";
-        }
+        } 
     }
 
     protected String getSessionId() {
         try {
             return sessionInfo.getId();
-        } catch ( ContextNotActiveException e ) {
+        } catch ( Exception e ) {
+            logger.debug( "Unable to retrieve session info; falling back to default '--'", e );
             return "--";
-        }
+        } 
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     @Override
     public void addRole( final Project project,
                          final String role ) {
@@ -843,15 +849,18 @@ public class ProjectServiceImpl
 
             content.setName( newName );
             final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
+            
+            CommentedOption commentedOption = makeCommentedOption( comment );
+            ioService.startBatch(commentedOption);
             try {
-                ioService.startBatch();
-                ioService.move( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
+                ioService.move( projectDirectory, newProjectPath, commentedOption );
                 pomService.save( newPathToPomXML, content, null, comment );
             } catch ( final Exception e ) {
                 throw e;
             } finally {
                 ioService.endBatch();
             }
+            
             final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
             invalidateDMOCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, oldProject, oldProjectDir ) );
             renameProjectEvent.fire( new RenameProjectEvent( oldProject, newProject ) );
@@ -869,7 +878,8 @@ public class ProjectServiceImpl
             final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
             final Project project2Delete = resolveProject( Paths.convert( projectDirectory ) );
 
-            ioService.delete( projectDirectory, StandardDeleteOption.NON_EMPTY_DIRECTORIES, new CommentedOption( getSessionId(), getIdentityName(), null, comment ) );
+            CommentedOption commentedOption = makeCommentedOption(comment);
+            ioService.delete( projectDirectory, StandardDeleteOption.NON_EMPTY_DIRECTORIES, commentedOption);
             deleteProjectEvent.fire( new DeleteProjectEvent( project2Delete ) );
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -896,15 +906,18 @@ public class ProjectServiceImpl
 
             content.setName( newName );
             final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( "pom.xml" ) );
+           
+            CommentedOption commentedOption = makeCommentedOption( comment );
+            ioService.startBatch(commentedOption);
             try {
-                ioService.startBatch();
-                ioService.copy( projectDirectory, newProjectPath, makeCommentedOption( comment ) );
+                ioService.copy( projectDirectory, newProjectPath, commentedOption );
                 pomService.save( newPathToPomXML, content, null, comment );
             } catch ( final Exception e ) {
                 throw e;
             } finally {
                 ioService.endBatch();
             }
+            
             final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
             newProjectEvent.fire( new NewProjectEvent( newProject, sessionInfo ) );
 
