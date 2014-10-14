@@ -29,11 +29,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.uberfire.client.forms.FormDisplayerView;
 import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent
-public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewView, FormDisplayerView {
+public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewView {
 
     @Override
     public void displayNotification(String text) {
@@ -104,19 +103,19 @@ public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewV
 
     }
 
-    @Override
+    
     public void setInputMap(Map<String, String> params) {
         requestorTextBox.setText((String) params.get("in_requestor"));
         repositoryTextBox.setText((String) params.get("in_repository"));
         showCommitsBox.setText((String) params.get("in_commits"));
     }
 
-    @Override
+    
     public void setReadOnly(boolean b) {
         this.readOnly = b;
     }
 
-    @Override
+    
     public boolean isReadOnly() {
         return this.readOnly;
     }

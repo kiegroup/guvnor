@@ -27,12 +27,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.uberfire.client.forms.FormDisplayerView;
 import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent
-public class RequiresReworkViewImpl extends Composite implements RequiresReworkPresenter.RequiresReworkView,
-                                                                 FormDisplayerView {
+public class RequiresReworkViewImpl extends Composite implements RequiresReworkPresenter.RequiresReworkView {
 
     @Override
     public void displayNotification( String text ) {
@@ -77,17 +75,16 @@ public class RequiresReworkViewImpl extends Composite implements RequiresReworkP
 
     }
 
-    @Override
+    
     public void setInputMap(Map<String, String> params) {
         reviewCommentBox.setText((String) params.get("ReviewComment"));
     }
 
-    @Override
+    
     public void setReadOnly( boolean b ) {
         this.readOnly = b;
     }
 
-    @Override
     public boolean isReadOnly() {
         return this.readOnly;
     }

@@ -16,7 +16,6 @@
 package org.guvnor.asset.management.client.editors.forms.promote;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -34,13 +33,16 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import javax.enterprise.event.Observes;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.uberfire.client.forms.FormDisplayerView;
+import org.kie.uberfire.client.forms.GetFormParamsEvent;
+import org.kie.uberfire.client.forms.RequestFormParamsEvent;
+import org.kie.uberfire.client.forms.SetFormParamsEvent;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAssetsToPromotePresenter.SelectAssetsToPromoteView, FormDisplayerView {
+public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAssetsToPromotePresenter.SelectAssetsToPromoteView {
 
     interface Binder
             extends UiBinder<Widget, SelectAssetsToPromoteViewImpl> {
@@ -78,6 +80,9 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
 
     @Inject
     private Event<NotificationEvent> notification;
+    
+    @Inject
+    private Event<GetFormParamsEvent> getFormParamsEvent;
 
 
     private Map<String, String> commitsPerFile;
@@ -92,7 +97,8 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
 
     }
 
-    public Map<String, Object> getOutputMap() {
+    public void getOutputMap(@Observes RequestFormParamsEvent event) {
+        
         Map<String, Object> outputMap = new HashMap<String, Object>();
 
         int filesToPromoteCount = getFilesToPromoteList().getItemCount();
@@ -106,8 +112,8 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
 
         outputMap.put("out_commits", out_commits);
         outputMap.put("out_requires_review", getRequiresReviewCheckBox().getValue());
-
-        return outputMap;
+        getFormParamsEvent.fire(new GetFormParamsEvent(event.getAction(), outputMap));
+        
     }
 
     @Override
@@ -170,9 +176,8 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
         return requiresReviewCheckBox;
     }
 
-    @Override
-    public void setInputMap(Map<String, String> params) {
-
+    public void setInputMap(@Observes SetFormParamsEvent event) {
+        Map<String, String> params = event.getParams();
         String files = params.get("in_list_of_files");
         commitsPerFile = new HashMap<String, String>();
 
@@ -195,10 +200,11 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
         for (String file : filesArray) {
             getFilesInTheBranchList().addItem(file);
         }
+        setReadOnly(event.isReadOnly());
 
     }
 
-    public void setReadOnly(boolean readOnly) {
+    private void setReadOnly(boolean readOnly) {
         this.isReadOnly = readOnly;
         if (isReadOnly) {
             getFilesInTheBranchList().setEnabled(false);

@@ -28,12 +28,16 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.uberfire.client.forms.FormDisplayerView;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import org.kie.uberfire.client.forms.GetFormParamsEvent;
+import org.kie.uberfire.client.forms.RequestFormParamsEvent;
+import org.kie.uberfire.client.forms.SetFormParamsEvent;
+
 import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent
-public class ApproveOperationViewImpl extends Composite implements ApproveOperationPresenter.ApproveOperationView,
-                                                                   FormDisplayerView {
+public class ApproveOperationViewImpl extends Composite implements ApproveOperationPresenter.ApproveOperationView {
 
     @Override
     public void displayNotification( String text ) {
@@ -83,6 +87,9 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
 
     @UiField
     CheckBox approvedCheckBox;
+    
+    @Inject
+    private Event<GetFormParamsEvent> getFormParamsEvent;
 
     public ApproveOperationViewImpl() {
 
@@ -90,10 +97,10 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
 
     }
 
-    public Map<String, Object> getOutputMap() {
+    public void getOutputMap(@Observes RequestFormParamsEvent event) {
         Map<String, Object> outputMap = new HashMap<String, Object>();
         outputMap.put( "out_approved", approvedCheckBox.getValue() );
-        return outputMap;
+        getFormParamsEvent.fire(new GetFormParamsEvent(event.getAction(), outputMap));
     }
 
     @Override
@@ -102,20 +109,21 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
 
     }
 
-    @Override
-    public void setInputMap(Map<String, String> params) {
+    
+    public void setInputMap(@Observes SetFormParamsEvent event) {
+        Map<String, String> params = event.getParams();
         requestorTextBox.setText((String) params.get("in_requestor"));
         operationTextBox.setText((String) params.get("in_operation"));
         repositoryTextBox.setText((String) params.get("in_repository"));
         projectTextBox.setText((String) params.get("in_project"));
     }
 
-    @Override
+    
     public void setReadOnly( boolean b ) {
         this.readOnly = b;
     }
 
-    @Override
+    
     public boolean isReadOnly() {
         return this.readOnly;
     }
