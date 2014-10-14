@@ -16,6 +16,7 @@
 package org.guvnor.asset.management.backend.service;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +24,7 @@ import javax.annotation.PostConstruct;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.guvnor.asset.management.model.BuildProjectStructureEvent;
 import org.guvnor.asset.management.model.ConfigureRepositoryEvent;
@@ -55,7 +57,7 @@ public class AssetManagementServiceImpl implements AssetManagementService {
     private ConfigurationService configurationService;
 
     @Inject
-    private ProjectService<?> projectService;
+    private Instance<ProjectService<?>> projectService;
 
     private boolean supportRuntimeDeployment;
 
@@ -132,7 +134,8 @@ public class AssetManagementServiceImpl implements AssetManagementService {
 
     @Override
     public Set<Project> getProjects(Repository repository, String branch) {
-        return projectService.getProjects(repository, branch);
+
+        return projectService.get().getProjects(repository, branch);
     }
 
     private String encodePassword(String password) {
