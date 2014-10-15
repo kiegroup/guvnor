@@ -765,12 +765,17 @@ public class ProjectServiceImpl
     }
 
     protected String getIdentityName() {
+        String identityName;
         try {
-            return identity.getName();
+            identityName = identity.getName();
         } catch ( Exception e ) {
             logger.debug( "Unable to retrieve identity; falling back to default 'unknown'", e );
             return "unknown";
         } 
+        if( identityName == null ) { 
+            return "unknown";
+        }
+        return identityName;
     }
 
     protected String getSessionId() {
