@@ -47,16 +47,7 @@ public class ReviewPresenter {
     @Inject
     ReviewView view;
 
-    @Inject
-    User identity;
-
-    @Inject
-    Caller<AssetManagementService> assetManagementServices;
-
     private PlaceRequest place;
-
-    @Inject
-    private PlaceManager placeManager;
 
     @OnStartup
     public void onStartup( final PlaceRequest place ) {

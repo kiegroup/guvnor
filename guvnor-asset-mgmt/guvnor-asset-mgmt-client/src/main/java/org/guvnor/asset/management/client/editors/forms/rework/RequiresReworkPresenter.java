@@ -48,16 +48,9 @@ public class RequiresReworkPresenter {
     @Inject
     RequiresReworkView view;
 
-    @Inject
-    Caller<AssetManagementService> assetManagementServices;
-
-    @Inject
-    private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
     private PlaceRequest place;
 
-    @Inject
-    private PlaceManager placeManager;
 
     @OnStartup
     public void onStartup(final PlaceRequest place) {

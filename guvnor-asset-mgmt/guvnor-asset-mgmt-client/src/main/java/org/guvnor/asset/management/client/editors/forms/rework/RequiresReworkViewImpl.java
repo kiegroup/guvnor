@@ -27,6 +27,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import org.kie.uberfire.client.forms.GetFormParamsEvent;
+import org.kie.uberfire.client.forms.RequestFormParamsEvent;
+import org.kie.uberfire.client.forms.SetFormParamsEvent;
 import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent
@@ -56,6 +61,9 @@ public class RequiresReworkViewImpl extends Composite implements RequiresReworkP
 
     @UiField
     TextArea reviewCommentBox;
+    
+    @Inject
+    private Event<GetFormParamsEvent> getFormParamsEvent;
 
     public RequiresReworkViewImpl() {
 
@@ -63,10 +71,10 @@ public class RequiresReworkViewImpl extends Composite implements RequiresReworkP
 
     }
 
-    public Map<String, Object> getOutputMap() {
+    public void getOutputMap(@Observes RequestFormParamsEvent event) {
         Map<String, Object> outputMap = new HashMap<String, Object>();
 
-        return outputMap;
+        getFormParamsEvent.fire(new GetFormParamsEvent(event.getAction(), outputMap));
     }
 
     @Override
@@ -76,8 +84,9 @@ public class RequiresReworkViewImpl extends Composite implements RequiresReworkP
     }
 
     
-    public void setInputMap(Map<String, String> params) {
-        reviewCommentBox.setText((String) params.get("ReviewComment"));
+    public void setInputMap(@Observes SetFormParamsEvent event) {
+        reviewCommentBox.setText(event.getParams().get("ReviewComment"));
+        setReadOnly(event.isReadOnly());
     }
 
     

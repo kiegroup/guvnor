@@ -116,6 +116,7 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
         operationTextBox.setText((String) params.get("in_operation"));
         repositoryTextBox.setText((String) params.get("in_repository"));
         projectTextBox.setText((String) params.get("in_project"));
+        setReadOnly(event.isReadOnly());
     }
 
     
