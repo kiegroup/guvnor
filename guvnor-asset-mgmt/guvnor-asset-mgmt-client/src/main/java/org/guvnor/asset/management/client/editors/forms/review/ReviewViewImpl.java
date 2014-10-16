@@ -29,6 +29,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import org.kie.uberfire.client.forms.GetFormParamsEvent;
+import org.kie.uberfire.client.forms.RequestFormParamsEvent;
+import org.kie.uberfire.client.forms.SetFormParamsEvent;
 import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent
@@ -83,6 +88,10 @@ public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewV
 
     @UiField
     TextArea commentsBox;
+    
+    @Inject
+    private Event<GetFormParamsEvent> getFormParamsEvent;
+
 
     public ReviewViewImpl() {
 
@@ -90,11 +99,11 @@ public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewV
 
     }
 
-    public Map<String, Object> getOutputMap() {
+    public void getOutputMap(@Observes RequestFormParamsEvent event) {
         Map<String, Object> outputMap = new HashMap<String, Object>();
         outputMap.put("out_reviewed", approvedCheckBox.getValue());
         outputMap.put("out_comment", commentsBox.getText());
-        return outputMap;
+        getFormParamsEvent.fire(new GetFormParamsEvent(event.getAction(), outputMap));
     }
 
     @Override
@@ -104,10 +113,11 @@ public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewV
     }
 
     
-    public void setInputMap(Map<String, String> params) {
-        requestorTextBox.setText((String) params.get("in_requestor"));
-        repositoryTextBox.setText((String) params.get("in_repository"));
-        showCommitsBox.setText((String) params.get("in_commits"));
+    public void setInputMap(@Observes SetFormParamsEvent event) {
+        requestorTextBox.setText(event.getParams().get("in_requestor"));
+        repositoryTextBox.setText( event.getParams().get("in_repository"));
+        showCommitsBox.setText(event.getParams().get("in_commits"));
+        setReadOnly(event.isReadOnly());
     }
 
     

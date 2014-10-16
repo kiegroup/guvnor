@@ -15,11 +15,6 @@
  */
 package org.guvnor.asset.management.client.editors.forms.error;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -28,6 +23,15 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import java.util.HashMap;
+import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import org.kie.uberfire.client.forms.GetFormParamsEvent;
+import org.kie.uberfire.client.forms.RequestFormParamsEvent;
+import org.kie.uberfire.client.forms.SetFormParamsEvent;
 import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent
@@ -63,6 +67,10 @@ public class DisplayErrorViewImpl extends Composite implements DisplayErrorPrese
 
     @UiField
     TextBox processNameTextBox;
+    
+    @Inject
+    private Event<GetFormParamsEvent> getFormParamsEvent;
+
 
     public DisplayErrorViewImpl() {
 
@@ -70,10 +78,10 @@ public class DisplayErrorViewImpl extends Composite implements DisplayErrorPrese
 
     }
 
-    public Map<String, Object> getOutputMap() {
+    public void getOutputMap(@Observes RequestFormParamsEvent event) {
         Map<String, Object> outputMap = new HashMap<String, Object>();
 
-        return outputMap;
+        getFormParamsEvent.fire(new GetFormParamsEvent(event.getAction(), outputMap));
     }
 
     @Override
@@ -83,9 +91,10 @@ public class DisplayErrorViewImpl extends Composite implements DisplayErrorPrese
     }
 
     
-    public void setInputMap(Map<String, String> params) {
-        processNameTextBox.setText((String) params.get("ProcessName"));
-        errorBox.setText((String) params.get("Error"));
+    public void setInputMap(@Observes SetFormParamsEvent event) {
+        processNameTextBox.setText( event.getParams().get("ProcessName"));
+        errorBox.setText( event.getParams().get("Error"));
+        this.readOnly = event.isReadOnly();
     }
 
     

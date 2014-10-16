@@ -48,12 +48,6 @@ public class ApproveOperationPresenter {
     @Inject
     ApproveOperationView view;
 
-    @Inject
-    Caller<AssetManagementService> assetManagementServices;
-
-    @Inject
-    private Event<BeforeClosePlaceEvent> closePlaceEvent;
-
     private PlaceRequest place;
 
     @Inject

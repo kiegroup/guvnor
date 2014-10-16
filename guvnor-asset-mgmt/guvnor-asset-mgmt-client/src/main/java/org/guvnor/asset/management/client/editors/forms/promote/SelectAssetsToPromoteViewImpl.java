@@ -156,8 +156,8 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
         for(int i = 0; i < itemCount; i ++){
             String value = filesInTheBranchList.getValue(i);
             filesToPromoteList.addItem(value);
-            filesInTheBranchList.removeItem(i);
         }
+        filesInTheBranchList.clear();
 
     }
 
