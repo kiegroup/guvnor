@@ -186,11 +186,16 @@ public class ProjectResource {
         jobRequest.setJobId( id );
         jobRequest.setRepository( repository );
 
-        addAcceptedJobResult( id );
-
-        jobRequestObserver.createOrCloneRepositoryRequest( jobRequest );
-
-        return createAcceptedStatusResponse( jobRequest );
+        String reqType = repository.getRequestType();
+        if ( reqType == null || reqType.trim().isEmpty() 
+             || !( "new".equals( reqType ) || "clone".equals( reqType ) ) ) {
+            jobRequest.setStatus(JobStatus.BAD_REQUEST);
+            return Response.status( Status.BAD_REQUEST ).entity( jobRequest ).variant( defaultVariant ).build();
+        } else { 
+            addAcceptedJobResult( id );
+            jobRequestObserver.createOrCloneRepositoryRequest( jobRequest );
+            return createAcceptedStatusResponse( jobRequest );
+        } 
     }
 
     @DELETE
