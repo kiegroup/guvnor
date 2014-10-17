@@ -95,6 +95,18 @@ public class ProjectStructureModel {
         return orphanProjects;
     }
 
+    public Project getSingleProject() {
+        return orphanProjects != null && isSingleProject() ? orphanProjects.get( 0 ) : null;
+    }
+
+    public POM getSingleProjectPOM() {
+        Project project = getSingleProject();
+        if ( project != null ) {
+            return orphanProjectsPOM.get( project.getSignatureId() );
+        }
+        return null;
+    }
+
     public void setOrphanProjects( List<Project> orphanProjects ) {
         this.orphanProjects = orphanProjects;
     }
