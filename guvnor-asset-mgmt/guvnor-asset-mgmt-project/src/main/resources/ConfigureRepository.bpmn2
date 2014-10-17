@@ -402,7 +402,7 @@
       <bpmn2:dataOutputAssociation id="_ujnJyko8EeS1sOr-ltSUgw">
         <bpmn2:sourceRef>_76D2DF80-8639-4E29-9E07-C674185F7903_error</bpmn2:sourceRef>
         <bpmn2:targetRef>Exception</bpmn2:targetRef>
-        <bpmn2:transformation language="http://www.mvel.org/2.0"><![CDATA[errr.getMessage()]]></bpmn2:transformation>
+        <bpmn2:transformation language="http://www.mvel.org/2.0"><![CDATA[error.getMessage()]]></bpmn2:transformation>
       </bpmn2:dataOutputAssociation>
       <bpmn2:outputSet id="_ujnJyUo8EeS1sOr-ltSUgw">
         <bpmn2:dataOutputRefs>_76D2DF80-8639-4E29-9E07-C674185F7903_error</bpmn2:dataOutputRefs>
