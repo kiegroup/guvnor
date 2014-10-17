@@ -304,8 +304,6 @@ public class ProjectStructurePresenter
                             @Override
                             public void callback( Repository repository ) {
                                 view.hideBusyIndicator();
-                                ProjectContextChangeEvent event = new ProjectContextChangeEvent(workbenchContext.getActiveOrganizationalUnit(), repository, project, branch);
-                                contextChangedEvent.fire(event);
                                 ProjectStructurePresenter.this.repository = repository;
                                 init();
 
@@ -321,8 +319,6 @@ public class ProjectStructurePresenter
                 @Override
                 public void callback( Repository repository ) {
                     view.hideBusyIndicator();
-                    ProjectContextChangeEvent event = new ProjectContextChangeEvent(workbenchContext.getActiveOrganizationalUnit(), repository, project, branch);
-                    contextChangedEvent.fire(event);
                     ProjectStructurePresenter.this.repository = repository;
                     init();
                 }
