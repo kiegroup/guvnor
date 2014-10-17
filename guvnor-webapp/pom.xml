@@ -116,10 +116,6 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
 
@@ -163,11 +159,6 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-structure-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-services-api</artifactId>
     </dependency>
 
     <dependency>
@@ -280,11 +271,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-panel-manager-nswe</artifactId>
-      <scope>provided</scope>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-security-picketlink</artifactId>
     </dependency>
-
 
     <!-- Errai AS -->
     <dependency>
@@ -307,11 +296,6 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-weld-integration</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-jetty</artifactId>
     </dependency>
 
     <!-- Weld Modules -->
@@ -359,6 +343,14 @@
       <artifactId>junit</artifactId>
     </dependency>
 
+    <!-- PicketLink has a hard dependency on JBoss Logging.
+     Since this app deploys to Jetty, we include this as a runtime-scoped dependency.
+     If deploying to JBoss AS or WildFly, you would set this to provided scope. -->
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 
   <build>

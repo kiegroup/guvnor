@@ -45,7 +45,9 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
+
+import org.jboss.errai.security.shared.api.identity.User;
+
 
 @Service
 @ApplicationScoped
@@ -68,7 +70,7 @@ public class ProjectServiceImpl
                                Event<RenameProjectEvent> renameProjectEvent,
                                Event<DeleteProjectEvent> deleteProjectEvent,
                                Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
-                               Identity identity,
+                               User identity,
                                SessionInfo sessionInfo ) {
         super( ioService, pomService, projectConfigurationContentHandler, configurationService,
                configurationFactory, newProjectEvent, newPackageEvent, renameProjectEvent, deleteProjectEvent,

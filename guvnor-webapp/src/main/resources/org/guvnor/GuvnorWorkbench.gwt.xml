@@ -20,7 +20,6 @@
 <module>
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
-  <inherits name="org.uberfire.UberfireNSWEManager"/>
 
   <!-- Uberfire Extensions - Core Widgets -->
   <inherits name="org.kie.uberfire.KIEUberfireWidgetsCore"/>

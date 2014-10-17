@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import org.guvnor.client.resources.i18n.AppConstants;
 import org.guvnor.m2repo.client.event.M2RepoRefreshEvent;
@@ -30,26 +31,28 @@ import org.guvnor.m2repo.client.upload.UploadForm;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.util.Layouts;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.annotations.Roles;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 
 /**
  * A Perspective to show M2_REPO related screen
  */
 @Roles({ "admin" })
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective", isDefault = false)
-public class M2RepoPerspective {
+@WorkbenchPerspective(identifier = "org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective")
+public class M2RepoPerspective extends FlowPanel {
 
     @Inject
     private Event<M2RepoSearchEvent> searchEvents;
@@ -64,17 +67,19 @@ public class M2RepoPerspective {
     private SyncBeanManager iocManager;
 
     private PerspectiveDefinition perspective;
-    private Menus menus;
+
+    @Inject
+    @WorkbenchPanel(parts = "M2RepoEditor")
+    FlowPanel m2RepoEditor;
 
     @PostConstruct
     private void init() {
-        buildPerspective();
-        buildMenuBar();
+        Layouts.setToFillParent( m2RepoEditor );
+        add(m2RepoEditor);
     }
 
     private void buildPerspective() {
-        this.perspective = new PerspectiveDefinitionImpl( PanelType.ROOT_STATIC );
-        this.perspective.setTransient( true );
+        this.perspective = new PerspectiveDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
         this.perspective.setName( "M2 Repository Explorer" );
 
         this.perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "M2RepoEditor" ) ) );
@@ -82,21 +87,7 @@ public class M2RepoPerspective {
 
     @WorkbenchMenu
     public Menus getMenus() {
-        return this.menus;
-    }
-
-    @Perspective
-    public PerspectiveDefinition getPerspective() {
-        return this.perspective;
-    }
-
-    @OnStartup
-    public void onStartup() {
-
-    }
-
-    private void buildMenuBar() {
-        this.menus = MenuFactory.newTopLevelMenu( AppConstants.INSTANCE.Upload() )
+        return MenuFactory.newTopLevelMenu( AppConstants.INSTANCE.Upload() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
@@ -125,4 +116,8 @@ public class M2RepoPerspective {
                 .build();
     }
 
+    @OnStartup
+    public void onStartup() {
+
+    }
 }

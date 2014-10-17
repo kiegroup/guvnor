@@ -29,14 +29,15 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 
 /**
  * A Perspective to show M2_REPO related screen
@@ -61,17 +62,16 @@ public class DemoPerspective {
     }
 
     private void buildPerspective() {
-        this.perspective = new PerspectiveDefinitionImpl(PanelType.ROOT_STATIC);
-        this.perspective.setTransient(true);
+        this.perspective = new PerspectiveDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName() );
         this.perspective.setName("Keycloak perspective");
 
         this.perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("settingsScreen")));
 
-        final PanelDefinition west = new PanelDefinitionImpl(PanelType.SIMPLE);
+        final PanelDefinition west = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
         west.setWidth(300);
         west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("defaultLHSMenu")));
 
-        this.perspective.getRoot().insertChild(Position.WEST, west);
+        this.perspective.getRoot().insertChild(CompassPosition.WEST, west);
     }
 
     @WorkbenchMenu

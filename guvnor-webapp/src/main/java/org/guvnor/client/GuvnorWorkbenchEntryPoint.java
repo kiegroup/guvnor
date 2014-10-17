@@ -240,7 +240,7 @@ public class GuvnorWorkbenchEntryPoint {
                               @Override
                               public int compare( AbstractWorkbenchPerspectiveActivity o1,
                                                   AbstractWorkbenchPerspectiveActivity o2 ) {
-                                  return o1.getPerspective().getName().compareTo( o2.getPerspective().getName() );
+                                  return o1.getDefaultPerspectiveLayout().getName().compareTo( o2.getDefaultPerspectiveLayout().getName() );
                               }
 
                           } );
