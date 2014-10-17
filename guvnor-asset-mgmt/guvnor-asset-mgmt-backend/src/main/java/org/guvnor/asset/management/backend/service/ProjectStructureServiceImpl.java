@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -21,6 +22,7 @@ import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +65,9 @@ public class ProjectStructureServiceImpl
     private CommentedOptionFactory optionsFactory;
 
     @Inject
+    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
+
+    @Inject
     @Named( "ioStrategy" )
     private IOService ioService;
 
@@ -93,7 +98,10 @@ public class ProjectStructureServiceImpl
         Map<String, Object> config = new HashMap<String, Object>( );
 
         config.put( MANAGED, managed );
-        return repositoryService.updateRepository( repo, config );
+        Repository updatedRepo = repositoryService.updateRepository( repo, config );
+        repositoryUpdatedEvent.fire( new RepositoryUpdatedEvent( repo, updatedRepo ) );
+
+        return updatedRepo;
     }
 
     @Override
