@@ -30,6 +30,7 @@ import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.model.ProjectStructureModel;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.ProjectStructureService;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -181,18 +182,25 @@ public class ReleaseConfigurationPresenter {
                 projectStructureServices.call(new RemoteCallback<ProjectStructureModel>() {
                     @Override
                     public void callback(ProjectStructureModel model) {
-                        if (model != null && model.getPOM() != null) {
-                            view.getCurrentVersionText().setText(model.getPOM().getGav().getVersion());
-                            view.getVersionText().setText(model.getPOM().getGav().getVersion().replaceFirst("-SNAPSHOT", ""));
+
+                        POM pom = null;
+                        if ( model != null && ( model.isSingleProject() || model.isMultiModule() ) ) {
+                            pom = model.isMultiModule() ? model.getPOM() : model.getSingleProjectPOM();
+                        }
+
+                        if ( pom != null ) {
+                            // don't include snapshot for branch names
+                            view.getCurrentVersionText().setText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
+                            view.getVersionText().setText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
+
                         } else {
-                            view.getCurrentVersionText().setText(constants.No_Project_Structure_Available());
-                            view.getVersionText().setText("1.0.0");
+                            view.getCurrentVersionText().setText( constants.No_Project_Structure_Available() );
+                            view.getVersionText().setText( "1.0.0" );
                         }
                     }
                 }).load(r);
                 return;
             }
-
         }
     }
 
