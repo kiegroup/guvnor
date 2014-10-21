@@ -41,16 +41,15 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-
 public class ReleaseConfigurationViewImpl extends Composite implements ReleaseConfigurationPresenter.ReleaseConfigurationView {
 
-     interface Binder
+    interface Binder
             extends UiBinder<Widget, ReleaseConfigurationViewImpl> {
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
-    
+    private static Binder uiBinder = GWT.create( Binder.class );
+
     @Inject
     private PlaceManager placeManager;
 
@@ -61,17 +60,16 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
 
     @UiField
     public ListBox chooseBranchBox;
-    
+
     @UiField
     public Button releaseButton;
 
     @UiField
     public TextBox userNameText;
-    
-  
+
     @UiField
     public PasswordTextBox passwordText;
-  
+
     @UiField
     public TextBox serverURLText;
 
@@ -99,82 +97,77 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
     @Inject
     private Event<NotificationEvent> notification;
 
-    private Constants constants = GWT.create(Constants.class);
+    private Constants constants = GWT.create( Constants.class );
 
     public ReleaseConfigurationViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
-    
-    
 
     @Override
-    public void init(final ReleaseConfigurationPresenter presenter) {
+    public void init( final ReleaseConfigurationPresenter presenter ) {
         this.presenter = presenter;
-        currentVersionText.setReadOnly(true);
+        currentVersionText.setReadOnly( true );
         presenter.loadServerSetting();
-        chooseRepositoryBox.addChangeHandler(new ChangeHandler() {
+        chooseRepositoryBox.addChangeHandler( new ChangeHandler() {
 
             @Override
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 String value = chooseRepositoryBox.getValue();
 
-                presenter.loadBranches(value);
-                 presenter.loadRepositoryProjectStructure(value);
-                
+                presenter.loadBranches( value );
+                presenter.loadRepositoryProjectStructure( value );
+
             }
-        });
-        
+        } );
+
         presenter.loadRepositories();
 
     }
 
-    public void showHideDeployToRuntimeSection(boolean show) {
-        if (show) {
-            deployToRuntimeRow.setVisible(true);
-            usernameRow.setVisible(true);
-            passwordRow.setVisible(true);
-            serverURLRow.setVisible(true);
+    public void showHideDeployToRuntimeSection( boolean show ) {
+        if ( show ) {
+            deployToRuntimeRow.setVisible( true );
+            usernameRow.setVisible( true );
+            passwordRow.setVisible( true );
+            serverURLRow.setVisible( true );
 
             // by default deploy to runtime inputs are disabled
-            userNameText.setEnabled(false);
-            passwordText.setEnabled(false);
-            serverURLText.setEnabled(false);
+            userNameText.setEnabled( false );
+            passwordText.setEnabled( false );
+            serverURLText.setEnabled( false );
 
-            deployToRuntimeCheck.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            deployToRuntimeCheck.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
                 @Override
-                public void onValueChange(ValueChangeEvent<Boolean> event) {
-                    if (event.getValue()) {
-                        userNameText.setEnabled(true);
-                        passwordText.setEnabled(true);
-                        serverURLText.setEnabled(true);
+                public void onValueChange( ValueChangeEvent<Boolean> event ) {
+                    if ( event.getValue() ) {
+                        userNameText.setEnabled( true );
+                        passwordText.setEnabled( true );
+                        serverURLText.setEnabled( true );
                     } else {
-                        userNameText.setEnabled(false);
-                        passwordText.setEnabled(false);
-                        serverURLText.setEnabled(false);
+                        userNameText.setEnabled( false );
+                        passwordText.setEnabled( false );
+                        serverURLText.setEnabled( false );
                     }
                 }
-            });
+            } );
         } else {
-            deployToRuntimeRow.setVisible(false);
-            usernameRow.setVisible(false);
-            passwordRow.setVisible(false);
-            serverURLRow.setVisible(false);
+            deployToRuntimeRow.setVisible( false );
+            usernameRow.setVisible( false );
+            passwordRow.setVisible( false );
+            serverURLRow.setVisible( false );
         }
     }
-    
 
     @UiHandler("releaseButton")
-    public void releaseButton(ClickEvent e) {
+    public void releaseButton( ClickEvent e ) {
 
-        presenter.releaseProject(chooseRepositoryBox.getValue(), chooseBranchBox.getValue(),
-                userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue(), versionText.getText());
+        presenter.releaseProject( chooseRepositoryBox.getValue(), chooseBranchBox.getValue(),
+                userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue(), versionText.getText() );
     }
 
-   
-
     @Override
-    public void displayNotification(String text) {
-        notification.fire(new NotificationEvent(text));
+    public void displayNotification( String text ) {
+        notification.fire( new NotificationEvent( text ) );
     }
 
     public ListBox getChooseBranchBox() {
@@ -185,8 +178,8 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
     public ListBox getChooseRepositoryBox() {
         return chooseRepositoryBox;
     }
-    
-     @Override
+
+    @Override
     public TextBox getCurrentVersionText() {
         return currentVersionText;
     }
@@ -196,5 +189,4 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
         return versionText;
     }
 
-   
 }

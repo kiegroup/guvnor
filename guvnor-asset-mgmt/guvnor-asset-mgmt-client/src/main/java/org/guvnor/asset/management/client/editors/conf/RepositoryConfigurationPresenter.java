@@ -15,31 +15,24 @@
  */
 package org.guvnor.asset.management.client.editors.conf;
 
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
-import com.google.gwt.core.client.GWT;
-import org.guvnor.asset.management.client.i18n.Constants;
+import org.guvnor.asset.management.client.editors.common.BaseAssetsMgmtPresenter;
+import org.guvnor.asset.management.client.editors.common.BaseAssetsMgmtView;
 import org.guvnor.asset.management.model.ProjectStructureModel;
-import org.guvnor.asset.management.service.AssetManagementService;
-import org.guvnor.asset.management.service.ProjectStructureService;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopup;
@@ -48,76 +41,55 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchScreen(identifier = "Repository Configuration")
-public class RepositoryConfigurationPresenter {
+@WorkbenchScreen( identifier = "Repository Configuration" )
+public class RepositoryConfigurationPresenter extends BaseAssetsMgmtPresenter {
 
-  private Constants constants = GWT.create(Constants.class);
+    public interface RepositoryConfigurationView extends UberView<RepositoryConfigurationPresenter>, BaseAssetsMgmtView {
 
-  public interface RepositoryConfigurationView extends UberView<RepositoryConfigurationPresenter> {
+        Button getConfigureButton();
 
-    void displayNotification(String text);
+        TextBox getReleaseBranchText();
 
-    ListBox getChooseRepositoryBox();
+        TextBox getDevBranchText();
 
-    Button getConfigureButton();
+        TextBox getCurrentVersionText();
 
-    TextBox getReleaseBranchText();
+        TextBox getVersionText();
 
-    TextBox getDevBranchText();
-    
-    TextBox getCurrentVersionText();
-    
-    TextBox getVersionText();
+    }
 
-  }
+    @Inject
+    RepositoryConfigurationView view;
 
-  @Inject
-  RepositoryConfigurationView view;
+    @Inject
+    private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
-  @Inject
-  Caller<AssetManagementService> assetManagementServices;
+    @OnStartup
+    public void onStartup( final PlaceRequest place ) {
+        this.place = place;
+    }
 
-  @Inject
-  Caller<RepositoryService> repositoryServices;
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return constants.Repository_Configuration();
+    }
 
-  @Inject
-  Caller<ProjectStructureService> projectStructureServices;
+    @WorkbenchPartView
+    public UberView<RepositoryConfigurationPresenter> getView() {
+        return view;
+    }
 
-  @Inject
-  private Event<BeforeClosePlaceEvent> closePlaceEvent;
+    public RepositoryConfigurationPresenter() {
+    }
 
-  private PlaceRequest place;
-
-  @Inject
-  private PlaceManager placeManager;
-
-  private List<Repository> repositories;
-  
-  @OnStartup
-  public void onStartup(final PlaceRequest place) {
-    this.place = place;
-  }
-
-  @WorkbenchPartTitle
-  public String getTitle() {
-    return constants.Repository_Configuration();
-  }
-
-  @WorkbenchPartView
-  public UberView<RepositoryConfigurationPresenter> getView() {
-    return view;
-  }
-
-  public RepositoryConfigurationPresenter() {
-  }
-
-  @PostConstruct
-  public void init() {
-  }
+    @PostConstruct
+    public void init() {
+        baseView = view;
+    }
 
     public void loadRepositoryProjectStructure( String value ) {
         if ( !value.equals( constants.Select_Repository() ) ) {
-            for ( Repository r : repositories ) {
+            for ( Repository r : getRepositories() ) {
                 if ( ( r.getAlias() ).equals( value ) ) {
                     projectStructureServices.call( new RemoteCallback<ProjectStructureModel>() {
                         @Override
@@ -144,43 +116,27 @@ public class RepositoryConfigurationPresenter {
         }
     }
 
+    public void configureRepository( String repository, String sourceBranch, String devBranch, String releaseBranch, String version ) {
+        assetManagementServices.call( new RemoteCallback<Long>() {
+                                          @Override
+                                          public void callback( Long taskId ) {
+                                              view.displayNotification( "Repository Configuration Started!" );
+                                          }
+                                      }, new ErrorCallback<Message>() {
+                                          @Override
+                                          public boolean error( Message message, Throwable throwable ) {
+                                              ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
+                                              return true;
+                                          }
+                                      }
+        ).configureRepository( repository, sourceBranch, devBranch, releaseBranch, version );
 
-  public void loadRepositories() {
-    repositoryServices.call(new RemoteCallback<List<Repository>>() {
+    }
 
-      @Override
-      public void callback(final List<Repository> repositoriesResults) {
-        repositories = repositoriesResults;
-        view.getChooseRepositoryBox().addItem(constants.Select_Repository());
-        for (Repository r : repositories) {
-          view.getChooseRepositoryBox().addItem(r.getAlias(), r.getAlias());
-        }
+    @OnOpen
+    public void onOpen() {
+        view.getChooseRepositoryBox().setFocus( true );
 
-      }
-    }).getRepositories();
-
-  }
-
-  public void configureRepository(String repository, String sourceBranch, String devBranch, String releaseBranch, String version) {
-    assetManagementServices.call(new RemoteCallback<Long>() {
-      @Override
-      public void callback(Long taskId) {
-        view.displayNotification("Repository Configuration Started!");
-      }
-    }, new ErrorCallback<Message>() {
-      @Override
-      public boolean error(Message message, Throwable throwable) {
-        ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
-        return true;
-      }
-    }).configureRepository(repository, sourceBranch, devBranch, releaseBranch, version);
-
-  }
-
-  @OnOpen
-  public void onOpen() {
-    view.getChooseRepositoryBox().setFocus(true);
-
-  }
+    }
 
 }

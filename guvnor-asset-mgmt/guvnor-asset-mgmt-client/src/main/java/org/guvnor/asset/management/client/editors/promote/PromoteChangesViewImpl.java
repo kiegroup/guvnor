@@ -30,7 +30,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.asset.management.client.i18n.Constants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -42,14 +41,12 @@ public class PromoteChangesViewImpl extends Composite implements PromoteChangesP
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
-    
+    private static Binder uiBinder = GWT.create( Binder.class );
+
     @Inject
     private PlaceManager placeManager;
 
     private PromoteChangesPresenter presenter;
-
- 
 
     @UiField
     public ListBox chooseRepositoryBox;
@@ -66,41 +63,37 @@ public class PromoteChangesViewImpl extends Composite implements PromoteChangesP
     @Inject
     private Event<NotificationEvent> notification;
 
-    private Constants constants = GWT.create(Constants.class);
-
     public PromoteChangesViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
-    
-    
 
     @Override
-    public void init(final PromoteChangesPresenter presenter) {
+    public void init( final PromoteChangesPresenter presenter ) {
         this.presenter = presenter;
-        
-        chooseRepositoryBox.addChangeHandler(new ChangeHandler() {
+
+        chooseRepositoryBox.addChangeHandler( new ChangeHandler() {
 
             @Override
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 String value = chooseRepositoryBox.getValue();
-                GWT.log(value);
+                GWT.log( value );
 
-                presenter.loadBranches(value);
+                presenter.loadBranches( value );
             }
-        });
+        } );
 
         presenter.loadRepositories();
     }
 
-    @UiHandler("promoteButton")
-    public void promoteButton(ClickEvent e) {
-        presenter.promoteChanges(chooseRepositoryBox.getValue(), chooseSourceBranchBox.getValue(), chooseTargetBranchBox.getValue());
+    @UiHandler( "promoteButton" )
+    public void promoteButton( ClickEvent e ) {
+        presenter.promoteChanges( chooseRepositoryBox.getValue(), chooseSourceBranchBox.getValue(), chooseTargetBranchBox.getValue() );
 
     }
 
     @Override
-    public void displayNotification(String text) {
-        notification.fire(new NotificationEvent(text));
+    public void displayNotification( String text ) {
+        notification.fire( new NotificationEvent( text ) );
     }
 
     @Override
