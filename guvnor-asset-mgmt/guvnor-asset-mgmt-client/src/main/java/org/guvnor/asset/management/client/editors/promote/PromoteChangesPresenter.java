@@ -78,20 +78,18 @@ public class PromoteChangesPresenter extends BaseAssetsMgmtPresenter {
         baseView = view;
     }
 
-    public void loadBranches( String repository ) {
-        for ( Repository r : getRepositories() ) {
-            view.getChooseSourceBranchBox().clear();
-            view.getChooseTargetBranchBox().clear();
+    public void loadBranches( String alias ) {
+        view.getChooseSourceBranchBox().clear();
+        view.getChooseTargetBranchBox().clear();
 
-            if ( ( r.getAlias() ).equals( repository ) ) {
-                view.getChooseSourceBranchBox().addItem( constants.Select_A_Branch() );
-                for ( String branch : r.getBranches() ) {
-                    view.getChooseSourceBranchBox().addItem( branch, branch );
-                }
-                view.getChooseTargetBranchBox().addItem( constants.Select_A_Branch() );
-                for ( String branch : r.getBranches() ) {
-                    view.getChooseTargetBranchBox().addItem( branch, branch );
-                }
+        view.getChooseSourceBranchBox().addItem( constants.Select_A_Branch() );
+        view.getChooseTargetBranchBox().addItem( constants.Select_A_Branch() );
+
+        Repository repository = getRepository( alias );
+        if ( repository != null ) {
+            for ( String branch : repository.getBranches() ) {
+                view.getChooseSourceBranchBox().addItem( branch, branch );
+                view.getChooseTargetBranchBox().addItem( branch, branch );
             }
         }
     }

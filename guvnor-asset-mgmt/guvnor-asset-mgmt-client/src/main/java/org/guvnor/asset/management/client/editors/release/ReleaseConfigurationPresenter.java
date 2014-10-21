@@ -122,15 +122,14 @@ public class ReleaseConfigurationPresenter extends BaseAssetsMgmtPresenter {
         } ).supportRuntimeDeployment();
     }
 
-    public void loadBranches( String repository ) {
-        Repository r = getRepository( repository );
-        view.getChooseRepositoryBox().clear();
-        if ( r != null ) {
+    public void loadBranches( String alias ) {
+        Repository repository = getRepository( alias );
+        if ( repository != null ) {
+            view.getChooseBranchBox().clear();
             view.getChooseBranchBox().addItem( constants.Select_A_Branch() );
-            for ( String branch : r.getBranches() ) {
+            for ( String branch : repository.getBranches() ) {
                 view.getChooseBranchBox().addItem( branch, branch );
             }
-
         }
     }
 

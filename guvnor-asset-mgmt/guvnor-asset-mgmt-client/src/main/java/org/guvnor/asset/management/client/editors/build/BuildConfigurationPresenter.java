@@ -120,33 +120,36 @@ public class BuildConfigurationPresenter extends BaseAssetsMgmtPresenter {
         } ).supportRuntimeDeployment();
     }
 
-    public void loadBranches( String repository ) {
-        Repository r = getRepository( repository );
-        if ( r != null ) {
-            view.getChooseRepositoryBox().clear();
+    public void loadBranches( String alias ) {
+        Repository repository = getRepository( alias );
+        if ( repository != null ) {
+            view.getChooseBranchBox().clear();
             view.getChooseBranchBox().addItem( constants.Select_A_Branch() );
-            for ( String branch : r.getBranches() ) {
+            view.getChooseProjectBox().clear();
+            view.getChooseProjectBox().addItem( constants.Select_Project() );
+            for ( String branch : repository.getBranches() ) {
                 view.getChooseBranchBox().addItem( branch, branch );
             }
         }
     }
 
-    public void loadProjects( String repository,
+    public void loadProjects( String alias,
             String branch ) {
-        Repository r = getRepository( repository );
+        Repository repository = getRepository( alias );
+        view.getChooseProjectBox().clear();
+        view.getChooseProjectBox().addItem( constants.Select_Project() );
 
         assetManagementServices.call( new RemoteCallback<Set<Project>>() {
 
             @Override
             public void callback( final Set<Project> projectSetResults ) {
 
-                view.getChooseProjectBox().addItem( constants.Select_Project() );
                 for ( Project project : projectSetResults ) {
                     view.getChooseProjectBox().addItem( project.getProjectName(), project.getProjectName() );
                 }
 
             }
-        } ).getProjects( r, branch );
+        } ).getProjects( repository, branch );
     }
 
     @OnOpen
