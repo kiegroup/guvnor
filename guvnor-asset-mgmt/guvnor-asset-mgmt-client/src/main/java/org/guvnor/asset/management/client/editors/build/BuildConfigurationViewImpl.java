@@ -36,20 +36,19 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.asset.management.client.i18n.Constants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-
-public class BuildConfigurationViewImpl extends Composite implements BuildConfigurationPresenter.BuildConfigurationView {
+public class BuildConfigurationViewImpl extends Composite
+        implements BuildConfigurationPresenter.BuildConfigurationView {
 
     interface Binder
             extends UiBinder<Widget, BuildConfigurationViewImpl> {
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @Inject
     private PlaceManager placeManager;
@@ -70,7 +69,6 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
 
     @UiField
     public TextBox userNameText;
-
 
     @UiField
     public PasswordTextBox passwordText;
@@ -96,89 +94,83 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
     @Inject
     private Event<NotificationEvent> notification;
 
-    private Constants constants = GWT.create(Constants.class);
-
     public BuildConfigurationViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-
-
     @Override
-    public void init(final BuildConfigurationPresenter presenter) {
+    public void init( final BuildConfigurationPresenter presenter ) {
         this.presenter = presenter;
         presenter.loadServerSetting();
-        chooseRepositoryBox.addChangeHandler(new ChangeHandler() {
+        chooseRepositoryBox.addChangeHandler( new ChangeHandler() {
 
             @Override
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 String value = chooseRepositoryBox.getValue();
 
-                presenter.loadBranches(value);
+                presenter.loadBranches( value );
             }
-        });
+        } );
 
-        chooseBranchBox.addChangeHandler(new ChangeHandler() {
+        chooseBranchBox.addChangeHandler( new ChangeHandler() {
 
             @Override
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 String repo = chooseRepositoryBox.getValue();
                 String branch = chooseBranchBox.getValue();
 
-                presenter.loadProjects(repo, branch);
+                presenter.loadProjects( repo, branch );
             }
-        });
+        } );
 
         presenter.loadRepositories();
 
     }
 
-    public void showHideDeployToRuntimeSection(boolean show) {
-        if (show) {
-            deployToRuntimeRow.setVisible(true);
-            usernameRow.setVisible(true);
-            passwordRow.setVisible(true);
-            serverURLRow.setVisible(true);
+    public void showHideDeployToRuntimeSection( boolean show ) {
+        if ( show ) {
+            deployToRuntimeRow.setVisible( true );
+            usernameRow.setVisible( true );
+            passwordRow.setVisible( true );
+            serverURLRow.setVisible( true );
 
             // by default deploy to runtime inputs are disabled
-            userNameText.setEnabled(false);
-            passwordText.setEnabled(false);
-            serverURLText.setEnabled(false);
+            userNameText.setEnabled( false );
+            passwordText.setEnabled( false );
+            serverURLText.setEnabled( false );
 
-            deployToRuntimeCheck.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            deployToRuntimeCheck.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
                 @Override
-                public void onValueChange(ValueChangeEvent<Boolean> event) {
-                    if (event.getValue()) {
-                        userNameText.setEnabled(true);
-                        passwordText.setEnabled(true);
-                        serverURLText.setEnabled(true);
+                public void onValueChange( ValueChangeEvent<Boolean> event ) {
+                    if ( event.getValue() ) {
+                        userNameText.setEnabled( true );
+                        passwordText.setEnabled( true );
+                        serverURLText.setEnabled( true );
                     } else {
-                        userNameText.setEnabled(false);
-                        passwordText.setEnabled(false);
-                        serverURLText.setEnabled(false);
+                        userNameText.setEnabled( false );
+                        passwordText.setEnabled( false );
+                        serverURLText.setEnabled( false );
                     }
                 }
-            });
+            } );
         } else {
-            deployToRuntimeRow.setVisible(false);
-            usernameRow.setVisible(false);
-            passwordRow.setVisible(false);
-            serverURLRow.setVisible(false);
+            deployToRuntimeRow.setVisible( false );
+            usernameRow.setVisible( false );
+            passwordRow.setVisible( false );
+            serverURLRow.setVisible( false );
         }
     }
 
-    @UiHandler("buildButton")
-    public void buildButton(ClickEvent e) {
-        presenter.buildProject(chooseRepositoryBox.getValue(), chooseBranchBox.getValue(), chooseProjectBox.getValue(),
-                               userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue());
+    @UiHandler( "buildButton" )
+    public void buildButton( ClickEvent e ) {
+        presenter.buildProject( chooseRepositoryBox.getValue(), chooseBranchBox.getValue(), chooseProjectBox.getValue(),
+                userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue() );
 
     }
 
-
-
     @Override
-    public void displayNotification(String text) {
-        notification.fire(new NotificationEvent(text));
+    public void displayNotification( String text ) {
+        notification.fire( new NotificationEvent( text ) );
     }
 
     @Override
@@ -199,8 +191,5 @@ public class BuildConfigurationViewImpl extends Composite implements BuildConfig
     public Button getBuildButton() {
         return buildButton;
     }
-
-
-
 
 }

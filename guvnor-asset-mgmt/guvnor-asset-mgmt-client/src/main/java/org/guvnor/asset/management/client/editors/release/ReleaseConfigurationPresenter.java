@@ -15,9 +15,6 @@
  */
 package org.guvnor.asset.management.client.editors.release;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -26,22 +23,19 @@ import javax.inject.Inject;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import org.guvnor.asset.management.client.editors.common.BaseAssetsMgmtPresenter;
+import org.guvnor.asset.management.client.editors.common.BaseAssetsMgmtView;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.model.ProjectStructureModel;
-import org.guvnor.asset.management.service.AssetManagementService;
-import org.guvnor.asset.management.service.ProjectStructureService;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.lifecycle.OnOpen;
@@ -49,16 +43,12 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchScreen(identifier = "Release Management")
-public class ReleaseConfigurationPresenter {
+@WorkbenchScreen( identifier = "Release Management" )
+public class ReleaseConfigurationPresenter extends BaseAssetsMgmtPresenter {
 
-    private Constants constants = GWT.create(Constants.class);
+    private Constants constants = GWT.create( Constants.class );
 
-    public interface ReleaseConfigurationView extends UberView<ReleaseConfigurationPresenter> {
-
-        void displayNotification(String text);
-
-        ListBox getChooseRepositoryBox();
+    public interface ReleaseConfigurationView extends UberView<ReleaseConfigurationPresenter>, BaseAssetsMgmtView {
 
         ListBox getChooseBranchBox();
 
@@ -66,35 +56,19 @@ public class ReleaseConfigurationPresenter {
 
         TextBox getVersionText();
 
-        void showHideDeployToRuntimeSection(boolean show);
+        void showHideDeployToRuntimeSection( boolean show );
     }
 
     @Inject
     ReleaseConfigurationView view;
 
     @Inject
-    Caller<AssetManagementService> assetManagementServices;
-
-    @Inject
-    Caller<ProjectStructureService> projectStructureServices;
-
-    @Inject
     private Event<BeforeClosePlaceEvent> closePlaceEvent;
-
-    private PlaceRequest place;
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
-    Caller<RepositoryService> repositoryServices;
-
-    private Map<String, Repository> repositories = new HashMap<String, Repository>();
 
     private boolean supportRuntimeDeployment;
 
     @OnStartup
-    public void onStartup(final PlaceRequest place) {
+    public void onStartup( final PlaceRequest place ) {
         this.place = place;
     }
 
@@ -113,75 +87,60 @@ public class ReleaseConfigurationPresenter {
 
     @PostConstruct
     public void init() {
-
+        baseView = view;
     }
 
-    public void releaseProject(String repository, String branch,
-            String userName, String password, String serverURL, Boolean deployToRuntime, String version) {
+    public void releaseProject( String repository, String branch,
+            String userName, String password, String serverURL, Boolean deployToRuntime, String version ) {
 
         if ( serverURL != null && !serverURL.isEmpty() && serverURL.endsWith( "/" ) ) {
-            serverURL = serverURL.substring( 0, serverURL.length()-1 );
+            serverURL = serverURL.substring( 0, serverURL.length() - 1 );
         }
 
-        assetManagementServices.call(new RemoteCallback<Long>() {
-            @Override
-            public void callback(Long taskId) {
-                view.displayNotification("Release project process started");
-            }
-        }, new ErrorCallback<Message>() {
-            @Override
-            public boolean error(Message message, Throwable throwable) {
-                ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
-                return true;
-            }
-        }).releaseProject(repository, branch, userName, password, serverURL, deployToRuntime, version);
+        assetManagementServices.call( new RemoteCallback<Long>() {
+                                          @Override
+                                          public void callback( Long taskId ) {
+                                              view.displayNotification( "Release project process started" );
+                                          }
+                                      }, new ErrorCallback<Message>() {
+                                          @Override
+                                          public boolean error( Message message, Throwable throwable ) {
+                                              ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
+                                              return true;
+                                          }
+                                      }
+        ).releaseProject( repository, branch, userName, password, serverURL, deployToRuntime, version );
 
     }
 
     public void loadServerSetting() {
-        assetManagementServices.call(new RemoteCallback<Boolean>() {
+        assetManagementServices.call( new RemoteCallback<Boolean>() {
             @Override
-            public void callback(Boolean supportRuntimeDeployment) {
-                view.showHideDeployToRuntimeSection(supportRuntimeDeployment);
+            public void callback( Boolean supportRuntimeDeployment ) {
+                view.showHideDeployToRuntimeSection( supportRuntimeDeployment );
             }
-        }).supportRuntimeDeployment();
+        } ).supportRuntimeDeployment();
     }
 
-    public void loadRepositories() {
-        repositoryServices.call(new RemoteCallback<List<Repository>>() {
-
-            @Override
-            public void callback(final List<Repository> repositoriesResults) {
-
-                view.getChooseRepositoryBox().addItem(constants.Select_Repository());
-                for (Repository r : repositoriesResults) {
-                    repositories.put(r.getAlias(), r);
-                    view.getChooseRepositoryBox().addItem(r.getAlias(), r.getAlias());
-                }
-
-            }
-        }).getRepositories();
-
-    }
-
-    public void loadBranches(String repository) {
-        Repository r = repositories.get(repository);
-        if (r != null) {
-            view.getChooseBranchBox().addItem(constants.Select_A_Branch());
-            for (String branch : r.getBranches()) {
-                view.getChooseBranchBox().addItem(branch, branch);
+    public void loadBranches( String repository ) {
+        Repository r = getRepository( repository );
+        view.getChooseRepositoryBox().clear();
+        if ( r != null ) {
+            view.getChooseBranchBox().addItem( constants.Select_A_Branch() );
+            for ( String branch : r.getBranches() ) {
+                view.getChooseBranchBox().addItem( branch, branch );
             }
 
         }
     }
 
-    public void loadRepositoryProjectStructure(String value) {
-        if (!value.equals(constants.Select_Repository())) {
-            Repository r = repositories.get(value);
-            if (r != null) {
-                projectStructureServices.call(new RemoteCallback<ProjectStructureModel>() {
+    public void loadRepositoryProjectStructure( String value ) {
+        if ( !value.equals( constants.Select_Repository() ) ) {
+            Repository r = getRepository( value );
+            if ( r != null ) {
+                projectStructureServices.call( new RemoteCallback<ProjectStructureModel>() {
                     @Override
-                    public void callback(ProjectStructureModel model) {
+                    public void callback( ProjectStructureModel model ) {
 
                         POM pom = null;
                         if ( model != null && ( model.isSingleProject() || model.isMultiModule() ) ) {
@@ -198,13 +157,13 @@ public class ReleaseConfigurationPresenter {
                             view.getVersionText().setText( "1.0.0" );
                         }
                     }
-                }).load(r);
+                } ).load( r );
                 return;
             }
         }
     }
 
-    protected void setSupportRuntimeDeployment(boolean b) {
+    protected void setSupportRuntimeDeployment( boolean b ) {
         this.supportRuntimeDeployment = b;
     }
 
@@ -214,7 +173,7 @@ public class ReleaseConfigurationPresenter {
 
     @OnOpen
     public void onOpen() {
-        view.getChooseRepositoryBox().setFocus(true);
+        view.getChooseRepositoryBox().setFocus( true );
 
     }
 
