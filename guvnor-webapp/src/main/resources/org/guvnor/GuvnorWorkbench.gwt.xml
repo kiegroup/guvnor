@@ -35,6 +35,15 @@
   <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleClient"/>
   <inherits name='org.guvnor.organizationalunit.manager.GuvnorOrganizationalUnitManager'/>
 
+  <!-- Uberfire Extensions - Runtime Plugin -->
+  <inherits name="org.kie.uberfire.plugin.RuntimePluginClient"/>
+
+  <!-- Uberfire Extensions - Perspective Editor -->
+  <inherits name="org.kie.uberfire.perspective.editor.PerspectiveEditorClient"/>
+
+  <!-- Uberfire Extensions - Apps -->
+  <inherits name="org.kie.uberfire.apps.UberfireAppsClient"/>
+
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/guvnor-workbench.css'/>
 
@@ -48,11 +57,5 @@
   <extend-property name="locale" values="ja_JP"/>
   <extend-property name="locale" values="pt_BR"/>
   <extend-property name="locale" values="zh_CN"/>
-
-  <!-- SuperDevMode -->
-  <add-linker name="xsiframe"/>
-  <set-configuration-property name="devModeRedirectEnabled" value="true"/>
-  <set-property name="compiler.useSourceMaps" value="true"/>
-  <set-configuration-property name='xsiframe.failIfScriptTag' value='false'/>
 
 </module>

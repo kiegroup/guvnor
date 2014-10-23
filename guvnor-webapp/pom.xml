@@ -29,11 +29,12 @@
   <artifactId>guvnor-webapp</artifactId>
   <packaging>war</packaging>
 
-  <name>Guvnor Workbench - WebApp</name>
-  <description>Guvnor Workbench - WebApp</description>
+  <name>Guvnor - WebApp</name>
+  <description>Guvnor - WebApp</description>
 
   <dependencies>
 
+    <!-- All transient dependencies -->
     <dependency>
       <groupId>com.github.gwtbootstrap</groupId>
       <artifactId>gwt-bootstrap</artifactId>
@@ -59,8 +60,8 @@
       <artifactId>errai-ioc</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-security-server</artifactId>
     </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
@@ -119,7 +120,6 @@
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
 
-
     <!-- Hack: ANT bundled with kie-ci needs to be excluded when running on Jetty -->
     <!-- It is added back for other Application Servers in their respective assemblies -->
     <dependency>
@@ -131,6 +131,18 @@
           <artifactId>ant</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <!-- Tag library - used by not_authorized.jsp -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet.jstl</groupId>
+      <artifactId>jboss-jstl-api_1.2_spec</artifactId>
+    </dependency>
+
+    <!-- HTML Parameter Encoder - used by not_authorized.jsp -->
+    <dependency>
+      <groupId>org.owasp.encoder</groupId>
+      <artifactId>encoder</artifactId>
     </dependency>
 
     <!--Logs-->
@@ -145,7 +157,6 @@
     </dependency>
 
     <!-- Guvnor -->
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-asset-mgmt-backend</artifactId>
@@ -236,18 +247,12 @@
       <artifactId>guvnor-organizationalunit-manager</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-rest-backend</artifactId>
-    </dependency>
-
-    <!-- REST exception handling -->
-    <dependency>
-      <groupId>org.kie.remote</groupId>
-      <artifactId>kie-remote-common</artifactId>
-    </dependency>
-
     <!-- UberFire Extension -->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-servlet-security</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.kie.uberfire</groupId>
       <artifactId>kie-uberfire-metadata-commons-io</artifactId>
@@ -258,21 +263,52 @@
       <artifactId>kie-uberfire-metadata-backend-lucene</artifactId>
     </dependency>
 
+    <!-- UberFire Plugins -->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-runtime-plugins-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-runtime-plugins-client</artifactId>
+    </dependency>
+
+    <!-- UberFire Perspective Editor -->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-perspective-editor-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-perspective-editor-backend</artifactId>
+    </dependency>
+
+    <!-- UberFire Apps -->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-apps-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-apps-backend</artifactId>
+    </dependency>
+
     <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-all</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.errai</groupId>
+          <artifactId>errai-security-picketlink</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-security-picketlink</artifactId>
     </dependency>
 
     <!-- Errai AS -->
@@ -404,6 +440,11 @@
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-backend</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
+
+            <!-- UberFire extensions -->
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-runtime-plugins-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-perspective-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-apps-client</compileSourcesArtifact>
 
           </compileSourcesArtifacts>
           <runTarget>org.guvnor.GuvnorWorkbench/GuvnorWorkbench.html</runTarget>

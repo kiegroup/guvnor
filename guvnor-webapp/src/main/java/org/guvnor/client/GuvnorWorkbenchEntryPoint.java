@@ -44,6 +44,7 @@ import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.client.menu.CustomSplashHelp;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
@@ -78,6 +79,9 @@ public class GuvnorWorkbenchEntryPoint {
 
     @Inject
     private ActivityManager activityManager;
+
+    @Inject
+    private Caller<AuthenticationService> authService;
 
     private Command newRepoCommand = null;
     private Command cloneRepoCommand = null;
@@ -186,12 +190,7 @@ public class GuvnorWorkbenchEntryPoint {
                 } )
                 .endMenu()
                 .newTopLevelMenu( AppConstants.INSTANCE.Logout() )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        redirect( GWT.getModuleBaseURL() + "uf_logout" );
-                    }
-                } )
+                .respondsWith( new LogoutCommand() )
                 .endMenu()
                 .newTopLevelMenu( AppConstants.INSTANCE.Find() )
                 .position( MenuPosition.RIGHT )
@@ -264,6 +263,20 @@ public class GuvnorWorkbenchEntryPoint {
                 e.getStyle().setVisibility( Style.Visibility.HIDDEN );
             }
         }.run( 500 );
+    }
+
+    private class LogoutCommand implements Command {
+
+        @Override
+        public void execute() {
+            authService.call( new RemoteCallback<Void>() {
+                @Override
+                public void callback( Void response ) {
+                    final String location = GWT.getModuleBaseURL().replaceFirst("/" + GWT.getModuleName() + "/",  "/logout.jsp");
+                    redirect( location );
+                }
+            } ).logout();
+        }
     }
 
     public static native void redirect( String url )/*-{
