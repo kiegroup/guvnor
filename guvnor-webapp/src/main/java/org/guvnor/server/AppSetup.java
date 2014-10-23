@@ -28,7 +28,6 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
@@ -74,35 +73,58 @@ public class AppSetup {
 
     @PostConstruct
     public void assertPlayground() {
-        // TODO in case repo is not defined in system repository so we add default
-        try {
-            Repository repository1 = repositoryService.getRepository( DROOLS_WB_PLAYGROUND_ALIAS );
-            if ( repository1 == null ) {
-                repository1 = repositoryService.createRepository( DROOLS_WB_PLAYGROUND_SCHEME, DROOLS_WB_PLAYGROUND_ALIAS,
-                                                                  new HashMap<String, Object>() {{
-                                                                      put( "origin", DROOLS_WB_PLAYGROUND_ORIGIN );
-                                                                      put( "username", DROOLS_WB_PLAYGROUND_UID );
-                                                                      put( "crypt:password", DROOLS_WB_PLAYGROUND_PWD );
-                                                                  }} );
+        if ( "true".equalsIgnoreCase( System.getProperty( "org.kie.demo" ) ) ) {
+            try {
+                Repository repository = createRepository( DROOLS_WB_PLAYGROUND_ALIAS,
+                                                          DROOLS_WB_PLAYGROUND_SCHEME,
+                                                          DROOLS_WB_PLAYGROUND_ORIGIN,
+                                                          DROOLS_WB_PLAYGROUND_UID,
+                                                          DROOLS_WB_PLAYGROUND_PWD );
+                createOU( repository,
+                          DROOLS_WB_ORGANIZATIONAL_UNIT1,
+                          DROOLS_WB_ORGANIZATIONAL_UNIT1_OWNER );
+            } catch ( Exception e ) {
+                logger.error( "Failed to setup Repository '" + DROOLS_WB_PLAYGROUND_ALIAS + "'",
+                              e );
             }
-
-            // TODO in case Organizational Units are not defined
-            OrganizationalUnit organizationalUnit1 = organizationalUnitService.getOrganizationalUnit( DROOLS_WB_ORGANIZATIONAL_UNIT1 );
-            if ( organizationalUnit1 == null ) {
-                final List<Repository> repositories = new ArrayList<Repository>();
-                repositories.add( repository1 );
-                organizationalUnitService.createOrganizationalUnit( DROOLS_WB_ORGANIZATIONAL_UNIT1,
-                                                                    DROOLS_WB_ORGANIZATIONAL_UNIT1_OWNER,
-                                                                    repositories );
-            }
-        } catch ( Exception e ) {
-            logger.error( "Failed to setup Repository '" + DROOLS_WB_PLAYGROUND_ALIAS + "'",
-                          e );
         }
 
         //Define mandatory properties
         defineGlobalProperties();
+    }
 
+    private Repository createRepository( final String alias,
+                                         final String scheme,
+                                         final String origin,
+                                         final String user,
+                                         final String password ) {
+        Repository repository = repositoryService.getRepository( alias );
+        if ( repository == null ) {
+            repository = repositoryService.createRepository( scheme,
+                                                             alias,
+                                                             new HashMap<String, Object>() {{
+                                                                 if ( origin != null ) {
+                                                                     put( "origin", origin );
+                                                                 }
+                                                                 put( "username", user );
+                                                                 put( "crypt:password", password );
+                                                             }} );
+        }
+        return repository;
+    }
+
+    private OrganizationalUnit createOU( final Repository repository,
+                                         final String ouName,
+                                         final String ouOwner ) {
+        OrganizationalUnit ou = organizationalUnitService.getOrganizationalUnit( ouName );
+        if ( ou == null ) {
+            List<Repository> repositories = new ArrayList<Repository>();
+            repositories.add( repository );
+            organizationalUnitService.createOrganizationalUnit( ouName,
+                                                                ouOwner,
+                                                                repositories );
+        }
+        return ou;
     }
 
     private void defineGlobalProperties() {
@@ -118,8 +140,6 @@ public class AppSetup {
             configurationService.addConfiguration( getGlobalConfiguration() );
         }
     }
-
-
 
     private ConfigGroup getGlobalConfiguration() {
         //Global Configurations used by many of Drools Workbench editors
