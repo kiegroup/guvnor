@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.guvnor.common.services.backend.archive;
 
 import org.uberfire.io.IOService;
@@ -21,10 +36,16 @@ public class Archiver {
     private Path originalPath;
     private ZipOutputStream outputStream;
 
-    @Inject
-    @Named("ioStrategy")
+
     private IOService ioService;
 
+    public Archiver() {
+    }
+
+    @Inject
+    public Archiver(@Named("ioStrategy") IOService ioService) {
+        this.ioService = ioService;
+    }
 
     public void archive(ByteArrayOutputStream outputStream,
                         String uri) throws IOException, URISyntaxException {
@@ -74,7 +95,24 @@ public class Archiver {
     }
 
     private ZipEntry getZipEntry(Path subPath) {
-        String fileName = subPath.toUri().getPath().substring(originalPath.toUri().getPath().length() + 1);
-        return new ZipEntry(fileName);
+        return new ZipEntry(FileNameResolver.resolve(subPath.toUri().getPath(), originalPath.toUri().getPath()));
+    }
+
+    static class FileNameResolver {
+        static protected String resolve(String subPath, String originalPath) {
+            if ("/".equals(originalPath)) {
+                return subPath.substring(originalPath.length());
+            } else {
+                return getBaseFolder(originalPath) + subPath.substring(originalPath.length() + 1);
+            }
+        }
+
+        private static String getBaseFolder(String originalPath) {
+            if (originalPath.contains("/")) {
+                return originalPath.substring(originalPath.lastIndexOf("/") + 1) + "/";
+            } else {
+                return originalPath + "/";
+            }
+        }
     }
 }
