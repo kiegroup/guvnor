@@ -1,22 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright 2014 JBoss Inc
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~       http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
   <distributable/>
@@ -26,32 +12,34 @@
   </listener>
 
   <filter>
-    <filter-name>request-capture</filter-name>
-    <filter-class>org.kie.uberfire.security.server.SecurityIntegrationFilter</filter-class>
+    <filter-name>UI Security Filter</filter-name>
+    <filter-class>org.picketlink.authentication.web.AuthenticationFilter</filter-class>
+
+    <init-param>
+      <param-name>authType</param-name>
+      <param-value>org.jboss.errai.security.server.FormAuthenticationScheme</param-value>
+    </init-param>
+    <init-param>
+      <param-name>form-login-page</param-name>
+      <param-value>/login.jsp</param-value>
+    </init-param>
+    <init-param>
+      <param-name>host-page</param-name>
+      <param-value>/guvnor-wb.html</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceReAuthentication</param-name>
+      <param-value>true</param-value>
+    </init-param>
   </filter>
 
   <filter-mapping>
-    <filter-name>request-capture</filter-name>
-    <url-pattern>*</url-pattern>
+    <filter-name>UI Security Filter</filter-name>
+    <url-pattern>/guvnor-wb.html</url-pattern>
+    <url-pattern>/uf_security_check</url-pattern>
+    <url-pattern>*.erraiBus</url-pattern>
+    <url-pattern>/org.guvnor.GuvnorWorkbench/*</url-pattern>
   </filter-mapping>
-
-  <servlet>
-    <servlet-name>UberfireFileUploadServlet</servlet-name>
-    <servlet-class>org.uberfire.server.FileUploadServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>UberfireFileUploadServlet</servlet-name>
-    <url-pattern>/org.kie.workbench.drools.KIEDroolsWebapp/defaulteditor/upload/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>UberfireFileDownloadServlet</servlet-name>
-    <servlet-class>org.uberfire.server.FileDownloadServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>UberfireFileDownloadServlet</servlet-name>
-    <url-pattern>/org.kie.workbench.drools.KIEDroolsWebapp/defaulteditor/download/*</url-pattern>
-  </servlet-mapping>
 
   <servlet>
     <servlet-name>PluginMediaServlet</servlet-name>
@@ -83,12 +71,39 @@ profile in pom.xml to use that. -->
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>ArchiveServlet</servlet-name>
+    <servlet-class>org.guvnor.common.services.backend.archive.ArchiveServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ArchiveServlet</servlet-name>
+    <url-pattern>/org.guvnor.GuvnorWorkbench/archive</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>M2Servlet</servlet-name>
     <servlet-class>org.guvnor.m2repo.backend.server.M2Servlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>M2Servlet</servlet-name>
     <url-pattern>/maven2/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UberfireFileUploadServlet</servlet-name>
+    <servlet-class>org.uberfire.server.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UberfireFileUploadServlet</servlet-name>
+    <url-pattern>/org.guvnor.GuvnorWorkbench/defaulteditor/upload/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UberfireFileDownloadServlet</servlet-name>
+    <servlet-class>org.uberfire.server.FileDownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UberfireFileDownloadServlet</servlet-name>
+    <url-pattern>/org.guvnor.GuvnorWorkbench/defaulteditor/download/*</url-pattern>
   </servlet-mapping>
 
   <resource-env-ref>
@@ -103,60 +118,8 @@ profile in pom.xml to use that. -->
     <resource-env-ref-type>org.jboss.errai.bus.server.service.ErraiService</resource-env-ref-type>
   </resource-env-ref>
 
-  <context-param>
-    <param-name>org.jboss.seam.transaction.disableListener</param-name>
-    <param-value>true</param-value>
-  </context-param>
-
   <welcome-file-list>
     <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>
-
-  <!-- Basic Auth Filter for REST and Maven2 repo -->
-  <filter>
-    <filter-name>HTTP Basic Auth Filter</filter-name>
-    <filter-class>org.kie.uberfire.security.server.BasicAuthSecurityFilter</filter-class>
-    <init-param>
-      <param-name>realmName</param-name>
-      <param-value>Guvnor Workbench Realm</param-value>
-    </init-param>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>HTTP Basic Auth Filter</filter-name>
-    <url-pattern>/rest/*</url-pattern>
-    <url-pattern>/maven2/*</url-pattern>
-  </filter-mapping>
-
-  <!-- Container based security -->
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>console</web-resource-name>
-      <url-pattern>/guvnor-wb.html</url-pattern>
-      <url-pattern>*.erraiBus</url-pattern>
-      <url-pattern>/org.guvnor.GuvnorWorkbench/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>admin</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <login-config>
-    <auth-method>FORM</auth-method>
-    <form-login-config>
-      <form-login-page>/login.jsp</form-login-page>
-      <form-error-page>/login.jsp?message=Login failed: Invalid UserName or Password</form-error-page>
-    </form-login-config>
-  </login-config>
-
-  <error-page>
-    <error-code>403</error-code>
-    <location>/not_authorized.jsp</location>
-  </error-page>
-
-  <security-role>
-    <description>Administrator</description>
-    <role-name>admin</role-name>
-  </security-role>
 
 </web-app>

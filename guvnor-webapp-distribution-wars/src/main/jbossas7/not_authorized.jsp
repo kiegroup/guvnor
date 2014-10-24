@@ -1,24 +1,24 @@
-<%--
-  ~ Copyright 2012 JBoss Inc
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~       http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8" %>
+<%@ page import="java.util.Locale" %>
 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://jakarta.apache.org/taglibs/i18n-1.0" prefix="i18n" %>
+<%
+  request.getSession().invalidate();
+  Locale locale = null;
+  try {
+    locale = new Locale( request.getParameter( "locale" ) );
+  } catch ( Exception e ) {
+    locale = request.getLocale();
+  }
+%>
+<i18n:bundle id="bundle" baseName="org.guvnor.client.resources.i18n.LoginConstants"
+             locale='<%= locale%>'/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page import="org.jboss.errai.security.server.FormAuthenticationScheme"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>Guvnor Workbench</title>
+  <title><i18n:message key="LoginTitle">Guvnor Workbench</i18n:message></title>
 
   <style type="text/css">
     * {
@@ -27,7 +27,7 @@
 
     body {
       margin: 0;
-      padding: 0;
+      pading: 0;
       color: #fff;
       background: url('images/bg-login.png') repeat #1b1b1b;
       font-size: 14px;
@@ -104,7 +104,7 @@
     }
 
     input.button {
-      float: right;
+      float: center;
       padding: 6px 10px;
       color: #fff;
       font-size: 14px;
@@ -129,7 +129,7 @@
 
     div.error {
       padding: 8px;
-      background: rgb(52, 4, 0);
+      background: rgba(52, 4, 0, 0.4);
       -moz-border-radius: 8px;
       -webkit-border-radius: 8px;
       border-radius: 8px;
@@ -143,32 +143,22 @@
 
 <div id="login-wrapper" class="png_bg">
   <div id="login-top">
-    <img src="images/uf_logo.png" alt="UberFire Logo" title="Powered By Uberfire"/>
+    <img src="images/uf_logo.png" alt="Guvnor Workbench Logo" title="Powered By Drools/jBPM"/>
   </div>
 
   <div id="login-content">
-    <form action="uf_security_check" method="post">
-      <p>
-        <label>Username</label>
-        <input value="" name="uf_username" class="text-input" type="text"/>
-        <br style="clear: both"/>
-      </p>
 
-      <p>
-        <label>Password</label>
-        <input name="uf_password" class="text-input" type="password"/>
-        <br style="clear: both"/>
-      </p>
+    <h3><i18n:message key="loginFailed">Login failed: Not Authorized</i18n:message></h3>
 
+    <form action="kie-drools-wb.html" method="GET">
       <p>
         <% if (request.getParameter("gwt.codesvr") != null) { %>
         <input type="hidden" name="gwt.codesvr" value="<%= org.owasp.encoder.Encode.forHtmlAttribute(request.getParameter("gwt.codesvr")) %>"/>
         <% } %>
-        <% if (request.getParameter( FormAuthenticationScheme.LOGIN_ERROR_QUERY_PARAM ) != null) { %>
-        <span class="error">Login failed. Please try again.</span>
-        <% } %>
-        <input class="button" type="submit" value="Sign In"/>
+
+        <input class="button" type="submit" value='<i18n:message key="loginAsAnotherUser">Login as another user</i18n:message>'/>
       </p>
+
     </form>
   </div>
 </div>
