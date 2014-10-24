@@ -79,7 +79,9 @@
           <exclude>WEB-INF/lib/kie-uberfire-apps-client-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-uberfire-widgets-properties-editor-client-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-uberfire-wires-core-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-uberfire-wires-core-scratchpad-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-uberfire-wires-core-trees-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-uberfire-wires-bayesian-network-client-*.jar</exclude>
 
           <!-- Guvnor client related -->
           <exclude>WEB-INF/lib/guvnor-project-client-*.jar</exclude>
@@ -97,6 +99,7 @@
           <exclude>WEB-INF/lib/guava-gwt-*.jar</exclude>
           <exclude>WEB-INF/lib/gwt-dnd-*.jar</exclude>
           <exclude>WEB-INF/lib/gchart-*.jar</exclude>
+          <exclude>WEB-INF/lib/lienzo-core-*.jar</exclude>
 
           <!-- General -->
           <exclude>WEB-INF/lib/*-sources.jar</exclude>

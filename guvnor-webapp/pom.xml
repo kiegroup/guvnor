@@ -304,6 +304,50 @@
       <artifactId>kie-uberfire-apps-backend</artifactId>
     </dependency>
 
+    <!--Wires-->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-core-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-core-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.rht-emitrom</groupId>
+      <artifactId>lienzo-core</artifactId>
+    </dependency>
+
+    <!--Wires Scratch Pad dependencies-->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-core-scratchpad</artifactId>
+    </dependency>
+
+    <!--Wires Trees dependencies-->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-core-trees</artifactId>
+    </dependency>
+
+    <!--Wires Bayesian Network dependencies-->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-bayesian-parser-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-bayesian-parser-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-bayesian-network-client</artifactId>
+    </dependency>
+
     <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -451,6 +495,14 @@
             <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-runtime-plugins-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-perspective-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-apps-client</compileSourcesArtifact>
+
+            <!-- Wires -->
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-scratchpad</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-trees</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-bayesian-parser-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-bayesian-network-client</compileSourcesArtifact>
 
           </compileSourcesArtifacts>
           <runTarget>guvnor-wb.html</runTarget>

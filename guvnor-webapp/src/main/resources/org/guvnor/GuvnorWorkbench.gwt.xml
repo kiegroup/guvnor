@@ -44,6 +44,14 @@
   <!-- Uberfire Extensions - Apps -->
   <inherits name="org.kie.uberfire.apps.UberfireAppsClient"/>
 
+  <!-- Wires dependencies -->
+  <inherits name="com.emitrom.lienzo.Lienzo"/>
+  <inherits name="org.kie.uberfire.wires.core.WiresCoreClient"/>
+  <inherits name="org.kie.uberfire.wires.core.scratchpad.WiresCoreScratchPad"/>
+  <inherits name="org.kie.uberfire.wires.core.trees.WiresCoreTrees"/>
+  <inherits name="org.kie.uberfire.wires.bayesian.network.parser.BayesianNetworkAPI"/>
+  <inherits name="org.kie.uberfire.wires.bayesian.network.BayesianNetworkClient"/>
+
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/guvnor-workbench.css'/>
 

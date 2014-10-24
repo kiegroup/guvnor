@@ -147,7 +147,6 @@ public class GuvnorWorkbenchEntryPoint {
                 } )
                 .endMenu()
                 .newTopLevelMenu( AppConstants.INSTANCE.MenuOrganizationalUnits() )
-
                 .menus()
                 .menu( AppConstants.INSTANCE.MenuManageOrganizationalUnits() )
                 .respondsWith( new Command() {
@@ -160,7 +159,6 @@ public class GuvnorWorkbenchEntryPoint {
                 .endMenus()
                 .endMenu()
                 .newTopLevelMenu( "Repositories" )
-
                 .menus()
                 .menu( "Repositories List" )
                 .respondsWith( new Command() {
@@ -188,6 +186,34 @@ public class GuvnorWorkbenchEntryPoint {
                         }
                     }
                 } )
+                .endMenu()
+                .newTopLevelMenu( "Wires" )
+                .menus()
+                .menu("Scratch Pad")
+                .respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                            placeManager.goTo(new DefaultPlaceRequest("WiresScratchPadPerspective"));
+                    }
+                } )
+                .endMenu()
+                .menu("Trees")
+                .respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo(new DefaultPlaceRequest("WiresTreesPerspective"));
+                    }
+                } )
+                .endMenu()
+                .menu("Bayesian networks")
+                .respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo(new DefaultPlaceRequest("WiresBayesianPerspective"));
+                    }
+                } )
+                .endMenu()
+                .endMenus()
                 .endMenu()
                 .newTopLevelMenu( AppConstants.INSTANCE.Logout() )
                 .respondsWith( new LogoutCommand() )
