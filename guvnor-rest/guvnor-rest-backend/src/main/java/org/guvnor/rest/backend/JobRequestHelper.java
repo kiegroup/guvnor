@@ -16,10 +16,12 @@
 package org.guvnor.rest.backend;
 
 import java.lang.annotation.Annotation;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -218,6 +220,39 @@ public class JobRequestHelper {
         };
     }
 
+    public JobResult deleteProject( String jobId, String repositoryName, String projectName ) {
+        JobResult result = new JobResult();
+        result.setJobId( jobId );
+
+        org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
+
+        if ( repositoryPath == null ) {
+            result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
+            result.setResult( "Repository [" + repositoryName + "] does not exist" );
+            return result;
+        } else {
+            String repoPathStr = repositoryPath.toUri().toString();
+            StringBuilder projectPomUriStrBdr = new StringBuilder(repoPathStr);
+            if( ! repoPathStr.endsWith("/") ) { 
+                projectPomUriStrBdr.append("/");
+            }
+            projectPomUriStrBdr.append(projectName).append("/pom.xml");
+            URI projectPomUri = URI.create(projectPomUriStrBdr.toString());
+            Path projectPomPath = Paths.convert(org.uberfire.java.nio.file.Paths.get(projectPomUri));
+            try {
+                projectService.delete( projectPomPath, "Deleting project via REST request" );
+            } catch ( Exception e ) {
+                result.setStatus( JobStatus.FAIL );
+                result.setResult( "Project [" + projectName + "] could not be deleted: " + e.getMessage() );
+                logger.error("Unable to delete project '" + projectName + "': " + e.getMessage(), e );
+                return result;
+            }
+
+            result.setStatus( JobStatus.SUCCESS );
+            return result;
+        }
+    }        
+    
     public JobResult compileProject( final String jobId,
                                      final String repositoryName,
                                      final String projectName ) {

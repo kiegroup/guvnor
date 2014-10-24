@@ -50,6 +50,7 @@ import org.guvnor.rest.client.CompileProjectRequest;
 import org.guvnor.rest.client.CreateOrCloneRepositoryRequest;
 import org.guvnor.rest.client.CreateOrganizationalUnitRequest;
 import org.guvnor.rest.client.CreateProjectRequest;
+import org.guvnor.rest.client.DeleteProjectRequest;
 import org.guvnor.rest.client.DeployProjectRequest;
 import org.guvnor.rest.client.InstallProjectRequest;
 import org.guvnor.rest.client.JobRequest;
@@ -290,26 +291,18 @@ public class ProjectResource {
         logger.debug( "-----deleteProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
         checkRepositoryExistence( repositoryName );
 
-        throw new WebApplicationException( Response.status( Response.Status.NOT_ACCEPTABLE )
-                                                   .entity( "UNIMPLEMENTED" ).build() );
-        
-/*        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
-        CreateProjectRequest jobRequest = new CreateProjectRequest();
-        jobRequest.setStatus(JobRequest.Status.ACCEPTED);
-        jobRequest.setJobId(id);
-        jobRequest.setRepositoryName(repositoryName);
-        jobRequest.setProjectName(projectName);
-        
-        JobResult jobResult = new JobResult();
-        jobResult.setJobId(id);
-        jobResult.setStatus(JobRequest.Status.ACCEPTED);
-        jobs.put(id, jobResult);
-        
-        //TODO: Delete project. ProjectService does not have a removeProject method yet.
-        //createProjectRequestEvent.fire(jobRequest);
-        
-        return createAcceptedStatusResponse(jobRequest);
-        */
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        DeleteProjectRequest jobRequest = new DeleteProjectRequest();
+        jobRequest.setStatus( JobStatus.ACCEPTED );
+        jobRequest.setJobId( id );
+        jobRequest.setRepositoryName( repositoryName );
+        jobRequest.setProjectName( projectName );
+
+        addAcceptedJobResult( id );
+
+        jobRequestObserver.deleteProjectRequest( jobRequest );
+
+        return createAcceptedStatusResponse( jobRequest );
     }
 
     @POST
