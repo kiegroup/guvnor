@@ -26,25 +26,16 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import org.guvnor.client.resources.i18n.AppConstants;
 import org.guvnor.m2repo.client.event.M2RepoRefreshEvent;
-import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
 import org.guvnor.m2repo.client.upload.UploadForm;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.util.Layouts;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.annotations.Roles;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 
 /**
  * A Perspective to show M2_REPO related screen
@@ -55,18 +46,10 @@ import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 public class M2RepoPerspective extends FlowPanel {
 
     @Inject
-    private Event<M2RepoSearchEvent> searchEvents;
-
-    @Inject
     private Event<M2RepoRefreshEvent> refreshEvents;
 
     @Inject
-    private PlaceManager placeManager;
-
-    @Inject
     private SyncBeanManager iocManager;
-
-    private PerspectiveDefinition perspective;
 
     @Inject
     @WorkbenchPanel(parts = "M2RepoEditor")
@@ -75,14 +58,7 @@ public class M2RepoPerspective extends FlowPanel {
     @PostConstruct
     private void init() {
         Layouts.setToFillParent( m2RepoEditor );
-        add(m2RepoEditor);
-    }
-
-    private void buildPerspective() {
-        this.perspective = new PerspectiveDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
-        this.perspective.setName( "M2 Repository Explorer" );
-
-        this.perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "M2RepoEditor" ) ) );
+        add( m2RepoEditor );
     }
 
     @WorkbenchMenu
@@ -116,8 +92,4 @@ public class M2RepoPerspective extends FlowPanel {
                 .build();
     }
 
-    @OnStartup
-    public void onStartup() {
-
-    }
 }
