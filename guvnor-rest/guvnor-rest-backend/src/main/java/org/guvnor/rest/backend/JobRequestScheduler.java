@@ -24,12 +24,12 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.guvnor.asset.management.model.ExecuteOperationEvent;
-
 import org.guvnor.rest.backend.cmd.AddRepositoryToOrgUnitCmd;
 import org.guvnor.rest.backend.cmd.CompileProjectCmd;
 import org.guvnor.rest.backend.cmd.CreateOrCloneRepositoryCmd;
 import org.guvnor.rest.backend.cmd.CreateOrgUnitCmd;
 import org.guvnor.rest.backend.cmd.CreateProjectCmd;
+import org.guvnor.rest.backend.cmd.DeleteProjectCmd;
 import org.guvnor.rest.backend.cmd.DeployProjectCmd;
 import org.guvnor.rest.backend.cmd.InstallProjectCmd;
 import org.guvnor.rest.backend.cmd.RemoveOrgUnitCmd;
@@ -41,6 +41,7 @@ import org.guvnor.rest.client.CompileProjectRequest;
 import org.guvnor.rest.client.CreateOrCloneRepositoryRequest;
 import org.guvnor.rest.client.CreateOrganizationalUnitRequest;
 import org.guvnor.rest.client.CreateProjectRequest;
+import org.guvnor.rest.client.DeleteProjectRequest;
 import org.guvnor.rest.client.DeployProjectRequest;
 import org.guvnor.rest.client.InstallProjectRequest;
 import org.guvnor.rest.client.JobRequest;
@@ -87,6 +88,16 @@ public class JobRequestScheduler {
         params.put("Repository", jobRequest.getRepositoryName());
         params.put("Project", jobRequest.getProjectName());
         params.put("Operation", "createProject");
+
+        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+    }
+
+    public void deleteProjectRequest( DeleteProjectRequest jobRequest ) {
+        Map<String, Object> params = getContext(jobRequest).getData();
+        params.put("CommandClass", DeleteProjectCmd.class.getName());
+        params.put("Repository", jobRequest.getRepositoryName());
+        params.put("Project", jobRequest.getProjectName());
+        params.put("Operation", "deleteProject");
 
         excuteOperationEvent.fire(new ExecuteOperationEvent(params));
     }
