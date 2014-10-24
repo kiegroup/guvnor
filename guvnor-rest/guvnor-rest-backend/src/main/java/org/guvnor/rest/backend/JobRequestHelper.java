@@ -58,6 +58,8 @@ public class JobRequestHelper {
     // TODO: add more logging in this class? (not at the beginning of methods, but during.. )
     private static final Logger logger = LoggerFactory.getLogger( JobRequestHelper.class );
 
+    public static final String GUVNOR_BASE_URL = "/";
+    
     @Inject
     private RepositoryService repositoryService;
 
@@ -164,12 +166,21 @@ public class JobRequestHelper {
 
     public JobResult createProject( final String jobId,
                                     final String repositoryName,
-                                    final String projectName ) {
+                                    final String projectName,
+                                    String projectGroupId,
+                                    String projectVersion ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
+        if( projectGroupId == null || projectGroupId.trim().isEmpty() ) { 
+            projectGroupId = projectName;
+        }
+        if( projectVersion == null || projectVersion.trim().isEmpty() ) { 
+            projectVersion = "1.0";
+        }
+        
         if ( repositoryPath == null ) {
             result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
@@ -177,14 +188,14 @@ public class JobRequestHelper {
         } else {
             POM pom = new POM();
             pom.getGav().setArtifactId( projectName );
-            pom.getGav().setGroupId( projectName );
-            pom.getGav().setVersion( "1.0" );
+            pom.getGav().setGroupId( projectGroupId );
+            pom.getGav().setVersion( projectVersion );
 
             try {
                 projectService.newProject( makeRepository( Paths.convert( repositoryPath ) ),
                                            projectName,
                                            pom,
-                                           "/" );
+                                           GUVNOR_BASE_URL );
             } catch ( org.uberfire.java.nio.file.FileAlreadyExistsException e ) {
                 result.setStatus( JobStatus.DUPLICATE_RESOURCE );
                 result.setResult( "Project [" + projectName + "] already exists" );

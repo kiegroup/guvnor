@@ -5,6 +5,7 @@ import org.guvnor.rest.client.CreateProjectRequest;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
+import org.guvnor.rest.client.ProjectRequest;
 import org.kie.internal.executor.api.CommandContext;
 
 public class CreateProjectCmd extends AbstractJobCommand {
@@ -16,11 +17,14 @@ public class CreateProjectCmd extends AbstractJobCommand {
 
         JobResult result = null;
         try { 
-            result= helper.createProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
+            result = helper.createProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() ,
+                    jobRequest.getProjectGroupId(), jobRequest.getProjectVersion() );
         } finally { 
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug( "-----createProject--- , repositoryName: {}, project name: {} [{}]", 
-                    jobRequest.getRepositoryName(), jobRequest.getProjectName(), status);
+            String groupId = jobRequest.getProjectGroupId() == null ? jobRequest.getProjectName() : jobRequest.getProjectGroupId();
+            String version = jobRequest.getProjectVersion() == null ? "1.0" : jobRequest.getProjectVersion();
+            logger.debug( "-----createProject--- , repositoryName: {}, project : {}:{}:{} [{}]", 
+                    jobRequest.getRepositoryName(), jobRequest.getProjectName(), groupId, version, status);
         }
         return result;
     }

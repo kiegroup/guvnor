@@ -16,6 +16,7 @@
 
 package org.guvnor.common.services.project.service;
 
+import java.util.List;
 import java.util.Set;
 
 import org.guvnor.common.services.project.model.POM;
@@ -45,7 +46,13 @@ public interface ProjectService<T extends Project> {
     
     Project resolveToParentProject( final Path resource );
 
-    Set<Project> getProjects(final Repository repository, String branch);
+    /**
+     * Gets a list of the  projects in a particular repository
+     * @param repository
+     * @param baseURL the base URL where the Guvnor is hosted in web container
+     * @return
+     */
+    Set<Project> getProjects( final Repository repository, final String baseURL );
 
     /**
      * Given a Resource path resolve it to the containing Package Path. A Package path is the folder containing the resource.
@@ -89,6 +96,8 @@ public interface ProjectService<T extends Project> {
                   final POM pom,
                   final String baseURL );
 
+
+                        
     /**
      * Creates a new package as a child of the provide package.
      * @param pkg
