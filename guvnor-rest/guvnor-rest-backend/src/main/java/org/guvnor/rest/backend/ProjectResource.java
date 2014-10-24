@@ -15,9 +15,12 @@
 */
 package org.guvnor.rest.backend;
 
+import static org.guvnor.rest.backend.JobRequestHelper.GUVNOR_BASE_URL;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -38,6 +41,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Variant;
 
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.rest.client.AddRepositoryToOrganizationalUnitRequest;
 import org.guvnor.rest.client.BuildConfig;
 import org.guvnor.rest.client.CompileProjectRequest;
@@ -45,12 +51,13 @@ import org.guvnor.rest.client.CreateOrCloneRepositoryRequest;
 import org.guvnor.rest.client.CreateOrganizationalUnitRequest;
 import org.guvnor.rest.client.CreateProjectRequest;
 import org.guvnor.rest.client.DeployProjectRequest;
-import org.guvnor.rest.client.Entity;
 import org.guvnor.rest.client.InstallProjectRequest;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
 import org.guvnor.rest.client.OrganizationalUnit;
+import org.guvnor.rest.client.ProjectRequest;
+import org.guvnor.rest.client.ProjectResponse;
 import org.guvnor.rest.client.RemoveOrganizationalUnitRequest;
 import org.guvnor.rest.client.RemoveRepositoryFromOrganizationalUnitRequest;
 import org.guvnor.rest.client.RemoveRepositoryRequest;
@@ -88,6 +95,9 @@ public class ProjectResource {
     private RepositoryService repositoryService;
 
     @Inject
+    private ProjectService<Project> projectService;
+
+    @Inject
     private JobRequestScheduler jobRequestObserver;
 
     @Inject
@@ -111,7 +121,7 @@ public class ProjectResource {
         JobResult job = jobManager.getJob( jobId );
         if ( job == null ) {
             //the job has gone probably because its done and has been removed.
-            logger.debug( "-----getJobStatus--- , can not find jobId:" + jobId + ", the job has gone probably because its done and has been removed." );
+            logger.debug( "-----getJobStatus--- , can not find jobId: " + jobId + ", the job has gone probably because its done and has been removed." );
             job = new JobResult();
             job.setStatus( JobStatus.GONE );
             return job;
@@ -130,7 +140,7 @@ public class ProjectResource {
 
         if ( job == null ) {
             //the job has gone probably because its done and has been removed.
-            logger.debug( "-----removeJob--- , can not find jobId:" + jobId + ", the job has gone probably because its done and has been removed." );
+            logger.debug( "-----removeJob--- , can not find jobId: " + jobId + ", the job has gone probably because its done and has been removed." );
             job = new JobResult();
             job.setStatus( JobStatus.GONE );
             return job;
@@ -224,7 +234,7 @@ public class ProjectResource {
     @Path("/repositories/{repositoryName}/projects")
     public Response createProject(
             @PathParam("repositoryName") String repositoryName,
-            Entity project ) {
+            ProjectRequest project ) {
         logger.debug( "-----createProject--- , repositoryName: {} , project name: {}", repositoryName, project.getName() );
         checkRepositoryExistence( repositoryName );
 
@@ -234,6 +244,8 @@ public class ProjectResource {
         jobRequest.setJobId( id );
         jobRequest.setRepositoryName( repositoryName );
         jobRequest.setProjectName( project.getName() );
+        jobRequest.setProjectGroupId( project.getGroupId() );
+        jobRequest.setProjectVersion( project.getVersion() );
         jobRequest.setDescription( project.getDescription() );
 
         addAcceptedJobResult( id );
@@ -243,6 +255,32 @@ public class ProjectResource {
         return createAcceptedStatusResponse( jobRequest );
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/repositories/{repositoryName}/projects")
+    public List<ProjectResponse> getProjects( @PathParam("repositoryName") String repositoryName) {
+        logger.info( "-----getProjects--- , repositoryName: {}", repositoryName );
+
+        Repository repository = repositoryService.getRepository(repositoryName);
+        if( repository == null ) { 
+            throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( repositoryName ).build() );
+        }
+        
+        Set<Project> projects = projectService.getProjects(repository, repository.getCurrentBranch());
+        
+        List<ProjectResponse> projectRequests = new ArrayList<ProjectResponse>(projects.size());
+        for( Project project : projects ) { 
+           ProjectResponse projectReq = new ProjectResponse();
+           GAV projectGAV = project.getPom().getGav();
+           projectReq.setGroupId(projectGAV.getGroupId());
+           projectReq.setName(projectGAV.getArtifactId());
+           projectReq.setVersion(projectGAV.getVersion());
+           projectRequests.add(projectReq);
+        }
+        
+        return projectRequests;
+    }
+    
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}")

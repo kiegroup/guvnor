@@ -16,13 +16,27 @@
 
 package org.guvnor.common.services.project.backend.server;
 
+import static java.util.Collections.emptySet;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.java.nio.file.Files.*;
+
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
+
 import javax.enterprise.context.ContextNotActiveException;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -37,6 +51,7 @@ import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -63,6 +78,23 @@ import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.java.nio.file.FileVisitOption;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.StandardDeleteOption;
+import org.uberfire.rpc.SessionInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.base.FileSystemId;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileVisitResult;
+import org.uberfire.java.nio.file.SimpleFileVisitor;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.java.nio.file.attribute.FileAttribute;
+import org.uberfire.java.nio.file.attribute.FileAttributeView;
 
 public abstract class AbstractProjectService<T extends Project>
         implements ProjectService<T>,
@@ -772,6 +804,7 @@ public abstract class AbstractProjectService<T extends Project>
         return null;
     }
 
+    @Override
     public Set<Project> getProjects( final Repository repository,
                                      String branch ) {
         final Set<Project> authorizedProjects = new HashSet<Project>();
@@ -780,17 +813,25 @@ public abstract class AbstractProjectService<T extends Project>
         }
         final Path repositoryRoot = repository.getBranchRoot( branch );
         final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( Paths.convert( repositoryRoot ) );
-        for ( org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
-            if ( Files.isDirectory( nioRepositoryPath ) ) {
-                final org.uberfire.backend.vfs.Path projectPath = Paths.convert( nioRepositoryPath );
-                final Project project = resolveProject( projectPath );
-                if ( project != null ) {
-                    if ( authorizationManager.authorize( project, identity ) ) {
-                        authorizedProjects.add( project );
+        try { 
+            for ( org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
+                if ( Files.isDirectory( nioRepositoryPath ) ) {
+                    final org.uberfire.backend.vfs.Path projectPath = Paths.convert( nioRepositoryPath );
+                    final Project project = resolveProject( projectPath );
+
+                    if ( project != null ) {
+                        if ( authorizationManager.authorize( project, identity ) ) {
+                            POM projectPom = pomService.load(project.getPomXMLPath());
+                            project.setPom(projectPom);
+                            authorizedProjects.add( project );
+                        }
                     }
                 }
             }
+        } finally { 
+            nioRepositoryPaths.close();
         }
         return authorizedProjects;
     }
+
 }
