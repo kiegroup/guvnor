@@ -16,6 +16,7 @@
 
 package org.guvnor.common.services.project.service;
 
+import java.util.List;
 import java.util.Set;
 
 import org.guvnor.common.services.project.model.POM;
@@ -94,6 +95,14 @@ public interface ProjectService extends SupportsRead<ProjectImports>,
                         final POM pom,
                         final String baseURL );
 
+    /**
+     * Gets a list of the  projects in a particular repository
+     * @param repository
+     * @param baseURL the base URL where the Guvnor is hosted in web container
+     * @return
+     */
+    List<Project> getProjects( final Repository repository, final String baseURL );
+                        
     /**
      * Creates a new package as a child of the provide package.
      * @param pkg

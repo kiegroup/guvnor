@@ -39,6 +39,9 @@ public class Project implements RuntimeResource {
 
     private Collection<String> roles = new ArrayList<String>();
 
+    // only loaded by ProjectService.getProjects()
+    private POM pom;
+    
     public Project() {
         //For Errai-marshalling
     }
@@ -93,6 +96,14 @@ public class Project implements RuntimeResource {
     @Override
     public Collection<String> getTraits() {
         return Collections.emptySet();
+    }
+
+    public POM getPom() {
+        return pom;
+    }
+
+    public void setPom( POM pom ) {
+        this.pom = pom;
     }
 
     @Override

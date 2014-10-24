@@ -16,12 +16,21 @@
 
 package org.guvnor.common.services.project.backend.server;
 
+import static java.util.Collections.emptySet;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.java.nio.file.Files.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -38,6 +47,7 @@ import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -65,10 +75,24 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.java.nio.file.FileVisitOption;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.base.FileSystemId;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileVisitResult;
+import org.uberfire.java.nio.file.SimpleFileVisitor;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.java.nio.file.attribute.FileAttribute;
+import org.uberfire.java.nio.file.attribute.FileAttributeView;
 
 @Service
 @ApplicationScoped
@@ -636,6 +660,48 @@ public class ProjectServiceImpl
         return imports;
     }
 
+    @Override
+    public List<Project> getProjects( final Repository repository, final String baseUrl ) {
+       if( repository == null ) { 
+           throw new IllegalArgumentException("Null repository argument received");
+       }
+       if( baseUrl == null || baseUrl.trim().isEmpty() ) { 
+           throw new IllegalArgumentException("Empty baseURL argument received: '" + baseUrl + "'");
+       }
+       final Path fsRoot = repository.getRoot();
+       final Path repositoryRootPath = Paths.convert( Paths.convert( fsRoot ) );
+   
+       // not sure that walkFileTree won't turn concurrent in the future??
+       final Queue<Project> projectsQueue = new ConcurrentLinkedQueue<Project>();
+       
+       final Set<FileVisitOption> options = emptySet();
+       walkFileTree( 
+               Paths.convert( checkNotNull( "root", repositoryRootPath ) ),
+               options, // no options
+               2, // max depth
+               new SimpleFileVisitor<org.uberfire.java.nio.file.Path>() {
+           @Override
+           public FileVisitResult visitFile( final org.uberfire.java.nio.file.Path file, final BasicFileAttributes attrs ) throws IOException {
+               try {
+                   checkNotNull( "file", file );
+                   checkNotNull( "attrs", attrs );
+                   if ( file.getFileName().endsWith( "pom.xml" ) ) {
+                       Project project = makeProject(file.getParent());
+                       projectsQueue.add(project);
+                       POM projectPom = pomService.load(Paths.convert(file));
+                       project.setPom(projectPom);
+                   } 
+               } catch ( final Exception e ) {
+                   logger.error( "Unable to go through repository files: " + e.getMessage(), e);
+                   return FileVisitResult.TERMINATE;
+               }
+               return FileVisitResult.CONTINUE;
+           }
+       }); 
+       
+       return new ArrayList<Project>(projectsQueue);
+    }
+    
     @Override
     public Package newPackage( final Package parentPackage,
                                final String packageName ) {
