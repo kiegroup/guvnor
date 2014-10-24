@@ -32,48 +32,19 @@ import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
 
-public class ProjectServiceImplResolvePackageValidTest {
-
-    private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
-    private BeanManager beanManager;
-    private Paths paths;
-
-    @Before
-    public void setUp() throws Exception {
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
-
-        //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
-        paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc );
-
-        //Ensure URLs use the default:// scheme
-        fs.forceAsDefault();
-    }
+public class ProjectServiceImplResolvePackageValidTest extends ProjectServiceImplBaseTest {
 
     @Test
     public void testProjectServiceInstantiation() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
         assertNotNull( projectService );
     }
 
     @Test
     public void testResolvePackageWithNonProjectPath() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL testUrl = this.getClass().getResource( "/" );
         final org.uberfire.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
@@ -87,11 +58,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testResolvePackageWithRootPath() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -105,11 +72,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testResolvePackageWithSrcPath() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -123,11 +86,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testResolvePackageWithMainPath() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -141,11 +100,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testResolvePackageDefaultJava() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/java" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -164,11 +119,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testResolvePackageDefaultResources() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -187,11 +138,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testResolvePackageWithJavaFileInDefaultPackage() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/java" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -210,11 +157,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testResolvePackageWithJavaFileInSubPackage() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/java/org/kie/test" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -233,11 +176,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testResolvePackageWithResourcesFileInDefaultPackage() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -256,11 +195,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testResolvePackageWithResourcesFileInSubPackage() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/org/kie/test" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -279,11 +214,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testResolvePackageWithPOMFile() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/pom.xml" );
         final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
@@ -297,11 +228,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testResolvePackageWithKModuleFile() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/META-INF/kmodule.xml" );
         final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
@@ -315,11 +242,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testIsPOMFileWithPOMFile() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/pom.xml" );
         final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
@@ -333,11 +256,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testIsPOMFileWithNonPOMFile() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/project.imports" );
         final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
@@ -351,11 +270,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testIsKModuleFileWithKModuleFile() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/META-INF/kmodule.xml" );
         final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
@@ -369,11 +284,7 @@ public class ProjectServiceImplResolvePackageValidTest {
     @Test
     public void testIsKModuleFileWithNonKModuleFile() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/META-INF" );
         final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );

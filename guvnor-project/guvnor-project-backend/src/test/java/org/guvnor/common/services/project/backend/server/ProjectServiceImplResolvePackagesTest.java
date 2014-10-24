@@ -20,37 +20,12 @@ import static org.junit.Assert.*;
 /**
  * Tests for ProjectServiceImpl resolveTestPackage
  */
-public class ProjectServiceImplResolvePackagesTest {
-
-    private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
-    private BeanManager beanManager;
-    private Paths paths;
-
-    @Before
-    public void setUp() throws Exception {
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
-
-        //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
-        paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc );
-
-        //Ensure URLs use the default:// scheme
-        fs.forceAsDefault();
-    }
+public class ProjectServiceImplResolvePackagesTest extends ProjectServiceImplBaseTest {
 
     @Test
     public void testResolvePackages() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final ProjectService projectService = getService(ProjectService.class);
 
         final URL root = this.getClass().getResource( "/ProjectBackendTestProject1" );
         final URL pom = this.getClass().getResource( "/ProjectBackendTestProject1/pom.xml" );
