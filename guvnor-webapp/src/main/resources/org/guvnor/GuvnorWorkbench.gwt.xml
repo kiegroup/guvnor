@@ -53,6 +53,10 @@
   <inherits name="org.kie.uberfire.wires.bayesian.network.parser.BayesianNetworkAPI"/>
   <inherits name="org.kie.uberfire.wires.bayesian.network.BayesianNetworkClient"/>
 
+  <!-- Dashbuilder dependencies -->
+  <inherits name="org.dashbuilder.DashbuilderClientAll"/>
+  <inherits name="org.dashbuilder.renderer.GChartsRenderer"/>
+
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/guvnor-workbench.css'/>
 
