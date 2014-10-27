@@ -16,22 +16,38 @@
 
 package org.guvnor.server;
 
-import java.util.Collection;
-import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-
+import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.workbench.events.ResourceChange;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Map;
 
 @Service
 @ApplicationScoped
 public class BuildServiceImpl
         implements BuildService {
+
+
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
+
 
     @Override
     public BuildResults build(final Project project) {
@@ -40,8 +56,18 @@ public class BuildServiceImpl
 
     @Override
     public BuildResults buildAndDeploy(final Project project) {
-        return new BuildResults();
+
+//        new Visitor(project,ioService).visitPaths(ioService.newDirectoryStream(Paths.convert(project.getRootPath())));
+
+        BuildResults buildResults = new BuildResults();
+        BuildMessage message = new BuildMessage();
+        message.setId(123);
+//        message.setText(new String(out.toByteArray()));
+        message.setLevel(BuildMessage.Level.INFO);
+        buildResults.addBuildMessage(message);
+        return buildResults;
     }
+
 
     @Override
     public BuildResults buildAndDeploy(final Project project, boolean suppressHandlers) {
@@ -70,7 +96,7 @@ public class BuildServiceImpl
 
     @Override
     public IncrementalBuildResults applyBatchResourceChanges(final Project project,
-            final Map<Path, Collection<ResourceChange>> changes) {
+                                                             final Map<Path, Collection<ResourceChange>> changes) {
         return new IncrementalBuildResults();
     }
 

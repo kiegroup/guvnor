@@ -39,7 +39,7 @@ import org.uberfire.workbench.model.menu.Menus;
  * A Perspective to show a Key Cloak mock
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "org.guvnor.DefaultPerspective", isDefault = true)
+@WorkbenchPerspective(identifier = "org.guvnor.DefaultPerspective", isDefault = false)
 public class DemoPerspective {
 
     private Menus menus;

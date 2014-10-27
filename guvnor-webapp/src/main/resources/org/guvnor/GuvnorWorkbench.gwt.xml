@@ -43,6 +43,7 @@
 
   <!-- Uberfire Extensions - Apps -->
   <inherits name="org.kie.uberfire.apps.UberfireAppsClient"/>
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectClient"/>
 
   <!-- Wires dependencies -->
   <inherits name="com.emitrom.lienzo.Lienzo"/>

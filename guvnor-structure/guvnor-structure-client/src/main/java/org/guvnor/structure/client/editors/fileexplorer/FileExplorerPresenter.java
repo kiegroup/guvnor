@@ -21,9 +21,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -65,6 +69,9 @@ public class FileExplorerPresenter {
 
     @Inject
     private Caller<RepositoryService> repositoryService;
+
+    @Inject
+    private Event<PathSelectedEvent> pathSelectedEvent;
 
     @Inject
     private PlaceManager placeManager;
@@ -161,6 +168,9 @@ public class FileExplorerPresenter {
     }
 
     public void redirect( final Path path ) {
+
+        pathSelectedEvent.fire(new PathSelectedEvent(path));
+
         vfsService.call( new RemoteCallback<Map>() {
             @Override
             public void callback( final Map response ) {
