@@ -215,6 +215,34 @@ public class GuvnorWorkbenchEntryPoint {
                 .endMenu()
                 .endMenus()
                 .endMenu()
+                .newTopLevelMenu( "Workbench" )
+                .menus()
+                .menu("Apps")
+                .respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo(new DefaultPlaceRequest("AppsPerspective"));
+                    }
+                } )
+                .endMenu()
+                .menu("Perspectives")
+                .respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                            placeManager.goTo(new DefaultPlaceRequest("PerspectiveEditorPerspective"));
+                    }
+                } )
+                .endMenu()
+                .menu("Plugins")
+                .respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo(new DefaultPlaceRequest("PlugInAuthoringPerspective"));
+                    }
+                } )
+                .endMenu()
+                .endMenus()
+                .endMenu()
                 .newTopLevelMenu( AppConstants.INSTANCE.Logout() )
                 .respondsWith( new LogoutCommand() )
                 .endMenu()
