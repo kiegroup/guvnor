@@ -66,7 +66,7 @@ public class BuildServiceImpl
             PrintStream printStream = new PrintStream(out);
 
             MavenCli cli = new MavenCli();
-            int result = cli.doMain(new String[]{"compile"},
+            int result = cli.doMain(new String[]{"clean","install"},
                     visitor.getRootFolder().getAbsolutePath(),
                     printStream, printStream);
 
