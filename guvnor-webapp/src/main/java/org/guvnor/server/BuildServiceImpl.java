@@ -16,25 +16,23 @@
 
 package org.guvnor.server;
 
+import org.apache.maven.cli.MavenCli;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.Files;
 import org.uberfire.workbench.events.ResourceChange;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -57,14 +55,36 @@ public class BuildServiceImpl
     @Override
     public BuildResults buildAndDeploy(final Project project) {
 
-//        new Visitor(project,ioService).visitPaths(ioService.newDirectoryStream(Paths.convert(project.getRootPath())));
-
         BuildResults buildResults = new BuildResults();
-        BuildMessage message = new BuildMessage();
-        message.setId(123);
-//        message.setText(new String(out.toByteArray()));
-        message.setLevel(BuildMessage.Level.INFO);
-        buildResults.addBuildMessage(message);
+
+        try {
+
+            Visitor visitor = new Visitor(project, ioService);
+            visitor.visit();
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PrintStream printStream = new PrintStream(out);
+
+            MavenCli cli = new MavenCli();
+            int result = cli.doMain(new String[]{"compile"},
+                    visitor.getRootFolder().getAbsolutePath(),
+                    printStream, printStream);
+
+            BuildMessage message = new BuildMessage();
+            message.setId(123);
+            message.setText(new String(out.toByteArray()));
+            message.setLevel(BuildMessage.Level.INFO);
+            buildResults.addBuildMessage(message);
+
+
+        } catch (IOException e) {
+            BuildMessage message = new BuildMessage();
+            message.setId(123);
+            message.setText(e.getMessage());
+            message.setLevel(BuildMessage.Level.ERROR);
+            buildResults.addBuildMessage(message);
+        }
+
         return buildResults;
     }
 
