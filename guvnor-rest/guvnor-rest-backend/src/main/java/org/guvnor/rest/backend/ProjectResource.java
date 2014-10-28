@@ -96,7 +96,7 @@ public class ProjectResource {
     private RepositoryService repositoryService;
 
     @Inject
-    private ProjectService<Project> projectService;
+    private ProjectService<? extends Project> projectService;
 
     @Inject
     private JobRequestScheduler jobRequestObserver;
