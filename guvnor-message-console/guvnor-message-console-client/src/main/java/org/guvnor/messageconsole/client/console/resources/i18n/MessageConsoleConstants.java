@@ -36,4 +36,10 @@ public interface MessageConsoleConstants extends Messages {
 
     String Refreshing();
 
+    String ErrorLevelTitle();
+
+    String WarningLevelTitle();
+
+    String InfoLevelTitle();
+
 }

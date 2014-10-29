@@ -19,14 +19,19 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import org.guvnor.messageconsole.client.console.resources.MessageConsoleResources;
+import org.guvnor.messageconsole.events.SystemMessage;
 import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.uberfire.client.tables.SimpleTable;
 import org.uberfire.client.mvp.PlaceManager;
@@ -141,6 +146,14 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
                         return MessageConsoleResources.INSTANCE.Information();
                 }
             }
+
+            @Override
+            public void render( Cell.Context context, MessageConsoleServiceRow row, SafeHtmlBuilder sb ) {
+                String title = getLevelTitle( row.getMessageLevel() );
+                sb.append( createDivStart(title) );
+                super.render( context, row, sb );
+                sb.append( createDivEnd() );
+            }
         };
         dataGrid.addColumn( column,
                             MessageConsoleResources.CONSTANTS.Level() );
@@ -159,4 +172,28 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
         BusyPopup.close();
     }
 
+    private String getLevelTitle(SystemMessage.Level level) {
+        switch ( level ) {
+            case ERROR:
+                return MessageConsoleResources.CONSTANTS.ErrorLevelTitle();
+           case WARNING:
+                return MessageConsoleResources.CONSTANTS.WarningLevelTitle();
+            case INFO:
+            default:
+                return MessageConsoleResources.CONSTANTS.InfoLevelTitle();
+        }
+    }
+
+    private SafeHtml createDivStart(String title) {
+        return createDivStart(title, "");
+    }
+
+    private SafeHtml createDivStart(String title, String defaultValue) {
+        if (title == null || "".equals(title)) title = defaultValue;
+        return SafeHtmlUtils.fromTrustedString( "<div title=\"" + title.trim() + "\">" );
+    }
+
+    private SafeHtml createDivEnd() {
+        return SafeHtmlUtils.fromTrustedString("</div>");
+    }
 }
