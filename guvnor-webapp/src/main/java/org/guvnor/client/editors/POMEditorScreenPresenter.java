@@ -21,9 +21,13 @@ import org.kie.uberfire.client.editors.texteditor.TextEditorPresenter;
 import org.kie.uberfire.client.editors.texteditor.TextResourceType;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.Menus;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -35,6 +39,7 @@ public class POMEditorScreenPresenter
 
     @Inject
     private TextResourceType type;
+
 
     @OnStartup
     public void onStartup(final ObservablePath path) {
@@ -49,5 +54,16 @@ public class POMEditorScreenPresenter
     @WorkbenchPartView
     public IsWidget asWidget() {
         return super.getWidget();
+    }
+
+    @WorkbenchMenu
+    public Menus getMenus() {
+        return MenuFactory.newTopLevelMenu("File").menus()
+                .menu("Save").respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+
+                    }
+                }).endMenu().endMenus().endMenu().build();
     }
 }
