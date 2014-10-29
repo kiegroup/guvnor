@@ -187,6 +187,13 @@ public class GuvnorWorkbenchEntryPoint {
                     }
                 } )
                 .endMenu()
+                .newTopLevelMenu( "Artifacts" ).respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo(new DefaultPlaceRequest("org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective"));
+                    }
+                } )
+                .endMenu()
                 .newTopLevelMenu( "Wires" )
                 .menus()
                 .menu("Scratch Pad")

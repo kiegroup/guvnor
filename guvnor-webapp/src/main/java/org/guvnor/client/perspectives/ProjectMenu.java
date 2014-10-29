@@ -7,6 +7,7 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.structure.client.editors.fileexplorer.PathSelectedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -36,6 +37,9 @@ public class ProjectMenu {
 
     private Project activeProject;
 
+    @Inject
+    private PlaceManager placeManager;
+
     private MenuItem build = MenuFactory
             .newSimpleItem("Build and Deploy")
             .respondsWith(new Command() {
@@ -59,7 +63,8 @@ public class ProjectMenu {
                             }
                     ).buildAndDeploy(activeProject);
                 }
-            }).endMenu().build().getItems().get(0);
+            }).endMenu()
+            .build().getItems().get(0);
 
     public List<MenuItem> getMenuItems() {
         List<MenuItem> menuItems = new ArrayList<MenuItem>();

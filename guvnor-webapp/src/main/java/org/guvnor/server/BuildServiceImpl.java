@@ -68,34 +68,35 @@ public class BuildServiceImpl
                     projectVisitor.getRootFolder().getAbsolutePath(),
                     printStream, printStream);
 
-            BuildMessage message = new BuildMessage();
-            message.setId(123);
-            message.setText(new String(out.toByteArray()));
-            message.setLevel(BuildMessage.Level.INFO);
-            buildResults.addBuildMessage(message);
+            if (result != 0) {
+                BuildMessage message = new BuildMessage();
+                message.setId(123);
+                message.setText(new String(out.toByteArray()));
+                message.setLevel(BuildMessage.Level.ERROR);
+                buildResults.addBuildMessage(message);
+            }
 
             deployer.deploy(projectVisitor.getTargetFolder());
 
-
         } catch (IOException e) {
-            reportError(buildResults, e);
+            buildResults.addBuildMessage(reportError(e));
         } finally {
 
             try {
                 FileUtils.deleteDirectory(projectVisitor.getGuvnorTempFolder());
             } catch (IOException e) {
-                reportError(buildResults, e);
+                buildResults.addBuildMessage(reportError(e));
             }
         }
 
         return buildResults;
     }
 
-    private void reportError(BuildResults buildResults, IOException e) {
+    private BuildMessage reportError(IOException e) {
         BuildMessage message = new BuildMessage();
         message.setText(e.getMessage());
         message.setLevel(BuildMessage.Level.ERROR);
-        buildResults.addBuildMessage(message);
+        return message;
     }
 
 
