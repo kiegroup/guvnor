@@ -146,35 +146,7 @@ public class HttpPostHelper {
                 // is available() safe?
                 fileData.mark( fileData.available() );
 
-                //Attempt to load JAR's POM information from it's pom.xml file
-                PomModel pomModel = null;
-                try {
-                    String pomXML = GuvnorM2Repository.loadPOMFromJar( fileData );
-                    if ( pomXML != null ) {
-                        pomModel = PomModel.Parser.parse( "pom.xml",
-                                                          new ByteArrayInputStream( pomXML.getBytes() ) );
-                    }
-                } catch ( Exception e ) {
-                    log.info( "Failed to parse pom.xml for GAV information. Falling back to pom.properties.",
-                              e );
-                }
-
-                //Attempt to load JAR's POM information from it's pom.properties file
-                if ( pomModel == null ) {
-                    try {
-                        fileData.reset();
-                        String pomProperties = GuvnorM2Repository.loadPOMPropertiesFromJar( fileData );
-                        if ( pomProperties != null ) {
-                            final ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString( pomProperties );
-                            if ( releaseId != null ) {
-                                pomModel = new PomModel();
-                                pomModel.setReleaseId( releaseId );
-                            }
-                        }
-                    } catch ( Exception e ) {
-                        log.info( "Failed to parse pom.properties for GAV information." );
-                    }
-                }
+                PomModel pomModel = PomModelResolver.resolve(fileData);
 
                 //If we were able to get a POM model we can get the GAV
                 if ( pomModel != null ) {

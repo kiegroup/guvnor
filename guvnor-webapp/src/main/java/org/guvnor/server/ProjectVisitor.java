@@ -7,32 +7,43 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class Visitor {
+public class ProjectVisitor {
+
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
 
     private Project project;
-    private IOService ioService;
     private File rootFolder;
+    private String buildRoot;
 
-    private static String tempDir = System.getProperty("java.io.tmpdir");
-
-    public Visitor(Project project, IOService ioService) {
+    public void visit(Project project) throws IOException {
         this.project = project;
-        this.ioService = ioService;
-    }
-
-    public void visit() throws IOException {
-        Path path = Paths.convert(project.getRootPath());
+        this.buildRoot = System.getProperty("java.io.tmpdir") + File.separatorChar + "guvnor" + File.separatorChar + project.getProjectName();
+        Path path = Paths.convert(this.project.getRootPath());
+        makeTempRootDirectory();
+        makeTempDirectory(path);
         rootFolder = makeTempDirectory(path);
         visitPaths(ioService.newDirectoryStream(path));
     }
 
     public File getRootFolder() {
         return rootFolder;
+    }
+
+    public File getGuvnorTempFolder() {
+        return new File(System.getProperty("java.io.tmpdir") + File.separatorChar + "guvnor");
+    }
+
+    public File getTargetFolder() {
+        return new File(buildRoot + File.separatorChar + "target");
     }
 
     private void visitPaths(final DirectoryStream<Path> directoryStream) throws IOException {
@@ -47,10 +58,20 @@ public class Visitor {
     }
 
     private File makeTempDirectory(Path path) {
-        String filePath = getFilePath(path);
+        return makeTempDirectory(getFilePath(path));
+    }
+
+    private File makeTempDirectory(String filePath) {
         File tempDirectory = new File(filePath);
-        tempDirectory.mkdir();
+        if (!tempDirectory.isFile()) {
+            tempDirectory.mkdir();
+        }
         return tempDirectory;
+    }
+
+    private void makeTempRootDirectory() {
+        File tempDirectory = new File(buildRoot);
+        tempDirectory.mkdirs();
     }
 
     private void makeTempFile(Path path) throws IOException {
@@ -77,7 +98,6 @@ public class Visitor {
     }
 
     private String getFilePath(Path path) {
-        String rawPath = path.toUri().getRawPath();
-        return tempDir + rawPath;
+        return buildRoot + path.toUri().getRawPath();
     }
 }

@@ -16,6 +16,7 @@
 
 package org.guvnor.server;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.cli.MavenCli;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -24,12 +25,10 @@ import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.io.IOService;
 import org.uberfire.workbench.events.ResourceChange;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -41,11 +40,11 @@ import java.util.Map;
 public class BuildServiceImpl
         implements BuildService {
 
+    @Inject
+    private ProjectVisitor projectVisitor;
 
     @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
-
+    private Deployer deployer;
 
     @Override
     public BuildResults build(final Project project) {
@@ -59,15 +58,14 @@ public class BuildServiceImpl
 
         try {
 
-            Visitor visitor = new Visitor(project, ioService);
-            visitor.visit();
+            projectVisitor.visit(project);
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             PrintStream printStream = new PrintStream(out);
 
             MavenCli cli = new MavenCli();
-            int result = cli.doMain(new String[]{"clean","install"},
-                    visitor.getRootFolder().getAbsolutePath(),
+            int result = cli.doMain(new String[]{"clean", "install"},
+                    projectVisitor.getRootFolder().getAbsolutePath(),
                     printStream, printStream);
 
             BuildMessage message = new BuildMessage();
@@ -76,16 +74,28 @@ public class BuildServiceImpl
             message.setLevel(BuildMessage.Level.INFO);
             buildResults.addBuildMessage(message);
 
+            deployer.deploy(projectVisitor.getTargetFolder());
+
 
         } catch (IOException e) {
-            BuildMessage message = new BuildMessage();
-            message.setId(123);
-            message.setText(e.getMessage());
-            message.setLevel(BuildMessage.Level.ERROR);
-            buildResults.addBuildMessage(message);
+            reportError(buildResults, e);
+        } finally {
+
+            try {
+                FileUtils.deleteDirectory(projectVisitor.getGuvnorTempFolder());
+            } catch (IOException e) {
+                reportError(buildResults, e);
+            }
         }
 
         return buildResults;
+    }
+
+    private void reportError(BuildResults buildResults, IOException e) {
+        BuildMessage message = new BuildMessage();
+        message.setText(e.getMessage());
+        message.setLevel(BuildMessage.Level.ERROR);
+        buildResults.addBuildMessage(message);
     }
 
 
