@@ -18,11 +18,11 @@ package org.guvnor.asset.management.client.editors.project.structure;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.asset.management.client.editors.project.structure.widgets.ProjectModulesView;
-import org.guvnor.asset.management.client.editors.project.structure.widgets.ProjectStructureDataView;
-import org.guvnor.asset.management.model.ProjectStructureModel;
+import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataView;
+import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.kie.uberfire.client.common.HasBusyIndicator;
 
-public interface ProjectStructureView
+public interface RepositoryStructureView
         extends HasBusyIndicator,
         IsWidget {
 
@@ -30,13 +30,13 @@ public interface ProjectStructureView
 
     }
 
-    void setPresenter( ProjectStructurePresenter projectStructurePresenter );
+    void setPresenter( RepositoryStructurePresenter repositoryStructurePresenter );
 
-    ProjectStructureDataView getDataView();
+    RepositoryStructureDataView getDataView();
 
     ProjectModulesView getModulesView();
 
-    void setModel( ProjectStructureModel model );
+    void setModel( RepositoryStructureModel model );
 
     void setModulesViewVisible( boolean visible );
 

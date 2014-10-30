@@ -25,32 +25,32 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.editors.project.structure.widgets.ProjectModulesView;
-import org.guvnor.asset.management.client.editors.project.structure.widgets.ProjectStructureDataView;
-import org.guvnor.asset.management.model.ProjectStructureModel;
+import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataView;
+import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.uberfire.client.common.BusyPopup;
 
 @ApplicationScoped
-public class ProjectStructureViewImpl
+public class RepositoryStructureViewImpl
         extends Composite
-        implements ProjectStructureView {
+        implements RepositoryStructureView {
 
-    private ProjectStructurePresenter presenter;
+    private RepositoryStructurePresenter presenter;
 
-    interface ProjectStructureViewImplBinder
+    interface RepositoryStructureViewImplBinder
             extends
-            UiBinder<Widget, ProjectStructureViewImpl> {
+            UiBinder<Widget, RepositoryStructureViewImpl> {
 
     }
 
-    private static ProjectStructureViewImplBinder uiBinder = GWT.create( ProjectStructureViewImplBinder.class );
+    private static RepositoryStructureViewImplBinder uiBinder = GWT.create(RepositoryStructureViewImplBinder.class );
 
     @UiField
     FluidRow dataViewContainer;
 
     @UiField(provided = true)
-    ProjectStructureDataView dataView;
+    RepositoryStructureDataView dataView;
 
     @UiField
     FluidRow modulesViewContainer;
@@ -59,7 +59,7 @@ public class ProjectStructureViewImpl
     ProjectModulesView modulesView;
 
     @Inject
-    public ProjectStructureViewImpl( ProjectStructureDataView dataView,
+    public RepositoryStructureViewImpl( RepositoryStructureDataView dataView,
             ProjectModulesView modulesView ) {
 
         this.dataView = dataView;
@@ -68,7 +68,7 @@ public class ProjectStructureViewImpl
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void setPresenter( ProjectStructurePresenter presenter ) {
+    public void setPresenter( RepositoryStructurePresenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -83,7 +83,7 @@ public class ProjectStructureViewImpl
     }
 
     @Override
-    public ProjectStructureDataView getDataView() {
+    public RepositoryStructureDataView getDataView() {
         return dataView;
     }
 
@@ -98,7 +98,7 @@ public class ProjectStructureViewImpl
     }
 
     @Override
-    public void setModel( ProjectStructureModel model ) {
+    public void setModel( RepositoryStructureModel model ) {
         if ( model == null ) {
             return;
         }

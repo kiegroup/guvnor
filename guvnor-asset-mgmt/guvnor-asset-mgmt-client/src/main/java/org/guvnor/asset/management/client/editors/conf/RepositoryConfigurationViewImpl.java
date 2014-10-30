@@ -96,7 +96,7 @@ public class RepositoryConfigurationViewImpl extends Composite implements Reposi
                 String value = chooseRepositoryBox.getValue();
                 GWT.log( value );
 
-                presenter.loadRepositoryProjectStructure( value );
+                presenter.loadRepositoryStructure( value );
             }
         } );
         presenter.loadRepositories();

@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @Ignore("This should not fail with the GWTBridge error")
-public class ProjectStructurePresenterTest {
+public class RepositoryStructurePresenterTest {
 
     @Test
     public void testSetPresenter() throws Exception {

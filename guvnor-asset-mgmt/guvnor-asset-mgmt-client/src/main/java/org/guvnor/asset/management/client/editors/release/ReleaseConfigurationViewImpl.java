@@ -115,7 +115,7 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
                 String value = chooseRepositoryBox.getValue();
 
                 presenter.loadBranches( value );
-                presenter.loadRepositoryProjectStructure( value );
+                presenter.loadRepositoryStructure( value );
 
             }
         } );

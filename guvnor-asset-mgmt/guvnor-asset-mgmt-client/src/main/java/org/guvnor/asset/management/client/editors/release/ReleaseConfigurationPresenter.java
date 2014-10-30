@@ -26,7 +26,7 @@ import com.google.gwt.core.client.GWT;
 import org.guvnor.asset.management.client.editors.common.BaseAssetsMgmtPresenter;
 import org.guvnor.asset.management.client.editors.common.BaseAssetsMgmtView;
 import org.guvnor.asset.management.client.i18n.Constants;
-import org.guvnor.asset.management.model.ProjectStructureModel;
+import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -133,13 +133,13 @@ public class ReleaseConfigurationPresenter extends BaseAssetsMgmtPresenter {
         }
     }
 
-    public void loadRepositoryProjectStructure( String value ) {
+    public void loadRepositoryStructure( String value ) {
         if ( !value.equals( constants.Select_Repository() ) ) {
             Repository r = getRepository( value );
             if ( r != null ) {
-                projectStructureServices.call( new RemoteCallback<ProjectStructureModel>() {
+                repositoryStructureServices.call(new RemoteCallback<RepositoryStructureModel>() {
                     @Override
-                    public void callback( ProjectStructureModel model ) {
+                    public void callback( RepositoryStructureModel model ) {
 
                         POM pom = null;
                         if ( model != null && ( model.isSingleProject() || model.isMultiModule() ) ) {

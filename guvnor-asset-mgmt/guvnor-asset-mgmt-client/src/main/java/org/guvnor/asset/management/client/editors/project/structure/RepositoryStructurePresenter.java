@@ -27,10 +27,10 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import org.guvnor.asset.management.client.editors.project.structure.widgets.ProjectModuleRow;
 import org.guvnor.asset.management.client.editors.project.structure.widgets.ProjectModulesView;
-import org.guvnor.asset.management.client.editors.project.structure.widgets.ProjectStructureDataView;
+import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataView;
 import org.guvnor.asset.management.client.i18n.Constants;
-import org.guvnor.asset.management.model.ProjectStructureModel;
-import org.guvnor.asset.management.service.ProjectStructureService;
+import org.guvnor.asset.management.model.RepositoryStructureModel;
+import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
@@ -66,16 +66,16 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
-@WorkbenchScreen( identifier = "projectStructureScreen" )
-public class ProjectStructurePresenter
-        implements ProjectStructureView.Presenter,
-        ProjectStructureDataView.Presenter,
+@WorkbenchScreen( identifier = "repositoryStructureScreen" )
+public class RepositoryStructurePresenter
+        implements RepositoryStructureView.Presenter,
+        RepositoryStructureDataView.Presenter,
         ProjectModulesView.Presenter {
 
-    private ProjectStructureView view;
+    private RepositoryStructureView view;
 
     @Inject
-    private Caller<ProjectStructureService> projectStructureService;
+    private Caller<RepositoryStructureService> repositoryStructureService;
 
     @Inject
     private Caller<POMService> pomService;
@@ -104,7 +104,7 @@ public class ProjectStructurePresenter
     @Inject
     private ProjectContext workbenchContext;
 
-    private ProjectStructureModel model;
+    private RepositoryStructureModel model;
 
     private Project project;
 
@@ -116,7 +116,7 @@ public class ProjectStructurePresenter
 
     private String branch;
 
-    private ObservablePath pathToProjectStructure;
+    private ObservablePath pathToRepositoryStructure;
 
     private PlaceRequest placeRequest;
 
@@ -131,7 +131,7 @@ public class ProjectStructurePresenter
     protected Event<ProjectContextChangeEvent> contextChangedEvent;
 
     @Inject
-    public ProjectStructurePresenter( ProjectStructureView view ) {
+    public RepositoryStructurePresenter( RepositoryStructureView view ) {
         this.view = view;
         view.setPresenter( this );
         view.getDataView().setPresenter( this );
@@ -146,7 +146,7 @@ public class ProjectStructurePresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return Constants.INSTANCE.ProjectStructure();
+        return Constants.INSTANCE.RepositoryStructure();
     }
 
     @WorkbenchPartView
@@ -157,8 +157,8 @@ public class ProjectStructurePresenter
     @OnClose
     public void onClose() {
         concurrentUpdateSessionInfo = null;
-        if ( pathToProjectStructure != null ) {
-            pathToProjectStructure.dispose();
+        if ( pathToRepositoryStructure != null ) {
+            pathToRepositoryStructure.dispose();
         }
     }
 
@@ -200,61 +200,61 @@ public class ProjectStructurePresenter
 
         view.showBusyIndicator( Constants.INSTANCE.Loading() );
         clearView();
-        projectStructureService.call( getLoadModelSuccessCallback(),
+        repositoryStructureService.call( getLoadModelSuccessCallback(),
                 new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository );
 
     }
 
-    private RemoteCallback<ProjectStructureModel> getLoadModelSuccessCallback() {
+    private RemoteCallback<RepositoryStructureModel> getLoadModelSuccessCallback() {
 
-        return new RemoteCallback<ProjectStructureModel>() {
+        return new RemoteCallback<RepositoryStructureModel>() {
             @Override
-            public void callback( final ProjectStructureModel model ) {
+            public void callback( final RepositoryStructureModel model ) {
 
                 view.hideBusyIndicator();
 
-                ProjectStructurePresenter.this.model = model;
+                RepositoryStructurePresenter.this.model = model;
                 boolean initialized = false;
                 dataProvider.getList().clear();
-                if ( pathToProjectStructure != null ) {
-                    pathToProjectStructure.dispose();
+                if ( pathToRepositoryStructure != null ) {
+                    pathToRepositoryStructure.dispose();
                 }
                 concurrentUpdateSessionInfo = null;
 
                 if ( model == null ) {
 
-                    ProjectStructurePresenter.this.model = new ProjectStructureModel();
-                    view.getDataView().setMode( ProjectStructureDataView.ViewMode.CREATE_STRUCTURE );
+                    RepositoryStructurePresenter.this.model = new RepositoryStructureModel();
+                    view.getDataView().setMode(RepositoryStructureDataView.ViewMode.CREATE_STRUCTURE );
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.MODULES_VIEW );
-                    view.setModel( ProjectStructurePresenter.this.model );
+                    view.setModel(RepositoryStructurePresenter.this.model );
                     view.setModulesViewVisible( false );
-                    pathToProjectStructure = null;
+                    pathToRepositoryStructure = null;
 
                 } else if ( model.isMultiModule() ) {
 
-                    view.getDataView().setMode( ProjectStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT );
+                    view.getDataView().setMode(RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT );
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.MODULES_VIEW );
                     view.setModel( model );
                     view.setModulesViewVisible( true );
                     initialized = true;
 
-                    pathToProjectStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getPathToPOM() );
+                    pathToRepositoryStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getPathToPOM() );
 
                     updateModulesList( model.getModules() );
 
                 } else if ( model.isSingleProject() ) {
 
-                    view.getDataView().setMode( ProjectStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT );
+                    view.getDataView().setMode(RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT );
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
                     view.setModel( model );
                     view.setModulesViewVisible( false );
                     initialized = true;
 
-                    pathToProjectStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getOrphanProjects().get( 0 ).getPomXMLPath() );
+                    pathToRepositoryStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getOrphanProjects().get( 0 ).getPomXMLPath() );
 
                 } else {
 
-                    view.getDataView().setMode( ProjectStructureDataView.ViewMode.EDIT_UNMANAGED_REPOSITORY );
+                    view.getDataView().setMode(RepositoryStructureDataView.ViewMode.EDIT_UNMANAGED_REPOSITORY );
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
                     view.setModulesViewVisible( true );
                     initialized = true;
@@ -274,12 +274,12 @@ public class ProjectStructurePresenter
         init();
     }
 
-    private void initProjectStructure() {
+    private void initRepositoryStructure() {
         //TODO add parameters validation
 
         if ( view.getDataView().isMultiModule() ) {
-            view.showBusyIndicator( Constants.INSTANCE.CreatingProjectStructure() );
-            projectStructureService.call( new RemoteCallback<Path>() {
+            view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
+            repositoryStructureService.call( new RemoteCallback<Path>() {
 
                 @Override
                 public void callback( Path response ) {
@@ -287,7 +287,7 @@ public class ProjectStructurePresenter
                     init();
                 }
 
-            }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initProjectStructure(
+            }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepositoryStructure(
                     new GAV( view.getDataView().getGroupId(),
                     view.getDataView().getArtifactId(),
                     view.getDataView().getVersionId() ),
@@ -295,16 +295,16 @@ public class ProjectStructurePresenter
 
         } else if ( view.getDataView().isSingleModule() ) {
             wizzard.setContent( null, null, null);
-            wizzard.start( new Callback<Project>() {
+            wizzard.start(new Callback<Project>() {
                 @Override public void callback( Project result ) {
                     lastAddedModule = result;
                     if ( result != null ) {
-                        view.showBusyIndicator( Constants.INSTANCE.CreatingProjectStructure() );
-                        projectStructureService.call( new RemoteCallback<Repository>() {
+                        view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
+                        repositoryStructureService.call(new RemoteCallback<Repository>() {
                             @Override
                             public void callback( Repository repository ) {
                                 view.hideBusyIndicator();
-                                ProjectStructurePresenter.this.repository = repository;
+                                RepositoryStructurePresenter.this.repository = repository;
                                 init();
 
                             }
@@ -314,12 +314,12 @@ public class ProjectStructurePresenter
                 }
             }, false);
         } else if ( view.getDataView().isUnmanagedRepository() ) {
-            view.showBusyIndicator( Constants.INSTANCE.CreatingProjectStructure() );
-            projectStructureService.call( new RemoteCallback<Repository>( ) {
+            view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
+            repositoryStructureService.call(new RemoteCallback<Repository>( ) {
                 @Override
                 public void callback( Repository repository ) {
                     view.hideBusyIndicator();
-                    ProjectStructurePresenter.this.repository = repository;
+                    RepositoryStructurePresenter.this.repository = repository;
                     init();
                 }
             }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepository( repository, false );
@@ -343,7 +343,7 @@ public class ProjectStructurePresenter
 
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.ProjectStructureWithName( getRepositoryLabel( repository ) + "- > " +
+                    Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "- > " +
                             model.getPOM().getGav().getArtifactId() + ":"
                             + model.getPOM().getGav().getGroupId() + ":"
                             + model.getPOM().getGav().getVersion() ) ) );
@@ -351,7 +351,7 @@ public class ProjectStructurePresenter
         } else if ( model.isSingleProject() ) {
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.ProjectStructureWithName( getRepositoryLabel( repository ) + "- > " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
+                    Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "- > " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
 
         } else {
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
@@ -366,16 +366,16 @@ public class ProjectStructurePresenter
 
     private void addStructureChangeListeners() {
 
-        if ( pathToProjectStructure != null ) {
+        if ( pathToRepositoryStructure != null ) {
 
-            pathToProjectStructure.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+            pathToRepositoryStructure.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
                 @Override
                 public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
                     concurrentUpdateSessionInfo = eventInfo;
                 }
             } );
 
-            pathToProjectStructure.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+            pathToRepositoryStructure.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
                 @Override
                 public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
                     newConcurrentRename( info.getSource(),
@@ -397,7 +397,7 @@ public class ProjectStructurePresenter
                 }
             } );
 
-            pathToProjectStructure.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+            pathToRepositoryStructure.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
                 @Override
                 public void execute( final ObservablePath.OnConcurrentDelete info ) {
                     newConcurrentDelete( info.getPath(),
@@ -411,7 +411,7 @@ public class ProjectStructurePresenter
                             new Command() {
                                 @Override
                                 public void execute() {
-                                    placeManager.closePlace( "projectStructureScreen" );
+                                    placeManager.closePlace( "repositoryStructureScreen" );
                                 }
                             }
                     ).show();
@@ -477,9 +477,9 @@ public class ProjectStructurePresenter
                     //A new module was added.
                     if ( model.isMultiModule() ) {
                         view.showBusyIndicator( Constants.INSTANCE.Loading() );
-                        projectStructureService.call( new RemoteCallback<ProjectStructureModel>() {
+                        repositoryStructureService.call(new RemoteCallback<RepositoryStructureModel>() {
                             @Override
-                            public void callback( ProjectStructureModel _model ) {
+                            public void callback( RepositoryStructureModel _model ) {
                                 view.hideBusyIndicator();
                                 if ( _model != null ) {
                                     model.setPOM( _model.getPOM() );
@@ -565,7 +565,7 @@ public class ProjectStructurePresenter
 
         view.showBusyIndicator( Constants.INSTANCE.Deleting() );
         lastDeletedModule = project;
-        projectStructureService.call( getModuleDeletedSuccessCallback( project )
+        repositoryStructureService.call( getModuleDeletedSuccessCallback( project )
                 , new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( project.getPomXMLPath(), "Module removed" );
     }
 
@@ -578,9 +578,9 @@ public class ProjectStructurePresenter
                     //A project was deleted
                     if ( model.isMultiModule() ) {
                         view.showBusyIndicator( Constants.INSTANCE.Loading() );
-                        projectStructureService.call( new RemoteCallback<ProjectStructureModel>() {
+                        repositoryStructureService.call(new RemoteCallback<RepositoryStructureModel>() {
                             @Override
-                            public void callback( ProjectStructureModel _model ) {
+                            public void callback( RepositoryStructureModel _model ) {
                                 view.hideBusyIndicator();
                                 if ( _model != null ) {
                                     model.setPOM( _model.getPOM() );
@@ -634,21 +634,21 @@ public class ProjectStructurePresenter
     }
 
     @Override
-    public void onInitProjectStructure() {
-        initProjectStructure();
+    public void onInitRepositoryStructure() {
+        initRepositoryStructure();
     }
 
     @Override
-    public void onSaveProjectStructure() {
+    public void onSaveRepositoryStructure() {
 
         if ( model.getPOM() != null ) {
 
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                    Constants.INSTANCE.ConfirmSaveProjectStructure(),
+                    Constants.INSTANCE.ConfirmSaveRepositoryStructure(),
                     new Command() {
                         @Override
                         public void execute() {
-                            saveProjectStructure();
+                            saveRepositoryStructure();
                         }
                     },
                     CommonConstants.INSTANCE.YES(),
@@ -677,7 +677,7 @@ public class ProjectStructurePresenter
         }
     }
 
-    private void saveProjectStructure() {
+    private void saveRepositoryStructure() {
 
         if ( model.getPOM() != null ) {
 
@@ -686,7 +686,7 @@ public class ProjectStructurePresenter
             model.getPOM().getGav().setVersion( view.getDataView().getVersionId() );
 
             view.showBusyIndicator( Constants.INSTANCE.Saving() );
-            projectStructureService.call( new RemoteCallback<Void>() {
+            repositoryStructureService.call( new RemoteCallback<Void>() {
                 @Override
                 public void callback( Void response ) {
                     view.hideBusyIndicator();
@@ -739,7 +739,7 @@ public class ProjectStructurePresenter
         GAV gav = new GAV( view.getDataView().getGroupId(), view.getDataView().getArtifactId(), view.getDataView().getVersionId() );
 
         view.showBusyIndicator( Constants.INSTANCE.ConvertingToMultiModuleProject() );
-        projectStructureService.call( new RemoteCallback<Path>() {
+        repositoryStructureService.call( new RemoteCallback<Path>() {
             @Override
             public void callback( Path response ) {
                 view.hideBusyIndicator();

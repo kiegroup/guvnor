@@ -3,7 +3,7 @@ package org.guvnor.asset.management.client.editors.project.structure.widgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
 
-public interface ProjectStructureDataView extends IsWidget {
+public interface RepositoryStructureDataView extends IsWidget {
 
     enum ViewMode {
         CREATE_STRUCTURE,
@@ -22,9 +22,9 @@ public interface ProjectStructureDataView extends IsWidget {
 
         void onVersionChange( String version );
 
-        void onInitProjectStructure();
+        void onInitRepositoryStructure();
 
-        void onSaveProjectStructure();
+        void onSaveRepositoryStructure();
 
         void onConvertToMultiModule();
 

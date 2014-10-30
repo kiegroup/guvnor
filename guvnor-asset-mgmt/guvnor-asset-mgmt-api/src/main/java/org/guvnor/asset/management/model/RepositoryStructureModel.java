@@ -12,7 +12,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
-public class ProjectStructureModel {
+public class RepositoryStructureModel {
 
     private POM pom;
 
@@ -32,7 +32,7 @@ public class ProjectStructureModel {
 
     private Boolean managed;
 
-    public ProjectStructureModel() {
+    public RepositoryStructureModel() {
     }
 
     public POM getPOM() {
