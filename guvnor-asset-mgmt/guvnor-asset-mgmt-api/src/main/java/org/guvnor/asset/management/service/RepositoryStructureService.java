@@ -2,7 +2,7 @@ package org.guvnor.asset.management.service;
 
 import java.util.List;
 
-import org.guvnor.asset.management.model.ProjectStructureModel;
+import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
@@ -11,9 +11,9 @@ import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
-public interface ProjectStructureService {
+public interface RepositoryStructureService {
 
-    Path initProjectStructure( final GAV gav, final Repository repo);
+    Path initRepositoryStructure( final GAV gav, final Repository repo);
 
     Repository initRepository( final Repository repo, boolean managed );
 
@@ -23,13 +23,13 @@ public interface ProjectStructureService {
             final boolean updateChildrenGav,
             final String comment );
 
-    ProjectStructureModel load( final Repository repository );
+    RepositoryStructureModel load( final Repository repository );
 
 
-    ProjectStructureModel load( final Repository repository, boolean includeModules );
+    RepositoryStructureModel load( final Repository repository, boolean includeModules );
 
     void save( final Path pathToPomXML,
-            final ProjectStructureModel model,
+            final RepositoryStructureModel model,
             final String comment );
 
 

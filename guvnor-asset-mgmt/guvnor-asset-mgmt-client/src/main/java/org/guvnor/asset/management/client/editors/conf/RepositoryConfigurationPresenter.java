@@ -24,7 +24,7 @@ import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import org.guvnor.asset.management.client.editors.common.BaseAssetsMgmtPresenter;
 import org.guvnor.asset.management.client.editors.common.BaseAssetsMgmtView;
-import org.guvnor.asset.management.model.ProjectStructureModel;
+import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -87,13 +87,13 @@ public class RepositoryConfigurationPresenter extends BaseAssetsMgmtPresenter {
         baseView = view;
     }
 
-    public void loadRepositoryProjectStructure( String value ) {
+    public void loadRepositoryStructure( String value ) {
         if ( !value.equals( constants.Select_Repository() ) ) {
             for ( Repository r : getRepositories() ) {
                 if ( ( r.getAlias() ).equals( value ) ) {
-                    projectStructureServices.call( new RemoteCallback<ProjectStructureModel>() {
+                    repositoryStructureServices.call(new RemoteCallback<RepositoryStructureModel>() {
                         @Override
-                        public void callback( ProjectStructureModel model ) {
+                        public void callback( RepositoryStructureModel model ) {
                             POM pom = null;
                             if ( model != null && ( model.isSingleProject() || model.isMultiModule() ) ) {
                                 pom = model.isMultiModule() ? model.getPOM() : model.getSingleProjectPOM();

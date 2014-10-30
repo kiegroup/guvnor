@@ -9,8 +9,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.asset.management.model.ProjectStructureModel;
-import org.guvnor.asset.management.service.ProjectStructureService;
+import org.guvnor.asset.management.model.RepositoryStructureModel;
+import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
@@ -38,10 +38,10 @@ import static org.guvnor.structure.backend.repositories.EnvironmentParameters.*;
 
 @Service
 @ApplicationScoped
-public class ProjectStructureServiceImpl
-        implements ProjectStructureService {
+public class RepositoryStructureServiceImpl
+        implements RepositoryStructureService {
 
-    private static final Logger logger = LoggerFactory.getLogger( ProjectStructureServiceImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(RepositoryStructureServiceImpl.class );
 
     @Inject
     private POMService pomService;
@@ -71,7 +71,7 @@ public class ProjectStructureServiceImpl
     @Named( "ioStrategy" )
     private IOService ioService;
 
-    public Path initProjectStructure( GAV gav, Repository repo ) {
+    public Path initRepositoryStructure( GAV gav, Repository repo ) {
 
         POM pom = new POM( repo.getAlias(), repo.getAlias(), gav
                 , true );
@@ -117,7 +117,7 @@ public class ProjectStructureServiceImpl
 
         try {
             POM parentPom;
-            Path path = initProjectStructure( parentGav, repo );
+            Path path = initRepositoryStructure( parentGav, repo );
 
             parentPom = pomService.load( path );
             if ( parentPom == null ) {
@@ -156,19 +156,19 @@ public class ProjectStructureServiceImpl
     }
 
     @Override
-    public ProjectStructureModel load( final Repository repository ) {
+    public RepositoryStructureModel load( final Repository repository ) {
         return load( repository, true );
     }
 
     @Override
-    public ProjectStructureModel load( final Repository repository, boolean includeModules ) {
+    public RepositoryStructureModel load( final Repository repository, boolean includeModules ) {
 
         if ( repository == null ) return null;
         Repository _repository = repositoryService.getRepository( repository.getAlias() );
 
         if ( _repository == null ) return null;
 
-        ProjectStructureModel model = new ProjectStructureModel();
+        RepositoryStructureModel model = new RepositoryStructureModel();
         Boolean managedStatus = _repository.getEnvironment() != null ? (Boolean)_repository.getEnvironment().get( MANAGED ) : null;
         if ( managedStatus != null) {
             model.setManaged( managedStatus );
@@ -222,7 +222,7 @@ public class ProjectStructureServiceImpl
 
     @Override
     public void save( final Path pathToPomXML,
-            final ProjectStructureModel model,
+            final RepositoryStructureModel model,
             final String comment ) {
         final FileSystem fs = Paths.convert( pathToPomXML ).getFileSystem();
         try {

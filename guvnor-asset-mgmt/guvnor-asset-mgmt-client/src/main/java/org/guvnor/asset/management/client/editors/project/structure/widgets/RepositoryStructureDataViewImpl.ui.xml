@@ -62,8 +62,8 @@
     <g:HTML>
       <br/>
     </g:HTML>
-    <b:Button type="PRIMARY" ui:field="initProjectStructureButton">
-      <ui:text from="{i18n.InitProjectStructure}"/>
+    <b:Button type="PRIMARY" ui:field="initRepositoryStructureButton">
+      <ui:text from="{i18n.InitRepositoryStructure}"/>
     </b:Button>
   </b:Well>
 

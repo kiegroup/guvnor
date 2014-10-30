@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.service.AssetManagementService;
-import org.guvnor.asset.management.service.ProjectStructureService;
+import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -33,7 +33,7 @@ public abstract class BaseAssetsMgmtPresenter {
     protected Caller<RepositoryService> repositoryServices;
 
     @Inject
-    protected Caller<ProjectStructureService> projectStructureServices;
+    protected Caller<RepositoryStructureService> repositoryStructureServices;
 
     @Inject
     protected User identity;
