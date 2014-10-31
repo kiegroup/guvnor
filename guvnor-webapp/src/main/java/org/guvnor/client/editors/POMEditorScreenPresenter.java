@@ -17,19 +17,27 @@ package org.guvnor.client.editors;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.client.type.POMResourceType;
+import org.guvnor.shared.editors.DefaultEditorService;
+import org.guvnor.structure.client.file.CommandWithCommitMessage;
+import org.guvnor.structure.client.file.SaveOperationService;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.editors.texteditor.TextEditorPresenter;
 import org.kie.uberfire.client.editors.texteditor.TextResourceType;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 @Dependent
@@ -40,6 +48,11 @@ public class POMEditorScreenPresenter
     @Inject
     private TextResourceType type;
 
+    @Inject
+    private Caller<DefaultEditorService> defaultEditorService;
+
+    @Inject
+    private Event<NotificationEvent> notificationEvent;
 
     @OnStartup
     public void onStartup(final ObservablePath path) {
@@ -62,7 +75,21 @@ public class POMEditorScreenPresenter
                 .menu("Save").respondsWith(new Command() {
                     @Override
                     public void execute() {
-
+                        new SaveOperationService().save(path,
+                                new CommandWithCommitMessage() {
+                                    @Override
+                                    public void execute(final String commitMessage) {
+                                        defaultEditorService.call(new RemoteCallback<Path>() {
+                                            @Override
+                                            public void callback(Path path) {
+                                                notificationEvent.fire(new NotificationEvent("Save successful"));
+                                            }
+                                        }).save(
+                                                path,
+                                                view.getContent(),
+                                                commitMessage);
+                                    }
+                                });
                     }
                 }).endMenu().endMenus().endMenu().build();
     }
