@@ -50,6 +50,7 @@ import org.guvnor.rest.client.RemoveRepositoryFromOrganizationalUnitRequest;
 import org.guvnor.rest.client.RemoveRepositoryRequest;
 import org.guvnor.rest.client.TestProjectRequest;
 import org.kie.internal.executor.api.CommandContext;
+import org.kie.internal.executor.api.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -179,8 +180,8 @@ public class JobRequestScheduler {
     protected CommandContext getContext(JobRequest jobRequest) {
         CommandContext ctx = new CommandContext();
         ctx.setData(JOB_REQUEST_KEY, jobRequest);
-        ctx.setData("retries", 0);
         ctx.setData("Retries", 0);
+        ctx.setData("Owner", ExecutorService.EXECUTOR_ID);
 
         return ctx;
     }
