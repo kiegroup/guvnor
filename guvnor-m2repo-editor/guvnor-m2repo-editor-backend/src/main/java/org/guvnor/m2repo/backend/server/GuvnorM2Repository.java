@@ -58,7 +58,6 @@ import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.deployment.DeploymentException;
 import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.installation.InstallationException;
-import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.util.artifact.SubArtifact;
@@ -85,7 +84,7 @@ public class GuvnorM2Repository {
     }
 
     private void setM2Repos() {
-         final String meReposDir = System.getProperty( "org.guvnor.m2repo.dir" );
+        final String meReposDir = System.getProperty( "org.guvnor.m2repo.dir" );
 
         if ( meReposDir == null || meReposDir.trim().isEmpty() ) {
             M2_REPO_DIR = M2_REPO_ROOT;
@@ -101,7 +100,7 @@ public class GuvnorM2Repository {
             root.mkdirs();
         }
 
-        Aether.getAether().getRepositories().add(getGuvnorM2Repository());
+        Aether.getAether().getRepositories().add( getGuvnorM2Repository() );
     }
 
     public String getM2RepositoryRootDir() {
@@ -126,45 +125,55 @@ public class GuvnorM2Repository {
                                              "jar" ) );
 
         try {
-            if ( !jarFile.exists() ) {
-                jarFile.getParentFile().mkdirs();
-                jarFile.createNewFile();
+
+            try {
+                if ( !jarFile.exists() ) {
+                    jarFile.getParentFile().mkdirs();
+                    jarFile.createNewFile();
+                }
+                FileOutputStream fos = new FileOutputStream( jarFile );
+
+                final byte[] buf = new byte[ BUFFER_SIZE ];
+                int byteRead = 0;
+                while ( ( byteRead = inputStream.read( buf ) ) != -1 ) {
+                    fos.write( buf, 0, byteRead );
+                }
+                fos.flush();
+                fos.close();
+            } catch ( IOException e ) {
+                throw new RuntimeException( e );
             }
-            FileOutputStream fos = new FileOutputStream( jarFile );
 
-            final byte[] buf = new byte[ BUFFER_SIZE ];
-            int byteRead = 0;
-            while ( ( byteRead = inputStream.read( buf ) ) != -1 ) {
-                fos.write( buf, 0, byteRead );
+            //Write pom.xml to JAR if it doesn't already exist
+            String pomXML = loadPOMFromJarInternal( new File( jarFile.getPath() ) );
+            if ( pomXML == null ) {
+                pomXML = generatePOM( gav );
+                jarFile = appendPOMToJar( pomXML,
+                                          jarFile.getPath(),
+                                          gav );
             }
-            fos.flush();
-            fos.close();
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
-        }
 
-        //Write pom.xml to JAR if it doesn't already exist
-        String pomXML = loadPOMFromJarInternal( new File( jarFile.getPath() ) );
-        if ( pomXML == null ) {
-            pomXML = generatePOM( gav );
-            jarFile = appendPOMToJar( pomXML,
-                                      jarFile.getPath(),
-                                      gav );
-        }
+            //Write pom.properties to JAR if it doesn't already exist
+            String pomProperties = loadGAVFromJarInternal( new File( jarFile.getPath() ) );
+            if ( pomProperties == null ) {
+                pomProperties = generatePomProperties( gav );
+                jarFile = appendPomPropertiesToJar( pomProperties,
+                                                    jarFile.getPath(),
+                                                    gav );
+            }
 
-        //Write pom.properties to JAR if it doesn't already exist
-        String pomProperties = loadGAVFromJarInternal( new File( jarFile.getPath() ) );
-        if ( pomProperties == null ) {
-            pomProperties = generatePomProperties( gav );
-            jarFile = appendPomPropertiesToJar( pomProperties,
-                                                jarFile.getPath(),
-                                                gav );
-        }
+            deployArtifact( gav,
+                            pomXML,
+                            jarFile,
+                            includeAdditionalRepositories );
 
-        deployArtifact( gav,
-                        pomXML,
-                        jarFile,
-                        includeAdditionalRepositories );
+        } finally {
+            try {
+                jarFile.delete();
+            } catch ( Exception e ) {
+                log.warn( "Unable to remove temporary file '" + jarFile.getAbsolutePath() + "'" );
+            }
+        }
     }
 
     /**
@@ -177,60 +186,70 @@ public class GuvnorM2Repository {
 
     }
 
-    public void deployParentPom(final GAV gav){
-      //Write pom.xml to temporary file for deployment
+    public void deployParentPom( final GAV gav ) {
+        //Write pom.xml to temporary file for deployment
         final File pomXMLFile = new File( System.getProperty( "java.io.tmpdir" ),
                                           toFileName( gav,
                                                       "pom.xml" ) );
-        String pomXML = generateParentPOM(gav);
+
         try {
-            if ( !pomXMLFile.exists() ) {
-                pomXMLFile.getParentFile().mkdirs();
-                pomXMLFile.createNewFile();
+
+            String pomXML = generateParentPOM( gav );
+            try {
+                if ( !pomXMLFile.exists() ) {
+                    pomXMLFile.getParentFile().mkdirs();
+                    pomXMLFile.createNewFile();
+                }
+
+                FileOutputStream fos = new FileOutputStream( pomXMLFile );
+                IOUtils.write( pomXML,
+                               fos );
+
+                fos.flush();
+                fos.close();
+            } catch ( IOException e ) {
+                throw new RuntimeException( e );
+            }
+            //pom.xml Artifact
+            Artifact pomXMLArtifact = new DefaultArtifact( gav.getGroupId(),
+                                                           gav.getArtifactId(),
+                                                           "pom",
+                                                           gav.getVersion() );
+            pomXMLArtifact = pomXMLArtifact.setFile( pomXMLFile );
+
+            try {
+                //Install into local repository
+                final InstallRequest installRequest = new InstallRequest();
+                installRequest
+                        .addArtifact( pomXMLArtifact );
+
+                Aether.getAether().getSystem().install( Aether.getAether().getSession(),
+                                                        installRequest );
+            } catch ( InstallationException e ) {
+                throw new RuntimeException( e );
             }
 
-            FileOutputStream fos = new FileOutputStream( pomXMLFile );
-            IOUtils.write( pomXML,
-                           fos );
+            //Deploy into Workbench's default remote repository
+            try {
+                final DeployRequest deployRequest = new DeployRequest();
+                deployRequest
+                        .addArtifact( pomXMLArtifact )
+                        .setRepository( getGuvnorM2Repository() );
 
-            fos.flush();
-            fos.close();
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
+                Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
+                                                       deployRequest );
+
+            } catch ( DeploymentException e ) {
+                throw new RuntimeException( e );
+            }
+
+        } finally {
+            try {
+                pomXMLFile.delete();
+            } catch ( Exception e ) {
+                log.warn( "Unable to remove temporary file '" + pomXMLFile.getAbsolutePath() + "'" );
+            }
         }
-        //pom.xml Artifact
-        Artifact pomXMLArtifact = new DefaultArtifact( gav.getGroupId(),
-                                                    gav.getArtifactId(),
-                                                    "pom",
-                                                    gav.getVersion() );
-        pomXMLArtifact = pomXMLArtifact.setFile( pomXMLFile );
-
-        try {
-            //Install into local repository
-            final InstallRequest installRequest = new InstallRequest();
-            installRequest
-                    .addArtifact( pomXMLArtifact );
-
-            Aether.getAether().getSystem().install( Aether.getAether().getSession(),
-                                                    installRequest );
-        } catch ( InstallationException e ) {
-            throw new RuntimeException( e );
-        }
-
-        //Deploy into Workbench's default remote repository
-        try {
-            final DeployRequest deployRequest = new DeployRequest();
-            deployRequest
-                    .addArtifact( pomXMLArtifact )
-                    .setRepository( getGuvnorM2Repository() );
-
-            Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
-                                                   deployRequest );
-
-        } catch ( DeploymentException e ) {
-            throw new RuntimeException( e );
-        }
-
     }
 
     private void deployArtifact( final GAV gav,
@@ -243,104 +262,113 @@ public class GuvnorM2Repository {
                                                       "pom.xml" ) );
 
         try {
-            if ( !pomXMLFile.exists() ) {
-                pomXMLFile.getParentFile().mkdirs();
-                pomXMLFile.createNewFile();
-            }
 
-            FileOutputStream fos = new FileOutputStream( pomXMLFile );
-            IOUtils.write( pomXML,
-                           fos );
-
-            fos.flush();
-            fos.close();
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
-        }
-
-        //JAR Artifact
-        Artifact jarArtifact = new DefaultArtifact( gav.getGroupId(),
-                                                    gav.getArtifactId(),
-                                                    "jar",
-                                                    gav.getVersion() );
-        jarArtifact = jarArtifact.setFile( jarFile );
-
-        //pom.xml Artifact
-        Artifact pomXMLArtifact = new SubArtifact( jarArtifact,
-                                                   "",
-                                                   "pom" );
-        pomXMLArtifact = pomXMLArtifact.setFile( pomXMLFile );
-
-        try {
-            //Install into local repository
-            final InstallRequest installRequest = new InstallRequest();
-            installRequest
-                    .addArtifact( jarArtifact )
-                    .addArtifact( pomXMLArtifact );
-
-            Aether.getAether().getSystem().install( Aether.getAether().getSession(),
-                                                    installRequest );
-        } catch ( InstallationException e ) {
-            throw new RuntimeException( e );
-        }
-
-        //Deploy into Workbench's default remote repository
-        try {
-            final DeployRequest deployRequest = new DeployRequest();
-            deployRequest
-                    .addArtifact( jarArtifact )
-                    .addArtifact( pomXMLArtifact )
-                    .setRepository( getGuvnorM2Repository() );
-
-            Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
-                                                   deployRequest );
-
-        } catch ( DeploymentException e ) {
-            throw new RuntimeException( e );
-        }
-
-        //Only deploy to additional repositories if required. This flag is principally for Unit Tests
-        if ( !includeAdditionalRepositories ) {
-            return;
-        }
-
-        //Deploy into remote repository defined in <distributionManagement>
-        try {
-            final Model model = new MavenXpp3Reader().read( new StringReader( pomXML ) );
-            final DistributionManagement distributionManagement = model.getDistributionManagement();
-
-            if ( distributionManagement != null ) {
-
-                final boolean isSnapshot = pomXMLArtifact.isSnapshot();
-                DeploymentRepository remoteRepository = null;
-                if ( isSnapshot ) {
-                    remoteRepository = distributionManagement.getSnapshotRepository();
-                } else {
-                    remoteRepository = distributionManagement.getRepository();
+            try {
+                if ( !pomXMLFile.exists() ) {
+                    pomXMLFile.getParentFile().mkdirs();
+                    pomXMLFile.createNewFile();
                 }
 
-                //If the user has configured a distribution management module in the pom then we will attempt to deploy there.
-                //If credentials are required those credentials must be provisioned in the user's settings.xml file
-                if ( remoteRepository != null ) {
-                    DeployRequest remoteRequest = new DeployRequest();
-                    remoteRequest
-                            .addArtifact( jarArtifact )
-                            .addArtifact( pomXMLArtifact )
-                            .setRepository( getRemoteRepoFromDeployment( remoteRepository ) );
+                FileOutputStream fos = new FileOutputStream( pomXMLFile );
+                IOUtils.write( pomXML,
+                               fos );
 
-                    Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
-                                                           remoteRequest );
-                }
+                fos.flush();
+                fos.close();
+            } catch ( IOException e ) {
+                throw new RuntimeException( e );
             }
 
-        } catch ( DeploymentException e ) {
-            throw new RuntimeException( e );
-        } catch ( XmlPullParserException xppe ) {
-            throw new RuntimeException( xppe );
-        } catch ( IOException ioe ) {
-            throw new RuntimeException( ioe );
-        }
+            //JAR Artifact
+            Artifact jarArtifact = new DefaultArtifact( gav.getGroupId(),
+                                                        gav.getArtifactId(),
+                                                        "jar",
+                                                        gav.getVersion() );
+            jarArtifact = jarArtifact.setFile( jarFile );
 
+            //pom.xml Artifact
+            Artifact pomXMLArtifact = new SubArtifact( jarArtifact,
+                                                       "",
+                                                       "pom" );
+            pomXMLArtifact = pomXMLArtifact.setFile( pomXMLFile );
+
+            try {
+                //Install into local repository
+                final InstallRequest installRequest = new InstallRequest();
+                installRequest
+                        .addArtifact( jarArtifact )
+                        .addArtifact( pomXMLArtifact );
+
+                Aether.getAether().getSystem().install( Aether.getAether().getSession(),
+                                                        installRequest );
+            } catch ( InstallationException e ) {
+                throw new RuntimeException( e );
+            }
+
+            //Deploy into Workbench's default remote repository
+            try {
+                final DeployRequest deployRequest = new DeployRequest();
+                deployRequest
+                        .addArtifact( jarArtifact )
+                        .addArtifact( pomXMLArtifact )
+                        .setRepository( getGuvnorM2Repository() );
+
+                Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
+                                                       deployRequest );
+
+            } catch ( DeploymentException e ) {
+                throw new RuntimeException( e );
+            }
+
+            //Only deploy to additional repositories if required. This flag is principally for Unit Tests
+            if ( !includeAdditionalRepositories ) {
+                return;
+            }
+
+            //Deploy into remote repository defined in <distributionManagement>
+            try {
+                final Model model = new MavenXpp3Reader().read( new StringReader( pomXML ) );
+                final DistributionManagement distributionManagement = model.getDistributionManagement();
+
+                if ( distributionManagement != null ) {
+
+                    final boolean isSnapshot = pomXMLArtifact.isSnapshot();
+                    DeploymentRepository remoteRepository = null;
+                    if ( isSnapshot ) {
+                        remoteRepository = distributionManagement.getSnapshotRepository();
+                    } else {
+                        remoteRepository = distributionManagement.getRepository();
+                    }
+
+                    //If the user has configured a distribution management module in the pom then we will attempt to deploy there.
+                    //If credentials are required those credentials must be provisioned in the user's settings.xml file
+                    if ( remoteRepository != null ) {
+                        DeployRequest remoteRequest = new DeployRequest();
+                        remoteRequest
+                                .addArtifact( jarArtifact )
+                                .addArtifact( pomXMLArtifact )
+                                .setRepository( getRemoteRepoFromDeployment( remoteRepository ) );
+
+                        Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
+                                                               remoteRequest );
+                    }
+                }
+
+            } catch ( DeploymentException e ) {
+                throw new RuntimeException( e );
+            } catch ( XmlPullParserException xppe ) {
+                throw new RuntimeException( xppe );
+            } catch ( IOException ioe ) {
+                throw new RuntimeException( ioe );
+            }
+
+        } finally {
+            try {
+                pomXMLFile.delete();
+            } catch ( Exception e ) {
+                log.warn( "Unable to remove temporary file '" + pomXMLFile.getAbsolutePath() + "'" );
+            }
+        }
     }
 
     private RemoteRepository getGuvnorM2Repository() {
@@ -353,14 +381,14 @@ public class GuvnorM2Repository {
         try {
             String localRepositoryUrl = m2RepoDir.toURI().toURL().toExternalForm();
             return new RemoteRepository.Builder( "guvnor-m2-repo",
-                                         "default",
-                                         localRepositoryUrl )
+                                                 "default",
+                                                 localRepositoryUrl )
                     .setSnapshotPolicy( new RepositoryPolicy( true,
-                                                      RepositoryPolicy.UPDATE_POLICY_DAILY,
-                                                      RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
-                    .setReleasePolicy(new RepositoryPolicy(true,
-                            RepositoryPolicy.UPDATE_POLICY_ALWAYS,
-                            RepositoryPolicy.CHECKSUM_POLICY_WARN))
+                                                              RepositoryPolicy.UPDATE_POLICY_DAILY,
+                                                              RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
+                    .setReleasePolicy( new RepositoryPolicy( true,
+                                                             RepositoryPolicy.UPDATE_POLICY_ALWAYS,
+                                                             RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
                     .build();
 
         } catch ( MalformedURLException e ) {
@@ -373,12 +401,12 @@ public class GuvnorM2Repository {
     private RemoteRepository getRemoteRepoFromDeployment( DeploymentRepository repo ) {
 
         RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder( repo.getId(), repo.getLayout(), repo.getUrl() )
-                .setSnapshotPolicy(new RepositoryPolicy(true,
-                        RepositoryPolicy.UPDATE_POLICY_DAILY,
-                        RepositoryPolicy.CHECKSUM_POLICY_WARN))
-                .setReleasePolicy(new RepositoryPolicy(true,
-                        RepositoryPolicy.UPDATE_POLICY_ALWAYS,
-                        RepositoryPolicy.CHECKSUM_POLICY_WARN));
+                .setSnapshotPolicy( new RepositoryPolicy( true,
+                                                          RepositoryPolicy.UPDATE_POLICY_DAILY,
+                                                          RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
+                .setReleasePolicy( new RepositoryPolicy( true,
+                                                         RepositoryPolicy.UPDATE_POLICY_ALWAYS,
+                                                         RepositoryPolicy.CHECKSUM_POLICY_WARN ) );
 
         Settings settings = MavenSettings.getSettings();
         Server server = settings.getServer( repo.getId() );
@@ -386,9 +414,9 @@ public class GuvnorM2Repository {
         if ( server != null ) {
             remoteRepoBuilder.setAuthentication(
                     new AuthenticationBuilder()
-                            .addUsername(server.getUsername())
-                            .addPassword(server.getPassword())
-                            .build());
+                            .addUsername( server.getUsername() )
+                            .addPassword( server.getPassword() )
+                            .build() );
         }
 
         return remoteRepoBuilder.build();
@@ -688,7 +716,7 @@ public class GuvnorM2Repository {
 
     protected String toFileName( final GAV gav,
                                  final String fileName ) {
-        return gav.getArtifactId() + "-" + gav.getVersion() + "." + fileName;
+        return gav.getGroupId() + "-" + gav.getArtifactId() + "-" + gav.getVersion() + "-" + Math.random() + "." + fileName;
     }
 
     public String generatePOM( final GAV gav ) {
