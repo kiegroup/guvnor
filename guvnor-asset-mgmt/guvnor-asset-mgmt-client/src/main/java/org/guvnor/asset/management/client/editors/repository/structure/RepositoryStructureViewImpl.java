@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.guvnor.asset.management.client.editors.project.structure;
+package org.guvnor.asset.management.client.editors.repository.structure;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,10 +26,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.editors.project.structure.widgets.ProjectModulesView;
 import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataView;
+import org.guvnor.asset.management.client.editors.repository.structure.configure.ConfigureScreenPopupViewImpl;
+import org.guvnor.asset.management.client.editors.repository.structure.promote.PromoteScreenPopupViewImpl;
+import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupViewImpl;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.uberfire.client.common.BusyPopup;
+
 
 @ApplicationScoped
 public class RepositoryStructureViewImpl
@@ -57,6 +61,16 @@ public class RepositoryStructureViewImpl
 
     @UiField(provided = true)
     ProjectModulesView modulesView;
+    
+    @Inject
+    ReleaseScreenPopupViewImpl releaseScreenPopupView;
+    
+    @Inject
+    ConfigureScreenPopupViewImpl configureScreenPopupView;
+    
+    @Inject
+    PromoteScreenPopupViewImpl promoteScreenPopupView;
+    
 
     @Inject
     public RepositoryStructureViewImpl( RepositoryStructureDataView dataView,
@@ -72,6 +86,22 @@ public class RepositoryStructureViewImpl
         this.presenter = presenter;
     }
 
+    @Override
+    public ReleaseScreenPopupViewImpl getReleaseScreenPopupView() {
+        return releaseScreenPopupView;
+    }
+
+    @Override
+    public ConfigureScreenPopupViewImpl getConfigureScreenPopupView() {
+        return configureScreenPopupView;
+    }
+
+    @Override
+    public PromoteScreenPopupViewImpl getPromoteScreenPopupView() {
+        return promoteScreenPopupView;
+    }
+    
+    
     @Override
     public void showBusyIndicator( final String message ) {
         BusyPopup.showMessage( message );
