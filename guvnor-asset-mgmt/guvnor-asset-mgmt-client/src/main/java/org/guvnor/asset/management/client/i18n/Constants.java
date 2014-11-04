@@ -18,7 +18,6 @@ package org.guvnor.asset.management.client.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
-import org.uberfire.workbench.model.menu.MenuItem;
 
 /**
  * This uses GWT to provide client side compile time resolving of locales. See:
@@ -226,5 +225,76 @@ public interface Constants extends Messages {
     String Configure();
 
     String Promote();
+
+    //create repository wizard
+
+    String NewRepository();
+
+    String RepoName();
+
+    String RepoNameHolder();
+
+    String OrganizationalUnit();
+
+    String ManagedRepository();
+
+    String ManagedRepositoryHelpInline();
+
+    String RepositoryInfoPage();
+
+    String RepositoryStructurePage();
+
+    String StructureTypeDescription();
+
+    String RepoInformation();
+
+    String ProjectGroup();
+
+    String ProjectGroupHolder();
+
+    String ProjectArtifact();
+
+    String ProjectArtifactHolder();
+
+    String ProjectVersion();
+
+    String ProjectVersionHolder();
+
+    String ProjectName();
+
+    String ProjectNameHolder();
+
+    String ProjectDescription();
+
+    String ProjectDescriptionHolder();
+
+    String SingleModule();
+
+    String SingleModuleHelpInline();
+
+    String MultiModule();
+
+    String MultiModuleHelpInline();
+
+    String ConfigureBranches();
+
+    String IsRequired();
+
+    String CreatingRepository();
+
+    String RepoCreationSuccess();
+
+    String InitializingRepository();
+
+    String RepoInitializationSuccess();
+
+    String RepoInitializationFail();
+
+    String RepoConfigurationStarted();
+
+    String RepoConfigurationStartFailed();
+
+    //end of create repository wizard.
+
 
 }

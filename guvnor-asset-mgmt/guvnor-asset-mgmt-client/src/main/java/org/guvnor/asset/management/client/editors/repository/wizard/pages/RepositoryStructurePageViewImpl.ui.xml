@@ -1,0 +1,91 @@
+<!--
+  ~ Copyright 2014 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+
+  <ui:with field="i18n" type="org.guvnor.asset.management.client.i18n.Constants"/>
+
+  <b:Well>
+    <b:Fieldset>
+
+      <b:Legend>
+        <ui:text from="{i18n.StructureTypeDescription}"/>
+        <small>
+          <ui:text from="{i18n.IsRequired}"/>
+        </small>
+      </b:Legend>
+
+      <b:ControlLabel for="projectNameTextBox">
+        <g:Label ui:field="projectName" text="{i18n.ProjectName}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <b:TextBox b:id="projectName" ui:field="projectNameTextBox" placeholder="{i18n.ProjectNameHolder}"/>
+      </b:Controls>
+
+      <b:ControlLabel for="projectDescriptionTextBox">
+        <g:Label ui:field="projectDescription" text="{i18n.ProjectDescription}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <b:TextBox b:id="projectDescription" ui:field="projectDescriptionTextBox" placeholder="{i18n.ProjectDescriptionHolder}"/>
+      </b:Controls>
+
+      <b:ControlLabel for="groupIdTextBox">
+        <g:Label ui:field="groupId" text="{i18n.ProjectGroup}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <b:TextBox b:id="groupId" ui:field="groupIdTextBox" placeholder="{i18n.ProjectGroupHolder}"/>
+        <b:HelpInline ui:field="groupIdTextBoxHelpInline"/>
+      </b:Controls>
+
+      <b:ControlLabel for="artifactIdTextBox">
+        <g:Label ui:field="artifactId" text="{i18n.ProjectArtifact}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <b:TextBox b:id="artifactId" ui:field="artifactIdTextBox" placeholder="{i18n.ProjectArtifactHolder}"/>
+        <b:HelpInline ui:field="artifactIdTextBoxHelpInline"/>
+      </b:Controls>
+
+      <b:ControlLabel for="versionTextBox">
+        <g:Label ui:field="version" text="{i18n.ProjectVersion}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <b:TextBox b:id="version" ui:field="versionTextBox" placeholder="{i18n.ProjectVersionHolder}"/>
+        <b:HelpInline ui:field="versionTextBoxHelpInline"/>
+      </b:Controls>
+
+      <b:Controls>
+        <b:RadioButton name="moduleType" b:id="isSingleModule" ui:field="isSingleModuleRadioButton" text="{i18n.SingleModule}"/>
+        <b:HelpInline ui:field="isSingleModuleRadioButtonHelpInline" text="{i18n.SingleModuleHelpInline}"/>
+      </b:Controls>
+
+      <b:Controls>
+        <b:RadioButton name="moduleType" b:id="isMultiModule" ui:field="isMultiModuleRadioButton" text="{i18n.MultiModule}"/>
+        <b:HelpInline ui:field="isMultiModuleRadioButtonHelpInline" text="{i18n.MultiModuleHelpInline}"/>
+      </b:Controls>
+
+      <b:Controls>
+        <b:CheckBox ui:field="isConfigureRepositoryCheckBox" text="{i18n.ConfigureBranches}"></b:CheckBox>
+      </b:Controls>
+
+
+    </b:Fieldset>
+
+  </b:Well>
+
+</ui:UiBinder>

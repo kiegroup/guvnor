@@ -15,6 +15,8 @@ public interface RepositoryStructureService {
 
     Path initRepositoryStructure( final GAV gav, final Repository repo);
 
+    Path initRepositoryStructure( POM pom, String baseUrl, Repository repo, boolean multiProject );
+
     Repository initRepository( final Repository repo, boolean managed );
 
     Path convertToMultiProjectStructure( final List<Project> projects,
