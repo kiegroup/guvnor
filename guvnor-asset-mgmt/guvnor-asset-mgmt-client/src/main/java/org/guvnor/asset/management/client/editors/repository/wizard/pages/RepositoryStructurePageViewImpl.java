@@ -53,32 +53,42 @@ public class RepositoryStructurePageViewImpl extends Composite
     @UiField
     TextBox groupIdTextBox;
 
+    /*
     @UiField
     HelpInline groupIdTextBoxHelpInline;
+    */
 
     @UiField
     TextBox artifactIdTextBox;
 
+    /*
     @UiField
     HelpInline artifactIdTextBoxHelpInline;
+    */
 
     @UiField
     TextBox versionTextBox;
 
+    /*
     @UiField
     HelpInline versionTextBoxHelpInline;
+    */
 
     @UiField
     RadioButton isSingleModuleRadioButton;
 
+    /*
     @UiField
     HelpInline isSingleModuleRadioButtonHelpInline;
+    */
 
     @UiField
     RadioButton isMultiModuleRadioButton;
 
+    /*
     @UiField
     HelpInline isMultiModuleRadioButtonHelpInline;
+    */
 
     @UiField
     CheckBox isConfigureRepositoryCheckBox;

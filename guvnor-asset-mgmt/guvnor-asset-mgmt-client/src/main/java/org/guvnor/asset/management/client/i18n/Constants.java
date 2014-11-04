@@ -236,6 +236,8 @@ public interface Constants extends Messages {
 
     String OrganizationalUnit();
 
+    String RepositoryType();
+
     String ManagedRepository();
 
     String ManagedRepositoryHelpInline();
@@ -260,6 +262,8 @@ public interface Constants extends Messages {
 
     String ProjectVersionHolder();
 
+    String ProjectSettings();
+
     String ProjectName();
 
     String ProjectNameHolder();
@@ -275,6 +279,8 @@ public interface Constants extends Messages {
     String MultiModule();
 
     String MultiModuleHelpInline();
+
+    String ProjectBranches();
 
     String ConfigureBranches();
 
