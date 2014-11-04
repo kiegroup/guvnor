@@ -10,6 +10,8 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
@@ -32,6 +34,25 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
 
     @Inject
     private User identity;
+    
+    @UiField
+    ControlGroup repositoryTextGroup;
+
+    @UiField
+    TextBox repositoryText;
+
+    @UiField
+    HelpInline repositoryTextHelpInline;
+    
+    @UiField
+    ControlGroup sourceBranchTextGroup;
+
+    @UiField
+    TextBox sourceBranchText;
+
+    @UiField
+    HelpInline sourceBranchTextHelpInline;
+    
 
     @UiField
     ControlGroup userNameTextGroup;
@@ -130,7 +151,7 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
     private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(okCommand, cancelCommand);
 
     public ReleaseScreenPopupViewImpl() {
-        setTitle(Constants.INSTANCE.Release());
+        setTitle(Constants.INSTANCE.Release_Configuration());
         setBackdrop(BackdropType.STATIC);
         setKeyboard(true);
         setAnimation(true);
@@ -140,12 +161,35 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
         add(footer);
     }
 
-    public void configure(Command command) {
+    public void configure(String repositoryAlias, String branch, String repositoryVersion, Command command) {
         this.callbackCommand = command;
 
+        this.sourceBranchText.setText(branch);
+        this.repositoryText.setText(repositoryAlias);
+        this.sourceBranchText.setReadOnly(true);
+        this.repositoryText.setReadOnly(true);
         // set default values for the fields
         userNameText.setText(identity.getIdentifier());
         serverURLText.setText(GWT.getModuleBaseURL().replaceFirst("/" + GWT.getModuleName() + "/", ""));
+        this.versionTextHelpInline.setText("The current repository version is: "+repositoryVersion);
+        this.versionText.setText(repositoryVersion);
+        userNameText.setEnabled( false );
+        passwordText.setEnabled( false );
+        serverURLText.setEnabled( false );
+        deployToRuntimeCheck.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+                @Override
+                public void onValueChange( ValueChangeEvent<Boolean> event ) {
+                    if ( event.getValue() ) {
+                        userNameText.setEnabled( true );
+                        passwordText.setEnabled( true );
+                        serverURLText.setEnabled( true );
+                    } else {
+                        userNameText.setEnabled( false );
+                        passwordText.setEnabled( false );
+                        serverURLText.setEnabled( false );
+                    }
+                }
+            } );
     }
 
     public String getUsername() {

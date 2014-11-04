@@ -34,6 +34,26 @@
     <bootstrap:Well>
       <bootstrap:Fieldset>
 
+          
+          <bootstrap:ControlGroup ui:field="repositoryTextGroup">
+          <bootstrap:ControlLabel for="repositoryText">
+            <ui:text from="{i18n.Repository}"/>
+          </bootstrap:ControlLabel>
+          <bootstrap:Controls>
+            <bootstrap:TextBox bootstrap:id="repositoryText" ui:field="repositoryText" placeholder="{i18n.Repository}"/>
+            <bootstrap:HelpInline ui:field="repositoryTextHelpInline"/>
+          </bootstrap:Controls>
+        </bootstrap:ControlGroup>
+        
+       <bootstrap:ControlGroup ui:field="sourceBranchTextGroup">
+          <bootstrap:ControlLabel for="sourceBranchText">
+            <ui:text from="{i18n.Source_Branch}"/>
+          </bootstrap:ControlLabel>
+          <bootstrap:Controls>
+            <bootstrap:TextBox bootstrap:id="sourceBranchText" ui:field="sourceBranchText" placeholder="{i18n.Source_Branch}"/>
+            <bootstrap:HelpInline ui:field="sourceBranchTextHelpInline"/>
+          </bootstrap:Controls>
+        </bootstrap:ControlGroup>
 
          <bootstrap:ControlGroup ui:field="versionTextGroup">
           <bootstrap:ControlLabel for="verionText">
