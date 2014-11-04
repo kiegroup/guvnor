@@ -1,14 +1,11 @@
 package org.guvnor.asset.management.client.editors.repository.structure.configure;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -33,6 +30,24 @@ public class ConfigureScreenPopupViewImpl extends KieBaseModal {
     @Inject
     private User identity;
 
+    @UiField
+    ControlGroup repositoryTextGroup;
+
+    @UiField
+    TextBox repositoryText;
+
+    @UiField
+    HelpInline repositoryTextHelpInline;
+    
+    @UiField
+    ControlGroup sourceBranchTextGroup;
+
+    @UiField
+    TextBox sourceBranchText;
+
+    @UiField
+    HelpInline sourceBranchTextHelpInline;
+    
     @UiField
     ControlGroup devBranchTextGroup;
 
@@ -94,7 +109,7 @@ public class ConfigureScreenPopupViewImpl extends KieBaseModal {
     private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(okCommand, cancelCommand);
 
     public ConfigureScreenPopupViewImpl() {
-        setTitle(Constants.INSTANCE.Release());
+        setTitle(Constants.INSTANCE.Configure_Repository());
         setBackdrop(BackdropType.STATIC);
         setKeyboard(true);
         setAnimation(true);
@@ -104,10 +119,18 @@ public class ConfigureScreenPopupViewImpl extends KieBaseModal {
         add(footer);
     }
 
-    public void configure(Command command) {
+    public void configure(String repositoryAlias, String branch, String repositoryVersion, Command command) {
         this.callbackCommand = command;
-
-      
+        this.devBranchText.setText("dev");
+        this.devBranchTextHelpInline.setText("The branch will be called (dev)-"+repositoryVersion);
+        this.releaseBranchText.setText("release");
+        this.releaseBranchTextHelpInline.setText("The branch will be called (release)-"+repositoryVersion);
+        this.sourceBranchText.setText(branch);
+        this.repositoryText.setText(repositoryAlias);
+        this.sourceBranchText.setReadOnly(true);
+        this.repositoryText.setReadOnly(true);
+        this.versionTextHelpInline.setText("The current repository version is: "+repositoryVersion);
+        this.versionText.setText(repositoryVersion);
     }
 
     public String getDevBranch() {

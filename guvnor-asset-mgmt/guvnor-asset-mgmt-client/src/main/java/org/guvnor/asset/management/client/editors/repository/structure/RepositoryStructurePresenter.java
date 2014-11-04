@@ -851,7 +851,7 @@ public class RepositoryStructurePresenter
         return new Command() {
             @Override
             public void execute() {
-                view.getConfigureScreenPopupView().configure(new com.google.gwt.user.client.Command() {
+                view.getConfigureScreenPopupView().configure(repository.getAlias(), branch, model.getPOM().getGav().getVersion(), new com.google.gwt.user.client.Command() {
                     @Override
                     public void execute() {
                         String devBranch = view.getConfigureScreenPopupView().getDevBranch();
@@ -873,7 +873,7 @@ public class RepositoryStructurePresenter
         return new Command() {
             @Override
             public void execute() {
-                view.getPromoteScreenPopupView().configure(new com.google.gwt.user.client.Command() {
+                view.getPromoteScreenPopupView().configure(repository.getAlias(), branch, repository.getBranches(), new com.google.gwt.user.client.Command() {
                     @Override
                     public void execute() {
                         String targetBranch = view.getPromoteScreenPopupView().getTargetBranch();
@@ -891,7 +891,7 @@ public class RepositoryStructurePresenter
         return new Command() {
             @Override
             public void execute() {
-                view.getReleaseScreenPopupView().configure(new com.google.gwt.user.client.Command() {
+                view.getReleaseScreenPopupView().configure(repository.getAlias(), branch, model.getPOM().getGav().getVersion(), new com.google.gwt.user.client.Command() {
                     @Override
                     public void execute() {
                         String username = view.getReleaseScreenPopupView().getUsername();
