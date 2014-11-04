@@ -89,6 +89,35 @@ public class RepositoryStructureServiceImpl
         return pathToPom;
     }
 
+    public Path initRepositoryStructure( POM pom, String baseUrl, Repository repo, boolean multiProject ) {
+
+        if ( pom == null || baseUrl == null || repo == null ) {
+            return null;
+        }
+
+        if ( multiProject ) {
+
+            pom.setMultiModule( true );
+
+            //Creating the parent pom
+            final Path fsRoot = repo.getRoot();
+            final Path pathToPom = pomService.create( fsRoot,
+                    "",
+                    pom );
+            //Deploying the parent pom artifact,
+            // it needs to be deployed before the first child is created
+            m2service.deployParentPom( pom.getGav() );
+
+            updateManagedStatus( repo, true );
+
+            return pathToPom;
+
+        } else {
+            Project project = projectService.newProject( repo, pom.getName(), pom, baseUrl );
+            return project.getPomXMLPath();
+        }
+    }
+
     @Override
     public Repository initRepository( final Repository repo, boolean managed ) {
         return updateManagedStatus( repo, managed );
