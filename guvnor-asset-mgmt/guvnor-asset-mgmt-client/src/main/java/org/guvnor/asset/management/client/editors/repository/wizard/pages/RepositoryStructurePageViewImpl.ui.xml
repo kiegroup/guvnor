@@ -21,6 +21,12 @@
 
   <ui:with field="i18n" type="org.guvnor.asset.management.client.i18n.Constants"/>
 
+  <ui:style>
+    .mandatory-field {
+      color: red !important;
+    }
+  </ui:style>
+
   <b:Well>
     <b:Fieldset>
 
@@ -50,7 +56,9 @@
       <b:ControlLabel><br/><strong><g:Label text="{i18n.ProjectSettings}"/></strong></b:ControlLabel>
 
       <b:ControlLabel for="projectNameTextBox">
-        <g:Label ui:field="projectName" text="{i18n.ProjectName}"/>
+        <span class="{style.mandatory-field}">*</span>
+        <ui:text from="{i18n.ProjectName}"/>
+        <!--g:Label ui:field="projectName" text="{i18n.ProjectName}"/-->
       </b:ControlLabel>
       <b:Controls>
         <b:TextBox b:id="projectName" ui:field="projectNameTextBox" placeholder="{i18n.ProjectNameHolder}"/>
@@ -64,7 +72,9 @@
       </b:Controls>
 
       <b:ControlLabel for="groupIdTextBox">
-        <g:Label ui:field="groupId" text="{i18n.ProjectGroup}"/>
+        <span class="{style.mandatory-field}">*</span>
+        <ui:text from="{i18n.ProjectGroup}"/>
+        <!--g:Label ui:field="groupId" text="{i18n.ProjectGroup}"/-->
       </b:ControlLabel>
       <b:Controls>
         <b:TextBox b:id="groupId" ui:field="groupIdTextBox" placeholder="{i18n.ProjectGroupHolder}"/>
@@ -72,7 +82,9 @@
       </b:Controls>
 
       <b:ControlLabel for="artifactIdTextBox">
-        <g:Label ui:field="artifactId" text="{i18n.ProjectArtifact}"/>
+        <span class="{style.mandatory-field}">*</span>
+        <ui:text from="{i18n.ProjectArtifact}"/>
+        <!--g:Label ui:field="artifactId" text="{i18n.ProjectArtifact}"/-->
       </b:ControlLabel>
       <b:Controls>
         <b:TextBox b:id="artifactId" ui:field="artifactIdTextBox" placeholder="{i18n.ProjectArtifactHolder}"/>
@@ -80,7 +92,9 @@
       </b:Controls>
 
       <b:ControlLabel for="versionTextBox">
-        <g:Label ui:field="version" text="{i18n.ProjectVersion}"/>
+        <span class="{style.mandatory-field}">*</span>
+        <ui:text from="{i18n.ProjectVersion}"/>
+        <!--g:Label ui:field="version" text="{i18n.ProjectVersion}"/-->
       </b:ControlLabel>
       <b:Controls>
         <b:TextBox b:id="version" ui:field="versionTextBox" placeholder="{i18n.ProjectVersionHolder}"/>
