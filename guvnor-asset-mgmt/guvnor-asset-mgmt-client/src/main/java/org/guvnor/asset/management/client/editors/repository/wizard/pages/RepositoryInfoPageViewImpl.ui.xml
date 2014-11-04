@@ -23,7 +23,7 @@
 
   <ui:style>
     .mandatory-field {
-      color: red;
+      color: red !important;
     }
   </ui:style>
 
