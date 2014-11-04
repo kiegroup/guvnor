@@ -21,7 +21,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-
 public class ReleaseScreenPopupViewImpl extends KieBaseModal {
 
     interface ReleaseScreenPopupWidgetBinder
@@ -34,7 +33,7 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
 
     @Inject
     private User identity;
-    
+
     @UiField
     ControlGroup repositoryTextGroup;
 
@@ -43,7 +42,7 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
 
     @UiField
     HelpInline repositoryTextHelpInline;
-    
+
     @UiField
     ControlGroup sourceBranchTextGroup;
 
@@ -52,7 +51,6 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
 
     @UiField
     HelpInline sourceBranchTextHelpInline;
-    
 
     @UiField
     ControlGroup userNameTextGroup;
@@ -104,26 +102,35 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
     private final Command okCommand = new Command() {
         @Override
         public void execute() {
-
-            if (isEmpty(userNameText.getText())) {
-                userNameTextGroup.setType(ControlGroupType.ERROR);
-                userNameTextHelpInline.setText(Constants.INSTANCE.FieldMandatory0("Username"));
-
-                return;
-            }
-
-            if (isEmpty(passwordText.getText())) {
-                passwordTextGroup.setType(ControlGroupType.ERROR);
-                passwordTextHelpInline.setText(Constants.INSTANCE.FieldMandatory0("Password"));
+            if (isEmpty(versionText.getText())) {
+                versionTextGroup.setType(ControlGroupType.ERROR);
+                versionTextHelpInline.setText(Constants.INSTANCE.FieldMandatory0("Version"));
 
                 return;
             }
+            if (deployToRuntimeCheck.getValue()) {
 
-            if (isEmpty(serverURLText.getText())) {
-                serverURLTextGroup.setType(ControlGroupType.ERROR);
-                serverURLTextHelpInline.setText(Constants.INSTANCE.FieldMandatory0("ServerURL"));
+                if (isEmpty(userNameText.getText())) {
+                    userNameTextGroup.setType(ControlGroupType.ERROR);
+                    userNameTextHelpInline.setText(Constants.INSTANCE.FieldMandatory0("Username"));
 
-                return;
+                    return;
+                }
+
+                if (isEmpty(passwordText.getText())) {
+                    passwordTextGroup.setType(ControlGroupType.ERROR);
+                    passwordTextHelpInline.setText(Constants.INSTANCE.FieldMandatory0("Password"));
+
+                    return;
+                }
+
+                if (isEmpty(serverURLText.getText())) {
+                    serverURLTextGroup.setType(ControlGroupType.ERROR);
+                    serverURLTextHelpInline.setText(Constants.INSTANCE.FieldMandatory0("ServerURL"));
+
+                    return;
+                }
+
             }
 
             if (callbackCommand != null) {
@@ -171,25 +178,25 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
         // set default values for the fields
         userNameText.setText(identity.getIdentifier());
         serverURLText.setText(GWT.getModuleBaseURL().replaceFirst("/" + GWT.getModuleName() + "/", ""));
-        this.versionTextHelpInline.setText("The current repository version is: "+repositoryVersion);
+        this.versionTextHelpInline.setText("The current repository version is: " + repositoryVersion);
         this.versionText.setText(repositoryVersion);
-        userNameText.setEnabled( false );
-        passwordText.setEnabled( false );
-        serverURLText.setEnabled( false );
-        deployToRuntimeCheck.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-                @Override
-                public void onValueChange( ValueChangeEvent<Boolean> event ) {
-                    if ( event.getValue() ) {
-                        userNameText.setEnabled( true );
-                        passwordText.setEnabled( true );
-                        serverURLText.setEnabled( true );
-                    } else {
-                        userNameText.setEnabled( false );
-                        passwordText.setEnabled( false );
-                        serverURLText.setEnabled( false );
-                    }
+        userNameText.setEnabled(false);
+        passwordText.setEnabled(false);
+        serverURLText.setEnabled(false);
+        deployToRuntimeCheck.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                if (event.getValue()) {
+                    userNameText.setEnabled(true);
+                    passwordText.setEnabled(true);
+                    serverURLText.setEnabled(true);
+                } else {
+                    userNameText.setEnabled(false);
+                    passwordText.setEnabled(false);
+                    serverURLText.setEnabled(false);
                 }
-            } );
+            }
+        });
     }
 
     public String getUsername() {

@@ -6,6 +6,7 @@ import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -82,7 +83,26 @@ public class ConfigureScreenPopupViewImpl extends KieBaseModal {
         @Override
         public void execute() {
 
-           
+            if (isEmpty(devBranchText.getText())) {
+                devBranchTextGroup.setType(ControlGroupType.ERROR);
+                devBranchTextHelpInline.setText(Constants.INSTANCE.FieldMandatory0("Dev Branch"));
+
+                return;
+            }
+            
+            if (isEmpty(releaseBranchText.getText())) {
+                releaseBranchTextGroup.setType(ControlGroupType.ERROR);
+                releaseBranchTextHelpInline.setText(Constants.INSTANCE.FieldMandatory0("Release Branch"));
+
+                return;
+            }
+            
+            if (isEmpty(versionText.getText())) {
+                versionTextGroup.setType(ControlGroupType.ERROR);
+                versionTextHelpInline.setText(Constants.INSTANCE.FieldMandatory0("Version"));
+
+                return;
+            }
 
             if (callbackCommand != null) {
                 callbackCommand.execute();
@@ -102,6 +122,7 @@ public class ConfigureScreenPopupViewImpl extends KieBaseModal {
     private final Command cancelCommand = new Command() {
         @Override
         public void execute() {
+            
             hide();
         }
     };
