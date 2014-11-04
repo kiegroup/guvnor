@@ -19,8 +19,8 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <ui:with field="i18n"
-           type="org.guvnor.asset.management.client.i18n.Constants"/>
+  <ui:with field="i18n" type="org.guvnor.asset.management.client.i18n.Constants"/>
+
   <ui:style>
     .mandatory-field {
       color: red;
@@ -30,12 +30,14 @@
   <g:HTMLPanel>
     <b:Well>
       <b:Fieldset>
-        <b:Legend>
+
+        <!--b:Legend>
           <ui:text from="{i18n.RepoInformation}"/>
           <small>
             <ui:text from="{i18n.IsRequired}"/>
           </small>
-        </b:Legend>
+        </b:Legend-->
+
         <b:ControlGroup ui:field="nameGroup">
           <b:ControlLabel for="name">
             <span class="{style.mandatory-field}">*</span>

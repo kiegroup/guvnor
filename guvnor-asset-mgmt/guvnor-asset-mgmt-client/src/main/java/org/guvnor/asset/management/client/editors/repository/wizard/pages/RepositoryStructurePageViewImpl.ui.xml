@@ -24,12 +24,30 @@
   <b:Well>
     <b:Fieldset>
 
-      <b:Legend>
+      <!--b:Legend>
         <ui:text from="{i18n.StructureTypeDescription}"/>
         <small>
           <ui:text from="{i18n.IsRequired}"/>
         </small>
-      </b:Legend>
+      </b:Legend-->
+
+      <b:ControlLabel><strong><g:Label text="{i18n.RepositoryType}"/></strong></b:ControlLabel>
+      <b:Controls>
+        <b:RadioButton name="moduleType" b:id="isSingleModule" ui:field="isSingleModuleRadioButton" text="{i18n.SingleModule}"/>
+        <!--b:HelpInline ui:field="isSingleModuleRadioButtonHelpInline" text="{i18n.SingleModuleHelpInline}"/-->
+      </b:Controls>
+
+      <b:Controls>
+        <b:RadioButton name="moduleType" b:id="isMultiModule" ui:field="isMultiModuleRadioButton" text="{i18n.MultiModule}"/>
+        <!--b:HelpInline ui:field="isMultiModuleRadioButtonHelpInline" text="{i18n.MultiModuleHelpInline}"/-->
+      </b:Controls>
+
+      <b:ControlLabel><br/><strong><g:Label text="{i18n.ProjectBranches}"/></strong></b:ControlLabel>
+      <b:Controls>
+        <b:CheckBox ui:field="isConfigureRepositoryCheckBox" text="{i18n.ConfigureBranches}"></b:CheckBox>
+      </b:Controls>
+
+      <b:ControlLabel><br/><strong><g:Label text="{i18n.ProjectSettings}"/></strong></b:ControlLabel>
 
       <b:ControlLabel for="projectNameTextBox">
         <g:Label ui:field="projectName" text="{i18n.ProjectName}"/>
@@ -50,7 +68,7 @@
       </b:ControlLabel>
       <b:Controls>
         <b:TextBox b:id="groupId" ui:field="groupIdTextBox" placeholder="{i18n.ProjectGroupHolder}"/>
-        <b:HelpInline ui:field="groupIdTextBoxHelpInline"/>
+        <!--b:HelpInline ui:field="groupIdTextBoxHelpInline"/-->
       </b:Controls>
 
       <b:ControlLabel for="artifactIdTextBox">
@@ -58,7 +76,7 @@
       </b:ControlLabel>
       <b:Controls>
         <b:TextBox b:id="artifactId" ui:field="artifactIdTextBox" placeholder="{i18n.ProjectArtifactHolder}"/>
-        <b:HelpInline ui:field="artifactIdTextBoxHelpInline"/>
+        <!--b:HelpInline ui:field="artifactIdTextBoxHelpInline"/-->
       </b:Controls>
 
       <b:ControlLabel for="versionTextBox">
@@ -66,23 +84,8 @@
       </b:ControlLabel>
       <b:Controls>
         <b:TextBox b:id="version" ui:field="versionTextBox" placeholder="{i18n.ProjectVersionHolder}"/>
-        <b:HelpInline ui:field="versionTextBoxHelpInline"/>
+        <!--b:HelpInline ui:field="versionTextBoxHelpInline"/-->
       </b:Controls>
-
-      <b:Controls>
-        <b:RadioButton name="moduleType" b:id="isSingleModule" ui:field="isSingleModuleRadioButton" text="{i18n.SingleModule}"/>
-        <b:HelpInline ui:field="isSingleModuleRadioButtonHelpInline" text="{i18n.SingleModuleHelpInline}"/>
-      </b:Controls>
-
-      <b:Controls>
-        <b:RadioButton name="moduleType" b:id="isMultiModule" ui:field="isMultiModuleRadioButton" text="{i18n.MultiModule}"/>
-        <b:HelpInline ui:field="isMultiModuleRadioButtonHelpInline" text="{i18n.MultiModuleHelpInline}"/>
-      </b:Controls>
-
-      <b:Controls>
-        <b:CheckBox ui:field="isConfigureRepositoryCheckBox" text="{i18n.ConfigureBranches}"></b:CheckBox>
-      </b:Controls>
-
 
     </b:Fieldset>
 
