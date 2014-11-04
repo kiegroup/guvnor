@@ -77,18 +77,18 @@ public class RepositoryStructurePageViewImpl extends Composite
     @UiField
     RadioButton isSingleModuleRadioButton;
 
-    /*
+
     @UiField
     HelpInline isSingleModuleRadioButtonHelpInline;
-    */
+
 
     @UiField
     RadioButton isMultiModuleRadioButton;
 
-    /*
+
     @UiField
     HelpInline isMultiModuleRadioButtonHelpInline;
-    */
+
 
     @UiField
     CheckBox isConfigureRepositoryCheckBox;

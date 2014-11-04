@@ -40,12 +40,12 @@
       <b:ControlLabel><strong><g:Label text="{i18n.RepositoryType}"/></strong></b:ControlLabel>
       <b:Controls>
         <b:RadioButton name="moduleType" b:id="isSingleModule" ui:field="isSingleModuleRadioButton" text="{i18n.SingleModule}"/>
-        <!--b:HelpInline ui:field="isSingleModuleRadioButtonHelpInline" text="{i18n.SingleModuleHelpInline}"/-->
+        <b:HelpInline ui:field="isSingleModuleRadioButtonHelpInline" text="{i18n.SingleModuleHelpInline}"/>
       </b:Controls>
 
       <b:Controls>
         <b:RadioButton name="moduleType" b:id="isMultiModule" ui:field="isMultiModuleRadioButton" text="{i18n.MultiModule}"/>
-        <!--b:HelpInline ui:field="isMultiModuleRadioButtonHelpInline" text="{i18n.MultiModuleHelpInline}"/-->
+        <b:HelpInline ui:field="isMultiModuleRadioButtonHelpInline" text="{i18n.MultiModuleHelpInline}"/>
       </b:Controls>
 
       <b:ControlLabel><br/><strong><g:Label text="{i18n.ProjectBranches}"/></strong></b:ControlLabel>
