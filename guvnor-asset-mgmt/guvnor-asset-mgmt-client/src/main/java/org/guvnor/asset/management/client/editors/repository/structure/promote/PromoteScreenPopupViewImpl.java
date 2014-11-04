@@ -7,6 +7,7 @@ import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -67,7 +68,13 @@ public class PromoteScreenPopupViewImpl extends KieBaseModal {
         @Override
         public void execute() {
 
-           
+            if (targetBranchListBox.getValue().equals(Constants.INSTANCE.Select_A_Branch())
+                    || targetBranchListBox.getValue().equals(sourceBranchText.getText())) {
+                targetBranchListBoxGroup.setType(ControlGroupType.ERROR);
+                targetBranchListBoxHelpInline.setText(Constants.INSTANCE.FieldMandatory0("Target Branch"));
+
+                return;
+            }
 
             if (callbackCommand != null) {
                 callbackCommand.execute();
@@ -75,13 +82,6 @@ public class PromoteScreenPopupViewImpl extends KieBaseModal {
             hide();
         }
 
-        private boolean isEmpty(String value) {
-            if (value == null || value.isEmpty()) {
-                return true;
-            }
-
-            return false;
-        }
     };
 
     private final Command cancelCommand = new Command() {
