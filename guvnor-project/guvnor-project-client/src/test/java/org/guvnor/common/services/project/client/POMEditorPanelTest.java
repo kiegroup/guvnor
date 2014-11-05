@@ -66,7 +66,7 @@ public class POMEditorPanelTest {
     @Test
     public void testOpenProjectContext() throws Exception {
         presenter.onOpenProjectContext();
-        verify(placeManager).goTo("projectStructureScreen");
+        verify(placeManager).goTo("repositoryStructureScreen");
     }
 
     private POM createTestModel(String group, String artifact, String version) {
