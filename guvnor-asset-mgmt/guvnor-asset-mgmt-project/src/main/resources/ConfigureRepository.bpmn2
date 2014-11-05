@@ -29,6 +29,11 @@
   <bpmn2:itemDefinition id="__C3D97030-B297-41AB-BE4B-3922F6A08F01_OperationInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__C3D97030-B297-41AB-BE4B-3922F6A08F01_ApprovedOutputXItem" structureRef="Object"/>
   <bpmn2:process id="guvnor-asset-management.ConfigureRepository" drools:packageName="org.jbpm" drools:version="1.0" name="ConfigureRepository" isExecutable="true">
+       <bpmn2:extensionElements>
+      <drools:metaData name="customDescription">
+        <drools:metaValue><![CDATA[Configuring #{RepositoryName} with branches: #{DevBranchName} and #{ReleaseBranchName}]]></drools:metaValue>
+      </drools:metaData>
+    </bpmn2:extensionElements>
     <bpmn2:property id="RepositoryName" itemSubjectRef="_RepositoryNameItem"/>
     <bpmn2:property id="Exception" itemSubjectRef="_ExceptionItem"/>
     <bpmn2:property id="DevBranchName" itemSubjectRef="_DevBranchNameItem"/>

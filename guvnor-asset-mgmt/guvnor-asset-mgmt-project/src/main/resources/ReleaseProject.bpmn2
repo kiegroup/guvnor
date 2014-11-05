@@ -40,6 +40,11 @@
   <bpmn2:itemDefinition id="__B0819863-4285-4C76-A33B-5F9F58C8A62E_OperationInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__B0819863-4285-4C76-A33B-5F9F58C8A62E_ApprovedOutputXItem" structureRef="Object"/>
   <bpmn2:process id="guvnor-asset-management.ReleaseProject" drools:packageName="org.jbpm" drools:version="1.0" name="ReleaseProject" isExecutable="true">
+      <bpmn2:extensionElements>
+      <drools:metaData name="customDescription">
+        <drools:metaValue><![CDATA[Releasing from #{ProjectURI} (#{ToReleaseBranch}) version: #{ToReleaseVersion}]]></drools:metaValue>
+      </drools:metaData>
+    </bpmn2:extensionElements>
     <bpmn2:property id="ValidForRelease" itemSubjectRef="_ValidForReleaseItem"/>
     <bpmn2:property id="ProjectURI" itemSubjectRef="_ProjectURIItem"/>
     <bpmn2:property id="ToReleaseBranch" itemSubjectRef="_ToReleaseBranchItem"/>
