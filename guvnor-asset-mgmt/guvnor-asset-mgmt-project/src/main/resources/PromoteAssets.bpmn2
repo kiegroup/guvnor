@@ -70,6 +70,11 @@
   <bpmn2:itemDefinition id="__1DA5345A-EBE8-4177-A224-DEDC9F8D6506_RepositoryInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__1DA5345A-EBE8-4177-A224-DEDC9F8D6506_ApprovedOutputXItem" structureRef="Object"/>
   <bpmn2:process id="guvnor-asset-management.PromoteAssets" drools:packageName="org.jbpm" drools:version="1.0" name="PromoteAssets" isExecutable="true">
+      <bpmn2:extensionElements>
+      <drools:metaData name="customDescription">
+        <drools:metaValue><![CDATA[Promoting Assets in #{RepositoryName} from #{SourceBranchName} to #{TargetBranchName}]]></drools:metaValue>
+      </drools:metaData>
+    </bpmn2:extensionElements>
     <bpmn2:property id="RepositoryName" itemSubjectRef="_GitRepositoryNameItem"/>
     <bpmn2:property id="SourceBranchName" itemSubjectRef="_SourceBranchNameItem"/>
     <bpmn2:property id="TargetBranchName" itemSubjectRef="_TargetBranchNameItem"/>
