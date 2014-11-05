@@ -77,6 +77,8 @@ public class CreateRepositoryWizard extends AbstractWizard {
     @Inject
     private Event<NotificationEvent> notification;
 
+    private Callback<Void> onCloseCallback = null;
+
     public static final String MANAGED = "managed";
 
     @PostConstruct
@@ -150,6 +152,11 @@ public class CreateRepositoryWizard extends AbstractWizard {
     @Override
     public void close() {
         super.close();
+        invokeOnCloseCallback();
+    }
+
+    public void onCloseCallback( final Callback<Void> callback ) {
+        this.onCloseCallback = callback;
     }
 
     private void managedRepositorySelected( boolean selected ) {
@@ -201,6 +208,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
                                 } catch ( Throwable ex ) {
                                     showErrorPopup( CoreConstants.INSTANCE.RepoCreationFail() + " \n" + throwable.getMessage() );
                                 }
+                                invokeOnCloseCallback();
                                 return true;
                             }
                         }
@@ -246,10 +254,13 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
                                     hideBusyIndicator();
                                     showErrorPopup( Constants.INSTANCE.RepoInitializationFail() + " \n" + throwable.getMessage() );
+                                    invokeOnCloseCallback();
                                     return true;
                                 }
                             }
                     ).initRepositoryStructure( pom, baseUrl, repository, model.isMultiModule() );
+                } else {
+                    invokeOnCloseCallback();
                 }
             }
         };
@@ -265,18 +276,28 @@ public class CreateRepositoryWizard extends AbstractWizard {
                         @Override
                         public void callback( Void o ) {
                             notification.fire( new NotificationEvent( Constants.INSTANCE.RepoConfigurationStarted() ) );
+                            invokeOnCloseCallback();
                         }
                     },
                     new ErrorCallback<Message>() {
                         @Override
                         public boolean error( Message message, Throwable throwable ) {
                             showErrorPopup( Constants.INSTANCE.RepoConfigurationStartFailed() + " \n" + throwable.getMessage() );
+                            invokeOnCloseCallback();
                             return true;
                         }
                     }).configureRepository( pair.getK1().getAlias() , "master", "dev", "release", model.getVersion() );
+                } else {
+                    invokeOnCloseCallback();
                 }
             }
         };
+    }
+
+    private void invokeOnCloseCallback() {
+        if ( onCloseCallback != null ) {
+            onCloseCallback.callback( null );
+        }
     }
 
     private void showBusyIndicator( final String message ) {
