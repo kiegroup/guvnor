@@ -27,7 +27,6 @@ public class GitRepository implements Repository {
 
     private boolean requiresRefresh = true;
     private final Map<String, Path> branches = new HashMap<String, Path>();
-    private String currentBranch;
 
     public GitRepository() {
     }
@@ -66,9 +65,6 @@ public class GitRepository implements Repository {
     }
 
     public void setRoot( final Path root ) {
-
-        // TODO: This should also change branch if needed.
-
         this.root = root;
     }
 
@@ -76,10 +72,6 @@ public class GitRepository implements Repository {
     public void setBranches( final Map<String, Path> branches ) {
         this.branches.clear();
         this.branches.putAll(branches);
-    }
-
-    public void setCurrentBranch(String currentBranch) {
-        this.currentBranch = currentBranch;
     }
 
     @Override
@@ -90,7 +82,13 @@ public class GitRepository implements Repository {
     @Override
     public String getCurrentBranch() {
 
-        return currentBranch;
+        for (String branchName : branches.keySet()) {
+            if (branches.get(branchName).equals(root)) {
+                return branchName;
+            }
+        }
+
+        return "master";
     }
 
     @Override
@@ -171,9 +169,6 @@ public class GitRepository implements Repository {
         if ( root != null ? !root.equals( that.root ) : that.root != null ) {
             return false;
         }
-        if ( currentBranch != null ? !currentBranch.equals( that.currentBranch) : that.currentBranch != null ) {
-            return false;
-        }
         if ( branches != null ? !branches.equals( that.branches ) : that.branches != null ) {
             return false;
         }
@@ -189,7 +184,6 @@ public class GitRepository implements Repository {
         result = 31 * result + ( root != null ? root.hashCode() : 0 );
         result = 31 * result + ( roles != null ? roles.hashCode() : 0 );
         result = 31 * result + ( branches != null ? branches.hashCode() : 0 );
-        result = 31 * result + ( currentBranch != null ? currentBranch.hashCode() : 0 );
         return result;
     }
 
@@ -211,7 +205,6 @@ public class GitRepository implements Repository {
     }
 
     public void changeBranch(String branch) {
-        setCurrentBranch(branch);
         setRoot(branches.get(branch));
     }
 

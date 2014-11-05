@@ -67,7 +67,6 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
         checkNotNull("branch", branch);
 
         final GitRepository repo = new GitRepository(repoConfig.getName());
-        repo.setCurrentBranch(branch);
 
         for (final ConfigItem item : repoConfig.getItems()) {
             if (item instanceof SecureConfigItem) {
@@ -104,6 +103,9 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
         repo.setBranches(branches);
 
         repo.setRoot(defaultRoot);
+
+        repo.changeBranch(branch);
+
         final String[] uris = fs.toString().split("\\r?\\n");
         final List<PublicURI> publicURIs = new ArrayList<PublicURI>(uris.length);
 
