@@ -119,7 +119,7 @@ public class POMEditorPanel
 
     @Override
     public void onOpenProjectContext() {
-        placeManager.goTo("projectStructureScreen");
+        placeManager.goTo("repositoryStructureScreen");
     }
 
     @Override
