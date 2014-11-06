@@ -99,8 +99,7 @@ public class RepositoryInfoPage extends RepositoryWizardPage
     @Override
     public void stateChanged() {
 
-        //TODO add the correct validation for the repository name
-        isNameValid = view.getName() != null && !"error".equals( view.getName() );
+        isNameValid = view.getName() != null && !view.getName().isEmpty();
         view.setValidName( isNameValid );
         model.setRepositoryName( view.getName() != null ? view.getName().trim() : null );
 
