@@ -160,12 +160,24 @@ public class CreateRepositoryWizard extends AbstractWizard {
     }
 
     private void managedRepositorySelected( boolean selected ) {
+        boolean updateDefaultValues = false;
         if ( selected && !pages.contains( structurePage )) {
             pages.add( structurePage );
+            updateDefaultValues = true;
         } else {
             pages.remove( structurePage );
         }
         super.start();
+        if ( updateDefaultValues ) {
+            setStructureDefaultValues();
+        }
+    }
+
+    public void pageSelected( final int pageNumber ) {
+        super.pageSelected( pageNumber );
+        if ( pageNumber == 1) {
+            setStructureDefaultValues();
+        }
     }
 
     private void doComplete() {
@@ -177,7 +189,14 @@ public class CreateRepositoryWizard extends AbstractWizard {
                     if ( !Window.confirm( CoreConstants.INSTANCE.RepositoryNameInvalid() + " \"" + normalizedName + "\". " + CoreConstants.INSTANCE.DoYouAgree() ) ) {
                         return;
                     }
+                    String unNormalizedName = model.getRepositoryName();
                     model.setRepositoryName( normalizedName );
+                    if ( model.getProjectName().equals( unNormalizedName ) ) {
+                        model.setProjectName( normalizedName );
+                    }
+                    if ( model.getArtifactId().equals( unNormalizedName ) ) {
+                        model.setArtifactId( normalizedName );
+                    }
                 }
                 parentComplete();
 
@@ -231,6 +250,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
                     POM pom = new POM();
                     pom.setName( model.getProjectName() );
+                    pom.setDescription( model.getProjectDescription() );
                     pom.getGav().setGroupId( model.getGroupId() );
                     pom.getGav().setArtifactId(model.getArtifactId() );
                     pom.getGav().setVersion( model.getVersion() );
@@ -310,5 +330,22 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
     private void showErrorPopup( final String message ) {
         ErrorPopup.showMessage( message );
+    }
+
+    private void setStructureDefaultValues() {
+
+        if ( model.getRepositoryName() != null ) {
+            structurePage.setProjectName( model.getRepositoryName() );
+            structurePage.setArtifactId( model.getRepositoryName() );
+        }
+
+        if ( model.getOrganizationalUnit() != null ) {
+            structurePage.setGroupId( model.getOrganizationalUnit().getName() );
+        }
+
+        structurePage.setProjectDescription( null );
+        structurePage.setVersion( "1.0.0-SNAPSHOT" );
+        structurePage.stateChanged();
+
     }
 }

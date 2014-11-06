@@ -12,6 +12,7 @@ import javax.inject.Named;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.validation.ValidationUtils;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
@@ -266,29 +267,32 @@ public class RepositoryStructureServiceImpl
         }
     }
 
-    @Override
-    public boolean validate( final POM pom ) {
-        PortablePreconditions.checkNotNull( "pom",
-                pom );
-        final String name = pom.getName();
-        final String groupId = pom.getGav().getGroupId();
-        final String artifactId = pom.getGav().getArtifactId();
-        final String version = pom.getGav().getVersion();
+    public boolean isValidProjectName( String name ) {
+        return ValidationUtils.isFileName( name );
+    }
 
-        final String[] groupIdComponents = ( groupId == null ? new String[] { } : groupId.split( "\\.",
-                -1 ) );
-        final String[] artifactIdComponents = ( artifactId == null ? new String[] { } : artifactId.split( "\\.",
-                -1 ) );
-
-//        final boolean validName = !( name == null || name.isEmpty() ) && validationService.isProjectNameValid( name );
-//        final boolean validGroupId = !( groupIdComponents.length == 0 || validationService.evaluateIdentifiers( groupIdComponents ).containsValue( Boolean.FALSE ) );
-//        final boolean validArtifactId = !( artifactIdComponents.length == 0 || validationService.evaluateArtifactIdentifiers( artifactIdComponents ).containsValue( Boolean.FALSE ) );
-//        final boolean validVersion = !( version == null || version.isEmpty() || !version.matches( "^[a-zA-Z0-9\\.\\-_]+$" ) );
-
-//        return validName && validGroupId && validArtifactId && validVersion;
+    public boolean isValidGroupId( String groupId ) {
+        if ( groupId == null || "".equals( groupId.trim() ) ) return false;
+        final String[] groupIdComponents = groupId.split( "\\.", -1 );
+        for ( String s : groupIdComponents ) {
+            if ( !ValidationUtils.isJavaIdentifier( s ) ) return false;
+        }
         return true;
     }
 
+    public boolean isValidArtifactId( String artifactId ) {
+        if ( artifactId == null || "".equals( artifactId.trim() ) ) return false;
+        final String[] artifactIdComponents = artifactId.split( "\\.", -1 );
+        for ( String s : artifactIdComponents ) {
+            if ( !ValidationUtils.isArtifactIdentifier( s ) ) return false;
+        }
+        return true;
+    }
+
+    public boolean isValidVersion( String version ) {
+        if ( version == null || "".equals( version.trim() ) )  return false;
+        return version.matches( "^[a-zA-Z0-9\\.\\-_]+$" );
+    }
 
     @Override
     public void delete( final Path pathToPomXML, final String comment ) {
