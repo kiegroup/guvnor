@@ -104,8 +104,39 @@ public class RepositoryStructurePageViewImpl extends Composite
     }
 
     @Override
+    public void setProjectName( String projectName ) {
+        projectNameTextBox.setText( projectName );
+    }
+
+    @Override
+    public void setGroupId( String groupId ) {
+        groupIdTextBox.setText( groupId );
+
+    }
+
+    @Override
+    public void setArtifactId( String artifactId ) {
+        artifactIdTextBox.setText( artifactId );
+    }
+
+    @Override
+    public void setVersion( String version ) {
+        versionTextBox.setText( version );
+    }
+
+    @Override
+    public void setConfigureRepository( boolean configureRepository ) {
+        isConfigureRepositoryCheckBox.setValue( configureRepository );
+    }
+
+    @Override
     public String getProjectDescription() {
         return projectDescriptionTextBox.getText();
+    }
+
+    @Override
+    public void setProjectDescription( String projectDescription ) {
+        projectDescriptionTextBox.setText( projectDescription );
     }
 
     @Override
@@ -140,7 +171,7 @@ public class RepositoryStructurePageViewImpl extends Composite
 
     private void initializeFields() {
         isMultiModuleRadioButton.setValue( true );
-        isConfigureRepositoryCheckBox.setValue( false );
+        isConfigureRepositoryCheckBox.setValue( true );
 
         projectNameTextBox.addChangeHandler( new ChangeHandler() {
             @Override

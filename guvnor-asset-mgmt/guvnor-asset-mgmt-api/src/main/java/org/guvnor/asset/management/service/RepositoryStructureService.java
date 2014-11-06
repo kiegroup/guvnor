@@ -34,8 +34,13 @@ public interface RepositoryStructureService {
             final RepositoryStructureModel model,
             final String comment );
 
+    boolean isValidProjectName( String name );
 
-    boolean validate( final POM pom );
+    boolean isValidGroupId( String groupId );
+
+    boolean isValidArtifactId( String artifactId );
+
+    boolean isValidVersion( String version );
 
     void delete( final Path pathToPomXML, final String comment );
 

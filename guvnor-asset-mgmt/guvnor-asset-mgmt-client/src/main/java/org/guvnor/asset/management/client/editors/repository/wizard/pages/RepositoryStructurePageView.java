@@ -25,20 +25,45 @@ public interface RepositoryStructurePageView
     interface Presenter {
 
         void stateChanged();
+
+        void setProjectName( String projectName );
+
+        void setProjectDescription( String projectDescription );
+
+        void setGroupId( String groupId );
+
+        void setArtifactId( String artifactId );
+
+        void setConfigureRepository( boolean configureRepository );
+
+        void setVersion( String version );
+
     }
 
     String getProjectName();
 
+    void setProjectName( String projectName );
+
     String getProjectDescription();
+
+    void setProjectDescription( String projectDescription );
 
     String getGroupId();
 
+    void setGroupId( String groupId );
+
     String getArtifactId();
 
+    void setArtifactId( String artifactId );
+
     String getVersion();
+
+    void setVersion( String version );
 
     boolean isMultiModule();
 
     boolean isConfigureRepository();
+
+    void setConfigureRepository( boolean configureRepository );
 
 }

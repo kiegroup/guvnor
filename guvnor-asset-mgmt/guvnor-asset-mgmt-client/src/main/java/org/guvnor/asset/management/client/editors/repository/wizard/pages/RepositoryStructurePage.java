@@ -18,7 +18,12 @@ package org.guvnor.asset.management.client.editors.repository.wizard.pages;
 
 import javax.inject.Inject;
 
+import org.guvnor.asset.management.client.editors.repository.wizard.CreateRepositoryWizardModel;
 import org.guvnor.asset.management.client.i18n.Constants;
+import org.guvnor.asset.management.service.RepositoryStructureService;
+import org.guvnor.common.services.project.model.POM;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.callbacks.Callback;
 
 public class RepositoryStructurePage extends RepositoryWizardPage
@@ -30,14 +35,56 @@ public class RepositoryStructurePage extends RepositoryWizardPage
 
     private boolean isComplete = false;
 
+    @Inject
+    private Caller<RepositoryStructureService> repositoryStructureService;
+
     @Override
     public String getTitle() {
         return Constants.INSTANCE.RepositoryStructurePage();
     }
 
     @Override
-    public void isComplete( Callback<Boolean> callback ) {
-        callback.callback( isComplete );
+    public void isComplete( final Callback<Boolean> callback ) {
+
+        isComplete = false;
+
+        //check if project name is valid
+        repositoryStructureService.call( new RemoteCallback<Boolean>() {
+            @Override
+            public void callback( Boolean isValid ) {
+                isComplete = isValid;
+
+                //check if group id is valid
+                repositoryStructureService.call( new RemoteCallback<Boolean>() {
+                    @Override
+                    public void callback( Boolean isValid ) {
+                        isComplete = isComplete && isValid;
+
+                        //check if artifact id is valid
+                        repositoryStructureService.call( new RemoteCallback<Boolean>() {
+                            @Override public void callback( Boolean isValid ) {
+                                isComplete = isComplete && isValid;
+
+                                //check if version id is valid
+                                repositoryStructureService.call( new RemoteCallback<Boolean>() {
+                                    @Override
+                                    public void callback( Boolean isValid ) {
+                                        isComplete = isComplete && isValid;
+                                        callback.callback( isComplete );
+                                    }
+                                } ).isValidVersion( model.getVersion() );
+                            }
+                        } ).isValidArtifactId( model.getArtifactId() );
+                    }
+                } ).isValidGroupId( model.getGroupId() );
+            }
+        } ).isValidProjectName( model.getProjectName() );
+    }
+
+    @Override
+    public void setModel( CreateRepositoryWizardModel model ) {
+        super.setModel( model );
+        model.setConfigureRepository( view.isConfigureRepository() );
     }
 
     @Override
@@ -71,6 +118,42 @@ public class RepositoryStructurePage extends RepositoryWizardPage
         model.setConfigureRepository( view.isConfigureRepository() );
 
         fireEvent();
+    }
+
+    @Override
+    public void setProjectName( String projectName ) {
+        model.setProjectName( projectName );
+        view.setProjectName( projectName );
+    }
+
+    @Override
+    public void setProjectDescription( String projectDescription ) {
+        model.setProjectDescription( projectDescription );
+        view.setProjectDescription( projectDescription );
+    }
+
+    @Override
+    public void setGroupId( String groupId ) {
+        model.setGroupId( groupId );
+        view.setGroupId( groupId );
+    }
+
+    @Override
+    public void setArtifactId( String artifactId ) {
+        model.setArtifactId( artifactId );
+        view.setArtifactId( artifactId );
+    }
+
+    @Override
+    public void setConfigureRepository( boolean configureRepository ) {
+        model.setConfigureRepository( configureRepository );
+        view.setConfigureRepository( configureRepository );
+    }
+
+    @Override
+    public void setVersion( String version ) {
+        model.setVersion( version );
+        view.setVersion( version );
     }
 
     private boolean isValid( String value ) {

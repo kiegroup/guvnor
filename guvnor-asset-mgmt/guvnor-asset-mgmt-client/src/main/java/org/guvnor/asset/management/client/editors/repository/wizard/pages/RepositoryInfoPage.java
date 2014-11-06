@@ -162,6 +162,7 @@ public class RepositoryInfoPage extends RepositoryWizardPage
     public void setModel( CreateRepositoryWizardModel model ) {
         super.setModel( model );
         model.setMandatoryOU( mandatoryOU );
+        model.setManged( view.isManagedRepository() );
     }
 
     private boolean isOUMandatory() {
