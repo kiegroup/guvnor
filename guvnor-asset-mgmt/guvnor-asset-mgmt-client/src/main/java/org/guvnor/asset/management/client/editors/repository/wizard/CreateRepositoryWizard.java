@@ -306,12 +306,21 @@ public class CreateRepositoryWizard extends AbstractWizard {
                             invokeOnCloseCallback();
                             return true;
                         }
-                    }).configureRepository( pair.getK1().getAlias() , "master", "dev", "release", model.getVersion() );
+                    }).configureRepository( pair.getK1().getAlias() , "master", "dev", "release", normalizeVersionNumber( model.getVersion() ) );
                 } else {
                     invokeOnCloseCallback();
                 }
             }
         };
+    }
+
+    private String normalizeVersionNumber( String version ) {
+        version = version != null ? version.trim() : null;
+        if ( version != null && version.contains( "-SNAPSHOT" ) ) {
+            return version.replace( "-SNAPSHOT", "" );
+        } else {
+            return version;
+        }
     }
 
     private void invokeOnCloseCallback() {
