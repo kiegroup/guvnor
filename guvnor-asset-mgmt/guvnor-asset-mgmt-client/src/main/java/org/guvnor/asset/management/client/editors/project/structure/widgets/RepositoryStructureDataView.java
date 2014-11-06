@@ -1,7 +1,6 @@
 package org.guvnor.asset.management.client.editors.project.structure.widgets;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.backend.vfs.Path;
 
 public interface RepositoryStructureDataView extends IsWidget {
 
@@ -47,26 +46,7 @@ public interface RepositoryStructureDataView extends IsWidget {
 
     String getVersionId();
 
-    void setSingleProjectGroupId( String groupId );
-
-    void setSingleProjectArtifactId( String artifactId );
-
-    void setSingleProjectVersion( String version );
-
-    void setMultiModule();
-
-    void setSingleModule();
-
-    boolean isSingleModule();
-
-    boolean isMultiModule();
-
-    boolean isUnmanagedRepository();
-
     void clear();
 
-    void enableActions( boolean value );
-
-    void setReadonly( boolean readonly );
 
 }

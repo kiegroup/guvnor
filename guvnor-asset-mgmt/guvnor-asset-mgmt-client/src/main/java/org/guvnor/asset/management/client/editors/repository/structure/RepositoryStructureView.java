@@ -45,8 +45,6 @@ public interface RepositoryStructureView
     void setModulesViewVisible( boolean visible );
 
     void clear();
-
-    void setReadonly( boolean readonly );
     
     ReleaseScreenPopupViewImpl getReleaseScreenPopupView();
     
