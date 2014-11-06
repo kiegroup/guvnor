@@ -141,9 +141,9 @@ public class RepositoryStructureViewImpl
             Project project = model.getOrphanProjects().get( 0 );
             POM pom = model.getOrphanProjectsPOM().get( project.getSignatureId() );
             if ( pom != null && pom.getGav() != null ) {
-                getDataView().setSingleProjectGroupId( pom.getGav().getGroupId() );
-                getDataView().setSingleProjectArtifactId( pom.getGav().getArtifactId() );
-                getDataView().setSingleProjectVersion( pom.getGav().getVersion() );
+                getDataView().setGroupId( pom.getGav().getGroupId() );
+                getDataView().setArtifactId( pom.getGav().getArtifactId() );
+                getDataView().setVersion( pom.getGav().getVersion() );
             }
         }
     }
@@ -153,9 +153,6 @@ public class RepositoryStructureViewImpl
         getDataView().clear();
     }
 
-    @Override
-    public void setReadonly( boolean readonly ) {
-        getDataView().setReadonly( readonly );
-    }
+   
 
 }

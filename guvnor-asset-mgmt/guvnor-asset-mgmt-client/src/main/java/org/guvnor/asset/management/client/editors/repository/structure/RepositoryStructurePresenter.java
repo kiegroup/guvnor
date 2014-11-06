@@ -192,7 +192,7 @@ public class RepositoryStructurePresenter
 
         if (repository == null) {
             clearView();
-            view.setReadonly(true);
+            
             view.setModulesViewVisible(false);
             enableActions(false);
         } else if ((repoOrBranchChanged = repositoryOrBranchChanged(repository)) || (project != null && !project.equals(this.project))) {
@@ -201,7 +201,7 @@ public class RepositoryStructurePresenter
             this.branch = repository != null ? repository.getCurrentBranch() : null;
             this.project = project;
 
-            view.setReadonly(false);
+            
             if (repoOrBranchChanged || (lastAddedModule == null || !lastAddedModule.equals(project)) && lastDeletedModule == null) {
                 init();
             }
@@ -300,54 +300,55 @@ public class RepositoryStructurePresenter
 
     private void initRepositoryStructure() {
         //TODO add parameters validation
+        if(model != null){
+            if (model.isMultiModule()) {
+                view.showBusyIndicator(Constants.INSTANCE.CreatingRepositoryStructure());
+                repositoryStructureService.call(new RemoteCallback<Path>() {
 
-        if (view.getDataView().isMultiModule()) {
-            view.showBusyIndicator(Constants.INSTANCE.CreatingRepositoryStructure());
-            repositoryStructureService.call(new RemoteCallback<Path>() {
-
-                @Override
-                public void callback(Path response) {
-                    view.hideBusyIndicator();
-                    init();
-                }
-
-            }, new HasBusyIndicatorDefaultErrorCallback(view)).initRepositoryStructure(
-                    new GAV(view.getDataView().getGroupId(),
-                            view.getDataView().getArtifactId(),
-                            view.getDataView().getVersionId()),
-                    repository);
-
-        } else if (view.getDataView().isSingleModule()) {
-            wizzard.setContent(null, null, null);
-            wizzard.start(new Callback<Project>() {
-                @Override
-                public void callback(Project result) {
-                    lastAddedModule = result;
-                    if (result != null) {
-                        view.showBusyIndicator(Constants.INSTANCE.CreatingRepositoryStructure());
-                        repositoryStructureService.call(new RemoteCallback<Repository>() {
-                            @Override
-                            public void callback(Repository repository) {
-                                view.hideBusyIndicator();
-                                RepositoryStructurePresenter.this.repository = repository;
-                                init();
-
-                            }
-                        }, new HasBusyIndicatorDefaultErrorCallback(view)).initRepository(repository, true);
-
+                    @Override
+                    public void callback(Path response) {
+                        view.hideBusyIndicator();
+                        init();
                     }
-                }
-            }, false);
-        } else if (view.getDataView().isUnmanagedRepository()) {
-            view.showBusyIndicator(Constants.INSTANCE.CreatingRepositoryStructure());
-            repositoryStructureService.call(new RemoteCallback<Repository>() {
-                @Override
-                public void callback(Repository repository) {
-                    view.hideBusyIndicator();
-                    RepositoryStructurePresenter.this.repository = repository;
-                    init();
-                }
-            }, new HasBusyIndicatorDefaultErrorCallback(view)).initRepository(repository, false);
+
+                }, new HasBusyIndicatorDefaultErrorCallback(view)).initRepositoryStructure(
+                        new GAV(view.getDataView().getGroupId(),
+                                view.getDataView().getArtifactId(),
+                                view.getDataView().getVersionId()),
+                        repository);
+
+            } else if (model.isSingleProject()) {
+                wizzard.setContent(null, null, null);
+                wizzard.start(new Callback<Project>() {
+                    @Override
+                    public void callback(Project result) {
+                        lastAddedModule = result;
+                        if (result != null) {
+                            view.showBusyIndicator(Constants.INSTANCE.CreatingRepositoryStructure());
+                            repositoryStructureService.call(new RemoteCallback<Repository>() {
+                                @Override
+                                public void callback(Repository repository) {
+                                    view.hideBusyIndicator();
+                                    RepositoryStructurePresenter.this.repository = repository;
+                                    init();
+
+                                }
+                            }, new HasBusyIndicatorDefaultErrorCallback(view)).initRepository(repository, true);
+
+                        }
+                    }
+                }, false);
+            } else if (!model.isManaged()) {
+                view.showBusyIndicator(Constants.INSTANCE.CreatingRepositoryStructure());
+                repositoryStructureService.call(new RemoteCallback<Repository>() {
+                    @Override
+                    public void callback(Repository repository) {
+                        view.hideBusyIndicator();
+                        RepositoryStructurePresenter.this.repository = repository;
+                        init();
+                    }
+                }, new HasBusyIndicatorDefaultErrorCallback(view)).initRepository(repository, false);
+            }
         }
     }
 
@@ -462,7 +463,7 @@ public class RepositoryStructurePresenter
     }
 
     private void enableActions(boolean value) {
-        view.getDataView().enableActions(value);
+        
         view.getModulesView().enableActions(value);
     }
 
