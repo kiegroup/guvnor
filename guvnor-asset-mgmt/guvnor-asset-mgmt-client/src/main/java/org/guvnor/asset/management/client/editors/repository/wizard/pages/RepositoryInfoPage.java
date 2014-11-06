@@ -26,7 +26,6 @@ import com.google.gwt.user.client.Window;
 import org.guvnor.asset.management.client.editors.repository.wizard.CreateRepositoryWizardModel;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
-import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.jboss.errai.bus.client.api.messaging.Message;
