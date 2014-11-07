@@ -58,7 +58,7 @@
          <bootstrap:ControlGroup ui:field="versionTextGroup">
           <bootstrap:ControlLabel for="verionText">
             <span class="{style.mandatory-field}">*</span>
-            <ui:text from="{i18n.Version}"/>
+            <ui:text from="{i18n.ReleaseVersion}"/>
           </bootstrap:ControlLabel>
           <bootstrap:Controls>
             <bootstrap:TextBox bootstrap:id="versionText" ui:field="versionText" placeholder="{i18n.Version}"/>
