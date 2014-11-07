@@ -31,7 +31,7 @@
   <bpmn2:process id="guvnor-asset-management.ConfigureRepository" drools:packageName="org.jbpm" drools:version="1.0" name="ConfigureRepository" isExecutable="true">
        <bpmn2:extensionElements>
       <drools:metaData name="customDescription">
-        <drools:metaValue><![CDATA[Configuring #{RepositoryName} with branches: #{DevBranchName} and #{ReleaseBranchName}]]></drools:metaValue>
+        <drools:metaValue><![CDATA[Configuring #{RepositoryName} with branches: #{DevBranchName} and #{RelBranchName}]]></drools:metaValue>
       </drools:metaData>
     </bpmn2:extensionElements>
     <bpmn2:property id="RepositoryName" itemSubjectRef="_RepositoryNameItem"/>
