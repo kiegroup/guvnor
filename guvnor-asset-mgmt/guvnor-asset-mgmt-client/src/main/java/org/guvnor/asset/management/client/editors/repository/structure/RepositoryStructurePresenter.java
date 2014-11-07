@@ -892,7 +892,11 @@ public class RepositoryStructurePresenter
         return new Command() {
             @Override
             public void execute() {
-                view.getReleaseScreenPopupView().configure(repository.getAlias(), branch, model.getPOM().getGav().getVersion(), new com.google.gwt.user.client.Command() {
+                view.getReleaseScreenPopupView().configure(repository.getAlias(),
+                        branch,
+                        trimSnapshotFromVersion( model.getPOM().getGav().getVersion() ),
+                        model.getPOM().getGav().getVersion(),
+                        new com.google.gwt.user.client.Command() {
                     @Override
                     public void execute() {
                         String username = view.getReleaseScreenPopupView().getUsername();
@@ -908,6 +912,13 @@ public class RepositoryStructurePresenter
             }
         };
 
+    }
+
+    private String trimSnapshotFromVersion( String version ) {
+        if ( version != null && version.endsWith( "-SNAPSHOT" ) ) {
+            return version.replace( "-SNAPSHOT", "" );
+        }
+        return version;
     }
 
     public void configureRepository(String repository, String sourceBranch, String devBranch, String releaseBranch, String version) {

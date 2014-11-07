@@ -68,6 +68,8 @@ public interface Constants extends Messages {
 
     String Version();
 
+    String ReleaseVersion();
+
     String ABuildIsAlreadyRunning();
     
     String Loading();
@@ -221,6 +223,8 @@ public interface Constants extends Messages {
     String Release();
     
     String FieldMandatory0( final String fieldName );
+
+    String SnapshotNotAvailableForRelease( final String version );
 
     String Configure();
 

@@ -108,6 +108,12 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
 
                 return;
             }
+            if (isSnapshot( versionText.getText() )) {
+                versionTextGroup.setType(ControlGroupType.ERROR);
+                versionTextHelpInline.setText(Constants.INSTANCE.SnapshotNotAvailableForRelease("-SNAPSHOT"));
+
+                return;
+            }
             if (deployToRuntimeCheck.getValue()) {
 
                 if (isEmpty(userNameText.getText())) {
@@ -140,10 +146,17 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
         }
 
         private boolean isEmpty(String value) {
-            if (value == null || value.isEmpty()) {
+            if (value == null || value.isEmpty() || value.trim().isEmpty() ) {
                 return true;
             }
 
+            return false;
+        }
+
+        private boolean isSnapshot(String value) {
+            if ( value != null && trim(value).endsWith( "-SNAPSHOT" ) ) {
+                return true;
+            }
             return false;
         }
     };
@@ -164,11 +177,12 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
         setAnimation(true);
         setDynamicSafe(true);
 
+
         add(uiBinder.createAndBindUi(this));
         add(footer);
     }
 
-    public void configure(String repositoryAlias, String branch, String repositoryVersion, Command command) {
+    public void configure(String repositoryAlias, String branch, String suggestedVersion, String repositoryVersion, Command command) {
         this.callbackCommand = command;
 
         this.sourceBranchText.setText(branch);
@@ -179,7 +193,7 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
         userNameText.setText(identity.getIdentifier());
         serverURLText.setText(GWT.getModuleBaseURL().replaceFirst("/" + GWT.getModuleName() + "/", ""));
         this.versionTextHelpInline.setText("The current repository version is: " + repositoryVersion);
-        this.versionText.setText(repositoryVersion);
+        this.versionText.setText(suggestedVersion);
         userNameText.setEnabled(false);
         passwordText.setEnabled(false);
         serverURLText.setEnabled(false);
@@ -200,23 +214,27 @@ public class ReleaseScreenPopupViewImpl extends KieBaseModal {
     }
 
     public String getUsername() {
-        return this.userNameText.getText();
+        return trim(this.userNameText.getText());
     }
 
     public String getPassword() {
-        return this.passwordText.getText();
+        return trim(this.passwordText.getText());
     }
 
     public String getServerURL() {
-        return this.serverURLText.getText();
+        return trim(this.serverURLText.getText());
     }
 
     public String getVersion() {
-        return this.versionText.getText();
+        return trim(this.versionText.getText());
     }
 
     public Boolean getDeployToRuntime() {
         return this.deployToRuntimeCheck.getValue();
+    }
+
+    private String trim( String value ) {
+        return value != null ? value.trim() : value;
     }
 
 }
