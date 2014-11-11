@@ -70,10 +70,10 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
             }
         };
         dataGrid.addColumn( lineColumn,
-                            MessageConsoleResources.CONSTANTS.Line() );
+                MessageConsoleResources.CONSTANTS.Line() );
         dataGrid.setColumnWidth( lineColumn,
-                                 60,
-                                 Style.Unit.PCT );
+                60,
+                Style.Unit.PCT );
     }
 
     private void addColumnColumn() {
@@ -84,10 +84,10 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
             }
         };
         dataGrid.addColumn( column,
-                            MessageConsoleResources.CONSTANTS.Column() );
+                MessageConsoleResources.CONSTANTS.Column() );
         dataGrid.setColumnWidth( column,
-                                 60,
-                                 Style.Unit.PCT );
+                60,
+                Style.Unit.PCT );
     }
 
     private void addTextColumn() {
@@ -96,12 +96,21 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
             public String getValue( MessageConsoleServiceRow row ) {
                 return row.getMessageText();
             }
+
+            @Override
+            public void render( Cell.Context context, MessageConsoleServiceRow row, SafeHtmlBuilder sb ) {
+                String title = row.getMessageText();
+                sb.append( createDivStart(title) );
+                super.render( context, row, sb );
+                sb.append( createDivEnd() );
+            }
+
         };
         dataGrid.addColumn( column,
-                            MessageConsoleResources.CONSTANTS.Text() );
+                MessageConsoleResources.CONSTANTS.Text() );
         dataGrid.setColumnWidth( column,
-                                 60,
-                                 Style.Unit.PCT );
+                60,
+                Style.Unit.PCT );
     }
 
     private void addFileNameColumn() {
@@ -118,18 +127,18 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
         column.setFieldUpdater( new FieldUpdater<MessageConsoleServiceRow, HyperLinkCell.HyperLink>() {
             @Override
             public void update( final int index,
-                                final MessageConsoleServiceRow row,
-                                final HyperLinkCell.HyperLink value ) {
+                    final MessageConsoleServiceRow row,
+                    final HyperLinkCell.HyperLink value ) {
                 if ( row.getMessagePath() != null ) {
                     placeManager.goTo( row.getMessagePath() );
                 }
             }
         } );
         dataGrid.addColumn( column,
-                            MessageConsoleResources.CONSTANTS.FileName() );
+                MessageConsoleResources.CONSTANTS.FileName() );
         dataGrid.setColumnWidth( column,
-                                 60,
-                                 Style.Unit.PCT );
+                60,
+                Style.Unit.PCT );
     }
 
     private void addLevelColumn() {
@@ -148,18 +157,21 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
             }
 
             @Override
-            public void render( Cell.Context context, MessageConsoleServiceRow row, SafeHtmlBuilder sb ) {
+
+            public void render( Cell.Context context,
+                    MessageConsoleServiceRow row,
+                    SafeHtmlBuilder sb ) {
                 String title = getLevelTitle( row.getMessageLevel() );
-                sb.append( createDivStart(title) );
+                sb.append( createDivStart( title ) );
                 super.render( context, row, sb );
                 sb.append( createDivEnd() );
             }
         };
         dataGrid.addColumn( column,
-                            MessageConsoleResources.CONSTANTS.Level() );
+                MessageConsoleResources.CONSTANTS.Level() );
         dataGrid.setColumnWidth( column,
-                                 60,
-                                 Style.Unit.PCT );
+                60,
+                Style.Unit.PCT );
     }
 
     @Override
@@ -190,7 +202,7 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
 
     private SafeHtml createDivStart(String title, String defaultValue) {
         if (title == null || "".equals(title)) title = defaultValue;
-        return SafeHtmlUtils.fromTrustedString( "<div title=\"" + title.trim() + "\">" );
+        return SafeHtmlUtils.fromTrustedString( "<div title=\"" + SafeHtmlUtils.htmlEscape( title.trim() ) + "\">" );
     }
 
     private SafeHtml createDivEnd() {
