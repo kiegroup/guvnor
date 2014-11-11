@@ -23,12 +23,11 @@ import org.guvnor.asset.management.client.editors.repository.structure.configure
 import org.guvnor.asset.management.client.editors.repository.structure.promote.PromoteScreenPopupViewImpl;
 import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupViewImpl;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
-import org.kie.uberfire.client.common.HasBusyIndicator;
-
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public interface RepositoryStructureView
         extends HasBusyIndicator,
-        IsWidget {
+                IsWidget {
 
     interface Presenter {
 
@@ -45,9 +44,9 @@ public interface RepositoryStructureView
     void setModulesViewVisible( boolean visible );
 
     void clear();
-    
+
     ReleaseScreenPopupViewImpl getReleaseScreenPopupView();
-    
+
     ConfigureScreenPopupViewImpl getConfigureScreenPopupView();
 
     PromoteScreenPopupViewImpl getPromoteScreenPopupView();

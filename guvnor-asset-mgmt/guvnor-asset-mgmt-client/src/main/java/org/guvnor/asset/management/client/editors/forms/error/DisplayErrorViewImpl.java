@@ -15,6 +15,13 @@
  */
 package org.guvnor.asset.management.client.editors.forms.error;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -23,22 +30,16 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import java.util.HashMap;
-import java.util.Map;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import org.kie.uberfire.client.forms.GetFormParamsEvent;
-import org.kie.uberfire.client.forms.RequestFormParamsEvent;
-import org.kie.uberfire.client.forms.SetFormParamsEvent;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.widgets.common.client.forms.GetFormParamsEvent;
+import org.uberfire.ext.widgets.common.client.forms.RequestFormParamsEvent;
+import org.uberfire.ext.widgets.common.client.forms.SetFormParamsEvent;
 
 @Dependent
 public class DisplayErrorViewImpl extends Composite implements DisplayErrorPresenter.DisplayErrorView {
 
     @Override
-    public void displayNotification(String text) {
+    public void displayNotification( String text ) {
 
     }
 
@@ -47,7 +48,7 @@ public class DisplayErrorViewImpl extends Composite implements DisplayErrorPrese
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @Inject
     private PlaceManager placeManager;
@@ -67,38 +68,35 @@ public class DisplayErrorViewImpl extends Composite implements DisplayErrorPrese
 
     @UiField
     TextBox processNameTextBox;
-    
+
     @Inject
     private Event<GetFormParamsEvent> getFormParamsEvent;
 
-
     public DisplayErrorViewImpl() {
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
 
     }
 
-    public void getOutputMap(@Observes RequestFormParamsEvent event) {
+    public void getOutputMap( @Observes RequestFormParamsEvent event ) {
         Map<String, Object> outputMap = new HashMap<String, Object>();
 
-        getFormParamsEvent.fire(new GetFormParamsEvent(event.getAction(), outputMap));
+        getFormParamsEvent.fire( new GetFormParamsEvent( event.getAction(), outputMap ) );
     }
 
     @Override
-    public void init(DisplayErrorPresenter presenter) {
+    public void init( DisplayErrorPresenter presenter ) {
         this.presenter = presenter;
 
     }
 
-    
-    public void setInputMap(@Observes SetFormParamsEvent event) {
-        processNameTextBox.setText( event.getParams().get("ProcessName"));
-        errorBox.setText( event.getParams().get("Error"));
+    public void setInputMap( @Observes SetFormParamsEvent event ) {
+        processNameTextBox.setText( event.getParams().get( "ProcessName" ) );
+        errorBox.setText( event.getParams().get( "Error" ) );
         this.readOnly = event.isReadOnly();
     }
 
-    
-    public void setReadOnly(boolean b) {
+    public void setReadOnly( boolean b ) {
         this.readOnly = b;
     }
 

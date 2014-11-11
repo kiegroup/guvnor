@@ -38,11 +38,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.common.FileUpload;
-import org.kie.uberfire.client.common.FormStyleLayout;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.FileUpload;
+import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -52,7 +52,7 @@ public class UploadForm
     @Inject
     private Event<M2RepoSearchEvent> searchEvent;
 
-    private Modal popup = new KieBaseModal();
+    private Modal popup = new BaseModal();
     private WellForm form;
 
     private final TextBox hiddenGroupIdField = new TextBox();

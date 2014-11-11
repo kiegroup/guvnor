@@ -18,7 +18,7 @@ package org.guvnor.common.services.project.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.model.GAV;
-import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public interface POMEditorPanelView extends HasBusyIndicator,
                                             IsWidget {
@@ -71,9 +71,9 @@ public interface POMEditorPanelView extends HasBusyIndicator,
 
     void setReadOnly();
 
-    void disableGroupID(String reason);
+    void disableGroupID( String reason );
 
-    void disableVersion(String reason);
+    void disableVersion( String reason );
 
     void enableGroupID();
 

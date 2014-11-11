@@ -34,11 +34,11 @@ import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 

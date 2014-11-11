@@ -21,11 +21,10 @@ import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
-import org.kie.uberfire.client.common.popups.footers.GenericModalFooter;
 import org.guvnor.structure.client.resources.CommonImages;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
-
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 

@@ -26,7 +26,6 @@ import com.google.gwt.user.client.Window;
 import org.guvnor.asset.management.client.editors.repository.wizard.CreateRepositoryWizardModel;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
-import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -36,8 +35,8 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
 public class RepositoryInfoPage extends RepositoryWizardPage
         implements
@@ -139,22 +138,22 @@ public class RepositoryInfoPage extends RepositoryWizardPage
                                                 if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
                                                     for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
                                                         availableOrganizationalUnits.put( organizationalUnit.getName(),
-                                                                organizationalUnit );
+                                                                                          organizationalUnit );
                                                     }
                                                     view.initOrganizationalUnits( organizationalUnits );
                                                 }
                                             }
                                         },
-                new ErrorCallback<Message>() {
-                    @Override
-                    public boolean error( final Message message,
-                            final Throwable throwable ) {
-                        Window.alert( CoreConstants.INSTANCE.CantLoadOrganizationalUnits() + " \n" + message.toString() );
+                                        new ErrorCallback<Message>() {
+                                            @Override
+                                            public boolean error( final Message message,
+                                                                  final Throwable throwable ) {
+                                                Window.alert( CoreConstants.INSTANCE.CantLoadOrganizationalUnits() + " \n" + message.toString() );
 
-                        return false;
-                    }
-                }
-        ).getOrganizationalUnits();
+                                                return false;
+                                            }
+                                        }
+                                      ).getOrganizationalUnits();
     }
 
     @Override

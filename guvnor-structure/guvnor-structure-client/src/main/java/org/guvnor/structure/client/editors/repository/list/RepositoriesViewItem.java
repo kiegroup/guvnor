@@ -19,7 +19,7 @@ import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
 public class RepositoriesViewItem extends Composite {
 
@@ -63,7 +63,7 @@ public class RepositoriesViewItem extends Composite {
                                  final String currentBranch,
                                  final Collection<String> branches,
                                  final RemoveRepositoryCmd cmdRemoveRepository,
-                                 final UpdateRepositoryCmd cmdUpdateRepository) {
+                                 final UpdateRepositoryCmd cmdUpdateRepository ) {
         initWidget( uiBinder.createAndBindUi( this ) );
 
         this.cmdRemoveRepository = cmdRemoveRepository;
@@ -108,10 +108,10 @@ public class RepositoriesViewItem extends Composite {
 
         // populate branches
         int index = 0;
-        for (String branch : branches) {
-            branchesDropdown.addItem(branch, branch);
-            if (currentBranch.equals(branch)) {
-                branchesDropdown.setSelectedIndex(index);
+        for ( String branch : branches ) {
+            branchesDropdown.addItem( branch, branch );
+            if ( currentBranch.equals( branch ) ) {
+                branchesDropdown.setSelectedIndex( index );
             }
             index++;
         }
@@ -130,14 +130,15 @@ public class RepositoriesViewItem extends Composite {
     public void onClickButtonUpdateRepository( final ClickEvent event ) {
         if ( cmdUpdateRepository != null ) {
             final String branch = branchesDropdown.getValue( branchesDropdown.getSelectedIndex() );
-            cmdUpdateRepository.add("branch", branch);
+            cmdUpdateRepository.add( "branch", branch );
             cmdUpdateRepository.execute();
         }
     }
 
-    public void update(final Repository repository, final RepositoriesPresenter presenter) {
-        this.cmdRemoveRepository = new RemoveRepositoryCmd(repository, presenter);
-        this.cmdUpdateRepository = new UpdateRepositoryCmd(repository, presenter);
+    public void update( final Repository repository,
+                        final RepositoriesPresenter presenter ) {
+        this.cmdRemoveRepository = new RemoveRepositoryCmd( repository, presenter );
+        this.cmdUpdateRepository = new UpdateRepositoryCmd( repository, presenter );
     }
 
     public static native void glueCopy( final com.google.gwt.user.client.Element element ) /*-{

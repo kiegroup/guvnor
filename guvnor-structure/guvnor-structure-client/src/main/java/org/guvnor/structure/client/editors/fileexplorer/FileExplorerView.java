@@ -26,9 +26,9 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
 import org.guvnor.structure.repositories.Repository;
-import org.kie.uberfire.client.resources.CoreImages;
-import org.kie.uberfire.client.tree.Tree;
-import org.kie.uberfire.client.tree.TreeItem;
+import org.uberfire.ext.widgets.core.client.resources.CoreImages;
+import org.uberfire.ext.widgets.core.client.tree.Tree;
+import org.uberfire.ext.widgets.core.client.tree.TreeItem;
 import org.uberfire.backend.vfs.Path;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;

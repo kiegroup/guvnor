@@ -35,8 +35,8 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.navigator.CommitNavigator;
 import org.guvnor.structure.repositories.PublicURI;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.ParameterizedCommand;
 

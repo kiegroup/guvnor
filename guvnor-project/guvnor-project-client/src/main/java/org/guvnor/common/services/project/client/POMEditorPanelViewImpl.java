@@ -16,6 +16,9 @@
 
 package org.guvnor.common.services.project.client;
 
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.Fieldset;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -30,11 +33,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.client.resources.ProjectResources;
 import org.guvnor.common.services.project.model.GAV;
-import org.kie.uberfire.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 public class POMEditorPanelViewImpl
         extends Composite
@@ -48,7 +48,7 @@ public class POMEditorPanelViewImpl
 
     }
 
-    private static GroupArtifactVersionEditorPanelViewImplBinder uiBinder = GWT.create(GroupArtifactVersionEditorPanelViewImplBinder.class);
+    private static GroupArtifactVersionEditorPanelViewImplBinder uiBinder = GWT.create( GroupArtifactVersionEditorPanelViewImplBinder.class );
 
     private Event<NotificationEvent> notificationEvent;
 
@@ -73,23 +73,23 @@ public class POMEditorPanelViewImpl
     }
 
     @Inject
-    public POMEditorPanelViewImpl(Event<NotificationEvent> notificationEvent,
-                                  GAVEditor parentGavEditor,
-                                  GAVEditor gavEditor) {
+    public POMEditorPanelViewImpl( Event<NotificationEvent> notificationEvent,
+                                   GAVEditor parentGavEditor,
+                                   GAVEditor gavEditor ) {
         this.parentGavEditor = parentGavEditor;
         this.gavEditor = gavEditor;
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
         this.notificationEvent = notificationEvent;
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void showSaveSuccessful(String fileName) {
-        notificationEvent.fire(new NotificationEvent(ProjectResources.CONSTANTS.SaveSuccessful(fileName)));
+    public void showSaveSuccessful( String fileName ) {
+        notificationEvent.fire( new NotificationEvent( ProjectResources.CONSTANTS.SaveSuccessful( fileName ) ) );
     }
 
     @Override
@@ -98,48 +98,48 @@ public class POMEditorPanelViewImpl
     }
 
     @Override
-    public void setName(String projectName) {
-        pomNameTextBox.setText(projectName);
+    public void setName( String projectName ) {
+        pomNameTextBox.setText( projectName );
     }
 
     @Override
-    public void setDescription(String projectDescription) {
-        pomDescriptionTextArea.setText(projectDescription);
+    public void setDescription( String projectDescription ) {
+        pomDescriptionTextArea.setText( projectDescription );
     }
 
     @Override
     public void showParentGAV() {
-        parentGavEditorFieldSet.setVisible(true);
+        parentGavEditorFieldSet.setVisible( true );
     }
 
     @Override
     public void hideParentGAV() {
-        parentGavEditorFieldSet.setVisible(false);
+        parentGavEditorFieldSet.setVisible( false );
     }
 
     @Override
-    public void setParentGAV(GAV gav) {
-        parentGavEditor.setGAV(gav);
+    public void setParentGAV( GAV gav ) {
+        parentGavEditor.setGAV( gav );
     }
 
     @Override
-    public void setGAV(GAV gav) {
-        gavEditor.setGAV(gav);
+    public void setGAV( GAV gav ) {
+        gavEditor.setGAV( gav );
     }
 
     @Override
-    public void addGroupIdChangeHandler(GroupIdChangeHandler changeHandler) {
-        gavEditor.addGroupIdChangeHandler(changeHandler);
+    public void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler ) {
+        gavEditor.addGroupIdChangeHandler( changeHandler );
     }
 
     @Override
-    public void addArtifactIdChangeHandler(ArtifactIdChangeHandler changeHandler) {
-        gavEditor.addArtifactIdChangeHandler(changeHandler);
+    public void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler ) {
+        gavEditor.addArtifactIdChangeHandler( changeHandler );
     }
 
     @Override
-    public void addVersionChangeHandler(VersionChangeHandler changeHandler) {
-        gavEditor.addVersionChangeHandler(changeHandler);
+    public void addVersionChangeHandler( VersionChangeHandler changeHandler ) {
+        gavEditor.addVersionChangeHandler( changeHandler );
     }
 
     @Override
@@ -148,13 +148,13 @@ public class POMEditorPanelViewImpl
     }
 
     @Override
-    public void disableGroupID(String reason) {
-        gavEditor.disableGroupID(reason);
+    public void disableGroupID( String reason ) {
+        gavEditor.disableGroupID( reason );
     }
 
     @Override
-    public void disableVersion(String reason) {
-        gavEditor.disableVersion(reason);
+    public void disableVersion( String reason ) {
+        gavEditor.disableVersion( reason );
     }
 
     @Override
@@ -168,7 +168,7 @@ public class POMEditorPanelViewImpl
     }
 
     @Override
-    public void setTitleText(String titleText) {
+    public void setTitleText( String titleText ) {
         tabTitleLabel = titleText;
     }
 
@@ -178,8 +178,8 @@ public class POMEditorPanelViewImpl
     }
 
     @Override
-    public void showBusyIndicator(final String message) {
-        BusyPopup.showMessage(message);
+    public void showBusyIndicator( final String message ) {
+        BusyPopup.showMessage( message );
     }
 
     @Override
@@ -189,17 +189,17 @@ public class POMEditorPanelViewImpl
 
     @UiHandler("pomNameTextBox")
     //Use KeyUpEvent as ValueChangeEvent is only fired when the focus is lost
-    public void onNameChange(KeyUpEvent event) {
-        presenter.onNameChange(pomNameTextBox.getText());
+    public void onNameChange( KeyUpEvent event ) {
+        presenter.onNameChange( pomNameTextBox.getText() );
     }
 
     @UiHandler("openProjectContext")
-    public void onOpenProjectContext(ClickEvent event) {
+    public void onOpenProjectContext( ClickEvent event ) {
         presenter.onOpenProjectContext();
     }
 
     @UiHandler("pomDescriptionTextArea")
-    public void onDescriptionChange(ValueChangeEvent<String> event) {
-        presenter.onDescriptionChange(pomDescriptionTextArea.getText());
+    public void onDescriptionChange( ValueChangeEvent<String> event ) {
+        presenter.onDescriptionChange( pomDescriptionTextArea.getText() );
     }
 }

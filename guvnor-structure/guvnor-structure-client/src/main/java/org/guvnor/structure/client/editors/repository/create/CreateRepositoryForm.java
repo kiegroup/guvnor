@@ -16,7 +16,6 @@
 
 package org.guvnor.structure.client.editors.repository.create;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +30,6 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -58,10 +56,10 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 @Dependent
@@ -108,7 +106,7 @@ public class CreateRepositoryForm
     InlineHTML isOUMandatory;
 
     @UiField
-    KieBaseModal popup;
+    BaseModal popup;
 
     private Map<String, OrganizationalUnit> availableOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
     private boolean mandatoryOU = true;

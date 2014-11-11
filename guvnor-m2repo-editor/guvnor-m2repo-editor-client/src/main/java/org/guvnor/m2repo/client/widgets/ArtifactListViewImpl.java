@@ -33,7 +33,7 @@ import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.tables.PagedTable;
+import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 
 public class ArtifactListViewImpl extends Composite implements ArtifactListView {
 

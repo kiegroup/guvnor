@@ -22,7 +22,7 @@
   <inherits name="org.uberfire.UberfireClientAll"/>
 
   <!-- Uberfire Extensions - Core Widgets -->
-  <inherits name="org.kie.uberfire.KIEUberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
 
   <!-- Guvnor dependencies -->
   <inherits name='org.guvnor.structure.GuvnorStructureClient'/>
@@ -36,22 +36,22 @@
   <inherits name='org.guvnor.organizationalunit.manager.GuvnorOrganizationalUnitManager'/>
 
   <!-- Uberfire Extensions - Runtime Plugin -->
-  <inherits name="org.kie.uberfire.plugin.RuntimePluginClient"/>
+  <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
 
   <!-- Uberfire Extensions - Perspective Editor -->
-  <inherits name="org.kie.uberfire.perspective.editor.PerspectiveEditorClient"/>
+  <inherits name="org.uberfire.ext.perspective.editor.PerspectiveEditorClient"/>
 
   <!-- Uberfire Extensions - Apps -->
-  <inherits name="org.kie.uberfire.apps.UberfireAppsClient"/>
+  <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
   <inherits name="org.guvnor.common.services.project.GuvnorProjectClient"/>
 
   <!-- Wires dependencies -->
   <inherits name="com.emitrom.lienzo.Lienzo"/>
-  <inherits name="org.kie.uberfire.wires.core.WiresCoreClient"/>
-  <inherits name="org.kie.uberfire.wires.core.scratchpad.WiresCoreScratchPad"/>
-  <inherits name="org.kie.uberfire.wires.core.trees.WiresCoreTrees"/>
-  <inherits name="org.kie.uberfire.wires.bayesian.network.parser.BayesianNetworkAPI"/>
-  <inherits name="org.kie.uberfire.wires.bayesian.network.BayesianNetworkClient"/>
+  <inherits name="org.uberfire.ext.wires.core.WiresCoreClient"/>
+  <inherits name="org.uberfire.ext.wires.core.scratchpad.WiresCoreScratchPad"/>
+  <inherits name="org.uberfire.ext.wires.core.trees.WiresCoreTrees"/>
+  <inherits name="org.uberfire.ext.wires.bayesian.network.parser.BayesianNetworkAPI"/>
+  <inherits name="org.uberfire.ext.wires.bayesian.network.BayesianNetworkClient"/>
 
   <!-- Dashbuilder dependencies -->
   <inherits name="org.dashbuilder.DashbuilderClientAll"/>

@@ -32,12 +32,12 @@ import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.OnStartup;
 
 @Dependent
@@ -71,7 +71,8 @@ public class RepositoriesPresenter {
 
         void clear();
 
-        void updateRepository(final Repository old, final Repository updated);
+        void updateRepository( final Repository old,
+                               final Repository updated );
     }
 
     @Inject
@@ -110,15 +111,16 @@ public class RepositoriesPresenter {
         return view;
     }
 
-    public void updateRepository( final Repository repository, final Map<String, Object> config ) {
+    public void updateRepository( final Repository repository,
+                                  final Map<String, Object> config ) {
         repositoryService.call( new RemoteCallback<Repository>() {
 
             @Override
             public void callback( Repository updatedRepository ) {
-                view.updateRepository(repository, updatedRepository);
+                view.updateRepository( repository, updatedRepository );
                 repositoryUpdatedEvent.fire( new RepositoryUpdatedEvent( repository, updatedRepository ) );
             }
-            } ).updateRepository( repository, config );
+        } ).updateRepository( repository, config );
 
     }
 

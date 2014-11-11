@@ -23,13 +23,13 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKButton;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 
 /**
  * A popup that shows an error message
  */
-public class JarDetailPopup extends KieBaseModal {
+public class JarDetailPopup extends BaseModal {
 
     interface JarDetailPopupWidgetBinder
             extends

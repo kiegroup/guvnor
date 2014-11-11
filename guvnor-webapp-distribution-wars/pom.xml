@@ -76,8 +76,8 @@
 
     <!-- JAAS authentication integration -->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-servlet-security</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-servlet-security</artifactId>
     </dependency>
 
     <!-- Tag library - used by not_authorized.jsp -->

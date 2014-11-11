@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.NavSearch;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
@@ -29,15 +28,14 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.guvnor.messageconsole.client.console.HyperLinkCell;
-import org.kie.uberfire.client.tables.SimpleTable;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 
 @Dependent
 @WorkbenchScreen(identifier = "clientsScreen")

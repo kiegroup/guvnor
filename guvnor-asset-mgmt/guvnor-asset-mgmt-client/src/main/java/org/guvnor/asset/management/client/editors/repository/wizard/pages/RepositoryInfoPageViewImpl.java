@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
 public class RepositoryInfoPageViewImpl extends Composite
         implements RepositoryInfoPageView {
@@ -133,7 +133,7 @@ public class RepositoryInfoPageViewImpl extends Composite
         if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
             for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
                 organizationalUnitDropdown.addItem( organizationalUnit.getName(),
-                        organizationalUnit.getName() );
+                                                    organizationalUnit.getName() );
 
             }
         }

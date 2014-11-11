@@ -32,8 +32,7 @@ import org.guvnor.asset.management.client.editors.repository.structure.release.R
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
-import org.kie.uberfire.client.common.BusyPopup;
-
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 @ApplicationScoped
 public class RepositoryStructureViewImpl
@@ -48,7 +47,7 @@ public class RepositoryStructureViewImpl
 
     }
 
-    private static RepositoryStructureViewImplBinder uiBinder = GWT.create(RepositoryStructureViewImplBinder.class );
+    private static RepositoryStructureViewImplBinder uiBinder = GWT.create( RepositoryStructureViewImplBinder.class );
 
     @UiField
     FluidRow dataViewContainer;
@@ -61,20 +60,19 @@ public class RepositoryStructureViewImpl
 
     @UiField(provided = true)
     ProjectModulesView modulesView;
-    
+
     @Inject
     ReleaseScreenPopupViewImpl releaseScreenPopupView;
-    
+
     @Inject
     ConfigureScreenPopupViewImpl configureScreenPopupView;
-    
+
     @Inject
     PromoteScreenPopupViewImpl promoteScreenPopupView;
-    
 
     @Inject
     public RepositoryStructureViewImpl( RepositoryStructureDataView dataView,
-            ProjectModulesView modulesView ) {
+                                        ProjectModulesView modulesView ) {
 
         this.dataView = dataView;
         this.modulesView = modulesView;
@@ -100,8 +98,7 @@ public class RepositoryStructureViewImpl
     public PromoteScreenPopupViewImpl getPromoteScreenPopupView() {
         return promoteScreenPopupView;
     }
-    
-    
+
     @Override
     public void showBusyIndicator( final String message ) {
         BusyPopup.showMessage( message );
@@ -152,7 +149,5 @@ public class RepositoryStructureViewImpl
     public void clear() {
         getDataView().clear();
     }
-
-   
 
 }

@@ -18,6 +18,8 @@ package org.guvnor.asset.management.client.editors.forms.approve;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
@@ -28,13 +30,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import org.kie.uberfire.client.forms.GetFormParamsEvent;
-import org.kie.uberfire.client.forms.RequestFormParamsEvent;
-import org.kie.uberfire.client.forms.SetFormParamsEvent;
-
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.widgets.common.client.forms.GetFormParamsEvent;
+import org.uberfire.ext.widgets.common.client.forms.RequestFormParamsEvent;
+import org.uberfire.ext.widgets.common.client.forms.SetFormParamsEvent;
 
 @Dependent
 public class ApproveOperationViewImpl extends Composite implements ApproveOperationPresenter.ApproveOperationView {
@@ -87,7 +86,7 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
 
     @UiField
     CheckBox approvedCheckBox;
-    
+
     @Inject
     private Event<GetFormParamsEvent> getFormParamsEvent;
 
@@ -97,10 +96,10 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
 
     }
 
-    public void getOutputMap(@Observes RequestFormParamsEvent event) {
+    public void getOutputMap( @Observes RequestFormParamsEvent event ) {
         Map<String, Object> outputMap = new HashMap<String, Object>();
         outputMap.put( "out_approved", approvedCheckBox.getValue() );
-        getFormParamsEvent.fire(new GetFormParamsEvent(event.getAction(), outputMap));
+        getFormParamsEvent.fire( new GetFormParamsEvent( event.getAction(), outputMap ) );
     }
 
     @Override
@@ -109,22 +108,19 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
 
     }
 
-    
-    public void setInputMap(@Observes SetFormParamsEvent event) {
+    public void setInputMap( @Observes SetFormParamsEvent event ) {
         Map<String, String> params = event.getParams();
-        requestorTextBox.setText((String) params.get("in_requestor"));
-        operationTextBox.setText((String) params.get("in_operation"));
-        repositoryTextBox.setText((String) params.get("in_repository"));
-        projectTextBox.setText((String) params.get("in_project"));
-        setReadOnly(event.isReadOnly());
+        requestorTextBox.setText( (String) params.get( "in_requestor" ) );
+        operationTextBox.setText( (String) params.get( "in_operation" ) );
+        repositoryTextBox.setText( (String) params.get( "in_repository" ) );
+        projectTextBox.setText( (String) params.get( "in_project" ) );
+        setReadOnly( event.isReadOnly() );
     }
 
-    
     public void setReadOnly( boolean b ) {
         this.readOnly = b;
     }
 
-    
     public boolean isReadOnly() {
         return this.readOnly;
     }

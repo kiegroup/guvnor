@@ -32,9 +32,9 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import org.guvnor.messageconsole.client.console.resources.MessageConsoleResources;
 import org.guvnor.messageconsole.events.SystemMessage;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.tables.SimpleTable;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 
 @ApplicationScoped
 public class MessageConsoleViewImpl extends Composite implements MessageConsoleView {
@@ -148,9 +148,11 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
             }
 
             @Override
-            public void render( Cell.Context context, MessageConsoleServiceRow row, SafeHtmlBuilder sb ) {
+            public void render( Cell.Context context,
+                                MessageConsoleServiceRow row,
+                                SafeHtmlBuilder sb ) {
                 String title = getLevelTitle( row.getMessageLevel() );
-                sb.append( createDivStart(title) );
+                sb.append( createDivStart( title ) );
                 super.render( context, row, sb );
                 sb.append( createDivEnd() );
             }
@@ -172,11 +174,11 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
         BusyPopup.close();
     }
 
-    private String getLevelTitle(SystemMessage.Level level) {
+    private String getLevelTitle( SystemMessage.Level level ) {
         switch ( level ) {
             case ERROR:
                 return MessageConsoleResources.CONSTANTS.ErrorLevelTitle();
-           case WARNING:
+            case WARNING:
                 return MessageConsoleResources.CONSTANTS.WarningLevelTitle();
             case INFO:
             default:
@@ -184,16 +186,19 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
         }
     }
 
-    private SafeHtml createDivStart(String title) {
-        return createDivStart(title, "");
+    private SafeHtml createDivStart( String title ) {
+        return createDivStart( title, "" );
     }
 
-    private SafeHtml createDivStart(String title, String defaultValue) {
-        if (title == null || "".equals(title)) title = defaultValue;
+    private SafeHtml createDivStart( String title,
+                                     String defaultValue ) {
+        if ( title == null || "".equals( title ) ) {
+            title = defaultValue;
+        }
         return SafeHtmlUtils.fromTrustedString( "<div title=\"" + title.trim() + "\">" );
     }
 
     private SafeHtml createDivEnd() {
-        return SafeHtmlUtils.fromTrustedString("</div>");
+        return SafeHtmlUtils.fromTrustedString( "</div>" );
     }
 }

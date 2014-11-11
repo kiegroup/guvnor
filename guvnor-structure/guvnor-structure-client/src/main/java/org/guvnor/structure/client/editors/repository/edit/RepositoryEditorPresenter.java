@@ -21,16 +21,20 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.structure.repositories.*;
+import org.guvnor.structure.repositories.PublicURI;
+import org.guvnor.structure.repositories.RepositoryInfo;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
+import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.RepositoryServiceEditor;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
@@ -117,7 +121,7 @@ public class RepositoryEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return CoreConstants.INSTANCE.RepositoryEditor() +" [" + alias + "]";
+        return CoreConstants.INSTANCE.RepositoryEditor() + " [" + alias + "]";
     }
 
     @WorkbenchPartView
@@ -125,9 +129,9 @@ public class RepositoryEditorPresenter {
         return view;
     }
 
-    public void onRepositoryRemovedEvent(@Observes RepositoryRemovedEvent event) {
-        if (alias.equals(event.getRepository().getAlias())) {
-            placeManager.closePlace(place);
+    public void onRepositoryRemovedEvent( @Observes RepositoryRemovedEvent event ) {
+        if ( alias.equals( event.getRepository().getAlias() ) ) {
+            placeManager.closePlace( place );
         }
     }
 }

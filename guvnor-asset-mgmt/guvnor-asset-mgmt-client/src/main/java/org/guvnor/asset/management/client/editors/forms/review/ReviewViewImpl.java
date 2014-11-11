@@ -18,6 +18,8 @@ package org.guvnor.asset.management.client.editors.forms.review;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
@@ -29,18 +31,16 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import org.kie.uberfire.client.forms.GetFormParamsEvent;
-import org.kie.uberfire.client.forms.RequestFormParamsEvent;
-import org.kie.uberfire.client.forms.SetFormParamsEvent;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.widgets.common.client.forms.GetFormParamsEvent;
+import org.uberfire.ext.widgets.common.client.forms.RequestFormParamsEvent;
+import org.uberfire.ext.widgets.common.client.forms.SetFormParamsEvent;
 
 @Dependent
 public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewView {
 
     @Override
-    public void displayNotification(String text) {
+    public void displayNotification( String text ) {
 
     }
 
@@ -49,7 +49,7 @@ public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewV
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @Inject
     private PlaceManager placeManager;
@@ -63,7 +63,6 @@ public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewV
 
     @UiField
     TextArea showCommitsBox;
-
 
     @UiField
     ControlGroup requestorGroup;
@@ -88,44 +87,40 @@ public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewV
 
     @UiField
     TextArea commentsBox;
-    
+
     @Inject
     private Event<GetFormParamsEvent> getFormParamsEvent;
 
-
     public ReviewViewImpl() {
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
 
     }
 
-    public void getOutputMap(@Observes RequestFormParamsEvent event) {
+    public void getOutputMap( @Observes RequestFormParamsEvent event ) {
         Map<String, Object> outputMap = new HashMap<String, Object>();
-        outputMap.put("out_reviewed", approvedCheckBox.getValue());
-        outputMap.put("out_comment", commentsBox.getText());
-        getFormParamsEvent.fire(new GetFormParamsEvent(event.getAction(), outputMap));
+        outputMap.put( "out_reviewed", approvedCheckBox.getValue() );
+        outputMap.put( "out_comment", commentsBox.getText() );
+        getFormParamsEvent.fire( new GetFormParamsEvent( event.getAction(), outputMap ) );
     }
 
     @Override
-    public void init(ReviewPresenter presenter) {
+    public void init( ReviewPresenter presenter ) {
         this.presenter = presenter;
 
     }
 
-    
-    public void setInputMap(@Observes SetFormParamsEvent event) {
-        requestorTextBox.setText(event.getParams().get("in_requestor"));
-        repositoryTextBox.setText( event.getParams().get("in_repository"));
-        showCommitsBox.setText(event.getParams().get("in_commits"));
-        setReadOnly(event.isReadOnly());
+    public void setInputMap( @Observes SetFormParamsEvent event ) {
+        requestorTextBox.setText( event.getParams().get( "in_requestor" ) );
+        repositoryTextBox.setText( event.getParams().get( "in_repository" ) );
+        showCommitsBox.setText( event.getParams().get( "in_commits" ) );
+        setReadOnly( event.isReadOnly() );
     }
 
-    
-    public void setReadOnly(boolean b) {
+    public void setReadOnly( boolean b ) {
         this.readOnly = b;
     }
 
-    
     public boolean isReadOnly() {
         return this.readOnly;
     }

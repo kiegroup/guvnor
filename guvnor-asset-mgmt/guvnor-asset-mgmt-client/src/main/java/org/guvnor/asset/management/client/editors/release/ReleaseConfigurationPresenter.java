@@ -32,23 +32,24 @@ import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchScreen( identifier = "Release Management" )
+@WorkbenchScreen(identifier = "Release Management")
 public class ReleaseConfigurationPresenter extends BaseAssetsMgmtPresenter {
 
     private Constants constants = GWT.create( Constants.class );
 
-    public interface ReleaseConfigurationView extends UberView<ReleaseConfigurationPresenter>, BaseAssetsMgmtView {
+    public interface ReleaseConfigurationView extends UberView<ReleaseConfigurationPresenter>,
+                                                      BaseAssetsMgmtView {
 
         ListBox getChooseBranchBox();
 
@@ -90,8 +91,13 @@ public class ReleaseConfigurationPresenter extends BaseAssetsMgmtPresenter {
         baseView = view;
     }
 
-    public void releaseProject( String repository, String branch,
-            String userName, String password, String serverURL, Boolean deployToRuntime, String version ) {
+    public void releaseProject( String repository,
+                                String branch,
+                                String userName,
+                                String password,
+                                String serverURL,
+                                Boolean deployToRuntime,
+                                String version ) {
 
         if ( serverURL != null && !serverURL.isEmpty() && serverURL.endsWith( "/" ) ) {
             serverURL = serverURL.substring( 0, serverURL.length() - 1 );
@@ -104,12 +110,13 @@ public class ReleaseConfigurationPresenter extends BaseAssetsMgmtPresenter {
                                           }
                                       }, new ErrorCallback<Message>() {
                                           @Override
-                                          public boolean error( Message message, Throwable throwable ) {
+                                          public boolean error( Message message,
+                                                                Throwable throwable ) {
                                               ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
                                               return true;
                                           }
                                       }
-        ).releaseProject( repository, branch, userName, password, serverURL, deployToRuntime, version );
+                                    ).releaseProject( repository, branch, userName, password, serverURL, deployToRuntime, version );
 
     }
 
@@ -137,7 +144,7 @@ public class ReleaseConfigurationPresenter extends BaseAssetsMgmtPresenter {
         if ( !value.equals( constants.Select_Repository() ) ) {
             Repository r = getRepository( value );
             if ( r != null ) {
-                repositoryStructureServices.call(new RemoteCallback<RepositoryStructureModel>() {
+                repositoryStructureServices.call( new RemoteCallback<RepositoryStructureModel>() {
                     @Override
                     public void callback( RepositoryStructureModel model ) {
 

@@ -21,13 +21,13 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.version.VersionService;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
+import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 
 public class RestorePopup {
 
@@ -43,24 +43,25 @@ public class RestorePopup {
     @Inject
     private RestoreUtil restoreUtil;
 
-    public void show(final ObservablePath currentPath, final String currentVersionRecordUri) {
+    public void show( final ObservablePath currentPath,
+                      final String currentVersionRecordUri ) {
 
-        new SavePopup(new CommandWithCommitMessage() {
+        new SavePopup( new CommandWithCommitMessage() {
             @Override
-            public void execute(final String comment) {
-                busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Restoring());
-                versionService.call(getRestorationSuccessCallback(currentVersionRecordUri),
-                        new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).restore(currentPath, comment);
+            public void execute( final String comment ) {
+                busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Restoring() );
+                versionService.call( getRestorationSuccessCallback( currentVersionRecordUri ),
+                                     new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).restore( currentPath, comment );
             }
-        }).show();
+        } ).show();
     }
 
-    private RemoteCallback<Path> getRestorationSuccessCallback(final String currentVersionRecordUri) {
+    private RemoteCallback<Path> getRestorationSuccessCallback( final String currentVersionRecordUri ) {
         return new RemoteCallback<Path>() {
             @Override
-            public void callback(final Path restored) {
+            public void callback( final Path restored ) {
                 busyIndicatorView.hideBusyIndicator();
-                restoreEvent.fire(new RestoreEvent(restoreUtil.createObservablePath(restored, currentVersionRecordUri)));
+                restoreEvent.fire( new RestoreEvent( restoreUtil.createObservablePath( restored, currentVersionRecordUri ) ) );
             }
         };
     }

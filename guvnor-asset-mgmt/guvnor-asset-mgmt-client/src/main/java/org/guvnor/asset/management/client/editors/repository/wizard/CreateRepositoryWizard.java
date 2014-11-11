@@ -42,14 +42,14 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
-import org.kie.uberfire.client.wizards.AbstractWizard;
-import org.kie.uberfire.client.wizards.WizardPage;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
+import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -92,7 +92,8 @@ public class CreateRepositoryWizard extends AbstractWizard {
         structurePage.setModel( model );
 
         infoPage.setHandler( new RepositoryInfoPage.RepositoryInfoPageHandler() {
-            @Override public void managedRepositoryStatusChanged( boolean status ) {
+            @Override
+            public void managedRepositoryStatusChanged( boolean status ) {
                 managedRepositorySelected( status );
             }
         } );
@@ -161,7 +162,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
     private void managedRepositorySelected( boolean selected ) {
         boolean updateDefaultValues = false;
-        if ( selected && !pages.contains( structurePage )) {
+        if ( selected && !pages.contains( structurePage ) ) {
             pages.add( structurePage );
             updateDefaultValues = true;
         } else {
@@ -175,7 +176,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
     public void pageSelected( final int pageNumber ) {
         super.pageSelected( pageNumber );
-        if ( pageNumber == 1) {
+        if ( pageNumber == 1 ) {
             setStructureDefaultValues();
         }
     }
@@ -215,23 +216,23 @@ public class CreateRepositoryWizard extends AbstractWizard {
                                                 getRepositoryCreatedSuccessCallback().callback( repository );
                                             }
                                         },
-                        new ErrorCallback<Message>() {
-                            @Override
-                            public boolean error( final Message message,
-                                    final Throwable throwable ) {
-                                try {
-                                    hideBusyIndicator();
-                                    throw throwable;
-                                } catch ( RepositoryAlreadyExistsException ex ) {
-                                    showErrorPopup( CoreConstants.INSTANCE.RepoAlreadyExists() );
-                                } catch ( Throwable ex ) {
-                                    showErrorPopup( CoreConstants.INSTANCE.RepoCreationFail() + " \n" + throwable.getMessage() );
-                                }
-                                invokeOnCloseCallback();
-                                return true;
-                            }
-                        }
-                ).createRepository( model.getOrganizationalUnit(), scheme, alias, env );
+                                        new ErrorCallback<Message>() {
+                                            @Override
+                                            public boolean error( final Message message,
+                                                                  final Throwable throwable ) {
+                                                try {
+                                                    hideBusyIndicator();
+                                                    throw throwable;
+                                                } catch ( RepositoryAlreadyExistsException ex ) {
+                                                    showErrorPopup( CoreConstants.INSTANCE.RepoAlreadyExists() );
+                                                } catch ( Throwable ex ) {
+                                                    showErrorPopup( CoreConstants.INSTANCE.RepoCreationFail() + " \n" + throwable.getMessage() );
+                                                }
+                                                invokeOnCloseCallback();
+                                                return true;
+                                            }
+                                        }
+                                      ).createRepository( model.getOrganizationalUnit(), scheme, alias, env );
             }
         } ).normalizeRepositoryName( model.getRepositoryName() );
     }
@@ -252,7 +253,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
                     pom.setName( model.getProjectName() );
                     pom.setDescription( model.getProjectDescription() );
                     pom.getGav().setGroupId( model.getGroupId() );
-                    pom.getGav().setArtifactId(model.getArtifactId() );
+                    pom.getGav().setArtifactId( model.getArtifactId() );
                     pom.getGav().setVersion( model.getVersion() );
                     final String url = GWT.getModuleBaseURL();
                     final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
@@ -270,7 +271,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
                             new ErrorCallback<Message>() {
                                 @Override
                                 public boolean error( final Message message,
-                                        final Throwable throwable ) {
+                                                      final Throwable throwable ) {
 
                                     hideBusyIndicator();
                                     showErrorPopup( Constants.INSTANCE.RepoInitializationFail() + " \n" + throwable.getMessage() );
@@ -278,7 +279,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
                                     return true;
                                 }
                             }
-                    ).initRepositoryStructure( pom, baseUrl, repository, model.isMultiModule() );
+                                                   ).initRepositoryStructure( pom, baseUrl, repository, model.isMultiModule() );
                 } else {
                     invokeOnCloseCallback();
                 }
@@ -293,20 +294,22 @@ public class CreateRepositoryWizard extends AbstractWizard {
             public void callback( Pair<Repository, Path> pair ) {
                 if ( model.isConfigureRepository() ) {
                     assetManagementService.call( new RemoteCallback<Void>() {
-                        @Override
-                        public void callback( Void o ) {
-                            notification.fire( new NotificationEvent( Constants.INSTANCE.RepoConfigurationStarted() ) );
-                            invokeOnCloseCallback();
-                        }
-                    },
-                    new ErrorCallback<Message>() {
-                        @Override
-                        public boolean error( Message message, Throwable throwable ) {
-                            showErrorPopup( Constants.INSTANCE.RepoConfigurationStartFailed() + " \n" + throwable.getMessage() );
-                            invokeOnCloseCallback();
-                            return true;
-                        }
-                    }).configureRepository( pair.getK1().getAlias() , "master", "dev", "release", normalizeVersionNumber( model.getVersion() ) );
+                                                     @Override
+                                                     public void callback( Void o ) {
+                                                         notification.fire( new NotificationEvent( Constants.INSTANCE.RepoConfigurationStarted() ) );
+                                                         invokeOnCloseCallback();
+                                                     }
+                                                 },
+                                                 new ErrorCallback<Message>() {
+                                                     @Override
+                                                     public boolean error( Message message,
+                                                                           Throwable throwable ) {
+                                                         showErrorPopup( Constants.INSTANCE.RepoConfigurationStartFailed() + " \n" + throwable.getMessage() );
+                                                         invokeOnCloseCallback();
+                                                         return true;
+                                                     }
+                                                 }
+                                               ).configureRepository( pair.getK1().getAlias(), "master", "dev", "release", normalizeVersionNumber( model.getVersion() ) );
                 } else {
                     invokeOnCloseCallback();
                 }

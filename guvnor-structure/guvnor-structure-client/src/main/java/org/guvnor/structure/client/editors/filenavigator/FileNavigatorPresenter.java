@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;

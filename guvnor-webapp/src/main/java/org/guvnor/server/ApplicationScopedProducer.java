@@ -24,25 +24,21 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
-import org.kie.uberfire.metadata.io.IOSearchIndex;
-import org.kie.uberfire.metadata.io.IOServiceIndexedImpl;
-
-import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
+import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
+import org.uberfire.ext.metadata.io.IOSearchIndex;
+import org.uberfire.ext.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.io.IOSearchService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
-import org.kie.uberfire.metadata.io.IOSearchIndex;
-import org.kie.uberfire.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 

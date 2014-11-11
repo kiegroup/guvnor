@@ -33,8 +33,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.uberfire.client.tables.SimpleTable;
 import org.guvnor.asset.management.client.i18n.Constants;
+import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 
 public class ProjectModulesViewImpl extends Composite
         implements ProjectModulesView {
@@ -46,7 +46,7 @@ public class ProjectModulesViewImpl extends Composite
 
     private static ProjectModulesEditorViewImplUIBinder uiBinder = GWT.create( ProjectModulesEditorViewImplUIBinder.class );
 
-    @UiField( provided = true )
+    @UiField(provided = true)
     final SimpleTable<ProjectModuleRow> modulesTable = new SimpleTable<ProjectModuleRow>();
 
     @UiField
@@ -110,8 +110,8 @@ public class ProjectModulesViewImpl extends Composite
         };
         modulesTable.addColumn( modulesColumn, Constants.INSTANCE.Module() );
         modulesTable.setColumnWidth( modulesColumn,
-                70,
-                Style.Unit.PCT );
+                                     70,
+                                     Style.Unit.PCT );
 
     }
 
@@ -129,8 +129,8 @@ public class ProjectModulesViewImpl extends Composite
         };
         deleteModuleColumn.setFieldUpdater( new FieldUpdater<ProjectModuleRow, String>() {
             public void update( final int index,
-                    final ProjectModuleRow moduleRow,
-                    final String value ) {
+                                final ProjectModuleRow moduleRow,
+                                final String value ) {
                 if ( presenter != null && actionsEnabled ) {
                     presenter.onDeleteModule( moduleRow );
                 }
@@ -139,13 +139,12 @@ public class ProjectModulesViewImpl extends Composite
 
         modulesTable.addColumn( deleteModuleColumn, "" );
         modulesTable.setColumnWidth( deleteModuleColumn,
-                15,
-                Style.Unit.PCT );
+                                     15,
+                                     Style.Unit.PCT );
 
     }
 
     private void addEditModuleColumn() {
-
 
         final ButtonCell editModuleButton = new ButtonCell( ButtonSize.SMALL );
         editModuleButton.setType( ButtonType.PRIMARY );
@@ -158,8 +157,8 @@ public class ProjectModulesViewImpl extends Composite
         };
         editModuleColumn.setFieldUpdater( new FieldUpdater<ProjectModuleRow, String>() {
             public void update( final int index,
-                    final ProjectModuleRow moduleRow,
-                    final String value ) {
+                                final ProjectModuleRow moduleRow,
+                                final String value ) {
                 if ( presenter != null && actionsEnabled ) {
                     presenter.onEditModule( moduleRow );
                 }
@@ -168,11 +167,12 @@ public class ProjectModulesViewImpl extends Composite
 
         modulesTable.addColumn( editModuleColumn, "" );
         modulesTable.setColumnWidth( editModuleColumn,
-                15,
-                Style.Unit.PCT );
+                                     15,
+                                     Style.Unit.PCT );
     }
 
-    @UiHandler( "addModuleButton" ) void onAddModuleButtonClick( final ClickEvent e ) {
+    @UiHandler("addModuleButton")
+    void onAddModuleButtonClick( final ClickEvent e ) {
         presenter.onAddModule();
     }
 

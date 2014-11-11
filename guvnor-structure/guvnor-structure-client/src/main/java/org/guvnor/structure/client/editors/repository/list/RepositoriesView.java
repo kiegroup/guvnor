@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.repositories.Repository;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
 @Dependent
 public class RepositoriesView extends Composite
@@ -72,8 +72,8 @@ public class RepositoriesView extends Composite
                                                                     CoreConstants.INSTANCE.Empty(),
                                                                     repository.getCurrentBranch(),
                                                                     repository.getBranches(),
-                                                                    new RemoveRepositoryCmd(repository, presenter),
-                                                                    new UpdateRepositoryCmd(repository, presenter)  );
+                                                                    new RemoveRepositoryCmd( repository, presenter ),
+                                                                    new UpdateRepositoryCmd( repository, presenter ) );
         repositoryToWidgetMap.put( repository,
                                    item );
         panel.add( item );
@@ -107,12 +107,13 @@ public class RepositoriesView extends Composite
     }
 
     @Override
-    public void updateRepository(final Repository old, final Repository updated) {
-        RepositoriesViewItem item = (RepositoriesViewItem) repositoryToWidgetMap.remove(old);
+    public void updateRepository( final Repository old,
+                                  final Repository updated ) {
+        RepositoriesViewItem item = (RepositoriesViewItem) repositoryToWidgetMap.remove( old );
 
-        if (item != null) {
-            item.update(updated, presenter);
-            repositoryToWidgetMap.put(updated, item);
+        if ( item != null ) {
+            item.update( updated, presenter );
+            repositoryToWidgetMap.put( updated, item );
         }
     }
 }

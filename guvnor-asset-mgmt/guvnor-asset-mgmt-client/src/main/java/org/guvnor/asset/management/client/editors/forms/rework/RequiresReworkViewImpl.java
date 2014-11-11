@@ -18,6 +18,8 @@ package org.guvnor.asset.management.client.editors.forms.rework;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
@@ -27,12 +29,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import org.kie.uberfire.client.forms.GetFormParamsEvent;
-import org.kie.uberfire.client.forms.RequestFormParamsEvent;
-import org.kie.uberfire.client.forms.SetFormParamsEvent;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.widgets.common.client.forms.GetFormParamsEvent;
+import org.uberfire.ext.widgets.common.client.forms.RequestFormParamsEvent;
+import org.uberfire.ext.widgets.common.client.forms.SetFormParamsEvent;
 
 @Dependent
 public class RequiresReworkViewImpl extends Composite implements RequiresReworkPresenter.RequiresReworkView {
@@ -61,7 +61,7 @@ public class RequiresReworkViewImpl extends Composite implements RequiresReworkP
 
     @UiField
     TextArea reviewCommentBox;
-    
+
     @Inject
     private Event<GetFormParamsEvent> getFormParamsEvent;
 
@@ -71,10 +71,10 @@ public class RequiresReworkViewImpl extends Composite implements RequiresReworkP
 
     }
 
-    public void getOutputMap(@Observes RequestFormParamsEvent event) {
+    public void getOutputMap( @Observes RequestFormParamsEvent event ) {
         Map<String, Object> outputMap = new HashMap<String, Object>();
 
-        getFormParamsEvent.fire(new GetFormParamsEvent(event.getAction(), outputMap));
+        getFormParamsEvent.fire( new GetFormParamsEvent( event.getAction(), outputMap ) );
     }
 
     @Override
@@ -83,13 +83,11 @@ public class RequiresReworkViewImpl extends Composite implements RequiresReworkP
 
     }
 
-    
-    public void setInputMap(@Observes SetFormParamsEvent event) {
-        reviewCommentBox.setText(event.getParams().get("ReviewComment"));
-        setReadOnly(event.isReadOnly());
+    public void setInputMap( @Observes SetFormParamsEvent event ) {
+        reviewCommentBox.setText( event.getParams().get( "ReviewComment" ) );
+        setReadOnly( event.isReadOnly() );
     }
 
-    
     public void setReadOnly( boolean b ) {
         this.readOnly = b;
     }

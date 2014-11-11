@@ -47,11 +47,9 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.popups.YesNoCancelPopup;
-import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -59,6 +57,10 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnStartup;
@@ -66,19 +68,17 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
-import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
+
 @WorkbenchScreen(identifier = "repositoryStructureScreen")
 public class RepositoryStructurePresenter
         implements RepositoryStructureView.Presenter,
-        RepositoryStructureDataView.Presenter,
-        ProjectModulesView.Presenter {
+                   RepositoryStructureDataView.Presenter,
+                   ProjectModulesView.Presenter {
 
     private RepositoryStructureView view;
 
@@ -144,18 +144,18 @@ public class RepositoryStructurePresenter
     protected Caller<AssetManagementService> assetManagementServices;
 
     @Inject
-    public RepositoryStructurePresenter(RepositoryStructureView view) {
+    public RepositoryStructurePresenter( RepositoryStructureView view ) {
         this.view = view;
-        view.setPresenter(this);
-        view.getDataView().setPresenter(this);
-        view.getModulesView().setPresenter(this);
+        view.setPresenter( this );
+        view.getDataView().setPresenter( this );
+        view.getModulesView().setPresenter( this );
         makeMenuBar();
     }
 
     @OnStartup
-    public void onStartup(final PlaceRequest placeRequest) {
+    public void onStartup( final PlaceRequest placeRequest ) {
         this.placeRequest = placeRequest;
-        processContextChange(workbenchContext.getActiveRepository(), workbenchContext.getActiveProject());
+        processContextChange( workbenchContext.getActiveRepository(), workbenchContext.getActiveProject() );
     }
 
     @WorkbenchPartTitle
@@ -171,7 +171,7 @@ public class RepositoryStructurePresenter
     @OnClose
     public void onClose() {
         concurrentUpdateSessionInfo = null;
-        if (pathToRepositoryStructure != null) {
+        if ( pathToRepositoryStructure != null ) {
             pathToRepositoryStructure.dispose();
         }
     }
@@ -183,26 +183,26 @@ public class RepositoryStructurePresenter
         dataProvider.refresh();
     }
 
-    private void onContextChange(@Observes final ProjectContextChangeEvent event) {
-        processContextChange(event.getRepository(), event.getProject());
+    private void onContextChange( @Observes final ProjectContextChangeEvent event ) {
+        processContextChange( event.getRepository(), event.getProject() );
     }
 
-    private void processContextChange(final Repository repository, final Project project) {
+    private void processContextChange( final Repository repository,
+                                       final Project project ) {
         boolean repoOrBranchChanged = false;
 
-        if (repository == null) {
+        if ( repository == null ) {
             clearView();
-            
-            view.setModulesViewVisible(false);
-            enableActions(false);
-        } else if ((repoOrBranchChanged = repositoryOrBranchChanged(repository)) || (project != null && !project.equals(this.project))) {
+
+            view.setModulesViewVisible( false );
+            enableActions( false );
+        } else if ( ( repoOrBranchChanged = repositoryOrBranchChanged( repository ) ) || ( project != null && !project.equals( this.project ) ) ) {
 
             this.repository = repository;
             this.branch = repository != null ? repository.getCurrentBranch() : null;
             this.project = project;
 
-            
-            if (repoOrBranchChanged || (lastAddedModule == null || !lastAddedModule.equals(project)) && lastDeletedModule == null) {
+            if ( repoOrBranchChanged || ( lastAddedModule == null || !lastAddedModule.equals( project ) ) && lastDeletedModule == null ) {
                 init();
             }
             lastAddedModule = null;
@@ -212,10 +212,10 @@ public class RepositoryStructurePresenter
 
     private void init() {
 
-        view.showBusyIndicator(Constants.INSTANCE.Loading());
+        view.showBusyIndicator( Constants.INSTANCE.Loading() );
         clearView();
-        repositoryStructureService.call(getLoadModelSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(view)).load(repository);
+        repositoryStructureService.call( getLoadModelSuccessCallback(),
+                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository );
 
     }
 
@@ -223,76 +223,75 @@ public class RepositoryStructurePresenter
 
         return new RemoteCallback<RepositoryStructureModel>() {
             @Override
-            public void callback(final RepositoryStructureModel model) {
+            public void callback( final RepositoryStructureModel model ) {
 
                 view.hideBusyIndicator();
 
                 RepositoryStructurePresenter.this.model = model;
                 boolean initialized = false;
                 dataProvider.getList().clear();
-                if (pathToRepositoryStructure != null) {
+                if ( pathToRepositoryStructure != null ) {
                     pathToRepositoryStructure.dispose();
                 }
                 concurrentUpdateSessionInfo = null;
 
-                if (model == null) {
+                if ( model == null ) {
 
                     RepositoryStructurePresenter.this.model = new RepositoryStructureModel();
-                    view.getDataView().setMode(RepositoryStructureDataView.ViewMode.CREATE_STRUCTURE);
-                    view.getModulesView().setMode(ProjectModulesView.ViewMode.MODULES_VIEW);
-                    view.setModel(RepositoryStructurePresenter.this.model);
-                    view.setModulesViewVisible(false);
+                    view.getDataView().setMode( RepositoryStructureDataView.ViewMode.CREATE_STRUCTURE );
+                    view.getModulesView().setMode( ProjectModulesView.ViewMode.MODULES_VIEW );
+                    view.setModel( RepositoryStructurePresenter.this.model );
+                    view.setModulesViewVisible( false );
                     pathToRepositoryStructure = null;
 
-                } else if (model.isMultiModule()) {
+                } else if ( model.isMultiModule() ) {
 
-                    view.getDataView().setMode(RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT);
-                    view.getModulesView().setMode(ProjectModulesView.ViewMode.MODULES_VIEW);
-                    view.setModel(model);
-                    view.setModulesViewVisible(true);
+                    view.getDataView().setMode( RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT );
+                    view.getModulesView().setMode( ProjectModulesView.ViewMode.MODULES_VIEW );
+                    view.setModel( model );
+                    view.setModulesViewVisible( true );
                     initialized = true;
 
-                    pathToRepositoryStructure = IOC.getBeanManager().lookupBean(ObservablePath.class).getInstance().wrap(model.getPathToPOM());
+                    pathToRepositoryStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getPathToPOM() );
 
-                    updateModulesList(model.getModules());
+                    updateModulesList( model.getModules() );
 
-                } else if (model.isSingleProject()) {
+                } else if ( model.isSingleProject() ) {
 
-                    view.getDataView().setMode(RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT);
-                    view.getModulesView().setMode(ProjectModulesView.ViewMode.PROJECTS_VIEW);
-                    view.setModel(model);
-                    view.setModulesViewVisible(false);
+                    view.getDataView().setMode( RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT );
+                    view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
+                    view.setModel( model );
+                    view.setModulesViewVisible( false );
                     initialized = true;
 
-                    pathToRepositoryStructure = IOC.getBeanManager().lookupBean(ObservablePath.class).getInstance().wrap(model.getOrphanProjects().get(0).getPomXMLPath());
+                    pathToRepositoryStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getOrphanProjects().get( 0 ).getPomXMLPath() );
 
                 } else {
 
-                    view.getDataView().setMode(RepositoryStructureDataView.ViewMode.EDIT_UNMANAGED_REPOSITORY);
-                    view.getModulesView().setMode(ProjectModulesView.ViewMode.PROJECTS_VIEW);
-                    view.setModulesViewVisible(true);
+                    view.getDataView().setMode( RepositoryStructureDataView.ViewMode.EDIT_UNMANAGED_REPOSITORY );
+                    view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
+                    view.setModulesViewVisible( true );
                     initialized = true;
 
-                    view.setModel(model);
-                    updateProjectsList(model.getOrphanProjects());
+                    view.setModel( model );
+                    updateProjectsList( model.getOrphanProjects() );
                 }
 
                 addStructureChangeListeners();
-                updateEditorTitle(initialized);
-                updateMenus(initialized);
+                updateEditorTitle( initialized );
+                updateMenus( initialized );
             }
 
-            
         };
     }
 
-    private void updateMenus(boolean initialized) {
+    private void updateMenus( boolean initialized ) {
         List<MenuItem> items = menus.getItems();
-        for(MenuItem mi : items){
-            mi.setEnabled(initialized);
+        for ( MenuItem mi : items ) {
+            mi.setEnabled( initialized );
         }
     }
-    
+
     private void reload() {
         concurrentUpdateSessionInfo = null;
         init();
@@ -300,177 +299,177 @@ public class RepositoryStructurePresenter
 
     private void initRepositoryStructure() {
         //TODO add parameters validation
-        if(model != null){
-            if (model.isMultiModule()) {
-                view.showBusyIndicator(Constants.INSTANCE.CreatingRepositoryStructure());
-                repositoryStructureService.call(new RemoteCallback<Path>() {
+        if ( model != null ) {
+            if ( model.isMultiModule() ) {
+                view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
+                repositoryStructureService.call( new RemoteCallback<Path>() {
 
                     @Override
-                    public void callback(Path response) {
+                    public void callback( Path response ) {
                         view.hideBusyIndicator();
                         init();
                     }
 
-                }, new HasBusyIndicatorDefaultErrorCallback(view)).initRepositoryStructure(
-                        new GAV(view.getDataView().getGroupId(),
-                                view.getDataView().getArtifactId(),
-                                view.getDataView().getVersionId()),
-                        repository);
+                }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepositoryStructure(
+                        new GAV( view.getDataView().getGroupId(),
+                                 view.getDataView().getArtifactId(),
+                                 view.getDataView().getVersionId() ),
+                        repository );
 
-            } else if (model.isSingleProject()) {
-                wizzard.setContent(null, null, null);
-                wizzard.start(new Callback<Project>() {
+            } else if ( model.isSingleProject() ) {
+                wizzard.setContent( null, null, null );
+                wizzard.start( new Callback<Project>() {
                     @Override
-                    public void callback(Project result) {
+                    public void callback( Project result ) {
                         lastAddedModule = result;
-                        if (result != null) {
-                            view.showBusyIndicator(Constants.INSTANCE.CreatingRepositoryStructure());
-                            repositoryStructureService.call(new RemoteCallback<Repository>() {
+                        if ( result != null ) {
+                            view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
+                            repositoryStructureService.call( new RemoteCallback<Repository>() {
                                 @Override
-                                public void callback(Repository repository) {
+                                public void callback( Repository repository ) {
                                     view.hideBusyIndicator();
                                     RepositoryStructurePresenter.this.repository = repository;
                                     init();
 
                                 }
-                            }, new HasBusyIndicatorDefaultErrorCallback(view)).initRepository(repository, true);
+                            }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepository( repository, true );
 
                         }
                     }
-                }, false);
-            } else if (!model.isManaged()) {
-                view.showBusyIndicator(Constants.INSTANCE.CreatingRepositoryStructure());
-                repositoryStructureService.call(new RemoteCallback<Repository>() {
+                }, false );
+            } else if ( !model.isManaged() ) {
+                view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
+                repositoryStructureService.call( new RemoteCallback<Repository>() {
                     @Override
-                    public void callback(Repository repository) {
+                    public void callback( Repository repository ) {
                         view.hideBusyIndicator();
                         RepositoryStructurePresenter.this.repository = repository;
                         init();
                     }
-                }, new HasBusyIndicatorDefaultErrorCallback(view)).initRepository(repository, false);
+                }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepository( repository, false );
             }
         }
     }
 
-    private void updateEditorTitle(boolean initialized) {
+    private void updateEditorTitle( boolean initialized ) {
 
-        if (repository == null) {
+        if ( repository == null ) {
 
-            changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
-                    Constants.INSTANCE.RepositoryNotSelected()));
+            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
+                                                                     Constants.INSTANCE.RepositoryNotSelected() ) );
 
-        } else if (!initialized) {
+        } else if ( !initialized ) {
 
-            changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(
+            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.UnInitializedStructure(getRepositoryLabel(repository))));
+                    Constants.INSTANCE.UnInitializedStructure( getRepositoryLabel( repository ) ) ) );
 
-        } else if (model.isMultiModule()) {
+        } else if ( model.isMultiModule() ) {
 
-            changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(
+            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.RepositoryStructureWithName(getRepositoryLabel(repository) + "- > "
-                            + model.getPOM().getGav().getArtifactId() + ":"
-                            + model.getPOM().getGav().getGroupId() + ":"
-                            + model.getPOM().getGav().getVersion())));
+                    Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "- > "
+                                                                            + model.getPOM().getGav().getArtifactId() + ":"
+                                                                            + model.getPOM().getGav().getGroupId() + ":"
+                                                                            + model.getPOM().getGav().getVersion() ) ) );
 
-        } else if (model.isSingleProject()) {
-            changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(
+        } else if ( model.isSingleProject() ) {
+            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.RepositoryStructureWithName(getRepositoryLabel(repository) + "- > " + model.getOrphanProjects().get(0).getProjectName())));
+                    Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "- > " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
 
         } else {
-            changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(
+            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.UnmanagedRepository(getRepositoryLabel(repository))));
+                    Constants.INSTANCE.UnmanagedRepository( getRepositoryLabel( repository ) ) ) );
         }
     }
 
-    private String getRepositoryLabel(Repository repository) {
-        return repository != null ? (repository.getAlias() + " (" + repository.getCurrentBranch() + ") ") : "";
+    private String getRepositoryLabel( Repository repository ) {
+        return repository != null ? ( repository.getAlias() + " (" + repository.getCurrentBranch() + ") " ) : "";
     }
 
     private void addStructureChangeListeners() {
 
-        if (pathToRepositoryStructure != null) {
+        if ( pathToRepositoryStructure != null ) {
 
-            pathToRepositoryStructure.onConcurrentUpdate(new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+            pathToRepositoryStructure.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
                 @Override
-                public void execute(final ObservablePath.OnConcurrentUpdateEvent eventInfo) {
+                public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
                     concurrentUpdateSessionInfo = eventInfo;
                 }
-            });
+            } );
 
-            pathToRepositoryStructure.onConcurrentRename(new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+            pathToRepositoryStructure.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
                 @Override
-                public void execute(final ObservablePath.OnConcurrentRenameEvent info) {
-                    newConcurrentRename(info.getSource(),
-                            info.getTarget(),
-                            info.getIdentity(),
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    enableActions(false);
-                                }
-                            },
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    reload();
-                                }
-                            }
-                    ).show();
+                public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
+                    newConcurrentRename( info.getSource(),
+                                         info.getTarget(),
+                                         info.getIdentity(),
+                                         new Command() {
+                                             @Override
+                                             public void execute() {
+                                                 enableActions( false );
+                                             }
+                                         },
+                                         new Command() {
+                                             @Override
+                                             public void execute() {
+                                                 reload();
+                                             }
+                                         }
+                                       ).show();
                 }
-            });
+            } );
 
-            pathToRepositoryStructure.onConcurrentDelete(new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+            pathToRepositoryStructure.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
                 @Override
-                public void execute(final ObservablePath.OnConcurrentDelete info) {
-                    newConcurrentDelete(info.getPath(),
-                            info.getIdentity(),
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    enableActions(false);
-                                }
-                            },
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    placeManager.closePlace("repositoryStructureScreen");
-                                }
-                            }
-                    ).show();
+                public void execute( final ObservablePath.OnConcurrentDelete info ) {
+                    newConcurrentDelete( info.getPath(),
+                                         info.getIdentity(),
+                                         new Command() {
+                                             @Override
+                                             public void execute() {
+                                                 enableActions( false );
+                                             }
+                                         },
+                                         new Command() {
+                                             @Override
+                                             public void execute() {
+                                                 placeManager.closePlace( "repositoryStructureScreen" );
+                                             }
+                                         }
+                                       ).show();
                 }
-            });
+            } );
         }
     }
 
-    private void updateModulesList(List<String> modules) {
-        if (modules != null) {
-            for (String module : model.getModules()) {
-                dataProvider.getList().add(new ProjectModuleRow(module));
+    private void updateModulesList( List<String> modules ) {
+        if ( modules != null ) {
+            for ( String module : model.getModules() ) {
+                dataProvider.getList().add( new ProjectModuleRow( module ) );
             }
         }
     }
 
-    private void updateProjectsList(List<Project> projects) {
-        if (projects != null) {
-            for (Project project : projects) {
-                dataProvider.getList().add(new ProjectModuleRow(project.getProjectName()));
+    private void updateProjectsList( List<Project> projects ) {
+        if ( projects != null ) {
+            for ( Project project : projects ) {
+                dataProvider.getList().add( new ProjectModuleRow( project.getProjectName() ) );
             }
         }
     }
 
-    private void enableActions(boolean value) {
-        
-        view.getModulesView().enableActions(value);
+    private void enableActions( boolean value ) {
+
+        view.getModulesView().enableActions( value );
     }
 
     private void clearView() {
         view.getDataView().clear();
         dataProvider.getList().clear();
-        enableActions(true);
+        enableActions( true );
     }
 
     /**
@@ -478,55 +477,55 @@ public class RepositoryStructurePresenter
      */
     @Override
     public void onAddModule() {
-        if (model.isMultiModule()) {
-            wizzard.setContent(null,
-                    view.getDataView().getGroupId(),
-                    view.getDataView().getVersionId());
+        if ( model.isMultiModule() ) {
+            wizzard.setContent( null,
+                                view.getDataView().getGroupId(),
+                                view.getDataView().getVersionId() );
         } else {
-            wizzard.setContent(null,
-                    null,
-                    null);
+            wizzard.setContent( null,
+                                null,
+                                null );
 
         }
 
-        wizzard.start(getModuleAddedSuccessCallback(), false);
+        wizzard.start( getModuleAddedSuccessCallback(), false );
     }
 
     private Callback<Project> getModuleAddedSuccessCallback() {
         //optimization to avoid reloading the complete model when a module is added.
         return new Callback<Project>() {
             @Override
-            public void callback(final Project _project) {
+            public void callback( final Project _project ) {
                 lastAddedModule = _project;
-                if (_project != null) {
+                if ( _project != null ) {
                     //A new module was added.
-                    if (model.isMultiModule()) {
-                        view.showBusyIndicator(Constants.INSTANCE.Loading());
-                        repositoryStructureService.call(new RemoteCallback<RepositoryStructureModel>() {
+                    if ( model.isMultiModule() ) {
+                        view.showBusyIndicator( Constants.INSTANCE.Loading() );
+                        repositoryStructureService.call( new RemoteCallback<RepositoryStructureModel>() {
                             @Override
-                            public void callback(RepositoryStructureModel _model) {
+                            public void callback( RepositoryStructureModel _model ) {
                                 view.hideBusyIndicator();
-                                if (_model != null) {
-                                    model.setPOM(_model.getPOM());
-                                    model.setPOMMetaData(_model.getPOMMetaData());
-                                    model.setModules(_model.getModules());
-                                    model.getModulesProject().put(_project.getProjectName(), _project);
-                                    addToModulesList(_project);
+                                if ( _model != null ) {
+                                    model.setPOM( _model.getPOM() );
+                                    model.setPOMMetaData( _model.getPOMMetaData() );
+                                    model.setModules( _model.getModules() );
+                                    model.getModulesProject().put( _project.getProjectName(), _project );
+                                    addToModulesList( _project );
                                 }
                             }
-                        }, new HasBusyIndicatorDefaultErrorCallback(view)).load(repository, false);
+                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository, false );
 
                     } else {
-                        view.showBusyIndicator(Constants.INSTANCE.Loading());
-                        pomService.call(new RemoteCallback<POM>() {
+                        view.showBusyIndicator( Constants.INSTANCE.Loading() );
+                        pomService.call( new RemoteCallback<POM>() {
                             @Override
-                            public void callback(POM _pom) {
+                            public void callback( POM _pom ) {
                                 view.hideBusyIndicator();
-                                model.getOrphanProjects().add(_project);
-                                model.getOrphanProjectsPOM().put(_project.getSignatureId(), _pom);
-                                addToModulesList(_project);
+                                model.getOrphanProjects().add( _project );
+                                model.getOrphanProjectsPOM().put( _project.getSignatureId(), _pom );
+                                addToModulesList( _project );
                             }
-                        }, new HasBusyIndicatorDefaultErrorCallback(view)).load(_project.getPomXMLPath());
+                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( _project.getPomXMLPath() );
                     }
                 }
             }
@@ -534,94 +533,94 @@ public class RepositoryStructurePresenter
     }
 
     @Override
-    public void addDataDisplay(HasData<ProjectModuleRow> display) {
-        dataProvider.addDataDisplay(display);
+    public void addDataDisplay( HasData<ProjectModuleRow> display ) {
+        dataProvider.addDataDisplay( display );
     }
 
     @Override
-    public void onDeleteModule(ProjectModuleRow moduleRow) {
+    public void onDeleteModule( ProjectModuleRow moduleRow ) {
 
-        final Project project = getSelectedModule(moduleRow.getName());
+        final Project project = getSelectedModule( moduleRow.getName() );
         String message = null;
 
-        if (project != null) {
+        if ( project != null ) {
 
-            if (model.isMultiModule()) {
-                message = Constants.INSTANCE.ConfirmModuleDeletion(moduleRow.getName());
+            if ( model.isMultiModule() ) {
+                message = Constants.INSTANCE.ConfirmModuleDeletion( moduleRow.getName() );
             } else {
-                message = Constants.INSTANCE.ConfirmProjectDeletion(moduleRow.getName());
+                message = Constants.INSTANCE.ConfirmProjectDeletion( moduleRow.getName() );
             }
 
-            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
-                    message,
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            deleteSelectedModule(project);
-                        }
-                    },
-                    CommonConstants.INSTANCE.YES(),
-                    ButtonType.DANGER,
-                    IconType.MINUS_SIGN,
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //do nothing
-                        }
-                    },
-                    null,
-                    ButtonType.DEFAULT,
-                    null,
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //do nothing.
-                        }
-                    },
-                    null,
-                    ButtonType.DEFAULT,
-                    null
-            );
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                                                                                      message,
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              deleteSelectedModule( project );
+                                                                                          }
+                                                                                      },
+                                                                                      CommonConstants.INSTANCE.YES(),
+                                                                                      ButtonType.DANGER,
+                                                                                      IconType.MINUS_SIGN,
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              //do nothing
+                                                                                          }
+                                                                                      },
+                                                                                      null,
+                                                                                      ButtonType.DEFAULT,
+                                                                                      null,
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              //do nothing.
+                                                                                          }
+                                                                                      },
+                                                                                      null,
+                                                                                      ButtonType.DEFAULT,
+                                                                                      null
+                                                                                    );
 
-            yesNoCancelPopup.setCloseVisible(false);
+            yesNoCancelPopup.setCloseVisible( false );
             yesNoCancelPopup.show();
         }
     }
 
-    private void deleteSelectedModule(final Project project) {
+    private void deleteSelectedModule( final Project project ) {
 
-        view.showBusyIndicator(Constants.INSTANCE.Deleting());
+        view.showBusyIndicator( Constants.INSTANCE.Deleting() );
         lastDeletedModule = project;
-        repositoryStructureService.call(getModuleDeletedSuccessCallback(project), new HasBusyIndicatorDefaultErrorCallback(view)).delete(project.getPomXMLPath(), "Module removed");
+        repositoryStructureService.call( getModuleDeletedSuccessCallback( project ), new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( project.getPomXMLPath(), "Module removed" );
     }
 
-    private RemoteCallback<Void> getModuleDeletedSuccessCallback(final Project _project) {
+    private RemoteCallback<Void> getModuleDeletedSuccessCallback( final Project _project ) {
         //optimization to avoid reloading the complete model when a module is added.
         return new RemoteCallback<Void>() {
             @Override
-            public void callback(Void response) {
-                if (_project != null) {
+            public void callback( Void response ) {
+                if ( _project != null ) {
                     //A project was deleted
-                    if (model.isMultiModule()) {
-                        view.showBusyIndicator(Constants.INSTANCE.Loading());
-                        repositoryStructureService.call(new RemoteCallback<RepositoryStructureModel>() {
+                    if ( model.isMultiModule() ) {
+                        view.showBusyIndicator( Constants.INSTANCE.Loading() );
+                        repositoryStructureService.call( new RemoteCallback<RepositoryStructureModel>() {
                             @Override
-                            public void callback(RepositoryStructureModel _model) {
+                            public void callback( RepositoryStructureModel _model ) {
                                 view.hideBusyIndicator();
-                                if (_model != null) {
-                                    model.setPOM(_model.getPOM());
-                                    model.setPOMMetaData(_model.getPOMMetaData());
-                                    model.setModules(_model.getModules());
-                                    model.getModulesProject().remove(_project.getProjectName());
-                                    removeFromModulesList(_project.getProjectName());
+                                if ( _model != null ) {
+                                    model.setPOM( _model.getPOM() );
+                                    model.setPOMMetaData( _model.getPOMMetaData() );
+                                    model.setModules( _model.getModules() );
+                                    model.getModulesProject().remove( _project.getProjectName() );
+                                    removeFromModulesList( _project.getProjectName() );
                                 }
                             }
-                        }, new HasBusyIndicatorDefaultErrorCallback(view)).load(repository, false);
+                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository, false );
 
                     } else {
-                        model.getOrphanProjects().remove(_project);
-                        model.getOrphanProjectsPOM().remove(_project.getSignatureId());
-                        removeFromModulesList(_project.getProjectName());
+                        model.getOrphanProjects().remove( _project );
+                        model.getOrphanProjectsPOM().remove( _project.getSignatureId() );
+                        removeFromModulesList( _project.getProjectName() );
                     }
                 }
             }
@@ -629,28 +628,28 @@ public class RepositoryStructurePresenter
     }
 
     @Override
-    public void onEditModule(ProjectModuleRow moduleRow) {
+    public void onEditModule( ProjectModuleRow moduleRow ) {
 
-        Project project = getSelectedModule(moduleRow.getName());
-        if (project != null) {
+        Project project = getSelectedModule( moduleRow.getName() );
+        if ( project != null ) {
             //TODO check if there's a better implementation for this projectScreen opening.
-            contextChangeEvent.fire(new ProjectContextChangeEvent(workbenchContext.getActiveOrganizationalUnit(), repository, project));
-            placeManager.goTo("projectScreen");
+            contextChangeEvent.fire( new ProjectContextChangeEvent( workbenchContext.getActiveOrganizationalUnit(), repository, project ) );
+            placeManager.goTo( "projectScreen" );
         }
     }
 
     @Override
-    public void onArtifactIdChange(String artifactId) {
+    public void onArtifactIdChange( String artifactId ) {
         //Window.alert( "onArtifactIdChange: " + artifactId );
     }
 
     @Override
-    public void onGroupIdChange(String groupId) {
+    public void onGroupIdChange( String groupId ) {
         //Window.alert( "onGroupIdChange: " + groupId );
     }
 
     @Override
-    public void onVersionChange(String version) {
+    public void onVersionChange( String version ) {
         //Window.alert( "onVersionChange: " + version );
     }
 
@@ -667,132 +666,132 @@ public class RepositoryStructurePresenter
     @Override
     public void onSaveRepositoryStructure() {
 
-        if (model.getPOM() != null) {
+        if ( model.getPOM() != null ) {
 
-            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
-                    Constants.INSTANCE.ConfirmSaveRepositoryStructure(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            saveRepositoryStructure();
-                        }
-                    },
-                    CommonConstants.INSTANCE.YES(),
-                    ButtonType.PRIMARY,
-                    IconType.SAVE,
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //do nothing
-                        }
-                    },
-                    null,
-                    ButtonType.DEFAULT,
-                    null,
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //do nothing.
-                        }
-                    },
-                    null,
-                    ButtonType.DEFAULT,
-                    null
-            );
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                                                                                      Constants.INSTANCE.ConfirmSaveRepositoryStructure(),
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              saveRepositoryStructure();
+                                                                                          }
+                                                                                      },
+                                                                                      CommonConstants.INSTANCE.YES(),
+                                                                                      ButtonType.PRIMARY,
+                                                                                      IconType.SAVE,
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              //do nothing
+                                                                                          }
+                                                                                      },
+                                                                                      null,
+                                                                                      ButtonType.DEFAULT,
+                                                                                      null,
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              //do nothing.
+                                                                                          }
+                                                                                      },
+                                                                                      null,
+                                                                                      ButtonType.DEFAULT,
+                                                                                      null
+                                                                                    );
 
-            yesNoCancelPopup.setCloseVisible(false);
+            yesNoCancelPopup.setCloseVisible( false );
             yesNoCancelPopup.show();
         }
     }
 
     private void saveRepositoryStructure() {
 
-        if (model.getPOM() != null) {
+        if ( model.getPOM() != null ) {
 
-            model.getPOM().getGav().setGroupId(view.getDataView().getGroupId());
-            model.getPOM().getGav().setArtifactId(view.getDataView().getArtifactId());
-            model.getPOM().getGav().setVersion(view.getDataView().getVersionId());
+            model.getPOM().getGav().setGroupId( view.getDataView().getGroupId() );
+            model.getPOM().getGav().setArtifactId( view.getDataView().getArtifactId() );
+            model.getPOM().getGav().setVersion( view.getDataView().getVersionId() );
 
-            view.showBusyIndicator(Constants.INSTANCE.Saving());
-            repositoryStructureService.call(new RemoteCallback<Void>() {
+            view.showBusyIndicator( Constants.INSTANCE.Saving() );
+            repositoryStructureService.call( new RemoteCallback<Void>() {
                 @Override
-                public void callback(Void response) {
+                public void callback( Void response ) {
                     view.hideBusyIndicator();
                     init();
                 }
-            }).save(model.getPathToPOM(), model, "");
+            } ).save( model.getPathToPOM(), model, "" );
         }
     }
 
     @Override
     public void onConvertToMultiModule() {
 
-        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
-                Constants.INSTANCE.ConfirmConvertToMultiModuleStructure(),
-                new Command() {
-                    @Override
-                    public void execute() {
-                        convertToMultiModule();
-                    }
-                },
-                CommonConstants.INSTANCE.YES(),
-                ButtonType.PRIMARY,
-                IconType.SAVE,
-                new Command() {
-                    @Override
-                    public void execute() {
-                        //do nothing
-                    }
-                },
-                null,
-                ButtonType.DEFAULT,
-                null,
-                new Command() {
-                    @Override
-                    public void execute() {
-                        //do nothing.
-                    }
-                },
-                null,
-                ButtonType.DEFAULT,
-                null
-        );
+        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                                                                                  Constants.INSTANCE.ConfirmConvertToMultiModuleStructure(),
+                                                                                  new Command() {
+                                                                                      @Override
+                                                                                      public void execute() {
+                                                                                          convertToMultiModule();
+                                                                                      }
+                                                                                  },
+                                                                                  CommonConstants.INSTANCE.YES(),
+                                                                                  ButtonType.PRIMARY,
+                                                                                  IconType.SAVE,
+                                                                                  new Command() {
+                                                                                      @Override
+                                                                                      public void execute() {
+                                                                                          //do nothing
+                                                                                      }
+                                                                                  },
+                                                                                  null,
+                                                                                  ButtonType.DEFAULT,
+                                                                                  null,
+                                                                                  new Command() {
+                                                                                      @Override
+                                                                                      public void execute() {
+                                                                                          //do nothing.
+                                                                                      }
+                                                                                  },
+                                                                                  null,
+                                                                                  ButtonType.DEFAULT,
+                                                                                  null
+                                                                                );
 
-        yesNoCancelPopup.setCloseVisible(false);
+        yesNoCancelPopup.setCloseVisible( false );
         yesNoCancelPopup.show();
 
     }
 
     private void convertToMultiModule() {
-        Project project = model.getOrphanProjects().get(0);
-        POM pom = model.getOrphanProjectsPOM().get(project.getSignatureId());
-        GAV gav = new GAV(view.getDataView().getGroupId(), view.getDataView().getArtifactId(), view.getDataView().getVersionId());
+        Project project = model.getOrphanProjects().get( 0 );
+        POM pom = model.getOrphanProjectsPOM().get( project.getSignatureId() );
+        GAV gav = new GAV( view.getDataView().getGroupId(), view.getDataView().getArtifactId(), view.getDataView().getVersionId() );
 
-        view.showBusyIndicator(Constants.INSTANCE.ConvertingToMultiModuleProject());
-        repositoryStructureService.call(new RemoteCallback<Path>() {
+        view.showBusyIndicator( Constants.INSTANCE.ConvertingToMultiModuleProject() );
+        repositoryStructureService.call( new RemoteCallback<Path>() {
             @Override
-            public void callback(Path response) {
+            public void callback( Path response ) {
                 view.hideBusyIndicator();
                 init();
             }
-        }).convertToMultiProjectStructure(model.getOrphanProjects(), gav, repository, true, null);
+        } ).convertToMultiProjectStructure( model.getOrphanProjects(), gav, repository, true, null );
     }
 
     @Override
     public void onOpenSingleProject() {
-        if (model != null && model.isSingleProject()) {
-            placeManager.goTo("projectScreen");
+        if ( model != null && model.isSingleProject() ) {
+            placeManager.goTo( "projectScreen" );
         }
     }
 
-    private Project getSelectedModule(String name) {
+    private Project getSelectedModule( String name ) {
         Project project = null;
-        if (model != null && name != null) {
-            if (model.isMultiModule()) {
-                project = model.getModulesProject() != null ? model.getModulesProject().get(name) : null;
-            } else if (model.getOrphanProjects() != null) {
-                for (Project _project : model.getOrphanProjects()) {
-                    if (name.equals(_project.getProjectName())) {
+        if ( model != null && name != null ) {
+            if ( model.isMultiModule() ) {
+                project = model.getModulesProject() != null ? model.getModulesProject().get( name ) : null;
+            } else if ( model.getOrphanProjects() != null ) {
+                for ( Project _project : model.getOrphanProjects() ) {
+                    if ( name.equals( _project.getProjectName() ) ) {
                         project = _project;
                         break;
                     }
@@ -802,49 +801,48 @@ public class RepositoryStructurePresenter
         return project;
     }
 
-    private void removeFromModulesList(String module) {
-        if (module != null) {
+    private void removeFromModulesList( String module ) {
+        if ( module != null ) {
             int index = -1;
-            for (ProjectModuleRow row : dataProvider.getList()) {
+            for ( ProjectModuleRow row : dataProvider.getList() ) {
                 index++;
-                if (module.equals(row.getName())) {
+                if ( module.equals( row.getName() ) ) {
                     break;
                 }
             }
-            if (index >= 0 && (index == 0 || index < dataProvider.getList().size())) {
-                dataProvider.getList().remove(index);
+            if ( index >= 0 && ( index == 0 || index < dataProvider.getList().size() ) ) {
+                dataProvider.getList().remove( index );
             }
         }
     }
 
-    private void addToModulesList(final Project project) {
-        dataProvider.getList().add(new ProjectModuleRow(project.getProjectName()));
+    private void addToModulesList( final Project project ) {
+        dataProvider.getList().add( new ProjectModuleRow( project.getProjectName() ) );
     }
 
-    private boolean repositoryOrBranchChanged(Repository selectedRepository) {
+    private boolean repositoryOrBranchChanged( Repository selectedRepository ) {
         return selectedRepository != null
-                && (!selectedRepository.equals(this.repository)
-                || !selectedRepository.getCurrentBranch().equals(this.branch));
+                && ( !selectedRepository.equals( this.repository )
+                || !selectedRepository.getCurrentBranch().equals( this.branch ) );
     }
 
     private void makeMenuBar() {
         MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> configure = MenuFactory
-                            .newTopLevelMenu(Constants.INSTANCE.Configure())
-                            //.withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_SAVE))
-                            .respondsWith(getConfigureCommand())
-                            .endMenu();
-                    MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> promote = configure.newTopLevelMenu(Constants.INSTANCE.Promote())
-                            // .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_DELETE))
-                            .respondsWith(getPromoteCommand())
-                            .endMenu();
+                .newTopLevelMenu( Constants.INSTANCE.Configure() )
+                        //.withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_SAVE))
+                .respondsWith( getConfigureCommand() )
+                .endMenu();
+        MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> promote = configure.newTopLevelMenu( Constants.INSTANCE.Promote() )
+                // .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_DELETE))
+                .respondsWith( getPromoteCommand() )
+                .endMenu();
 
-                    MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> release = configure.newTopLevelMenu(Constants.INSTANCE.Release())
-                            //  .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_RENAME))
-                            .respondsWith(getReleaseCommand())
-                            .endMenu();
+        MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> release = configure.newTopLevelMenu( Constants.INSTANCE.Release() )
+                //  .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_RENAME))
+                .respondsWith( getReleaseCommand() )
+                .endMenu();
 
-                    menus = configure.build();
-        
+        menus = configure.build();
 
     }
 
@@ -852,7 +850,7 @@ public class RepositoryStructurePresenter
         return new Command() {
             @Override
             public void execute() {
-                view.getConfigureScreenPopupView().configure(repository.getAlias(), branch, model.getPOM().getGav().getVersion(), new com.google.gwt.user.client.Command() {
+                view.getConfigureScreenPopupView().configure( repository.getAlias(), branch, model.getPOM().getGav().getVersion(), new com.google.gwt.user.client.Command() {
                     @Override
                     public void execute() {
                         String devBranch = view.getConfigureScreenPopupView().getDevBranch();
@@ -860,10 +858,10 @@ public class RepositoryStructurePresenter
 
                         String version = view.getConfigureScreenPopupView().getVersion();
 
-                        configureRepository(repository.getAlias(), branch, devBranch, releaseBranch, version);
+                        configureRepository( repository.getAlias(), branch, devBranch, releaseBranch, version );
                         view.getConfigureScreenPopupView().hide();
                     }
-                });
+                } );
                 view.getConfigureScreenPopupView().show();
             }
         };
@@ -874,14 +872,14 @@ public class RepositoryStructurePresenter
         return new Command() {
             @Override
             public void execute() {
-                view.getPromoteScreenPopupView().configure(repository.getAlias(), branch, repository.getBranches(), new com.google.gwt.user.client.Command() {
+                view.getPromoteScreenPopupView().configure( repository.getAlias(), branch, repository.getBranches(), new com.google.gwt.user.client.Command() {
                     @Override
                     public void execute() {
                         String targetBranch = view.getPromoteScreenPopupView().getTargetBranch();
-                        promoteChanges(repository.getAlias(), branch, targetBranch);
+                        promoteChanges( repository.getAlias(), branch, targetBranch );
                         view.getPromoteScreenPopupView().hide();
                     }
-                });
+                } );
                 view.getPromoteScreenPopupView().show();
             }
         };
@@ -892,22 +890,22 @@ public class RepositoryStructurePresenter
         return new Command() {
             @Override
             public void execute() {
-                view.getReleaseScreenPopupView().configure(repository.getAlias(),
-                        branch,
-                        trimSnapshotFromVersion( model.getPOM().getGav().getVersion() ),
-                        model.getPOM().getGav().getVersion(),
-                        new com.google.gwt.user.client.Command() {
-                    @Override
-                    public void execute() {
-                        String username = view.getReleaseScreenPopupView().getUsername();
-                        String password = view.getReleaseScreenPopupView().getPassword();
-                        String serverURL = view.getReleaseScreenPopupView().getServerURL();
-                        String version = view.getReleaseScreenPopupView().getVersion();
-                        Boolean deployToRuntime = view.getReleaseScreenPopupView().getDeployToRuntime();
-                        releaseProject(repository.getAlias(), branch, username, password, serverURL, deployToRuntime, version);
-                        view.getReleaseScreenPopupView().hide();
-                    }
-                });
+                view.getReleaseScreenPopupView().configure( repository.getAlias(),
+                                                            branch,
+                                                            trimSnapshotFromVersion( model.getPOM().getGav().getVersion() ),
+                                                            model.getPOM().getGav().getVersion(),
+                                                            new com.google.gwt.user.client.Command() {
+                                                                @Override
+                                                                public void execute() {
+                                                                    String username = view.getReleaseScreenPopupView().getUsername();
+                                                                    String password = view.getReleaseScreenPopupView().getPassword();
+                                                                    String serverURL = view.getReleaseScreenPopupView().getServerURL();
+                                                                    String version = view.getReleaseScreenPopupView().getVersion();
+                                                                    Boolean deployToRuntime = view.getReleaseScreenPopupView().getDeployToRuntime();
+                                                                    releaseProject( repository.getAlias(), branch, username, password, serverURL, deployToRuntime, version );
+                                                                    view.getReleaseScreenPopupView().hide();
+                                                                }
+                                                            } );
                 view.getReleaseScreenPopupView().show();
             }
         };
@@ -921,60 +919,74 @@ public class RepositoryStructurePresenter
         return version;
     }
 
-    public void configureRepository(String repository, String sourceBranch, String devBranch, String releaseBranch, String version) {
-        assetManagementServices.call(new RemoteCallback<Long>() {
-            @Override
-            public void callback(Long taskId) {
-                //view.displayNotification( "Repository Configuration Started!" );
-            }
-        }, new ErrorCallback<Message>() {
-            @Override
-            public boolean error(Message message, Throwable throwable) {
-                org.uberfire.client.workbench.widgets.common.ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
-                return true;
-            }
-        }
-        ).configureRepository(repository, sourceBranch, devBranch, releaseBranch, version);
+    public void configureRepository( String repository,
+                                     String sourceBranch,
+                                     String devBranch,
+                                     String releaseBranch,
+                                     String version ) {
+        assetManagementServices.call( new RemoteCallback<Long>() {
+                                          @Override
+                                          public void callback( Long taskId ) {
+                                              //view.displayNotification( "Repository Configuration Started!" );
+                                          }
+                                      }, new ErrorCallback<Message>() {
+                                          @Override
+                                          public boolean error( Message message,
+                                                                Throwable throwable ) {
+                                              org.uberfire.client.workbench.widgets.common.ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
+                                              return true;
+                                          }
+                                      }
+                                    ).configureRepository( repository, sourceBranch, devBranch, releaseBranch, version );
 
     }
 
-    public void promoteChanges(String repository, String sourceBranch, String destinationBranch) {
-        assetManagementServices.call(new RemoteCallback<Long>() {
-            @Override
-            public void callback(Long taskId) {
-                // view.displayNotification( "Promote Changes Process Started!" );
-            }
-        }, new ErrorCallback<Message>() {
-            @Override
-            public boolean error(Message message, Throwable throwable) {
-                org.uberfire.client.workbench.widgets.common.ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
-                return true;
-            }
-        }
-        ).promoteChanges(repository, sourceBranch, destinationBranch);
+    public void promoteChanges( String repository,
+                                String sourceBranch,
+                                String destinationBranch ) {
+        assetManagementServices.call( new RemoteCallback<Long>() {
+                                          @Override
+                                          public void callback( Long taskId ) {
+                                              // view.displayNotification( "Promote Changes Process Started!" );
+                                          }
+                                      }, new ErrorCallback<Message>() {
+                                          @Override
+                                          public boolean error( Message message,
+                                                                Throwable throwable ) {
+                                              org.uberfire.client.workbench.widgets.common.ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
+                                              return true;
+                                          }
+                                      }
+                                    ).promoteChanges( repository, sourceBranch, destinationBranch );
 
     }
 
-    public void releaseProject(String repository, String branch,
-            String userName, String password, String serverURL, Boolean deployToRuntime, String version) {
+    public void releaseProject( String repository,
+                                String branch,
+                                String userName,
+                                String password,
+                                String serverURL,
+                                Boolean deployToRuntime,
+                                String version ) {
 
-        if (serverURL != null && !serverURL.isEmpty() && serverURL.endsWith("/")) {
-            serverURL = serverURL.substring(0, serverURL.length() - 1);
+        if ( serverURL != null && !serverURL.isEmpty() && serverURL.endsWith( "/" ) ) {
+            serverURL = serverURL.substring( 0, serverURL.length() - 1 );
         }
 
-        assetManagementServices.call(new RemoteCallback<Long>() {
-            @Override
-            public void callback(Long taskId) {
+        assetManagementServices.call( new RemoteCallback<Long>() {
+                                          @Override
+                                          public void callback( Long taskId ) {
 //                                              view.displayNotification( "Release project process started" );
-            }
-        }, new ErrorCallback<Message>() {
-            @Override
-            public boolean error(Message message, Throwable throwable) {
-                ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
-                return true;
-            }
-        }
-        ).releaseProject(repository, branch, userName, password, serverURL, deployToRuntime, version);
+                                          }
+                                      }, new ErrorCallback<Message>() {
+                                          @Override
+                                          public boolean error( Message message,
+                                                                Throwable throwable ) {
+                                              ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
+                                              return true;
+                                          }
+                                      }
+                                    ).releaseProject( repository, branch, userName, password, serverURL, deployToRuntime, version );
 
     }
 

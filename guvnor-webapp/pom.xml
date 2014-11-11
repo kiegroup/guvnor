@@ -40,20 +40,12 @@
       <artifactId>gwt-bootstrap</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -84,20 +76,12 @@
       <artifactId>guvnor-structure-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-widgets-core-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-widgets-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-metadata-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -291,54 +275,54 @@
 
     <!-- UberFire Extension -->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-metadata-commons-io</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-commons-io</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-metadata-backend-lucene</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-backend-lucene</artifactId>
     </dependency>
 
     <!-- UberFire Plugins -->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-runtime-plugins-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-runtime-plugins-backend</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-runtime-plugins-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-runtime-plugins-client</artifactId>
     </dependency>
 
     <!-- UberFire Perspective Editor -->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-perspective-editor-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-perspective-editor-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-perspective-editor-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-perspective-editor-backend</artifactId>
     </dependency>
 
     <!-- UberFire Apps -->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-apps-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-apps-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-apps-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-apps-backend</artifactId>
     </dependency>
 
     <!--Wires-->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-wires-core-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-core-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-wires-core-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-core-client</artifactId>
     </dependency>
 
     <dependency>
@@ -348,30 +332,30 @@
 
     <!--Wires Scratch Pad dependencies-->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-wires-core-scratchpad</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-core-scratchpad</artifactId>
     </dependency>
 
     <!--Wires Trees dependencies-->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-wires-core-trees</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-core-trees</artifactId>
     </dependency>
 
     <!--Wires Bayesian Network dependencies-->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-wires-bayesian-parser-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-bayesian-parser-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-wires-bayesian-parser-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-bayesian-parser-backend</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-wires-bayesian-network-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-bayesian-network-client</artifactId>
     </dependency>
 
     <!-- Dashbuilder -->
@@ -529,17 +513,17 @@
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
 
             <!-- UberFire extensions -->
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-runtime-plugins-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-perspective-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-apps-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-perspective-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-apps-client</compileSourcesArtifact>
 
             <!-- Wires -->
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-scratchpad</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-trees</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-bayesian-parser-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-bayesian-network-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-wires-core-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-wires-core-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-wires-core-scratchpad</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-wires-core-trees</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-wires-bayesian-parser-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-wires-bayesian-network-client</compileSourcesArtifact>
 
             <!-- Dashbuilder -->
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-api</compileSourcesArtifact>

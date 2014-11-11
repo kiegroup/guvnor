@@ -1,5 +1,6 @@
 package org.guvnor.asset.management.client.editors.repository.structure.promote;
 
+import java.util.Collection;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
@@ -13,14 +14,12 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-import java.util.Collection;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-
-public class PromoteScreenPopupViewImpl extends KieBaseModal {
+public class PromoteScreenPopupViewImpl extends BaseModal {
 
     interface PromoteScreenPopupWidgetBinder
             extends
@@ -28,7 +27,7 @@ public class PromoteScreenPopupViewImpl extends KieBaseModal {
 
     }
 
-    private PromoteScreenPopupWidgetBinder uiBinder = GWT.create(PromoteScreenPopupWidgetBinder.class);
+    private PromoteScreenPopupWidgetBinder uiBinder = GWT.create( PromoteScreenPopupWidgetBinder.class );
 
     @Inject
     private User identity;
@@ -41,7 +40,7 @@ public class PromoteScreenPopupViewImpl extends KieBaseModal {
 
     @UiField
     HelpInline repositoryTextHelpInline;
-    
+
     @UiField
     ControlGroup sourceBranchTextGroup;
 
@@ -50,7 +49,7 @@ public class PromoteScreenPopupViewImpl extends KieBaseModal {
 
     @UiField
     HelpInline sourceBranchTextHelpInline;
-    
+
     @UiField
     ControlGroup targetBranchListBoxGroup;
 
@@ -60,23 +59,21 @@ public class PromoteScreenPopupViewImpl extends KieBaseModal {
     @UiField
     HelpInline targetBranchListBoxHelpInline;
 
-    
-
     private Command callbackCommand;
 
     private final Command okCommand = new Command() {
         @Override
         public void execute() {
 
-            if (targetBranchListBox.getValue().equals(Constants.INSTANCE.Select_A_Branch())
-                    || targetBranchListBox.getValue().equals(sourceBranchText.getText())) {
-                targetBranchListBoxGroup.setType(ControlGroupType.ERROR);
-                targetBranchListBoxHelpInline.setText(Constants.INSTANCE.FieldMandatory0("Target Branch"));
+            if ( targetBranchListBox.getValue().equals( Constants.INSTANCE.Select_A_Branch() )
+                    || targetBranchListBox.getValue().equals( sourceBranchText.getText() ) ) {
+                targetBranchListBoxGroup.setType( ControlGroupType.ERROR );
+                targetBranchListBoxHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "Target Branch" ) );
 
                 return;
             }
 
-            if (callbackCommand != null) {
+            if ( callbackCommand != null ) {
                 callbackCommand.execute();
             }
             hide();
@@ -91,39 +88,39 @@ public class PromoteScreenPopupViewImpl extends KieBaseModal {
         }
     };
 
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(okCommand, cancelCommand);
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand, cancelCommand );
 
     public PromoteScreenPopupViewImpl() {
-        setTitle(Constants.INSTANCE.Promote_Assets());
-        setBackdrop(BackdropType.STATIC);
-        setKeyboard(true);
-        setAnimation(true);
-        setDynamicSafe(true);
+        setTitle( Constants.INSTANCE.Promote_Assets() );
+        setBackdrop( BackdropType.STATIC );
+        setKeyboard( true );
+        setAnimation( true );
+        setDynamicSafe( true );
 
-        add(uiBinder.createAndBindUi(this));
-        add(footer);
+        add( uiBinder.createAndBindUi( this ) );
+        add( footer );
     }
 
-    public void configure(String repositoryAlias, String branch, Collection<String> branches, Command command) {
+    public void configure( String repositoryAlias,
+                           String branch,
+                           Collection<String> branches,
+                           Command command ) {
         this.callbackCommand = command;
-        this.sourceBranchText.setText(branch);
-        this.repositoryText.setText(repositoryAlias);
-        this.sourceBranchText.setReadOnly(true);
-        this.repositoryText.setReadOnly(true);
+        this.sourceBranchText.setText( branch );
+        this.repositoryText.setText( repositoryAlias );
+        this.sourceBranchText.setReadOnly( true );
+        this.repositoryText.setReadOnly( true );
         targetBranchListBox.clear();
         this.targetBranchListBox.addItem( Constants.INSTANCE.Select_A_Branch() );
-        
+
         for ( String b : branches ) {
-                targetBranchListBox.addItem( b, b );
-                
+            targetBranchListBox.addItem( b, b );
+
         }
     }
 
     public String getTargetBranch() {
         return this.targetBranchListBox.getValue();
     }
-
-   
-
 
 }
