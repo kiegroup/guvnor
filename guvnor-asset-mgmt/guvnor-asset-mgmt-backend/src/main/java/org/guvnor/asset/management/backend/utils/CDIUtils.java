@@ -9,6 +9,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.kie.internal.executor.api.CommandContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,9 @@ public class CDIUtils {
 	
 	public static BeanManager lookUpBeanManager(CommandContext ctx) {
 		BeanManager beanManager = null;
+
+		// This is probably not needed anymore. The BeanManagerProvider should cover this.
+		// But at this point too risky to remove
 		for (String jndiName : BEAN_MANAGER_NAMES) {
 			if (jndiName == null) {
 				continue;
@@ -32,6 +36,11 @@ public class CDIUtils {
 				logger.debug("No bean manager under {} jndi name", jndiName);
 			}
 		}
+
+		if (beanManager == null) {
+			beanManager = BeanManagerProvider.getInstance().getBeanManager();
+		}
+
 		if (beanManager == null) {
 			beanManager = (BeanManager) ctx.getData("BeanManager");
 		}
