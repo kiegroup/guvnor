@@ -62,7 +62,6 @@
     <module>guvnor-message-console</module>
     <module>guvnor-organizationalunit-manager</module>
     <module>guvnor-asset-mgmt</module>
-    <!--<module>guvnor-webapp</module>-->
   </modules>
 
   <profiles>
@@ -88,8 +87,8 @@
         </property>
       </activation>
       <modules>
-        <!--<module>guvnor-webapp</module>-->
-        <!--<module>guvnor-webapp-distribution-wars</module>-->
+        <module>guvnor-webapp</module>
+        <module>guvnor-webapp-distribution-wars</module>
       </modules>
     </profile>
 
