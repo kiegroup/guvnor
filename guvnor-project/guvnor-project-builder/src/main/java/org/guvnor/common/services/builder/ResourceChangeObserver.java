@@ -21,6 +21,8 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
@@ -57,6 +59,10 @@ public class ResourceChangeObserver {
 
     @Inject
     private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCacheEvent;
+
+    @Inject
+    @Any
+    private Instance<ResourceChangeObservableFile> observableFiles;
 
     public void processResourceAdd( @Observes final ResourceAddedEvent resourceAddedEvent ) {
         processResourceChange( resourceAddedEvent.getSessionInfo(),
@@ -148,18 +154,19 @@ public class ResourceChangeObserver {
             notifiedProjects.put( project.getRootPath().toURI(),
                                   Boolean.TRUE );
         }
-
     }
 
+    //Check if the changed file should invalidate the DMO cache
     private boolean isObservableResource( Path path ) {
-        return path != null
-                && ( path.getFileName().endsWith( ".java" )
-                || path.getFileName().endsWith( ".class" )
-                || path.getFileName().equals( "pom.xml" )
-                || path.getFileName().equals( "kmodule.xml" )
-                || path.getFileName().equals( "project.imports" )
-                || path.getFileName().endsWith( "import.suggestions" )
-        );
+        if ( path == null ) {
+            return false;
+        }
+        for ( ResourceChangeObservableFile observableFile : observableFiles ) {
+            if ( observableFile.accept( path.getFileName() ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
