@@ -9,6 +9,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class TestResultMessage {
 
+    private String identifier;
     private boolean wasSuccessful;
     private int runCount;
     private int failureCount;
@@ -17,7 +18,12 @@ public class TestResultMessage {
     public TestResultMessage() {
     }
 
-    public TestResultMessage(boolean wasSuccessful, int runCount, int failureCount, List<Failure> failures) {
+    public TestResultMessage( String identifier,
+                              boolean wasSuccessful,
+                              int runCount,
+                              int failureCount,
+                              List<Failure> failures) {
+        this.identifier = identifier;
         this.wasSuccessful = wasSuccessful;
         this.runCount = runCount;
         this.failureCount = failureCount;
@@ -26,6 +32,10 @@ public class TestResultMessage {
 
     public boolean wasSuccessful() {
         return wasSuccessful;
+    }
+
+    public String getIdentifier() {
+        return identifier;
     }
 
     public int getRunCount() {
@@ -56,6 +66,7 @@ public class TestResultMessage {
     @Override
     public String toString() {
         return "TestResultMessage{" +
+                "identifier=" + identifier +
                 "wasSuccessful=" + wasSuccessful +
                 ", runCount=" + runCount +
                 ", failureCount=" + failureCount +
