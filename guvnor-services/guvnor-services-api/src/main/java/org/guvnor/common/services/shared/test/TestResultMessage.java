@@ -10,28 +10,22 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class TestResultMessage {
 
     private String identifier;
-    private boolean wasSuccessful;
     private int runCount;
-    private int failureCount;
     private List<Failure> failures;
 
     public TestResultMessage() {
     }
 
     public TestResultMessage( String identifier,
-                              boolean wasSuccessful,
                               int runCount,
-                              int failureCount,
                               List<Failure> failures) {
         this.identifier = identifier;
-        this.wasSuccessful = wasSuccessful;
         this.runCount = runCount;
-        this.failureCount = failureCount;
         this.failures = failures;
     }
 
     public boolean wasSuccessful() {
-        return wasSuccessful;
+        return failures.isEmpty();
     }
 
     public String getIdentifier() {
@@ -42,9 +36,6 @@ public class TestResultMessage {
         return runCount;
     }
 
-    public int getFailureCount() {
-        return failureCount;
-    }
 
     public List<Failure> getFailures() {
         return failures;
@@ -52,10 +43,8 @@ public class TestResultMessage {
 
     public List<String> getResultStrings() { 
         List<String> result = new ArrayList<String>(3 + (failures == null ? 0 : failures.size()));
-        result.add( "wasSuccessful: " + this.wasSuccessful);
         result.add( "RunCount: " + this.runCount);
-        result.add( "FailureCount: " + this.failureCount );
-        if( this.failures != null ) { 
+        if( this.failures != null ) {
             for ( Failure failure : this.failures ) { 
                 result.add( "Failure: " + failure.getMessage() );
             }
@@ -67,9 +56,7 @@ public class TestResultMessage {
     public String toString() {
         return "TestResultMessage{" +
                 "identifier=" + identifier +
-                "wasSuccessful=" + wasSuccessful +
                 ", runCount=" + runCount +
-                ", failureCount=" + failureCount +
                 ", failures=" + failures +
                 '}';
     }
