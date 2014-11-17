@@ -15,8 +15,6 @@
 */
 package org.guvnor.rest.backend;
 
-import static org.guvnor.rest.backend.JobRequestHelper.GUVNOR_BASE_URL;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -259,7 +257,7 @@ public class ProjectResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects")
-    public List<ProjectResponse> getProjects( @PathParam("repositoryName") String repositoryName) {
+    public Collection<ProjectResponse> getProjects( @PathParam("repositoryName") String repositoryName) {
         logger.info( "-----getProjects--- , repositoryName: {}", repositoryName );
 
         Repository repository = repositoryService.getRepository(repositoryName);
