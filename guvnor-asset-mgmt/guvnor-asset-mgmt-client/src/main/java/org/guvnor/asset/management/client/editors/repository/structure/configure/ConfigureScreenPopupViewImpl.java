@@ -14,11 +14,11 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 
-public class ConfigureScreenPopupViewImpl extends KieBaseModal {
+public class ConfigureScreenPopupViewImpl extends BaseModal {
 
     interface ConfigureScreenPopupWidgetBinder
             extends

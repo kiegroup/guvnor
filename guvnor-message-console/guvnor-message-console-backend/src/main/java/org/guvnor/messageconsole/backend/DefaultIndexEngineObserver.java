@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import org.guvnor.messageconsole.events.PublishMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
-import org.kie.uberfire.metadata.engine.Observer;
+import org.uberfire.ext.metadata.engine.Observer;
 
 /**
  * Observer component translates Index activities into Message Console entries

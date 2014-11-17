@@ -22,7 +22,7 @@
   <inherits name='org.uberfire.UberfireClientAll'/>
   <inherits name='org.guvnor.inbox.GuvnorInboxAPI'/>
 
-  <inherits name='org.kie.uberfire.KIEUberfireWidgetsCommons'/>
+  <inherits name='org.uberfire.ext.widgets.common.UberfireWidgetsCommons'/>
 
   <source path="client"/>
 

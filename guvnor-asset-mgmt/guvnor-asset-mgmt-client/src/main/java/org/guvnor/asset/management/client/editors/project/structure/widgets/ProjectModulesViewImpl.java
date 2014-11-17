@@ -33,7 +33,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.uberfire.client.tables.SimpleTable;
+import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 import org.guvnor.asset.management.client.i18n.Constants;
 
 public class ProjectModulesViewImpl extends Composite

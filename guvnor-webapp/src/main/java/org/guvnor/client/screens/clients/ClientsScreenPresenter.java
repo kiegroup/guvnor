@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.guvnor.messageconsole.client.console.HyperLinkCell;
-import org.kie.uberfire.client.tables.SimpleTable;
+import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;

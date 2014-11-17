@@ -32,7 +32,7 @@ import org.guvnor.asset.management.client.editors.repository.structure.release.R
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
-import org.kie.uberfire.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 
 @ApplicationScoped

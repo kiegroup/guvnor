@@ -32,8 +32,8 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import org.guvnor.messageconsole.client.console.resources.MessageConsoleResources;
 import org.guvnor.messageconsole.events.SystemMessage;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.tables.SimpleTable;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 import org.uberfire.client.mvp.PlaceManager;
 
 @ApplicationScoped

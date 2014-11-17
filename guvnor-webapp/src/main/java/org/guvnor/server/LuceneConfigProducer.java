@@ -24,8 +24,8 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
+import org.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
 
 import static org.apache.lucene.util.Version.*;
 

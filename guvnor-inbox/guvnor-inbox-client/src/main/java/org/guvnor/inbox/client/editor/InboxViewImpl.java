@@ -39,9 +39,9 @@ import org.guvnor.inbox.model.InboxPageRow;
 import org.guvnor.inbox.service.InboxService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.tables.ComparableImageResource;
-import org.kie.uberfire.client.tables.ComparableImageResourceCell;
-import org.kie.uberfire.client.tables.PagedTable;
+import org.uberfire.ext.widgets.common.client.tables.ComparableImageResource;
+import org.uberfire.ext.widgets.common.client.tables.ComparableImageResourceCell;
+import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 import org.uberfire.paging.PageResponse;
 
 /**

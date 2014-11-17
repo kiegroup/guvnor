@@ -23,7 +23,7 @@
   <inherits name="org.uberfire.UberfireNSWEManager"/>
 
   <!-- Uberfire Extensions - Core Widgets -->
-  <inherits name="org.kie.uberfire.KIEUberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
 
   <!-- Guvnor dependencies -->
   <inherits name='org.guvnor.structure.GuvnorStructureClient'/>

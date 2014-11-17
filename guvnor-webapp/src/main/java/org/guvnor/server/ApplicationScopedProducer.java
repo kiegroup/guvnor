@@ -33,9 +33,9 @@ import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
-import org.kie.uberfire.metadata.io.IOSearchIndex;
-import org.kie.uberfire.metadata.io.IOServiceIndexedImpl;
+import org.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.uberfire.metadata.io.IOSearchIndex;
+import org.uberfire.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.security.server.cdi.SecurityFactory;
 

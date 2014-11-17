@@ -29,11 +29,11 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.organizationalunit.manager.client.editor.OrganizationalUnitManagerPresenter;
 import org.guvnor.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.client.mvp.UberView;
 
-public class AddOrganizationalUnitPopup extends KieBaseModal implements UberView<OrganizationalUnitManagerPresenter> {
+public class AddOrganizationalUnitPopup extends BaseModal implements UberView<OrganizationalUnitManagerPresenter> {
 
     interface AddOrganizationalUnitPopupBinder
             extends

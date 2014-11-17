@@ -22,9 +22,8 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.editors.repository.wizard.CreateRepositoryWizardModel;
-import org.guvnor.asset.management.client.editors.repository.wizard.CreateRepositoryWizardModel;
-import org.kie.uberfire.client.wizards.WizardPage;
-import org.kie.uberfire.client.wizards.WizardPageStatusChangeEvent;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
 public abstract class RepositoryWizardPage implements WizardPage {
 
