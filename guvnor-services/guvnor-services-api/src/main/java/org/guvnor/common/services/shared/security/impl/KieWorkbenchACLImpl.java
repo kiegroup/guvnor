@@ -30,9 +30,9 @@ import org.guvnor.common.services.shared.security.KieWorkbenchPolicy;
 @ApplicationScoped
 public class KieWorkbenchACLImpl implements KieWorkbenchACL {
 
-    private static final String PREFIX_DESCR = "feature.";
-    private static final String PREFIX_CHILDREN = "group.";
-    private static final String PREFIX_ROLES = "roles.";
+    public static final String PREFIX_DESCR = "feature.";
+    public static final String PREFIX_CHILDREN = "group.";
+    public static final String PREFIX_ROLES = "roles.";
 
     private KieWorkbenchFeatureRegistry featureRegistry;
 
