@@ -30,15 +30,21 @@ import org.guvnor.common.services.shared.security.KieWorkbenchPolicy;
 @ApplicationScoped
 public class KieWorkbenchACLImpl implements KieWorkbenchACL {
 
-    public static final String PREFIX_DESCR = "feature.";
-    public static final String PREFIX_CHILDREN = "group.";
-    public static final String PREFIX_ROLES = "roles.";
+    private static final String PREFIX_DESCR = "feature.";
+    private static final String PREFIX_CHILDREN = "group.";
+    private static final String PREFIX_ROLES = "roles.";
 
-
-    @Inject
     private KieWorkbenchFeatureRegistry featureRegistry;
 
     protected Map<String,Set<String>> grantedFeatures = new HashMap<String,Set<String>>();
+
+    public KieWorkbenchACLImpl() {
+    }
+
+    @Inject
+    public KieWorkbenchACLImpl(KieWorkbenchFeatureRegistry featureRegistry) {
+        this.featureRegistry = featureRegistry;
+    }
 
     public KieWorkbenchFeatureRegistry getFeatureRegistry() {
         return featureRegistry;

@@ -72,7 +72,14 @@ public class RepositoryInfoPage extends RepositoryWizardPage
 
     @Override
     public void isComplete( final Callback<Boolean> callback ) {
-        callback.callback( mandatoryOU ? isNameValid && isOUValid : isNameValid );
+        boolean completed = mandatoryOU ? isNameValid && isOUValid : isNameValid;
+
+        /*
+        if ( view.isManagedRepository() ) {
+            completed = completed && structurePageWasVisited;
+        }
+        */
+        callback.callback( completed );
     }
 
     @Override
@@ -161,6 +168,10 @@ public class RepositoryInfoPage extends RepositoryWizardPage
         super.setModel( model );
         model.setMandatoryOU( mandatoryOU );
         model.setManged( view.isManagedRepository() );
+    }
+
+    public void enableManagedRepoCreation( boolean enable ) {
+        view.enabledManagedRepositoryCreation( enable );
     }
 
     private boolean isOUMandatory() {

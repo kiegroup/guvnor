@@ -51,4 +51,6 @@ public interface RepositoryInfoPageView
 
     boolean isManagedRepository();
 
+    void enabledManagedRepositoryCreation( boolean enabled );
+
 }
