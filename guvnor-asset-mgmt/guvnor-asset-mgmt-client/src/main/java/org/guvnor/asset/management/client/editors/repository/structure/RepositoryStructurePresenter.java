@@ -44,7 +44,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
+//import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -113,8 +113,10 @@ public class RepositoryStructurePresenter
     @Inject
     private Event<ProjectContextChangeEvent> contextChangeEvent;
 
+    /*
     @Inject
     private KieWorkbenchACL kieACL;
+    */
 
     @Inject
     private PlaceManager placeManager;
@@ -851,21 +853,21 @@ public class RepositoryStructurePresenter
 
         configure = MenuFactory
                 .newTopLevelMenu( Constants.INSTANCE.Configure() )
-                .withRoles( kieACL.getGrantedRoles( CONFIGURE_REPOSITORY ) )
+                //.withRoles( kieACL.getGrantedRoles( CONFIGURE_REPOSITORY ) )
                 .respondsWith( getConfigureCommand() )
                 .endMenu()
                 .build().getItems().get( 0 );
 
         promote = MenuFactory
                 .newTopLevelMenu( Constants.INSTANCE.Promote() )
-                .withRoles( kieACL.getGrantedRoles( PROMOTE_ASSETS ) )
+                //.withRoles( kieACL.getGrantedRoles( PROMOTE_ASSETS ) )
                 .respondsWith( getPromoteCommand() )
                 .endMenu()
                 .build().getItems().get( 0 );
 
         release = MenuFactory
                 .newTopLevelMenu( Constants.INSTANCE.Release() )
-                .withRoles( kieACL.getGrantedRoles( RELEASE_PROJECT ) )
+                //.withRoles( kieACL.getGrantedRoles( RELEASE_PROJECT ) )
                 .respondsWith( getReleaseCommand() )
                 .endMenu()
                 .build().getItems().get( 0 );
@@ -893,13 +895,13 @@ public class RepositoryStructurePresenter
 
         MenuItem item;
         item = getItem( MenuItems.CONFIGURE_MENU_ITEM );
-        configureIsGranted = item != null && item.isEnabled();
+        configureIsGranted = true;//item != null && item.isEnabled();
 
         item = getItem( MenuItems.PROMOTE_MENU_ITEM );
-        promoteIsGranted = item != null && item.isEnabled();
+        promoteIsGranted = true;//item != null && item.isEnabled();
 
         item = getItem( MenuItems.RELEASE_MENU_ITEM );
-        releaseIsGranted = item != null && item.isEnabled();
+        releaseIsGranted = true;//item != null && item.isEnabled();
     }
 
     private void enableAssetsManagementMenu( boolean enable ) {

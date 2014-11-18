@@ -36,7 +36,7 @@ import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
+//import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -82,8 +82,10 @@ public class CreateRepositoryWizard extends AbstractWizard {
     @Inject
     private Event<NotificationEvent> notification;
 
+    /*
     @Inject
     private KieWorkbenchACL kieACL;
+    */
 
     @Inject
     private SessionInfo sessionInfo;
@@ -377,6 +379,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
     private void setAssetsManagementGrant() {
 
+        /*
         Set<String> grantedRoles = kieACL.getGrantedRoles( CONFIGURE_REPOSITORY );
         assetsManagementIsGranted = false;
 
@@ -388,6 +391,8 @@ public class CreateRepositoryWizard extends AbstractWizard {
                 }
             }
         }
+        */
+        assetsManagementIsGranted = true;
         infoPage.enableManagedRepoCreation( assetsManagementIsGranted );
     }
 
