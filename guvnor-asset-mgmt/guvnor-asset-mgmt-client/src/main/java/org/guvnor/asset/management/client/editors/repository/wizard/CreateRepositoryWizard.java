@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -35,6 +36,7 @@ import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -42,15 +44,18 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.callbacks.Callback;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
+import org.jboss.errai.security.shared.api.Role;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.commons.data.Pair;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
+import static org.guvnor.asset.management.security.AssetsMgmtFeatures.*;
 
 @Dependent
 public class CreateRepositoryWizard extends AbstractWizard {
@@ -77,9 +82,17 @@ public class CreateRepositoryWizard extends AbstractWizard {
     @Inject
     private Event<NotificationEvent> notification;
 
+    @Inject
+    private KieWorkbenchACL kieACL;
+
+    @Inject
+    private SessionInfo sessionInfo;
+
     private Callback<Void> onCloseCallback = null;
 
     public static final String MANAGED = "managed";
+
+    private boolean assetsManagementIsGranted = false;
 
     @PostConstruct
     public void setupPages() {
@@ -97,6 +110,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
                 managedRepositorySelected( status );
             }
         } );
+        setAssetsManagementGrant();
     }
 
     @Override
@@ -161,22 +175,26 @@ public class CreateRepositoryWizard extends AbstractWizard {
     }
 
     private void managedRepositorySelected( boolean selected ) {
-        boolean updateDefaultValues = false;
-        if ( selected && !pages.contains( structurePage ) ) {
-            pages.add( structurePage );
-            updateDefaultValues = true;
-        } else {
-            pages.remove( structurePage );
-        }
-        super.start();
-        if ( updateDefaultValues ) {
-            setStructureDefaultValues();
+        if ( assetsManagementIsGranted ) {
+            boolean updateDefaultValues = false;
+            if ( selected && !pages.contains( structurePage )) {
+                pages.add( structurePage );
+                updateDefaultValues = true;
+            } else {
+                pages.remove( structurePage );
+            }
+            super.start();
+            if ( updateDefaultValues ) {
+                setStructureDefaultValues();
+            }
         }
     }
 
     public void pageSelected( final int pageNumber ) {
         super.pageSelected( pageNumber );
-        if ( pageNumber == 1 ) {
+        if ( pageNumber == 1) {
+            infoPage.setStructurePageWasVisited( true );
+            structurePage.setStructurePageWasVisited( true );
             setStructureDefaultValues();
         }
     }
@@ -192,10 +210,10 @@ public class CreateRepositoryWizard extends AbstractWizard {
                     }
                     String unNormalizedName = model.getRepositoryName();
                     model.setRepositoryName( normalizedName );
-                    if ( model.getProjectName().equals( unNormalizedName ) ) {
+                    if ( unNormalizedName.equals( model.getProjectName() ) ) {
                         model.setProjectName( normalizedName );
                     }
-                    if ( model.getArtifactId().equals( unNormalizedName ) ) {
+                    if ( unNormalizedName.equals( model.getArtifactId() ) ) {
                         model.setArtifactId( normalizedName );
                     }
                 }
@@ -204,8 +222,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
                 final String scheme = "git";
                 final String alias = model.getRepositoryName().trim();
                 final Map<String, Object> env = new HashMap<String, Object>( 3 );
-                env.put( MANAGED, model.isManged() );
-
+                env.put( MANAGED, assetsManagementIsGranted && model.isManged() );
                 showBusyIndicator( Constants.INSTANCE.CreatingRepository() );
 
                 repositoryService.call( new RemoteCallback<Repository>() {
@@ -360,4 +377,21 @@ public class CreateRepositoryWizard extends AbstractWizard {
         structurePage.stateChanged();
 
     }
+
+    private void setAssetsManagementGrant() {
+
+        Set<String> grantedRoles = kieACL.getGrantedRoles( CONFIGURE_REPOSITORY );
+        assetsManagementIsGranted = false;
+
+        if ( sessionInfo != null && sessionInfo.getIdentity() != null && sessionInfo.getIdentity().getRoles() != null ) {
+            for (Role role : sessionInfo.getIdentity().getRoles()) {
+                if ( grantedRoles.contains( role.getName() ) ) {
+                    assetsManagementIsGranted = true;
+                    break;
+                }
+            }
+        }
+        infoPage.enableManagedRepoCreation( assetsManagementIsGranted );
+    }
+
 }

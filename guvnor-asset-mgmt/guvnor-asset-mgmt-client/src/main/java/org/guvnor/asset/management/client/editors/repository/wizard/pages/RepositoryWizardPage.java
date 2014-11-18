@@ -33,6 +33,7 @@ public abstract class RepositoryWizardPage implements WizardPage {
 
     @Inject
     protected Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
+    protected boolean structurePageWasVisited = false;
 
     @Override
     public Widget asWidget() {
@@ -50,5 +51,9 @@ public abstract class RepositoryWizardPage implements WizardPage {
 
     public void setModel( CreateRepositoryWizardModel model ) {
         this.model = model;
+    }
+
+    public void setStructurePageWasVisited( boolean structurePageWasVisited ) {
+        this.structurePageWasVisited = structurePageWasVisited;
     }
 }

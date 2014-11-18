@@ -46,13 +46,13 @@ public class RepositoryStructurePage extends RepositoryWizardPage
     @Override
     public void isComplete( final Callback<Boolean> callback ) {
 
-        isComplete = false;
+        isComplete = structurePageWasVisited;
 
         //check if project name is valid
         repositoryStructureService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( Boolean isValid ) {
-                isComplete = isValid;
+                isComplete = isComplete && isValid;
 
                 //check if group id is valid
                 repositoryStructureService.call( new RemoteCallback<Boolean>() {
@@ -79,6 +79,7 @@ public class RepositoryStructurePage extends RepositoryWizardPage
                 } ).isValidGroupId( model.getGroupId() );
             }
         } ).isValidProjectName( model.getProjectName() );
+
     }
 
     @Override

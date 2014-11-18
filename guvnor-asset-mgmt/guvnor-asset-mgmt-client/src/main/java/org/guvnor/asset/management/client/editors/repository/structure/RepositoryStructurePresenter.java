@@ -15,7 +15,10 @@
  */
 package org.guvnor.asset.management.client.editors.repository.structure;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -41,6 +44,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -73,8 +77,9 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
+import static org.guvnor.asset.management.security.AssetsMgmtFeatures.*;
 
-@WorkbenchScreen(identifier = "repositoryStructureScreen")
+@WorkbenchScreen( identifier = "repositoryStructureScreen" )
 public class RepositoryStructurePresenter
         implements RepositoryStructureView.Presenter,
                    RepositoryStructureDataView.Presenter,
@@ -107,10 +112,22 @@ public class RepositoryStructurePresenter
     private Event<ProjectContextChangeEvent> contextChangeEvent;
 
     @Inject
+    private KieWorkbenchACL kieACL;
+
+    @Inject
     private PlaceManager placeManager;
 
     @Inject
     private ProjectContext workbenchContext;
+
+    @Inject
+    private ProjectWizard wizzard;
+
+    @Inject
+    protected Event<ProjectContextChangeEvent> contextChangedEvent;
+
+    @Inject
+    protected Caller<AssetManagementService> assetManagementServices;
 
     private RepositoryStructureModel model;
 
@@ -132,16 +149,23 @@ public class RepositoryStructurePresenter
 
     private ListDataProvider<ProjectModuleRow> dataProvider = new ListDataProvider<ProjectModuleRow>();
 
-    @Inject
-    private ProjectWizard wizzard;
-
-    @Inject
-    protected Event<ProjectContextChangeEvent> contextChangedEvent;
-
     private Menus menus;
 
-    @Inject
-    protected Caller<AssetManagementService> assetManagementServices;
+    private MenuItem configure;
+
+    private MenuItem release;
+
+    private MenuItem promote;
+
+    private boolean promoteIsGranted = false;
+
+    private boolean configureIsGranted = false;
+
+    private boolean releaseIsGranted = false;
+
+    public enum MenuItems {
+        CONFIGURE_MENU_ITEM, PROMOTE_MENU_ITEM, RELEASE_MENU_ITEM
+    }
 
     @Inject
     public RepositoryStructurePresenter( RepositoryStructureView view ) {
@@ -149,13 +173,13 @@ public class RepositoryStructurePresenter
         view.setPresenter( this );
         view.getDataView().setPresenter( this );
         view.getModulesView().setPresenter( this );
-        makeMenuBar();
     }
 
     @OnStartup
     public void onStartup( final PlaceRequest placeRequest ) {
         this.placeRequest = placeRequest;
         processContextChange( workbenchContext.getActiveRepository(), workbenchContext.getActiveProject() );
+        makeMenuBar();
     }
 
     @WorkbenchPartTitle
@@ -242,6 +266,8 @@ public class RepositoryStructurePresenter
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.MODULES_VIEW );
                     view.setModel( RepositoryStructurePresenter.this.model );
                     view.setModulesViewVisible( false );
+
+                    enableAssetsManagementMenu( false );
                     pathToRepositoryStructure = null;
 
                 } else if ( model.isMultiModule() ) {
@@ -255,6 +281,7 @@ public class RepositoryStructurePresenter
                     pathToRepositoryStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getPathToPOM() );
 
                     updateModulesList( model.getModules() );
+                    enableAssetsManagementMenu( true );
 
                 } else if ( model.isSingleProject() ) {
 
@@ -265,6 +292,7 @@ public class RepositoryStructurePresenter
                     initialized = true;
 
                     pathToRepositoryStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getOrphanProjects().get( 0 ).getPomXMLPath() );
+                    enableAssetsManagementMenu( true );
 
                 } else {
 
@@ -273,23 +301,16 @@ public class RepositoryStructurePresenter
                     view.setModulesViewVisible( true );
                     initialized = true;
 
+                    enableAssetsManagementMenu( false );
                     view.setModel( model );
                     updateProjectsList( model.getOrphanProjects() );
                 }
 
                 addStructureChangeListeners();
                 updateEditorTitle( initialized );
-                updateMenus( initialized );
+
             }
-
         };
-    }
-
-    private void updateMenus( boolean initialized ) {
-        List<MenuItem> items = menus.getItems();
-        for ( MenuItem mi : items ) {
-            mi.setEnabled( initialized );
-        }
     }
 
     private void reload() {
@@ -312,8 +333,8 @@ public class RepositoryStructurePresenter
 
                 }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepositoryStructure(
                         new GAV( view.getDataView().getGroupId(),
-                                 view.getDataView().getArtifactId(),
-                                 view.getDataView().getVersionId() ),
+                                view.getDataView().getArtifactId(),
+                                view.getDataView().getVersionId() ),
                         repository );
 
             } else if ( model.isSingleProject() ) {
@@ -552,35 +573,35 @@ public class RepositoryStructurePresenter
             }
 
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                                                                                      message,
-                                                                                      new Command() {
-                                                                                          @Override
-                                                                                          public void execute() {
-                                                                                              deleteSelectedModule( project );
-                                                                                          }
-                                                                                      },
-                                                                                      CommonConstants.INSTANCE.YES(),
-                                                                                      ButtonType.DANGER,
-                                                                                      IconType.MINUS_SIGN,
-                                                                                      new Command() {
-                                                                                          @Override
-                                                                                          public void execute() {
-                                                                                              //do nothing
-                                                                                          }
-                                                                                      },
-                                                                                      null,
-                                                                                      ButtonType.DEFAULT,
-                                                                                      null,
-                                                                                      new Command() {
-                                                                                          @Override
-                                                                                          public void execute() {
-                                                                                              //do nothing.
-                                                                                          }
-                                                                                      },
-                                                                                      null,
-                                                                                      ButtonType.DEFAULT,
-                                                                                      null
-                                                                                    );
+                    message,
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            deleteSelectedModule( project );
+                        }
+                    },
+                    CommonConstants.INSTANCE.YES(),
+                    ButtonType.DANGER,
+                    IconType.MINUS_SIGN,
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //do nothing
+                        }
+                    },
+                    null,
+                    ButtonType.DEFAULT,
+                    null,
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //do nothing.
+                        }
+                    },
+                    null,
+                    ButtonType.DEFAULT,
+                    null
+            );
 
             yesNoCancelPopup.setCloseVisible( false );
             yesNoCancelPopup.show();
@@ -669,35 +690,35 @@ public class RepositoryStructurePresenter
         if ( model.getPOM() != null ) {
 
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                                                                                      Constants.INSTANCE.ConfirmSaveRepositoryStructure(),
-                                                                                      new Command() {
-                                                                                          @Override
-                                                                                          public void execute() {
-                                                                                              saveRepositoryStructure();
-                                                                                          }
-                                                                                      },
-                                                                                      CommonConstants.INSTANCE.YES(),
-                                                                                      ButtonType.PRIMARY,
-                                                                                      IconType.SAVE,
-                                                                                      new Command() {
-                                                                                          @Override
-                                                                                          public void execute() {
-                                                                                              //do nothing
-                                                                                          }
-                                                                                      },
-                                                                                      null,
-                                                                                      ButtonType.DEFAULT,
-                                                                                      null,
-                                                                                      new Command() {
-                                                                                          @Override
-                                                                                          public void execute() {
-                                                                                              //do nothing.
-                                                                                          }
-                                                                                      },
-                                                                                      null,
-                                                                                      ButtonType.DEFAULT,
-                                                                                      null
-                                                                                    );
+                    Constants.INSTANCE.ConfirmSaveRepositoryStructure(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            saveRepositoryStructure();
+                        }
+                    },
+                    CommonConstants.INSTANCE.YES(),
+                    ButtonType.PRIMARY,
+                    IconType.SAVE,
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //do nothing
+                        }
+                    },
+                    null,
+                    ButtonType.DEFAULT,
+                    null,
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //do nothing.
+                        }
+                    },
+                    null,
+                    ButtonType.DEFAULT,
+                    null
+            );
 
             yesNoCancelPopup.setCloseVisible( false );
             yesNoCancelPopup.show();
@@ -727,35 +748,35 @@ public class RepositoryStructurePresenter
     public void onConvertToMultiModule() {
 
         YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                                                                                  Constants.INSTANCE.ConfirmConvertToMultiModuleStructure(),
-                                                                                  new Command() {
-                                                                                      @Override
-                                                                                      public void execute() {
-                                                                                          convertToMultiModule();
-                                                                                      }
-                                                                                  },
-                                                                                  CommonConstants.INSTANCE.YES(),
-                                                                                  ButtonType.PRIMARY,
-                                                                                  IconType.SAVE,
-                                                                                  new Command() {
-                                                                                      @Override
-                                                                                      public void execute() {
-                                                                                          //do nothing
-                                                                                      }
-                                                                                  },
-                                                                                  null,
-                                                                                  ButtonType.DEFAULT,
-                                                                                  null,
-                                                                                  new Command() {
-                                                                                      @Override
-                                                                                      public void execute() {
-                                                                                          //do nothing.
-                                                                                      }
-                                                                                  },
-                                                                                  null,
-                                                                                  ButtonType.DEFAULT,
-                                                                                  null
-                                                                                );
+                Constants.INSTANCE.ConfirmConvertToMultiModuleStructure(),
+                new Command() {
+                    @Override
+                    public void execute() {
+                        convertToMultiModule();
+                    }
+                },
+                CommonConstants.INSTANCE.YES(),
+                ButtonType.PRIMARY,
+                IconType.SAVE,
+                new Command() {
+                    @Override
+                    public void execute() {
+                        //do nothing
+                    }
+                },
+                null,
+                ButtonType.DEFAULT,
+                null,
+                new Command() {
+                    @Override
+                    public void execute() {
+                        //do nothing.
+                    }
+                },
+                null,
+                ButtonType.DEFAULT,
+                null
+        );
 
         yesNoCancelPopup.setCloseVisible( false );
         yesNoCancelPopup.show();
@@ -827,23 +848,82 @@ public class RepositoryStructurePresenter
     }
 
     private void makeMenuBar() {
-        MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> configure = MenuFactory
+
+        final List<MenuItem> items = new ArrayList<MenuItem>();
+
+        configure = MenuFactory
                 .newTopLevelMenu( Constants.INSTANCE.Configure() )
-                        //.withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_SAVE))
+                .withRoles( kieACL.getGrantedRoles( CONFIGURE_REPOSITORY ) )
                 .respondsWith( getConfigureCommand() )
-                .endMenu();
-        MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> promote = configure.newTopLevelMenu( Constants.INSTANCE.Promote() )
-                // .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_DELETE))
+                .endMenu()
+                .build().getItems().get( 0 );
+
+        promote = MenuFactory
+                .newTopLevelMenu( Constants.INSTANCE.Promote() )
+                .withRoles( kieACL.getGrantedRoles( PROMOTE_ASSETS ) )
                 .respondsWith( getPromoteCommand() )
-                .endMenu();
+                .endMenu()
+                .build().getItems().get( 0 );
 
-        MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> release = configure.newTopLevelMenu( Constants.INSTANCE.Release() )
-                //  .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_RENAME))
+        release = MenuFactory
+                .newTopLevelMenu( Constants.INSTANCE.Release() )
+                .withRoles( kieACL.getGrantedRoles( RELEASE_PROJECT ) )
                 .respondsWith( getReleaseCommand() )
-                .endMenu();
+                .endMenu()
+                .build().getItems().get( 0 );
 
-        menus = configure.build();
+        items.add( configure );
+        items.add( promote );
+        items.add( release );
 
+        menus = new Menus() {
+            @Override public List<MenuItem> getItems() {
+                return items;
+            }
+
+            @Override public Map<Object, MenuItem> getItemsMap() {
+
+                return new HashMap<Object, MenuItem>() {
+                    {
+                        put( MenuItems.CONFIGURE_MENU_ITEM, configure );
+                        put( MenuItems.PROMOTE_MENU_ITEM, promote );
+                        put( MenuItems.RELEASE_MENU_ITEM, release );
+                    }
+                };
+            }
+        };
+
+        MenuItem item;
+        item = getItem( MenuItems.CONFIGURE_MENU_ITEM );
+        configureIsGranted = item != null && item.isEnabled();
+
+        item = getItem( MenuItems.PROMOTE_MENU_ITEM );
+        promoteIsGranted = item != null && item.isEnabled();
+
+        item = getItem( MenuItems.RELEASE_MENU_ITEM );
+        releaseIsGranted = item != null && item.isEnabled();
+    }
+
+    private void enableAssetsManagementMenu( boolean enable ) {
+        enableConfigure( configureIsGranted && enable );
+        enablePromote( promoteIsGranted && enable );
+        enableRelease( releaseIsGranted && enable );
+    }
+
+    private void enableConfigure( boolean enable ) {
+        configure.setEnabled( enable );
+    }
+
+    private void enablePromote( boolean enable ) {
+        promote.setEnabled( enable );
+    }
+
+    private void enableRelease( boolean enable ) {
+        release.setEnabled( enable );
+    }
+
+    private MenuItem getItem( MenuItems itemKey ) {
+        return menus != null ? menus.getItemsMap().get( itemKey ) : null;
     }
 
     private Command getConfigureCommand() {
@@ -891,21 +971,21 @@ public class RepositoryStructurePresenter
             @Override
             public void execute() {
                 view.getReleaseScreenPopupView().configure( repository.getAlias(),
-                                                            branch,
-                                                            trimSnapshotFromVersion( model.getPOM().getGav().getVersion() ),
-                                                            model.getPOM().getGav().getVersion(),
-                                                            new com.google.gwt.user.client.Command() {
-                                                                @Override
-                                                                public void execute() {
-                                                                    String username = view.getReleaseScreenPopupView().getUsername();
-                                                                    String password = view.getReleaseScreenPopupView().getPassword();
-                                                                    String serverURL = view.getReleaseScreenPopupView().getServerURL();
-                                                                    String version = view.getReleaseScreenPopupView().getVersion();
-                                                                    Boolean deployToRuntime = view.getReleaseScreenPopupView().getDeployToRuntime();
-                                                                    releaseProject( repository.getAlias(), branch, username, password, serverURL, deployToRuntime, version );
-                                                                    view.getReleaseScreenPopupView().hide();
-                                                                }
-                                                            } );
+                        branch,
+                        trimSnapshotFromVersion( model.getPOM().getGav().getVersion() ),
+                        model.getPOM().getGav().getVersion(),
+                        new com.google.gwt.user.client.Command() {
+                            @Override
+                            public void execute() {
+                                String username = view.getReleaseScreenPopupView().getUsername();
+                                String password = view.getReleaseScreenPopupView().getPassword();
+                                String serverURL = view.getReleaseScreenPopupView().getServerURL();
+                                String version = view.getReleaseScreenPopupView().getVersion();
+                                Boolean deployToRuntime = view.getReleaseScreenPopupView().getDeployToRuntime();
+                                releaseProject( repository.getAlias(), branch, username, password, serverURL, deployToRuntime, version );
+                                view.getReleaseScreenPopupView().hide();
+                            }
+                        } );
                 view.getReleaseScreenPopupView().show();
             }
         };
@@ -919,11 +999,9 @@ public class RepositoryStructurePresenter
         return version;
     }
 
-    public void configureRepository( String repository,
-                                     String sourceBranch,
-                                     String devBranch,
-                                     String releaseBranch,
-                                     String version ) {
+
+    public void configureRepository( String repository, String sourceBranch, String devBranch, String releaseBranch, String version ) {
+
         assetManagementServices.call( new RemoteCallback<Long>() {
                                           @Override
                                           public void callback( Long taskId ) {
@@ -931,19 +1009,16 @@ public class RepositoryStructurePresenter
                                           }
                                       }, new ErrorCallback<Message>() {
                                           @Override
-                                          public boolean error( Message message,
-                                                                Throwable throwable ) {
+                                          public boolean error( Message message, Throwable throwable ) {
                                               org.uberfire.client.workbench.widgets.common.ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
                                               return true;
                                           }
                                       }
-                                    ).configureRepository( repository, sourceBranch, devBranch, releaseBranch, version );
+        ).configureRepository( repository, sourceBranch, devBranch, releaseBranch, version );
 
     }
 
-    public void promoteChanges( String repository,
-                                String sourceBranch,
-                                String destinationBranch ) {
+    public void promoteChanges( String repository, String sourceBranch, String destinationBranch ) {
         assetManagementServices.call( new RemoteCallback<Long>() {
                                           @Override
                                           public void callback( Long taskId ) {
@@ -951,23 +1026,18 @@ public class RepositoryStructurePresenter
                                           }
                                       }, new ErrorCallback<Message>() {
                                           @Override
-                                          public boolean error( Message message,
-                                                                Throwable throwable ) {
+                                          public boolean error( Message message, Throwable throwable ) {
+
                                               org.uberfire.client.workbench.widgets.common.ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
                                               return true;
                                           }
                                       }
-                                    ).promoteChanges( repository, sourceBranch, destinationBranch );
+        ).promoteChanges( repository, sourceBranch, destinationBranch );
 
     }
 
-    public void releaseProject( String repository,
-                                String branch,
-                                String userName,
-                                String password,
-                                String serverURL,
-                                Boolean deployToRuntime,
-                                String version ) {
+    public void releaseProject( String repository, String branch,
+            String userName, String password, String serverURL, Boolean deployToRuntime, String version ) {
 
         if ( serverURL != null && !serverURL.isEmpty() && serverURL.endsWith( "/" ) ) {
             serverURL = serverURL.substring( 0, serverURL.length() - 1 );
@@ -980,13 +1050,12 @@ public class RepositoryStructurePresenter
                                           }
                                       }, new ErrorCallback<Message>() {
                                           @Override
-                                          public boolean error( Message message,
-                                                                Throwable throwable ) {
+                                          public boolean error( Message message, Throwable throwable ) {
                                               ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
                                               return true;
                                           }
                                       }
-                                    ).releaseProject( repository, branch, userName, password, serverURL, deployToRuntime, version );
+        ).releaseProject( repository, branch, userName, password, serverURL, deployToRuntime, version );
 
     }
 

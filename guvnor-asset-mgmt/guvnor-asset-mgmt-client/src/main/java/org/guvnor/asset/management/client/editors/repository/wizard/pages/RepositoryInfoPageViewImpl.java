@@ -144,6 +144,11 @@ public class RepositoryInfoPageViewImpl extends Composite
         return managedRepository;
     }
 
+    @Override
+    public void enabledManagedRepositoryCreation( boolean enabled ) {
+        managedReposiotryGroup.setVisible( enabled );
+    }
+
     private void initialiseFields() {
         nameTextBox.addKeyUpHandler( new KeyUpHandler() {
             @Override
