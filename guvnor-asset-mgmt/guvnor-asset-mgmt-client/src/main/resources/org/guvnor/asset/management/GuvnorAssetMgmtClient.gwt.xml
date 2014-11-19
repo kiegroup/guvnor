@@ -28,7 +28,7 @@
   <inherits name="org.jboss.errai.ui.UI" />
   <inherits name="org.uberfire.UberfireClientAPI" />
 
-  <!--inherits name='org.guvnor.common.services.GuvnorServicesAPI'/-->
+  <inherits name='org.guvnor.common.services.GuvnorServicesAPI'/>
   <inherits name="org.guvnor.asset.management.GuvnorAssetMgmtAPI" />
 
 
