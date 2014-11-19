@@ -45,6 +45,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
+import org.guvnor.common.services.shared.security.impl.KieWorkbenchACLImpl;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -111,8 +112,13 @@ public class RepositoryStructurePresenter
     @Inject
     private Event<ProjectContextChangeEvent> contextChangeEvent;
 
+    /**
+     * WM, Impl class was injected here due to an errai IOC issue. I we inject just KieWorkbenchACL then
+     * we have errors at ProjectScreenPresenter when the webapp is being built. So it was decided to just us the Impl
+     * class here.
+     */
     @Inject
-    private KieWorkbenchACL kieACL;
+    private KieWorkbenchACLImpl kieACL;
 
     @Inject
     private PlaceManager placeManager;
