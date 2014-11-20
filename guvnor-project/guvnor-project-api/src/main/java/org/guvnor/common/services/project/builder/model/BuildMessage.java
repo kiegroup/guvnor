@@ -16,11 +16,13 @@
 
 package org.guvnor.common.services.project.builder.model;
 
+import java.io.Serializable;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
-public class BuildMessage {
+public class BuildMessage implements Serializable {
 
     private long id;
     private Level level;

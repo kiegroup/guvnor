@@ -16,6 +16,7 @@
 
 package org.guvnor.messageconsole.client.console;
 
+import java.util.ArrayList;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -30,6 +31,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.messageconsole.client.console.resources.MessageConsoleResources;
 import org.guvnor.messageconsole.events.MessageUtils;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
+import org.guvnor.messageconsole.events.SystemMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.annotations.DefaultPosition;
@@ -89,6 +91,19 @@ public class MessageConsoleScreen {
                                 view.hideBusyIndicator();
                             }
                         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).build( project );
+                    }
+                } )
+                .endMenu()
+                .newTopLevelMenu(MessageConsoleResources.CONSTANTS.ClearMessageConsole())
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        PublishBatchMessagesEvent batchMessages = new PublishBatchMessagesEvent();
+                        batchMessages.setCleanExisting( true );
+                        batchMessages.setMessageType(MessageUtils.BUILD_SYSTEM_MESSAGE);
+                        batchMessages.setMessagesToPublish(new ArrayList<SystemMessage>());
+
+                        publishBatchMessagesEvent.fire( batchMessages );
                     }
                 } )
                 .endMenu()

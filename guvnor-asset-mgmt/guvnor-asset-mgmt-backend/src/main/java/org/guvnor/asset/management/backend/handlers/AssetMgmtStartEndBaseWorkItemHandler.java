@@ -16,6 +16,8 @@
 
 package org.guvnor.asset.management.backend.handlers;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -23,6 +25,9 @@ import org.guvnor.asset.management.backend.utils.CDIUtils;
 import org.guvnor.asset.management.backend.utils.DataUtils;
 import org.guvnor.asset.management.social.ProcessEndEvent;
 import org.guvnor.asset.management.social.ProcessStartEvent;
+import org.guvnor.messageconsole.events.MessageUtils;
+import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
+import org.guvnor.messageconsole.events.SystemMessage;
 import org.guvnor.structure.repositories.RepositoryInfo;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.kie.api.runtime.process.WorkItem;
@@ -38,6 +43,10 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
 
     @Override
     public void executeWorkItem( WorkItem workItem, WorkItemManager manager ) {
+
+        PublishBatchMessagesEvent publishMessage = new PublishBatchMessagesEvent();
+        publishMessage.setCleanExisting( true );
+        List<SystemMessage> messageList = new ArrayList<SystemMessage>();
 
         String _ProcessName = ( String ) workItem.getParameter( "ProcessName" );
         String _Owner = ( String ) workItem.getParameter( "Owner" );
@@ -81,6 +90,8 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
         String _BP_Password;
         Boolean _BP_DeployToRuntime;
         Exception _BP_Exception;
+        String _BP_DeployOutcome;
+        String _BP_Initiator;
 
 
         //ReleaseProject variables
@@ -178,6 +189,8 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
                 _BP_Username = ( String ) workItem.getParameter( "BP_Username" );
                 _BP_DeployToRuntime = Boolean.TRUE.equals( workItem.getParameter( "BP_DeployToRuntime" ) );
                 _BP_Exception = ( Exception ) workItem.getParameter( "BP_Exception" );
+                _BP_DeployOutcome = ( String ) workItem.getParameter( "BP_DeployOutcome" );
+                _BP_Initiator = ( String ) workItem.getParameter( "BP_Initiator" );
 
                 ProcessEndEvent event = new ProcessEndEvent( _ProcessName, _BP_Repository, repositoryURI, user, System.currentTimeMillis() );
                 event.addParam( "BP_BuildOutcome", _BP_BuildOutcome  );
@@ -190,6 +203,25 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
                 event.addParam( "branch", _BP_BranchName );
 
                 beanManager.fireEvent( event );
+
+                StringBuffer message = new StringBuffer();
+                message.append("Build of project '" + _BP_Project+"' (requested by "+_BP_Initiator + ") completed.\n");
+                message.append(" Build: " + _BP_BuildOutcome);
+                message.append(" Maven: " + _BP_MavenDeployOutcome);
+                if (_BP_DeployOutcome != null) {
+                    message.append(" Deploy: " + _BP_DeployOutcome);
+                }
+
+                SystemMessage infoMsg = new SystemMessage();
+                infoMsg.setLevel(SystemMessage.Level.INFO);
+                infoMsg.setText(message.toString());
+                infoMsg.setMessageType( MessageUtils.BUILD_SYSTEM_MESSAGE );
+
+                messageList.add(infoMsg);
+                publishMessage.setMessagesToPublish(messageList);
+
+                beanManager.fireEvent(publishMessage);
+
             }
 
         } else if ( beanManager != null && "ReleaseProject".equals( _ProcessName ) ) {
@@ -221,6 +253,7 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
                 beanManager.fireEvent( event );
             }
         }
+
 
         if ( manager != null ) {
             manager.completeWorkItem( workItem.getId(), null );

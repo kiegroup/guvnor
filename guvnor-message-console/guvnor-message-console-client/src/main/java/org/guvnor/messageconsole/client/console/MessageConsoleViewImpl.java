@@ -183,6 +183,7 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
         BusyPopup.close();
     }
 
+
     private String getLevelTitle( SystemMessage.Level level ) {
         switch ( level ) {
             case ERROR:
