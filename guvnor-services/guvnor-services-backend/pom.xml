@@ -15,6 +15,10 @@
   <description>Guvnor - Services Backend</description>
 
   <dependencies>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
