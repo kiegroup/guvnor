@@ -21,13 +21,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class Overview {
 
-    private String preview;
     private Metadata metadata;
     private String projectName;
-
-    public String getPreview() {
-        return preview;
-    }
 
     public Metadata getMetadata() {
         return metadata;
@@ -35,10 +30,6 @@ public class Overview {
 
     public String getProjectName() {
         return projectName;
-    }
-
-    public void setPreview(String preview) {
-        this.preview = preview;
     }
 
     public void setProjectName(String projectName) {

@@ -119,7 +119,6 @@ public class CategoryServiceImpl
         Overview overview = new Overview();
 
         overview.setMetadata(metadataService.getMetadata(path));
-        overview.setPreview("");
         overview.setProjectName("");
 
         return overview;
