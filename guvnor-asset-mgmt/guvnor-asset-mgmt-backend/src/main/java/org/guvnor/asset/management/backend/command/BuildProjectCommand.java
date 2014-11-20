@@ -1,7 +1,8 @@
 package org.guvnor.asset.management.backend.command;
 
 import java.net.URI;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.TypeLiteral;
 
@@ -15,6 +16,9 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.messageconsole.events.MessageUtils;
+import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
+import org.guvnor.messageconsole.events.SystemMessage;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
@@ -76,17 +80,30 @@ public class BuildProjectCommand extends AbstractCommand {
                     buildOutcome = "SUCCESSFUL";
                 } else {
                     buildOutcome = "FAILURE";
+
+                    PublishBatchMessagesEvent publishMessage = new PublishBatchMessagesEvent();
+                    publishMessage.setCleanExisting( true );
+                    List<SystemMessage> messageList = new ArrayList<SystemMessage>();
+
                     for ( BuildMessage message : results.getMessages() ) {
                         event.addError( message.getText() );
                         if ( logger.isDebugEnabled() ) {
                             logger.debug("Error " + message.getText());
                         }
+                        messageList.add(MessageUtils.convert(message));
                     }
+
+                    publishMessage.setMessagesToPublish(messageList);
+
+                    beanManager.fireEvent(publishMessage);
+
                 }
-                executionResults.setData("Errors", results.getErrorMessages());
-                executionResults.setData("Warnings", results.getWarningMessages());
-                executionResults.setData("Info", results.getInformationMessages());
+                executionResults.setData("Errors", processMessages(results.getErrorMessages()));
+                executionResults.setData("Warnings", processMessages(results.getWarningMessages()));
+                executionResults.setData("Info", processMessages(results.getInformationMessages()));
                 executionResults.setData("GAV", results.getGAV().toString());
+
+
 
                 beanManager.fireEvent( event );
             }
@@ -120,6 +137,18 @@ public class BuildProjectCommand extends AbstractCommand {
         event.setProjectName( projectName );
 
         return event;
+    }
+
+    protected List<String> processMessages(List<BuildMessage> messageList) {
+        List<String> messages = new ArrayList<String>();
+
+        if (messageList != null) {
+            for (BuildMessage buildMessage : messageList) {
+                messages.add(buildMessage.getText());
+            }
+        }
+
+        return messages;
     }
 	
 }

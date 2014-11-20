@@ -1,6 +1,8 @@
 package org.guvnor.asset.management.backend.command;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.TypeLiteral;
 
@@ -14,6 +16,9 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.messageconsole.events.MessageUtils;
+import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
+import org.guvnor.messageconsole.events.SystemMessage;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
@@ -82,6 +87,18 @@ public class MavenDeployProjectCommand extends AbstractCommand {
                             logger.debug("Error " + message.getText());
                         }
                     }
+
+                    PublishBatchMessagesEvent publishMessage = new PublishBatchMessagesEvent();
+                    publishMessage.setCleanExisting( true );
+                    List<SystemMessage> messageList = new ArrayList<SystemMessage>();
+
+                    SystemMessage buildOutcomeMsg = new SystemMessage();
+                    buildOutcomeMsg.setLevel(SystemMessage.Level.ERROR);
+                    buildOutcomeMsg.setText("Maven install process failed for project " + project.getProjectName());
+                    buildOutcomeMsg.setMessageType( MessageUtils.BUILD_SYSTEM_MESSAGE );
+                    messageList.add(buildOutcomeMsg);
+
+                    beanManager.fireEvent(publishMessage);
                 }
                 executionResults.setData("Errors", results.getErrorMessages());
                 executionResults.setData("Warnings", results.getWarningMessages());

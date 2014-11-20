@@ -641,6 +641,8 @@
         <bpmn2:dataInput id="_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_BP_DeployToRuntimeInputX" drools:dtype="Boolean" itemSubjectRef="__C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_BP_DeployToRuntimeInputXItem" name="BP_DeployToRuntime"/>
         <bpmn2:dataInput id="_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_BP_ExceptionInputX" drools:dtype="String" itemSubjectRef="__C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_BP_ExceptionInputXItem" name="BP_Exception"/>
         <bpmn2:dataInput id="_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_ProcessNameInputX" drools:dtype="String" itemSubjectRef="__C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_ProcessNameInputXItem" name="ProcessName"/>
+        <bpmn2:dataInput id="_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_DeployOutcomeInputX" drools:dtype="String" itemSubjectRef="__C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_DeployOutcomeInputXItem" name="BP_DeployOutcome"/>
+        <bpmn2:dataInput id="_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_InitiatorInputX" drools:dtype="String" itemSubjectRef="__C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_InitiatorInputXItem" name="BP_Initiator"/>
         <bpmn2:inputSet id="_mZXKxlOZEeSBDLLXGrwEZw">
           <bpmn2:dataInputRefs>_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_BP_ProjectURIInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_BP_BranchNameInputX</bpmn2:dataInputRefs>
@@ -656,6 +658,8 @@
           <bpmn2:dataInputRefs>_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_BP_DeployToRuntimeInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_BP_ExceptionInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_ProcessNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_DeployOutcomeInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_InitiatorInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_TaskNameInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
         <bpmn2:outputSet id="_mZXKx1OZEeSBDLLXGrwEZw"/>
@@ -722,6 +726,14 @@
       <bpmn2:dataInputAssociation id="_mZXK2VOZEeSBDLLXGrwEZw">
         <bpmn2:sourceRef>_ProcessName</bpmn2:sourceRef>
         <bpmn2:targetRef>_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_ProcessNameInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_mZXK2VOZEeSBDLLXGrwEZq">
+        <bpmn2:sourceRef>DeployOutcome</bpmn2:sourceRef>
+        <bpmn2:targetRef>_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_DeployOutcomeInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_mZXK2VOZEeSBDLLXGrwEZa">
+        <bpmn2:sourceRef>initiator</bpmn2:sourceRef>
+        <bpmn2:targetRef>_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_InitiatorInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
     </bpmn2:task>
     <bpmn2:sequenceFlow id="_FFBA2468-32D7-4E72-8AE7-7799C1363AD5" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_C4ACDC27-96F3-425F-BFC6-D8F8DED2E062" targetRef="_43AF5357-0FAB-464B-A53A-C19747439237"/>
