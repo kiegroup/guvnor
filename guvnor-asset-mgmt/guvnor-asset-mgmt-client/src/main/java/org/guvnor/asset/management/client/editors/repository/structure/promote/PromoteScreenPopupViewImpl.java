@@ -114,8 +114,9 @@ public class PromoteScreenPopupViewImpl extends KieBaseModal {
         this.targetBranchListBox.addItem( Constants.INSTANCE.Select_A_Branch() );
         
         for ( String b : branches ) {
+            if ( !b.equals( branch ) ) {
                 targetBranchListBox.addItem( b, b );
-                
+            }
         }
     }
 
