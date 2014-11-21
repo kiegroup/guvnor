@@ -114,8 +114,9 @@ public class PromoteScreenPopupViewImpl extends BaseModal {
         this.targetBranchListBox.addItem( Constants.INSTANCE.Select_A_Branch() );
 
         for ( String b : branches ) {
-            targetBranchListBox.addItem( b, b );
-
+            if ( !b.equals( branch ) ) {
+                targetBranchListBox.addItem( b, b );
+            }
         }
     }
 
