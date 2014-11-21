@@ -57,4 +57,6 @@ public interface CommonConstants
 
     String Restoring();
 
+    String IndexClonedRepositoryWarning();
+
 }

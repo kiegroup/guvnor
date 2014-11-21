@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
+import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
@@ -246,7 +247,7 @@ public class CloneRepositoryForm
                                                 @Override
                                                 public void callback( Repository o ) {
                                                     BusyPopup.close();
-                                                    Window.alert( CoreConstants.INSTANCE.RepoCloneSuccess() );
+                                                    Window.alert( CoreConstants.INSTANCE.RepoCloneSuccess() + "\n\n" + CommonConstants.INSTANCE.IndexClonedRepositoryWarning() );
                                                     hide();
                                                     placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias", o.getAlias() ) );
                                                 }
