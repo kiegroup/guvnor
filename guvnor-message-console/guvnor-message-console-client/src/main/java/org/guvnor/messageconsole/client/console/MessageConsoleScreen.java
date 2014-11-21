@@ -94,14 +94,13 @@ public class MessageConsoleScreen {
                     }
                 } )
                 .endMenu()
-                .newTopLevelMenu(MessageConsoleResources.CONSTANTS.ClearMessageConsole())
+                .newTopLevelMenu( MessageConsoleResources.CONSTANTS.ClearMessageConsole() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
                         PublishBatchMessagesEvent batchMessages = new PublishBatchMessagesEvent();
                         batchMessages.setCleanExisting( true );
-                        batchMessages.setMessageType(MessageUtils.BUILD_SYSTEM_MESSAGE);
-                        batchMessages.setMessagesToPublish(new ArrayList<SystemMessage>());
+                        batchMessages.setMessagesToPublish( new ArrayList<SystemMessage>() );
 
                         publishBatchMessagesEvent.fire( batchMessages );
                     }
