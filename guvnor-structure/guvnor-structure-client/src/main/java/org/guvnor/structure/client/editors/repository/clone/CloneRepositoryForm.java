@@ -246,7 +246,7 @@ public class CloneRepositoryForm
                                                 @Override
                                                 public void callback( Repository o ) {
                                                     BusyPopup.close();
-                                                    Window.alert( CoreConstants.INSTANCE.RepoCloneSuccess() );
+                                                    Window.alert( CoreConstants.INSTANCE.RepoCloneSuccess() + "\n\n" + CoreConstants.INSTANCE.IndexClonedRepositoryWarning() );
                                                     hide();
                                                     placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias", o.getAlias() ) );
                                                 }
