@@ -334,8 +334,28 @@ public abstract class AbstractProjectService<T extends Project>
     public Package resolveParentPackage( final Package pkg ) {
         final Set<String> packageNames = new HashSet<String>();
 
+        //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
         final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert( pkg.getProjectRootPath() );
-        packageNames.addAll( getPackageNames( nioProjectRootPath, Paths.convert( pkg.getPackageMainSrcPath() ).getParent(), true, false, false ) );
+        packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                              Paths.convert( pkg.getPackageMainSrcPath() ).getParent(),
+                                              true,
+                                              false,
+                                              false ) );
+        packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                              Paths.convert( pkg.getPackageMainResourcesPath() ).getParent(),
+                                              true,
+                                              false,
+                                              false ) );
+        packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                              Paths.convert( pkg.getPackageTestSrcPath() ).getParent(),
+                                              true,
+                                              false,
+                                              false ) );
+        packageNames.addAll( getPackageNames( nioProjectRootPath,
+                                              Paths.convert( pkg.getPackageTestResourcesPath() ).getParent(),
+                                              true,
+                                              false,
+                                              false ) );
 
         //Construct Package objects for each package name
         for ( String packagePathSuffix : packageNames ) {
@@ -813,7 +833,7 @@ public abstract class AbstractProjectService<T extends Project>
         }
         final Path repositoryRoot = repository.getBranchRoot( branch );
         final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( Paths.convert( repositoryRoot ) );
-        try { 
+        try {
             for ( org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
                 if ( Files.isDirectory( nioRepositoryPath ) ) {
                     final org.uberfire.backend.vfs.Path projectPath = Paths.convert( nioRepositoryPath );
@@ -821,14 +841,14 @@ public abstract class AbstractProjectService<T extends Project>
 
                     if ( project != null ) {
                         if ( authorizationManager.authorize( project, identity ) ) {
-                            POM projectPom = pomService.load(project.getPomXMLPath());
-                            project.setPom(projectPom);
+                            POM projectPom = pomService.load( project.getPomXMLPath() );
+                            project.setPom( projectPom );
                             authorizedProjects.add( project );
                         }
                     }
                 }
             }
-        } finally { 
+        } finally {
             nioRepositoryPaths.close();
         }
         return authorizedProjects;
