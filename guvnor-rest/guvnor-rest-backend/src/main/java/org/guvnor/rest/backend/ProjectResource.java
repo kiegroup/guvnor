@@ -66,6 +66,7 @@ import org.guvnor.rest.client.TestProjectRequest;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.kie.remote.rest.exception.KieRemoteRestOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
@@ -533,7 +534,7 @@ public class ProjectResource {
     private org.guvnor.structure.repositories.Repository checkRepositoryExistence( String repoName ) {
         org.guvnor.structure.repositories.Repository repo = repositoryService.getRepository( repoName );
         if ( repo == null ) {
-            throw new IllegalStateException( "Repository " + repoName + " does not exist." );
+            throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( repoName ).build() );
         }
         return repo;
     }
@@ -543,7 +544,7 @@ public class ProjectResource {
                 = organizationalUnitService.getOrganizationalUnit( orgUnitName );
 
         if ( origOrgUnit == null ) {
-            throw new IllegalStateException( "Organizational unit " + orgUnitName + " does not exist." );
+            throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( orgUnitName ).build() );
         }
         return origOrgUnit;
     }
