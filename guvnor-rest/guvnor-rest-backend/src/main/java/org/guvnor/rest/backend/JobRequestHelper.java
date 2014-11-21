@@ -24,7 +24,6 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -35,8 +34,8 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.test.TestService;
 import org.guvnor.common.services.shared.test.TestResultMessage;
+import org.guvnor.common.services.shared.test.TestService;
 import org.guvnor.rest.client.BuildConfig;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
@@ -379,12 +378,6 @@ public class JobRequestHelper {
 
                 @Override
                 public <U extends TestResultMessage> Event<U> select( Class<U> subtype, Annotation... qualifiers ) {
-                    // not used
-                    return null;
-                }
-
-                @Override
-                public <U extends TestResultMessage> Event<U> select( TypeLiteral<U> subtype, Annotation... qualifiers ) {
                     // not used
                     return null;
                 }
