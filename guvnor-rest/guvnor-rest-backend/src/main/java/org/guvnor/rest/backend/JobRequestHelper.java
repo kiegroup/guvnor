@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -377,8 +378,13 @@ public class JobRequestHelper {
                 }
 
                 @Override
-                public <U extends TestResultMessage> Event<U> select( Class<U> subtype,
-                                                                      Annotation... qualifiers ) {
+                public <U extends TestResultMessage> Event<U> select( Class<U> subtype, Annotation... qualifiers ) {
+                    // not used
+                    return null;
+                }
+
+                @Override
+                public <U extends TestResultMessage> Event<U> select( TypeLiteral<U> subtype, Annotation... qualifiers ) {
                     // not used
                     return null;
                 }

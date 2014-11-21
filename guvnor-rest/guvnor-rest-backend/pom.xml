@@ -71,10 +71,6 @@
           <artifactId>drools-compiler</artifactId>
           <groupId>org.drools</groupId>
         </exclusion>
-        <exclusion>
-          <artifactId>kie-api</artifactId>
-          <groupId>org.kie</groupId>
-        </exclusion>
       </exclusions>
     </dependency>
 
@@ -82,7 +78,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-
 
     <!-- REST dependencies -->
     <dependency>
