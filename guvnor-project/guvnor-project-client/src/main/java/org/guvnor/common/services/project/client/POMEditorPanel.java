@@ -127,10 +127,6 @@ public class POMEditorPanel
         return view.asWidget();
     }
 
-    public boolean isDirty() {
-        return false;
-    }
-
     public void disableGroupID(String reason) {
         view.disableGroupID(reason);
     }
