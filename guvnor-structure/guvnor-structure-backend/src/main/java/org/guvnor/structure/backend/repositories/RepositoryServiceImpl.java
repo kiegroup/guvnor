@@ -78,6 +78,14 @@ public class RepositoryServiceImpl implements RepositoryService {
                 final Repository repository = repositoryFactory.newRepository( config );
                 configuredRepositories.put( repository.getAlias(), repository );
                 rootToRepo.put( repository.getRoot(), repository );
+                Collection<String> branches;
+                if ( repository instanceof GitRepository &&
+                        (branches = repository.getBranches()) != null &&
+                        !branches.isEmpty() ) {
+                    for ( String branch : branches ) {
+                        rootToRepo.put( repository.getBranchRoot( branch ), repository );
+                    }
+                }
             }
         }
 
@@ -359,6 +367,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             Repository repository = configuredRepositories.get(changedEvent.getRepositoryAlias());
             if (repository instanceof GitRepository) {
                 ((GitRepository) repository).addBranch(changedEvent.getBranchName(), changedEvent.getBranchPath());
+                rootToRepo.put( changedEvent.getBranchPath(), repository );
             }
         }
     }
