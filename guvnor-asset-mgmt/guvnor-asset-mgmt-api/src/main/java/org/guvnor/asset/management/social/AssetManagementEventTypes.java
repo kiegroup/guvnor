@@ -16,8 +16,10 @@
 
 package org.guvnor.asset.management.social;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 
+@Portable
 public enum AssetManagementEventTypes
         implements SocialEventType {
     BRANCH_CREATED,
