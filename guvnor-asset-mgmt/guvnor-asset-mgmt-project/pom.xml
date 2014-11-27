@@ -2,14 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <artifactId>guvnor-asset-mgmt</artifactId>
-    <groupId>org.guvnor</groupId>
-    <version>6.3.0-SNAPSHOT</version>
-  </parent>
+
+  <!-- This Project doesn't inherit from a parent deliberately as there is no need. Inheriting from guvnor-asset-mgmt -->
+  <!-- leads to dependency resolution issues when deploying on EWS. See https://bugzilla.redhat.com/show_bug.cgi?id=1168171 -->
+  <groupId>org.guvnor</groupId>
+  <artifactId>guvnor-asset-mgmt-project</artifactId>
+  <version>6.3.0-SNAPSHOT</version>
+
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>guvnor-asset-mgmt-project</artifactId>
   <packaging>jar</packaging>
 
   <name>Guvnor - Asset Management project</name>
