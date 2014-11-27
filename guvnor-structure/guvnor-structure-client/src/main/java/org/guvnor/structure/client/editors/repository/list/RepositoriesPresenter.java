@@ -51,9 +51,6 @@ public class RepositoriesPresenter {
     private Caller<RepositoryService> repositoryService;
 
     @Inject
-    private Event<RepositoryRemovedEvent> repositoryRemovedEvent;
-
-    @Inject
     private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
 
     @Inject
@@ -124,13 +121,7 @@ public class RepositoriesPresenter {
 
     public void removeRepository( final Repository repository ) {
         if ( view.confirmDeleteRepository( repository ) ) {
-            repositoryService.call( new RemoteCallback<Void>() {
-
-                @Override
-                public void callback( Void aVoid ) {
-                    repositoryRemovedEvent.fire( new RepositoryRemovedEvent( repository ) );
-                }
-            } ).removeRepository( repository.getAlias() );
+            repositoryService.call().removeRepository( repository.getAlias() );
         }
     }
 

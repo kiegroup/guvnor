@@ -16,7 +16,13 @@ import javax.inject.Named;
 import org.guvnor.structure.backend.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.guvnor.structure.repositories.*;
+import org.guvnor.structure.repositories.NewBranchEvent;
+import org.guvnor.structure.repositories.NewRepositoryEvent;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
+import org.guvnor.structure.repositories.RepositoryInfo;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.PortableVersionRecord;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -66,6 +72,9 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Inject
     private Event<NewRepositoryEvent> event;
 
+    @Inject
+    private Event<RepositoryRemovedEvent> repositoryRemovedEvent;
+
     private Map<String, Repository> configuredRepositories = new HashMap<String, Repository>();
     private Map<Path, Repository> rootToRepo = new HashMap<Path, Repository>();
 
@@ -80,7 +89,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                 rootToRepo.put( repository.getRoot(), repository );
                 Collection<String> branches;
                 if ( repository instanceof GitRepository &&
-                        (branches = repository.getBranches()) != null &&
+                        ( branches = repository.getBranches() ) != null &&
                         !branches.isEmpty() ) {
                     for ( String branch : branches ) {
                         rootToRepo.put( repository.getBranchRoot( branch ), repository );
@@ -144,7 +153,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                                         final String scheme,
                                         final String alias,
                                         final Map<String, Object> env ) throws RepositoryAlreadyExistsException {
-        final Repository repository = createRepository(scheme, alias, env);
+        final Repository repository = createRepository( scheme, alias, env );
         if ( organizationalUnit != null ) {
             organizationalUnitService.addRepository( organizationalUnit, repository );
         }
@@ -188,7 +197,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     //Save the definition
     private Repository createRepository( final ConfigGroup repositoryConfig ) {
-        final Repository repository = repositoryFactory.newRepository(repositoryConfig);
+        final Repository repository = repositoryFactory.newRepository( repositoryConfig );
         configurationService.addConfiguration( repositoryConfig );
         configuredRepositories.put( repository.getAlias(), repository );
         rootToRepo.put( repository.getRoot(), repository );
@@ -204,7 +213,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public void addRole( Repository repository,
                          String role ) {
-        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(repository.getAlias());
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
 
         if ( thisRepositoryConfig != null ) {
             final ConfigItem<List> roles = thisRepositoryConfig.getConfigItem( "security:roles" );
@@ -241,7 +250,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     protected ConfigGroup findRepositoryConfig( final String alias ) {
-        final Collection<ConfigGroup> groups = configurationService.getConfiguration(ConfigType.REPOSITORY);
+        final Collection<ConfigGroup> groups = configurationService.getConfiguration( ConfigType.REPOSITORY );
         if ( groups != null ) {
             for ( ConfigGroup groupConfig : groups ) {
                 if ( groupConfig.getName().equals( alias ) ) {
@@ -254,15 +263,17 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     @Override
     public void removeRepository( String alias ) {
-        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(alias);
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig( alias );
 
         if ( thisRepositoryConfig != null ) {
             configurationService.removeConfiguration( thisRepositoryConfig );
-            final Repository repo = configuredRepositories.remove( alias );
-            if ( repo != null ) {
-                rootToRepo.remove( repo.getRoot() );
-                ioService.delete( convert( repo.getRoot() ).getFileSystem().getPath( null ) );
-            }
+        }
+
+        final Repository repo = configuredRepositories.remove( alias );
+        if ( repo != null ) {
+            rootToRepo.remove( repo.getRoot() );
+            repositoryRemovedEvent.fire( new RepositoryRemovedEvent( repo ) );
+            ioService.delete( convert( repo.getRoot() ).getFileSystem().getPath( null ) );
         }
 
         //Remove reference to Repository from Organizational Units
@@ -316,22 +327,25 @@ public class RepositoryServiceImpl implements RepositoryService {
                 }
             }
         }
-        List<VersionRecord> initialRecordList = getRepositoryHistory( alias, 0, HISTORY_PAGE_SIZE);
-        return new RepositoryInfo( alias, ouName, repo.getRoot(), repo.getPublicURIs(), initialRecordList);
+        List<VersionRecord> initialRecordList = getRepositoryHistory( alias, 0, HISTORY_PAGE_SIZE );
+        return new RepositoryInfo( alias, ouName, repo.getRoot(), repo.getPublicURIs(), initialRecordList );
     }
 
     @Override
-    public List<VersionRecord> getRepositoryHistory( String alias, int startIndex ) {
-        return getRepositoryHistory(alias, startIndex, startIndex + HISTORY_PAGE_SIZE);
+    public List<VersionRecord> getRepositoryHistory( String alias,
+                                                     int startIndex ) {
+        return getRepositoryHistory( alias, startIndex, startIndex + HISTORY_PAGE_SIZE );
     }
 
     @Override
     public List<VersionRecord> getRepositoryHistoryAll( String alias ) {
-        return getRepositoryHistory(alias, 0, -1);
+        return getRepositoryHistory( alias, 0, -1 );
     }
 
     @Override
-    public List<VersionRecord> getRepositoryHistory( String alias, int startIndex, int endIndex ) {
+    public List<VersionRecord> getRepositoryHistory( String alias,
+                                                     int startIndex,
+                                                     int endIndex ) {
         final Repository repo = getRepository( alias );
         final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( convert( repo.getRoot() ), VersionAttributeView.class );
         final List<VersionRecord> records = versionAttributeView.readAttributes().history().records();
@@ -339,10 +353,10 @@ public class RepositoryServiceImpl implements RepositoryService {
         if ( startIndex < 0 ) {
             startIndex = 0;
         }
-        if ( endIndex < 0 || endIndex > records.size()) {
+        if ( endIndex < 0 || endIndex > records.size() ) {
             endIndex = records.size();
         }
-        if ( startIndex >= records.size() || startIndex >= endIndex) {
+        if ( startIndex >= records.size() || startIndex >= endIndex ) {
             return Collections.emptyList();
         }
 
@@ -360,18 +374,16 @@ public class RepositoryServiceImpl implements RepositoryService {
         flush();
     }
 
+    public void updateBranch( @Observes NewBranchEvent changedEvent ) {
+        if ( configuredRepositories.containsKey( changedEvent.getRepositoryAlias() ) ) {
 
-    public void updateBranch(@Observes NewBranchEvent changedEvent) {
-        if (configuredRepositories.containsKey(changedEvent.getRepositoryAlias())) {
-
-            Repository repository = configuredRepositories.get(changedEvent.getRepositoryAlias());
-            if (repository instanceof GitRepository) {
-                ((GitRepository) repository).addBranch(changedEvent.getBranchName(), changedEvent.getBranchPath());
+            final Repository repository = configuredRepositories.get( changedEvent.getRepositoryAlias() );
+            if ( repository instanceof GitRepository ) {
+                ( (GitRepository) repository ).addBranch( changedEvent.getBranchName(), changedEvent.getBranchPath() );
                 rootToRepo.put( changedEvent.getBranchPath(), repository );
             }
         }
     }
-
 
     private void flush() {
         configuredRepositories.clear();
