@@ -17,19 +17,20 @@
 package org.guvnor.common.services.backend.version;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.guvnor.common.services.backend.MockIOService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionAttributes;
 import org.uberfire.java.nio.base.version.VersionHistory;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
@@ -38,15 +39,16 @@ import static org.mockito.Mockito.*;
 
 public class VersionLoaderTest {
 
-    private MetadataService metadataService;
-    private MockIOService   ioService;
-    private Path            pathToFile;
-    private Path            pathToDotFile;
+    private MetadataServerSideService metadataService;
+    private MockIOService             ioService;
+    private Path                      pathToFile;
+    private Path                      pathToDotFile;
     private ArrayList<VersionRecord> dotFileVersionRecords  = new ArrayList<VersionRecord>();
     private ArrayList<VersionRecord> mainFileVersionRecords = new ArrayList<VersionRecord>();
 
     @Before
     public void setUp() throws Exception {
+
         pathToFile = mock(Path.class);
         pathToDotFile = mock(Path.class);
         ioService = new MockIOService() {
@@ -55,7 +57,7 @@ public class VersionLoaderTest {
                 return (V) new MockVersionAttributeView(path);
             }
         };
-        metadataService = mock(MetadataService.class);
+        metadataService = mock(MetadataServerSideService.class);
         when(metadataService.getMetadata(pathToFile))
                 .thenReturn(
                         new Metadata() {
@@ -64,6 +66,15 @@ public class VersionLoaderTest {
                                 return dotFileVersionRecords;
                             }
                         });
+
+        mainFileVersionRecords.add(makeVersionRecord("id1", new Date(1)));
+        mainFileVersionRecords.add(makeVersionRecord("id3", new Date(3)));
+        mainFileVersionRecords.add(makeVersionRecord("id4", new Date(4)));
+
+        dotFileVersionRecords.add(makeVersionRecord("id1", new Date(1)));
+        dotFileVersionRecords.add(makeVersionRecord("id2", new Date(2)));
+        dotFileVersionRecords.add(makeVersionRecord("id5", new Date(5)));
+
     }
 
     @Test
@@ -76,11 +87,41 @@ public class VersionLoaderTest {
 
         List<VersionRecord> versions = versionLoader.load(pathToFile);
 
-        assertEquals(3, versions.size());
+        assertEquals(5, versions.size());
         assertEquals("id1", versions.get(0).id());
         assertEquals("id2", versions.get(1).id());
         assertEquals("id3", versions.get(2).id());
+        assertEquals("id4", versions.get(3).id());
+        assertEquals("id5", versions.get(4).id());
 
+    }
+
+    private VersionRecord makeVersionRecord(final String id, final Date date) {
+        return new VersionRecord() {
+            @Override public String id() {
+                return id;
+            }
+
+            @Override public String author() {
+                return null;
+            }
+
+            @Override public String email() {
+                return null;
+            }
+
+            @Override public String comment() {
+                return null;
+            }
+
+            @Override public Date date() {
+                return date;
+            }
+
+            @Override public String uri() {
+                return null;
+            }
+        };
     }
 
     private class MockVersionAttributeView

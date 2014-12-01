@@ -61,9 +61,13 @@ public class MetadataServiceImpl implements MetadataService {
     private IOService ioService;
 
     @Override
-    public Metadata getMetadata( final Path resource ) {
+    public Metadata getMetadata( final Path pathToResource ) {
+        return getMetadata(Paths.convert( pathToResource ));
+    }
+
+    public Metadata getMetadata(org.uberfire.java.nio.file.Path path) {
+
         try {
-            final org.uberfire.java.nio.file.Path path = Paths.convert( resource );
 
             final DublinCoreView dcoreView = ioService.getFileAttributeView( path, DublinCoreView.class );
             final DiscussionView discussView = ioService.getFileAttributeView( path, DiscussionView.class );

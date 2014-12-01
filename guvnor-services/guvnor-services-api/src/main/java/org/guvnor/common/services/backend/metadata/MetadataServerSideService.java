@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.shared.metadata;
+package org.guvnor.common.services.backend.metadata;
 
-import java.util.Map;
-
-import com.google.common.annotations.GwtIncompatible;
+import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.vfs.Path;
 
-/**
- *
- */
-@Remote
-public interface MetadataService {
+public interface MetadataServerSideService
+        extends MetadataService {
 
-    Metadata getMetadata( final Path resource );
-
-    Map<String, Object> configAttrs( final Map<String, Object> attrs,
-                                     final Metadata metadata );
-
-    Map<String, Object> setUpAttributes( Path path,
-                                         Metadata metadata );
+    Metadata getMetadata(org.uberfire.java.nio.file.Path resource);
 
 }

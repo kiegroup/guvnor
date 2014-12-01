@@ -24,33 +24,33 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.repositories.impl.PortableVersionRecord;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.file.Path;
 
 public class VersionLoader {
 
     private IOService ioService;
 
-    protected MetadataService metadataService;
+    protected MetadataServerSideService metadataService;
 
     public VersionLoader() {
     }
 
     @Inject
     public VersionLoader(@Named("ioStrategy") IOService ioService,
-                         MetadataService metadataService) {
+                         MetadataServerSideService metadataService) {
         this.ioService = ioService;
         this.metadataService = metadataService;
     }
 
     public List<VersionRecord> load(Path path) {
 
-        final List<VersionRecord> records = ioService.getFileAttributeView(Paths.convert(path),
+        final List<VersionRecord> records = ioService.getFileAttributeView(path,
                                                                            VersionAttributeView.class).readAttributes().history().records();
 
         List<VersionRecord> metadataVersionRecords = metadataService.getMetadata(path).getVersion();
@@ -60,12 +60,7 @@ public class VersionLoader {
 
         for (final VersionRecord record : records) {
             if (doesNotContainID(record.id(), result)) {
-                result.add(new PortableVersionRecord(record.id(),
-                                                     record.author(),
-                                                     record.email(),
-                                                     record.comment(),
-                                                     record.date(),
-                                                     record.uri()));
+                result.add(makePortable(record));
             }
         }
 
@@ -79,7 +74,15 @@ public class VersionLoader {
                 });
 
         return result;
+    }
 
+    private PortableVersionRecord makePortable(VersionRecord record) {
+        return new PortableVersionRecord(record.id(),
+                                         record.author(),
+                                         record.email(),
+                                         record.comment(),
+                                         record.date(),
+                                         record.uri());
     }
 
     private boolean doesNotContainID(String id, List<VersionRecord> records) {
