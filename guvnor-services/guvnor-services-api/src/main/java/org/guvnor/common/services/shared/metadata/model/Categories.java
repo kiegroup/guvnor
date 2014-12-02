@@ -37,4 +37,5 @@ public class Categories
     public Iterator<CategoryItem> iterator() {
         return getChildren().iterator();
     }
+
 }

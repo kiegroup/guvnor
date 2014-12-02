@@ -125,4 +125,56 @@ public class POM {
     public boolean hasParent() {
         return parent != null;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        POM pom = ( POM ) o;
+
+        if ( multiModule != pom.multiModule ) {
+            return false;
+        }
+        if ( dependencies != null ? !dependencies.equals( pom.dependencies ) : pom.dependencies != null ) {
+            return false;
+        }
+        if ( description != null ? !description.equals( pom.description ) : pom.description != null ) {
+            return false;
+        }
+        if ( gav != null ? !gav.equals( pom.gav ) : pom.gav != null ) {
+            return false;
+        }
+        if ( modules != null ? !modules.equals( pom.modules ) : pom.modules != null ) {
+            return false;
+        }
+        if ( name != null ? !name.equals( pom.name ) : pom.name != null ) {
+            return false;
+        }
+        if ( parent != null ? !parent.equals( pom.parent ) : pom.parent != null ) {
+            return false;
+        }
+        if ( repositories != null ? !repositories.equals( pom.repositories ) : pom.repositories != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = parent != null ? parent.hashCode() : 0;
+        result = 31 * result + ( gav != null ? gav.hashCode() : 0 );
+        result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = 31 * result + ( description != null ? description.hashCode() : 0 );
+        result = 31 * result + ( multiModule ? 1 : 0 );
+        result = 31 * result + ( dependencies != null ? dependencies.hashCode() : 0 );
+        result = 31 * result + ( repositories != null ? repositories.hashCode() : 0 );
+        result = 31 * result + ( modules != null ? modules.hashCode() : 0 );
+        return result;
+    }
 }
