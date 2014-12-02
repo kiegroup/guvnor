@@ -177,4 +177,80 @@ public class Metadata {
     public void setDescription( final String description ) {
         this.description = description;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        Metadata metadata = ( Metadata ) o;
+
+        if ( categories != null ? !categories.equals( metadata.categories ) : metadata.categories != null ) {
+            return false;
+        }
+        if ( checkinComment != null ? !checkinComment.equals( metadata.checkinComment ) : metadata.checkinComment != null ) {
+            return false;
+        }
+        if ( creator != null ? !creator.equals( metadata.creator ) : metadata.creator != null ) {
+            return false;
+        }
+        if ( dateCreated != null ? !dateCreated.equals( metadata.dateCreated ) : metadata.dateCreated != null ) {
+            return false;
+        }
+        if ( description != null ? !description.equals( metadata.description ) : metadata.description != null ) {
+            return false;
+        }
+        if ( discussion != null ? !discussion.equals( metadata.discussion ) : metadata.discussion != null ) {
+            return false;
+        }
+        if ( externalRelation != null ? !externalRelation.equals( metadata.externalRelation ) : metadata.externalRelation != null ) {
+            return false;
+        }
+        if ( externalSource != null ? !externalSource.equals( metadata.externalSource ) : metadata.externalSource != null ) {
+            return false;
+        }
+        if ( lastContributor != null ? !lastContributor.equals( metadata.lastContributor ) : metadata.lastContributor != null ) {
+            return false;
+        }
+        if ( lastModified != null ? !lastModified.equals( metadata.lastModified ) : metadata.lastModified != null ) {
+            return false;
+        }
+        if ( path != null ? !path.equals( metadata.path ) : metadata.path != null ) {
+            return false;
+        }
+        if ( subject != null ? !subject.equals( metadata.subject ) : metadata.subject != null ) {
+            return false;
+        }
+        if ( type != null ? !type.equals( metadata.type ) : metadata.type != null ) {
+            return false;
+        }
+        if ( version != null ? !version.equals( metadata.version ) : metadata.version != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = path != null ? path.hashCode() : 0;
+        result = 31 * result + ( checkinComment != null ? checkinComment.hashCode() : 0 );
+        result = 31 * result + ( lastContributor != null ? lastContributor.hashCode() : 0 );
+        result = 31 * result + ( creator != null ? creator.hashCode() : 0 );
+        result = 31 * result + ( lastModified != null ? lastModified.hashCode() : 0 );
+        result = 31 * result + ( dateCreated != null ? dateCreated.hashCode() : 0 );
+        result = 31 * result + ( subject != null ? subject.hashCode() : 0 );
+        result = 31 * result + ( type != null ? type.hashCode() : 0 );
+        result = 31 * result + ( externalRelation != null ? externalRelation.hashCode() : 0 );
+        result = 31 * result + ( externalSource != null ? externalSource.hashCode() : 0 );
+        result = 31 * result + ( description != null ? description.hashCode() : 0 );
+        result = 31 * result + ( categories != null ? categories.hashCode() : 0 );
+        result = 31 * result + ( discussion != null ? discussion.hashCode() : 0 );
+        result = 31 * result + ( version != null ? version.hashCode() : 0 );
+        return result;
+    }
 }

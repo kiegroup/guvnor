@@ -108,4 +108,40 @@ public class CategoryItem {
 
         return parent + "/" + getName();
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        CategoryItem that = ( CategoryItem ) o;
+
+        if ( children != null ? !children.equals( that.children ) : that.children != null ) {
+            return false;
+        }
+        if ( description != null ? !description.equals( that.description ) : that.description != null ) {
+            return false;
+        }
+        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+            return false;
+        }
+        if ( parent != null ? !parent.equals( that.parent ) : that.parent != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = parent != null ? parent.hashCode() : 0;
+        result = 31 * result + ( children != null ? children.hashCode() : 0 );
+        result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = 31 * result + ( description != null ? description.hashCode() : 0 );
+        return result;
+    }
 }
