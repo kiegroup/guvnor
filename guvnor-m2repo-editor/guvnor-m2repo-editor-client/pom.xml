@@ -15,6 +15,12 @@
   <description>Guvnor - M2_REPO Client</description>
 
   <dependencies>
+    <!-- Transitive dependencies -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-m2repo-editor-api</artifactId>
@@ -45,7 +51,7 @@
       <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
