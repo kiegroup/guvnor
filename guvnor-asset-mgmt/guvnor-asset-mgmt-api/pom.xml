@@ -27,7 +27,7 @@
     <artifactId>guvnor-asset-mgmt-api</artifactId>
     <packaging>jar</packaging>
 
-    <name>Guvnor - Asset Managemenet API</name>
+    <name>Guvnor - Asset Management API</name>
 
   <dependencies>
     <dependency>
