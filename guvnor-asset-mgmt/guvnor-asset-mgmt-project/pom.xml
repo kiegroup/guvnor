@@ -7,7 +7,7 @@
   <!-- leads to dependency resolution issues when deploying on EWS. See https://bugzilla.redhat.com/show_bug.cgi?id=1168171 -->
   <groupId>org.guvnor</groupId>
   <artifactId>guvnor-asset-mgmt-project</artifactId>
-  <version>6.2.0-SNAPSHOT</version>
+  <version>6.2.0.CR3</version>
 
   <modelVersion>4.0.0</modelVersion>
 
