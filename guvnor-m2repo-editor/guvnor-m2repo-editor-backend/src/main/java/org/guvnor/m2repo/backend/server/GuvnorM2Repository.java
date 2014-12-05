@@ -336,6 +336,12 @@ public class GuvnorM2Repository {
                     DeploymentRepository remoteRepository = null;
                     if ( isSnapshot ) {
                         remoteRepository = distributionManagement.getSnapshotRepository();
+
+                        //Maven documentation states use of the regular repository if the SNAPSHOT repository is undefined
+                        //See https://maven.apache.org/pom.html#Repository and https://bugzilla.redhat.com/show_bug.cgi?id=1129573
+                        if ( remoteRepository == null ) {
+                            remoteRepository = distributionManagement.getRepository();
+                        }
                     } else {
                         remoteRepository = distributionManagement.getRepository();
                     }
