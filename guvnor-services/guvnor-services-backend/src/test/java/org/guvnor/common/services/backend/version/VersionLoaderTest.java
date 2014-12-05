@@ -16,13 +16,12 @@
 
 package org.guvnor.common.services.backend.version;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.guvnor.common.services.backend.MockIOService;
-import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.java.nio.IOException;
@@ -39,10 +38,9 @@ import static org.mockito.Mockito.*;
 
 public class VersionLoaderTest {
 
-    private MetadataServerSideService metadataService;
-    private MockIOService             ioService;
-    private Path                      pathToFile;
-    private Path                      pathToDotFile;
+    private MockIOService ioService;
+    private Path          pathToFile;
+    private Path          pathToDotFile;
     private ArrayList<VersionRecord> dotFileVersionRecords  = new ArrayList<VersionRecord>();
     private ArrayList<VersionRecord> mainFileVersionRecords = new ArrayList<VersionRecord>();
 
@@ -51,21 +49,15 @@ public class VersionLoaderTest {
 
         pathToFile = mock(Path.class);
         pathToDotFile = mock(Path.class);
+
+        when(pathToFile.resolveSibling(anyString())).thenReturn(pathToDotFile);
+
         ioService = new MockIOService() {
             @Override
             public <V extends FileAttributeView> V getFileAttributeView(org.uberfire.java.nio.file.Path path, Class<V> vClass) throws IllegalArgumentException {
                 return (V) new MockVersionAttributeView(path);
             }
         };
-        metadataService = mock(MetadataServerSideService.class);
-        when(metadataService.getMetadata(pathToFile))
-                .thenReturn(
-                        new Metadata() {
-                            @Override
-                            public List<VersionRecord> getVersion() {
-                                return dotFileVersionRecords;
-                            }
-                        });
 
         mainFileVersionRecords.add(makeVersionRecord("id1", new Date(1)));
         mainFileVersionRecords.add(makeVersionRecord("id3", new Date(3)));
@@ -80,9 +72,11 @@ public class VersionLoaderTest {
     @Test
     public void testSimple() throws Exception {
 
+        ioService.setExistingPaths(pathToFile, pathToDotFile);
+
         VersionLoader versionLoader = new VersionLoader(
                 ioService,
-                metadataService
+                new VersionUtil()
         );
 
         List<VersionRecord> versions = versionLoader.load(pathToFile);
@@ -93,6 +87,73 @@ public class VersionLoaderTest {
         assertEquals("id3", versions.get(2).id());
         assertEquals("id4", versions.get(3).id());
         assertEquals("id5", versions.get(4).id());
+
+    }
+
+    @Test
+    public void testNoDotFile() throws Exception {
+
+        ioService.setExistingPaths(pathToFile);
+
+        VersionLoader versionLoader = new VersionLoader(
+                ioService,
+                new VersionUtil()
+        );
+
+        List<VersionRecord> versions = versionLoader.load(pathToFile);
+
+        assertEquals(3, versions.size());
+        assertEquals("id1", versions.get(0).id());
+        assertEquals("id3", versions.get(1).id());
+        assertEquals("id4", versions.get(2).id());
+
+    }
+
+    @Test
+    public void testLoadRecord() throws Exception {
+
+        ioService.setExistingPaths(pathToFile);
+
+        VersionLoader versionLoader = new VersionLoader(
+                ioService,
+                new VersionUtil() {
+                    @Override Path getPath(Path path, String version) throws URISyntaxException {
+                        return path;
+                    }
+
+                    @Override String getVersion(Path path) {
+                        return "id3";
+                    }
+                }
+        );
+
+        VersionRecord record = versionLoader.loadRecord(pathToFile);
+
+        assertEquals(record.id(), "id3");
+
+    }
+
+    @Test
+    public void testLoadRecordMaster() throws Exception {
+
+        ioService.setExistingPaths(pathToFile);
+
+        VersionLoader versionLoader = new VersionLoader(
+                ioService,
+                new VersionUtil() {
+                    @Override Path getPath(Path path, String version) throws URISyntaxException {
+                        return path;
+                    }
+
+                    @Override String getVersion(Path path) {
+                        return "master";
+                    }
+                }
+        );
+
+        VersionRecord record = versionLoader.loadRecord(pathToFile);
+
+        assertEquals(record.id(), "id1");
 
     }
 
@@ -127,8 +188,15 @@ public class VersionLoaderTest {
     private class MockVersionAttributeView
             extends VersionAttributeView<org.uberfire.java.nio.file.Path> {
 
+        List<VersionRecord> records;
+
         public MockVersionAttributeView(org.uberfire.java.nio.file.Path path) {
             super(path);
+            if (pathToFile.equals(path)) {
+                records = mainFileVersionRecords;
+            } else {
+                records = dotFileVersionRecords;
+            }
         }
 
         @Override public VersionAttributes readAttributes() throws IOException {
@@ -136,7 +204,7 @@ public class VersionLoaderTest {
                 @Override public VersionHistory history() {
                     return new VersionHistory() {
                         @Override public List<VersionRecord> records() {
-                            return mainFileVersionRecords;
+                            return records;
                         }
                     };
                 }

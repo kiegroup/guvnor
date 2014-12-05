@@ -16,16 +16,14 @@
 
 package org.guvnor.common.services.backend.version;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.repositories.impl.PortableVersionRecord;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
@@ -34,27 +32,22 @@ import org.uberfire.java.nio.file.Path;
 
 public class VersionLoader {
 
-    private IOService ioService;
-
-    protected MetadataServerSideService metadataService;
+    private IOService   ioService;
+    private VersionUtil util;
 
     public VersionLoader() {
     }
 
     @Inject
     public VersionLoader(@Named("ioStrategy") IOService ioService,
-                         MetadataServerSideService metadataService) {
+                         VersionUtil util) {
         this.ioService = ioService;
-        this.metadataService = metadataService;
+        this.util = util;
     }
 
     public List<VersionRecord> load(Path path) {
 
-        final List<VersionRecord> records = ioService.getFileAttributeView(path,
-                                                                           VersionAttributeView.class).readAttributes().history().records();
-
-        List<VersionRecord> metadataVersionRecords = metadataService.getMetadata(path).getVersion();
-        records.addAll(metadataVersionRecords);
+        final List<VersionRecord> records = loadAllVersionRecords(path);
 
         final List<VersionRecord> result = new ArrayList<VersionRecord>();
 
@@ -76,6 +69,24 @@ public class VersionLoader {
         return result;
     }
 
+    private List<VersionRecord> loadAllVersionRecords(Path path) {
+        final List<VersionRecord> records = new ArrayList<VersionRecord>();
+
+        records.addAll(loadVersionRecords(path));
+        records.addAll(loadVersionRecords(util.getDotFilePath(path)));
+
+        return records;
+    }
+
+    public List<VersionRecord> loadVersionRecords(Path path) {
+        if (ioService.exists(path)) {
+            return ioService.getFileAttributeView(path,
+                                                  VersionAttributeView.class).readAttributes().history().records();
+        } else {
+            return Collections.EMPTY_LIST;
+        }
+    }
+
     private PortableVersionRecord makePortable(VersionRecord record) {
         return new PortableVersionRecord(record.id(),
                                          record.author(),
@@ -92,5 +103,20 @@ public class VersionLoader {
             }
         }
         return true;
+    }
+
+    public VersionRecord loadRecord(Path path) throws URISyntaxException {
+
+        for (VersionRecord record : loadVersionRecords(util.getPath(path, "master"))) {
+            String version = util.getVersion(path);
+            if ("master".equals(version)) {
+                // Return first record when looking for master
+                return record;
+            } else if (record.id().equals(version)) {
+                return record;
+            }
+        }
+
+        return null;
     }
 }

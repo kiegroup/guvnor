@@ -54,7 +54,9 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Service
 @ApplicationScoped
-public class MetadataServiceImpl implements MetadataService {
+public class MetadataServiceImpl
+        implements MetadataService,
+                   MetadataServerSideService{
 
     @Inject
     @Named("ioStrategy")
@@ -65,6 +67,7 @@ public class MetadataServiceImpl implements MetadataService {
         return getMetadata(Paths.convert( pathToResource ));
     }
 
+    @Override
     public Metadata getMetadata(org.uberfire.java.nio.file.Path path) {
 
         try {

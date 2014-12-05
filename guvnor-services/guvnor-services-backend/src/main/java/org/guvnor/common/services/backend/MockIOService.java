@@ -1,26 +1,49 @@
 package org.guvnor.common.services.backend;
 
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.channels.SeekableByteChannel;
-import org.uberfire.java.nio.file.*;
-import org.uberfire.java.nio.file.InterruptedException;
-import org.uberfire.java.nio.file.attribute.FileAttribute;
-import org.uberfire.java.nio.file.attribute.FileAttributeView;
-import org.uberfire.java.nio.file.attribute.FileTime;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.channels.SeekableByteChannel;
+import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
+import org.uberfire.java.nio.file.CopyOption;
+import org.uberfire.java.nio.file.DeleteOption;
+import org.uberfire.java.nio.file.DirectoryNotEmptyException;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystemNotFoundException;
+import org.uberfire.java.nio.file.InterruptedException;
+import org.uberfire.java.nio.file.NoSuchFileException;
+import org.uberfire.java.nio.file.NotDirectoryException;
+import org.uberfire.java.nio.file.OpenOption;
+import org.uberfire.java.nio.file.Option;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.ProviderNotFoundException;
+import org.uberfire.java.nio.file.attribute.FileAttribute;
+import org.uberfire.java.nio.file.attribute.FileAttributeView;
+import org.uberfire.java.nio.file.attribute.FileTime;
+
 public class MockIOService
         implements IOService {
+
+    private ArrayList<Path> paths = new ArrayList<Path>();
+
+    public void setExistingPaths(Path... paths) {
+        for (Path path : paths) {
+            this.paths.add(path);
+        }
+    }
 
     @Override
     public void dispose() {
@@ -229,7 +252,7 @@ public class MockIOService
 
     @Override
     public boolean exists(Path path) throws IllegalArgumentException, SecurityException {
-        return false;
+        return paths.contains(path);
     }
 
     @Override
