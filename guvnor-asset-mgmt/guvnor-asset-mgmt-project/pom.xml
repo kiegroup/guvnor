@@ -18,27 +18,40 @@
 
   <build>
 
-    <plugins>
-      <!-- Disable Zanata -->
-      <plugin>
-        <groupId>org.zanata</groupId>
-        <artifactId>zanata-maven-plugin</artifactId>
-        <version>2.3.0</version>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
+      <plugins>
+          <!-- Disable Zanata -->
+          <plugin>
+              <groupId>org.zanata</groupId>
+              <artifactId>zanata-maven-plugin</artifactId>
+              <version>2.3.0</version>
+              <configuration>
+                  <skip>true</skip>
+              </configuration>
+          </plugin>
+      </plugins>
 
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>src/main/filtered-resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
+      <resources>
+          <resource>
+              <directory>src/main/resources</directory>
+          </resource>
+          <resource>
+              <directory>src/main/filtered-resources</directory>
+              <filtering>true</filtering>
+          </resource>
+      </resources>
   </build>
+
+    <distributionManagement>
+        <repository>
+            <id>jboss-releases-repository</id>
+            <name>JBoss Releases Repository</name>
+            <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>jboss-snapshots-repository</id>
+            <name>JBoss Snapshot Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
