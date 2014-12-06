@@ -13,8 +13,45 @@
 
   <packaging>jar</packaging>
 
-  <name>Guvnor - Asset Management project</name>
-  <description>Guvnor - Asset management project (includes processes to manage business assets)</description>
+    <name>Guvnor - Asset Management project</name>
+    <description>Guvnor - Asset management project (includes processes to manage business assets)</description>
+    <url>http://guvnor.jboss.org</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <repositories>
+        <!-- Conventions are described in http://community.jboss.org/wiki/MavenGettingStarted-Developers -->
+        <repository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <scm>
+        <connection>scm:git:git@github.com:droolsjbpm/guvnor.git</connection>
+        <developerConnection>scm:git:git@github.com:droolsjbpm/guvnor.git</developerConnection>
+        <url>https://github.com/droolsjbpm/guvnor</url>
+    </scm>
+    <developers>
+        <developer>
+            <name>All developers are listed on the team website</name>
+            <url>https://developer.jboss.org/en/guvnor/people</url>
+        </developer>
+    </developers>
 
   <build>
 
