@@ -18,6 +18,7 @@ package org.guvnor.common.services.project.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.POM;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public interface POMEditorPanelView extends HasBusyIndicator,
@@ -38,6 +39,18 @@ public interface POMEditorPanelView extends HasBusyIndicator,
         void onDescriptionChange( String description );
 
         void onOpenProjectContext();
+
+        void disableGroupID( String reason );
+
+        void disableVersion( String reason );
+
+        POM getPom();
+
+        void setValidGroupID( boolean isValid );
+
+        void setValidArtifactID( boolean isValid );
+
+        void setValidVersion( boolean isValid );
 
     }
 
@@ -78,5 +91,11 @@ public interface POMEditorPanelView extends HasBusyIndicator,
     void enableGroupID();
 
     void enableVersion();
+
+    void setValidGroupID( boolean isValid );
+
+    void setValidArtifactID( boolean isValid );
+
+    void setValidVersion( boolean isValid );
 
 }
