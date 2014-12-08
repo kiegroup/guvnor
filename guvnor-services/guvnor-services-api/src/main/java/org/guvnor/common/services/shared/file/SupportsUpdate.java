@@ -18,7 +18,7 @@ package org.guvnor.common.services.shared.file;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 
-public interface SupportsUpdate<T> {
+public interface SupportsUpdate<T> extends org.uberfire.ext.editor.commons.service.support.SupportsUpdate<T, Metadata> {
 
     Path save( final Path path,
                final T content,

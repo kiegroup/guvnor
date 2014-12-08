@@ -23,7 +23,6 @@ import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryInfo;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.impl.PortableVersionRecord;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
@@ -34,6 +33,7 @@ import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.server.util.TextUtil;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.version.impl.PortableVersionRecord;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
@@ -332,13 +332,13 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public List<VersionRecord> getRepositoryHistory( String alias,
-                                                     int startIndex ) {
+    public List<VersionRecord> getRepositoryHistory( final String alias,
+                                                     final int startIndex ) {
         return getRepositoryHistory( alias, startIndex, startIndex + HISTORY_PAGE_SIZE );
     }
 
     @Override
-    public List<VersionRecord> getRepositoryHistoryAll( String alias ) {
+    public List<VersionRecord> getRepositoryHistoryAll( final String alias ) {
         return getRepositoryHistory( alias, 0, -1 );
     }
 
@@ -362,7 +362,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
         Collections.reverse( records );
 
-        List<VersionRecord> result = new ArrayList<VersionRecord>( endIndex - startIndex );
+        final List<VersionRecord> result = new ArrayList<VersionRecord>( endIndex - startIndex );
         for ( VersionRecord record : records.subList( startIndex, endIndex ) ) {
             result.add( new PortableVersionRecord( record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri() ) );
         }
