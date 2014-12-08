@@ -25,38 +25,6 @@ public interface CommonConstants
 
     public static final CommonConstants INSTANCE = GWT.create(CommonConstants.class);
 
-    String SavePopupTitle();
-
-    String CheckInComment();
-
-    String CheckInCommentColon();
-
-    String Save();
-
-    String Cancel();
-
-    String CopyPopupTitle();
-
-    String NewName();
-
-    String NewNameColon();
-
-    String CopyPopupCreateACopy();
-
-    String InvalidFileName0(String baseFileName);
-
-    String DeletePopupTitle();
-
-    String DeletePopupDelete();
-
-    String DeletePopupRenameNamePrompt();
-
-    String RenamePopupTitle();
-
-    String RenamePopupRenameItem();
-
-    String Restoring();
-
     String IndexClonedRepositoryWarning();
 
 }

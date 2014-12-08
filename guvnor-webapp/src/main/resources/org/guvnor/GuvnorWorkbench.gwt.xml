@@ -21,6 +21,9 @@
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
 
+  <!-- Uberfire Extensions - Common Editor -->
+  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
+
   <!-- Uberfire Extensions - Core Widgets -->
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
 

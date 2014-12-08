@@ -22,8 +22,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.client.type.POMResourceType;
 import org.guvnor.shared.editors.DefaultEditorService;
-import org.guvnor.structure.client.file.CommandWithCommitMessage;
-import org.guvnor.structure.client.file.SaveOperationService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -32,10 +30,12 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextResourceType;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -76,7 +76,7 @@ public class POMEditorScreenPresenter
                     @Override
                     public void execute() {
                         new SaveOperationService().save( path,
-                                                         new CommandWithCommitMessage() {
+                                                         new ParameterizedCommand<String>() {
                                                              @Override
                                                              public void execute( final String commitMessage ) {
                                                                  defaultEditorService.call( new RemoteCallback<Path>() {
