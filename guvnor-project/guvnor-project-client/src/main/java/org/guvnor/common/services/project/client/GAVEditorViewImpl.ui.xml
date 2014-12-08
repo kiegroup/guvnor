@@ -26,8 +26,8 @@
            type="org.guvnor.common.services.project.client.resources.ProjectResources"/>
 
   <gwt:HTMLPanel>
-    <bootstrap:Form type="INLINE">
-      <bootstrap:FluidRow>
+    <bootstrap:FluidRow>
+      <bootstrap:ControlGroup ui:field="groupIdGroup">
         <bootstrap:Column size="2">
           <bootstrap:ControlLabel for="groupIdTextBox">
             <ui:text from="{i18n.GroupID}"/>
@@ -36,6 +36,7 @@
         <bootstrap:Column size="4">
           <bootstrap:Controls>
             <bootstrap:TextBox ui:field="groupIdTextBox" placeholder="{i18n.EnterAGroupID}"/>
+            <bootstrap:HelpInline ui:field="groupIdHelpInline"/>
           </bootstrap:Controls>
         </bootstrap:Column>
         <bootstrap:Column size="6">
@@ -44,9 +45,11 @@
             <bootstrap:Icon ui:field="gavHelpIcon" type="QUESTION_SIGN"></bootstrap:Icon>
           </bootstrap:Popover>
         </bootstrap:Column>
-      </bootstrap:FluidRow>
+      </bootstrap:ControlGroup>
+    </bootstrap:FluidRow>
 
-      <bootstrap:FluidRow>
+    <bootstrap:FluidRow>
+      <bootstrap:ControlGroup ui:field="artifactIdGroup">
         <bootstrap:Column size="2">
           <bootstrap:ControlLabel for="artifactIdTextBox">
             <ui:text from="{i18n.ArtifactID}"/>
@@ -55,6 +58,7 @@
         <bootstrap:Column size="4">
           <bootstrap:Controls>
             <bootstrap:TextBox ui:field="artifactIdTextBox" placeholder="{i18n.EnterAnArtifactID}"/>
+            <bootstrap:HelpInline ui:field="artifactIdHelpInline"/>
           </bootstrap:Controls>
         </bootstrap:Column>
         <bootstrap:Column size="6">
@@ -63,9 +67,11 @@
             <bootstrap:Icon ui:field="gavHelpIcon2" type="QUESTION_SIGN"></bootstrap:Icon>
           </bootstrap:Popover>
         </bootstrap:Column>
-      </bootstrap:FluidRow>
+      </bootstrap:ControlGroup>
+    </bootstrap:FluidRow>
 
-      <bootstrap:FluidRow>
+    <bootstrap:FluidRow>
+      <bootstrap:ControlGroup ui:field="versionGroup">
         <bootstrap:Column size="2">
           <bootstrap:ControlLabel for="versionTextBox">
             <ui:text from="{i18n.Version}"/>
@@ -74,6 +80,7 @@
         <bootstrap:Column size="4">
           <bootstrap:Controls>
             <bootstrap:TextBox ui:field="versionTextBox" placeholder="{i18n.EnterAVersion}"/>
+            <bootstrap:HelpInline ui:field="versionHelpInline"/>
           </bootstrap:Controls>
         </bootstrap:Column>
         <bootstrap:Column size="6">
@@ -82,7 +89,8 @@
             <bootstrap:Icon ui:field="gavHelpIcon3" type="QUESTION_SIGN"></bootstrap:Icon>
           </bootstrap:Popover>
         </bootstrap:Column>
-      </bootstrap:FluidRow>
-    </bootstrap:Form>
+      </bootstrap:ControlGroup>
+    </bootstrap:FluidRow>
   </gwt:HTMLPanel>
+
 </ui:UiBinder>

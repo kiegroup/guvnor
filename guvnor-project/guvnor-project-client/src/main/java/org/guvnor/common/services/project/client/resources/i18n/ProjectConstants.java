@@ -23,7 +23,7 @@ public interface ProjectConstants
 
     String ProjectModel();
 
-    String SaveSuccessful(String fileName);
+    String SaveSuccessful( String fileName );
 
     String GroupID();
 
@@ -64,5 +64,11 @@ public interface ProjectConstants
     String GroupArtifactVersion();
 
     String ParentsGroupArtifactVersion();
+
+    String invalidGroupId();
+
+    String invalidArtifactId();
+
+    String invalidVersion();
 
 }

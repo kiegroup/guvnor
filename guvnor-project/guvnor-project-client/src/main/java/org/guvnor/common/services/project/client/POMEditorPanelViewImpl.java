@@ -187,6 +187,21 @@ public class POMEditorPanelViewImpl
         BusyPopup.close();
     }
 
+    @Override
+    public void setValidGroupID( final boolean isValid ) {
+        gavEditor.setValidGroupID( isValid );
+    }
+
+    @Override
+    public void setValidArtifactID( final boolean isValid ) {
+        gavEditor.setValidArtifactID( isValid );
+    }
+
+    @Override
+    public void setValidVersion( final boolean isValid ) {
+        gavEditor.setValidVersion( isValid );
+    }
+
     @UiHandler("pomNameTextBox")
     //Use KeyUpEvent as ValueChangeEvent is only fired when the focus is lost
     public void onNameChange( KeyUpEvent event ) {

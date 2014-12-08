@@ -16,19 +16,19 @@
 
 package org.guvnor.common.services.project.client;
 
+import java.util.ArrayList;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.POM;
 import org.uberfire.client.mvp.PlaceManager;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.ArrayList;
-
 @Dependent
 public class POMEditorPanel
         implements POMEditorPanelView.Presenter,
-        IsWidget {
+                   IsWidget {
 
     private ArrayList<NameChangeHandler> nameChangeHandlers = new ArrayList<NameChangeHandler>();
     private POMEditorPanelView view;
@@ -39,87 +39,87 @@ public class POMEditorPanel
     }
 
     @Inject
-    public POMEditorPanel(final POMEditorPanelView view,
-                          final PlaceManager placeManager) {
+    public POMEditorPanel( final POMEditorPanelView view,
+                           final PlaceManager placeManager ) {
         this.view = view;
         this.placeManager = placeManager;
-        view.setPresenter(this);
+        view.setPresenter( this );
     }
 
-    public void setPOM(POM model,
-                       boolean isReadOnly) {
-        if (isReadOnly) {
+    public void setPOM( POM model,
+                        boolean isReadOnly ) {
+        if ( isReadOnly ) {
             view.setReadOnly();
         }
 
         this.model = model;
 
-        view.setName(model.getName());
-        view.setDescription(model.getDescription());
-        if (model.hasParent()) {
-            view.setParentGAV(model.getParent());
+        view.setName( model.getName() );
+        view.setDescription( model.getDescription() );
+        if ( model.hasParent() ) {
+            view.setParentGAV( model.getParent() );
             view.showParentGAV();
-            view.disableGroupID("");
-            view.disableVersion("");
+            view.disableGroupID( "" );
+            view.disableVersion( "" );
         } else {
             view.hideParentGAV();
             view.enableGroupID();
             view.enableVersion();
         }
-        view.setGAV(model.getGav());
-        view.addArtifactIdChangeHandler(new ArtifactIdChangeHandler() {
+        view.setGAV( model.getGav() );
+        view.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
             @Override
-            public void onChange(String newArtifactId) {
-                setTitle(newArtifactId);
+            public void onChange( String newArtifactId ) {
+                setTitle( newArtifactId );
             }
-        });
-        setTitle(model.getGav().getArtifactId());
+        } );
+        setTitle( model.getGav().getArtifactId() );
     }
 
-    private void setTitle(final String titleText) {
-        if (titleText == null || titleText.isEmpty()) {
+    private void setTitle( final String titleText ) {
+        if ( titleText == null || titleText.isEmpty() ) {
             view.setProjectModelTitleText();
         } else {
-            view.setTitleText(titleText);
+            view.setTitleText( titleText );
         }
     }
 
     @Override
-    public void addNameChangeHandler(NameChangeHandler changeHandler) {
-        nameChangeHandlers.add(changeHandler);
+    public void addNameChangeHandler( NameChangeHandler changeHandler ) {
+        nameChangeHandlers.add( changeHandler );
     }
 
     @Override
-    public void addGroupIdChangeHandler(GroupIdChangeHandler changeHandler) {
-        this.view.addGroupIdChangeHandler(changeHandler);
+    public void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler ) {
+        this.view.addGroupIdChangeHandler( changeHandler );
     }
 
     @Override
-    public void addArtifactIdChangeHandler(ArtifactIdChangeHandler changeHandler) {
-        this.view.addArtifactIdChangeHandler(changeHandler);
+    public void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler ) {
+        this.view.addArtifactIdChangeHandler( changeHandler );
     }
 
     @Override
-    public void addVersionChangeHandler(VersionChangeHandler changeHandler) {
-        this.view.addVersionChangeHandler(changeHandler);
+    public void addVersionChangeHandler( VersionChangeHandler changeHandler ) {
+        this.view.addVersionChangeHandler( changeHandler );
     }
 
     @Override
-    public void onNameChange(String name) {
-        this.model.setName(name);
-        for (NameChangeHandler changeHandler : nameChangeHandlers) {
-            changeHandler.onChange(name);
+    public void onNameChange( String name ) {
+        this.model.setName( name );
+        for ( NameChangeHandler changeHandler : nameChangeHandlers ) {
+            changeHandler.onChange( name );
         }
     }
 
     @Override
-    public void onDescriptionChange(String description) {
-        this.model.setDescription(description);
+    public void onDescriptionChange( String description ) {
+        this.model.setDescription( description );
     }
 
     @Override
     public void onOpenProjectContext() {
-        placeManager.goTo("repositoryStructureScreen");
+        placeManager.goTo( "repositoryStructureScreen" );
     }
 
     @Override
@@ -127,15 +127,34 @@ public class POMEditorPanel
         return view.asWidget();
     }
 
-    public void disableGroupID(String reason) {
-        view.disableGroupID(reason);
+    @Override
+    public void disableGroupID( String reason ) {
+        view.disableGroupID( reason );
     }
 
-    public void disableVersion(String reason) {
-        view.disableVersion(reason);
+    @Override
+    public void disableVersion( String reason ) {
+        view.disableVersion( reason );
     }
 
+    @Override
     public POM getPom() {
         return model;
     }
+
+    @Override
+    public void setValidGroupID( final boolean isValid ) {
+        view.setValidGroupID( isValid );
+    }
+
+    @Override
+    public void setValidArtifactID( final boolean isValid ) {
+        view.setValidArtifactID( isValid );
+    }
+
+    @Override
+    public void setValidVersion( final boolean isValid ) {
+        view.setValidVersion( isValid );
+    }
+
 }

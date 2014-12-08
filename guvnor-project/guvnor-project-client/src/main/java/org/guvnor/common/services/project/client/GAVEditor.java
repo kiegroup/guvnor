@@ -23,6 +23,7 @@ public class GAVEditor
         view.setPresenter( this );
     }
 
+    @Override
     public void setGAV( GAV gav ) {
         this.gav = gav;
         view.setGroupId( gav.getGroupId() );
@@ -54,14 +55,17 @@ public class GAVEditor
         }
     }
 
+    @Override
     public void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler ) {
         groupIdChangeHandlers.add( changeHandler );
     }
 
+    @Override
     public void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler ) {
         artifactIdChangeHandlers.add( changeHandler );
     }
 
+    @Override
     public void addVersionChangeHandler( VersionChangeHandler changeHandler ) {
         versionChangeHandlers.add( changeHandler );
     }
@@ -71,27 +75,49 @@ public class GAVEditor
         return view.asWidget();
     }
 
+    @Override
     public void setReadOnly() {
         view.setReadOnly();
     }
 
-    public void disableGroupID(String reason) {
-        view.disableGroupID(reason);
+    @Override
+    public void disableGroupID( String reason ) {
+        view.disableGroupID( reason );
     }
 
-    public void disableVersion(String reason) {
-        view.disableVersion(reason);
+    @Override
+    public void disableVersion( String reason ) {
+        view.disableVersion( reason );
     }
 
-    public void disableArtifactID(String reason) {
-        view.disableArtifactID(reason);
+    @Override
+    public void disableArtifactID( String reason ) {
+        view.disableArtifactID( reason );
     }
 
+    @Override
     public void enableGroupID() {
         view.enableGroupID();
     }
 
+    @Override
     public void enableVersion() {
         view.enableVersion();
     }
+
+    @Override
+    public void setValidGroupID( final boolean isValid ) {
+        view.setValidGroupID( isValid );
+    }
+
+    @Override
+    public void setValidArtifactID( final boolean isValid ) {
+        view.setValidArtifactID( isValid );
+    }
+
+    @Override
+    public void setValidVersion( final boolean isValid ) {
+        view.setValidVersion( isValid );
+    }
+
 }
