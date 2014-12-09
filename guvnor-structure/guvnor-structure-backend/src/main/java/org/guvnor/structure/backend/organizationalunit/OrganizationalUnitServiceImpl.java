@@ -28,6 +28,7 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.rpc.SessionInfo;
 
 @Service
 @ApplicationScoped
@@ -55,6 +56,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     private Event<RepoRemovedFromOrganizationalUnitEvent> repoRemovedFromOrgUnitEvent;
 
     private Map<String, OrganizationalUnit> registeredOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
+
+    private
+    @Inject SessionInfo sessionInfo;
 
     @PostConstruct
     public void loadOrganizationalUnits() {
@@ -96,7 +100,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         registeredOrganizationalUnits.put( newOrganizationalUnit.getName(),
                                            newOrganizationalUnit );
 
-        newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit ) );
+        newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit, sessionInfo ) );
 
         return newOrganizationalUnit;
     }
@@ -120,7 +124,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         registeredOrganizationalUnits.put( newOrganizationalUnit.getName(),
                                            newOrganizationalUnit );
 
-        newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit ) );
+        newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit, sessionInfo ) );
 
         return newOrganizationalUnit;
     }
