@@ -67,7 +67,7 @@ public class PathResolver {
         return path.resolveSibling(util.getFileName(path).substring(1));
     }
 
-    private boolean isDotFile(Path path) {
+    public boolean isDotFile(Path path) {
         return util.getFileName(path).startsWith(".");
     }
 

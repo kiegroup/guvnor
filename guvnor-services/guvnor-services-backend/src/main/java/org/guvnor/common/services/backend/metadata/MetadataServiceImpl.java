@@ -46,6 +46,7 @@ import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.BasicFileAttributesUtil;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
@@ -56,15 +57,21 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 @ApplicationScoped
 public class MetadataServiceImpl
         implements MetadataService,
-                   MetadataServerSideService{
+                   MetadataServerSideService {
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
     @Override
-    public Metadata getMetadata( final Path pathToResource ) {
-        return getMetadata(Paths.convert( pathToResource ));
+    public Metadata getMetadata(final Path pathToResource) {
+        return getMetadata(Paths.convert(pathToResource));
+    }
+
+    @Override
+    public Metadata getMetadataDirectPath(org.uberfire.java.nio.file.Path path) {
+        OtherMetaView fileAttributeView = Files.getFileAttributeView(path, OtherMetaView.class);
+        return new Metadata();
     }
 
     @Override
@@ -72,50 +79,50 @@ public class MetadataServiceImpl
 
         try {
 
-            final DublinCoreView dcoreView = ioService.getFileAttributeView( path, DublinCoreView.class );
-            final DiscussionView discussView = ioService.getFileAttributeView( path, DiscussionView.class );
-            final OtherMetaView otherMetaView = ioService.getFileAttributeView( path, OtherMetaView.class );
-            final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path, VersionAttributeView.class );
+            final DublinCoreView dcoreView = ioService.getFileAttributeView(path, DublinCoreView.class);
+            final DiscussionView discussView = ioService.getFileAttributeView(path, DiscussionView.class);
+            final OtherMetaView otherMetaView = ioService.getFileAttributeView(path, OtherMetaView.class);
+            final VersionAttributeView versionAttributeView = ioService.getFileAttributeView(path, VersionAttributeView.class);
 
             return MetadataBuilder.newMetadata()
-                    .withPath( Paths.convert( path.toRealPath() ) )
-                    .withCheckinComment( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).comment() : null )
-                    .withLastContributor( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).author() : null )
-                    .withCreator( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( 0 ).author() : null )
-                    .withLastModified( new Date( versionAttributeView.readAttributes().lastModifiedTime().toMillis() ) )
-                    .withDateCreated( new Date( versionAttributeView.readAttributes().creationTime().toMillis() ) )
-                    .withSubject( dcoreView.readAttributes().subjects().size() > 0 ? dcoreView.readAttributes().subjects().get( 0 ) : null )
-                    .withType( dcoreView.readAttributes().types().size() > 0 ? dcoreView.readAttributes().types().get( 0 ) : null )
-                    .withExternalRelation( dcoreView.readAttributes().relations().size() > 0 ? dcoreView.readAttributes().relations().get( 0 ) : null )
-                    .withExternalSource( dcoreView.readAttributes().sources().size() > 0 ? dcoreView.readAttributes().sources().get( 0 ) : null )
-                    .withDescription( dcoreView.readAttributes().descriptions().size() > 0 ? dcoreView.readAttributes().descriptions().get( 0 ) : null )
-                    .withCategories( otherMetaView.readAttributes().categories() )
-                    .withDiscussion( discussView.readAttributes().discussion() )
-                    .withVersion( new ArrayList<VersionRecord>( versionAttributeView.readAttributes().history().records().size() ) {{
-                        for ( final VersionRecord record : versionAttributeView.readAttributes().history().records() ) {
-                            add( new PortableVersionRecord( record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri() ) );
-                        }
-                    }} )
-                    .build();
+                                  .withPath(Paths.convert(path.toRealPath()))
+                                  .withCheckinComment(versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get(versionAttributeView.readAttributes().history().records().size() - 1).comment() : null)
+                                  .withLastContributor(versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get(versionAttributeView.readAttributes().history().records().size() - 1).author() : null)
+                                  .withCreator(versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get(0).author() : null)
+                                  .withLastModified(new Date(versionAttributeView.readAttributes().lastModifiedTime().toMillis()))
+                                  .withDateCreated(new Date(versionAttributeView.readAttributes().creationTime().toMillis()))
+                                  .withSubject(dcoreView.readAttributes().subjects().size() > 0 ? dcoreView.readAttributes().subjects().get(0) : null)
+                                  .withType(dcoreView.readAttributes().types().size() > 0 ? dcoreView.readAttributes().types().get(0) : null)
+                                  .withExternalRelation(dcoreView.readAttributes().relations().size() > 0 ? dcoreView.readAttributes().relations().get(0) : null)
+                                  .withExternalSource(dcoreView.readAttributes().sources().size() > 0 ? dcoreView.readAttributes().sources().get(0) : null)
+                                  .withDescription(dcoreView.readAttributes().descriptions().size() > 0 ? dcoreView.readAttributes().descriptions().get(0) : null)
+                                  .withCategories(otherMetaView.readAttributes().categories())
+                                  .withDiscussion(discussView.readAttributes().discussion())
+                                  .withVersion(new ArrayList<VersionRecord>(versionAttributeView.readAttributes().history().records().size()) {{
+                                      for (final VersionRecord record : versionAttributeView.readAttributes().history().records()) {
+                                          add(new PortableVersionRecord(record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri()));
+                                      }
+                                  }})
+                                  .build();
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Map<String, Object> configAttrs( final Map<String, Object> _attrs,
-                                            final Metadata metadata ) {
+    public Map<String, Object> configAttrs(final Map<String, Object> _attrs,
+                                           final Metadata metadata) {
         try {
-            checkNotNull( "_attrs", _attrs );
-            checkNotNull( "metadata", metadata );
+            checkNotNull("_attrs", _attrs);
+            checkNotNull("metadata", metadata);
 
-            Map<String, Object> attrs = BasicFileAttributesUtil.cleanup( _attrs );
-            attrs = DublinCoreAttributesUtil.cleanup( attrs );
-            attrs = DiscussionAttributesUtil.cleanup( attrs );
-            attrs = OtherMetaAttributesUtil.cleanup( attrs );
+            Map<String, Object> attrs = BasicFileAttributesUtil.cleanup(_attrs);
+            attrs = DublinCoreAttributesUtil.cleanup(attrs);
+            attrs = DiscussionAttributesUtil.cleanup(attrs);
+            attrs = OtherMetaAttributesUtil.cleanup(attrs);
 
-            attrs.putAll( DiscussionAttributesUtil.toMap(
+            attrs.putAll(DiscussionAttributesUtil.toMap(
                     new DiscussionAttributes() {
                         @Override
                         public List<DiscussionRecord> discussion() {
@@ -166,9 +173,9 @@ public class MetadataServiceImpl
                         public Object fileKey() {
                             return null;
                         }
-                    }, "*" ) );
+                    }, "*"));
 
-            attrs.putAll( OtherMetaAttributesUtil.toMap(
+            attrs.putAll(OtherMetaAttributesUtil.toMap(
                     new OtherMetaAttributes() {
                         @Override
                         public List<String> categories() {
@@ -219,9 +226,9 @@ public class MetadataServiceImpl
                         public Object fileKey() {
                             return null;
                         }
-                    }, "*" ) );
+                    }, "*"));
 
-            attrs.putAll( DublinCoreAttributesUtil.toMap(
+            attrs.putAll(DublinCoreAttributesUtil.toMap(
                     new DublinCoreAttributes() {
 
                         @Override
@@ -236,15 +243,15 @@ public class MetadataServiceImpl
 
                         @Override
                         public List<String> subjects() {
-                            return new ArrayList<String>( 1 ) {{
-                                add( metadata.getSubject() );
+                            return new ArrayList<String>(1) {{
+                                add(metadata.getSubject());
                             }};
                         }
 
                         @Override
                         public List<String> descriptions() {
-                            return new ArrayList<String>( 1 ) {{
-                                add( metadata.getDescription() );
+                            return new ArrayList<String>(1) {{
+                                add(metadata.getDescription());
                             }};
                         }
 
@@ -260,8 +267,8 @@ public class MetadataServiceImpl
 
                         @Override
                         public List<String> types() {
-                            return new ArrayList<String>( 1 ) {{
-                                add( metadata.getType() );
+                            return new ArrayList<String>(1) {{
+                                add(metadata.getType());
                             }};
                         }
 
@@ -277,8 +284,8 @@ public class MetadataServiceImpl
 
                         @Override
                         public List<String> sources() {
-                            return new ArrayList<String>( 1 ) {{
-                                add( metadata.getExternalSource() );
+                            return new ArrayList<String>(1) {{
+                                add(metadata.getExternalSource());
                             }};
                         }
 
@@ -289,8 +296,8 @@ public class MetadataServiceImpl
 
                         @Override
                         public List<String> relations() {
-                            return new ArrayList<String>( 1 ) {{
-                                add( metadata.getExternalRelation() );
+                            return new ArrayList<String>(1) {{
+                                add(metadata.getExternalRelation());
                             }};
                         }
 
@@ -348,32 +355,32 @@ public class MetadataServiceImpl
                         public Object fileKey() {
                             return null;
                         }
-                    }, "*" ) );
+                    }, "*"));
 
             return attrs;
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Map<String, Object> setUpAttributes( final Path path,
-                                                final Metadata metadata ) {
+    public Map<String, Object> setUpAttributes(final Path path,
+                                               final Metadata metadata) {
         try {
             Map<String, Object> attributes;
             try {
-                attributes = ioService.readAttributes( Paths.convert( path ) );
-            } catch ( final NoSuchFileException ex ) {
+                attributes = ioService.readAttributes(Paths.convert(path));
+            } catch (final NoSuchFileException ex) {
                 attributes = new HashMap<String, Object>();
             }
-            if ( metadata != null ) {
-                attributes = configAttrs( attributes, metadata );
+            if (metadata != null) {
+                attributes = configAttrs(attributes, metadata);
             }
 
-            return BasicFileAttributesUtil.cleanup( attributes );
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return BasicFileAttributesUtil.cleanup(attributes);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 

@@ -18,7 +18,6 @@ package org.guvnor.common.services.shared.metadata;
 
 import java.util.Map;
 
-import com.google.common.annotations.GwtIncompatible;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
@@ -36,5 +35,6 @@ public interface MetadataService {
 
     Map<String, Object> setUpAttributes( Path path,
                                          Metadata metadata );
+
 
 }
