@@ -10,5 +10,6 @@
   <source path='navigator'/>
   <source path='organizationalunit'/>
   <source path='repositories'/>
+  <source path='social' />
 
 </module>
