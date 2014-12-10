@@ -2,27 +2,19 @@ package org.guvnor.structure.organizationalunit;
 
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.rpc.SessionInfo;
 
 @Portable
-public class RepoAddedToOrganizationaUnitEvent {
+public class RepoAddedToOrganizationaUnitEvent extends OrganizationalUnitEventBase {
 
-    private OrganizationalUnit organizationalUnit;
     private Repository repository;
 
     public RepoAddedToOrganizationaUnitEvent() {
     }
 
-    public RepoAddedToOrganizationaUnitEvent(final OrganizationalUnit organizationalUnit, final Repository repository) {
-        this.organizationalUnit = organizationalUnit;
+    public RepoAddedToOrganizationaUnitEvent(final OrganizationalUnit organizationalUnit, final Repository repository, final SessionInfo sessionInfo ) {
+        super( organizationalUnit, sessionInfo );
         this.repository = repository;
-    }
-
-    public OrganizationalUnit getOrganizationalUnit() {
-        return organizationalUnit;
-    }
-
-    public void setOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
-        this.organizationalUnit = organizationalUnit;
     }
 
     public Repository getRepository() {
