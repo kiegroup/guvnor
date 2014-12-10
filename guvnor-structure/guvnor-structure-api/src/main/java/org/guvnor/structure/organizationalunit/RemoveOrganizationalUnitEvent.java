@@ -1,25 +1,16 @@
 package org.guvnor.structure.organizationalunit;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.rpc.SessionInfo;
 
 @Portable
-public class RemoveOrganizationalUnitEvent {
-
-    private OrganizationalUnit organizationalUnit;
+public class RemoveOrganizationalUnitEvent extends OrganizationalUnitEventBase {
 
     public RemoveOrganizationalUnitEvent() {
     }
 
-    public RemoveOrganizationalUnitEvent( final OrganizationalUnit organizationalUnit ) {
-        this.organizationalUnit = organizationalUnit;
-    }
-
-    public OrganizationalUnit getOrganizationalUnit() {
-        return organizationalUnit;
-    }
-
-    public void setOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
-        this.organizationalUnit = organizationalUnit;
+    public RemoveOrganizationalUnitEvent( final OrganizationalUnit organizationalUnit, final SessionInfo sessionInfo ) {
+        super( organizationalUnit, sessionInfo );
     }
 
 }

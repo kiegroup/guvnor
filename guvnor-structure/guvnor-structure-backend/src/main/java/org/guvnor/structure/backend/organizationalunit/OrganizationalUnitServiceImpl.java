@@ -19,6 +19,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationaUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
+import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -54,6 +55,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @Inject
     private Event<RepoRemovedFromOrganizationalUnitEvent> repoRemovedFromOrgUnitEvent;
+
+    @Inject
+    private Event<UpdatedOrganizationalUnitEvent> updatedOrganizationalUnitEvent;
 
     private Map<String, OrganizationalUnit> registeredOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
 
@@ -150,6 +154,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
             registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
                                                updatedOrganizationalUnit );
+
+            updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, sessionInfo ) );
+
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + name + " not found" );
         }
@@ -171,7 +178,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
                                                updatedOrganizationalUnit );
 
-            repoAddedToOrgUnitEvent.fire(new RepoAddedToOrganizationaUnitEvent(organizationalUnit, repository));
+            repoAddedToOrgUnitEvent.fire(new RepoAddedToOrganizationaUnitEvent(organizationalUnit, repository, sessionInfo ));
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
         }
@@ -193,7 +200,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
                                                updatedOrganizationalUnit );
 
-            repoRemovedFromOrgUnitEvent.fire(new RepoRemovedFromOrganizationalUnitEvent(organizationalUnit, repository));
+            repoRemovedFromOrgUnitEvent.fire(new RepoRemovedFromOrganizationalUnitEvent(organizationalUnit, repository, sessionInfo ));
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
         }
@@ -214,6 +221,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
             registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
                                                updatedOrganizationalUnit );
+
+            updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, sessionInfo ) );
+
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
         }
@@ -234,6 +244,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
             registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
                                                updatedOrganizationalUnit );
+
+            updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, sessionInfo ) );
+
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
         }
@@ -258,7 +271,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         if ( thisGroupConfig != null ) {
             configurationService.removeConfiguration( thisGroupConfig );
             final OrganizationalUnit ou = registeredOrganizationalUnits.remove( groupName );
-            removeOrganizationalUnitEvent.fire( new RemoveOrganizationalUnitEvent( ou ) );
+            removeOrganizationalUnitEvent.fire( new RemoveOrganizationalUnitEvent( ou, sessionInfo ) );
         }
 
     }

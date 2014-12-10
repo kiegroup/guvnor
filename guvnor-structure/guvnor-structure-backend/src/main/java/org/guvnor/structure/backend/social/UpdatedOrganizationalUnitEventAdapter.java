@@ -19,10 +19,9 @@ package org.guvnor.structure.backend.social;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
+import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
@@ -30,21 +29,20 @@ import org.kie.uberfire.social.activities.repository.SocialUserRepository;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
-@ApplicationScoped
-public class NewOrganizationalUnitEventAdapter
-        implements SocialAdapter<NewOrganizationalUnitEvent> {
+public class UpdatedOrganizationalUnitEventAdapter
+        implements SocialAdapter<UpdatedOrganizationalUnitEvent> {
 
     @Inject
     private SocialUserRepository socialUserRepository;
 
     @Override
-    public Class<NewOrganizationalUnitEvent> eventToIntercept() {
-        return NewOrganizationalUnitEvent.class;
+    public Class<UpdatedOrganizationalUnitEvent> eventToIntercept() {
+        return UpdatedOrganizationalUnitEvent.class;
     }
 
     @Override
     public SocialEventType socialEventType() {
-        return OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT;
+        return OrganizationalUnitEventType.ORGANIZATIONAL_UNIT_UPDATED;
     }
 
     @Override
@@ -54,17 +52,17 @@ public class NewOrganizationalUnitEventAdapter
 
     @Override
     public SocialActivitiesEvent toSocial( Object object ) {
-        NewOrganizationalUnitEvent event = ( NewOrganizationalUnitEvent ) object;
+        UpdatedOrganizationalUnitEvent event = ( UpdatedOrganizationalUnitEvent ) object;
 
         return new SocialActivitiesEvent(
                 socialUserRepository.findSocialUser( event.getSessionInfo().getIdentity().getIdentifier() ),
                 socialEventType().name(),
                 new Date()
         )
-        .withDescription( event.getOrganizationalUnit().getName() )
-        .withLink( event.getOrganizationalUnit().getName(), event.getOrganizationalUnit().getName(), SocialActivitiesEvent.LINK_TYPE.CUSTOM )
-        .withAdicionalInfo( getAdditionalInfo( event ) )
-        .withParam( "ouName", event.getOrganizationalUnit().getName() );
+                .withDescription( event.getOrganizationalUnit().getName() )
+                .withLink( event.getOrganizationalUnit().getName(), event.getOrganizationalUnit().getName(), SocialActivitiesEvent.LINK_TYPE.CUSTOM )
+                .withAdicionalInfo( getAdditionalInfo( event ) )
+                .withParam( "ouName", event.getOrganizationalUnit().getName() );
     }
 
     @Override
@@ -77,7 +75,7 @@ public class NewOrganizationalUnitEventAdapter
         return new ArrayList<String>();
     }
 
-    private String getAdditionalInfo( NewOrganizationalUnitEvent event ) {
-        return "added";
+    private String getAdditionalInfo( UpdatedOrganizationalUnitEvent event ) {
+        return "updated";
     }
 }
