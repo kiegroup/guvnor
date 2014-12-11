@@ -36,4 +36,6 @@ public interface OrganizationalUnitService {
 
     void removeOrganizationalUnit( final String name );
 
+    OrganizationalUnit getParentOrganizationalUnit( final Repository repository );
+
 }
