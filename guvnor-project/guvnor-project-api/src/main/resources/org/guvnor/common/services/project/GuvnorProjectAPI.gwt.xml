@@ -31,5 +31,6 @@
   <source path='events'/>
   <source path='model'/>
   <source path='service'/>
+  <source path='social' />
 
 </module>

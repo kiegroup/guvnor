@@ -276,6 +276,17 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     }
 
+    @Override
+    public OrganizationalUnit getParentOrganizationalUnit( final Repository repository ) {
+        for ( OrganizationalUnit organizationalUnit : registeredOrganizationalUnits.values() ) {
+            if ( organizationalUnit.getRepositories() != null &&
+                    organizationalUnit.getRepositories().contains( repository ) ) {
+                return organizationalUnit;
+            }
+        }
+        return null;
+    }
+
     public void updateRegisteredOU( @Observes @OrgUnit SystemRepositoryChangedEvent changedEvent ) {
         registeredOrganizationalUnits.clear();
         loadOrganizationalUnits();

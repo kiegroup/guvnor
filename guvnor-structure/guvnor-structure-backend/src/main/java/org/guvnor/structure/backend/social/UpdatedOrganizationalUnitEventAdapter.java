@@ -19,6 +19,7 @@ package org.guvnor.structure.backend.social;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
@@ -29,6 +30,7 @@ import org.kie.uberfire.social.activities.repository.SocialUserRepository;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
+@ApplicationScoped
 public class UpdatedOrganizationalUnitEventAdapter
         implements SocialAdapter<UpdatedOrganizationalUnitEvent> {
 
