@@ -1,9 +1,7 @@
 package org.guvnor.asset.management.client.editors.repository.wizard;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
-@Portable
 public class CreateRepositoryWizardModel {
 
     private boolean manged;
