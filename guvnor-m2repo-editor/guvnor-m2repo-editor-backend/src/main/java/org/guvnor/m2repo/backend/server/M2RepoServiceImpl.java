@@ -99,9 +99,8 @@ public class M2RepoServiceImpl implements M2RepoService,
             if ( i >= pageRequest.getStartRowIndex() ) {
                 JarListPageRow jarListPageRow = new JarListPageRow();
                 jarListPageRow.setName( file.getName() );
-                //stripe the prefix of "repository"
-                final String jarPath = file.getPath().substring( GuvnorM2Repository.M2_REPO_DIR.length() + 1 );
-                jarListPageRow.setPath( jarPath );
+                jarListPageRow.setPath( getJarPath( file.getPath(),
+                                                    File.separator ) );
                 jarListPageRow.setLastModified( new Date( file.lastModified() ) );
                 tradeRatePageRowList.add( jarListPageRow );
             }
@@ -115,6 +114,18 @@ public class M2RepoServiceImpl implements M2RepoService,
         //response.setLastPage(true);
 
         return response;
+    }
+
+    // The file separator is provided as a parameter so that we can test for correct JAR path creation on both
+    // Windows and Linux based Operating Systems in Unit tests running on either platform. See JarPathTest.
+    String getJarPath( final String path,
+                       final String separator ) {
+        //Strip "Repository" prefix
+        String jarPath = path.substring( GuvnorM2Repository.M2_REPO_DIR.length() + 1 );
+        //Replace OS-dependent file separators with HTTP path separators
+        jarPath = jarPath.replaceAll( "\\" + separator,
+                                      "/" );
+        return jarPath;
     }
 
     /**
