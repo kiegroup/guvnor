@@ -1,46 +1,50 @@
 package org.guvnor.common.services.backend.archive;
 
-import org.guvnor.common.services.shared.file.upload.FileManagerFields;
-
-import javax.inject.Inject;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import javax.inject.Inject;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.guvnor.common.services.shared.file.upload.FileManagerFields;
+import org.uberfire.server.BaseFilteredServlet;
 
 public class ArchiveServlet
-        extends HttpServlet {
-
+        extends BaseFilteredServlet {
 
     @Inject
     private Archiver archiver;
 
-    protected void doGet(final HttpServletRequest request,
-                         final HttpServletResponse response) throws ServletException, IOException {
-        final String uri = request.getParameter(FileManagerFields.FORM_FIELD_PATH);
+    protected void doGet( final HttpServletRequest request,
+                          final HttpServletResponse response ) throws ServletException, IOException {
+        final String uri = request.getParameter( FileManagerFields.FORM_FIELD_PATH );
 
         try {
-            if (uri != null) {
+            if ( uri != null ) {
 
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                if ( !validateAccess( new URI( uri ), response ) ) {
+                    return;
+                }
 
-                archiver.archive(outputStream, uri);
+                final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-                response.setContentType("application/zip");
-                response.setHeader("Content-Disposition",
-                        "attachment; filename=download.zip");
+                archiver.archive( outputStream, uri );
 
-                response.setContentLength(outputStream.size());
-                response.getOutputStream().write(outputStream.toByteArray());
+                response.setContentType( "application/zip" );
+                response.setHeader( "Content-Disposition",
+                                    "attachment; filename=download.zip" );
+
+                response.setContentLength( outputStream.size() );
+                response.getOutputStream().write( outputStream.toByteArray() );
                 response.getOutputStream().flush();
             } else {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                response.sendError( HttpServletResponse.SC_BAD_REQUEST );
             }
-        } catch (URISyntaxException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        } catch ( URISyntaxException e ) {
+            response.sendError( HttpServletResponse.SC_BAD_REQUEST );
         }
     }
 
