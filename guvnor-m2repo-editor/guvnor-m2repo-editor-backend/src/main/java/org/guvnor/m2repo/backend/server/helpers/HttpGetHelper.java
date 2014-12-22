@@ -46,7 +46,8 @@ public class HttpGetHelper {
     @Inject
     private GuvnorM2Repository repository;
 
-    public void handle( final HttpServletRequest request,
+    public void handle( final SecurityFilter securityFilter,
+                        final HttpServletRequest request,
                         final HttpServletResponse response,
                         final ServletContext context ) throws IOException {
         String requestedFile = request.getPathInfo();
@@ -75,7 +76,11 @@ public class HttpGetHelper {
             return;
         }
 
-        // Process the ETag 
+        if ( !securityFilter.filter( file.getCanonicalFile().toURI() ) ) {
+            return;
+        }
+
+        // Process the ETag
         String fileName = file.getName();
         long length = file.length();
         long lastModified = file.lastModified();
