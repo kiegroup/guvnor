@@ -18,7 +18,7 @@ public class CreateProjectCmd extends AbstractJobCommand {
         JobResult result = null;
         try { 
             result = helper.createProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() ,
-                    jobRequest.getProjectGroupId(), jobRequest.getProjectVersion() );
+                    jobRequest.getProjectGroupId(), jobRequest.getProjectVersion(), jobRequest.getDescription() );
         } finally { 
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
             String groupId = jobRequest.getProjectGroupId() == null ? jobRequest.getProjectName() : jobRequest.getProjectGroupId();

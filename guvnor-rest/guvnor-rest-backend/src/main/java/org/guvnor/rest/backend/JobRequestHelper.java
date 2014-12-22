@@ -170,7 +170,8 @@ public class JobRequestHelper {
                                     final String repositoryName,
                                     final String projectName,
                                     String projectGroupId,
-                                    String projectVersion ) {
+                                    String projectVersion,
+                                    String projectDescription) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -192,6 +193,8 @@ public class JobRequestHelper {
             pom.getGav().setArtifactId( projectName );
             pom.getGav().setGroupId( projectGroupId );
             pom.getGav().setVersion( projectVersion );
+            pom.setDescription(projectDescription);
+            pom.setName(projectName);
 
             try {
                 projectService.newProject( makeRepository( Paths.convert( repositoryPath ) ),
