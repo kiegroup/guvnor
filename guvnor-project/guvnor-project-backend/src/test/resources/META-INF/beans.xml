@@ -1,4 +1,8 @@
-<beans>
+<beans xmlns="http://java.sun.com/xml/ns/javaee"
+       xmlns:weld="http://jboss.org/schema/weld/beans">
+  <weld:scan>
+    <weld:exclude name="org.uberfire.server.cdi.UberFireGeneralFactory"/>
+  </weld:scan>
   <alternatives>
     <class>org.guvnor.common.services.project.backend.server.TestAppSetup</class>
     <class>org.guvnor.common.services.project.backend.server.TestIdentityFactory</class>

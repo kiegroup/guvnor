@@ -24,7 +24,6 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,15 +37,17 @@ import org.guvnor.common.services.shared.file.upload.FileManagerFields;
 import org.guvnor.common.services.shared.file.upload.FileOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.server.BaseFilteredServlet;
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
  */
 //TODO: Basic authentication
-public abstract class AbstractFileServlet extends HttpServlet {
+public abstract class AbstractFileServlet extends BaseFilteredServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractFileServlet.class);
+    private static final Logger log = LoggerFactory.getLogger( AbstractFileServlet.class );
 
     private static final long serialVersionUID = 510l;
 
@@ -110,7 +111,8 @@ public abstract class AbstractFileServlet extends HttpServlet {
 
         if ( item.getFile() != null ) {
             response.getWriter().write( processUpload( item,
-                                                       request ) );
+                                                       request,
+                                                       response ) );
             return;
         }
 
@@ -141,16 +143,16 @@ public abstract class AbstractFileServlet extends HttpServlet {
                 if ( !item.isFormField() ) {
                     data.setFile( item );
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_PATH ) ) {
-                    log.debug("path:" + item.getString());
+                    log.debug( "path:" + item.getString() );
                     contextPath = item.getString();
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_NAME ) ) {
-                    log.debug("name:" + item.getString());
+                    log.debug( "name:" + item.getString() );
                     fileName = item.getString();
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_FULL_PATH ) ) {
-                    log.debug("full path:" + item.getString());
+                    log.debug( "full path:" + item.getString() );
                     fullPath = item.getString();
                 } else if ( item.getFieldName().equals( FileManagerFields.FORM_FIELD_OPERATION ) ) {
-                    log.debug("operation:" + item.getString());
+                    log.debug( "operation:" + item.getString() );
                     operation = FileOperation.valueOf( item.getString() );
                 }
             }
@@ -188,7 +190,8 @@ public abstract class AbstractFileServlet extends HttpServlet {
     }
 
     private String processUpload( final FormData item,
-                                  final HttpServletRequest request ) throws IOException {
+                                  final HttpServletRequest request,
+                                  final HttpServletResponse response ) throws IOException {
 
         // If the file it doesn't exist.
         if ( "".equals( item.getFile().getName() ) ) {
@@ -196,15 +199,21 @@ public abstract class AbstractFileServlet extends HttpServlet {
         }
 
         final String processResult = uploadFile( item,
-                                                 request );
+                                                 request,
+                                                 response );
 
         return processResult;
     }
 
     private String uploadFile( final FormData item,
-                               final HttpServletRequest request ) throws IOException {
+                               final HttpServletRequest request,
+                               final HttpServletResponse response ) throws IOException {
         final InputStream fileData = item.getFile().getInputStream();
         final org.uberfire.backend.vfs.Path targetPath = item.getTargetPath();
+
+        if ( !validateAccess( Paths.convert( targetPath ), response ) ) {
+            return "FAIL";
+        }
 
         try {
             switch ( item.getOperation() ) {
@@ -264,8 +273,12 @@ public abstract class AbstractFileServlet extends HttpServlet {
 
         try {
             final Path sourcePath = convertPath( path );
-            IOUtils.copy( doLoad( sourcePath,
-                                  request ),
+
+            if ( !validateAccess( Paths.convert( sourcePath ), response ) ) {
+                return;
+            }
+
+            IOUtils.copy( doLoad( sourcePath, request ),
                           output );
             // String fileName = m2RepoService.getJarName(path);
             final String fileName = sourcePath.getFileName();

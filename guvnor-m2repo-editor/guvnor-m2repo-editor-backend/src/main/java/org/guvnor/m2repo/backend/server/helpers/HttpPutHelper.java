@@ -42,7 +42,8 @@ public class HttpPutHelper {
     @Inject
     private GuvnorM2Repository m2RepoService;
 
-    public void handle( final HttpServletRequest request,
+    public void handle( final SecurityFilter securityFilter,
+                        final HttpServletRequest request,
                         final HttpServletResponse response ) throws ServletException, IOException {
 
         final InputStream inputStream = request.getInputStream();
@@ -65,6 +66,10 @@ public class HttpPutHelper {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
                 status = HttpServletResponse.SC_CREATED;
+            }
+
+            if ( !securityFilter.filter( file.getCanonicalFile().toURI() ) ) {
+                return;
             }
 
             outputStream = new BufferedOutputStream( new FileOutputStream( file ) );
