@@ -56,9 +56,6 @@ public class RepositoryStructureServiceImpl
     @Inject
     private MetadataService metadataService;
 
-//    @Inject
-//    private ValidationService validationService;
-
     @Inject
     private GuvnorM2Repository m2service;
 

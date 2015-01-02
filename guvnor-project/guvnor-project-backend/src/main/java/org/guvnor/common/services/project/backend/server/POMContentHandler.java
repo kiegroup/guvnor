@@ -78,7 +78,13 @@ public class POMContentHandler {
                 model.addRepository(fromClientModelToPom(repository));
             }
         } else { // If it is a kjar
-            model.setPackaging(PACKAGING);
+
+            if(isPackagingSet(model)){
+                // Currently we only support multimodules and kjars.
+                // But since the user can change and customers have actually changed the packaging to jar
+                // we do not overwrite the setting.
+                model.setPackaging(PACKAGING);
+            }
             if (pom.getParent() != null) {
                 Parent parent = new Parent();
                 parent.setGroupId(pom.getParent().getGroupId());
@@ -109,6 +115,10 @@ public class POMContentHandler {
         new MavenXpp3Writer().write(stringWriter, model);
 
         return stringWriter.toString();
+    }
+
+    private boolean isPackagingSet(Model model) {
+        return model.getPackaging() == null || model.getPackaging().isEmpty();
     }
 
     /**
