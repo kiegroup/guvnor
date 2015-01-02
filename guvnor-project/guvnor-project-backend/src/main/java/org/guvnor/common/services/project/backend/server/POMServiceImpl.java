@@ -6,7 +6,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Repository;
@@ -22,7 +21,6 @@ import org.uberfire.commons.data.Pair;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.rpc.SessionInfo;
 
 @Service
 @ApplicationScoped
@@ -37,8 +35,6 @@ public class POMServiceImpl
     @Inject
     private CommentedOptionFactory optionsFactory;
 
-    private SessionInfo sessionInfo;
-
     public POMServiceImpl() {
         // For Weld
     }
@@ -47,13 +43,11 @@ public class POMServiceImpl
     public POMServiceImpl( final @Named("ioStrategy") IOService ioService,
                            final POMContentHandler pomContentHandler,
                            final M2RepoService m2RepoService,
-                           final MetadataService metadataService,
-                           final SessionInfo sessionInfo ) {
+                           final MetadataService metadataService ) {
         this.ioService = ioService;
         this.pomContentHandler = pomContentHandler;
         this.m2RepoService = m2RepoService;
         this.metadataService = metadataService;
-        this.sessionInfo = new SafeSessionInfo(sessionInfo);
     }
 
     @Override
@@ -119,14 +113,6 @@ public class POMServiceImpl
                                  metadataService.setUpAttributes( path,
                                                                   metadata ) );
             }
-
-            //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
-            //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
-            //to avoid duplicating events (and re-construction of DMO).
-
-            //@wmedvede now the InvalidateDMOProjectCacheEvent will be fired in the DataModelResourceChangeObserver
-            //Invalidate Project-level DMO cache as POM has changed.
-            //invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( path ) );
 
             return path;
 

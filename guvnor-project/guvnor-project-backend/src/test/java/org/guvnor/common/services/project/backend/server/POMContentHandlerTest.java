@@ -103,6 +103,31 @@ public class POMContentHandlerTest {
         assertContainsIgnoreWhitespace( PLUGIN_XML,
                                         enrichedXml );
     }
+    @Test
+    public void testPOMContentHandlerExistingJarProject() throws IOException, XmlPullParserException {
+        /*
+           Keep the original type
+         */
+
+        final POMContentHandler handler = new POMContentHandler();
+        final String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+                + "<modelVersion>4.0.0</modelVersion>"
+                + "<groupId>org.guvnor</groupId>"
+                + "<artifactId>test</artifactId>"
+                + "<version>0.0.1</version>"
+                + "<packaging>something</packaging>"
+                + "<name>name</name>"
+                + "<description>description</description>"
+                + "</project>";
+
+        final String enrichedXml = handler.toString( handler.toModel( xml ),
+                                                     xml );
+
+
+        assertContainsIgnoreWhitespace( "<packaging>something</packaging>",
+                                        enrichedXml );
+    }
 
     @Test
     public void testPOMContentHandlerExistingKieProject() throws IOException, XmlPullParserException {
@@ -188,10 +213,10 @@ public class POMContentHandlerTest {
     }
 
     private void assertContainsIgnoreWhitespace( final String expected,
-                                                 final String actual ) {
+                                                 final String xml ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
                                                           "" );
-        final String cleanActual = actual.replaceAll( "\\s+",
+        final String cleanActual = xml.replaceAll( "\\s+",
                                                       "" );
 
         assertTrue( cleanActual.contains( cleanExpected ) );
