@@ -21,30 +21,29 @@ import java.io.StringWriter;
 import java.util.Properties;
 import javax.enterprise.context.Dependent;
 
-import org.apache.maven.model.*;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.Parent;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.Repository;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 
-import javax.enterprise.context.Dependent;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Properties;
-
 @Dependent
 public class POMContentHandler {
 
-    private static String MULTI_MODULE = "pom";
-    private static String PACKAGING = "kjar";
-    private static String KIE_PLUGIN_VERSION_FILENAME = "/kie-plugin-version.properties";
+    private static String MULTI_MODULE                     = "pom";
+    private static String PACKAGING                        = "kjar";
+    private static String KIE_PLUGIN_VERSION_FILENAME      = "/kie-plugin-version.properties";
     private static String KIE_PLUGIN_VERSION_PROPERTY_NAME = "kie_plugin_version";
 
-    private static String kieMavenPluginGroupId = "org.kie";
+    private static String kieMavenPluginGroupId    = "org.kie";
     private static String kieMavenPluginArtifactId = "kie-maven-plugin";
-    private static String kieMavenPluginVersion = getKiePluginVersion();
+    private static String kieMavenPluginVersion    = getKiePluginVersion();
 
     private static Plugin kieMavenPlugin = getKieMavenPlugin();
 
@@ -79,7 +78,7 @@ public class POMContentHandler {
             }
         } else { // If it is a kjar
 
-            if(isPackagingSet(model)){
+            if (isPackagingNotSet(model)) {
                 // Currently we only support multimodules and kjars.
                 // But since the user can change and customers have actually changed the packaging to jar
                 // we do not overwrite the setting.
@@ -104,10 +103,7 @@ public class POMContentHandler {
                 build.addPlugin(kieMavenPlugin);
             }
 
-            model.getDependencies().clear();
-            for (org.guvnor.common.services.project.model.Dependency dependency : pom.getDependencies()) {
-                model.addDependency(fromClientModelToPom(dependency));
-            }
+            new DependencyUpdater(model).updateDependencies(pom.getDependencies());
 
         }
 
@@ -117,12 +113,12 @@ public class POMContentHandler {
         return stringWriter.toString();
     }
 
-    private boolean isPackagingSet(Model model) {
+    private boolean isPackagingNotSet(Model model) {
         return model.getPackaging() == null || model.getPackaging().isEmpty();
     }
 
     /**
-     * @param gavModel          The model that is saved
+     * @param gavModel The model that is saved
      * @param originalPomAsText The original pom in text form, since the guvnor POM model does not cover all the pom.xml features.
      * @return pom.xml for saving, The original pom.xml with the fields edited in gavModel replaced.
      * @throws IOException
@@ -164,7 +160,7 @@ public class POMContentHandler {
         gavModel.getModules().clear();
         for (String module : model.getModules()) {
             gavModel.getModules().add(module);
-            gavModel.setMultiModule( true );
+            gavModel.setMultiModule(true);
         }
         for (Repository repository : model.getRepositories()) {
             gavModel.addRepository(fromPomModelToClientModel(repository));
@@ -193,16 +189,7 @@ public class POMContentHandler {
         dependency.setArtifactId(from.getArtifactId());
         dependency.setGroupId(from.getGroupId());
         dependency.setVersion(from.getVersion());
-
-        return dependency;
-    }
-
-    private Dependency fromClientModelToPom(org.guvnor.common.services.project.model.Dependency from) {
-        Dependency dependency = new Dependency();
-
-        dependency.setArtifactId(from.getArtifactId());
-        dependency.setGroupId(from.getGroupId());
-        dependency.setVersion(from.getVersion());
+        dependency.setScope(from.getScope());
 
         return dependency;
     }
