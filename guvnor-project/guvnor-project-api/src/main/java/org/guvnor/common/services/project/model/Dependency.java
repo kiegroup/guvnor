@@ -22,10 +22,20 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class Dependency
         extends GAV {
 
+    private String scope;
+
     public Dependency() {
     }
 
     public Dependency(GAV gav) {
         super(gav.getGroupId(), gav.getArtifactId(), gav.getVersion());
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 }
