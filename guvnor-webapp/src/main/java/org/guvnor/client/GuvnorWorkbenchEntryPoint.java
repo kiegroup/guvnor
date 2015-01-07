@@ -232,14 +232,6 @@ public class GuvnorWorkbenchEntryPoint {
                     }
                 } )
                 .endMenu()
-                .menu("Perspectives")
-                .respondsWith(new Command() {
-                    @Override
-                    public void execute() {
-                            placeManager.goTo(new DefaultPlaceRequest("PerspectiveEditorPerspective"));
-                    }
-                } )
-                .endMenu()
                 .menu("Plugins")
                 .respondsWith(new Command() {
                     @Override

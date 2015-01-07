@@ -41,8 +41,6 @@
   <!-- Uberfire Extensions - Runtime Plugin -->
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
 
-  <!-- Uberfire Extensions - Perspective Editor -->
-  <inherits name="org.uberfire.ext.perspective.editor.PerspectiveEditorClient"/>
 
   <!-- Uberfire Extensions - Apps -->
   <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
