@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.ejb.AccessTimeout;
 import javax.ejb.Asynchronous;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -18,6 +19,7 @@ import static javax.ejb.TransactionAttributeType.*;
 @Singleton
 @Startup
 @TransactionAttribute(NOT_SUPPORTED)
+@AccessTimeout(value = 1, unit = TimeUnit.MINUTES)
 public class MailboxProcessOutgoingExecutorManager {
 
     @Inject
