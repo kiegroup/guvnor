@@ -16,6 +16,7 @@
 
 package org.guvnor.m2repo.backend.server;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -45,12 +47,11 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.drools.core.io.impl.ReaderInputStream;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -64,6 +65,7 @@ import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.guvnor.common.services.project.model.GAV;
 import org.kie.scanner.Aether;
+import org.kie.scanner.embedder.MavenProjectLoader;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -327,8 +329,7 @@ public class GuvnorM2Repository {
 
             //Deploy into remote repository defined in <distributionManagement>
             try {
-                final Model model = new MavenXpp3Reader().read( new StringReader( pomXML ) );
-                final DistributionManagement distributionManagement = model.getDistributionManagement();
+                DistributionManagement distributionManagement = getDistributionManagement( pomXML );
 
                 if ( distributionManagement != null ) {
 
@@ -362,10 +363,6 @@ public class GuvnorM2Repository {
 
             } catch ( DeploymentException e ) {
                 throw new RuntimeException( e );
-            } catch ( XmlPullParserException xppe ) {
-                throw new RuntimeException( xppe );
-            } catch ( IOException ioe ) {
-                throw new RuntimeException( ioe );
             }
 
         } finally {
@@ -375,6 +372,25 @@ public class GuvnorM2Repository {
                 log.warn( "Unable to remove temporary file '" + pomXMLFile.getAbsolutePath() + "'" );
             }
         }
+    }
+
+    private DistributionManagement getDistributionManagement( final String pomXML ) {
+        final InputStream is = new ByteArrayInputStream( pomXML.getBytes( Charset.forName( "UTF-8" ) ) );
+        try {
+            //Get the effective POM as the DistributionManagement section may be in a parent POM
+            final MavenProject project = MavenProjectLoader.parseMavenPom( is );
+            final DistributionManagement distributionManagement = project.getDistributionManagement();
+
+            return distributionManagement;
+
+        } finally {
+            try {
+                is.close();
+            } catch ( IOException ioe ) {
+                //Swallow
+            }
+        }
+
     }
 
     private RemoteRepository getGuvnorM2Repository() {
