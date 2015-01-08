@@ -23,21 +23,23 @@ import javax.inject.Inject;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.Path;
 
-public class PathResolver {
+public class PathResolverImpl
+        implements PathResolver {
 
     private VersionLoader versionLoader;
     private VersionUtil   util;
 
-    public PathResolver() {
+    public PathResolverImpl() {
     }
 
     @Inject
-    public PathResolver(VersionLoader versionLoader,
-                        VersionUtil util) {
+    public PathResolverImpl(VersionLoader versionLoader,
+                            VersionUtil util) {
         this.util = util;
         this.versionLoader = versionLoader;
     }
 
+    @Override
     public Path resolveMainFilePath(Path path) throws URISyntaxException {
 
         if (isDotFile(path)) {

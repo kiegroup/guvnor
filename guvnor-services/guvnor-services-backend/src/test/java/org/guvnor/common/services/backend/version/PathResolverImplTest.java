@@ -32,10 +32,10 @@ import org.uberfire.java.nio.file.Path;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class PathResolverTest {
+public class PathResolverImplTest {
 
     private VersionLoader                      versionLoader;
-    private PathResolver                       resolver;
+    private PathResolverImpl                   resolver;
     private HashMap<Path, List<VersionRecord>> versionRecords;
     private Path                               pathToMainFile;
     private Path                               pathToDotFile;
@@ -47,7 +47,7 @@ public class PathResolverTest {
         pathToMainFile = makePath("text.txt");
         pathToDotFile = makePath(".text.txt");
 
-        resolver = new PathResolver(
+        resolver = new PathResolverImpl(
                 versionLoader,
                 new VersionUtil() {
                     @Override Path getPath(Path path, String version) throws URISyntaxException {
