@@ -238,19 +238,34 @@ public class Metadata {
     @Override
     public int hashCode() {
         int result = path != null ? path.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( checkinComment != null ? checkinComment.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( lastContributor != null ? lastContributor.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( creator != null ? creator.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( lastModified != null ? lastModified.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( dateCreated != null ? dateCreated.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( subject != null ? subject.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( type != null ? type.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( externalRelation != null ? externalRelation.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( externalSource != null ? externalSource.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( description != null ? description.hashCode() : 0 );
+        result = ~~result;
+        result = ~~result;
         result = 31 * result + ( categories != null ? categories.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( discussion != null ? discussion.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( version != null ? version.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

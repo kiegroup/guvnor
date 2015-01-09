@@ -139,9 +139,13 @@ public class CategoryItem {
     @Override
     public int hashCode() {
         int result = parent != null ? parent.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( children != null ? children.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( description != null ? description.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }
