@@ -38,7 +38,9 @@ public class ProjectImports {
     @Override
     public int hashCode() {
         int result = imports != null ? imports.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( version != null ? version.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

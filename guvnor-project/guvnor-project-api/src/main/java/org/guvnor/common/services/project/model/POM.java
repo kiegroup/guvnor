@@ -168,13 +168,21 @@ public class POM {
     @Override
     public int hashCode() {
         int result = parent != null ? parent.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( gav != null ? gav.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( description != null ? description.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( multiModule ? 1 : 0 );
+        result = ~~result;
         result = 31 * result + ( dependencies != null ? dependencies.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( repositories != null ? repositories.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( modules != null ? modules.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }
