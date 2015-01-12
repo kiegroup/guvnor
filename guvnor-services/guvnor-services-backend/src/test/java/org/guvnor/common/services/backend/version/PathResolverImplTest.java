@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.Path;
 
@@ -39,10 +40,16 @@ public class PathResolverImplTest {
     private HashMap<Path, List<VersionRecord>> versionRecords;
     private Path                               pathToMainFile;
     private Path                               pathToDotFile;
+    private IOService                          ioService;
+    private VersionUtil                        versionUtil;
 
     @Before
     public void setUp() throws Exception {
-        versionLoader = new VersionLoaderMock();
+        ioService = mock(IOService.class);
+        versionUtil = mock(VersionUtil.class);
+        versionLoader = new VersionLoaderMock(ioService, versionUtil);
+
+        when(versionUtil.getPath(any(Path.class), eq("master"))).thenReturn(pathToMainFile);
 
         pathToMainFile = makePath("text.txt");
         pathToDotFile = makePath(".text.txt");
@@ -135,6 +142,10 @@ public class PathResolverImplTest {
 
     private class VersionLoaderMock
             extends VersionLoader {
+
+        public VersionLoaderMock(IOService ioService, VersionUtil versionUtil) {
+            super(ioService, versionUtil);
+        }
 
         @Override
         public List<VersionRecord> load(Path path) {
