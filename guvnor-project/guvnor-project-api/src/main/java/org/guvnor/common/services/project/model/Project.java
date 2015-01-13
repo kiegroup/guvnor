@@ -106,10 +106,15 @@ public class Project implements RuntimeResource {
     public int hashCode() {
       int hash = 5;
       hash = 17 * hash + (this.rootPath != null ? this.rootPath.hashCode() : 0);
+      hash = ~~hash;
       hash = 17 * hash + (this.pomXMLPath != null ? this.pomXMLPath.hashCode() : 0);
+      hash = ~~hash;
       hash = 17 * hash + (this.projectName != null ? this.projectName.hashCode() : 0);
+      hash = ~~hash;
       hash = 17 * hash + (this.modules != null ? this.modules.hashCode() : 0);
+      hash = ~~hash;
       hash = 17 * hash + (this.roles != null ? this.roles.hashCode() : 0);
+      hash = ~~hash;
       return hash;
     }
 

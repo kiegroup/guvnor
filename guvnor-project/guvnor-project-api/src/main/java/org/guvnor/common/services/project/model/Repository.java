@@ -61,8 +61,11 @@ public class Repository {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( url != null ? url.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

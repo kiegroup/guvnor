@@ -179,11 +179,17 @@ public class GitRepository implements Repository {
     @Override
     public int hashCode() {
         int result = environment.hashCode();
+        result = ~~result;
         result = 31 * result + ( publicURIs.hashCode() );
+        result = ~~result;
         result = 31 * result + ( alias != null ? alias.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( root != null ? root.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( roles != null ? roles.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( branches != null ? branches.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 

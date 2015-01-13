@@ -81,7 +81,9 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( owner != null ? owner.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 

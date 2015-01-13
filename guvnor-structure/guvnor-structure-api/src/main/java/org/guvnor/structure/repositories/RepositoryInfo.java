@@ -84,10 +84,15 @@ public class RepositoryInfo {
     @Override
     public int hashCode() {
         int result = alias != null ? alias.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( owner != null ? owner.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( root != null ? root.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( publicURIs != null ? publicURIs.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( versionList != null ? versionList.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 

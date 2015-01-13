@@ -120,10 +120,15 @@ public class BuildMessage {
     @Override
     public int hashCode() {
         int result = level != null ? level.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( path != null ? path.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + line;
+        result = ~~result;
         result = 31 * result + column;
+        result = ~~result;
         result = 31 * result + ( text != null ? text.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 
