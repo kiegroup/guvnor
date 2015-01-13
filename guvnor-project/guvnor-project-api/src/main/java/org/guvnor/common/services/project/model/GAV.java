@@ -95,8 +95,11 @@ public class GAV {
     @Override
     public int hashCode() {
         int result = groupId != null ? groupId.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( artifactId != null ? artifactId.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( version != null ? version.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

@@ -86,8 +86,11 @@ public class DiscussionRecord {
     @Override
     public int hashCode() {
         int result = timestamp != null ? timestamp.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( note != null ? note.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( author != null ? author.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

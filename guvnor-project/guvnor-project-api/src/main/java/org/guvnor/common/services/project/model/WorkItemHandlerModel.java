@@ -64,7 +64,9 @@ public class WorkItemHandlerModel {
     @Override
     public int hashCode() {
         int result = type != null ? type.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

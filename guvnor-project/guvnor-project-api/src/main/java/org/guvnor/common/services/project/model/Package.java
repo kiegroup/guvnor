@@ -129,12 +129,19 @@ public class Package {
     @Override
     public int hashCode() {
         int result = projectRootPath.hashCode();
+        result = ~~result;
         result = 31 * result + ( packageMainSrcPath != null ? packageMainSrcPath.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( packageTestSrcPath != null ? packageTestSrcPath.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( packageMainResourcesPath != null ? packageMainResourcesPath.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( packageTestResourcesPath != null ? packageTestResourcesPath.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + packageName.hashCode();
+        result = ~~result;
         result = 31 * result + caption.hashCode();
+        result = ~~result;
         return result;
     }
 }

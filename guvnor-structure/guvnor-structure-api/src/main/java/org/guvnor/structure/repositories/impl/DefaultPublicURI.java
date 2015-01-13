@@ -64,7 +64,9 @@ public class DefaultPublicURI implements PublicURI {
     @Override
     public int hashCode() {
         int result = protocol != null ? protocol.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( uri != null ? uri.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 
