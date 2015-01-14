@@ -36,6 +36,7 @@ import org.guvnor.rest.backend.cmd.RemoveOrgUnitCmd;
 import org.guvnor.rest.backend.cmd.RemoveRepositoryCmd;
 import org.guvnor.rest.backend.cmd.RemoveRepositoryFromOrgUnitCmd;
 import org.guvnor.rest.backend.cmd.TestProjectCmd;
+import org.guvnor.rest.backend.cmd.UpdateOrgUnitCmd;
 import org.guvnor.rest.client.AddRepositoryToOrganizationalUnitRequest;
 import org.guvnor.rest.client.CompileProjectRequest;
 import org.guvnor.rest.client.CreateOrCloneRepositoryRequest;
@@ -49,6 +50,7 @@ import org.guvnor.rest.client.RemoveOrganizationalUnitRequest;
 import org.guvnor.rest.client.RemoveRepositoryFromOrganizationalUnitRequest;
 import org.guvnor.rest.client.RemoveRepositoryRequest;
 import org.guvnor.rest.client.TestProjectRequest;
+import org.guvnor.rest.client.UpdateOrganizationalUnitRequest;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutorService;
 import org.slf4j.Logger;
@@ -147,6 +149,14 @@ public class JobRequestScheduler {
         Map<String, Object> params = getContext(jobRequest).getData();
         params.put("CommandClass", CreateOrgUnitCmd.class.getName());
         params.put("Operation", "createOrgUnit");
+
+        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+    }
+
+    public void updateOrganizationalUnitRequest( UpdateOrganizationalUnitRequest jobRequest ) {
+        Map<String, Object> params = getContext(jobRequest).getData();
+        params.put("CommandClass", UpdateOrgUnitCmd.class.getName());
+        params.put("Operation", "updateOrgUnit");
 
         excuteOperationEvent.fire(new ExecuteOperationEvent(params));
     }

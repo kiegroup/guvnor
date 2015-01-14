@@ -35,6 +35,19 @@
           <b:HelpInline ui:field="nameHelpInline"/>
         </b:Controls>
       </b:ControlGroup>
+      <b:ControlGroup ui:field="defaultGroupIdGroup">
+        <b:ControlLabel for="groupId">
+          <font color="red">*</font>
+          Default group ID
+        </b:ControlLabel>
+        <b:Controls>
+          <b:TextBox ui:field="defaultGroupIdTextBox" placeholder="Default Group Id..."/>
+          <b:HelpInline ui:field="defaultGroupIdHelpInline"/>
+          <b:Popover placement="LEFT" trigger="HOVER" text="{i18n.GroupIdInfo}">
+            <b:Icon ui:field="groupIdHelpIcon" type="QUESTION_SIGN"></b:Icon>
+          </b:Popover>
+        </b:Controls>
+      </b:ControlGroup>
       <b:ControlGroup ui:field="ownerGroup">
         <b:ControlLabel for="owner">
           Owner

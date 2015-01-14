@@ -16,7 +16,11 @@ public class CreateOrgUnitCmd extends AbstractJobCommand {
 
         JobResult result = null;
         try { 
-            result = helper.createOrganizationalUnit( jobRequest.getJobId(), jobRequest.getOrganizationalUnitName(), jobRequest.getOwner(), jobRequest.getRepositories() );
+            result = helper.createOrganizationalUnit( jobRequest.getJobId(),
+                                                      jobRequest.getOrganizationalUnitName(),
+                                                      jobRequest.getOwner(),
+                                                      jobRequest.getDefaultGroupId(),
+                                                      jobRequest.getRepositories() );
         } finally { 
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
             logger.debug( "-----createOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {} [{}]",

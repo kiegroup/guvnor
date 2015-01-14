@@ -18,6 +18,7 @@ package org.guvnor.organizationalunit.manager.client.editor;
 import com.google.gwt.user.client.Command;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
+import org.jboss.errai.common.client.api.RemoteCallback;
 
 public interface OrganizationalUnitManagerPresenter {
 
@@ -28,12 +29,14 @@ public interface OrganizationalUnitManagerPresenter {
     void addNewOrganizationalUnit();
 
     void createNewOrganizationalUnit( final String organizationalUnitName,
-                                      final String organizationalUnitOwner );
+                                      final String organizationalUnitOwner,
+                                      final String defaultGroupId );
 
     void editOrganizationalUnit( final OrganizationalUnit organizationalUnit );
 
     void saveOrganizationalUnit( final String organizationalUnitName,
-                                 final String organizationalUnitOwner );
+                                 final String organizationalUnitOwner,
+                                 final String defaultGroupId );
 
     void deleteOrganizationalUnit( final OrganizationalUnit organizationalUnit );
 
@@ -47,4 +50,7 @@ public interface OrganizationalUnitManagerPresenter {
                                           final Command onSuccessCommand,
                                           final Command onFailureCommand );
 
+    void checkValidGroupId( final String proposedGroupId, RemoteCallback<Boolean> callback );
+
+    void getSanitizedGroupId( final String proposedGroupId, RemoteCallback<String> callback );
 }

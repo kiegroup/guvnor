@@ -41,6 +41,12 @@ public interface OrganizationalUnitManagerConstants
 
     String OrganizationalUnitNameIsMandatory();
 
+    String DefaultGroupIdIsMandatory();
+
+    String InvalidGroupId();
+
+    String GroupIdInfo();
+
     String NoOrganizationalUnitsDefined();
 
     String NoRepositoriesDefined();

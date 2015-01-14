@@ -9,6 +9,7 @@ public class CreateOrganizationalUnitRequest extends JobRequest {
 
     private String organizationalUnitName;
     private String owner;
+    private String defaultGroupId;
     private String description;
     private List<String> repositories;
 
@@ -26,6 +27,14 @@ public class CreateOrganizationalUnitRequest extends JobRequest {
 
     public void setOwner( String owner ) {
         this.owner = owner;
+    }
+
+    public String getDefaultGroupId() {
+        return defaultGroupId;
+    }
+
+    public void setDefaultGroupId( String defaultGroupId ) {
+        this.defaultGroupId = defaultGroupId;
     }
 
     public String getDescription() {
