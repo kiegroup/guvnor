@@ -12,6 +12,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class OrganizationalUnitImpl implements OrganizationalUnit {
 
     private String name;
+    private String defaultGroupId;
     private String owner;
 
     private Collection<Repository> repositories = new ArrayList<Repository>();
@@ -22,9 +23,11 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     }
 
     public OrganizationalUnitImpl( final String name,
-                                   final String owner ) {
+                                   final String owner,
+                                   final String defaultGroupId ) {
         this.name = name;
         this.owner = owner;
+        this.defaultGroupId = defaultGroupId;
     }
 
     @Override
@@ -35,6 +38,11 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     @Override
     public String getOwner() {
         return owner;
+    }
+
+    @Override
+    public String getDefaultGroupId() {
+        return defaultGroupId;
     }
 
     @Override
@@ -90,7 +98,7 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     @Override
     public String toString() {
       return "OrganizationalUnitImpl [name=" + name + ", owner=" + owner + ", repositories=" + repositories
-              + ", roles=" + roles + "]";
+              + ", roles=" + roles + ", defaultGroupId=" + defaultGroupId + "]";
     }
 
 

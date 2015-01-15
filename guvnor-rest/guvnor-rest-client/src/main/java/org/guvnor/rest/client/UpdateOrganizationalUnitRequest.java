@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,22 +16,28 @@
 
 package org.guvnor.rest.client;
 
-import java.util.List;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class OrganizationalUnit extends Entity {
-    
+public class UpdateOrganizationalUnitRequest extends JobRequest {
+
+    private String organizationalUnitName;
     private String owner;
     private String defaultGroupId;
-    private List<String> repositories;
-    
+
+    public String getOrganizationalUnitName() {
+        return organizationalUnitName;
+    }
+
+    public void setOrganizationalUnitName( String organizationalUnitName ) {
+        this.organizationalUnitName = organizationalUnitName;
+    }
+
     public String getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner( String owner ) {
         this.owner = owner;
     }
 
@@ -42,14 +48,4 @@ public class OrganizationalUnit extends Entity {
     public void setDefaultGroupId( String defaultGroupId ) {
         this.defaultGroupId = defaultGroupId;
     }
-
-	public List<String> getRepositories() {
-		return repositories;
-	}
-
-	public void setRepositories(List<String> repositories) {
-		this.repositories = repositories;
-	} 
-
- 
 }

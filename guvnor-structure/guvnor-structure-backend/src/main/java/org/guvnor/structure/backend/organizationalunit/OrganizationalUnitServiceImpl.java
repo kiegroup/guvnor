@@ -69,6 +69,14 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         Collection<ConfigGroup> groups = configurationService.getConfiguration( ConfigType.ORGANIZATIONAL_UNIT );
         if ( groups != null ) {
             for ( ConfigGroup groupConfig : groups ) {
+                // Make sure existing Organizational Units are correctly initialized with a default group id.
+                String ouName = groupConfig.getName();
+                String defaultGroupId = groupConfig.getConfigItemValue( "defaultGroupId" );
+                if ( defaultGroupId == null || defaultGroupId.trim().isEmpty() ) {
+                    groupConfig.setConfigItem( configurationFactory.newConfigItem( "defaultGroupId", getSanitizedDefaultGroupId( ouName ) ) );
+                    configurationService.updateConfiguration( groupConfig );
+                }
+
                 OrganizationalUnit ou = organizationalUnitFactory.newOrganizationalUnit( groupConfig );
                 registeredOrganizationalUnits.put( ou.getName(),
                                                    ou );
@@ -88,12 +96,16 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @Override
     public OrganizationalUnit createOrganizationalUnit( final String name,
-                                                        final String owner ) {
+                                                        final String owner,
+                                                        final String defaultGroupId ) {
         final ConfigGroup groupConfig = configurationFactory.newConfigGroup( ConfigType.ORGANIZATIONAL_UNIT,
                                                                              name,
                                                                              "" );
         groupConfig.addConfigItem( configurationFactory.newConfigItem( "owner",
                                                                        owner ) );
+        String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ? getSanitizedDefaultGroupId( name ) : defaultGroupId;
+        groupConfig.addConfigItem( configurationFactory.newConfigItem( "defaultGroupId",
+                                                                       _defaultGroupId ) );
         groupConfig.addConfigItem( configurationFactory.newConfigItem( "repositories",
                                                                        new ArrayList<String>() ) );
         groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
@@ -112,12 +124,16 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     @Override
     public OrganizationalUnit createOrganizationalUnit( final String name,
                                                         final String owner,
+                                                        final String defaultGroupId,
                                                         final Collection<Repository> repositories ) {
         final ConfigGroup groupConfig = configurationFactory.newConfigGroup( ConfigType.ORGANIZATIONAL_UNIT,
                                                                              name,
                                                                              "" );
         groupConfig.addConfigItem( configurationFactory.newConfigItem( "owner",
                                                                        owner ) );
+        String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ? getSanitizedDefaultGroupId( name ) : defaultGroupId;
+        groupConfig.addConfigItem( configurationFactory.newConfigItem( "defaultGroupId",
+                                                                       _defaultGroupId ) );
         groupConfig.addConfigItem( configurationFactory.newConfigItem( "repositories",
                                                                        getRepositoryAliases( repositories ) ) );
         groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
@@ -142,13 +158,20 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     }
 
     @Override
-    public void updateOrganizationalUnitOwner( final String name,
-                                               final String owner ) {
+    public OrganizationalUnit updateOrganizationalUnit( final String name,
+                                          final String owner,
+                                          final String defaultGroupId) {
         final ConfigGroup thisGroupConfig = findGroupConfig( name );
 
         if ( thisGroupConfig != null ) {
             thisGroupConfig.setConfigItem( configurationFactory.newConfigItem( "owner",
                                                                                owner ) );
+            // As per loadOrganizationalUnits(), all Organizational Units should have the default group id value set
+            String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ?
+                                        thisGroupConfig.getConfigItemValue( "defaultGroupId" ) : defaultGroupId;
+            thisGroupConfig.setConfigItem( configurationFactory.newConfigItem( "defaultGroupId",
+                                                                               _defaultGroupId ) );
+
             configurationService.updateConfiguration( thisGroupConfig );
 
             final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
@@ -157,6 +180,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
             updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, sessionInfo ) );
 
+            return updatedOrganizationalUnit;
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + name + " not found" );
         }
@@ -285,6 +309,20 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             }
         }
         return null;
+    }
+
+    @Override
+    public String getSanitizedDefaultGroupId( final String proposedGroupId ) {
+        //Only [A-Za-z0-9_\-.] are valid so strip everything else out
+        return proposedGroupId != null ? proposedGroupId.replaceAll( "[^A-Za-z0-9_\\-.]", "" ) : proposedGroupId;
+    }
+
+    @Override
+    public Boolean isValidGroupId( final String proposedGroupId ) {
+        if ( proposedGroupId != null && !proposedGroupId.trim().isEmpty() ) {
+            if ( proposedGroupId.length() == getSanitizedDefaultGroupId( proposedGroupId ).length() ) return true;
+        }
+        return false;
     }
 
     public void updateRegisteredOU( @Observes @OrgUnit SystemRepositoryChangedEvent changedEvent ) {

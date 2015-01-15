@@ -446,6 +446,7 @@ public class JobRequestHelper {
     public JobResult createOrganizationalUnit( final String jobId,
                                                final String organizationalUnitName,
                                                final String organizationalUnitOwner,
+                                               final String defaultGroupId,
                                                final List<String> repositoryNameList ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
@@ -454,6 +455,21 @@ public class JobRequestHelper {
             result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "OrganizationalUnit name and owner must be provided" );
             return result;
+        }
+
+        String _defaultGroupId = null;
+        if ( defaultGroupId == null || defaultGroupId.trim().isEmpty() ) {
+            _defaultGroupId = organizationalUnitService.getSanitizedDefaultGroupId( organizationalUnitName );
+            logger.warn( "No default group id was provided, reverting to the organizational unit name" );
+        } else {
+            if ( !organizationalUnitService.isValidGroupId( defaultGroupId ) ) {
+                result.setStatus( JobStatus.BAD_REQUEST );
+                result.setResult( "Invalid default group id, only alphanumerical characters are admitted, " +
+                        "as well as '\"_\"', '\"-\"' or '\".\"'." );
+                return result;
+            } else {
+                _defaultGroupId = defaultGroupId;
+            }
         }
 
         OrganizationalUnit organizationalUnit = null;
@@ -472,14 +488,57 @@ public class JobRequestHelper {
             }
             organizationalUnit = organizationalUnitService.createOrganizationalUnit( organizationalUnitName,
                                                                                      organizationalUnitOwner,
+                                                                                     _defaultGroupId,
                                                                                      repositories );
         } else {
             organizationalUnit = organizationalUnitService.createOrganizationalUnit( organizationalUnitName,
-                                                                                     organizationalUnitOwner );
+                                                                                     organizationalUnitOwner,
+                                                                                     _defaultGroupId );
         }
 
         if ( organizationalUnit != null ) {
             result.setResult( "OrganizationalUnit " + organizationalUnit.getName() + " is created successfully." );
+            result.setStatus( JobStatus.SUCCESS );
+        } else {
+            result.setStatus( JobStatus.FAIL );
+        }
+        return result;
+    }
+
+    public JobResult updateOrganizationalUnit( final String jobId,
+            final String organizationalUnitName,
+            final String organizationalUnitOwner,
+            final String defaultGroupId ) {
+        JobResult result = new JobResult();
+        result.setJobId( jobId );
+
+        if ( organizationalUnitName == null || organizationalUnitOwner == null ) {
+            result.setStatus( JobStatus.BAD_REQUEST );
+            result.setResult( "OrganizationalUnit name and owner must be provided" );
+            return result;
+        }
+
+        String _defaultGroupId = null;
+        if ( defaultGroupId == null || defaultGroupId.trim().isEmpty() ) {
+            _defaultGroupId = organizationalUnitService.getSanitizedDefaultGroupId( organizationalUnitName );
+            logger.warn( "No default group id was provided, reverting to the organizational unit name" );
+        } else {
+            if ( !organizationalUnitService.isValidGroupId( defaultGroupId ) ) {
+                result.setStatus( JobStatus.BAD_REQUEST );
+                result.setResult( "Invalid default group id, only alphanumerical characters are admitted, " +
+                        "as well as '\"_\"', '\"-\"' or '\".\"'." );
+                return result;
+            } else {
+                _defaultGroupId = defaultGroupId;
+            }
+        }
+
+        OrganizationalUnit organizationalUnit = organizationalUnitService.updateOrganizationalUnit( organizationalUnitName,
+                                                                                                    organizationalUnitOwner,
+                                                                                                    _defaultGroupId );
+
+        if ( organizationalUnit != null ) {
+            result.setResult( "OrganizationalUnit " + organizationalUnit.getName() + " was successfully updated." );
             result.setStatus( JobStatus.SUCCESS );
         } else {
             result.setStatus( JobStatus.FAIL );
@@ -507,6 +566,7 @@ public class JobRequestHelper {
         }
 
         OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl( organizationalUnitName,
+                                                                            null,
                                                                             null );
 
         GitRepository repo = new GitRepository( repositoryName );
@@ -543,7 +603,7 @@ public class JobRequestHelper {
             return result;
         }
 
-        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl( organizationalUnitName, null );
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl( organizationalUnitName, null, null );
         GitRepository repo = new GitRepository( repositoryName );
         try {
             organizationalUnitService.removeRepository( organizationalUnit,

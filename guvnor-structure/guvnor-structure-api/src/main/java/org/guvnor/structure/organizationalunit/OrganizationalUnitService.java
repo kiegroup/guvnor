@@ -13,14 +13,17 @@ public interface OrganizationalUnitService {
     Collection<OrganizationalUnit> getOrganizationalUnits();
 
     OrganizationalUnit createOrganizationalUnit( final String name,
-                                                 final String owner );
+                                                 final String owner,
+                                                 final String defaultGroupId);
 
     OrganizationalUnit createOrganizationalUnit( final String name,
                                                  final String owner,
+                                                 final String defaultGroupId,
                                                  final Collection<Repository> repositories );
 
-    void updateOrganizationalUnitOwner( final String name,
-                                        final String owner );
+    OrganizationalUnit updateOrganizationalUnit( final String name,
+                                   final String owner,
+                                   final String defaultGroupId);
 
     void addRepository( final OrganizationalUnit organizationalUnit,
                         final Repository repository );
@@ -38,4 +41,7 @@ public interface OrganizationalUnitService {
 
     OrganizationalUnit getParentOrganizationalUnit( final Repository repository );
 
+    String getSanitizedDefaultGroupId( final String proposedGroupId );
+
+    Boolean isValidGroupId( final String proposedGroupId );
 }

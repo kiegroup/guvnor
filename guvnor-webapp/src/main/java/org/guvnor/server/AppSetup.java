@@ -93,6 +93,7 @@ public class AppSetup {
                 repositories.add( repository1 );
                 organizationalUnitService.createOrganizationalUnit( DROOLS_WB_ORGANIZATIONAL_UNIT1,
                                                                     DROOLS_WB_ORGANIZATIONAL_UNIT1_OWNER,
+                                                                    null,
                                                                     repositories );
             }
         } catch ( Exception e ) {

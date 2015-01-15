@@ -12,6 +12,8 @@ public interface OrganizationalUnit extends RuntimeResource, Cacheable {
 
     String getOwner();
 
+    String getDefaultGroupId();
+
     Collection<Repository> getRepositories();
 
 }

@@ -161,7 +161,8 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
 
     @Override
     public void createNewOrganizationalUnit( final String organizationalUnitName,
-                                             final String organizationalUnitOwner ) {
+                                             final String organizationalUnitOwner,
+                                             final String defaultGroupId ) {
         final Collection<Repository> repositories = new ArrayList<Repository>();
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
         organizationalUnitService.call( new RemoteCallback<OrganizationalUnit>() {
@@ -174,6 +175,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).createOrganizationalUnit( organizationalUnitName,
                                                                                         organizationalUnitOwner,
+                                                                                        defaultGroupId,
                                                                                         repositories );
     }
 
@@ -185,16 +187,18 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
 
     @Override
     public void saveOrganizationalUnit( final String organizationalUnitName,
-                                        final String organizationalUnitOwner ) {
+                                        final String organizationalUnitOwner,
+                                        final String defaultGroupId ) {
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
-        organizationalUnitService.call( new RemoteCallback<Void>() {
+        organizationalUnitService.call( new RemoteCallback<OrganizationalUnit>() {
 
             @Override
-            public void callback( final Void response ) {
+            public void callback( final OrganizationalUnit response ) {
                 loadOrganizationalUnits();
             }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).updateOrganizationalUnitOwner( organizationalUnitName,
-                                                                                             organizationalUnitOwner );
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).updateOrganizationalUnit( organizationalUnitName,
+                                                                                        organizationalUnitOwner,
+                                                                                        defaultGroupId);
     }
 
     @Override
@@ -240,6 +244,20 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).removeRepository( organizationalUnit,
                                                                                 repository );
+    }
+
+    @Override
+    public void checkValidGroupId( final String proposedGroupId, RemoteCallback<Boolean> callback ) {
+        organizationalUnitService.call(
+                callback,
+                new HasBusyIndicatorDefaultErrorCallback( view ) ).isValidGroupId( proposedGroupId );
+    }
+
+    @Override
+    public void getSanitizedGroupId( String proposedGroupId, RemoteCallback<String> callback ) {
+        organizationalUnitService.call(
+                callback,
+                new HasBusyIndicatorDefaultErrorCallback( view ) ).getSanitizedDefaultGroupId( proposedGroupId );
     }
 
     public void onRepositoryAddedEvent( @Observes NewRepositoryEvent event ) {

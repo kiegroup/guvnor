@@ -63,6 +63,7 @@ import org.guvnor.rest.client.RemoveRepositoryRequest;
 import org.guvnor.rest.client.RepositoryRequest;
 import org.guvnor.rest.client.RepositoryResponse;
 import org.guvnor.rest.client.TestProjectRequest;
+import org.guvnor.rest.client.UpdateOrganizationalUnitRequest;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -413,6 +414,7 @@ public class ProjectResource {
             OrganizationalUnit orgUnit = new OrganizationalUnit();
             orgUnit.setName( ou.getName() );
             orgUnit.setOwner( ou.getOwner() );
+            orgUnit.setDefaultGroupId( ou.getDefaultGroupId() );
             List<String> repoNames = new ArrayList<String>();
             for ( Repository r : ou.getRepositories() ) {
                 repoNames.add( r.getAlias() );
@@ -435,6 +437,7 @@ public class ProjectResource {
         OrganizationalUnit orgUnit = new OrganizationalUnit();
         orgUnit.setName( origOrgUnit.getName() );
         orgUnit.setOwner( origOrgUnit.getOwner() );
+        orgUnit.setDefaultGroupId( origOrgUnit.getDefaultGroupId() );
         List<String> repoNames = new ArrayList<String>();
         for ( Repository r : origOrgUnit.getRepositories() ) {
             repoNames.add( r.getAlias() );
@@ -449,7 +452,8 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits")
     public Response createOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
-        logger.debug( "-----createOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {}", organizationalUnit.getName(), organizationalUnit.getOwner() );
+        logger.debug( "-----createOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {}, Default group id : {}",
+                        organizationalUnit.getName(), organizationalUnit.getOwner(), organizationalUnit.getDefaultGroupId() );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         CreateOrganizationalUnitRequest jobRequest = new CreateOrganizationalUnitRequest();
@@ -457,11 +461,35 @@ public class ProjectResource {
         jobRequest.setJobId( id );
         jobRequest.setOrganizationalUnitName( organizationalUnit.getName() );
         jobRequest.setOwner( organizationalUnit.getOwner() );
+        jobRequest.setDefaultGroupId( organizationalUnit.getDefaultGroupId() );
         jobRequest.setRepositories( organizationalUnit.getRepositories() );
 
         addAcceptedJobResult( id );
 
         jobRequestObserver.createOrganizationalUnitRequest( jobRequest );
+
+        return createAcceptedStatusResponse( jobRequest );
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/organizationalunits")
+    public Response updateOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
+        logger.debug( "-----updateOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {}, Default group id : {}",
+                        organizationalUnit.getName(), organizationalUnit.getOwner(), organizationalUnit.getDefaultGroupId() );
+
+        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        UpdateOrganizationalUnitRequest jobRequest = new UpdateOrganizationalUnitRequest();
+        jobRequest.setStatus( JobStatus.ACCEPTED );
+        jobRequest.setJobId( id );
+        jobRequest.setOrganizationalUnitName( organizationalUnit.getName() );
+        jobRequest.setOwner( organizationalUnit.getOwner() );
+        jobRequest.setDefaultGroupId( organizationalUnit.getDefaultGroupId() );
+
+        addAcceptedJobResult( id );
+
+        jobRequestObserver.updateOrganizationalUnitRequest( jobRequest );
 
         return createAcceptedStatusResponse( jobRequest );
     }
