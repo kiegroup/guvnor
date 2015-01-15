@@ -122,6 +122,7 @@ public class AppSetup {
             repositories.add( repository );
             organizationalUnitService.createOrganizationalUnit( ouName,
                                                                 ouOwner,
+                                                                null,
                                                                 repositories );
         }
         return ou;
