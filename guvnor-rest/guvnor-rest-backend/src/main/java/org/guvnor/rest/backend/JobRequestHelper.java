@@ -414,7 +414,7 @@ public class JobRequestHelper {
             BuildResults buildResults = buildService.buildAndDeploy( project );
 
             result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
-            result.setStatus( buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
+            result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
             return result;
         }
     }
@@ -472,7 +472,13 @@ public class JobRequestHelper {
             }
         }
 
-        OrganizationalUnit organizationalUnit = null;
+        OrganizationalUnit organizationalUnit = organizationalUnitService.getOrganizationalUnit(organizationalUnitName);
+        if ( organizationalUnit != null ) {
+            result.setStatus( JobStatus.BAD_REQUEST );
+            result.setResult( "OrganizationalUnit with name " + organizationalUnitName + " already exists" );
+            return result;
+        }
+
         List<org.guvnor.structure.repositories.Repository> repositories = new ArrayList<org.guvnor.structure.repositories.Repository>();
         if ( repositoryNameList != null && repositoryNameList.size() > 0 ) {
             for ( String repoName : repositoryNameList ) {

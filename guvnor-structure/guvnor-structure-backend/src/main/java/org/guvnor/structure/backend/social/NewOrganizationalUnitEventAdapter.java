@@ -31,7 +31,7 @@ import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
 @ApplicationScoped
-public class NewOrganizationalUnitEventAdapter
+public class NewOrganizationalUnitEventAdapter extends SocialEventAdapter
         implements SocialAdapter<NewOrganizationalUnitEvent> {
 
     @Inject
@@ -57,7 +57,7 @@ public class NewOrganizationalUnitEventAdapter
         NewOrganizationalUnitEvent event = ( NewOrganizationalUnitEvent ) object;
 
         return new SocialActivitiesEvent(
-                socialUserRepository.findSocialUser( event.getSessionInfo().getIdentity().getIdentifier() ),
+                socialUserRepository.findSocialUser( getUserInfo(event.getSessionInfo()) ),
                 socialEventType().name(),
                 new Date()
         )
@@ -80,4 +80,5 @@ public class NewOrganizationalUnitEventAdapter
     private String getAdditionalInfo( NewOrganizationalUnitEvent event ) {
         return "added";
     }
+
 }
