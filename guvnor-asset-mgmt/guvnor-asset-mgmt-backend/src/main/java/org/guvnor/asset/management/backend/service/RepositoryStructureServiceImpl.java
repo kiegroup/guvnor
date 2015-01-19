@@ -272,7 +272,7 @@ public class RepositoryStructureServiceImpl
         if ( groupId == null || "".equals( groupId.trim() ) ) return false;
         final String[] groupIdComponents = groupId.split( "\\.", -1 );
         for ( String s : groupIdComponents ) {
-            if ( !ValidationUtils.isJavaIdentifier( s ) ) return false;
+            if ( !ValidationUtils.isArtifactIdentifier( s ) ) return false;
         }
         return true;
     }
