@@ -366,7 +366,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
         }
 
         if ( model.getOrganizationalUnit() != null ) {
-            structurePage.setGroupId( model.getOrganizationalUnit().getName() );
+            structurePage.setGroupId( model.getOrganizationalUnit().getDefaultGroupId() );
         }
 
         structurePage.setProjectDescription( null );
