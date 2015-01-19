@@ -21,6 +21,7 @@ import javax.enterprise.event.Observes;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
 
 /**
@@ -33,6 +34,10 @@ public class ProjectContext {
     private Repository activeRepository;
     private Project activeProject;
     private Package activePackage;
+
+    public void onOrganizationalUnitUpdated( @Observes final UpdatedOrganizationalUnitEvent event ) {
+        this.setActiveOrganizationalUnit( event.getOrganizationalUnit() );
+    }
 
     public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
         this.setActiveOrganizationalUnit( event.getOrganizationalUnit() );
