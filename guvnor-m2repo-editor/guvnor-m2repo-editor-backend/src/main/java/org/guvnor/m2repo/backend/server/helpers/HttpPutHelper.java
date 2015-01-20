@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.util.Arrays;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,8 +41,7 @@ public class HttpPutHelper {
     @Inject
     private GuvnorM2Repository m2RepoService;
 
-    public void handle( final SecurityFilter securityFilter,
-                        final HttpServletRequest request,
+    public void handle( final HttpServletRequest request,
                         final HttpServletResponse response ) throws ServletException, IOException {
 
         final InputStream inputStream = request.getInputStream();
@@ -53,10 +51,27 @@ public class HttpPutHelper {
         try {
 
             //Get destination path
-            final String pathInfo = URLDecoder.decode( request.getPathInfo(),
-                                                       "UTF-8" );
-            final File mavenRootDir = new File( m2RepoService.getM2RepositoryRootDir() );
+            String pathInfo = request.getPathInfo();
 
+            if ( pathInfo == null ) {
+                response.sendError( HttpServletResponse.SC_NOT_FOUND );
+                return;
+            }
+
+            pathInfo = URLDecoder.decode( pathInfo,
+                                          "UTF-8" );
+
+            //File traversal check:
+            final File mavenRootDir = new File( m2RepoService.getM2RepositoryRootDir() );
+            final String canonicalDirPath = mavenRootDir.getCanonicalPath() + File.separator;
+            final String canonicalEntryPath = new File( mavenRootDir,
+                                                        pathInfo ).getCanonicalPath();
+            if ( !canonicalEntryPath.startsWith( canonicalDirPath ) ) {
+                response.sendError( HttpServletResponse.SC_NOT_FOUND );
+                return;
+            }
+
+            pathInfo = canonicalEntryPath.substring( canonicalDirPath.length() );
             final File file = new File( mavenRootDir,
                                         pathInfo );
 
@@ -66,10 +81,6 @@ public class HttpPutHelper {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
                 status = HttpServletResponse.SC_CREATED;
-            }
-
-            if ( !securityFilter.filter( file.getCanonicalFile().toURI() ) ) {
-                return;
             }
 
             outputStream = new BufferedOutputStream( new FileOutputStream( file ) );
@@ -106,15 +117,6 @@ public class HttpPutHelper {
             }
         }
 
-    }
-
-    private static boolean matches( final String matchHeader,
-                                    final String toMatch ) {
-        String[] matchValues = matchHeader.split( "\\s*,\\s*" );
-        Arrays.sort( matchValues );
-        return Arrays.binarySearch( matchValues,
-                                    toMatch ) > -1
-                || Arrays.binarySearch( matchValues, "*" ) > -1;
     }
 
 }
