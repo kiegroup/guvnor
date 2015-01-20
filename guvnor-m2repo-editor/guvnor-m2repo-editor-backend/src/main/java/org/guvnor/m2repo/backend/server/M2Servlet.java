@@ -16,21 +16,19 @@
 package org.guvnor.m2repo.backend.server;
 
 import java.io.IOException;
-import java.net.URI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.guvnor.m2repo.backend.server.helpers.HttpGetHelper;
 import org.guvnor.m2repo.backend.server.helpers.HttpPostHelper;
 import org.guvnor.m2repo.backend.server.helpers.HttpPutHelper;
-import org.guvnor.m2repo.backend.server.helpers.SecurityFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.server.BaseFilteredServlet;
 
-public class M2Servlet extends BaseFilteredServlet {
+public class M2Servlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger( M2Servlet.class );
 
@@ -47,13 +45,7 @@ public class M2Servlet extends BaseFilteredServlet {
     protected void doGet( final HttpServletRequest request,
                           final HttpServletResponse response ) throws ServletException, IOException {
         log.info( "GET request received for " + request.getPathInfo() );
-        httpGetHelper.handle( new SecurityFilter() {
-                                  @Override
-                                  public boolean filter( final URI uri ) {
-                                      return validateAccess( uri, response );
-                                  }
-                              },
-                              request,
+        httpGetHelper.handle( request,
                               response,
                               getServletContext() );
 
@@ -71,13 +63,7 @@ public class M2Servlet extends BaseFilteredServlet {
     protected void doPut( final HttpServletRequest request,
                           final HttpServletResponse response ) throws ServletException, IOException {
         log.info( "PUT request received for " + request.getPathInfo() );
-        httpPutHelper.handle( new SecurityFilter() {
-                                  @Override
-                                  public boolean filter( final URI uri ) {
-                                      return validateAccess( uri, response );
-                                  }
-                              },
-                              request,
+        httpPutHelper.handle( request,
                               response );
     }
 
