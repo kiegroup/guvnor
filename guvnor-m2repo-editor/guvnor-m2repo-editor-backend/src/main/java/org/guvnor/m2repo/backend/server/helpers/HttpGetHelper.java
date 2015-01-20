@@ -46,8 +46,7 @@ public class HttpGetHelper {
     @Inject
     private GuvnorM2Repository repository;
 
-    public void handle( final SecurityFilter securityFilter,
-                        final HttpServletRequest request,
+    public void handle( final HttpServletRequest request,
                         final HttpServletResponse response,
                         final ServletContext context ) throws IOException {
         String requestedFile = request.getPathInfo();
@@ -57,26 +56,25 @@ public class HttpGetHelper {
             return;
         }
 
-        requestedFile = URLDecoder.decode( requestedFile, "UTF-8" );
-        File mavenRootDir = new File( repository.getM2RepositoryRootDir() );
+        requestedFile = URLDecoder.decode( requestedFile,
+                                           "UTF-8" );
 
         //File traversal check:
+        final File mavenRootDir = new File( repository.getM2RepositoryRootDir() );
         final String canonicalDirPath = mavenRootDir.getCanonicalPath() + File.separator;
-        final String canonicalEntryPath = new File( mavenRootDir, requestedFile ).getCanonicalPath();
+        final String canonicalEntryPath = new File( mavenRootDir,
+                                                    requestedFile ).getCanonicalPath();
         if ( !canonicalEntryPath.startsWith( canonicalDirPath ) ) {
             response.sendError( HttpServletResponse.SC_NOT_FOUND );
             return;
         }
 
         requestedFile = canonicalEntryPath.substring( canonicalDirPath.length() );
-        File file = new File( mavenRootDir, requestedFile );
+        final File file = new File( mavenRootDir,
+                                    requestedFile );
 
         if ( !file.exists() ) {
             response.sendError( HttpServletResponse.SC_NOT_FOUND );
-            return;
-        }
-
-        if ( !securityFilter.filter( file.getCanonicalFile().toURI() ) ) {
             return;
         }
 
