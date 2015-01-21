@@ -71,4 +71,11 @@ public class BuildResults {
         this.messages.add( message );
     }
 
+    public void addBuildMessage( final int index, final BuildMessage message ) {
+        this.messages.add( index, message );
+    }
+
+    public void addAllBuildMessages(List<BuildMessage> buildMessages) {
+        messages.addAll(buildMessages);
+    }
 }

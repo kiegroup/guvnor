@@ -58,4 +58,11 @@ public class IncrementalBuildResults {
         this.removedMessages.add( message );
     }
 
+    public void addAllAddedMessages(List<BuildMessage> buildMessages) {
+        addedMessages.addAll(buildMessages);
+    }
+
+    public void addAllRemovedMessages(List<BuildMessage> buildMessages) {
+        removedMessages.addAll(buildMessages);
+    }
 }
