@@ -75,4 +75,7 @@ public class BuildResults {
         this.messages.add( index, message );
     }
 
+    public void addAllBuildMessages(List<BuildMessage> buildMessages) {
+        messages.addAll(buildMessages);
+    }
 }
