@@ -17,7 +17,6 @@
 package org.guvnor.structure.organizationalunit;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.rpc.SessionInfo;
 
 @Portable
 public class UpdatedOrganizationalUnitEvent extends OrganizationalUnitEventBase {
@@ -25,7 +24,7 @@ public class UpdatedOrganizationalUnitEvent extends OrganizationalUnitEventBase 
     public UpdatedOrganizationalUnitEvent() {
     }
 
-    public UpdatedOrganizationalUnitEvent( OrganizationalUnit organizationalUnit, SessionInfo sessionInfo ) {
-        super( organizationalUnit, sessionInfo );
+    public UpdatedOrganizationalUnitEvent( OrganizationalUnit organizationalUnit, String userName ) {
+        super( organizationalUnit, userName );
     }
 }

@@ -26,14 +26,14 @@ import org.uberfire.rpc.SessionInfo;
 public class OrganizationalUnitEventBase {
 
     protected OrganizationalUnit organizationalUnit;
-    protected SessionInfo sessionInfo;
+    protected String userName;
 
     public OrganizationalUnitEventBase() {
     }
 
-    public OrganizationalUnitEventBase( final OrganizationalUnit organizationalUnit, final SessionInfo sessionInfo ) {
+    public OrganizationalUnitEventBase( final OrganizationalUnit organizationalUnit, final String userName ) {
         this.organizationalUnit = organizationalUnit;
-        this.sessionInfo = sessionInfo;
+        this.userName = userName;
     }
 
     public OrganizationalUnit getOrganizationalUnit() {
@@ -44,12 +44,23 @@ public class OrganizationalUnitEventBase {
         this.organizationalUnit = organizationalUnit;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    /*
+     * we need to keep the old things like session info methods as it's portable object
+     * only for cr4 patch to deliver pure jars without gwt/errai compilation
+     */
     public SessionInfo getSessionInfo() {
-        return sessionInfo;
+        return null;
     }
 
     public void setSessionInfo( SessionInfo sessionInfo ) {
-        this.sessionInfo = sessionInfo;
-    }
 
+    }
 }
