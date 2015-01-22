@@ -17,7 +17,6 @@
 package org.guvnor.structure.organizationalunit;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.rpc.SessionInfo;
 
 /**
  * Common attributes for OU events, sub classes should be fired instead of this.
@@ -52,15 +51,4 @@ public class OrganizationalUnitEventBase {
         this.userName = userName;
     }
 
-    /*
-     * we need to keep the old things like session info methods as it's portable object
-     * only for cr4 patch to deliver pure jars without gwt/errai compilation
-     */
-    public SessionInfo getSessionInfo() {
-        return null;
-    }
-
-    public void setSessionInfo( SessionInfo sessionInfo ) {
-
-    }
 }
