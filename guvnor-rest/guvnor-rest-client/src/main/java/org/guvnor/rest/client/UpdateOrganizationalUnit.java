@@ -21,17 +21,25 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class OrganizationalUnit extends UpdateOrganizationalUnit {
+public class UpdateOrganizationalUnit extends Entity {
     
-    private List<String> repositories;
+    private String owner;
+    private String defaultGroupId;
     
-	public List<String> getRepositories() {
-		return repositories;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public void setRepositories(List<String> repositories) {
-		this.repositories = repositories;
-	} 
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
- 
+    public String getDefaultGroupId() {
+        return defaultGroupId;
+    }
+
+    public void setDefaultGroupId( String defaultGroupId ) {
+        this.defaultGroupId = defaultGroupId;
+    }
+
 }
