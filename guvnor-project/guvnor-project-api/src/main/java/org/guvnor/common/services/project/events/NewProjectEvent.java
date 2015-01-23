@@ -26,22 +26,28 @@ import org.uberfire.rpc.SessionInfo;
 public class NewProjectEvent {
 
     private Project project;
-    private SessionInfo sessionInfo;
+    private String sessionId;
+    private String identity;
 
     public NewProjectEvent() {
     }
 
     public NewProjectEvent( final Project project,
-                            final SessionInfo sessionInfo ) {
+                            final String sessionId, 
+                            final String identity ) {
         this.project = project;
-        this.sessionInfo = sessionInfo;
+        this.sessionId = sessionId;
     }
 
     public Project getProject() {
         return project;
     }
 
-    public SessionInfo getSessionInfo() {
-        return sessionInfo;
+    public String getSessionId() {
+        return sessionId;
+    }
+    
+    public String getIdentity() { 
+       return identity; 
     }
 }
