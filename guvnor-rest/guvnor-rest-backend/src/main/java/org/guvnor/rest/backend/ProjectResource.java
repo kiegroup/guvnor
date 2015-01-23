@@ -63,6 +63,7 @@ import org.guvnor.rest.client.RemoveRepositoryRequest;
 import org.guvnor.rest.client.RepositoryRequest;
 import org.guvnor.rest.client.RepositoryResponse;
 import org.guvnor.rest.client.TestProjectRequest;
+import org.guvnor.rest.client.UpdateOrganizationalUnit;
 import org.guvnor.rest.client.UpdateOrganizationalUnitRequest;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
@@ -190,7 +191,7 @@ public class ProjectResource {
     public Response createOrCloneRepository( RepositoryRequest repository ) {
         logger.debug( "-----createOrCloneRepository--- , repository name: {}", repository.getName() );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        String id = newId();
         CreateOrCloneRepositoryRequest jobRequest = new CreateOrCloneRepositoryRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -214,8 +215,7 @@ public class ProjectResource {
     public Response removeRepository( @PathParam("repositoryName") String repositoryName ) {
         logger.debug( "-----removeRepository--- , repositoryName: {}", repositoryName );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
-
+        String id = newId();
         RemoveRepositoryRequest jobRequest = new RemoveRepositoryRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -238,7 +238,7 @@ public class ProjectResource {
         logger.debug( "-----createProject--- , repositoryName: {} , project name: {}", repositoryName, project.getName() );
         checkRepositoryExistence( repositoryName );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        String id = newId();
         CreateProjectRequest jobRequest = new CreateProjectRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -292,7 +292,7 @@ public class ProjectResource {
         logger.debug( "-----deleteProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
         checkRepositoryExistence( repositoryName );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        String id = newId();
         DeleteProjectRequest jobRequest = new DeleteProjectRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -315,7 +315,7 @@ public class ProjectResource {
         logger.debug( "-----compileProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
         checkRepositoryExistence( repositoryName );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        String id = newId();
         CompileProjectRequest jobRequest = new CompileProjectRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -338,7 +338,7 @@ public class ProjectResource {
         logger.debug( "-----installProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
         checkRepositoryExistence( repositoryName );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        String id = newId();
         InstallProjectRequest jobRequest = new InstallProjectRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -363,7 +363,7 @@ public class ProjectResource {
         logger.debug( "-----testProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
         checkRepositoryExistence( repositoryName );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        String id = newId();
         TestProjectRequest jobRequest = new TestProjectRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -387,7 +387,7 @@ public class ProjectResource {
         logger.debug( "-----deployProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
         checkRepositoryExistence( repositoryName );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        String id = newId();
         DeployProjectRequest jobRequest = new DeployProjectRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -455,7 +455,7 @@ public class ProjectResource {
         logger.debug( "-----createOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {}, Default group id : {}",
                         organizationalUnit.getName(), organizationalUnit.getOwner(), organizationalUnit.getDefaultGroupId() );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        String id = newId();
         CreateOrganizationalUnitRequest jobRequest = new CreateOrganizationalUnitRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -475,13 +475,25 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}/")
-    public Response updateOrganizationalUnit(@PathParam("organizationalUnitName") String organizationalUnitName, OrganizationalUnit organizationalUnit ) {
+    public Response updateOrganizationalUnit(@PathParam("organizationalUnitName") String orgUnitName, UpdateOrganizationalUnit organizationalUnit ) {
+       
+        // use name in url if post entity name is null
+        if( organizationalUnit.getName() == null ) { 
+            organizationalUnit.setName(orgUnitName);
+        }
+        
         logger.debug( "-----updateOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {}, Default group id : {}",
                         organizationalUnit.getName(), organizationalUnit.getOwner(), organizationalUnit.getDefaultGroupId() );
 
-        checkOrganizationalUnitExistence(organizationalUnitName);
+        org.guvnor.structure.organizationalunit.OrganizationalUnit origOrgUnit
+                = checkOrganizationalUnitExistence(orgUnitName);
         
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        // use owner in existing OU if post owner is null
+        if( organizationalUnit.getOwner() == null ) { 
+            organizationalUnit.setOwner(origOrgUnit.getOwner());
+        }
+        
+        String id = newId();
         UpdateOrganizationalUnitRequest jobRequest = new UpdateOrganizationalUnitRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -505,7 +517,7 @@ public class ProjectResource {
         checkOrganizationalUnitExistence( organizationalUnitName );
         checkRepositoryExistence( repositoryName );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        String id = newId();
         AddRepositoryToOrganizationalUnitRequest jobRequest = new AddRepositoryToOrganizationalUnitRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -528,7 +540,7 @@ public class ProjectResource {
         checkOrganizationalUnitExistence( organizationalUnitName );
         checkRepositoryExistence( repositoryName );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        String id = newId();
         RemoveRepositoryFromOrganizationalUnitRequest jobRequest = new RemoveRepositoryFromOrganizationalUnitRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -549,7 +561,7 @@ public class ProjectResource {
         logger.debug( "-----deleteOrganizationalUnit--- , OrganizationalUnit name: {}", organizationalUnitName );
         checkOrganizationalUnitExistence( organizationalUnitName );
 
-        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
+        String id = newId();
         RemoveOrganizationalUnitRequest jobRequest = new RemoveOrganizationalUnitRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
         jobRequest.setJobId( id );
@@ -586,4 +598,7 @@ public class ProjectResource {
         return Response.status( Status.ACCEPTED ).entity( jobRequest ).variant( defaultVariant ).build();
     }
 
+    private String newId() { 
+        return "" + System.currentTimeMillis() + "-" + counter.incrementAndGet(); 
+    }
 }
