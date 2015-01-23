@@ -656,14 +656,12 @@ public abstract class AbstractProjectService<T extends Project>
     protected String getSessionId() {
         try {
             return sessionInfo.getId();
-        } catch ( ContextNotActiveException e ) {
-            return "--";
         } catch ( Exception e ) {
             return "--";
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     @Override
     public void addRole( final Project project,
                          final String role ) {
@@ -805,7 +803,7 @@ public abstract class AbstractProjectService<T extends Project>
                 ioService.endBatch();
             }
             final Project newProject = resolveProject( Paths.convert( newProjectPath ) );
-            newProjectEvent.fire( new NewProjectEvent( newProject, sessionInfo ) );
+            newProjectEvent.fire( new NewProjectEvent( newProject, getSessionId(), getIdentityName() ) );
 
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );

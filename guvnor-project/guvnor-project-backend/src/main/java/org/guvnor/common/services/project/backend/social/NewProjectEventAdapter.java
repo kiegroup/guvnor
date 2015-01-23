@@ -67,7 +67,7 @@ public class NewProjectEventAdapter implements SocialAdapter<NewProjectEvent> {
         }
 
         socialActivitiesEvent = new SocialActivitiesEvent(
-                socialUserRepository.findSocialUser( event.getSessionInfo().getIdentity().getIdentifier() ),
+                socialUserRepository.findSocialUser( event.getIdentity() ),
                 socialEventType().name(),
                 new Date()
         )
