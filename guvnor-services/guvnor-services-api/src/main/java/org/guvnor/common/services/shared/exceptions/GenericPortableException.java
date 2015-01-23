@@ -15,4 +15,8 @@ public class GenericPortableException extends RuntimeException {
         super( message );
     }
 
+    public GenericPortableException( final String message, Exception e ) {
+        super( message, e );
+    }
+
 }
