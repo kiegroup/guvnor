@@ -474,11 +474,13 @@ public class ProjectResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/organizationalunits")
-    public Response updateOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
+    @Path("/organizationalunits/{organizationalUnitName}/")
+    public Response updateOrganizationalUnit(@PathParam("organizationalUnitName") String organizationalUnitName, OrganizationalUnit organizationalUnit ) {
         logger.debug( "-----updateOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {}, Default group id : {}",
                         organizationalUnit.getName(), organizationalUnit.getOwner(), organizationalUnit.getDefaultGroupId() );
 
+        checkOrganizationalUnitExistence(organizationalUnitName);
+        
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         UpdateOrganizationalUnitRequest jobRequest = new UpdateOrganizationalUnitRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
