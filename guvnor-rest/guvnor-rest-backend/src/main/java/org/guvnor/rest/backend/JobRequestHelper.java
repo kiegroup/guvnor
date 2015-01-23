@@ -518,7 +518,6 @@ public class JobRequestHelper {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
-        organizationalUnitService.getOrganizationalUnit(organizationalUnitName);
         if ( organizationalUnitName == null || organizationalUnitOwner == null ) {
             result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "OrganizationalUnit name and owner must be provided" );
