@@ -82,6 +82,9 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
         if ( owner != null ? !owner.equals( ou.owner ) : ou.owner != null ) {
             return false;
         }
+        if ( defaultGroupId != null ? !defaultGroupId.equals( ou.defaultGroupId ) : ou.defaultGroupId != null ) {
+            return false;
+        }
 
         return true;
     }
@@ -91,6 +94,8 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
         int result = name != null ? name.hashCode() : 0;
         result = ~~result;
         result = 31 * result + ( owner != null ? owner.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( defaultGroupId != null ? defaultGroupId.hashCode() : 0 );
         result = ~~result;
         return result;
     }
