@@ -37,6 +37,7 @@ public class NewProjectEvent {
                             final String identity ) {
         this.project = project;
         this.sessionId = sessionId;
+        this.identity = identity;
     }
 
     public Project getProject() {
