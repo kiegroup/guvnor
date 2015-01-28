@@ -24,6 +24,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -80,18 +81,18 @@ public class RepositoriesPresenter {
     @OnStartup
     public void onStartup() {
         view.init( this );
+        loadContent();
+    }
+
+    private void loadContent() {
         view.clear();
 
         repositoryService.call( new RemoteCallback<Collection<Repository>>() {
             @Override
-            public void callback( Collection<Repository> response ) {
+            public void callback( final Collection<Repository> response ) {
+                view.clear();
                 for ( final Repository repo : response ) {
-                    vfsService.call( new RemoteCallback<Map>() {
-                        @Override
-                        public void callback( Map response ) {
-                            view.addRepository( repo );
-                        }
-                    } ).readAttributes( repo.getRoot() );
+                    view.addRepository( repo );
                 }
             }
         } ).getRepositories();
@@ -136,6 +137,10 @@ public class RepositoriesPresenter {
 
     public void removeRootDirectory( @Observes RepositoryRemovedEvent event ) {
         view.removeIfExists( event.getRepository() );
+    }
+
+    public void onSystemRepositoryChanged( @Observes SystemRepositoryChangedEvent event ) {
+        loadContent();
     }
 
 }

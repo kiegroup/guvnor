@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,10 +25,13 @@ import org.guvnor.structure.backend.config.watch.AsyncConfigWatchService;
 import org.guvnor.structure.backend.config.watch.AsyncWatchServiceCallback;
 import org.guvnor.structure.backend.config.watch.ConfigServiceWatchServiceExecutor;
 import org.guvnor.structure.backend.config.watch.ConfigServiceWatchServiceExecutorImpl;
+import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
@@ -49,6 +51,8 @@ import static org.uberfire.backend.server.util.Paths.*;
 @ApplicationScoped
 public class ConfigurationServiceImpl implements ConfigurationService,
                                                  AsyncWatchServiceCallback {
+
+    private static final Logger logger = LoggerFactory.getLogger( ConfigurationServiceImpl.class );
 
     private static final String MONITOR_DISABLED = "org.uberfire.sys.repo.monitor.disabled";
     //    private static final String MONITOR_CHECK_INTERVAL = "org.uberfire.sys.repo.monitor.interval";
@@ -157,6 +161,16 @@ public class ConfigurationServiceImpl implements ConfigurationService,
             // Preserve interrupt status
             Thread.currentThread().interrupt();
         }
+    }
+
+    @Override
+    public synchronized void startBatch() {
+        ioService.startBatch( ioService.get( systemRepository.getUri() ).getFileSystem() );
+    }
+
+    @Override
+    public void endBatch() {
+        ioService.endBatch();
     }
 
     @Override

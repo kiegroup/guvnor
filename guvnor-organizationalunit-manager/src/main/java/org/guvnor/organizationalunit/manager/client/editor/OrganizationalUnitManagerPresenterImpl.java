@@ -26,6 +26,7 @@ import com.google.gwt.user.client.Command;
 import org.guvnor.organizationalunit.manager.client.editor.popups.AddOrganizationalUnitPopup;
 import org.guvnor.organizationalunit.manager.client.editor.popups.EditOrganizationalUnitPopup;
 import org.guvnor.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
+import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
@@ -198,7 +199,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
             }
         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).updateOrganizationalUnit( organizationalUnitName,
                                                                                         organizationalUnitOwner,
-                                                                                        defaultGroupId);
+                                                                                        defaultGroupId );
     }
 
     @Override
@@ -247,14 +248,16 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     }
 
     @Override
-    public void checkValidGroupId( final String proposedGroupId, RemoteCallback<Boolean> callback ) {
+    public void checkValidGroupId( final String proposedGroupId,
+                                   RemoteCallback<Boolean> callback ) {
         organizationalUnitService.call(
                 callback,
                 new HasBusyIndicatorDefaultErrorCallback( view ) ).isValidGroupId( proposedGroupId );
     }
 
     @Override
-    public void getSanitizedGroupId( String proposedGroupId, RemoteCallback<String> callback ) {
+    public void getSanitizedGroupId( String proposedGroupId,
+                                     RemoteCallback<String> callback ) {
         organizationalUnitService.call(
                 callback,
                 new HasBusyIndicatorDefaultErrorCallback( view ) ).getSanitizedDefaultGroupId( proposedGroupId );
@@ -265,6 +268,10 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     }
 
     public void onRepositoryRemovedEvent( @Observes RepositoryRemovedEvent event ) {
+        onStartup();
+    }
+
+    public void onSystemRepositoryChanged( @Observes SystemRepositoryChangedEvent event ) {
         onStartup();
     }
 

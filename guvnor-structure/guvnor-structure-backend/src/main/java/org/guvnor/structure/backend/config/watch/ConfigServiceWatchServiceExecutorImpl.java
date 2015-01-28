@@ -10,7 +10,7 @@ import javax.inject.Named;
 import org.guvnor.structure.backend.config.ConfigurationServiceImpl;
 import org.guvnor.structure.backend.config.OrgUnit;
 import org.guvnor.structure.backend.config.Repository;
-import org.guvnor.structure.backend.config.SystemRepositoryChangedEvent;
+import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchKey;

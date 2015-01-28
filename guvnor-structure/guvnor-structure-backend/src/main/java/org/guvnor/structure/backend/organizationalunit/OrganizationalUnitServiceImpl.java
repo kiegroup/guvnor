@@ -12,7 +12,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.structure.backend.config.OrgUnit;
-import org.guvnor.structure.backend.config.SystemRepositoryChangedEvent;
+import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -62,7 +62,8 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     private Map<String, OrganizationalUnit> registeredOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
 
     private
-    @Inject SessionInfo sessionInfo;
+    @Inject
+    SessionInfo sessionInfo;
 
     @PostConstruct
     public void loadOrganizationalUnits() {
@@ -98,27 +99,32 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     public OrganizationalUnit createOrganizationalUnit( final String name,
                                                         final String owner,
                                                         final String defaultGroupId ) {
-        final ConfigGroup groupConfig = configurationFactory.newConfigGroup( ConfigType.ORGANIZATIONAL_UNIT,
-                                                                             name,
-                                                                             "" );
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "owner",
-                                                                       owner ) );
-        String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ? getSanitizedDefaultGroupId( name ) : defaultGroupId;
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "defaultGroupId",
-                                                                       _defaultGroupId ) );
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "repositories",
-                                                                       new ArrayList<String>() ) );
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
-                                                                       new ArrayList<String>() ) );
-        configurationService.addConfiguration( groupConfig );
+        try {
+            configurationService.startBatch();
+            final ConfigGroup groupConfig = configurationFactory.newConfigGroup( ConfigType.ORGANIZATIONAL_UNIT,
+                                                                                 name,
+                                                                                 "" );
+            groupConfig.addConfigItem( configurationFactory.newConfigItem( "owner",
+                                                                           owner ) );
+            String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ? getSanitizedDefaultGroupId( name ) : defaultGroupId;
+            groupConfig.addConfigItem( configurationFactory.newConfigItem( "defaultGroupId",
+                                                                           _defaultGroupId ) );
+            groupConfig.addConfigItem( configurationFactory.newConfigItem( "repositories",
+                                                                           new ArrayList<String>() ) );
+            groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
+                                                                           new ArrayList<String>() ) );
+            configurationService.addConfiguration( groupConfig );
 
-        final OrganizationalUnit newOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( groupConfig );
-        registeredOrganizationalUnits.put( newOrganizationalUnit.getName(),
-                                           newOrganizationalUnit );
+            final OrganizationalUnit newOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( groupConfig );
+            registeredOrganizationalUnits.put( newOrganizationalUnit.getName(),
+                                               newOrganizationalUnit );
 
-        newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit, getUserInfo(sessionInfo) ) );
+            newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit, getUserInfo( sessionInfo ) ) );
 
-        return newOrganizationalUnit;
+            return newOrganizationalUnit;
+        } finally {
+            configurationService.endBatch();
+        }
     }
 
     @Override
@@ -126,27 +132,32 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                                                         final String owner,
                                                         final String defaultGroupId,
                                                         final Collection<Repository> repositories ) {
-        final ConfigGroup groupConfig = configurationFactory.newConfigGroup( ConfigType.ORGANIZATIONAL_UNIT,
-                                                                             name,
-                                                                             "" );
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "owner",
-                                                                       owner ) );
-        String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ? getSanitizedDefaultGroupId( name ) : defaultGroupId;
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "defaultGroupId",
-                                                                       _defaultGroupId ) );
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "repositories",
-                                                                       getRepositoryAliases( repositories ) ) );
-        groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
-                                                                       new ArrayList<String>() ) );
-        configurationService.addConfiguration( groupConfig );
+        try {
+            configurationService.startBatch();
+            final ConfigGroup groupConfig = configurationFactory.newConfigGroup( ConfigType.ORGANIZATIONAL_UNIT,
+                                                                                 name,
+                                                                                 "" );
+            groupConfig.addConfigItem( configurationFactory.newConfigItem( "owner",
+                                                                           owner ) );
+            String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ? getSanitizedDefaultGroupId( name ) : defaultGroupId;
+            groupConfig.addConfigItem( configurationFactory.newConfigItem( "defaultGroupId",
+                                                                           _defaultGroupId ) );
+            groupConfig.addConfigItem( configurationFactory.newConfigItem( "repositories",
+                                                                           getRepositoryAliases( repositories ) ) );
+            groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
+                                                                           new ArrayList<String>() ) );
+            configurationService.addConfiguration( groupConfig );
 
-        final OrganizationalUnit newOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( groupConfig );
-        registeredOrganizationalUnits.put( newOrganizationalUnit.getName(),
-                                           newOrganizationalUnit );
+            final OrganizationalUnit newOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( groupConfig );
+            registeredOrganizationalUnits.put( newOrganizationalUnit.getName(),
+                                               newOrganizationalUnit );
 
-        newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit, getUserInfo(sessionInfo) ) );
+            newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit, getUserInfo( sessionInfo ) ) );
 
-        return newOrganizationalUnit;
+            return newOrganizationalUnit;
+        } finally {
+            configurationService.endBatch();
+        }
     }
 
     private List<String> getRepositoryAliases( final Collection<Repository> repositories ) {
@@ -159,28 +170,33 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @Override
     public OrganizationalUnit updateOrganizationalUnit( final String name,
-                                          final String owner,
-                                          final String defaultGroupId) {
+                                                        final String owner,
+                                                        final String defaultGroupId ) {
         final ConfigGroup thisGroupConfig = findGroupConfig( name );
 
         if ( thisGroupConfig != null ) {
-            thisGroupConfig.setConfigItem( configurationFactory.newConfigItem( "owner",
-                                                                               owner ) );
-            // As per loadOrganizationalUnits(), all Organizational Units should have the default group id value set
-            String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ?
-                                        thisGroupConfig.getConfigItemValue( "defaultGroupId" ) : defaultGroupId;
-            thisGroupConfig.setConfigItem( configurationFactory.newConfigItem( "defaultGroupId",
-                                                                               _defaultGroupId ) );
+            try {
+                configurationService.startBatch();
+                thisGroupConfig.setConfigItem( configurationFactory.newConfigItem( "owner",
+                                                                                   owner ) );
+                // As per loadOrganizationalUnits(), all Organizational Units should have the default group id value set
+                String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ?
+                        thisGroupConfig.getConfigItemValue( "defaultGroupId" ) : defaultGroupId;
+                thisGroupConfig.setConfigItem( configurationFactory.newConfigItem( "defaultGroupId",
+                                                                                   _defaultGroupId ) );
 
-            configurationService.updateConfiguration( thisGroupConfig );
+                configurationService.updateConfiguration( thisGroupConfig );
 
-            final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
-            registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
-                                               updatedOrganizationalUnit );
+                final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
+                registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
+                                                   updatedOrganizationalUnit );
 
-            updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, getUserInfo(sessionInfo) ) );
+                updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, getUserInfo( sessionInfo ) ) );
 
-            return updatedOrganizationalUnit;
+                return updatedOrganizationalUnit;
+            } finally {
+                configurationService.endBatch();
+            }
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + name + " not found" );
         }
@@ -193,16 +209,21 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         final ConfigGroup thisGroupConfig = findGroupConfig( organizationalUnit.getName() );
 
         if ( thisGroupConfig != null ) {
-            ConfigItem<List> repositories = thisGroupConfig.getConfigItem( "repositories" );
-            repositories.getValue().add( repository.getAlias() );
+            try {
+                configurationService.startBatch();
+                ConfigItem<List> repositories = thisGroupConfig.getConfigItem( "repositories" );
+                repositories.getValue().add( repository.getAlias() );
 
-            configurationService.updateConfiguration( thisGroupConfig );
+                configurationService.updateConfiguration( thisGroupConfig );
 
-            final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
-            registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
-                                               updatedOrganizationalUnit );
+                final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
+                registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
+                                                   updatedOrganizationalUnit );
 
-            repoAddedToOrgUnitEvent.fire(new RepoAddedToOrganizationaUnitEvent(organizationalUnit, repository, getUserInfo(sessionInfo) ));
+                repoAddedToOrgUnitEvent.fire( new RepoAddedToOrganizationaUnitEvent( organizationalUnit, repository, getUserInfo( sessionInfo ) ) );
+            } finally {
+                configurationService.endBatch();
+            }
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
         }
@@ -215,16 +236,21 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         final ConfigGroup thisGroupConfig = findGroupConfig( organizationalUnit.getName() );
 
         if ( thisGroupConfig != null ) {
-            final ConfigItem<List> repositories = thisGroupConfig.getConfigItem( "repositories" );
-            repositories.getValue().remove( repository.getAlias() );
+            try {
+                configurationService.startBatch();
+                final ConfigItem<List> repositories = thisGroupConfig.getConfigItem( "repositories" );
+                repositories.getValue().remove( repository.getAlias() );
 
-            configurationService.updateConfiguration( thisGroupConfig );
+                configurationService.updateConfiguration( thisGroupConfig );
 
-            final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
-            registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
-                                               updatedOrganizationalUnit );
+                final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
+                registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
+                                                   updatedOrganizationalUnit );
 
-            repoRemovedFromOrgUnitEvent.fire(new RepoRemovedFromOrganizationalUnitEvent(organizationalUnit, repository, getUserInfo(sessionInfo) ));
+                repoRemovedFromOrgUnitEvent.fire( new RepoRemovedFromOrganizationalUnitEvent( organizationalUnit, repository, getUserInfo( sessionInfo ) ) );
+            } finally {
+                configurationService.endBatch();
+            }
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
         }
@@ -237,17 +263,21 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         final ConfigGroup thisGroupConfig = findGroupConfig( organizationalUnit.getName() );
 
         if ( thisGroupConfig != null ) {
-            final ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
-            roles.getValue().add( role );
+            try {
+                configurationService.startBatch();
+                final ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
+                roles.getValue().add( role );
 
-            configurationService.updateConfiguration( thisGroupConfig );
+                configurationService.updateConfiguration( thisGroupConfig );
 
-            final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
-            registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
-                                               updatedOrganizationalUnit );
+                final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
+                registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
+                                                   updatedOrganizationalUnit );
 
-            updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, getUserInfo(sessionInfo) ) );
-
+                updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, getUserInfo( sessionInfo ) ) );
+            } finally {
+                configurationService.endBatch();
+            }
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
         }
@@ -260,17 +290,21 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         final ConfigGroup thisGroupConfig = findGroupConfig( organizationalUnit.getName() );
 
         if ( thisGroupConfig != null ) {
-            final ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
-            roles.getValue().remove( role );
+            try {
+                configurationService.startBatch();
+                final ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
+                roles.getValue().remove( role );
 
-            configurationService.updateConfiguration( thisGroupConfig );
+                configurationService.updateConfiguration( thisGroupConfig );
 
-            final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
-            registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
-                                               updatedOrganizationalUnit );
+                final OrganizationalUnit updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit( thisGroupConfig );
+                registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
+                                                   updatedOrganizationalUnit );
 
-            updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, getUserInfo(sessionInfo) ) );
-
+                updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, getUserInfo( sessionInfo ) ) );
+            } finally {
+                configurationService.endBatch();
+            }
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
         }
@@ -293,9 +327,14 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         final ConfigGroup thisGroupConfig = findGroupConfig( groupName );
 
         if ( thisGroupConfig != null ) {
-            configurationService.removeConfiguration( thisGroupConfig );
-            final OrganizationalUnit ou = registeredOrganizationalUnits.remove( groupName );
-            removeOrganizationalUnitEvent.fire( new RemoveOrganizationalUnitEvent( ou, getUserInfo(sessionInfo) ) );
+            try {
+                configurationService.startBatch();
+                configurationService.removeConfiguration( thisGroupConfig );
+                final OrganizationalUnit ou = registeredOrganizationalUnits.remove( groupName );
+                removeOrganizationalUnitEvent.fire( new RemoveOrganizationalUnitEvent( ou, getUserInfo( sessionInfo ) ) );
+            } finally {
+                configurationService.endBatch();
+            }
         }
 
     }
@@ -320,7 +359,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     @Override
     public Boolean isValidGroupId( final String proposedGroupId ) {
         if ( proposedGroupId != null && !proposedGroupId.trim().isEmpty() ) {
-            if ( proposedGroupId.length() == getSanitizedDefaultGroupId( proposedGroupId ).length() ) return true;
+            if ( proposedGroupId.length() == getSanitizedDefaultGroupId( proposedGroupId ).length() ) {
+                return true;
+            }
         }
         return false;
     }
@@ -340,7 +381,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
         try {
             return sessionInfo.getIdentity().getIdentifier();
-        } catch ( Exception e) {
+        } catch ( final Exception e ) {
             return "system";
         }
     }
