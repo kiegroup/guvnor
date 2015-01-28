@@ -15,7 +15,7 @@ import javax.inject.Inject;
 
 import org.guvnor.structure.backend.config.Added;
 import org.guvnor.structure.backend.config.Removed;
-import org.guvnor.structure.backend.config.SystemRepositoryChangedEvent;
+import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.deployment.DeploymentConfig;
 import org.guvnor.structure.deployment.DeploymentConfigService;
 import org.guvnor.structure.server.config.ConfigGroup;

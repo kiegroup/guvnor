@@ -6,6 +6,10 @@ public interface ConfigurationService {
 
     public static final String LAST_MODIFIED_MARKER_FILE = ".lastmodified";
 
+    void startBatch();
+
+    void endBatch();
+
     List<ConfigGroup> getConfiguration( ConfigType type );
 
     boolean addConfiguration( ConfigGroup configGroup );

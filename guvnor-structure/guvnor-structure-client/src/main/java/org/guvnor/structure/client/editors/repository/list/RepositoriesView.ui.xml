@@ -21,11 +21,10 @@
 
   <gwt:VerticalPanel>
     <gwt:HTMLPanel>
-    <p></p>
-    <p></p>
+      <p></p>
+      <p></p>
     </gwt:HTMLPanel>
-    <gwt:HTMLPanel ui:field="panel">
-    </gwt:HTMLPanel>
+    <gwt:HTMLPanel ui:field="panel"/>
   </gwt:VerticalPanel>
 
 </ui:UiBinder> 

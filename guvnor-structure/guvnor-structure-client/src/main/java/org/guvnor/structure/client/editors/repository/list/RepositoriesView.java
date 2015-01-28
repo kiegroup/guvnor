@@ -96,6 +96,7 @@ public class RepositoriesView extends Composite
 
     @Override
     public void clear() {
+        repositoryToWidgetMap.clear();
         panel.clear();
     }
 

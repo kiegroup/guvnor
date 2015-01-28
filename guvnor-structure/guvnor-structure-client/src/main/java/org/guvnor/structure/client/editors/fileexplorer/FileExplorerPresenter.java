@@ -25,9 +25,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -37,7 +35,6 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -47,6 +44,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.ResourceAddedEvent;
@@ -169,7 +167,7 @@ public class FileExplorerPresenter {
 
     public void redirect( final Path path ) {
 
-        pathSelectedEvent.fire(new PathSelectedEvent(path));
+        pathSelectedEvent.fire( new PathSelectedEvent( path ) );
 
         vfsService.call( new RemoteCallback<Map>() {
             @Override
@@ -251,6 +249,10 @@ public class FileExplorerPresenter {
 
     // Refresh when a batch Resource change has occurred
     public void onBatchResourceChange( @Observes final ResourceBatchChangesEvent event ) {
+        onStartup();
+    }
+
+    public void onSystemRepositoryChanged( @Observes SystemRepositoryChangedEvent event ) {
         onStartup();
     }
 

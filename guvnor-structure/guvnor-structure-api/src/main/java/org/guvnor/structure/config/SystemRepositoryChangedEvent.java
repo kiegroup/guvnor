@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.guvnor.structure.backend.config;
+package org.guvnor.structure.config;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
+@Portable
 public class SystemRepositoryChangedEvent {
 
 }

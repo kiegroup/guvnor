@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
+import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
@@ -24,7 +25,11 @@ public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory 
         ConfigItem<List<String>> repositories = groupConfig.getConfigItem( "repositories" );
         if ( repositories != null ) {
             for ( String alias : repositories.getValue() ) {
-                organizationalUnit.getRepositories().add( repositoryService.getRepository( alias ) );
+
+                final Repository repo = repositoryService.getRepository( alias );
+                if ( repo != null ) {
+                    organizationalUnit.getRepositories().add( repo );
+                }
             }
         }
 

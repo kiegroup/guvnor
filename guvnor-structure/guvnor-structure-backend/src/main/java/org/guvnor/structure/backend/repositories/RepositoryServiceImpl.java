@@ -13,7 +13,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.structure.backend.config.SystemRepositoryChangedEvent;
+import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.NewBranchEvent;
@@ -31,6 +31,8 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.TextUtil;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.version.impl.PortableVersionRecord;
@@ -46,6 +48,8 @@ import static org.uberfire.backend.server.util.Paths.*;
 @Service
 @ApplicationScoped
 public class RepositoryServiceImpl implements RepositoryService {
+
+    private static final Logger logger = LoggerFactory.getLogger( RepositoryServiceImpl.class );
 
     private static final int HISTORY_PAGE_SIZE = 10;
 
@@ -97,19 +101,6 @@ public class RepositoryServiceImpl implements RepositoryService {
                 }
             }
         }
-
-        ioService.onNewFileSystem( new IOService.NewFileSystemListener() {
-
-            @Override
-            public void execute( final FileSystem newFileSystem,
-                                 final String scheme,
-                                 final String name,
-                                 final Map<String, ?> env ) {
-                if ( getRepository( name ) == null ) {
-                    createRepository( scheme, name, (Map<String, Object>) env );
-                }
-            }
-        } );
     }
 
     @Override
@@ -153,11 +144,19 @@ public class RepositoryServiceImpl implements RepositoryService {
                                         final String scheme,
                                         final String alias,
                                         final Map<String, Object> env ) throws RepositoryAlreadyExistsException {
-        final Repository repository = createRepository( scheme, alias, env );
-        if ( organizationalUnit != null ) {
-            organizationalUnitService.addRepository( organizationalUnit, repository );
+        try {
+            configurationService.startBatch();
+            final Repository repository = createRepository( scheme, alias, env );
+            if ( organizationalUnit != null ) {
+                organizationalUnitService.addRepository( organizationalUnit, repository );
+            }
+            return repository;
+        } catch ( final Exception e ) {
+            logger.error( "Error during create repository", e );
+            throw new RuntimeException( e );
+        } finally {
+            configurationService.endBatch();
         }
-        return repository;
     }
 
     @Override
@@ -168,31 +167,39 @@ public class RepositoryServiceImpl implements RepositoryService {
         if ( configuredRepositories.containsKey( alias ) || SystemRepository.SYSTEM_REPO.getAlias().equals( alias ) ) {
             throw new RepositoryAlreadyExistsException( alias );
         }
-        final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY, alias, "" );
-        repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles", new ArrayList<String>() ) );
+        try {
+            configurationService.startBatch();
+            final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY, alias, "" );
+            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles", new ArrayList<String>() ) );
 
-        if ( !env.containsKey( SCHEME ) ) {
-            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME, scheme ) );
-        }
-
-        if ( env.containsKey( BRANCH ) ) {
-            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( BRANCH, env.get( BRANCH ) ) );
-        }
-        for ( final Map.Entry<String, Object> entry : env.entrySet() ) {
-            if ( entry.getKey().startsWith( "crypt:" ) ) {
-                repositoryConfig.addConfigItem( configurationFactory.newSecuredConfigItem( entry.getKey(),
-                                                                                           entry.getValue().toString() ) );
-            } else {
-                repositoryConfig.addConfigItem( configurationFactory.newConfigItem( entry.getKey(),
-                                                                                    entry.getValue() ) );
+            if ( !env.containsKey( SCHEME ) ) {
+                repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME, scheme ) );
             }
+
+            if ( env.containsKey( BRANCH ) ) {
+                repositoryConfig.addConfigItem( configurationFactory.newConfigItem( BRANCH, env.get( BRANCH ) ) );
+            }
+            for ( final Map.Entry<String, Object> entry : env.entrySet() ) {
+                if ( entry.getKey().startsWith( "crypt:" ) ) {
+                    repositoryConfig.addConfigItem( configurationFactory.newSecuredConfigItem( entry.getKey(),
+                                                                                               entry.getValue().toString() ) );
+                } else {
+                    repositoryConfig.addConfigItem( configurationFactory.newConfigItem( entry.getKey(),
+                                                                                        entry.getValue() ) );
+                }
+            }
+
+            final Repository repo = createRepository( repositoryConfig );
+
+            event.fire( new NewRepositoryEvent( repo ) );
+
+            return repo;
+        } catch ( final Exception e ) {
+            logger.error( "Error during create repository", e );
+            throw new RuntimeException( e );
+        } finally {
+            configurationService.endBatch();
         }
-
-        final Repository repo = createRepository( repositoryConfig );
-
-        event.fire( new NewRepositoryEvent( repo ) );
-
-        return repo;
     }
 
     //Save the definition
@@ -262,29 +269,37 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public void removeRepository( String alias ) {
+    public void removeRepository( final String alias ) {
         final ConfigGroup thisRepositoryConfig = findRepositoryConfig( alias );
 
-        if ( thisRepositoryConfig != null ) {
-            configurationService.removeConfiguration( thisRepositoryConfig );
-        }
+        try {
+            configurationService.startBatch();
+            if ( thisRepositoryConfig != null ) {
+                configurationService.removeConfiguration( thisRepositoryConfig );
+            }
 
-        final Repository repo = configuredRepositories.remove( alias );
-        if ( repo != null ) {
-            rootToRepo.remove( repo.getRoot() );
-            repositoryRemovedEvent.fire( new RepositoryRemovedEvent( repo ) );
-            ioService.delete( convert( repo.getRoot() ).getFileSystem().getPath( null ) );
-        }
+            final Repository repo = configuredRepositories.remove( alias );
+            if ( repo != null ) {
+                rootToRepo.remove( repo.getRoot() );
+                repositoryRemovedEvent.fire( new RepositoryRemovedEvent( repo ) );
+                ioService.delete( convert( repo.getRoot() ).getFileSystem().getPath( null ) );
+            }
 
-        //Remove reference to Repository from Organizational Units
-        final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
-        for ( OrganizationalUnit ou : organizationalUnits ) {
-            for ( Repository repository : ou.getRepositories() ) {
-                if ( repository.getAlias().equals( alias ) ) {
-                    organizationalUnitService.removeRepository( ou,
-                                                                repository );
+            //Remove reference to Repository from Organizational Units
+            final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
+            for ( OrganizationalUnit ou : organizationalUnits ) {
+                for ( Repository repository : ou.getRepositories() ) {
+                    if ( repository.getAlias().equals( alias ) ) {
+                        organizationalUnitService.removeRepository( ou,
+                                                                    repository );
+                    }
                 }
             }
+        } catch ( final Exception e ) {
+            logger.error( "Error during remove repository", e );
+            throw new RuntimeException( e );
+        } finally {
+            configurationService.endBatch();
         }
     }
 
@@ -295,23 +310,33 @@ public class RepositoryServiceImpl implements RepositoryService {
 
         if ( thisRepositoryConfig != null && config != null ) {
 
-            for ( Map.Entry<String, Object> entry : config.entrySet() ) {
+            try {
+                configurationService.startBatch();
 
-                ConfigItem configItem = thisRepositoryConfig.getConfigItem( entry.getKey() );
-                if ( configItem == null ) {
-                    thisRepositoryConfig.addConfigItem( configurationFactory.newConfigItem( entry.getKey(), entry.getValue() ) );
-                } else {
-                    configItem.setValue( entry.getValue() );
+                for ( final Map.Entry<String, Object> entry : config.entrySet() ) {
+
+                    ConfigItem configItem = thisRepositoryConfig.getConfigItem( entry.getKey() );
+                    if ( configItem == null ) {
+                        thisRepositoryConfig.addConfigItem( configurationFactory.newConfigItem( entry.getKey(), entry.getValue() ) );
+                    } else {
+                        configItem.setValue( entry.getValue() );
+                    }
                 }
+
+                configurationService.updateConfiguration( thisRepositoryConfig );
+
+                final Repository updatedRepo = repositoryFactory.newRepository( thisRepositoryConfig );
+                configuredRepositories.put( updatedRepo.getAlias(), updatedRepo );
+                rootToRepo.put( updatedRepo.getRoot(), updatedRepo );
+
+                return updatedRepo;
+            } catch ( final Exception e ) {
+                logger.error( "Error during remove repository", e );
+                throw new RuntimeException( e );
+            } finally {
+                configurationService.endBatch();
             }
 
-            configurationService.updateConfiguration( thisRepositoryConfig );
-
-            final Repository updatedRepo = repositoryFactory.newRepository( thisRepositoryConfig );
-            configuredRepositories.put( updatedRepo.getAlias(), updatedRepo );
-            rootToRepo.put( updatedRepo.getRoot(), updatedRepo );
-
-            return updatedRepo;
         } else {
             throw new IllegalArgumentException( "Repository " + repository.getAlias() + " not found" );
         }
