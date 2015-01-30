@@ -70,7 +70,7 @@ public class JobRequestScheduler {
     public void createOrCloneRepositoryRequest( CreateOrCloneRepositoryRequest jobRequest ) {
         Map<String, Object> params = getContext(jobRequest).getData();
         params.put("CommandClass", CreateOrCloneRepositoryCmd.class.getName());
-        params.put("Repository", jobRequest.getRepository());
+        params.put("Repository", jobRequest.getRepository().getName());
         params.put("Operation", "createOrCloneRepository");
 
         excuteOperationEvent.fire(new ExecuteOperationEvent(params));
