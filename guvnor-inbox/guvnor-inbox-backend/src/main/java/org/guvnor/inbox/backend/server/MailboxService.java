@@ -20,11 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.naming.InitialContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +38,6 @@ import org.uberfire.java.nio.file.Path;
 public class MailboxService {
 
     private static final Logger log = LoggerFactory.getLogger( MailboxService.class );
-
-    private MailboxProcessOutgoingExecutorManager executorManager = null;
     public static final String MAIL_MAN = "mailman";
 
     @Inject
@@ -61,28 +57,6 @@ public class MailboxService {
         processOutgoing();
     }
 
-    @PreDestroy
-    public void destroy() {
-        stopExecutor();
-    }
-
-    private void stopExecutor() {
-        if ( executorManager != null && !isEjb( executorManager, MailboxProcessOutgoingExecutorManager.class ) ) {
-            log.info( "Shutting down mailbox service" );
-            executorManager.shutdown();
-            log.info( "Mailbox service is shutdown." );
-        }
-    }
-
-    private boolean isEjb( Object o,
-                           Class<?> expected ) {
-        if ( o.getClass() != expected ) {
-            return true;
-        }
-
-        return false;
-    }
-
     /**
      * Call this to note that there has been a change - will then publish to any interested parties.
      * @param item
@@ -91,56 +65,32 @@ public class MailboxService {
      * Process any waiting messages
      */
     void processOutgoing() {
-        getExecutor().execute( new AsyncMailboxProcessOutgoing() {
-            @Override
-            public String getDescription() {
-                return "Mailbox Outgoing Processing";
-            }
+        try {
+            ioService.startBatch( bootstrapFS );
+            final List<InboxEntry> es = inboxBackend.loadIncoming( MAIL_MAN );
+            log.debug( "Outgoing messages size " + es.size() );
+            //wipe out inbox for mailman here...
 
-            @Override
-            public void execute( InboxBackend inboxBackend ) {
-                final List<InboxEntry> es = inboxBackend.loadIncoming( MAIL_MAN );
-                log.debug( "Outgoing messages size " + es.size() );
-                //wipe out inbox for mailman here...
+            String[] userList = listUsers();
+            log.debug( "userServices:" + userList.length );
+            for ( String toUser : userList ) {
+                log.debug( "userServices:" + toUser );
+                log.debug( "Processing any inbound messages for " + toUser );
+                if ( toUser.equals( MAIL_MAN ) ) {
+                    return;
+                }
 
-                String[] userList = listUsers();
-                log.debug( "userServices:" + userList.length );
-                for ( String toUser : userList ) {
-                    log.debug( "userServices:" + toUser );
-                    log.debug( "Processing any inbound messages for " + toUser );
-                    if ( toUser.equals( MAIL_MAN ) ) {
-                        return;
-                    }
-
-                    final Set<String> recentEdited = makeSetOf( inboxBackend.loadRecentEdited( toUser ) );
-                    for ( InboxEntry e : es ) {
-                        //the user who edited the item wont receive a message in inbox.
-                        if ( !e.getFrom().equals( toUser ) && recentEdited.contains( e.getItemPath() ) ) {
-                            inboxBackend.addToIncoming( e.getItemPath(), e.getNote(), e.getFrom(), toUser );
-                        }
+                final Set<String> recentEdited = makeSetOf( inboxBackend.loadRecentEdited( toUser ) );
+                for ( InboxEntry e : es ) {
+                    //the user who edited the item wont receive a message in inbox.
+                    if ( !e.getFrom().equals( toUser ) && recentEdited.contains( e.getItemPath() ) ) {
+                        inboxBackend.addToIncoming( e.getItemPath(), e.getNote(), e.getFrom(), toUser );
                     }
                 }
             }
-        } );
-    }
-
-    private synchronized MailboxProcessOutgoingExecutorManager getExecutor() {
-        if ( executorManager == null ) {
-            MailboxProcessOutgoingExecutorManager _executorManager = null;
-            try {
-                _executorManager = InitialContext.doLookup( "java:module/MailboxProcessOutgoingExecutorManager" );
-            } catch ( final Exception ignored ) {
-            }
-
-            if ( _executorManager == null ) {
-                executorManager = new MailboxProcessOutgoingExecutorManager();
-                executorManager.setInboxBackend( inboxBackend );
-            } else {
-                executorManager = _executorManager;
-            }
+        } finally {
+            ioService.endBatch();
         }
-
-        return executorManager;
     }
 
     private Set<String> makeSetOf( List<InboxEntry> inboxEntries ) {

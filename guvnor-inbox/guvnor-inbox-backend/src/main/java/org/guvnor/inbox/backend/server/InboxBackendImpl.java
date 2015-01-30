@@ -26,6 +26,7 @@ import javax.inject.Named;
 import com.thoughtworks.xstream.XStream;
 import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
@@ -45,6 +46,10 @@ public class InboxBackendImpl implements InboxBackend {
     @Inject
     @Named("configIO")
     private IOService ioService;
+
+    @Inject
+    @Named("systemFS")
+    private FileSystem bootstrapFS;
 
     @Inject
     private UserServicesBackendImpl userServicesBackend;
@@ -84,22 +89,38 @@ public class InboxBackendImpl implements InboxBackend {
                                String note,
                                String userFrom,
                                String userName ) {
-        addToInbox( INCOMING_ID,
-                    itemPath,
-                    note,
-                    userFrom,
-                    userName );
+        try {
+            ioService.startBatch( bootstrapFS );
+            addToInbox( INCOMING_ID,
+                        itemPath,
+                        note,
+                        userFrom,
+                        userName );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     public void recordOpeningEvent( @Observes final ResourceOpenedEvent event ) {
         checkNotNull( "event", event );
-        final org.uberfire.backend.vfs.Path resourcePath = event.getPath();
-        recordOpeningEvent( resourcePath.toURI(), resourcePath.getFileName().toString(), event.getSessionInfo().getIdentity().getIdentifier() );
+        try {
+            ioService.startBatch( bootstrapFS );
+            final org.uberfire.backend.vfs.Path resourcePath = event.getPath();
+            recordOpeningEvent( resourcePath.toURI(), resourcePath.getFileName().toString(), event.getSessionInfo().getIdentity().getIdentifier() );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     public void recordUserEditEvent( @Observes final ResourceUpdatedEvent event ) {
         checkNotNull( "event", event );
-        recordUserEditEvent( event.getPath().toURI(), event.getPath().getFileName(), event.getSessionInfo().getIdentity().getIdentifier() );
+
+        try {
+            ioService.startBatch( bootstrapFS );
+            recordUserEditEvent( event.getPath().toURI(), event.getPath().getFileName(), event.getSessionInfo().getIdentity().getIdentifier() );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     /**
