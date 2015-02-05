@@ -144,17 +144,18 @@ public class RepositoryServiceImpl implements RepositoryService {
                                         final String scheme,
                                         final String alias,
                                         final Map<String, Object> env ) throws RepositoryAlreadyExistsException {
+        Repository repository = null;
         try {
             configurationService.startBatch();
-            final Repository repository = createRepository( scheme, alias, env );
-            if ( organizationalUnit != null ) {
-                organizationalUnitService.addRepository( organizationalUnit, repository );
-            }
+            repository = createRepository( scheme, alias, env );
             return repository;
         } catch ( final Exception e ) {
             logger.error( "Error during create repository", e );
             throw new RuntimeException( e );
         } finally {
+            if ( organizationalUnit != null && repository != null ) {
+                organizationalUnitService.addRepository( organizationalUnit, repository );
+            }
             configurationService.endBatch();
         }
     }
