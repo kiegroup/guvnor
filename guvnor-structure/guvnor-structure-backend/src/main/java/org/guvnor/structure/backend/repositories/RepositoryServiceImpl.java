@@ -144,20 +144,16 @@ public class RepositoryServiceImpl implements RepositoryService {
                                         final String scheme,
                                         final String alias,
                                         final Map<String, Object> env ) throws RepositoryAlreadyExistsException {
-        Repository repository = null;
+
         try {
-            configurationService.startBatch();
-            repository = createRepository( scheme, alias, env );
+            final Repository repository = createRepository( scheme, alias, env );
+            if ( organizationalUnit != null && repository != null ) {
+                organizationalUnitService.addRepository( organizationalUnit, repository );
+            }
             return repository;
         } catch ( final Exception e ) {
             logger.error( "Error during create repository", e );
             throw new RuntimeException( e );
-        } finally {
-            configurationService.endBatch();
-            
-            if ( organizationalUnit != null && repository != null ) {
-                organizationalUnitService.addRepository( organizationalUnit, repository );
-            }
         }
     }
 
@@ -169,6 +165,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         if ( configuredRepositories.containsKey( alias ) || SystemRepository.SYSTEM_REPO.getAlias().equals( alias ) ) {
             throw new RepositoryAlreadyExistsException( alias );
         }
+        Repository repo = null;
         try {
             configurationService.startBatch();
             final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY, alias, "" );
@@ -191,16 +188,16 @@ public class RepositoryServiceImpl implements RepositoryService {
                 }
             }
 
-            final Repository repo = createRepository( repositoryConfig );
-
-            event.fire( new NewRepositoryEvent( repo ) );
-
+            repo = createRepository( repositoryConfig );
             return repo;
         } catch ( final Exception e ) {
             logger.error( "Error during create repository", e );
             throw new RuntimeException( e );
         } finally {
             configurationService.endBatch();
+            if ( repo != null) {
+                event.fire( new NewRepositoryEvent( repo ) );
+            }
         }
     }
 
