@@ -153,10 +153,11 @@ public class RepositoryServiceImpl implements RepositoryService {
             logger.error( "Error during create repository", e );
             throw new RuntimeException( e );
         } finally {
+            configurationService.endBatch();
+            
             if ( organizationalUnit != null && repository != null ) {
                 organizationalUnitService.addRepository( organizationalUnit, repository );
             }
-            configurationService.endBatch();
         }
     }
 
