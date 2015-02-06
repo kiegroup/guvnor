@@ -65,31 +65,26 @@ public class MailboxService {
      * Process any waiting messages
      */
     void processOutgoing() {
-        try {
-            ioService.startBatch( bootstrapFS );
-            final List<InboxEntry> es = inboxBackend.loadIncoming( MAIL_MAN );
-            log.debug( "Outgoing messages size " + es.size() );
-            //wipe out inbox for mailman here...
+        final List<InboxEntry> es = inboxBackend.loadIncoming( MAIL_MAN );
+        log.debug( "Outgoing messages size " + es.size() );
+        //wipe out inbox for mailman here...
 
-            String[] userList = listUsers();
-            log.debug( "userServices:" + userList.length );
-            for ( String toUser : userList ) {
-                log.debug( "userServices:" + toUser );
-                log.debug( "Processing any inbound messages for " + toUser );
-                if ( toUser.equals( MAIL_MAN ) ) {
-                    return;
-                }
+        String[] userList = listUsers();
+        log.debug( "userServices:" + userList.length );
+        for ( String toUser : userList ) {
+            log.debug( "userServices:" + toUser );
+            log.debug( "Processing any inbound messages for " + toUser );
+            if ( toUser.equals( MAIL_MAN ) ) {
+                return;
+            }
 
-                final Set<String> recentEdited = makeSetOf( inboxBackend.loadRecentEdited( toUser ) );
-                for ( InboxEntry e : es ) {
-                    //the user who edited the item wont receive a message in inbox.
-                    if ( !e.getFrom().equals( toUser ) && recentEdited.contains( e.getItemPath() ) ) {
-                        inboxBackend.addToIncoming( e.getItemPath(), e.getNote(), e.getFrom(), toUser );
-                    }
+            final Set<String> recentEdited = makeSetOf( inboxBackend.loadRecentEdited( toUser ) );
+            for ( InboxEntry e : es ) {
+                //the user who edited the item wont receive a message in inbox.
+                if ( !e.getFrom().equals( toUser ) && recentEdited.contains( e.getItemPath() ) ) {
+                    inboxBackend.addToIncoming( e.getItemPath(), e.getNote(), e.getFrom(), toUser );
                 }
             }
-        } finally {
-            ioService.endBatch();
         }
     }
 

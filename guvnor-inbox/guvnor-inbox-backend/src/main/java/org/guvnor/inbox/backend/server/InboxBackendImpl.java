@@ -89,38 +89,23 @@ public class InboxBackendImpl implements InboxBackend {
                                String note,
                                String userFrom,
                                String userName ) {
-        try {
-            ioService.startBatch( bootstrapFS );
-            addToInbox( INCOMING_ID,
-                        itemPath,
-                        note,
-                        userFrom,
-                        userName );
-        } finally {
-            ioService.endBatch();
-        }
+        addToInbox( INCOMING_ID,
+                    itemPath,
+                    note,
+                    userFrom,
+                    userName );
     }
 
     public void recordOpeningEvent( @Observes final ResourceOpenedEvent event ) {
         checkNotNull( "event", event );
-        try {
-            ioService.startBatch( bootstrapFS );
-            final org.uberfire.backend.vfs.Path resourcePath = event.getPath();
-            recordOpeningEvent( resourcePath.toURI(), resourcePath.getFileName().toString(), event.getSessionInfo().getIdentity().getIdentifier() );
-        } finally {
-            ioService.endBatch();
-        }
+        final org.uberfire.backend.vfs.Path resourcePath = event.getPath();
+        recordOpeningEvent( resourcePath.toURI(), resourcePath.getFileName().toString(), event.getSessionInfo().getIdentity().getIdentifier() );
     }
 
     public void recordUserEditEvent( @Observes final ResourceUpdatedEvent event ) {
         checkNotNull( "event", event );
 
-        try {
-            ioService.startBatch( bootstrapFS );
-            recordUserEditEvent( event.getPath().toURI(), event.getPath().getFileName(), event.getSessionInfo().getIdentity().getIdentifier() );
-        } finally {
-            ioService.endBatch();
-        }
+        recordUserEditEvent( event.getPath().toURI(), event.getPath().getFileName(), event.getSessionInfo().getIdentity().getIdentifier() );
     }
 
     /**
