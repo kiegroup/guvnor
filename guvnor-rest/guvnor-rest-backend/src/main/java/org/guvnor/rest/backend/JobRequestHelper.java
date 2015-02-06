@@ -95,6 +95,15 @@ public class JobRequestHelper {
 
         final String scheme = "git";
 
+        String orgUnitName = repository.getOrganizationlUnitName();
+        OrganizationalUnit orgUnit = organizationalUnitService.getOrganizationalUnit(repository.getOrganizationlUnitName());
+        if( orgUnit == null ) { 
+            // double check, this is also checked at input
+            result.setStatus( JobStatus.BAD_REQUEST );
+            result.setResult( "Organizational unit '" + orgUnitName + "' does not exist!" );
+            return result;
+        }
+        
         if ( "new".equals( repository.getRequestType() ) ) {
             if ( repository.getName() == null || "".equals( repository.getName() ) ) {
                 result.setStatus( JobStatus.BAD_REQUEST );
@@ -112,7 +121,11 @@ public class JobRequestHelper {
             }
             env.put( "init", true );
 
-            org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( scheme, repository.getName(), env );
+            org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( 
+                    orgUnit,
+                    scheme, 
+                    repository.getName(), 
+                    env );
             if ( newlyCreatedRepo != null ) {
                 result.setStatus( JobStatus.SUCCESS );
                 result.setResult( "Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri() );
@@ -137,7 +150,11 @@ public class JobRequestHelper {
             }
             env.put( "origin", repository.getGitURL() );
 
-            org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( scheme, repository.getName(), env );
+            org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( 
+                    orgUnit,
+                    scheme, 
+                    repository.getName(), 
+                    env );
             if ( newlyCreatedRepo != null ) {
                 result.setStatus( JobStatus.SUCCESS );
                 result.setResult( "Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri() );

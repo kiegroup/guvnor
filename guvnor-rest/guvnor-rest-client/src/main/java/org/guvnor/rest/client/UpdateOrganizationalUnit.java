@@ -16,8 +16,6 @@
 
 package org.guvnor.rest.client;
 
-import java.util.List;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable

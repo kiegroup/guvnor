@@ -191,6 +191,8 @@ public class ProjectResource {
     public Response createOrCloneRepository( RepositoryRequest repository ) {
         logger.debug( "-----createOrCloneRepository--- , repository name: {}", repository.getName() );
 
+        checkOrganizationalUnitExistence(repository.getOrganizationlUnitName());
+        
         String id = newId();
         CreateOrCloneRepositoryRequest jobRequest = new CreateOrCloneRepositoryRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
@@ -583,6 +585,10 @@ public class ProjectResource {
     }
 
     private org.guvnor.structure.organizationalunit.OrganizationalUnit checkOrganizationalUnitExistence( String orgUnitName ) {
+        if( orgUnitName == null || orgUnitName.isEmpty() ) { 
+            throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( orgUnitName ).build() );
+        }
+        
         org.guvnor.structure.organizationalunit.OrganizationalUnit origOrgUnit
                 = organizationalUnitService.getOrganizationalUnit( orgUnitName );
 
