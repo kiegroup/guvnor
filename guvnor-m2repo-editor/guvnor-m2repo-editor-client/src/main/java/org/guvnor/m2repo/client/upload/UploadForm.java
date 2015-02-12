@@ -86,7 +86,7 @@ public class UploadForm
 
     public WellForm doUploadForm() {
         form = new WellForm();
-        form.setAction( getWebContext() + "/maven2" );
+        form.setAction( getWebContext() + "/maven2wb" );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
@@ -123,7 +123,8 @@ public class UploadForm
 
                     searchEvent.fire( new M2RepoSearchEvent() );
 
-                    up.getElement().setPropertyString( "value", "" );
+                    up.getElement().setPropertyString( "value",
+                                                       "" );
                     hide();
                 } else if ( "NO VALID POM".equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
