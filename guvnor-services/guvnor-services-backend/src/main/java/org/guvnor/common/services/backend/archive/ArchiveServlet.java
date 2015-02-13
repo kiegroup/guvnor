@@ -29,13 +29,21 @@ public class ArchiveServlet
                     return;
                 }
 
+                // Try to extract a meaningful name for the zip-file from the URI.
+                int index = uri.lastIndexOf( "@" ) + 1;
+                if ( index < 0 ) index = 0;
+                String downLoadFileName = uri.substring( index );
+                if ( downLoadFileName.startsWith( "/" ) ) downLoadFileName = downLoadFileName.substring( 1 );
+                if ( downLoadFileName.endsWith( "/" ) ) downLoadFileName = downLoadFileName.substring( 0, downLoadFileName.length() - 1 );
+                downLoadFileName.replaceAll( "/", "_" );
+
                 final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
                 archiver.archive( outputStream, uri );
 
                 response.setContentType( "application/zip" );
                 response.setHeader( "Content-Disposition",
-                                    "attachment; filename=download.zip" );
+                        "attachment; filename=" + downLoadFileName + ".zip" );
 
                 response.setContentLength( outputStream.size() );
                 response.getOutputStream().write( outputStream.toByteArray() );
