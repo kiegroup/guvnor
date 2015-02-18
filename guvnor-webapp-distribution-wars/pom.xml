@@ -48,7 +48,6 @@
         <configuration>
           <finalName>guvnor-webapp-${project.version}</finalName>
           <descriptors>
-            <descriptor>src/main/assembly/assembly-guvnor-webapp-jboss-as-7_0.xml</descriptor>
             <descriptor>src/main/assembly/assembly-guvnor-webapp-jboss-eap-6_3.xml</descriptor>
           </descriptors>
           <archive>
