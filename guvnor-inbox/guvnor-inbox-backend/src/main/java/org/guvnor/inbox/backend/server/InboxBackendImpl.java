@@ -112,9 +112,9 @@ public class InboxBackendImpl implements InboxBackend {
      * Helper method to log the opening. Will remove any inbox items that have
      * the same id.
      */
-    private synchronized void recordOpeningEvent( final String itemPath,
-                                                  final String itemName,
-                                                  final String userName ) {
+    private void recordOpeningEvent( final String itemPath,
+                                     final String itemName,
+                                     final String userName ) {
         addToRecentOpened( itemPath, itemName, userName );
         List<InboxEntry> unreadIncoming = removeAnyExisting( itemPath,
                                                              loadIncoming( userName ) );
@@ -125,9 +125,9 @@ public class InboxBackendImpl implements InboxBackend {
      * Helper method to note the event
      */
     //@Override
-    private synchronized void recordUserEditEvent( final String itemPath,
-                                                   final String itemName,
-                                                   final String userName ) {
+    private void recordUserEditEvent( final String itemPath,
+                                      final String itemName,
+                                      final String userName ) {
         addToRecentEdited( itemPath, itemName, userName );
 
         //deliver messages to users inboxes (ie., the edited item is the itme that the current logged in user has edited in the past, or commented on)
