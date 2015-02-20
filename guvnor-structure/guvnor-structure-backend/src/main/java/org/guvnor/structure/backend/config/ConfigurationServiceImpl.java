@@ -164,7 +164,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
     }
 
     @Override
-    public synchronized void startBatch() {
+    public void startBatch() {
         ioService.startBatch( ioService.get( systemRepository.getUri() ).getFileSystem() );
     }
 
@@ -234,7 +234,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
     }
 
     @Override
-    public synchronized boolean updateConfiguration( ConfigGroup configGroup ) {
+    public boolean updateConfiguration( ConfigGroup configGroup ) {
         String filename = configGroup.getName().replaceAll( INVALID_FILENAME_CHARS, "_" );
 
         final Path filePath = ioService.get( systemRepository.getUri() ).resolve( filename + configGroup.getType().getExt() );
@@ -258,7 +258,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
     }
 
     @Override
-    public synchronized boolean removeConfiguration( final ConfigGroup configGroup ) {
+    public boolean removeConfiguration( final ConfigGroup configGroup ) {
 
         //Invalidate cache if an item has been removed; otherwise cached value is stale
         configuration.remove( configGroup.getType() );
