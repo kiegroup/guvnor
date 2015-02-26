@@ -45,6 +45,8 @@ public interface OrganizationalUnitManagerConstants
 
     String InvalidGroupId();
 
+    String DefaultGroupId();
+
     String GroupIdInfo();
 
     String NoOrganizationalUnitsDefined();

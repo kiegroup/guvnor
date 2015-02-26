@@ -34,12 +34,12 @@
       <b:ControlGroup ui:field="defaultGroupIdGroup">
         <b:ControlLabel for="groupId">
           <font color="red">*</font>
-          Default group ID
+          Default Group ID
         </b:ControlLabel>
         <b:Controls>
           <b:TextBox ui:field="defaultGroupIdTextBox"/>
           <b:HelpInline ui:field="defaultGroupIdHelpInline"/>
-          <b:Popover placement="LEFT" trigger="HOVER" text="{i18n.GroupIdInfo}">
+          <b:Popover placement="LEFT" trigger="HOVER" text="{i18n.GroupIdInfo}" heading="{i18n.DefaultGroupId}">
             <b:Icon ui:field="groupIdHelpIcon" type="QUESTION_SIGN"></b:Icon>
           </b:Popover>
         </b:Controls>
