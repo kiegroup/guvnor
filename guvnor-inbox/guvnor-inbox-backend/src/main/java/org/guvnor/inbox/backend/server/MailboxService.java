@@ -102,7 +102,7 @@ public class MailboxService {
 
         for ( final Path path : bootstrapFS.getRootDirectories() ) {
             final String value = path.toUri().getUserInfo();
-            if ( value.endsWith( "-uf-user" ) ) {
+            if ( value != null && value.endsWith( "-uf-user" ) ) {
                 userList.add( value.substring( 0, value.indexOf( "-uf-user" ) ) );
             }
         }
