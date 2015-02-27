@@ -29,6 +29,9 @@ import org.uberfire.backend.vfs.Path;
 public class TestServiceImpl
         implements TestService {
 
+    public TestServiceImpl() {
+    }
+
     @Override
     public void runAllTests(Path path) {
 

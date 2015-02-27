@@ -18,11 +18,13 @@ package org.guvnor.common.services.shared.test;
 
 import javax.enterprise.event.Event;
 
+import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 
 /**
- * Service definition for Scenario Test Editor
+ * Service definition for running JUnit tests
  */
+@Remote
 public interface TestService {
 
     void runAllTests(Path path);
