@@ -25,7 +25,7 @@ public class RepositoryRequest extends Entity {
     private String password;
     private String requestType;
     private String gitURL;
-    private String organizationlUnitName;
+    private String organizationalUnitName;
     
     public String getUserName() {
         return userName;
@@ -59,11 +59,11 @@ public class RepositoryRequest extends Entity {
         this.gitURL = gitURL;
     }
 
-    public String getOrganizationlUnitName() {
-        return organizationlUnitName;
+    public String getOrganizationalUnitName() {
+        return organizationalUnitName;
     }
 
-    public void setOrganizationlUnitName( String organizationlUnitName ) {
-        this.organizationlUnitName = organizationlUnitName;
+    public void setOrganizationalUnitName( String organizationalUnitName ) {
+        this.organizationalUnitName = organizationalUnitName;
     } 
 }

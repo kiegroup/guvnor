@@ -191,7 +191,7 @@ public class ProjectResource {
     public Response createOrCloneRepository( RepositoryRequest repository ) {
         logger.debug( "-----createOrCloneRepository--- , repository name: {}", repository.getName() );
 
-        checkOrganizationalUnitExistence(repository.getOrganizationlUnitName());
+        checkOrganizationalUnitExistence(repository.getOrganizationalUnitName());
         
         String id = newId();
         CreateOrCloneRepositoryRequest jobRequest = new CreateOrCloneRepositoryRequest();
