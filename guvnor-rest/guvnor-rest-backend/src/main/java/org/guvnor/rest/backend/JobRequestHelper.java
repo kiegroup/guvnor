@@ -95,8 +95,8 @@ public class JobRequestHelper {
 
         final String scheme = "git";
 
-        String orgUnitName = repository.getOrganizationlUnitName();
-        OrganizationalUnit orgUnit = organizationalUnitService.getOrganizationalUnit(repository.getOrganizationlUnitName());
+        String orgUnitName = repository.getOrganizationalUnitName();
+        OrganizationalUnit orgUnit = organizationalUnitService.getOrganizationalUnit(repository.getOrganizationalUnitName());
         if( orgUnit == null ) { 
             // double check, this is also checked at input
             result.setStatus( JobStatus.BAD_REQUEST );
