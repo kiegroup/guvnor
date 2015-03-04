@@ -659,8 +659,9 @@ public class RepositoryStructurePresenter
 
         Project project = getSelectedModule( moduleRow.getName() );
         if ( project != null ) {
-            //TODO check if there's a better implementation for this projectScreen opening.
-            contextChangeEvent.fire( new ProjectContextChangeEvent( workbenchContext.getActiveOrganizationalUnit(), repository, project ) );
+            contextChangeEvent.fire( new ProjectContextChangeEvent( workbenchContext.getActiveOrganizationalUnit(),
+                                                                    repository,
+                                                                    project ) );
             placeManager.goTo( "projectScreen" );
         }
     }

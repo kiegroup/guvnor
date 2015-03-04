@@ -15,14 +15,19 @@
  */
 package org.guvnor.common.services.project.context;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 
 /**
  * A specialized implementation that also has Project and Package scope
@@ -35,18 +40,36 @@ public class ProjectContext {
     private Project activeProject;
     private Package activePackage;
 
-    public void onOrganizationalUnitUpdated( @Observes final UpdatedOrganizationalUnitEvent event ) {
-        this.setActiveOrganizationalUnit( event.getOrganizationalUnit() );
+    private Map<ProjectContextChangeHandle, ProjectContextChangeHandler> changeHandlers = new HashMap<ProjectContextChangeHandle, ProjectContextChangeHandler>();
+
+    private Event<ProjectContextChangeEvent> contextChangeEvent;
+
+    public ProjectContext() {
     }
 
-    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
-        this.setActiveOrganizationalUnit( event.getOrganizationalUnit() );
-        this.setActiveRepository( event.getRepository() );
-        this.setActiveProject( event.getProject() );
-        this.setActivePackage( event.getPackage() );
+    @Inject
+    public ProjectContext(Event<ProjectContextChangeEvent> contextChangeEvent) {
+        this.contextChangeEvent = contextChangeEvent;
     }
 
-    public void setActiveOrganizationalUnit( final OrganizationalUnit activeOrganizationalUnit ) {
+    public void onRepositoryRemoved(final @Observes RepositoryRemovedEvent event) {
+        if (event.getRepository().equals(activeRepository)) {
+            contextChangeEvent.fire(new ProjectContextChangeEvent(activeOrganizationalUnit));
+        }
+    }
+
+    public void onOrganizationalUnitUpdated(@Observes final UpdatedOrganizationalUnitEvent event) {
+        this.setActiveOrganizationalUnit(event.getOrganizationalUnit());
+    }
+
+    public void onProjectContextChanged(@Observes final ProjectContextChangeEvent event) {
+        this.setActiveOrganizationalUnit(event.getOrganizationalUnit());
+        this.setActiveRepository(event.getRepository());
+        this.setActiveProject(event.getProject());
+        this.setActivePackage(event.getPackage());
+    }
+
+    public void setActiveOrganizationalUnit(final OrganizationalUnit activeOrganizationalUnit) {
         this.activeOrganizationalUnit = activeOrganizationalUnit;
     }
 
@@ -54,7 +77,7 @@ public class ProjectContext {
         return this.activeOrganizationalUnit;
     }
 
-    public void setActiveRepository( final Repository activeRepository ) {
+    public void setActiveRepository(final Repository activeRepository) {
         this.activeRepository = activeRepository;
     }
 
@@ -66,7 +89,7 @@ public class ProjectContext {
         return this.activeProject;
     }
 
-    public void setActiveProject( final Project activeProject ) {
+    public void setActiveProject(final Project activeProject) {
         this.activeProject = activeProject;
     }
 
@@ -78,4 +101,13 @@ public class ProjectContext {
         this.activePackage = activePackage;
     }
 
+    public ProjectContextChangeHandle addChangeHandler(ProjectContextChangeHandler changeHandler) {
+        ProjectContextChangeHandle handle = new ProjectContextChangeHandle();
+        changeHandlers.put(handle, changeHandler);
+        return handle;
+    }
+
+    public void removeChangeHandler(ProjectContextChangeHandle projectContextChangeHandle) {
+        changeHandlers.remove(projectContextChangeHandle);
+    }
 }
