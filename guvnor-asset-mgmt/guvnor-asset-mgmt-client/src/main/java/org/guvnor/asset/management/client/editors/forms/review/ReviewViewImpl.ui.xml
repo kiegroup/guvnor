@@ -59,7 +59,7 @@
         </b:ControlGroup>
 
         <b:ControlGroup ui:field="showCommitsGroup">
-          <b:TextArea ui:field="showCommitsBox" size="10"/>
+          <b:TextArea ui:field="showCommitsBox" visibleLines="4"/>
         </b:ControlGroup>
 
         <b:ControlGroup ui:field="approvedGroup">
@@ -74,7 +74,7 @@
         </b:ControlGroup>
 
         <b:ControlGroup ui:field="commentsGroup">
-          <b:TextArea ui:field="commentsBox" size="10"/>
+          <b:TextArea ui:field="commentsBox" visibleLines="4"/>
         </b:ControlGroup>
       </b:Fieldset>
     </b:Well>

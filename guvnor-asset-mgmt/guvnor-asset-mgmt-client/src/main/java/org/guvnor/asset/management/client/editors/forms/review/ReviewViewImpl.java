@@ -92,9 +92,8 @@ public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewV
     private Event<GetFormParamsEvent> getFormParamsEvent;
 
     public ReviewViewImpl() {
-
         initWidget( uiBinder.createAndBindUi( this ) );
-
+        showCommitsBox.setEnabled( false );
     }
 
     public void getOutputMap( @Observes RequestFormParamsEvent event ) {
@@ -119,6 +118,10 @@ public class ReviewViewImpl extends Composite implements ReviewPresenter.ReviewV
 
     public void setReadOnly( boolean b ) {
         this.readOnly = b;
+        requestorTextBox.setEnabled( !readOnly );
+        repositoryTextBox.setEnabled( !readOnly );
+        approvedCheckBox.setEnabled( !readOnly );
+        commentsBox.setEnabled( !readOnly );
     }
 
     public boolean isReadOnly() {
