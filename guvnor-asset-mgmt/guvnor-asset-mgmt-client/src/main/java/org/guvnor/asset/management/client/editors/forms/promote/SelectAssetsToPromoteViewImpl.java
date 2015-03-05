@@ -29,6 +29,9 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -186,12 +189,19 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
 
         String in_commits_per_file = params.get( "in_commits_per_file" );
 
-        if ( in_commits_per_file != null && in_commits_per_file.length() > 0 ) {
-            String[] commits_info = in_commits_per_file.split( ";" );
+        JSONObject jsonCommitsPerFile = JSONParser.parseStrict( in_commits_per_file ).isObject();
 
-            for ( String commit : commits_info ) {
-                String commits = commit.substring( commit.indexOf( "=" ) + 1 );
-                commitsPerFile.put( commit.substring( 0, commit.indexOf( "=" ) ), commits );
+        if (jsonCommitsPerFile != null) {
+            for (String file : jsonCommitsPerFile.keySet()) {
+                StringBuffer fileCommits = new StringBuffer(  );
+                JSONArray commits = jsonCommitsPerFile.get( file ).isArray();
+                if (commits != null) {
+                    for (int i = 0; i < commits.size(); i++) {
+                        if (fileCommits.length() > 0) fileCommits.append( "," );
+                        fileCommits.append( commits.get( i ).isString().stringValue() );
+                    }
+                }
+                commitsPerFile.put( file, fileCommits.toString() );
             }
         }
 
