@@ -67,6 +67,10 @@ public class ProjectContext {
         this.setActiveRepository(event.getRepository());
         this.setActiveProject(event.getProject());
         this.setActivePackage(event.getPackage());
+
+        for (ProjectContextChangeHandler handler : changeHandlers.values()) {
+            handler.onChange();
+        }
     }
 
     public void setActiveOrganizationalUnit(final OrganizationalUnit activeOrganizationalUnit) {
