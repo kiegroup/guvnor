@@ -18,7 +18,10 @@ package org.guvnor.common.services.project.context;
 
 import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.junit.Before;
@@ -78,6 +81,57 @@ public class ProjectContextTest {
         context.onRepositoryRemoved(repositoryRemovedEvent);
 
         assertEquals(activeRepository, context.getActiveRepository());
+
+    }
+
+    @Test
+    public void testContextChanged() throws Exception {
+        OrganizationalUnit oldOrganizationalUnit = mock(OrganizationalUnit.class);
+        Repository oldRepository = mock(Repository.class);
+        Package oldPackage = new Package();
+        Project oldProject = new Project();
+
+        context.setActiveOrganizationalUnit(oldOrganizationalUnit);
+        context.setActiveRepository(oldRepository);
+        context.setActivePackage(oldPackage);
+        context.setActiveProject(oldProject);
+
+        OrganizationalUnit newOrganizationalUnit = mock(OrganizationalUnit.class);
+        Repository newRepository = mock(Repository.class);
+        Package newPackage = new Package();
+        Project newProject = new Project();
+
+        ProjectContextChangeHandler changeHandler = mock(ProjectContextChangeHandler.class);
+        context.addChangeHandler(changeHandler);
+
+        context.onProjectContextChanged(new ProjectContextChangeEvent(newOrganizationalUnit,
+                                                                      newRepository,
+                                                                      newProject,
+                                                                      newPackage));
+
+        assertEquals(newOrganizationalUnit, context.getActiveOrganizationalUnit());
+        assertEquals(newRepository, context.getActiveRepository());
+        assertEquals(newProject, context.getActiveProject());
+        assertEquals(newPackage, context.getActivePackage());
+        verify(changeHandler).onChange();
+    }
+
+    @Test
+    public void testContextChangeHandlerGetsRemoved() throws Exception {
+        ProjectContextChangeHandler changeHandler = mock(ProjectContextChangeHandler.class);
+        ProjectContextChangeHandle handle = context.addChangeHandler(changeHandler);
+
+        context.onProjectContextChanged(new ProjectContextChangeEvent());
+
+        verify(changeHandler).onChange();
+
+        context.removeChangeHandler(handle);
+
+        reset(changeHandler);
+
+        context.onProjectContextChanged(new ProjectContextChangeEvent());
+
+        verify(changeHandler, never()).onChange();
 
     }
 
