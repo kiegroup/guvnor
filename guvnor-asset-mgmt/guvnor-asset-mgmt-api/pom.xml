@@ -21,7 +21,7 @@
     <parent>
         <artifactId>guvnor-asset-mgmt</artifactId>
         <groupId>org.guvnor</groupId>
-        <version>6.2.0-SNAPSHOT</version>
+        <version>6.2.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>guvnor-asset-mgmt-api</artifactId>
