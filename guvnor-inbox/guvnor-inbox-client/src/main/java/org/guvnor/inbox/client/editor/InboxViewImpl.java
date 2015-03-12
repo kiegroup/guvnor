@@ -120,6 +120,7 @@ public class InboxViewImpl extends PagedTable<InboxPageRow> implements InboxView
 
         final Button refreshButton = new Button();
         refreshButton.setIcon( IconType.REFRESH );
+        refreshButton.setTitle( InboxConstants.INSTANCE.refresh() );
         refreshButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {

@@ -34,6 +34,7 @@ import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.navigator.CommitNavigator;
+import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.guvnor.structure.repositories.PublicURI;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
@@ -158,6 +159,7 @@ public class RepositoryEditorView extends Composite
         myGitCopyButton.getElement().setAttribute( "data-clipboard-text", gitDaemonURI.getText() );
 
         myGitCopyButton.getElement().setId( "button-" + uriId );
+        myGitCopyButton.getElement().setTitle( CommonConstants.INSTANCE.copyRepositoryUrl() );
 
         glueCopy( myGitCopyButton.getElement() );
     }
