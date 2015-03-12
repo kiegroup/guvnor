@@ -28,8 +28,10 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -459,12 +461,16 @@ public class GuvnorM2Repository {
      * @return an collection of java.io.File with the matching files
      */
     public Collection<File> listFiles( final String filters ) {
-        String wildcard = "*.jar";
-        if ( filters != null ) {
-            wildcard = "*" + filters + "*.jar";
+        final List<String> wildcards = new ArrayList<String>();
+        if ( filters == null ) {
+            wildcards.add( "*.jar" );
+            wildcards.add( "*.kjar" );
+        } else {
+            wildcards.add( "*" + filters + "*.jar" );
+            wildcards.add( "*" + filters + "*.kjar" );
         }
         Collection<File> files = FileUtils.listFiles( new File( M2_REPO_DIR ),
-                                                      new WildcardFileFilter( wildcard,
+                                                      new WildcardFileFilter( wildcards,
                                                                               IOCase.INSENSITIVE ),
                                                       DirectoryFileFilter.DIRECTORY );
 

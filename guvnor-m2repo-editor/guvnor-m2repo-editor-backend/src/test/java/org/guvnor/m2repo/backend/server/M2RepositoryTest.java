@@ -29,14 +29,12 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.helpers.FormData;
 import org.guvnor.m2repo.backend.server.helpers.HttpPostHelper;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
-@Ignore
 public class M2RepositoryTest {
 
     private static final Logger log = LoggerFactory.getLogger( M2RepositoryTest.class );
@@ -68,7 +66,6 @@ public class M2RepositoryTest {
     }
 
     @Test
-    @Ignore("Fails - ignored for Beta3")
     public void testDeployArtifact() throws Exception {
         GuvnorM2Repository repo = new GuvnorM2Repository();
         repo.init();
@@ -90,7 +87,8 @@ public class M2RepositoryTest {
             if ( fileName.startsWith( "guvnor-m2repo-editor-backend-0.0.1" ) && fileName.endsWith( ".jar" ) ) {
                 found = true;
                 String path = file.getPath();
-                String pom = GuvnorM2Repository.loadPOMFromJar( path );
+                String jarPath = path.substring( GuvnorM2Repository.M2_REPO_DIR.length() + 1 );
+                String pom = GuvnorM2Repository.loadPOMFromJar( jarPath );
                 assertNotNull( pom );
                 break;
             }
