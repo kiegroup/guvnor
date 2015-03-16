@@ -195,7 +195,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             throw new RuntimeException( e );
         } finally {
             configurationService.endBatch();
-            if ( repo != null) {
+            if ( repo != null ) {
                 event.fire( new NewRepositoryEvent( repo ) );
             }
         }
@@ -371,6 +371,15 @@ public class RepositoryServiceImpl implements RepositoryService {
                                                      int startIndex,
                                                      int endIndex ) {
         final Repository repo = getRepository( alias );
+
+        //This is a work-around for https://bugzilla.redhat.com/show_bug.cgi?id=1199215
+        //org.kie.workbench.common.screens.contributors.backend.dataset.ContributorsManager is trying to
+        //load a Repository's history for a Repository associated with an Organizational Unit before the
+        //Repository has been setup.
+        if ( repo == null ) {
+            return Collections.EMPTY_LIST;
+        }
+
         final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( convert( repo.getRoot() ), VersionAttributeView.class );
         final List<VersionRecord> records = versionAttributeView.readAttributes().history().records();
 
