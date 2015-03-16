@@ -103,12 +103,16 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
     @PostConstruct
     public void setup() {
-        Path defaultRoot = fs.getRootDirectories().iterator().next();
+        Path defaultRoot = null;
         for ( final Path path : fs.getRootDirectories() ) {
             if ( path.toUri().toString().contains( "/master@" ) ) {
                 defaultRoot = path;
                 break;
             }
+        }
+
+        if ( defaultRoot == null ) {
+            throw new RuntimeException( "Could not resolve 'systemFS' main root directory." );
         }
 
         systemRepository.setRoot( convert( defaultRoot ) );
