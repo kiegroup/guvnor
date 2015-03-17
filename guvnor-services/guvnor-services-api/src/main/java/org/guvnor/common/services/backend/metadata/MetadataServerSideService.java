@@ -25,6 +25,4 @@ public interface MetadataServerSideService
 
     Metadata getMetadata(Path resource);
 
-    Metadata getMetadataDirectPath(Path path);
-
 }

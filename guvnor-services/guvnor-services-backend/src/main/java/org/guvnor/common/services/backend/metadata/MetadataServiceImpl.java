@@ -20,7 +20,6 @@ import static java.util.Collections.emptyList;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,23 +35,17 @@ import org.guvnor.common.services.backend.metadata.attribute.DiscussionView;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaAttributes;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaAttributesUtil;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.backend.vfs.impl.LockInfo;
-import org.uberfire.ext.editor.commons.version.impl.PortableVersionRecord;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreAttributes;
 import org.uberfire.io.attribute.DublinCoreAttributesUtil;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.BasicFileAttributesUtil;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
-import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.rpc.impl.SessionInfoWrapper;
@@ -60,11 +53,8 @@ import org.uberfire.rpc.impl.SessionInfoWrapper;
 @Service
 @ApplicationScoped
 public class MetadataServiceImpl
-        implements MetadataService,
-                   MetadataServerSideService {
+        implements MetadataServerSideService {
 
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
     
     @Inject
@@ -74,50 +64,37 @@ public class MetadataServiceImpl
     @Inject
     private SessionInfoWrapper sessionInfo;
 
+    @Inject
+    @Named("configIO")
+    private IOService configIOService;
+    
+    @Inject
+    private SessionInfoWrapper sessionInfo;
+
+    public MetadataServiceImpl() {
+    }
+
+    @Inject
+    public MetadataServiceImpl(@Named("ioStrategy") IOService ioService) {
+        this.ioService = ioService;
+    }
+
     @Override
     public Metadata getMetadata(final Path pathToResource) {
         return getMetadata(Paths.convert(pathToResource));
     }
 
     @Override
-    public Metadata getMetadataDirectPath(org.uberfire.java.nio.file.Path path) {
-        OtherMetaView fileAttributeView = Files.getFileAttributeView(path, OtherMetaView.class);
-        return new Metadata();
-    }
-
-    @Override
     public Metadata getMetadata(org.uberfire.java.nio.file.Path path) {
 
         try {
-
-            final DublinCoreView dcoreView = ioService.getFileAttributeView(path, DublinCoreView.class);
-            final DiscussionView discussView = ioService.getFileAttributeView(path, DiscussionView.class);
-            final OtherMetaView otherMetaView = ioService.getFileAttributeView(path, OtherMetaView.class);
-            final VersionAttributeView versionAttributeView = ioService.getFileAttributeView(path, VersionAttributeView.class);
-
-            return MetadataBuilder.newMetadata()
-                                  .withPath(Paths.convert(path))
-                                  .withRealPath(Paths.convert(path.toRealPath()))
-                                  .withCheckinComment(versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get(versionAttributeView.readAttributes().history().records().size() - 1).comment() : null)
-                                  .withLastContributor(versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get(versionAttributeView.readAttributes().history().records().size() - 1).author() : null)
-                                  .withCreator(versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get(0).author() : null)
-                                  .withLastModified(new Date(versionAttributeView.readAttributes().lastModifiedTime().toMillis()))
-                                  .withDateCreated(new Date(versionAttributeView.readAttributes().creationTime().toMillis()))
-                                  .withSubject(dcoreView.readAttributes().subjects().size() > 0 ? dcoreView.readAttributes().subjects().get(0) : null)
-                                  .withType(dcoreView.readAttributes().types().size() > 0 ? dcoreView.readAttributes().types().get(0) : null)
-                                  .withExternalRelation(dcoreView.readAttributes().relations().size() > 0 ? dcoreView.readAttributes().relations().get(0) : null)
-                                  .withExternalSource(dcoreView.readAttributes().sources().size() > 0 ? dcoreView.readAttributes().sources().get(0) : null)
-                                  .withDescription(dcoreView.readAttributes().descriptions().size() > 0 ? dcoreView.readAttributes().descriptions().get(0) : null)
-                                  .withCategories(otherMetaView.readAttributes().categories())
-                                  .withDiscussion(discussView.readAttributes().discussion())
-                                  .withLockInfo( retrieveLockInfo( Paths.convert( path ) ) )
-                                  .withUnlockAllowed( sessionInfo.isAdmin() )
-                                  .withVersion(new ArrayList<VersionRecord>(versionAttributeView.readAttributes().history().records().size()) {{
-                                      for (final VersionRecord record : versionAttributeView.readAttributes().history().records()) {
-                                          add(new PortableVersionRecord(record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri()));
-                                      }
-                                  }})                                  
-                                  .build();
+            return new MetadataCreator(path,
+                                       configIOService,
+                                       sessionInfo,
+                                       ioService.getFileAttributeView(path, DublinCoreView.class),
+                                       ioService.getFileAttributeView(path, DiscussionView.class),
+                                       ioService.getFileAttributeView(path, OtherMetaView.class),
+                                       ioService.getFileAttributeView(path, VersionAttributeView.class)).create();
 
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
@@ -398,18 +375,4 @@ public class MetadataServiceImpl
         }
     }
 
-    private LockInfo retrieveLockInfo( Path path ) {
-        final org.uberfire.java.nio.file.Path lockPath = Paths.convert( PathFactory.newLock( path ) );
-        if ( !configIOService.exists( lockPath ) ) {
-            return new LockInfo( false,
-                                 "",
-                                 path );
-        }
-        
-        final String lockedBy = configIOService.readAllString( lockPath );
-        return new LockInfo( true,
-                             lockedBy,
-                             path );
-    }
-    
 }
