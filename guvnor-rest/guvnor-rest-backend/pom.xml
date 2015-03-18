@@ -11,7 +11,7 @@
 
   <artifactId>guvnor-rest-backend</artifactId>
   <packaging>jar</packaging>
-  
+
   <name>Guvnor - REST Backend</name>
   <description>Guvnor - REST Backend</description>
 
@@ -107,6 +107,10 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-executor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-executor-cdi</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
