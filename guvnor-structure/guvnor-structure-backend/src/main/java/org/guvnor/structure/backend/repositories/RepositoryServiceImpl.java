@@ -13,6 +13,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -78,6 +79,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     @Inject
     private Event<RepositoryRemovedEvent> repositoryRemovedEvent;
+
+    @Inject
+    private BackwardCompatibleUtil backward;
 
     private Map<String, Repository> configuredRepositories = new HashMap<String, Repository>();
     private Map<Path, Repository> rootToRepo = new HashMap<Path, Repository>();
@@ -222,7 +226,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
 
         if ( thisRepositoryConfig != null ) {
-            final ConfigItem<List> groups = thisRepositoryConfig.getConfigItem( "security:groups" );
+            final ConfigItem<List> groups = backward.compat( thisRepositoryConfig ).getConfigItem( "security:groups" );
             groups.getValue().add( group );
 
             configurationService.updateConfiguration( thisRepositoryConfig );
@@ -242,7 +246,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
 
         if ( thisRepositoryConfig != null ) {
-            final ConfigItem<List> groups = thisRepositoryConfig.getConfigItem( "security:groups" );
+            final ConfigItem<List> groups = backward.compat( thisRepositoryConfig ).getConfigItem( "security:groups" );
             groups.getValue().remove( group );
 
             configurationService.updateConfiguration( thisRepositoryConfig );

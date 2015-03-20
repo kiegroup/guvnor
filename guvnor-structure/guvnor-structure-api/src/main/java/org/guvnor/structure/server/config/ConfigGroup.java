@@ -1,8 +1,8 @@
 package org.guvnor.structure.server.config;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ConfigGroup {
 
@@ -11,7 +11,7 @@ public class ConfigGroup {
     private ConfigType type;
     private boolean enabled;
 
-    private Map<String, ConfigItem> items = new HashMap<String, ConfigItem>();
+    private Map<String, ConfigItem> items = new ConcurrentHashMap<String, ConfigItem>();
 
     public String getName() {
         return name;
@@ -53,6 +53,10 @@ public class ConfigGroup {
 
     public ConfigItem getConfigItem( final String name ) {
         return this.items.get( name );
+    }
+
+    public void removeConfigItem( final String name ) {
+        this.items.remove( name );
     }
 
     public String getConfigItemValue( final String name ) {
