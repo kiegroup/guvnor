@@ -49,10 +49,10 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
         }
 
         //Copy in Security Roles required to access this resource
-        ConfigItem<List<String>> roles = repoConfig.getConfigItem( "security:roles" );
-        if ( roles != null ) {
-            for ( String role : roles.getValue() ) {
-                repository.getRoles().add( role );
+        ConfigItem<List<String>> groups = repoConfig.getConfigItem( "security:groups" );
+        if ( groups != null ) {
+            for ( String group : groups.getValue() ) {
+                repository.getGroups().add( group );
             }
         }
 

@@ -16,7 +16,7 @@ public class SystemRepository extends GitRepository {
 
     private static final String ALIAS = "system";
 
-    private static final Collection<String> roles = new ArrayList<String>( 1 ) {{
+    private static final Collection<String> groups = new ArrayList<String>( 1 ) {{
         add( "admin" );
     }};
 
@@ -51,7 +51,7 @@ public class SystemRepository extends GitRepository {
     }
 
     @Override
-    public Collection<String> getRoles() {
-        return unmodifiableCollection( roles );
+    public Collection<String> getGroups() {
+        return unmodifiableCollection( groups );
     }
 }

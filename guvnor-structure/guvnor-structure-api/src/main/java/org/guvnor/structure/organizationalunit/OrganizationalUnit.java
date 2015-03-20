@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import org.guvnor.structure.repositories.Repository;
 import org.uberfire.commons.data.Cacheable;
-import org.uberfire.security.authz.RuntimeResource;
+import org.uberfire.security.authz.RuntimeContentResource;
 
-public interface OrganizationalUnit extends RuntimeResource, Cacheable {
+public interface OrganizationalUnit extends RuntimeContentResource, Cacheable {
 
     String getName();
 
