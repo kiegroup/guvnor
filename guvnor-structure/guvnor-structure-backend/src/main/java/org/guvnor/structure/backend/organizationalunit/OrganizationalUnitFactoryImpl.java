@@ -34,10 +34,10 @@ public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory 
         }
 
         //Copy in Security Roles required to access this resource
-        ConfigItem<List<String>> roles = groupConfig.getConfigItem( "security:roles" );
-        if ( roles != null ) {
-            for ( String role : roles.getValue() ) {
-                organizationalUnit.getRoles().add( role );
+        ConfigItem<List<String>> groups = groupConfig.getConfigItem( "security:groups" );
+        if ( groups != null ) {
+            for ( String group : groups.getValue() ) {
+                organizationalUnit.getGroups().add( group );
             }
         }
         return organizationalUnit;

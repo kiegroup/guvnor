@@ -31,7 +31,7 @@ import org.guvnor.common.services.shared.security.KieWorkbenchPolicy;
 public class KieWorkbenchACLImpl implements KieWorkbenchACL {
 
     public static final String PREFIX_DESCR = "feature.";
-    public static final String PREFIX_CHILDREN = "group.";
+    public static final String PREFIX_CHILDREN = "profile.";
     public static final String PREFIX_ROLES = "roles.";
 
     private KieWorkbenchFeatureRegistry featureRegistry;
@@ -114,7 +114,7 @@ public class KieWorkbenchACLImpl implements KieWorkbenchACL {
         // Register the feature
         KieWorkbenchFeature result = featureRegistry.registerFeature(featureId, descr);
 
-        // For group features its children must be fetched and initialized first.
+        // For group features in a profile its children must be fetched and initialized first.
         if (children != null) {
             Set<String> noChildren = new HashSet<String>();
             for (int i = 0; i < children.length; i++) {

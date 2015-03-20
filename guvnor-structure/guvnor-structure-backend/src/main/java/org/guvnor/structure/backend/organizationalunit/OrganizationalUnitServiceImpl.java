@@ -113,7 +113,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                                                                            _defaultGroupId ) );
             groupConfig.addConfigItem( configurationFactory.newConfigItem( "repositories",
                                                                            new ArrayList<String>() ) );
-            groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
+            groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:groups",
                                                                            new ArrayList<String>() ) );
             configurationService.addConfiguration( groupConfig );
 
@@ -149,7 +149,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                                                                            _defaultGroupId ) );
             groupConfig.addConfigItem( configurationFactory.newConfigItem( "repositories",
                                                                            getRepositoryAliases( repositories ) ) );
-            groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
+            groupConfig.addConfigItem( configurationFactory.newConfigItem( "security:groups",
                                                                            new ArrayList<String>() ) );
             configurationService.addConfiguration( groupConfig );
 
@@ -268,16 +268,16 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void addRole( final OrganizationalUnit organizationalUnit,
-                         final String role ) {
+    public void addGroup( final OrganizationalUnit organizationalUnit,
+                          final String group ) {
         final ConfigGroup thisGroupConfig = findGroupConfig( organizationalUnit.getName() );
 
         if ( thisGroupConfig != null ) {
             OrganizationalUnit updatedOrganizationalUnit = null;
             try {
                 configurationService.startBatch();
-                final ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
-                roles.getValue().add( role );
+                final ConfigItem<List> groups = thisGroupConfig.getConfigItem( "security:groups" );
+                groups.getValue().add( group );
 
                 configurationService.updateConfiguration( thisGroupConfig );
 
@@ -298,16 +298,16 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void removeRole( final OrganizationalUnit organizationalUnit,
-                            final String role ) {
+    public void removeGroup( final OrganizationalUnit organizationalUnit,
+                             final String group ) {
         final ConfigGroup thisGroupConfig = findGroupConfig( organizationalUnit.getName() );
 
         if ( thisGroupConfig != null ) {
             OrganizationalUnit updatedOrganizationalUnit = null;
             try {
                 configurationService.startBatch();
-                final ConfigItem<List> roles = thisGroupConfig.getConfigItem( "security:roles" );
-                roles.getValue().remove( role );
+                final ConfigItem<List> groups = thisGroupConfig.getConfigItem( "security:groups" );
+                groups.getValue().remove( group );
 
                 configurationService.updateConfiguration( thisGroupConfig );
 

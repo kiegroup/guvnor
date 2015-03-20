@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.guvnor.structure.repositories.PublicURI;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
@@ -23,7 +23,7 @@ public class GitRepository implements Repository {
     private String alias = null;
     private Path root;
 
-    private Collection<String> roles = new ArrayList<String>();
+    private Collection<String> groups = new ArrayList<String>();
 
     private boolean requiresRefresh = true;
     private final Map<String, Path> branches = new HashMap<String, Path>();
@@ -68,22 +68,21 @@ public class GitRepository implements Repository {
         this.root = root;
     }
 
-
     public void setBranches( final Map<String, Path> branches ) {
         this.branches.clear();
-        this.branches.putAll(branches);
+        this.branches.putAll( branches );
     }
 
     @Override
     public Collection<String> getBranches() {
-        return Collections.unmodifiableSet(branches.keySet());
+        return Collections.unmodifiableSet( branches.keySet() );
     }
 
     @Override
     public String getCurrentBranch() {
 
-        for (String branchName : branches.keySet()) {
-            if (branches.get(branchName).equals(root)) {
+        for ( String branchName : branches.keySet() ) {
+            if ( branches.get( branchName ).equals( root ) ) {
                 return branchName;
             }
         }
@@ -97,8 +96,8 @@ public class GitRepository implements Repository {
     }
 
     @Override
-    public Path getBranchRoot(String branch) {
-        return branches.get(branch);
+    public Path getBranchRoot( String branch ) {
+        return branches.get( branch );
 
     }
 
@@ -130,12 +129,12 @@ public class GitRepository implements Repository {
     }
 
     @Override
-    public Collection<String> getRoles() {
-        return roles;
+    public Collection<String> getGroups() {
+        return groups;
     }
 
-    public void setRoles( Collection<String> roles ) {
-        this.roles = roles;
+    public void setGroups( Collection<String> groups ) {
+        this.groups = new ArrayList<String>( groups );
     }
 
     @Override
@@ -163,7 +162,7 @@ public class GitRepository implements Repository {
         if ( !publicURIs.equals( that.publicURIs ) ) {
             return false;
         }
-        if ( roles != null ? !roles.equals( that.roles ) : that.roles != null ) {
+        if ( groups != null ? !groups.equals( that.groups ) : that.groups != null ) {
             return false;
         }
         if ( root != null ? !root.equals( that.root ) : that.root != null ) {
@@ -186,7 +185,7 @@ public class GitRepository implements Repository {
         result = ~~result;
         result = 31 * result + ( root != null ? root.hashCode() : 0 );
         result = ~~result;
-        result = 31 * result + ( roles != null ? roles.hashCode() : 0 );
+        result = 31 * result + ( groups != null ? groups.hashCode() : 0 );
         result = ~~result;
         result = 31 * result + ( branches != null ? branches.hashCode() : 0 );
         result = ~~result;
@@ -195,10 +194,9 @@ public class GitRepository implements Repository {
 
     @Override
     public String toString() {
-        return "GitRepository [alias=" + alias + ", environment=" + environment + ", root=" + root + ", roles=" + roles
-                + ", publicURI=" + publicURIs + ", branches=" + branches +"]";
+        return "GitRepository [alias=" + alias + ", environment=" + environment + ", root=" + root + ", groups=" + groups
+                + ", publicURI=" + publicURIs + ", branches=" + branches + "]";
     }
-
 
     @Override
     public void markAsCached() {
@@ -210,11 +208,12 @@ public class GitRepository implements Repository {
         return requiresRefresh;
     }
 
-    public void changeBranch(String branch) {
-        setRoot(branches.get(branch));
+    public void changeBranch( String branch ) {
+        setRoot( branches.get( branch ) );
     }
 
-    public void addBranch(String branchName, Path path) {
-        branches.put(branchName, path);
+    public void addBranch( String branchName,
+                           Path path ) {
+        branches.put( branchName, path );
     }
 }

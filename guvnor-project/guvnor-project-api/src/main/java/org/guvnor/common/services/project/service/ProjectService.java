@@ -107,20 +107,20 @@ public interface ProjectService<T extends Project> {
                         final String packageName );
 
     /**
-     * Add a role to a project; limiting access to users with the role
+     * Add a group to a project; limiting access to users with the group
      * @param project The Project
-     * @param role The required role
+     * @param group The required group
      */
-    void addRole( final Project project,
-                  final String role );
+    void addGroup( final Project project,
+                   final String group );
 
     /**
-     * Remove a role from a project
+     * Remove a group from a project
      * @param project The Project
-     * @param role The role
+     * @param group The group
      */
-    void removeRole( final Project project,
-                     final String role );
+    void removeGroup( final Project project,
+                      final String group );
 
     Path rename( final Path pathToPomXML,
                  final String newName,

@@ -31,11 +31,11 @@ public interface OrganizationalUnitService {
     void removeRepository( final OrganizationalUnit organizationalUnit,
                            final Repository repository );
 
-    void addRole( final OrganizationalUnit organizationalUnit,
-                  final String role );
+    void addGroup( final OrganizationalUnit organizationalUnit,
+                   final String group );
 
-    void removeRole( final OrganizationalUnit organizationalUnit,
-                     final String role );
+    void removeGroup( final OrganizationalUnit organizationalUnit,
+                      final String group );
 
     void removeOrganizationalUnit( final String name );
 

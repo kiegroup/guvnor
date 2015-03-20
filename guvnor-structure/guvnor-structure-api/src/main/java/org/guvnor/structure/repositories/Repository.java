@@ -5,15 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.security.authz.RuntimeResource;
 import org.uberfire.commons.data.Cacheable;
+import org.uberfire.security.authz.RuntimeContentResource;
 
-public interface Repository extends RuntimeResource, Cacheable {
+public interface Repository extends RuntimeContentResource, Cacheable {
 
     /**
      * Most of the time, this can not be used as an unique ID.
      * If the Repository has branches each branch has the same alias.
-     *
      * @return short name for the repository
      */
     String getAlias();
@@ -33,7 +32,7 @@ public interface Repository extends RuntimeResource, Cacheable {
 
     Path getRoot();
 
-    Path getBranchRoot(String branch);
+    Path getBranchRoot( String branch );
 
     void setRoot( final Path root );
 
