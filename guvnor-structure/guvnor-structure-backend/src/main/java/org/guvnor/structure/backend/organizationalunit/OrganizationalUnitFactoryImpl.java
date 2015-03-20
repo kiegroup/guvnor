@@ -12,8 +12,6 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 
-import static org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil.*;
-
 public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory {
 
     @Inject

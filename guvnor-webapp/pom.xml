@@ -149,25 +149,6 @@
       <artifactId>maven-embedder</artifactId>
     </dependency>
 
-    <!-- Jetty dependencies for Hosted Mode -->
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-plus</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-naming</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
     <!-- HTML Parameter Encoder - used by JSPs -->
     <dependency>
       <groupId>org.owasp.encoder</groupId>
