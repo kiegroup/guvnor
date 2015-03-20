@@ -8,6 +8,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
@@ -27,6 +28,9 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
     @Inject
     @Any
     private Instance<RepositoryFactoryHelper> helpers;
+
+    @Inject
+    private BackwardCompatibleUtil backward;
 
     @Override
     public Repository newRepository( final ConfigGroup repoConfig ) {
@@ -49,7 +53,7 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
         }
 
         //Copy in Security Roles required to access this resource
-        ConfigItem<List<String>> groups = repoConfig.getConfigItem( "security:groups" );
+        ConfigItem<List<String>> groups = backward.compat( repoConfig ).getConfigItem( "security:groups" );
         if ( groups != null ) {
             for ( String group : groups.getValue() ) {
                 repository.getGroups().add( group );

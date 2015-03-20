@@ -11,6 +11,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.backend.config.OrgUnit;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
@@ -43,6 +44,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @Inject
     private OrganizationalUnitFactory organizationalUnitFactory;
+
+    @Inject
+    private BackwardCompatibleUtil backward;
 
     @Inject
     private Event<NewOrganizationalUnitEvent> newOrganizationalUnitEvent;
@@ -121,12 +125,11 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             registeredOrganizationalUnits.put( newOrganizationalUnit.getName(),
                                                newOrganizationalUnit );
 
-
             return newOrganizationalUnit;
         } finally {
             configurationService.endBatch();
-            if(newOrganizationalUnit != null){
-                newOrganizationalUnitEvent.fire(new NewOrganizationalUnitEvent(newOrganizationalUnit, getUserInfo(sessionInfo)));
+            if ( newOrganizationalUnit != null ) {
+                newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit, getUserInfo( sessionInfo ) ) );
             }
         }
     }
@@ -157,12 +160,11 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             registeredOrganizationalUnits.put( newOrganizationalUnit.getName(),
                                                newOrganizationalUnit );
 
-
             return newOrganizationalUnit;
         } finally {
             configurationService.endBatch();
-            if (newOrganizationalUnit != null) {
-                newOrganizationalUnitEvent.fire(new NewOrganizationalUnitEvent(newOrganizationalUnit, getUserInfo(sessionInfo)));
+            if ( newOrganizationalUnit != null ) {
+                newOrganizationalUnitEvent.fire( new NewOrganizationalUnitEvent( newOrganizationalUnit, getUserInfo( sessionInfo ) ) );
             }
         }
     }
@@ -199,12 +201,11 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                 registeredOrganizationalUnits.put( updatedOrganizationalUnit.getName(),
                                                    updatedOrganizationalUnit );
 
-
                 return updatedOrganizationalUnit;
             } finally {
                 configurationService.endBatch();
-                if(updatedOrganizationalUnit != null){
-                    updatedOrganizationalUnitEvent.fire(new UpdatedOrganizationalUnitEvent(updatedOrganizationalUnit, getUserInfo(sessionInfo)));
+                if ( updatedOrganizationalUnit != null ) {
+                    updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, getUserInfo( sessionInfo ) ) );
                 }
             }
         } else {
@@ -232,7 +233,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
             } finally {
                 configurationService.endBatch();
-                repoAddedToOrgUnitEvent.fire(new RepoAddedToOrganizationaUnitEvent(organizationalUnit, repository, getUserInfo(sessionInfo)));
+                repoAddedToOrgUnitEvent.fire( new RepoAddedToOrganizationaUnitEvent( organizationalUnit, repository, getUserInfo( sessionInfo ) ) );
             }
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
@@ -259,7 +260,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
             } finally {
                 configurationService.endBatch();
-                repoRemovedFromOrgUnitEvent.fire(new RepoRemovedFromOrganizationalUnitEvent(organizationalUnit, repository, getUserInfo(sessionInfo)));
+                repoRemovedFromOrgUnitEvent.fire( new RepoRemovedFromOrganizationalUnitEvent( organizationalUnit, repository, getUserInfo( sessionInfo ) ) );
             }
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
@@ -276,7 +277,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             OrganizationalUnit updatedOrganizationalUnit = null;
             try {
                 configurationService.startBatch();
-                final ConfigItem<List> groups = thisGroupConfig.getConfigItem( "security:groups" );
+                final ConfigItem<List> groups = backward.compat( thisGroupConfig ).getConfigItem( "security:groups" );
                 groups.getValue().add( group );
 
                 configurationService.updateConfiguration( thisGroupConfig );
@@ -287,8 +288,8 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
             } finally {
                 configurationService.endBatch();
-                if (updatedOrganizationalUnit != null) {
-                    updatedOrganizationalUnitEvent.fire(new UpdatedOrganizationalUnitEvent(updatedOrganizationalUnit, getUserInfo(sessionInfo)));
+                if ( updatedOrganizationalUnit != null ) {
+                    updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, getUserInfo( sessionInfo ) ) );
                 }
             }
         } else {
@@ -306,7 +307,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             OrganizationalUnit updatedOrganizationalUnit = null;
             try {
                 configurationService.startBatch();
-                final ConfigItem<List> groups = thisGroupConfig.getConfigItem( "security:groups" );
+                final ConfigItem<List> groups = backward.compat( thisGroupConfig ).getConfigItem( "security:groups" );
                 groups.getValue().remove( group );
 
                 configurationService.updateConfiguration( thisGroupConfig );
@@ -317,8 +318,8 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
             } finally {
                 configurationService.endBatch();
-                if (updatedOrganizationalUnit != null) {
-                    updatedOrganizationalUnitEvent.fire(new UpdatedOrganizationalUnitEvent(updatedOrganizationalUnit, getUserInfo(sessionInfo)));
+                if ( updatedOrganizationalUnit != null ) {
+                    updatedOrganizationalUnitEvent.fire( new UpdatedOrganizationalUnitEvent( updatedOrganizationalUnit, getUserInfo( sessionInfo ) ) );
                 }
             }
         } else {
@@ -350,8 +351,8 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                 ou = registeredOrganizationalUnits.remove( groupName );
             } finally {
                 configurationService.endBatch();
-                if( ou != null ){
-                    removeOrganizationalUnitEvent.fire(new RemoveOrganizationalUnitEvent(ou, getUserInfo(sessionInfo)));
+                if ( ou != null ) {
+                    removeOrganizationalUnitEvent.fire( new RemoveOrganizationalUnitEvent( ou, getUserInfo( sessionInfo ) ) );
                 }
             }
         }
