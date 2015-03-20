@@ -34,16 +34,17 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.client.workbench.widgets.common.ErrorPopup;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchScreen( identifier = "Build Management" )
+@WorkbenchScreen(identifier = "Build Management")
 public class BuildConfigurationPresenter extends BaseAssetsMgmtPresenter {
 
-    public interface BuildConfigurationView extends UberView<BuildConfigurationPresenter>, BaseAssetsMgmtView {
+    public interface BuildConfigurationView extends UberView<BuildConfigurationPresenter>,
+                                                    BaseAssetsMgmtView {
 
         ListBox getChooseBranchBox();
 
@@ -55,6 +56,9 @@ public class BuildConfigurationPresenter extends BaseAssetsMgmtPresenter {
 
     @Inject
     BuildConfigurationView view;
+
+    @Inject
+    ErrorPopupPresenter errorPopup;
 
     @Inject
     private Event<BeforeClosePlaceEvent> closePlaceEvent;
@@ -83,12 +87,12 @@ public class BuildConfigurationPresenter extends BaseAssetsMgmtPresenter {
     }
 
     public void buildProject( String repository,
-            String branch,
-            String project,
-            String userName,
-            String password,
-            String serverURL,
-            Boolean deployToMaven ) {
+                              String branch,
+                              String project,
+                              String userName,
+                              String password,
+                              String serverURL,
+                              Boolean deployToMaven ) {
 
         if ( serverURL != null && !serverURL.isEmpty() && serverURL.endsWith( "/" ) ) {
             serverURL = serverURL.substring( 0, serverURL.length() - 1 );
@@ -102,12 +106,12 @@ public class BuildConfigurationPresenter extends BaseAssetsMgmtPresenter {
                                       }, new ErrorCallback<Message>() {
                                           @Override
                                           public boolean error( Message message,
-                                                  Throwable throwable ) {
-                                              ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
+                                                                Throwable throwable ) {
+                                              errorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
                                               return true;
                                           }
                                       }
-        ).buildProject( repository, branch, project, userName, password, serverURL, deployToMaven );
+                                    ).buildProject( repository, branch, project, userName, password, serverURL, deployToMaven );
 
     }
 
@@ -134,7 +138,7 @@ public class BuildConfigurationPresenter extends BaseAssetsMgmtPresenter {
     }
 
     public void loadProjects( String alias,
-            String branch ) {
+                              String branch ) {
         Repository repository = getRepository( alias );
         view.getChooseProjectBox().clear();
         view.getChooseProjectBox().addItem( constants.Select_Project() );

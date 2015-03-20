@@ -65,8 +65,6 @@ import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil.*;
-
 public abstract class AbstractProjectService<T extends Project>
         implements ProjectService<T>,
                    ProjectFactory<T> {
@@ -158,6 +156,7 @@ public abstract class AbstractProjectService<T extends Project>
         //Copy in Security Roles required to access this resource
         final ConfigGroup projectConfiguration = findProjectConfig( project.getRootPath() );
         if ( projectConfiguration != null ) {
+
             ConfigItem<List<String>> groups = backward.compat( projectConfiguration ).getConfigItem( "security:groups" );
             if ( groups != null ) {
                 for ( String group : groups.getValue() ) {

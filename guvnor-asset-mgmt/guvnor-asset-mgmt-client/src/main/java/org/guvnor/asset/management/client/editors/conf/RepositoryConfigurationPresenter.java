@@ -35,7 +35,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.client.workbench.widgets.common.ErrorPopup;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
@@ -60,6 +60,9 @@ public class RepositoryConfigurationPresenter extends BaseAssetsMgmtPresenter {
 
     @Inject
     RepositoryConfigurationView view;
+
+    @Inject
+    ErrorPopupPresenter errorPopup;
 
     @Inject
     private Event<BeforeClosePlaceEvent> closePlaceEvent;
@@ -125,7 +128,7 @@ public class RepositoryConfigurationPresenter extends BaseAssetsMgmtPresenter {
                                       }, new ErrorCallback<Message>() {
                                           @Override
                                           public boolean error( Message message, Throwable throwable ) {
-                                              ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
+                                              errorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
                                               return true;
                                           }
                                       }
