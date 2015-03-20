@@ -40,11 +40,11 @@ public interface RepositoryService {
 
     String normalizeRepositoryName( final String name );
 
-    void addRole( final Repository repository,
-                  final String role );
+    void addGroup( final Repository repository,
+                   final String group );
 
-    void removeRole( final Repository repository,
-                     final String role );
+    void removeGroup( final Repository repository,
+                      final String group );
 
     void removeRepository( final String alias );
 

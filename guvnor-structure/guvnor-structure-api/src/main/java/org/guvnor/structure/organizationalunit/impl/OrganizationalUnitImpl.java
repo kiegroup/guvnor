@@ -16,7 +16,7 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     private String owner;
 
     private Collection<Repository> repositories = new ArrayList<Repository>();
-    private Collection<String> roles = new ArrayList<String>();
+    private Collection<String> groups = new ArrayList<String>();
     private boolean requiresRefresh = true;
 
     public OrganizationalUnitImpl() {
@@ -53,11 +53,6 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     @Override
     public String getSignatureId() {
         return getClass().getName() + "#" + getName();
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return roles;
     }
 
     @Override
@@ -102,10 +97,9 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
 
     @Override
     public String toString() {
-      return "OrganizationalUnitImpl [name=" + name + ", owner=" + owner + ", repositories=" + repositories
-              + ", roles=" + roles + ", defaultGroupId=" + defaultGroupId + "]";
+        return "OrganizationalUnitImpl [name=" + name + ", owner=" + owner + ", repositories=" + repositories
+                + ", groups=" + groups + ", defaultGroupId=" + defaultGroupId + "]";
     }
-
 
     @Override
     public void markAsCached() {
@@ -115,5 +109,10 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     @Override
     public boolean requiresRefresh() {
         return requiresRefresh;
+    }
+
+    @Override
+    public Collection<String> getGroups() {
+        return groups;
     }
 }

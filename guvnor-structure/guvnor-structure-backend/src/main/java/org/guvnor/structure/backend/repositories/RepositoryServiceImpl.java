@@ -169,7 +169,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         try {
             configurationService.startBatch();
             final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY, alias, "" );
-            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles", new ArrayList<String>() ) );
+            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "security:groups", new ArrayList<String>() ) );
 
             if ( !env.containsKey( SCHEME ) ) {
                 repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME, scheme ) );
@@ -217,13 +217,13 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void addRole( Repository repository,
-                         String role ) {
+    public void addGroup( Repository repository,
+                          String group ) {
         final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
 
         if ( thisRepositoryConfig != null ) {
-            final ConfigItem<List> roles = thisRepositoryConfig.getConfigItem( "security:roles" );
-            roles.getValue().add( role );
+            final ConfigItem<List> groups = thisRepositoryConfig.getConfigItem( "security:groups" );
+            groups.getValue().add( group );
 
             configurationService.updateConfiguration( thisRepositoryConfig );
 
@@ -237,13 +237,13 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void removeRole( Repository repository,
-                            String role ) {
+    public void removeGroup( Repository repository,
+                             String group ) {
         final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
 
         if ( thisRepositoryConfig != null ) {
-            final ConfigItem<List> roles = thisRepositoryConfig.getConfigItem( "security:roles" );
-            roles.getValue().remove( role );
+            final ConfigItem<List> groups = thisRepositoryConfig.getConfigItem( "security:groups" );
+            groups.getValue().remove( group );
 
             configurationService.updateConfiguration( thisRepositoryConfig );
 

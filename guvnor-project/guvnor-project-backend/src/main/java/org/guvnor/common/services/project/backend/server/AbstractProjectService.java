@@ -16,27 +16,13 @@
 
 package org.guvnor.common.services.project.backend.server;
 
-import static java.util.Collections.emptySet;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.java.nio.file.Files.*;
-
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
-
 import javax.enterprise.context.ContextNotActiveException;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -51,7 +37,6 @@ import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
-import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -78,23 +63,6 @@ import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.java.nio.file.FileVisitOption;
-import org.uberfire.java.nio.file.Files;
-import org.uberfire.java.nio.file.StandardDeleteOption;
-import org.uberfire.rpc.SessionInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.base.FileSystemId;
-import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileVisitResult;
-import org.uberfire.java.nio.file.SimpleFileVisitor;
-import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
-import org.uberfire.java.nio.file.attribute.FileAttribute;
-import org.uberfire.java.nio.file.attribute.FileAttributeView;
 
 public abstract class AbstractProjectService<T extends Project>
         implements ProjectService<T>,
@@ -175,19 +143,19 @@ public abstract class AbstractProjectService<T extends Project>
     protected T makeProject( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
         final T project = simpleProjectInstance( nioProjectRootPath );
 
-        addSecurityRoles( project );
+        addSecurityGroups( project );
 
         return project;
     }
 
-    protected void addSecurityRoles( final T project ) {
+    protected void addSecurityGroups( final T project ) {
         //Copy in Security Roles required to access this resource
         final ConfigGroup projectConfiguration = findProjectConfig( project.getRootPath() );
         if ( projectConfiguration != null ) {
-            ConfigItem<List<String>> roles = projectConfiguration.getConfigItem( "security:roles" );
-            if ( roles != null ) {
-                for ( String role : roles.getValue() ) {
-                    project.getRoles().add( role );
+            ConfigItem<List<String>> groups = projectConfiguration.getConfigItem( "security:groups" );
+            if ( groups != null ) {
+                for ( String group : groups.getValue() ) {
+                    project.getGroups().add( group );
                 }
             }
         }
@@ -663,22 +631,22 @@ public abstract class AbstractProjectService<T extends Project>
 
     @SuppressWarnings({ "rawtypes" })
     @Override
-    public void addRole( final Project project,
-                         final String role ) {
+    public void addGroup( final Project project,
+                          final String group ) {
         ConfigGroup thisProjectConfig = findProjectConfig( project.getRootPath() );
 
         if ( thisProjectConfig == null ) {
             thisProjectConfig = configurationFactory.newConfigGroup( ConfigType.PROJECT,
                                                                      project.getRootPath().toURI(),
                                                                      "Project '" + project.getProjectName() + "' configuration" );
-            thisProjectConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles",
+            thisProjectConfig.addConfigItem( configurationFactory.newConfigItem( "security:groups",
                                                                                  new ArrayList<String>() ) );
             configurationService.addConfiguration( thisProjectConfig );
         }
 
         if ( thisProjectConfig != null ) {
-            final ConfigItem<List> roles = thisProjectConfig.getConfigItem( "security:roles" );
-            roles.getValue().add( role );
+            final ConfigItem<List> groups = thisProjectConfig.getConfigItem( "security:groups" );
+            groups.getValue().add( group );
 
             configurationService.updateConfiguration( thisProjectConfig );
 
@@ -689,13 +657,13 @@ public abstract class AbstractProjectService<T extends Project>
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void removeRole( final Project project,
-                            final String role ) {
+    public void removeGroup( final Project project,
+                             final String group ) {
         final ConfigGroup thisProjectConfig = findProjectConfig( project.getRootPath() );
 
         if ( thisProjectConfig != null ) {
-            final ConfigItem<List> roles = thisProjectConfig.getConfigItem( "security:roles" );
-            roles.getValue().remove( role );
+            final ConfigItem<List> groups = thisProjectConfig.getConfigItem( "security:groups" );
+            groups.getValue().remove( group );
 
             configurationService.updateConfiguration( thisProjectConfig );
 
