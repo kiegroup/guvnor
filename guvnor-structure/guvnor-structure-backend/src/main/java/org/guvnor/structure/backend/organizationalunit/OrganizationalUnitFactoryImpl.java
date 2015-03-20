@@ -3,6 +3,7 @@ package org.guvnor.structure.backend.organizationalunit;
 import java.util.List;
 import javax.inject.Inject;
 
+import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Repository;
@@ -11,10 +12,15 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 
+import static org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil.*;
+
 public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory {
 
     @Inject
     private RepositoryService repositoryService;
+
+    @Inject
+    private BackwardCompatibleUtil backward;
 
     @Override
     public OrganizationalUnit newOrganizationalUnit( ConfigGroup groupConfig ) {
@@ -34,7 +40,7 @@ public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory 
         }
 
         //Copy in Security Roles required to access this resource
-        ConfigItem<List<String>> groups = groupConfig.getConfigItem( "security:groups" );
+        ConfigItem<List<String>> groups = backward.compat( groupConfig ).getConfigItem( "security:groups" );
         if ( groups != null ) {
             for ( String group : groups.getValue() ) {
                 organizationalUnit.getGroups().add( group );

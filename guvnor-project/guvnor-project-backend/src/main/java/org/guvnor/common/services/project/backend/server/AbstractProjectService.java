@@ -45,6 +45,7 @@ import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.PackageAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.workingset.client.model.WorkingSetSettings;
+import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
@@ -63,6 +64,8 @@ import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
+
+import static org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil.*;
 
 public abstract class AbstractProjectService<T extends Project>
         implements ProjectService<T>,
@@ -100,6 +103,9 @@ public abstract class AbstractProjectService<T extends Project>
 
     @Inject
     private AuthorizationManager authorizationManager;
+
+    @Inject
+    private BackwardCompatibleUtil backward;
 
     @Inject
     private User identity;
@@ -152,7 +158,7 @@ public abstract class AbstractProjectService<T extends Project>
         //Copy in Security Roles required to access this resource
         final ConfigGroup projectConfiguration = findProjectConfig( project.getRootPath() );
         if ( projectConfiguration != null ) {
-            ConfigItem<List<String>> groups = projectConfiguration.getConfigItem( "security:groups" );
+            ConfigItem<List<String>> groups = backward.compat( projectConfiguration ).getConfigItem( "security:groups" );
             if ( groups != null ) {
                 for ( String group : groups.getValue() ) {
                     project.getGroups().add( group );
@@ -386,7 +392,6 @@ public abstract class AbstractProjectService<T extends Project>
                                                         nioChildPackageSrcPath ) );
             }
         }
-
         return packageNames;
     }
 
@@ -645,7 +650,7 @@ public abstract class AbstractProjectService<T extends Project>
         }
 
         if ( thisProjectConfig != null ) {
-            final ConfigItem<List> groups = thisProjectConfig.getConfigItem( "security:groups" );
+            final ConfigItem<List> groups = backward.compat( thisProjectConfig ).getConfigItem( "security:groups" );
             groups.getValue().add( group );
 
             configurationService.updateConfiguration( thisProjectConfig );
@@ -662,7 +667,7 @@ public abstract class AbstractProjectService<T extends Project>
         final ConfigGroup thisProjectConfig = findProjectConfig( project.getRootPath() );
 
         if ( thisProjectConfig != null ) {
-            final ConfigItem<List> groups = thisProjectConfig.getConfigItem( "security:groups" );
+            final ConfigItem<List> groups = backward.compat( thisProjectConfig ).getConfigItem( "security:groups" );
             groups.getValue().remove( group );
 
             configurationService.updateConfiguration( thisProjectConfig );
