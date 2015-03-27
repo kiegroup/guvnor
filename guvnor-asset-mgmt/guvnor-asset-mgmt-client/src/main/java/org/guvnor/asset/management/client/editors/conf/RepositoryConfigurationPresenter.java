@@ -59,10 +59,10 @@ public class RepositoryConfigurationPresenter extends BaseAssetsMgmtPresenter {
     }
 
     @Inject
-    RepositoryConfigurationView view;
+    protected ErrorPopupPresenter errorPopup;
 
     @Inject
-    ErrorPopupPresenter errorPopup;
+    RepositoryConfigurationView view;
 
     @Inject
     private Event<BeforeClosePlaceEvent> closePlaceEvent;

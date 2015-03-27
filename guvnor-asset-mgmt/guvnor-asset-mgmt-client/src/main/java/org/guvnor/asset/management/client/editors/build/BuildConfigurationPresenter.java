@@ -55,10 +55,10 @@ public class BuildConfigurationPresenter extends BaseAssetsMgmtPresenter {
     }
 
     @Inject
-    BuildConfigurationView view;
+    private ErrorPopupPresenter errorPopup;
 
     @Inject
-    ErrorPopupPresenter errorPopup;
+    BuildConfigurationView view;
 
     @Inject
     private Event<BeforeClosePlaceEvent> closePlaceEvent;

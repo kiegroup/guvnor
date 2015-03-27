@@ -38,10 +38,11 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchScreen( identifier = "Promote Changes" )
+@WorkbenchScreen(identifier = "Promote Changes")
 public class PromoteChangesPresenter extends BaseAssetsMgmtPresenter {
 
-    public interface PromoteChangesView extends UberView<PromoteChangesPresenter>, BaseAssetsMgmtView {
+    public interface PromoteChangesView extends UberView<PromoteChangesPresenter>,
+                                                BaseAssetsMgmtView {
 
         ListBox getChooseSourceBranchBox();
 
@@ -50,10 +51,10 @@ public class PromoteChangesPresenter extends BaseAssetsMgmtPresenter {
     }
 
     @Inject
-    PromoteChangesView view;
+    private ErrorPopupPresenter errorPopup;
 
     @Inject
-    ErrorPopupPresenter errorPopup;
+    PromoteChangesView view;
 
     @Inject
     private Event<BeforeClosePlaceEvent> closePlaceEvent;
@@ -97,7 +98,9 @@ public class PromoteChangesPresenter extends BaseAssetsMgmtPresenter {
         }
     }
 
-    public void promoteChanges( String repository, String sourceBranch, String destinationBranch ) {
+    public void promoteChanges( String repository,
+                                String sourceBranch,
+                                String destinationBranch ) {
         assetManagementServices.call( new RemoteCallback<Long>() {
                                           @Override
                                           public void callback( Long taskId ) {
@@ -105,12 +108,13 @@ public class PromoteChangesPresenter extends BaseAssetsMgmtPresenter {
                                           }
                                       }, new ErrorCallback<Message>() {
                                           @Override
-                                          public boolean error( Message message, Throwable throwable ) {
+                                          public boolean error( Message message,
+                                                                Throwable throwable ) {
                                               errorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
                                               return true;
                                           }
                                       }
-        ).promoteChanges( repository, sourceBranch, destinationBranch );
+                                    ).promoteChanges( repository, sourceBranch, destinationBranch );
 
     }
 
