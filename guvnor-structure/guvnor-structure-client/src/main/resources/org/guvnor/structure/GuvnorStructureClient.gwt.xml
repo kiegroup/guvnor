@@ -15,11 +15,4 @@
 
   <inherits name="org.guvnor.structure.GuvnorStructureAPI"/>
 
-  <script src="zeroclipboard/ZeroClipboard.min.js"/>
-  <script src="zeroclipboard/ZeroClipboardLoader.js"/>
-
-  <public path="public">
-    <include name="zeroclipboard/ZeroClipboard.swf" />
-  </public>
-
 </module>

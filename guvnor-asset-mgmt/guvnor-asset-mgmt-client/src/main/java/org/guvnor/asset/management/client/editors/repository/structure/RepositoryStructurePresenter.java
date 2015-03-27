@@ -131,13 +131,13 @@ public class RepositoryStructurePresenter
     private ProjectWizard wizzard;
 
     @Inject
-    ErrorPopupPresenter errorPopup;
-
-    @Inject
     protected Event<ProjectContextChangeEvent> contextChangedEvent;
 
     @Inject
     protected Caller<AssetManagementService> assetManagementServices;
+
+    @Inject
+    protected ErrorPopupPresenter errorPopup;
 
     private RepositoryStructureModel model;
 
@@ -908,7 +908,7 @@ public class RepositoryStructurePresenter
             @Override
             public void accept( MenuVisitor visitor ) {
                 if ( visitor.visitEnter( this ) ) {
-                    for ( MenuItem item : items ) {
+                    for ( final MenuItem item : items ) {
                         item.accept( visitor );
                     }
                     visitor.visitLeave( this );

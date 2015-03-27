@@ -32,6 +32,13 @@
   <name>Guvnor - WebApp</name>
   <description>Guvnor - WebApp</description>
 
+  <properties>
+    <errai.version>${version.org.jboss.errai}</errai.version>
+    <as.version>8.1.0.Final</as.version>
+    <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
+    <errai.jboss.home>${project.build.directory}/wildfly-${as.version}</errai.jboss.home>
+  </properties>
+
   <dependencies>
 
     <!-- All transient dependencies -->
@@ -46,6 +53,7 @@
     <dependency>
       <groupId>com.github.gwtbootstrap</groupId>
       <artifactId>gwt-bootstrap</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -90,10 +98,12 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-core-client</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -110,6 +120,7 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -134,6 +145,7 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.picketlink</groupId>
@@ -155,17 +167,14 @@
       <artifactId>encoder</artifactId>
     </dependency>
 
-    <!-- Hack: ANT bundled with kie-ci needs to be excluded when running on Jetty -->
-    <!-- It is added back for other Application Servers in their respective assemblies -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.ant</groupId>
-          <artifactId>ant</artifactId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-plexus</artifactId>
     </dependency>
 
     <!--Logs-->
@@ -188,6 +197,7 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-structure-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -198,6 +208,7 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-m2repo-editor-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -213,6 +224,7 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-inbox-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -233,6 +245,7 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -243,6 +256,7 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-workingset-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -263,11 +277,21 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-message-console-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-organizationalunit-manager</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- UberFire BS2 -->
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client-views-bs2</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- UberFire Extension -->
@@ -284,6 +308,7 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- UberFire Plugins -->
@@ -294,12 +319,14 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-runtime-plugins-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- UberFire Apps -->
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-apps-client</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -315,23 +342,27 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-wires-core-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.rht-emitrom</groupId>
       <artifactId>lienzo-core</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!--Wires Scratch Pad dependencies-->
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-wires-core-scratchpad</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!--Wires Trees dependencies-->
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-wires-core-trees</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!--Wires Bayesian Network dependencies-->
@@ -348,22 +379,84 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-wires-bayesian-network-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Dashbuilder -->
     <dependency>
       <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-all</artifactId>
+      <artifactId>dashbuilder-server-all</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-common-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-dataset-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-dataset-shared</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-displayer-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-displayer-screen</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-displayer-editor</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-renderer-default</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-renderer-google</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-widgets</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-lienzo-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-lienzo-charts</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-renderer-lienzo</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- UberFire -->
@@ -380,6 +473,12 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client-backend</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -389,13 +488,22 @@
       <artifactId>errai-security-picketlink</artifactId>
     </dependency>
 
-    <!-- PicketLink has a hard dependency on JBoss Logging.-->
-    <!-- Since this app deploys to Jetty, we include this as a runtime-scoped dependency.-->
-    <!-- If deploying to JBoss AS or WildFly, you would set this to provided scope. -->
     <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging</artifactId>
-      <scope>runtime</scope>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ui</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-navigation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-security-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Errai AS -->
@@ -404,10 +512,10 @@
       <artifactId>errai-jboss-as-support</artifactId>
     </dependency>
 
-    <!-- CDI Integration Modules -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-client</artifactId>
+      <artifactId>errai-cdi-jboss</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -419,17 +527,6 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-weld-integration</artifactId>
-    </dependency>
-
-    <!-- Weld Modules -->
-    <dependency>
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.weld.servlet</groupId>
-      <artifactId>weld-servlet-core</artifactId>
     </dependency>
 
     <!-- GWT and GWT Extensions -->
@@ -448,38 +545,38 @@
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>
 
   <build>
-
-    <resources>
-      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-      <resource>
-        <directory>src/main/java</directory>
-      </resource>
-      <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
+    <finalName>${project.artifactId}</finalName>
+    <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 
     <plugins>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
-          <localWorkers>1</localWorkers>
+          <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms1024m -XX:PermSize=128m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
           <module>org.guvnor.FastCompiledGuvnorWorkbench</module>
           <logLevel>INFO</logLevel>
+          <noServer>false</noServer>
+          <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
+          <disableCastChecking>true</disableCastChecking>
+          <runTarget>guvnor-wb.html</runTarget>
+          <hostedWebapp>src/main/webapp</hostedWebapp>
+          <logLevel>INFO</logLevel>
+          <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
+          <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
           <compileSourcesArtifacts>
 
             <!-- Guvnor -->
@@ -493,6 +590,7 @@
             <compileSourcesArtifact>org.guvnor:guvnor-workingset-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-services-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-project-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-project-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-message-console-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-message-console-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-organizationalunit-manager</compileSourcesArtifact>
@@ -508,10 +606,20 @@
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-backend</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-bs2</compileSourcesArtifact>
 
             <!-- UberFire extensions -->
+            <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-apps-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-apps-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-service-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-client</compileSourcesArtifact>
 
             <!-- Wires -->
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-api</compileSourcesArtifact>
@@ -521,16 +629,24 @@
             <compileSourcesArtifact>org.uberfire:uberfire-wires-bayesian-parser-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-bayesian-network-client</compileSourcesArtifact>
 
+            <!-- KIE UberFire extensions -->
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-social-activities-api</compileSourcesArtifact>
+
             <!-- Dashbuilder -->
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-client-all</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-lienzo-core</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-lienzo-charts</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-validations</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-shared</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-displayer-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-common-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-displayer-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-displayer-editor</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-renderer-google</compileSourcesArtifact>
-
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-renderer-lienzo</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-widgets</compileSourcesArtifact>
           </compileSourcesArtifacts>
-          <runTarget>guvnor-wb.html</runTarget>
-          <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms2048m -XX:PermSize=128m -Xss1M</extraJvmArgs>
-          <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
-          <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
         </configuration>
         <executions>
           <execution>
@@ -551,25 +667,6 @@
       </plugin>
 
       <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <packagingExcludes>**/javax/**/*.*,**/client/**/*.class,**/*.symbolMap</packagingExcludes>
-          <archive>
-            <addMavenDescriptor>false</addMavenDescriptor>
-          </archive>
-        </configuration>
-      </plugin>
-
-      <!-- Tests are skipped by default because they require additional GWT dependencies. Run mvn with
-        -Pintegration-test to enable testing. -->
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
           <filesets>
@@ -582,6 +679,32 @@
             </fileset>
           </filesets>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.wildfly</groupId>
+                  <artifactId>wildfly-dist</artifactId>
+                  <version>${as.version}</version>
+                  <type>zip</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
 

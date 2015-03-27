@@ -15,6 +15,11 @@
   <description>Guvnor - Structure Backend</description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- dependencies added because of illegal transitive dependency check -->
     <dependency>
