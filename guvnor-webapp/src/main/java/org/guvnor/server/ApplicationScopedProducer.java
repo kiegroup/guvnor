@@ -17,7 +17,6 @@
 package org.guvnor.server;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -79,12 +78,6 @@ public class ApplicationScopedProducer {
         }
         ioSearchService = new IOSearchIndex( config.getSearchIndex(),
                                              ioService );
-    }
-
-    @PreDestroy
-    private void cleanup() {
-        config.dispose();
-        ioService.dispose();
     }
 
     @Produces
