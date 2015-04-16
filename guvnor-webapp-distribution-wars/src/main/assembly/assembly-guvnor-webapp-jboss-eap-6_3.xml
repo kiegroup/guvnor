@@ -154,6 +154,7 @@
           <exclude>WEB-INF/lib/antlr-2*.jar</exclude>
           <exclude>WEB-INF/lib/commons-cli-*.jar</exclude>
           <exclude>WEB-INF/lib/commons-collections-*.jar</exclude>
+          <!-- Exclude commons-lang-* as this is bundled with EAP, but don't exclude commons-lang3-* as this is not bundled with EAP -->
           <exclude>WEB-INF/lib/commons-lang-*.jar</exclude>
           <exclude>WEB-INF/lib/dom4j-*.jar</exclude>
           <exclude>WEB-INF/lib/ecj-*.jar</exclude>
