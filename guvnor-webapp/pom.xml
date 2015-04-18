@@ -541,6 +541,8 @@
             <compileSourcesArtifact>org.uberfire:uberfire-wires-bayesian-network-client</compileSourcesArtifact>
 
             <!-- Dashbuilder -->
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-hibernate-validator</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-validations</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-shared</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-displayer-api</compileSourcesArtifact>
