@@ -33,7 +33,7 @@ public class ExceptionUtilities {
      * @return
      */
     public static RuntimeException handleException( final Exception e ) {
-        logger.debug("Exception thrown: " + e.getMessage(), e);
+        logger.error("Exception thrown: " + e.getMessage(), e);
         if ( EnvUtil.isPortableType( e.getClass() ) ) {
             if ( e instanceof RuntimeException ) {
                 return (RuntimeException) e;
