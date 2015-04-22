@@ -16,13 +16,14 @@
 
 package org.guvnor.common.services.shared.metadata.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.backend.vfs.Path;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.LockInfo;
+import org.uberfire.java.nio.base.version.VersionRecord;
 
 /**
  *
@@ -31,6 +32,9 @@ import java.util.List;
 public class Metadata {
 
     private Path path;
+    private Path realPath;
+    private LockInfo lockInfo;
+    private boolean unlockAllowed;
 
     //git info
     private String checkinComment;
@@ -57,6 +61,7 @@ public class Metadata {
     }
 
     public Metadata( final Path path,
+                     final Path realPath,
                      final String checkinComment,
                      final String lastContributor,
                      final String creator,
@@ -69,8 +74,11 @@ public class Metadata {
                      final String description,
                      final List<String> categories,
                      final List<DiscussionRecord> discussion,
-                     final List<VersionRecord> version ) {
+                     final List<VersionRecord> version,
+                     final LockInfo lockInfo,
+                     final boolean unlockAllowed) {
         this.path = path;
+        this.realPath = realPath;
         this.checkinComment = checkinComment;
         this.lastContributor = lastContributor;
         this.creator = creator;
@@ -84,10 +92,16 @@ public class Metadata {
         this.categories = categories;
         this.discussion = discussion;
         this.version = version;
+        this.lockInfo = lockInfo;
+        this.unlockAllowed = unlockAllowed;
     }
 
     public Path getPath() {
         return path;
+    }
+    
+    public Path getRealPath() {
+        return realPath;
     }
 
     public String getCheckinComment() {
@@ -140,6 +154,18 @@ public class Metadata {
 
     public List<VersionRecord> getVersion() {
         return version;
+    }
+    
+    public LockInfo getLockInfo() {
+        return lockInfo;
+    }
+    
+    public void setLockInfo( LockInfo lockInfo ) {
+        this.lockInfo = lockInfo;
+    }
+
+    public boolean isUnlockAllowed() {
+        return unlockAllowed;
     }
 
     public void setSubject( final String subject ) {
@@ -222,6 +248,9 @@ public class Metadata {
         if ( path != null ? !path.equals( metadata.path ) : metadata.path != null ) {
             return false;
         }
+        if ( realPath != null ? !realPath.equals( metadata.realPath ) : metadata.realPath != null ) {
+            return false;
+        }
         if ( subject != null ? !subject.equals( metadata.subject ) : metadata.subject != null ) {
             return false;
         }
@@ -231,6 +260,11 @@ public class Metadata {
         if ( version != null ? !version.equals( metadata.version ) : metadata.version != null ) {
             return false;
         }
+        if ( lockInfo != null ? !lockInfo.equals( metadata.lockInfo ) : metadata.lockInfo != null ) {
+            return false;
+        }
+        if ( unlockAllowed != metadata.unlockAllowed )
+            return false;
 
         return true;
     }
@@ -238,6 +272,8 @@ public class Metadata {
     @Override
     public int hashCode() {
         int result = path != null ? path.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + (realPath != null ? realPath.hashCode() : 0);
         result = ~~result;
         result = 31 * result + ( checkinComment != null ? checkinComment.hashCode() : 0 );
         result = ~~result;
@@ -259,6 +295,9 @@ public class Metadata {
         result = ~~result;
         result = 31 * result + ( description != null ? description.hashCode() : 0 );
         result = ~~result;
+        result = 31 * result + ( lockInfo != null ? lockInfo.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + (unlockAllowed ? 1231 : 1237);
         result = ~~result;
         result = 31 * result + ( categories != null ? categories.hashCode() : 0 );
         result = ~~result;

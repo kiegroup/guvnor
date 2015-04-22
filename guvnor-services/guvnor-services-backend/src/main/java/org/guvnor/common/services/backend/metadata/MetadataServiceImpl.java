@@ -16,11 +16,15 @@
 
 package org.guvnor.common.services.backend.metadata;
 
+import static java.util.Collections.emptyList;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -38,6 +42,8 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.ext.editor.commons.version.impl.PortableVersionRecord;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreAttributes;
@@ -49,9 +55,7 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.FileTime;
-
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import org.uberfire.rpc.impl.SessionInfoWrapper;
 
 @Service
 @ApplicationScoped
@@ -62,6 +66,13 @@ public class MetadataServiceImpl
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+    
+    @Inject
+    @Named("configIO")
+    private IOService configIOService;
+    
+    @Inject
+    private SessionInfoWrapper sessionInfo;
 
     @Override
     public Metadata getMetadata(final Path pathToResource) {
@@ -85,7 +96,8 @@ public class MetadataServiceImpl
             final VersionAttributeView versionAttributeView = ioService.getFileAttributeView(path, VersionAttributeView.class);
 
             return MetadataBuilder.newMetadata()
-                                  .withPath(Paths.convert(path.toRealPath()))
+                                  .withPath(Paths.convert(path))
+                                  .withRealPath(Paths.convert(path.toRealPath()))
                                   .withCheckinComment(versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get(versionAttributeView.readAttributes().history().records().size() - 1).comment() : null)
                                   .withLastContributor(versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get(versionAttributeView.readAttributes().history().records().size() - 1).author() : null)
                                   .withCreator(versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get(0).author() : null)
@@ -98,11 +110,13 @@ public class MetadataServiceImpl
                                   .withDescription(dcoreView.readAttributes().descriptions().size() > 0 ? dcoreView.readAttributes().descriptions().get(0) : null)
                                   .withCategories(otherMetaView.readAttributes().categories())
                                   .withDiscussion(discussView.readAttributes().discussion())
+                                  .withLockInfo( retrieveLockInfo( Paths.convert( path ) ) )
+                                  .withUnlockAllowed( sessionInfo.isAdmin() )
                                   .withVersion(new ArrayList<VersionRecord>(versionAttributeView.readAttributes().history().records().size()) {{
                                       for (final VersionRecord record : versionAttributeView.readAttributes().history().records()) {
                                           add(new PortableVersionRecord(record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri()));
                                       }
-                                  }})
+                                  }})                                  
                                   .build();
 
         } catch (Exception e) {
@@ -384,4 +398,18 @@ public class MetadataServiceImpl
         }
     }
 
+    private LockInfo retrieveLockInfo( Path path ) {
+        final org.uberfire.java.nio.file.Path lockPath = Paths.convert( PathFactory.newLock( path ) );
+        if ( !configIOService.exists( lockPath ) ) {
+            return new LockInfo( false,
+                                 "",
+                                 path );
+        }
+        
+        final String lockedBy = configIOService.readAllString( lockPath );
+        return new LockInfo( true,
+                             lockedBy,
+                             path );
+    }
+    
 }

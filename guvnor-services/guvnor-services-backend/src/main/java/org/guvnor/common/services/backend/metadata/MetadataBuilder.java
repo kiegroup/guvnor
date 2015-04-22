@@ -16,16 +16,18 @@
 
 package org.guvnor.common.services.backend.metadata;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.backend.vfs.Path;
-
-import static org.uberfire.commons.validation.Preconditions.*;
+import org.uberfire.backend.vfs.impl.LockInfo;
+import org.uberfire.java.nio.base.version.VersionRecord;
 
 /**
  *
@@ -33,6 +35,9 @@ import static org.uberfire.commons.validation.Preconditions.*;
 public final class MetadataBuilder {
 
     private Path path;
+    private Path realPath;
+    private LockInfo lockInfo;
+    private boolean unlockAllowed;
 
     //git info
     private String checkinComment;
@@ -66,7 +71,12 @@ public final class MetadataBuilder {
         this.path = checkNotNull( "path", path );
         return this;
     }
-
+    
+    public MetadataBuilder withRealPath( final Path realPath ) {
+        this.realPath = checkNotNull( "realPath", realPath );
+        return this;
+    }
+    
     public MetadataBuilder withCheckinComment( final String checkinComment ) {
         this.checkinComment = checkinComment;
         return this;
@@ -131,12 +141,35 @@ public final class MetadataBuilder {
         this.version = version;
         return this;
     }
+    
+    public MetadataBuilder withLockInfo( final LockInfo lockInfo ) {
+        this.lockInfo = lockInfo;
+        return this;
+    }
+    
+    public MetadataBuilder withUnlockAllowed( final boolean unlockAllowed ) {
+        this.unlockAllowed = unlockAllowed;
+        return this;
+    }
 
     public Metadata build() {
-        return new Metadata( path, checkinComment, lastContributor, creator,
-                             lastModified, dateCreated, subject, type,
-                             externalRelation, externalSource,
-                             description, categories, discussion, version );
+        return new Metadata( path,
+                             realPath,
+                             checkinComment,
+                             lastContributor,
+                             creator,
+                             lastModified,
+                             dateCreated,
+                             subject,
+                             type,
+                             externalRelation,
+                             externalSource,
+                             description,
+                             categories,
+                             discussion,
+                             version,
+                             lockInfo,
+                             unlockAllowed );
     }
 
 }
