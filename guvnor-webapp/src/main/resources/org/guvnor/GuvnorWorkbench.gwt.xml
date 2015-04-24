@@ -48,7 +48,7 @@
   <inherits name="org.guvnor.common.services.project.GuvnorProjectClient"/>
 
   <!-- Wires dependencies -->
-  <inherits name="com.emitrom.lienzo.Lienzo"/>
+  <inherits name="com.ait.lienzo.Lienzo"/>
   <inherits name="org.uberfire.ext.wires.core.WiresCoreClient"/>
   <inherits name="org.uberfire.ext.wires.core.scratchpad.WiresCoreScratchPad"/>
   <inherits name="org.uberfire.ext.wires.core.trees.WiresCoreTrees"/>
@@ -65,11 +65,9 @@
   <inherits name="org.dashbuilder.DisplayerAPI"/>
   <inherits name="org.dashbuilder.DisplayerClient"/>
   <inherits name="org.dashbuilder.DisplayerScreen"/>
-
-  <inherits name="org.dashbuilder.renderer.DefaultRenderer"/>
-  <inherits name="org.dashbuilder.CommonWidgets"/>
-
   <inherits name="org.dashbuilder.DisplayerEditor"/>
+  
+  <inherits name="org.dashbuilder.renderer.DefaultRenderer"/>
   <inherits name="org.dashbuilder.renderer.GChartsRenderer"/>
   <inherits name="org.dashbuilder.renderer.LienzoChartsRenderer"/>
 
