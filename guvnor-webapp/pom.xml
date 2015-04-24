@@ -287,7 +287,6 @@
     </dependency>
 
     <!-- UberFire BS2 -->
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client-views-bs2</artifactId>
@@ -346,7 +345,7 @@
     </dependency>
 
     <dependency>
-      <groupId>com.rht-emitrom</groupId>
+      <groupId>com.ahome-it</groupId>
       <artifactId>lienzo-core</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -438,18 +437,6 @@
     <dependency>
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-widgets</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-lienzo-core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-lienzo-charts</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -637,8 +624,6 @@
             <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-social-activities-api</compileSourcesArtifact>
 
             <!-- Dashbuilder -->
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-lienzo-core</compileSourcesArtifact>
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-lienzo-charts</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-validations</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-shared</compileSourcesArtifact>
