@@ -554,6 +554,10 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>i18n-taglib</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
