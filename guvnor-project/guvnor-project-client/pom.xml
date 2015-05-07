@@ -39,11 +39,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
