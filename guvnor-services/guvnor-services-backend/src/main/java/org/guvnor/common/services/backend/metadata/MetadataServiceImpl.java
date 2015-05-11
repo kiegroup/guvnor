@@ -64,13 +64,6 @@ public class MetadataServiceImpl
     @Inject
     private SessionInfoWrapper sessionInfo;
 
-    @Inject
-    @Named("configIO")
-    private IOService configIOService;
-    
-    @Inject
-    private SessionInfoWrapper sessionInfo;
-
     public MetadataServiceImpl() {
     }
 

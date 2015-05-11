@@ -27,12 +27,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionAttributes;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.rpc.impl.SessionInfoWrapper;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -42,6 +44,8 @@ public class MetadataCreatorTest {
 
     private SimpleFileSystemProvider fileSystemProvider;
 
+    @Mock private IOService configIOService;
+    @Mock private SessionInfoWrapper sessionInfo;
     @Mock private DublinCoreView       dcoreView;
     @Mock private DiscussionView       discussView;
     @Mock private OtherMetaView        otherMetaView;
