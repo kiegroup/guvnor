@@ -37,6 +37,16 @@
     <url-pattern>/org.guvnor.GuvnorWorkbench/*</url-pattern>
   </filter-mapping>
 
+  <filter>
+    <filter-name>Host Page Patch</filter-name>
+    <filter-class>org.jboss.errai.security.server.servlet.UserHostPageFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>Host Page Patch</filter-name>
+    <url-pattern>/guvnor-wb.html</url-pattern>
+  </filter-mapping>
+
   <servlet>
     <servlet-name>PluginMediaServlet</servlet-name>
     <servlet-class>org.uberfire.ext.plugin.backend.PluginMediaServlet</servlet-class>
