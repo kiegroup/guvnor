@@ -21,9 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.attribute.FileTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -478,10 +475,8 @@ public class M2RepositoryTest {
                                            true );
         assertEquals( 2,
                       files.size() );
-        final FileTime fileTime0 = Files.getLastModifiedTime( files.get( 0 ).toPath(),
-                                                              LinkOption.NOFOLLOW_LINKS );
-        final FileTime fileTime1 = Files.getLastModifiedTime( files.get( 1 ).toPath(),
-                                                              LinkOption.NOFOLLOW_LINKS );
+        final Long fileTime0 = files.get( 0 ).lastModified();
+        final Long fileTime1 = files.get( 1 ).lastModified();
         assertTrue( fileTime0.compareTo( fileTime1 ) < 0 );
     }
 
@@ -515,10 +510,8 @@ public class M2RepositoryTest {
                                            false );
         assertEquals( 2,
                       files.size() );
-        final FileTime fileTime0 = Files.getLastModifiedTime( files.get( 0 ).toPath(),
-                                                              LinkOption.NOFOLLOW_LINKS );
-        final FileTime fileTime1 = Files.getLastModifiedTime( files.get( 1 ).toPath(),
-                                                              LinkOption.NOFOLLOW_LINKS );
+        final Long fileTime0 = files.get( 0 ).lastModified();
+        final Long fileTime1 = files.get( 1 ).lastModified();
         assertTrue( fileTime0.compareTo( fileTime1 ) > 0 );
     }
 

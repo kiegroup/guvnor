@@ -28,9 +28,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -528,13 +525,9 @@ public class GuvnorM2Repository {
                                   @Override
                                   public int compare( final File o1,
                                                       final File o2 ) {
-                                      try {
-                                          final FileTime ft1 = Files.getLastModifiedTime( o1.toPath(), LinkOption.NOFOLLOW_LINKS );
-                                          final FileTime ft2 = Files.getLastModifiedTime( o2.toPath(), LinkOption.NOFOLLOW_LINKS );
-                                          return ft1.compareTo( ft2 ) * order;
-                                      } catch ( IOException e ) {
-                                          return 0;
-                                      }
+                                      final Long ft1 = o1.lastModified();
+                                      final Long ft2 = o2.lastModified();
+                                      return ft1.compareTo( ft2 ) * order;
                                   }
                               } );
         }
