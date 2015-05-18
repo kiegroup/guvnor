@@ -28,8 +28,13 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -66,6 +71,7 @@ import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.m2repo.model.JarListPageRequest;
 import org.kie.scanner.Aether;
 import org.kie.scanner.embedder.MavenProjectLoader;
 import org.kie.scanner.embedder.MavenSettings;
@@ -451,7 +457,9 @@ public class GuvnorM2Repository {
      * @return an collection of java.io.File with the matching files
      */
     public Collection<File> listFiles() {
-        return listFiles( null );
+        return listFiles( null,
+                          null,
+                          false );
     }
 
     /**
@@ -461,6 +469,22 @@ public class GuvnorM2Repository {
      * @return an collection of java.io.File with the matching files
      */
     public Collection<File> listFiles( final String filters ) {
+        return listFiles( filters,
+                          null,
+                          false );
+    }
+
+    /**
+     * Finds files within the repository with the given filters.
+     * @param filters filter to apply when finding files. The filter is used to create a wildcard matcher, ie., "*fileter*.*", in which "*" is
+     * to represent a multiple wildcard characters.
+     * @param dataSourceName An optional column name by which to sort the results
+     * @param isAscending An optional sort order by which to sort the results
+     * @return an collection of java.io.File with the matching files
+     */
+    public List<File> listFiles( final String filters,
+                                 final String dataSourceName,
+                                 final boolean isAscending ) {
         final List<String> wildcards = new ArrayList<String>();
         if ( filters == null ) {
             wildcards.add( "*.jar" );
@@ -469,12 +493,53 @@ public class GuvnorM2Repository {
             wildcards.add( "*" + filters + "*.jar" );
             wildcards.add( "*" + filters + "*.kjar" );
         }
-        Collection<File> files = FileUtils.listFiles( new File( M2_REPO_DIR ),
-                                                      new WildcardFileFilter( wildcards,
-                                                                              IOCase.INSENSITIVE ),
-                                                      DirectoryFileFilter.DIRECTORY );
+        List<File> files = new ArrayList<File>( FileUtils.listFiles( new File( M2_REPO_DIR ),
+                                                                     new WildcardFileFilter( wildcards,
+                                                                                             IOCase.INSENSITIVE ),
+                                                                     DirectoryFileFilter.DIRECTORY ) );
+        if ( dataSourceName == null ) {
+            return files;
+        }
+        final int order = ( isAscending ? 1 : -1 );
+        final List<File> sortedFiles = new ArrayList<File>( files );
+        if ( dataSourceName.equals( JarListPageRequest.COLUMN_NAME ) ) {
+            Collections.sort( sortedFiles,
+                              new Comparator<File>() {
+                                  @Override
+                                  public int compare( final File o1,
+                                                      final File o2 ) {
+                                      return o1.getName().compareTo( o2.getName() ) * order;
+                                  }
+                              } );
 
-        return files;
+        } else if ( dataSourceName.equals( JarListPageRequest.COLUMN_PATH ) ) {
+            Collections.sort( sortedFiles,
+                              new Comparator<File>() {
+                                  @Override
+                                  public int compare( final File o1,
+                                                      final File o2 ) {
+                                      return o1.getPath().compareTo( o2.getPath() ) * order;
+                                  }
+                              } );
+
+        } else if ( dataSourceName.equals( JarListPageRequest.COLUMN_LAST_MODIFIED ) ) {
+            Collections.sort( sortedFiles,
+                              new Comparator<File>() {
+                                  @Override
+                                  public int compare( final File o1,
+                                                      final File o2 ) {
+                                      try {
+                                          final FileTime ft1 = Files.getLastModifiedTime( o1.toPath(), LinkOption.NOFOLLOW_LINKS );
+                                          final FileTime ft2 = Files.getLastModifiedTime( o2.toPath(), LinkOption.NOFOLLOW_LINKS );
+                                          return ft1.compareTo( ft2 ) * order;
+                                      } catch ( IOException e ) {
+                                          return 0;
+                                      }
+                                  }
+                              } );
+        }
+
+        return sortedFiles;
     }
 
     public InputStream loadFile( final String path ) {

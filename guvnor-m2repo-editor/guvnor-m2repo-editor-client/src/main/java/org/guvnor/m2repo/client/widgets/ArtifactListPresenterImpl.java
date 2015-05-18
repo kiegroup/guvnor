@@ -19,16 +19,17 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.Range;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
+import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.paging.PageRequest;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -101,8 +102,11 @@ public class ArtifactListPresenterImpl
         @Override
         protected void onRangeChanged( HasData<JarListPageRow> display ) {
             final Range range = display.getVisibleRange();
-            PageRequest request = new PageRequest( range.getStart(),
-                                                   range.getLength() );
+            JarListPageRequest request = new JarListPageRequest( range.getStart(),
+                                                                 range.getLength(),
+                                                                 view.getCurrentFilter(),
+                                                                 getSortColumnDataStoreName(),
+                                                                 isSortColumnAscending() );
 
             m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
                 @Override
@@ -112,8 +116,20 @@ public class ArtifactListPresenterImpl
                     updateRowData( response.getStartRowIndex(),
                                    response.getPageRowList() );
                 }
-            } ).listJars( request, view.getCurrentFilter() );
+            } ).listJars( request );
+
+        }
+
+        private String getSortColumnDataStoreName() {
+            final ColumnSortList columnSortList = view.getColumnSortList();
+            return ( columnSortList == null || columnSortList.size() == 0 ) ? null : columnSortList.get( 0 ).getColumn().getDataStoreName();
+        }
+
+        private boolean isSortColumnAscending() {
+            final ColumnSortList columnSortList = view.getColumnSortList();
+            return ( columnSortList == null || columnSortList.size() == 0 ) ? false : columnSortList.get( 0 ).isAscending();
         }
 
     }
+    
 }

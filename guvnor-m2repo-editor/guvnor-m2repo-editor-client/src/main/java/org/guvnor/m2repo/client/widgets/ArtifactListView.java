@@ -15,10 +15,8 @@
  */
 package org.guvnor.m2repo.client.widgets;
 
-import java.util.Comparator;
-
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.view.client.HasData;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.uberfire.client.mvp.UberView;
@@ -35,5 +33,7 @@ public interface ArtifactListView extends UberView<ArtifactListPresenter> {
                     final String caption );
 
     HasData<JarListPageRow> getDisplay();
+
+    ColumnSortList getColumnSortList();
 
 }
