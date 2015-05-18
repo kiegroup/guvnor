@@ -21,14 +21,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.attribute.FileTime;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemHeaders;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.helpers.FormData;
 import org.guvnor.m2repo.backend.server.helpers.HttpPostHelper;
-import org.junit.After;
+import org.guvnor.m2repo.model.JarListPageRequest;
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,11 +45,21 @@ public class M2RepositoryTest {
 
     private static final Logger log = LoggerFactory.getLogger( M2RepositoryTest.class );
 
-    @After
-    public void tearDown() throws Exception {
-        log.info( "Creating a new Repository Instance.." );
+    @Before
+    public void setup() throws Exception {
+        log.info( "Deleting existing Repositories instance.." );
 
-        File dir = new File( "repository" );
+        File dir = new File( "repositories" );
+        log.info( "DELETING test repo: " + dir.getAbsolutePath() );
+        deleteDir( dir );
+        log.info( "TEST repo was deleted." );
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        log.info( "Deleting all Repository instances.." );
+
+        File dir = new File( "repositories" );
         log.info( "DELETING test repo: " + dir.getAbsolutePath() );
         deleteDir( dir );
         log.info( "TEST repo was deleted." );
@@ -267,6 +283,9 @@ public class M2RepositoryTest {
             public void setHeaders( FileItemHeaders fileItemHeaders ) {
             }
         }
+        GuvnorM2Repository repo = new GuvnorM2Repository();
+        repo.init();
+
         //Create a shell M2RepoService and set the M2Repository
         M2RepoServiceImpl service = new M2RepoServiceImpl();
         java.lang.reflect.Field repositoryField = M2RepoServiceImpl.class.getDeclaredField( "repository" );
@@ -296,4 +315,211 @@ public class M2RepositoryTest {
         assert ( helperMethod.invoke( helper,
                                       uploadItem ).equals( "OK" ) );
     }
+
+    @Test
+    public void testListFilesWithSortOnNameAscending() throws Exception {
+        GuvnorM2Repository repo = new GuvnorM2Repository();
+        repo.init();
+
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend1",
+                           "0.0.1-SNAPSHOT" );
+        InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        gav = new GAV( "org.kie.guvnor",
+                       "guvnor-m2repo-editor-backend2",
+                       "0.0.1-SNAPSHOT" );
+        is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        //Sort by Name ascending
+        List<File> files = repo.listFiles( null,
+                                           JarListPageRequest.COLUMN_NAME,
+                                           true );
+        assertEquals( 2,
+                      files.size() );
+        final String fileName0 = files.get( 0 ).getName();
+        final String fileName1 = files.get( 1 ).getName();
+        assertTrue( fileName0.startsWith( "guvnor-m2repo-editor-backend1" ) );
+        assertTrue( fileName1.startsWith( "guvnor-m2repo-editor-backend2" ) );
+    }
+
+    @Test
+    public void testListFilesWithSortOnNameDescending() throws Exception {
+        GuvnorM2Repository repo = new GuvnorM2Repository();
+        repo.init();
+
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend1",
+                           "0.0.1-SNAPSHOT" );
+        InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        gav = new GAV( "org.kie.guvnor",
+                       "guvnor-m2repo-editor-backend2",
+                       "0.0.1-SNAPSHOT" );
+        is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        //Sort by Name descending
+        List<File> files = repo.listFiles( null,
+                                           JarListPageRequest.COLUMN_NAME,
+                                           false );
+        assertEquals( 2,
+                      files.size() );
+        final String fileName0 = files.get( 0 ).getName();
+        final String fileName1 = files.get( 1 ).getName();
+        assertTrue( fileName0.startsWith( "guvnor-m2repo-editor-backend2" ) );
+        assertTrue( fileName1.startsWith( "guvnor-m2repo-editor-backend1" ) );
+    }
+
+    @Test
+    public void testListFilesWithSortOnPathAscending() throws Exception {
+        GuvnorM2Repository repo = new GuvnorM2Repository();
+        repo.init();
+
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend1",
+                           "0.0.1-SNAPSHOT" );
+        InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        gav = new GAV( "org.kie.guvnor",
+                       "guvnor-m2repo-editor-backend2",
+                       "0.0.1-SNAPSHOT" );
+        is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        //Sort by Path ascending
+        List<File> files = repo.listFiles( null,
+                                           JarListPageRequest.COLUMN_PATH,
+                                           true );
+        assertEquals( 2,
+                      files.size() );
+        final String filePath0 = files.get( 0 ).getPath();
+        final String filePath1 = files.get( 1 ).getPath();
+        assertTrue( filePath0.contains( "guvnor-m2repo-editor-backend1" ) );
+        assertTrue( filePath1.contains( "guvnor-m2repo-editor-backend2" ) );
+    }
+
+    @Test
+    public void testListFilesWithSortOnPathDescending() throws Exception {
+        GuvnorM2Repository repo = new GuvnorM2Repository();
+        repo.init();
+
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend1",
+                           "0.0.1-SNAPSHOT" );
+        InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        gav = new GAV( "org.kie.guvnor",
+                       "guvnor-m2repo-editor-backend2",
+                       "0.0.1-SNAPSHOT" );
+        is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        //Sort by Name descending
+        List<File> files = repo.listFiles( null,
+                                           JarListPageRequest.COLUMN_PATH,
+                                           false );
+        assertEquals( 2,
+                      files.size() );
+        final String filePath0 = files.get( 0 ).getPath();
+        final String filePath1 = files.get( 1 ).getPath();
+        assertTrue( filePath0.contains( "guvnor-m2repo-editor-backend2" ) );
+        assertTrue( filePath1.contains( "guvnor-m2repo-editor-backend1" ) );
+    }
+
+    @Test
+    public void testListFilesWithSortOnLastModifiedAscending() throws Exception {
+        GuvnorM2Repository repo = new GuvnorM2Repository();
+        repo.init();
+
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend1",
+                           "0.0.1-SNAPSHOT" );
+        InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        //Wait a bit before deploying other file (to ensure different Last Modified times)
+        Thread.sleep( 2000 );
+
+        gav = new GAV( "org.kie.guvnor",
+                       "guvnor-m2repo-editor-backend2",
+                       "0.0.1-SNAPSHOT" );
+        is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        //Sort by Last Modified ascending
+        List<File> files = repo.listFiles( null,
+                                           JarListPageRequest.COLUMN_NAME,
+                                           true );
+        assertEquals( 2,
+                      files.size() );
+        final FileTime fileTime0 = Files.getLastModifiedTime( files.get( 0 ).toPath(),
+                                                              LinkOption.NOFOLLOW_LINKS );
+        final FileTime fileTime1 = Files.getLastModifiedTime( files.get( 1 ).toPath(),
+                                                              LinkOption.NOFOLLOW_LINKS );
+        assertTrue( fileTime0.compareTo( fileTime1 ) < 0 );
+    }
+
+    @Test
+    public void testListFilesWithSortOnLastModifiedDescending() throws Exception {
+        GuvnorM2Repository repo = new GuvnorM2Repository();
+        repo.init();
+
+        GAV gav = new GAV( "org.kie.guvnor",
+                           "guvnor-m2repo-editor-backend1",
+                           "0.0.1-SNAPSHOT" );
+        InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        //Wait a bit before deploying other file (to ensure different Last Modified times)
+        Thread.sleep( 2000 );
+
+        gav = new GAV( "org.kie.guvnor",
+                       "guvnor-m2repo-editor-backend2",
+                       "0.0.1-SNAPSHOT" );
+        is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test.jar" );
+        repo.deployArtifact( is,
+                             gav,
+                             false );
+
+        //Sort by Last Modified descending
+        List<File> files = repo.listFiles( null,
+                                           JarListPageRequest.COLUMN_NAME,
+                                           false );
+        assertEquals( 2,
+                      files.size() );
+        final FileTime fileTime0 = Files.getLastModifiedTime( files.get( 0 ).toPath(),
+                                                              LinkOption.NOFOLLOW_LINKS );
+        final FileTime fileTime1 = Files.getLastModifiedTime( files.get( 1 ).toPath(),
+                                                              LinkOption.NOFOLLOW_LINKS );
+        assertTrue( fileTime0.compareTo( fileTime1 ) > 0 );
+    }
+
 }

@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.backend.server.POMContentHandler;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -84,9 +85,10 @@ public class M2RepoServiceImpl implements M2RepoService,
     }
 
     @Override
-    public PageResponse<JarListPageRow> listJars( final PageRequest pageRequest,
-                                                  final String filters ) {
-        final Collection<File> files = repository.listFiles( filters );
+    public PageResponse<JarListPageRow> listJars( final JarListPageRequest pageRequest ) {
+        final Collection<File> files = repository.listFiles( pageRequest.getFilters(),
+                                                             pageRequest.getDataSourceName(),
+                                                             pageRequest.isAscending());
 
         final PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
         final List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();

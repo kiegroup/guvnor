@@ -25,10 +25,13 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
+import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.view.client.HasData;
 import org.guvnor.m2repo.client.editor.JarDetailPopup;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
+import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
@@ -57,6 +60,8 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
                 return row.getName();
             }
         };
+        nameColumn.setSortable( true );
+        nameColumn.setDataStoreName( JarListPageRequest.COLUMN_NAME );
         dataGrid.addColumn( nameColumn,
                             M2RepoEditorConstants.INSTANCE.Name() );
 
@@ -66,6 +71,8 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
                 return row.getPath();
             }
         };
+        pathColumn.setSortable( true );
+        pathColumn.setDataStoreName( JarListPageRequest.COLUMN_PATH );
         dataGrid.addColumn( pathColumn,
                             M2RepoEditorConstants.INSTANCE.Path() );
 
@@ -75,6 +82,8 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
                 return row.getLastModified();
             }
         };
+        lastModifiedColumn.setSortable( true );
+        lastModifiedColumn.setDataStoreName( JarListPageRequest.COLUMN_LAST_MODIFIED );
         dataGrid.addColumn( lastModifiedColumn,
                             M2RepoEditorConstants.INSTANCE.LastModified() );
 
@@ -101,6 +110,8 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
         } );
         dataGrid.addColumn( openColumn,
                             M2RepoEditorConstants.INSTANCE.Open() );
+
+        dataGrid.addColumnSortHandler( new ColumnSortEvent.AsyncHandler( dataGrid ) );
 
         initWidget( dataGrid );
     }
@@ -135,6 +146,11 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
     @Override
     public HasData<JarListPageRow> getDisplay() {
         return dataGrid;
+    }
+
+    @Override
+    public ColumnSortList getColumnSortList() {
+        return dataGrid.getColumnSortList();
     }
 
 }
