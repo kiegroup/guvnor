@@ -31,6 +31,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorPresenter;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextResourceType;
 import org.uberfire.lifecycle.OnStartup;
@@ -92,5 +93,10 @@ public class POMEditorScreenPresenter
                                                          } );
                     }
                 } ).endMenu().endMenus().endMenu().build();
+    }
+
+    @Override
+    public AceEditorMode getAceEditorMode() {
+        return AceEditorMode.XML;
     }
 }
