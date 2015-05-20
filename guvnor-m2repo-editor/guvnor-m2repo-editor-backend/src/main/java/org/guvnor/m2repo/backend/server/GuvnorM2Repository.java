@@ -86,7 +86,7 @@ public class GuvnorM2Repository {
     private static final int BUFFER_SIZE = 1024;
 
     @PostConstruct
-    protected void init() {
+    public void init() {
         setM2Repos();
     }
 
