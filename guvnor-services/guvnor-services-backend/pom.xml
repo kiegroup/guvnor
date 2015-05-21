@@ -15,15 +15,9 @@
   <description>Guvnor - Services Backend</description>
 
   <dependencies>
-    <!-- This is the version we're trying to use in KIE -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <!-- This is a transient dependency of Errai -->
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
     </dependency>
 
     <dependency>
