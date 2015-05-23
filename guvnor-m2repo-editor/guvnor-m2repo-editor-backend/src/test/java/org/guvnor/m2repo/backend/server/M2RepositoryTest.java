@@ -16,13 +16,21 @@
 
 package org.guvnor.m2repo.backend.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemHeaders;
@@ -35,8 +43,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.*;
 
 public class M2RepositoryTest {
 
@@ -79,7 +85,7 @@ public class M2RepositoryTest {
     }
 
     @Test
-    public void testDeployArtifact() throws Exception {
+    public void testDeployArtifactAndGetArtifactFile() throws Exception {
         GuvnorM2Repository repo = new GuvnorM2Repository();
         repo.init();
 
@@ -109,6 +115,20 @@ public class M2RepositoryTest {
 
         assertTrue( "Did not find expected file after calling M2Repository.addFile()",
                     found );
+      
+        // Test get artifact file
+        File file = repo.getArtifactFileFromRepository(gav);
+        assertNotNull( "Empty file for artifact", file );
+        JarFile jarFile = new JarFile(file);
+        int count = 0;
+       
+        String lastEntryName = null;
+        for( Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) { 
+            ++count;
+            JarEntry entry = entries.nextElement();
+            assertNotEquals( "Endless loop.", lastEntryName, entry.getName() );
+        }
+        assertTrue( "Empty jar file!", count > 0 );
     }
 
     @Test
