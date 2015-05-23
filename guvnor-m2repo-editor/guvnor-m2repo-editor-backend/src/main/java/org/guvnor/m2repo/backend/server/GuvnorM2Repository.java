@@ -40,6 +40,7 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -65,6 +66,9 @@ import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.installation.InstallationException;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.guvnor.common.services.project.model.GAV;
@@ -877,6 +881,37 @@ public class GuvnorM2Repository {
         }
 
         return stringWriter.toString();
+    }
+    
+    public File getArtifactFileFromRepository( final GAV gav ) { 
+     
+        
+        ArtifactRequest request = new ArtifactRequest();
+        request.addRepository(getGuvnorM2Repository());
+        DefaultArtifact artifact = new DefaultArtifact(gav.getGroupId(),
+                                                       gav.getArtifactId(), 
+                                                       "jar", 
+                                                       gav.getVersion());
+        request.setArtifact(artifact);
+        ArtifactResult result = null;
+        try {
+            result = Aether.getAether().getSystem().resolveArtifact(
+                    Aether.getAether().getSession(), 
+                    request);
+        } catch( ArtifactResolutionException e ) {
+            log.error( e.getMessage(), e );
+        }
+        
+        if( result == null ) { 
+            return null;
+        }
+      
+        File artifactFile = null;
+        if( result.isResolved() && ! result.isMissing() ) { 
+           artifactFile = result.getArtifact().getFile();
+        }
+        
+        return artifactFile;
     }
 }
 
