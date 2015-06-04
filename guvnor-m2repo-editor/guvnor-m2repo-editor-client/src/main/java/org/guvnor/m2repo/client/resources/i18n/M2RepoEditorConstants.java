@@ -118,4 +118,8 @@ public interface M2RepoEditorConstants
 
     String UploadFailed();
 
+    String UnsupportedFileType();
+
+    String InvalidPom();
+
 }

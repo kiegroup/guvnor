@@ -40,7 +40,6 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -78,6 +77,8 @@ import org.kie.scanner.embedder.MavenProjectLoader;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.guvnor.m2repo.utils.FileNameUtilities.*;
 
 @ApplicationScoped
 public class GuvnorM2Repository {
@@ -127,7 +128,7 @@ public class GuvnorM2Repository {
         return "file://" + file.getAbsolutePath();
     }
 
-    public void deployArtifact( final InputStream inputStream,
+    public void deployArtifact( final InputStream jarStream,
                                 final GAV gav,
                                 final boolean includeAdditionalRepositories ) {
         //Write JAR to temporary file for deployment
@@ -146,7 +147,7 @@ public class GuvnorM2Repository {
 
                 final byte[] buf = new byte[ BUFFER_SIZE ];
                 int byteRead = 0;
-                while ( ( byteRead = inputStream.read( buf ) ) != -1 ) {
+                while ( ( byteRead = jarStream.read( buf ) ) != -1 ) {
                     fos.write( buf, 0, byteRead );
                 }
                 fos.flush();
@@ -156,7 +157,7 @@ public class GuvnorM2Repository {
             }
 
             //Write pom.xml to JAR if it doesn't already exist
-            String pomXML = loadPOMFromJarInternal( new File( jarFile.getPath() ) );
+            String pomXML = loadPomFromJar( new File( jarFile.getPath() ) );
             if ( pomXML == null ) {
                 pomXML = generatePOM( gav );
                 jarFile = appendPOMToJar( pomXML,
@@ -187,14 +188,43 @@ public class GuvnorM2Repository {
         }
     }
 
-    /**
-     * Convenience method for unit tests - to avoid deploying to additional (possibly external) repositories
-     * @param is InputStream holding JAR
-     * @param gav GAV representing the JAR
-     */
-    public void deployArtifactInternal( InputStream is,
-                                        GAV gav ) {
+    public void deployPom( final InputStream pomStream,
+                           final GAV gav ) {
+        //Write POM to temporary file for deployment
+        File pomFile = new File( System.getProperty( "java.io.tmpdir" ),
+                                 toFileName( gav,
+                                             "pom" ) );
 
+        try {
+
+            try {
+                if ( !pomFile.exists() ) {
+                    pomFile.getParentFile().mkdirs();
+                    pomFile.createNewFile();
+                }
+                FileOutputStream fos = new FileOutputStream( pomFile );
+
+                final byte[] buf = new byte[ BUFFER_SIZE ];
+                int byteRead = 0;
+                while ( ( byteRead = pomStream.read( buf ) ) != -1 ) {
+                    fos.write( buf, 0, byteRead );
+                }
+                fos.flush();
+                fos.close();
+            } catch ( IOException e ) {
+                throw new RuntimeException( e );
+            }
+
+            deployPom( gav,
+                       pomFile );
+
+        } finally {
+            try {
+                pomFile.delete();
+            } catch ( Exception e ) {
+                log.warn( "Unable to remove temporary file '" + pomFile.getAbsolutePath() + "'" );
+            }
+        }
     }
 
     public void deployParentPom( final GAV gav ) {
@@ -383,6 +413,42 @@ public class GuvnorM2Repository {
         }
     }
 
+    private void deployPom( final GAV gav,
+                            final File pomFile ) {
+        //POM Artifact
+        Artifact pomArtifact = new DefaultArtifact( gav.getGroupId(),
+                                                    gav.getArtifactId(),
+                                                    "pom",
+                                                    gav.getVersion() );
+        pomArtifact = pomArtifact.setFile( pomFile );
+
+        try {
+            //Install into local repository
+            final InstallRequest installRequest = new InstallRequest();
+            installRequest
+                    .addArtifact( pomArtifact );
+
+            Aether.getAether().getSystem().install( Aether.getAether().getSession(),
+                                                    installRequest );
+        } catch ( InstallationException e ) {
+            throw new RuntimeException( e );
+        }
+
+        //Deploy into Workbench's default remote repository
+        try {
+            final DeployRequest deployRequest = new DeployRequest();
+            deployRequest
+                    .addArtifact( pomArtifact )
+                    .setRepository( getGuvnorM2Repository() );
+
+            Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
+                                                   deployRequest );
+
+        } catch ( DeploymentException e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
     private DistributionManagement getDistributionManagement( final String pomXML ) {
         final InputStream is = new ByteArrayInputStream( pomXML.getBytes( Charset.forName( "UTF-8" ) ) );
         try {
@@ -477,7 +543,7 @@ public class GuvnorM2Repository {
 
     /**
      * Finds files within the repository with the given filters.
-     * @param filters filter to apply when finding files. The filter is used to create a wildcard matcher, ie., "*fileter*.*", in which "*" is
+     * @param filters filter to apply when finding files. The filter is used to create a wildcard matcher, ie., "*filter*.*", in which "*" is
      * to represent a multiple wildcard characters.
      * @param dataSourceName An optional column name by which to sort the results
      * @param isAscending An optional sort order by which to sort the results
@@ -490,9 +556,11 @@ public class GuvnorM2Repository {
         if ( filters == null ) {
             wildcards.add( "*.jar" );
             wildcards.add( "*.kjar" );
+            wildcards.add( "*.pom" );
         } else {
             wildcards.add( "*" + filters + "*.jar" );
             wildcards.add( "*" + filters + "*.kjar" );
+            wildcards.add( "*.pom" );
         }
         List<File> files = new ArrayList<File>( FileUtils.listFiles( new File( M2_REPO_DIR ),
                                                                      new WildcardFileFilter( wildcards,
@@ -539,29 +607,18 @@ public class GuvnorM2Repository {
         return sortedFiles;
     }
 
-    public InputStream loadFile( final String path ) {
-        try {
-            return new FileInputStream( new File( M2_REPO_DIR,
-                                                  path ) );
-        } catch ( FileNotFoundException e ) {
-            log.error( e.getMessage() );
+    public static String getPomText( final String path ) {
+        final File file = new File( M2_REPO_DIR,
+                                    path );
+        if ( isJar( path ) || isKJar( path ) ) {
+            return loadPomFromJar( file );
+
+        } else {
+            return loadPom( file );
         }
-        return null;
     }
 
-    public String getFileName( final String path ) {
-        return ( new File( M2_REPO_DIR,
-                           path ) ).getName();
-    }
-
-    public static String loadPOMFromJar( final String jarPath ) {
-        File zip = new File( M2_REPO_DIR,
-                             jarPath );
-
-        return loadPOMFromJarInternal( zip );
-    }
-
-    private static String loadPOMFromJarInternal( final File file ) {
+    private static String loadPomFromJar( final File file ) {
         InputStream is = null;
         InputStreamReader isr = null;
         try {
@@ -581,6 +638,40 @@ public class GuvnorM2Repository {
                 }
             }
         } catch ( ZipException e ) {
+            log.error( e.getMessage() );
+        } catch ( IOException e ) {
+            log.error( e.getMessage() );
+        } finally {
+            if ( isr != null ) {
+                try {
+                    isr.close();
+                } catch ( IOException e ) {
+                }
+            }
+            if ( is != null ) {
+                try {
+                    is.close();
+                } catch ( IOException e ) {
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static String loadPom( final File file ) {
+        InputStream is = null;
+        InputStreamReader isr = null;
+        try {
+            is = new FileInputStream( file );
+            isr = new InputStreamReader( is, "UTF-8" );
+            StringBuilder sb = new StringBuilder();
+            for ( int c = isr.read(); c != -1; c = isr.read() ) {
+                sb.append( (char) c );
+            }
+            return sb.toString();
+
+        } catch ( FileNotFoundException e ) {
             log.error( e.getMessage() );
         } catch ( IOException e ) {
             log.error( e.getMessage() );
@@ -667,7 +758,7 @@ public class GuvnorM2Repository {
         return null;
     }
 
-    public static String loadPOMFromJar( final InputStream jarInputStream ) {
+    public static String loadPomFromJar( final InputStream jarInputStream ) {
         try {
 
             InputStream is = getInputStreamFromJar( jarInputStream,
@@ -685,7 +776,7 @@ public class GuvnorM2Repository {
         return null;
     }
 
-    public static String loadPOMPropertiesFromJar( final InputStream jarInputStream ) {
+    public static String loadPomPropertiesFromJar( final InputStream jarInputStream ) {
         try {
 
             InputStream is = getInputStreamFromJar( jarInputStream,
@@ -816,12 +907,6 @@ public class GuvnorM2Repository {
         model.setVersion( gav.getVersion() );
         model.setModelVersion( "4.0.0" );
 
-/*        Repository repo = new Repository();
-        repo.setId("guvnor-m2-repo");
-        repo.setName("Guvnor M2 Repo");
-        repo.setUrl(getRepositoryURL());
-        model.addRepository(repo);*/
-
         StringWriter stringWriter = new StringWriter();
         try {
             new MavenXpp3Writer().write( stringWriter,
@@ -866,12 +951,6 @@ public class GuvnorM2Repository {
         model.setPackaging( "pom" );
         model.setModelVersion( "4.0.0" );
 
-/*        Repository repo = new Repository();
-        repo.setId("guvnor-m2-repo");
-        repo.setName("Guvnor M2 Repo");
-        repo.setUrl(getRepositoryURL());
-        model.addRepository(repo);*/
-
         StringWriter stringWriter = new StringWriter();
         try {
             new MavenXpp3Writer().write( stringWriter,
@@ -882,35 +961,34 @@ public class GuvnorM2Repository {
 
         return stringWriter.toString();
     }
-    
-    public File getArtifactFileFromRepository( final GAV gav ) { 
-     
-        
+
+    public File getArtifactFileFromRepository( final GAV gav ) {
+
         ArtifactRequest request = new ArtifactRequest();
-        request.addRepository(getGuvnorM2Repository());
-        DefaultArtifact artifact = new DefaultArtifact(gav.getGroupId(),
-                                                       gav.getArtifactId(), 
-                                                       "jar", 
-                                                       gav.getVersion());
-        request.setArtifact(artifact);
+        request.addRepository( getGuvnorM2Repository() );
+        DefaultArtifact artifact = new DefaultArtifact( gav.getGroupId(),
+                                                        gav.getArtifactId(),
+                                                        "jar",
+                                                        gav.getVersion() );
+        request.setArtifact( artifact );
         ArtifactResult result = null;
         try {
             result = Aether.getAether().getSystem().resolveArtifact(
-                    Aether.getAether().getSession(), 
-                    request);
-        } catch( ArtifactResolutionException e ) {
+                    Aether.getAether().getSession(),
+                    request );
+        } catch ( ArtifactResolutionException e ) {
             log.error( e.getMessage(), e );
         }
-        
-        if( result == null ) { 
+
+        if ( result == null ) {
             return null;
         }
-      
+
         File artifactFile = null;
-        if( result.isResolved() && ! result.isMissing() ) { 
-           artifactFile = result.getArtifact().getFile();
+        if ( result.isResolved() && !result.isMissing() ) {
+            artifactFile = result.getArtifact().getFile();
         }
-        
+
         return artifactFile;
     }
 }

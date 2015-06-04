@@ -116,7 +116,7 @@ public class ArtifactListPresenterImpl
                     updateRowData( response.getStartRowIndex(),
                                    response.getPageRowList() );
                 }
-            } ).listJars( request );
+            } ).listArtifacts( request );
 
         }
 
@@ -131,5 +131,5 @@ public class ArtifactListPresenterImpl
         }
 
     }
-    
+
 }

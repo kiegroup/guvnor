@@ -31,7 +31,6 @@ import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.paging.PageRequest;
 import org.uberfire.paging.PageResponse;
 
 @Service
@@ -64,18 +63,15 @@ public class M2RepoServiceImpl implements M2RepoService,
     }
 
     @Override
-    public InputStream loadJar( final String path ) {
-        return repository.loadFile( path );
+    public void deployPom( final InputStream is,
+                           final GAV gav ) {
+        repository.deployPom( is,
+                              gav );
     }
 
     @Override
-    public String getJarName( final String path ) {
-        return repository.getFileName( path );
-    }
-
-    @Override
-    public String loadPOMStringFromJar( final String path ) {
-        return repository.loadPOMFromJar( path );
+    public String getPomText( final String path ) {
+        return repository.getPomText( path );
     }
 
     @Override
@@ -85,13 +81,13 @@ public class M2RepoServiceImpl implements M2RepoService,
     }
 
     @Override
-    public PageResponse<JarListPageRow> listJars( final JarListPageRequest pageRequest ) {
+    public PageResponse<JarListPageRow> listArtifacts( final JarListPageRequest pageRequest ) {
         final Collection<File> files = repository.listFiles( pageRequest.getFilters(),
                                                              pageRequest.getDataSourceName(),
-                                                             pageRequest.isAscending());
+                                                             pageRequest.isAscending() );
 
         final PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
-        final List<JarListPageRow> tradeRatePageRowList = new ArrayList<JarListPageRow>();
+        final List<JarListPageRow> jarPageRowList = new ArrayList<JarListPageRow>();
 
         int i = 0;
         for ( File file : files ) {
@@ -104,16 +100,15 @@ public class M2RepoServiceImpl implements M2RepoService,
                 jarListPageRow.setPath( getJarPath( file.getPath(),
                                                     File.separator ) );
                 jarListPageRow.setLastModified( new Date( file.lastModified() ) );
-                tradeRatePageRowList.add( jarListPageRow );
+                jarPageRowList.add( jarListPageRow );
             }
             i++;
         }
 
-        response.setPageRowList( tradeRatePageRowList );
+        response.setPageRowList( jarPageRowList );
         response.setStartRowIndex( pageRequest.getStartRowIndex() );
         response.setTotalRowSize( files.size() );
         response.setTotalRowSizeExact( true );
-        //response.setLastPage(true);
 
         return response;
     }

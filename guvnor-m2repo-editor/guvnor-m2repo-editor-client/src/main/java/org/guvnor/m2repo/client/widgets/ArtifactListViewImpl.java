@@ -105,7 +105,7 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
                         JarDetailPopup popup = new JarDetailPopup( response );
                         popup.show();
                     }
-                } ).loadPOMStringFromJar( row.getPath() );
+                } ).getPomText( row.getPath() );
             }
         } );
         dataGrid.addColumn( openColumn,

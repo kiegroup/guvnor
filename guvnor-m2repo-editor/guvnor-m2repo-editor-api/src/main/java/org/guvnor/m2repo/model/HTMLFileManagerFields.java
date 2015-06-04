@@ -22,14 +22,25 @@ package org.guvnor.m2repo.model;
  */
 public class HTMLFileManagerFields {
 
-    public static final String FORM_FIELD_REPOSITORY = "exportWholeRepository";
-    public static final String FORM_FIELD_PATH = "attachmentPath";
-    public static final String FILE_UPLOAD_FIELD_NAME_IMPORT = "importFile";
+    //Name for Upload Form control
     public static final String UPLOAD_FIELD_NAME_ATTACH = "fileUploadElement";
-    public static final String CLASSIC_DRL_IMPORT = "classicDRLFile";
-    public static final String REPO_CONFIG_REPOSITORY = "exportRepositoryConfig";
-    public static final String GROUP_ID = "groupId";   
-    public static final String ARTIFACT_ID = "artifactId";   
-    public static final String VERSION_ID = "versionId";   
-   
+
+    //Upload field for GroupID
+    public static final String GROUP_ID = "groupId";
+
+    //Upload field for ArtifactID
+    public static final String ARTIFACT_ID = "artifactId";
+
+    //Upload field for Version
+    public static final String VERSION_ID = "version";
+
+    //Indicator for uploaded JAR contains no pom.xml or pom.properties
+    public static final String UPLOAD_MISSING_POM = "MISSING_POM";
+
+    //Indicator for uploaded pom.xml file could not be parsed
+    public static final String UPLOAD_UNABLE_TO_PARSE_POM = "UNABLE_TO_PARSE_POM";
+
+    //Indicator for upload being successful
+    public static final String UPLOAD_OK = "OK";
+
 }
