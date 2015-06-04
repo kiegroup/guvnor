@@ -25,13 +25,31 @@ import org.uberfire.paging.PageResponse;
 @Remote
 public interface M2RepoService {
 
-    String getJarName( String path );
+    /**
+     * Retrieve the pom.xml from the given Path. The path may represent either a JAR, KJAR or pom.xml file
+     * @param path The path to the file
+     * @return The pom.xml text
+     */
+    String getPomText( String path );
 
-    String loadPOMStringFromJar( String path );
-
+    /**
+     * Retrieve the GAV details from a JAR or KJAR
+     * @param path The path to the artifact
+     * @return The GAV within the artifact
+     */
     GAV loadGAVFromJar( String path );
 
-    PageResponse<JarListPageRow> listJars( JarListPageRequest pageRequest );
+    /**
+     * Query the repository for a list of artifacts
+     * @param pageRequest Request for required artifacts
+     * @return Response containing artifacts
+     */
+    PageResponse<JarListPageRow> listArtifacts( JarListPageRequest pageRequest );
 
-    String getRepositoryURL( String baseURL );
+    /**
+     * Get the repository's URL
+     * @param context The web-context of the webapp
+     * @return A String representing the repository's URL relative to the container's root
+     */
+    String getRepositoryURL( String context );
 }

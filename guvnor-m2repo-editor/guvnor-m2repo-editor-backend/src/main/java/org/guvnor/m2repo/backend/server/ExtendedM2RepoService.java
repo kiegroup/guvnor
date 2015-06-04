@@ -18,8 +18,8 @@ package org.guvnor.m2repo.backend.server;
 
 import java.io.InputStream;
 
-import org.guvnor.m2repo.service.M2RepoService;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.m2repo.service.M2RepoService;
 
 public interface ExtendedM2RepoService extends M2RepoService {
 
@@ -30,22 +30,23 @@ public interface ExtendedM2RepoService extends M2RepoService {
      * @param is InputStream holding JAR
      * @param gav GAV representing the JAR
      */
-    public void deployJar( InputStream is,
-                           GAV gav );
+    void deployJar( InputStream is,
+                    GAV gav );
 
     /**
      * Convenience method for unit tests - to avoid deploying to additional (possibly external) repositories
      * @param is InputStream holding JAR
      * @param gav GAV representing the JAR
      */
-    public void deployJarInternal( InputStream is,
-                                   GAV gav );
+    void deployJarInternal( InputStream is,
+                            GAV gav );
 
     /**
-     * Load JAR from Guvnor's internal Maven Repository.
-     * @param path Path for JAR relative to Guvnor's Repository root
-     * @return
+     * Deploy POM to local Maven Repository and Workbench's remote Maven Repository.
+     * @param is InputStream holding POM
+     * @param gav GAV representing the POM
      */
-    public InputStream loadJar( String path );
+    void deployPom( InputStream is,
+                    GAV gav );
 
 }

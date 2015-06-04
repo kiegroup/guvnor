@@ -45,6 +45,9 @@ import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.mvp.Command;
 
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.*;
+import static org.guvnor.m2repo.utils.FileNameUtilities.*;
+
 @Dependent
 public class UploadForm
         extends PopupPanel {
@@ -107,13 +110,18 @@ public class UploadForm
                     BusyPopup.close();
                     Window.alert( M2RepoEditorConstants.INSTANCE.SelectFileUpload() );
                     event.cancel();
+                } else if ( !( isValid( fileName ) ) ) {
+                    BusyPopup.close();
+                    Window.alert( M2RepoEditorConstants.INSTANCE.UnsupportedFileType() );
+                    event.cancel();
                 }
             }
+
         } );
 
         form.addSubmitCompleteHandler( new Form.SubmitCompleteHandler() {
             public void onSubmitComplete( final Form.SubmitCompleteEvent event ) {
-                if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
+                if ( UPLOAD_OK.equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
                     Window.alert( M2RepoEditorConstants.INSTANCE.UploadedSuccessfully() );
                     hiddenFieldsPanel.setVisible( false );
@@ -126,10 +134,16 @@ public class UploadForm
                     up.getElement().setPropertyString( "value",
                                                        "" );
                     hide();
-                } else if ( "NO VALID POM".equalsIgnoreCase( event.getResults() ) ) {
+
+                } else if ( UPLOAD_MISSING_POM.equalsIgnoreCase( event.getResults() ) ) {
                     BusyPopup.close();
                     Window.alert( M2RepoEditorConstants.INSTANCE.InvalidJarNotPom() );
                     hiddenFieldsPanel.setVisible( true );
+
+                } else if ( UPLOAD_UNABLE_TO_PARSE_POM.equalsIgnoreCase( event.getResults() ) ) {
+                    BusyPopup.close();
+                    Window.alert( M2RepoEditorConstants.INSTANCE.InvalidPom() );
+                    hide();
 
                 } else {
                     BusyPopup.close();

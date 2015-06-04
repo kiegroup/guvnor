@@ -17,7 +17,6 @@
 package org.guvnor.m2repo.backend.server.helpers;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -32,26 +31,20 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
-import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
-import org.kie.api.builder.ReleaseId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.*;
+import static org.guvnor.m2repo.utils.FileNameUtilities.*;
 
 public class HttpPostHelper {
 
     private static final Logger log = LoggerFactory.getLogger( HttpPostHelper.class );
-
-    private final static String NO_VALID_POM = "NO VALID POM";
-
-    private final static String NO_SCRIPT_DATA = "NO-SCRIPT-DATA";
-
-    private final static String OK = "OK";
 
     @Inject
     private ExtendedM2RepoService m2RepoService;
@@ -62,33 +55,14 @@ public class HttpPostHelper {
      */
     public void handle( final HttpServletRequest request,
                         final HttpServletResponse response ) throws ServletException, IOException {
-
         response.setContentType( "text/html" );
-        FormData uploadItem = getFormData( request );
-
-        if ( uploadItem.getFile() != null ) {
-            response.getWriter().write( processUpload( uploadItem ) );
-            return;
-        }
-
-        response.getWriter().write( NO_SCRIPT_DATA );
-    }
-
-    private String processUpload( final FormData uploadItem ) throws IOException {
-
-        // If the file it doesn't exist.
-        if ( "".equals( uploadItem.getFile().getName() ) ) {
-            throw new IOException( "No file selected." );
-        }
-
-        String processResult = uploadFile( uploadItem );
-        uploadItem.getFile().getInputStream().close();
-
-        return processResult;
+        final FormData formData = extractFormData( request );
+        final String result = upload( formData );
+        response.getWriter().write( result );
     }
 
     @SuppressWarnings("rawtypes")
-    private FormData getFormData( final HttpServletRequest request ) throws IOException {
+    private FormData extractFormData( final HttpServletRequest request ) throws IOException {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload( factory );
         upload.setHeaderEncoding( "UTF-8" );
@@ -113,18 +87,16 @@ public class HttpPostHelper {
                 }
             }
 
-            if ( emptyGAV.getArtifactId() == null
-                    || "".equals( emptyGAV.getArtifactId() )
-                    || emptyGAV.getArtifactId() == null
-                    || "".equals( emptyGAV.getArtifactId() )
-                    || emptyGAV.getVersion() == null
-                    || "".equals( emptyGAV.getVersion() ) ) {
+            if ( isNullOrEmpty( emptyGAV.getGroupId() )
+                    || isNullOrEmpty( emptyGAV.getArtifactId() )
+                    || isNullOrEmpty( emptyGAV.getVersion() ) ) {
                 data.setGav( null );
             } else {
                 data.setGav( emptyGAV );
             }
 
             return data;
+
         } catch ( FileUploadException e ) {
             log.error( e.getMessage(),
                        e );
@@ -133,20 +105,43 @@ public class HttpPostHelper {
         return null;
     }
 
-    private String uploadFile( final FormData uploadItem ) throws IOException {
-        InputStream fileData = uploadItem.getFile().getInputStream();
-        GAV gav = uploadItem.getGav();
+    private String upload( final FormData formData ) throws IOException {
+        //Validate upload
+        final FileItem fileItem = formData.getFile();
+        if ( fileItem == null ) {
+            throw new IOException( "No file selected." );
+        }
+        final String fileName = fileItem.getName();
+        if ( isNullOrEmpty( fileName ) ) {
+            throw new IOException( "No file selected." );
+        }
+
+        if ( isJar( fileName ) || isKJar( fileName ) ) {
+            return uploadJar( formData );
+
+        } else if ( isPom( fileName ) ) {
+            return uploadPom( formData );
+
+        } else {
+            throw new IOException( "Unsupported file type selected." );
+        }
+    }
+
+    private String uploadJar( final FormData formData ) throws IOException {
+        GAV gav = formData.getGav();
+        InputStream jarStream = null;
 
         try {
+            jarStream = formData.getFile().getInputStream();
             if ( gav == null ) {
-                if ( !fileData.markSupported() ) {
-                    fileData = new BufferedInputStream( fileData );
+                if ( !jarStream.markSupported() ) {
+                    jarStream = new BufferedInputStream( jarStream );
                 }
 
                 // is available() safe?
-                fileData.mark( fileData.available() );
+                jarStream.mark( jarStream.available() );
 
-                PomModel pomModel = PomModelResolver.resolve(fileData);
+                PomModel pomModel = PomModelResolver.resolveFromJar( jarStream );
 
                 //If we were able to get a POM model we can get the GAV
                 if ( pomModel != null ) {
@@ -155,7 +150,7 @@ public class HttpPostHelper {
                     String version = pomModel.getReleaseId().getVersion();
 
                     if ( isNullOrEmpty( groupId ) || isNullOrEmpty( artifactId ) || isNullOrEmpty( version ) ) {
-                        return NO_VALID_POM;
+                        return UPLOAD_MISSING_POM;
                     } else {
                         gav = new GAV( groupId,
                                        artifactId,
@@ -163,25 +158,104 @@ public class HttpPostHelper {
                     }
 
                 } else {
-                    return NO_VALID_POM;
+                    return UPLOAD_MISSING_POM;
                 }
-                fileData.reset();
+                jarStream.reset();
             }
 
-            m2RepoService.deployJar( fileData, gav );
-            uploadItem.getFile().getInputStream().close();
+            m2RepoService.deployJar( jarStream,
+                                     gav );
 
-            return OK;
+            return UPLOAD_OK;
 
         } catch ( IOException ioe ) {
             log.error( ioe.getMessage(),
                        ioe );
             throw ExceptionUtilities.handleException( ioe );
+
+        } finally {
+            if ( jarStream != null ) {
+                jarStream.close();
+            }
+
         }
     }
 
-    private boolean isNullOrEmpty( String groupId ) {
-        return groupId == null || groupId.isEmpty();
+    private String uploadPom( final FormData formData ) throws IOException {
+        GAV gav = null;
+        ReusableInputStream pomStream = null;
+
+        try {
+            pomStream = new ReusableInputStream( formData.getFile().getInputStream() );
+
+            // is available() safe?
+            pomStream.mark( pomStream.available() );
+
+            PomModel pomModel = PomModelResolver.resolveFromPom( pomStream );
+
+            //If we were able to get a POM model we cannot upload file
+            if ( pomModel != null ) {
+                String groupId = pomModel.getReleaseId().getGroupId();
+                String artifactId = pomModel.getReleaseId().getArtifactId();
+                String version = pomModel.getReleaseId().getVersion();
+
+                if ( isNullOrEmpty( groupId ) || isNullOrEmpty( artifactId ) || isNullOrEmpty( version ) ) {
+                    return UPLOAD_UNABLE_TO_PARSE_POM;
+                } else {
+                    gav = new GAV( groupId,
+                                   artifactId,
+                                   version );
+                }
+
+            } else {
+                return UPLOAD_UNABLE_TO_PARSE_POM;
+            }
+            pomStream.reset();
+
+            m2RepoService.deployPom( pomStream,
+                                     gav );
+
+            return UPLOAD_OK;
+
+        } catch ( IOException ioe ) {
+            log.error( ioe.getMessage(),
+                       ioe );
+            throw ExceptionUtilities.handleException( ioe );
+
+        } finally {
+            if ( pomStream != null ) {
+                pomStream.doClose();
+            }
+
+        }
+    }
+
+    private boolean isNullOrEmpty( String value ) {
+        return value == null || value.isEmpty();
+    }
+
+    /**
+     * PomModelResolver uses org.kie.scanner.embedder.MavenEmbedder which closes the underlying
+     * InputStream once the PomModel has been resolved. We however need to keep the InputStream
+     * open to be able to write the file to GuvnorM2Repository. Therefore this sub-class
+     * overrides close to prevent the InputStream from being closed prematurely.
+     */
+    private static class ReusableInputStream extends BufferedInputStream {
+
+        public ReusableInputStream( InputStream in ) {
+            super( in );
+        }
+
+        @Override
+        public void close() throws IOException {
+            //Do nothing.
+        }
+
+        void doClose() throws IOException {
+            //Do the closure
+            super.close();
+        }
+
     }
 
 }
