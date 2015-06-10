@@ -34,7 +34,6 @@ public class InboxServiceImpl
         implements InboxService {
 
     @Inject
-    @SessionScoped
     private User identity;
 
     @Inject
