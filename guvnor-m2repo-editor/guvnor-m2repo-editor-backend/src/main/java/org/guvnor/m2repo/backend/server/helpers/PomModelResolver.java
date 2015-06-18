@@ -42,8 +42,8 @@ public class PomModelResolver {
                 if ( pomProperties != null ) {
                     final ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString( pomProperties );
                     if ( releaseId != null ) {
-                        pomModel = new PomModel();
-                        pomModel.setReleaseId( releaseId );
+                        pomModel = new PomModel.InternalModel();
+                        ( (PomModel.InternalModel) pomModel ).setReleaseId( releaseId );
                     }
                 }
             } catch ( Exception e ) {
