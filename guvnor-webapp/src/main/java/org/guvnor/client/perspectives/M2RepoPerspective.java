@@ -20,13 +20,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
 import org.guvnor.client.resources.i18n.AppConstants;
 import org.guvnor.m2repo.client.event.M2RepoRefreshEvent;
-import org.guvnor.m2repo.client.upload.UploadForm;
+import org.guvnor.m2repo.client.upload.UploadFormPresenter;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPanel;
@@ -67,17 +64,8 @@ public class M2RepoPerspective extends FlowPanel {
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        final UploadForm uploadForm = iocManager.lookupBean( UploadForm.class ).getInstance();
-                        //When pop-up is closed destroy bean to avoid memory leak
-                        uploadForm.addCloseHandler( new CloseHandler<PopupPanel>() {
-
-                            @Override
-                            public void onClose( CloseEvent<PopupPanel> event ) {
-                                iocManager.destroyBean( uploadForm );
-                            }
-
-                        } );
-                        uploadForm.show();
+                        UploadFormPresenter uploadFormPresenter = iocManager.lookupBean( UploadFormPresenter.class ).getInstance();
+                        uploadFormPresenter.showView();
                     }
                 } )
                 .endMenu()
