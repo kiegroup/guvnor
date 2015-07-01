@@ -16,6 +16,9 @@
 
 package org.guvnor.m2repo.backend.server;
 
+import static org.guvnor.m2repo.utils.FileNameUtilities.isJar;
+import static org.guvnor.m2repo.utils.FileNameUtilities.isKJar;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -77,8 +80,6 @@ import org.kie.scanner.embedder.MavenProjectLoader;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.guvnor.m2repo.utils.FileNameUtilities.*;
 
 @ApplicationScoped
 public class GuvnorM2Repository {
@@ -560,7 +561,7 @@ public class GuvnorM2Repository {
         } else {
             wildcards.add( "*" + filters + "*.jar" );
             wildcards.add( "*" + filters + "*.kjar" );
-            wildcards.add( "*.pom" );
+            wildcards.add( "*" + filters + "*.pom" );
         }
         List<File> files = new ArrayList<File>( FileUtils.listFiles( new File( M2_REPO_DIR ),
                                                                      new WildcardFileFilter( wildcards,

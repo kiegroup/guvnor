@@ -16,6 +16,12 @@
 
 package org.guvnor.m2repo.backend.server;
 
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_OK;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,13 +40,11 @@ import org.guvnor.m2repo.backend.server.helpers.FormData;
 import org.guvnor.m2repo.backend.server.helpers.HttpPostHelper;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.guvnor.m2repo.model.HTMLFileManagerFields.*;
-import static org.junit.Assert.*;
 
 public class M2RepositoryTest {
 
@@ -226,37 +230,42 @@ public class M2RepositoryTest {
         //filter with version number
         Collection<File> files = repo.listFiles( "1.0.2" );
         boolean found1 = false;
+        final String VERSION_NUMBER_SEARCH_FILTER ="arquillian-core-api-1.0.2";
         for ( File file : files ) {
             String fileName = file.getName();
-            if ( fileName.startsWith( "arquillian-core-api-1.0.2" ) && fileName.endsWith( ".jar" ) ) {
+            if ( fileName.startsWith( VERSION_NUMBER_SEARCH_FILTER ) && fileName.endsWith( ".jar" ) ) {
                 found1 = true;
             }
         }
         assertTrue( "Did not find expected file after calling M2Repository.addFile()",
                     found1 );
-        
-/*        //filter with group id
-        files = repo.listFiles("org.kie.guvnor");
-        found1 = false;
-        for(File file : files) {
+
+        for ( File file : files ) {
             String fileName = file.getName();
-            if("guvnor-m2repo-editor-backend-test-without-pom.jar".equals(fileName)) {
-                found1 = true;
-            } 
-        }        
-        assertTrue("Did not find expected file after calling M2Repository.addFile()", found1);*/
+            if ( !fileName.contains( VERSION_NUMBER_SEARCH_FILTER ) ) {
+                Assert.fail(fileName + " doesn't match the filter " + VERSION_NUMBER_SEARCH_FILTER);
+            }
+        }
 
         //filter with artifact id
         files = repo.listFiles( "arquillian-core-api" );
+        final String ARTIFACT_SEARCH_FILTER = "arquillian-core-api";
         found1 = false;
         for ( File file : files ) {
             String fileName = file.getName();
-            if ( fileName.startsWith( "arquillian-core-api-1.0.2" ) && fileName.endsWith( ".jar" ) ) {
+            if ( fileName.startsWith( ARTIFACT_SEARCH_FILTER ) && fileName.endsWith( ".jar" ) ) {
                 found1 = true;
             }
         }
         assertTrue( "Did not find expected file after calling M2Repository.addFile()",
                     found1 );
+
+        for ( File file : files ) {
+            String fileName = file.getName();
+            if ( !fileName.contains( ARTIFACT_SEARCH_FILTER) ) {
+                Assert.fail(fileName + " doesn't match the filter " + ARTIFACT_SEARCH_FILTER);
+            }
+        }
     }
 
     @Test
