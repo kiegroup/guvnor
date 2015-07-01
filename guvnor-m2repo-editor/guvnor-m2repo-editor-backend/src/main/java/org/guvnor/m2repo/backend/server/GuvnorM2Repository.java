@@ -560,7 +560,7 @@ public class GuvnorM2Repository {
         } else {
             wildcards.add( "*" + filters + "*.jar" );
             wildcards.add( "*" + filters + "*.kjar" );
-            wildcards.add( "*.pom" );
+            wildcards.add( "*" + filters + "*.pom" );
         }
         List<File> files = new ArrayList<File>( FileUtils.listFiles( new File( M2_REPO_DIR ),
                                                                      new WildcardFileFilter( wildcards,
