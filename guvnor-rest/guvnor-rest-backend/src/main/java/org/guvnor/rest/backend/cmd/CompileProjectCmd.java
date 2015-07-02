@@ -20,7 +20,7 @@ import org.guvnor.rest.client.CompileProjectRequest;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
-import org.kie.internal.executor.api.CommandContext;
+import org.kie.api.executor.CommandContext;
 
 public class CompileProjectCmd extends AbstractJobCommand {
 

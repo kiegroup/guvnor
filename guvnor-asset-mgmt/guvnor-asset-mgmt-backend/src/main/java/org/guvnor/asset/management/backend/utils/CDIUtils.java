@@ -25,7 +25,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
-import org.kie.internal.executor.api.CommandContext;
+import org.kie.api.executor.CommandContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

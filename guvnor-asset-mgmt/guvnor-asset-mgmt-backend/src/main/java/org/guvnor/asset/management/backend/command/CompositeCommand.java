@@ -20,9 +20,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.guvnor.asset.management.backend.AssetManagementRuntimeException;
-import org.kie.internal.executor.api.Command;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutionResults;
+import org.kie.api.executor.Command;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutionResults;
 
 
 public class CompositeCommand extends AbstractCommand {

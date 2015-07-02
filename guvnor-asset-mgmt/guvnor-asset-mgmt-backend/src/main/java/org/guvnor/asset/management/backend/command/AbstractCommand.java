@@ -16,8 +16,8 @@
 package org.guvnor.asset.management.backend.command;
 
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.internal.executor.api.Command;
-import org.kie.internal.executor.api.CommandContext;
+import org.kie.api.executor.Command;
+import org.kie.api.executor.CommandContext;
 
 public abstract class AbstractCommand implements Command {
 

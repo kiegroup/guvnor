@@ -20,7 +20,7 @@ import org.guvnor.rest.client.DeleteProjectRequest;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
-import org.kie.internal.executor.api.CommandContext;
+import org.kie.api.executor.CommandContext;
 
 public class DeleteProjectCmd extends AbstractJobCommand {
 

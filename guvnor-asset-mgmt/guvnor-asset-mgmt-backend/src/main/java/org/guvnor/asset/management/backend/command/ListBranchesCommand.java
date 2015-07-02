@@ -26,8 +26,8 @@ import org.guvnor.asset.management.backend.model.BranchInfo;
 import org.guvnor.asset.management.backend.utils.CDIUtils;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutionResults;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutionResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

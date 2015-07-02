@@ -25,9 +25,9 @@ import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
 import org.jbpm.executor.cdi.CDIUtils;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.internal.executor.api.Command;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutionResults;
+import org.kie.api.executor.Command;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutionResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
