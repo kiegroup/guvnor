@@ -700,6 +700,18 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <!-- Following enforcer rule fails in non-clean builds, because it picks up also generated Errai classes.
+               It is not yet possible to exclude these. Once the fix is available, the enforcer rule should be
+               enabled again and those Errai classes should be excluded from the check. See DROOLS-837 for more info.-->
+          <execution>
+            <id>enforce-direct-dependencies</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
 
     <pluginManagement>
