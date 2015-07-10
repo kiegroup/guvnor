@@ -64,6 +64,9 @@ public class ResourceChangeObserver {
     @Any
     private Instance<ResourceChangeObservableFile> observableFiles;
 
+    @Inject
+    private ObservablePOMFile observablePomFile;
+
     public void processResourceAdd( @Observes final ResourceAddedEvent resourceAddedEvent ) {
         processResourceChange( resourceAddedEvent.getSessionInfo(),
                                resourceAddedEvent.getPath(),
@@ -80,15 +83,15 @@ public class ResourceChangeObserver {
 
     public void processResourceUpdate( @Observes final ResourceUpdatedEvent resourceUpdatedEvent ) {
         processResourceChange( resourceUpdatedEvent.getSessionInfo(),
-                               resourceUpdatedEvent.getPath(),
-                               ResourceChangeType.UPDATE );
+                resourceUpdatedEvent.getPath(),
+                ResourceChangeType.UPDATE );
         incrementalBuilder.updateResource( resourceUpdatedEvent.getPath() );
     }
 
     public void processResourceCopied( @Observes final ResourceCopiedEvent resourceCopiedEvent ) {
         processResourceChange( resourceCopiedEvent.getSessionInfo(),
-                               resourceCopiedEvent.getPath(),
-                               ResourceChangeType.COPY );
+                resourceCopiedEvent.getPath(),
+                ResourceChangeType.COPY );
         incrementalBuilder.addResource( resourceCopiedEvent.getPath() ); //¿?
     }
 
@@ -102,38 +105,18 @@ public class ResourceChangeObserver {
 
     public void processBatchChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
         final Map<Path, Collection<ResourceChange>> batchChanges = resourceBatchChangesEvent.getBatch();
-        final Map<String, Boolean> notifiedProjects = new HashMap<String, Boolean>();
-
         if ( batchChanges == null ) {
             //un expected case
             logger.warn( "No batchChanges was present for the given resourceBatchChangesEvent: " + resourceBatchChangesEvent );
+        } else {
+            processBatchResourceChanges( resourceBatchChangesEvent.getSessionInfo(), batchChanges );
+            incrementalBuilder.batchResourceChanges( resourceBatchChangesEvent.getBatch() );
         }
-
-        //All the changes must be processed, we don't have warranties that all the changes belongs to the same project.
-        for ( final Map.Entry<Path, Collection<ResourceChange>> pathCollectionEntry : batchChanges.entrySet() ) {
-            for ( ResourceChange change : pathCollectionEntry.getValue() ) {
-                processResourceChange( resourceBatchChangesEvent.getSessionInfo(),
-                                       pathCollectionEntry.getKey(),
-                                       change.getType(),
-                                       notifiedProjects );
-            }
-        }
-        incrementalBuilder.batchResourceChanges( resourceBatchChangesEvent.getBatch() );
     }
 
     private void processResourceChange( final SessionInfo sessionInfo,
                                         final Path path,
                                         final ResourceChangeType changeType ) {
-        processResourceChange( sessionInfo,
-                               path,
-                               changeType,
-                               new HashMap<String, Boolean>() );
-    }
-
-    private void processResourceChange( final SessionInfo sessionInfo,
-                                        final Path path,
-                                        final ResourceChangeType changeType,
-                                        final Map<String, Boolean> notifiedProjects ) {
         //Only process Project resources
         final Project project = projectService.resolveProject( path );
         if ( project == null ) {
@@ -147,12 +130,40 @@ public class ResourceChangeObserver {
                                   + ", changeType: " + changeType );
         }
 
-        if ( !notifiedProjects.containsKey( project.getRootPath().toURI() ) && isObservableResource( path ) ) {
+        if ( isObservableResource( path ) ) {
             invalidateDMOProjectCacheEvent.fire( new InvalidateDMOProjectCacheEvent( sessionInfo,
                                                                                      project,
                                                                                      path ) );
-            notifiedProjects.put( project.getRootPath().toURI(),
-                                  Boolean.TRUE );
+        }
+    }
+
+    private void processBatchResourceChanges( final SessionInfo sessionInfo,
+                                              Map<Path, Collection<ResourceChange>> resourceChanges ) {
+
+        Map<Project, Path> pendingNotifications = new HashMap<Project, Path>( );
+        Project project;
+
+        for ( final Map.Entry<Path, Collection<ResourceChange>> pathCollectionEntry : resourceChanges.entrySet() ) {
+
+            //Only process Project resources
+            project = projectService.resolveProject( pathCollectionEntry.getKey() );
+            if ( project == null ) {
+                continue;
+            }
+
+            if ( !pendingNotifications.containsKey( project ) && isObservableResource( pathCollectionEntry.getKey() ) ) {
+                pendingNotifications.put( project, pathCollectionEntry.getKey() );
+            } else if ( isPomFile( pathCollectionEntry.getKey() ) ) {
+                //if the pom.xml comes in the batch events set then use the pom.xml path for the cache invalidation event
+                pendingNotifications.put( project, pathCollectionEntry.getKey() );
+            }
+        }
+
+        for ( final Map.Entry<Project, Path> pendingNotification : pendingNotifications.entrySet() ) {
+            invalidateDMOProjectCacheEvent.fire( new InvalidateDMOProjectCacheEvent( sessionInfo,
+                    pendingNotification.getKey(),
+                    pendingNotification.getValue() ) );
+
         }
     }
 
@@ -167,6 +178,13 @@ public class ResourceChangeObserver {
             }
         }
         return false;
+    }
+
+    private boolean isPomFile( Path path ) {
+        if ( path == null ) {
+            return false;
+        }
+        return observablePomFile.accept( path.getFileName() );
     }
 
 }
