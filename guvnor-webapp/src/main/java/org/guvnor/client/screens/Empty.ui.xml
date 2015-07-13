@@ -17,7 +17,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:bootstrap="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:style>
     .empty {
@@ -26,10 +26,10 @@
   </ui:style>
 
   <gwt:HTMLPanel>
-    <bootstrap:Hero addStyleNames='{style.empty}'>
-      <bootstrap:Heading size="2" ui:field="title"/>
+    <bootstrap:Jumbotron addStyleNames='{style.empty}'>
+      <bootstrap:Heading size="H2" ui:field="title"/>
       <gwt:Label text="Empty demo screen"/>
-    </bootstrap:Hero>
+    </bootstrap:Jumbotron>
   </gwt:HTMLPanel>
 
 </ui:UiBinder>

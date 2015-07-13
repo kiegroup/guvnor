@@ -16,22 +16,20 @@
 
 package org.guvnor.m2repo.client.upload;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Form;
-import com.github.gwtbootstrap.client.ui.ModalFooter;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.WellForm;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.FileUpload;
+import org.uberfire.ext.widgets.common.client.common.FormStyleItem;
 import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
@@ -40,33 +38,35 @@ import org.uberfire.mvp.Command;
 public class UploadFormViewImpl
         extends BaseModal implements UploadFormView {
 
-    private WellForm form;
+    private FormStyleLayout form = new FormStyleLayout();
 
     private final TextBox hiddenGroupIdField = new TextBox();
     private final TextBox hiddenArtifactIdField = new TextBox();
     private final TextBox hiddenVersionIdField = new TextBox();
+    private FormStyleItem groupIdItem;
+    private FormStyleItem artifactIdItem;
+    private FormStyleItem versionIdItem;
 
     private Presenter presenter;
-
-    private final FormStyleLayout hiddenFieldsPanel = new FormStyleLayout();
 
     private FileUpload uploader;
 
     public UploadFormViewImpl() {
-        this.add( new ModalFooter( new Button( M2RepoEditorConstants.INSTANCE.Cancel() ) {{
-            addClickHandler( new ClickHandler() {
-                @Override
-                public void onClick( ClickEvent event ) {
-                    hide();
-                }
-            } );
-        }} ) );
         this.setTitle( M2RepoEditorConstants.INSTANCE.ArtifactUpload() );
-        this.add( doUploadForm() );
+        this.setBody( doUploadForm() );
+        this.add( new ModalFooter() {{
+            add( new Button( M2RepoEditorConstants.INSTANCE.Cancel() ) {{
+                addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        hide();
+                    }
+                } );
+            }} );
+        }} );
     }
 
-    private WellForm doUploadForm() {
-        form = new WellForm();
+    private Form doUploadForm() {
         form.setAction( getWebContext() + "/maven2wb" );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
@@ -93,23 +93,16 @@ public class UploadFormViewImpl
             }
         } );
 
-        HorizontalPanel fields = new HorizontalPanel();
-        fields.add( uploader );
-
         hiddenGroupIdField.setName( HTMLFileManagerFields.GROUP_ID );
         hiddenArtifactIdField.setName( HTMLFileManagerFields.ARTIFACT_ID );
         hiddenVersionIdField.setName( HTMLFileManagerFields.VERSION_ID );
+
+        form.addAttribute( "File", uploader );
+        groupIdItem = (FormStyleItem) form.getWidget( form.addAttribute( "Group ID", hiddenGroupIdField ) );
+        artifactIdItem = (FormStyleItem) form.getWidget( form.addAttribute( "Artifact ID", hiddenArtifactIdField ) );
+        versionIdItem = (FormStyleItem) form.getWidget( form.addAttribute( "Version ID", hiddenVersionIdField ) );
+
         hideGAVInputs();
-
-        hiddenFieldsPanel.addAttribute( "GroupID:", hiddenGroupIdField );
-        hiddenFieldsPanel.addAttribute( "ArtifactID:", hiddenArtifactIdField );
-        hiddenFieldsPanel.addAttribute( "VersionID:", hiddenVersionIdField );
-
-        VerticalPanel allFields = new VerticalPanel();
-        allFields.add( fields );
-        allFields.add( hiddenFieldsPanel );
-
-        form.add( allFields );
 
         return form;
     }
@@ -169,15 +162,34 @@ public class UploadFormViewImpl
 
     @Override
     public void showGAVInputs() {
-        hiddenFieldsPanel.setVisible( true );
+        hiddenArtifactIdField.setVisible( true );
+        hiddenGroupIdField.setVisible( true );
+        hiddenVersionIdField.setVisible( true );
+        toggleFormStyleItem( groupIdItem, true );
+        toggleFormStyleItem( artifactIdItem, true );
+        toggleFormStyleItem( versionIdItem, true );
     }
 
     @Override
     public void hideGAVInputs() {
-        hiddenFieldsPanel.setVisible( false );
-        hiddenArtifactIdField.setText( null );
-        hiddenGroupIdField.setText( null );
-        hiddenVersionIdField.setText( null );
+        toggleFormStyleItem( groupIdItem, false );
+        toggleFormStyleItem( artifactIdItem, false );
+        toggleFormStyleItem( versionIdItem, false );
+        hideTextBox( hiddenArtifactIdField );
+        hideTextBox( hiddenGroupIdField );
+        hideTextBox( hiddenVersionIdField );
+    }
+
+    private void toggleFormStyleItem( final FormStyleItem item,
+                                      final boolean toggle ) {
+        if ( item != null ) {
+            item.setVisible( toggle );
+        }
+    }
+
+    private void hideTextBox( final TextBox textBox ) {
+        textBox.setText( null );
+        textBox.setVisible( false );
     }
 
     @Override

@@ -18,19 +18,12 @@ package org.guvnor.messageconsole.client.console.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
 import org.guvnor.messageconsole.client.console.resources.i18n.MessageConsoleConstants;
 
 public interface MessageConsoleResources extends ClientBundle {
 
-    public MessageConsoleResources INSTANCE = GWT.create( MessageConsoleResources.class );
+    MessageConsoleResources INSTANCE = GWT.create( MessageConsoleResources.class );
 
     MessageConsoleConstants CONSTANTS = GWT.create( MessageConsoleConstants.class );
-
-    @ClientBundle.Source("images/error.gif") ImageResource Error();
-
-    @ClientBundle.Source("images/warning.gif") ImageResource Warning();
-
-    @ClientBundle.Source("images/information.gif") ImageResource Information();
 
 }

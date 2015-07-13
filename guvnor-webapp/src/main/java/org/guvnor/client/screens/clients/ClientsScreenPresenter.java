@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -31,6 +30,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.guvnor.messageconsole.client.console.HyperLinkCell;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -60,7 +60,7 @@ public class ClientsScreenPresenter
         initWidget(uiBinder.createAndBindUi(this));
 
         TextBox textBox = new TextBox();
-        textBox.setSearchQuery(true);
+//        textBox.setSearchQuery(true);
         textBox.setPlaceholder("Search...");
         table.getLeftToolbar().add(textBox);
 

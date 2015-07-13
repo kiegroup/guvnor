@@ -22,10 +22,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -37,6 +33,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.forms.GetFormParamsEvent;
@@ -91,9 +91,11 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
 
     public SelectAssetsToPromoteViewImpl() {
 
-        filesInTheBranchList = new ListBox( true );
+        filesInTheBranchList = new ListBox();
+        filesInTheBranchList.setMultipleSelect( true );
 
-        filesToPromoteList = new ListBox( true );
+        filesToPromoteList = new ListBox();
+        filesToPromoteList.setMultipleSelect( true );
 
         initWidget( uiBinder.createAndBindUi( this ) );
 
@@ -129,10 +131,11 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
         filesToPromoteList.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                int selectedIndex = filesToPromoteList.getSelectedIndex();
-                String value = filesToPromoteList.getValue( selectedIndex );
-                filesInTheBranchList.addItem( value );
-                filesToPromoteList.removeItem( selectedIndex );
+                if( filesToPromoteList.getSelectedIndex() != -1 ) {
+                    String value = filesToPromoteList.getSelectedValue();
+                    filesInTheBranchList.addItem( value );
+                    filesToPromoteList.removeItem( filesToPromoteList.getSelectedIndex() );
+                }
             }
         } );
 

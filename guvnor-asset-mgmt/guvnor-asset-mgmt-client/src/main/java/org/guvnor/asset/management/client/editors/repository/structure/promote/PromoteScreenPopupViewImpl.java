@@ -18,18 +18,18 @@ package org.guvnor.asset.management.client.editors.repository.structure.promote;
 import java.util.Collection;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.i18n.Constants;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
@@ -48,31 +48,31 @@ public class PromoteScreenPopupViewImpl extends BaseModal {
     private User identity;
 
     @UiField
-    ControlGroup repositoryTextGroup;
+    FormGroup repositoryTextGroup;
 
     @UiField
     TextBox repositoryText;
 
     @UiField
-    HelpInline repositoryTextHelpInline;
+    HelpBlock repositoryTextHelpBlock;
 
     @UiField
-    ControlGroup sourceBranchTextGroup;
+    FormGroup sourceBranchTextGroup;
 
     @UiField
     TextBox sourceBranchText;
 
     @UiField
-    HelpInline sourceBranchTextHelpInline;
+    HelpBlock sourceBranchTextHelpBlock;
 
     @UiField
-    ControlGroup targetBranchListBoxGroup;
+    FormGroup targetBranchListBoxGroup;
 
     @UiField
     ListBox targetBranchListBox;
 
     @UiField
-    HelpInline targetBranchListBoxHelpInline;
+    HelpBlock targetBranchListBoxHelpBlock;
 
     private Command callbackCommand;
 
@@ -80,10 +80,10 @@ public class PromoteScreenPopupViewImpl extends BaseModal {
         @Override
         public void execute() {
 
-            if ( targetBranchListBox.getValue().equals( Constants.INSTANCE.Select_A_Branch() )
-                    || targetBranchListBox.getValue().equals( sourceBranchText.getText() ) ) {
-                targetBranchListBoxGroup.setType( ControlGroupType.ERROR );
-                targetBranchListBoxHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "Target Branch" ) );
+            if ( targetBranchListBox.getSelectedValue().equals( Constants.INSTANCE.Select_A_Branch() )
+                    || targetBranchListBox.getSelectedValue().equals( sourceBranchText.getText() ) ) {
+                targetBranchListBoxGroup.setValidationState( ValidationState.ERROR );
+                targetBranchListBoxHelpBlock.setText( Constants.INSTANCE.FieldMandatory0( "Target Branch" ) );
 
                 return;
             }
@@ -107,12 +107,12 @@ public class PromoteScreenPopupViewImpl extends BaseModal {
 
     public PromoteScreenPopupViewImpl() {
         setTitle( Constants.INSTANCE.Promote_Assets() );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
+        setDataBackdrop( ModalBackdrop.STATIC );
+        setDataKeyboard( true );
+        setFade( true );
+        setRemoveOnHide( true );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         add( footer );
     }
 
@@ -136,7 +136,7 @@ public class PromoteScreenPopupViewImpl extends BaseModal {
     }
 
     public String getTargetBranch() {
-        return this.targetBranchListBox.getValue();
+        return this.targetBranchListBox.getSelectedValue();
     }
 
 }

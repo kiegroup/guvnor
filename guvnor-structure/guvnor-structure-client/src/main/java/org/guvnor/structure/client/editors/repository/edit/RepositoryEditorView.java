@@ -19,7 +19,6 @@ package org.guvnor.structure.client.editors.repository.edit;
 import java.util.List;
 import javax.annotation.PostConstruct;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,15 +26,18 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.navigator.CommitNavigator;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.guvnor.structure.repositories.PublicURI;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.InputGroupAddon;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.html.Paragraph;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
@@ -55,22 +57,19 @@ public class RepositoryEditorView extends Composite
     private static RepositoryEditorViewBinder uiBinder = GWT.create( RepositoryEditorViewBinder.class );
 
     @UiField
-    public InlineHTML ownerReference;
+    public Heading repoName;
 
     @UiField
-    public InlineHTML repoName;
+    public Paragraph repoDesc;
 
     @UiField
-    public InlineHTML repoDesc;
+    public TextBox gitDaemonURI;
 
     @UiField
-    public InlineHTML gitDaemonURI;
+    public InputGroupAddon myGitCopyButton;
 
     @UiField
-    public Button myGitCopyButton;
-
-    @UiField
-    public FlowPanel linksPanel;
+    public Paragraph linksPanel;
 
     @UiField
     public FlowPanel history;
@@ -98,23 +97,22 @@ public class RepositoryEditorView extends Composite
                                    final String description,
                                    final List<VersionRecord> initialVersionList ) {
         if ( owner != null && !owner.isEmpty() ) {
-            ownerReference.setText( owner + " / " );
+            repoName.setText( owner + " / " + repositoryName );
+        } else {
+            repoName.setText( repositoryName );
         }
-        repoName.setText( repositoryName );
         repoDesc.setText( description );
         int count = 0;
         if ( publicURIs.size() > 0 ) {
-            linksPanel.add( new InlineHTML() {{
-                setText( CoreConstants.INSTANCE.AvailableProtocols() );
-                getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
-            }} );
+            linksPanel.setText( CoreConstants.INSTANCE.AvailableProtocols() );
         }
         for ( final PublicURI publicURI : publicURIs ) {
             if ( count == 0 ) {
                 gitDaemonURI.setText( publicURI.getURI() );
             }
             final String protocol = publicURI.getProtocol() == null ? "default" : publicURI.getProtocol();
-            final Anchor anchor = new Anchor( protocol );
+            final Button anchor = new Button( protocol );
+            anchor.getElement().getStyle().setMarginLeft( 5, Style.Unit.PX );
             anchor.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {

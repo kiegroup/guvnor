@@ -16,7 +16,7 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:bootstrap="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:style type="org.guvnor.client.widgets.Toggle.Style">
     .blue {

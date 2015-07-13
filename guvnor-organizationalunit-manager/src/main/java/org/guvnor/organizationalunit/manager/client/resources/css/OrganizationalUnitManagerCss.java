@@ -25,6 +25,9 @@ public interface OrganizationalUnitManagerCss extends CssResource {
 
     String container();
 
+    String buttonContainer();
+
     String shuffleButtons();
 
+    String panel();
 }

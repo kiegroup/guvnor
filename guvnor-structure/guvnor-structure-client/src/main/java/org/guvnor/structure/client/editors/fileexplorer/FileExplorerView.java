@@ -19,17 +19,15 @@ package org.guvnor.structure.client.editors.fileexplorer;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
 import org.guvnor.structure.repositories.Repository;
-import org.uberfire.ext.widgets.core.client.resources.CoreImages;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.core.client.tree.Tree;
 import org.uberfire.ext.widgets.core.client.tree.TreeItem;
-import org.uberfire.backend.vfs.Path;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -42,8 +40,6 @@ public class FileExplorerView
     private final Tree tree = new Tree();
 
     private final Map<Repository, TreeItem> repositoryToTreeItemMap = new HashMap<Repository, TreeItem>();
-
-    private static CoreImages images = GWT.create( CoreImages.class );
 
     private static final String REPOSITORY_ID = "repositories";
     private static final String LAZY_LOAD = "Loading...";

@@ -31,6 +31,7 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.messageconsole.events.MessageUtils;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
@@ -108,7 +109,7 @@ public class MavenDeployProjectCommand extends AbstractCommand {
                     List<SystemMessage> messageList = new ArrayList<SystemMessage>();
 
                     SystemMessage buildOutcomeMsg = new SystemMessage();
-                    buildOutcomeMsg.setLevel(SystemMessage.Level.ERROR);
+                    buildOutcomeMsg.setLevel(Level.ERROR);
                     buildOutcomeMsg.setText("Maven install process failed for project " + project.getProjectName());
                     buildOutcomeMsg.setMessageType( MessageUtils.BUILD_SYSTEM_MESSAGE );
                     messageList.add(buildOutcomeMsg);

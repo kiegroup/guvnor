@@ -16,6 +16,7 @@
 
 package org.guvnor.messageconsole.client.console;
 
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.paging.AbstractPageRow;
@@ -28,7 +29,9 @@ public class MessageConsoleServiceRow extends AbstractPageRow {
 
     SystemMessage message;
 
-    public MessageConsoleServiceRow( String sessionId, String userId, SystemMessage message ) {
+    public MessageConsoleServiceRow( String sessionId,
+                                     String userId,
+                                     SystemMessage message ) {
         this.sessionId = sessionId;
         this.userId = userId;
         this.message = message;
@@ -58,7 +61,6 @@ public class MessageConsoleServiceRow extends AbstractPageRow {
         this.message = message;
     }
 
-
     public String getMessageType() {
         return getMessage() != null ? getMessage().getMessageType() : null;
     }
@@ -71,7 +73,7 @@ public class MessageConsoleServiceRow extends AbstractPageRow {
         return getMessage() != null ? getMessage().getId() : -1;
     }
 
-    public SystemMessage.Level getMessageLevel() {
+    public Level getMessageLevel() {
         return getMessage() != null ? getMessage().getLevel() : null;
     }
 

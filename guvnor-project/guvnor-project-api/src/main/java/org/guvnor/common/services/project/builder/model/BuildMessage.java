@@ -18,6 +18,7 @@ package org.guvnor.common.services.project.builder.model;
 
 import java.io.Serializable;
 
+import org.guvnor.common.services.shared.message.Level;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
@@ -133,10 +134,4 @@ public class BuildMessage implements Serializable {
         result = ~~result;
         return result;
     }
-
-    @Portable
-    public static enum Level {
-        ERROR, WARNING, INFO;
-    }
-
 }

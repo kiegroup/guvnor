@@ -16,13 +16,15 @@
 package org.guvnor.m2repo.client.editor;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
+import org.gwtbootstrap3.client.shared.event.ModalShowEvent;
+import org.gwtbootstrap3.client.shared.event.ModalShowHandler;
+import org.gwtbootstrap3.client.ui.Pre;
+import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 
@@ -40,13 +42,14 @@ public class JarDetailPopup extends BaseModal {
     private static JarDetailPopupWidgetBinder uiBinder = GWT.create( JarDetailPopupWidgetBinder.class );
 
     @UiField
-    protected HTML pom;
+    protected Pre pom;
 
     public JarDetailPopup( final String details ) {
+        PatternFlyBootstrapper.ensurePrettifyIsAvailable();
         setTitle( M2RepoEditorConstants.INSTANCE.JarDetails() );
-        setHideOthers( false );
+        setHideOtherModals( false );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         add( new ModalFooterOKButton( new Command() {
             @Override
             public void execute() {
@@ -54,7 +57,17 @@ public class JarDetailPopup extends BaseModal {
             }
         } ) );
 
-        this.pom.setHTML( new SafeHtmlBuilder().appendEscapedLines( details ).toSafeHtml() );
+        this.pom.setHTML( details );
+        addShowHandler( new ModalShowHandler() {
+            @Override
+            public void onShow( ModalShowEvent evt ) {
+                initPrettify();
+            }
+        } );
     }
 
+
+    public static native void initPrettify() /*-{
+        $wnd.prettyPrint();
+    }-*/;
 }

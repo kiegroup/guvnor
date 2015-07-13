@@ -15,27 +15,21 @@
  */
 package org.guvnor.asset.management.client.editors.forms.error;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import org.guvnor.asset.management.client.i18n.Constants;
-import org.guvnor.asset.management.service.AssetManagementService;
-import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchScreen(identifier = "DisplayError Form")
+@WorkbenchScreen( identifier = "DisplayError Form" )
 public class DisplayErrorPresenter {
 
     private Constants constants = GWT.create( Constants.class );
@@ -66,18 +60,6 @@ public class DisplayErrorPresenter {
     @WorkbenchPartView
     public UberView<DisplayErrorPresenter> getView() {
         return view;
-    }
-
-    public DisplayErrorPresenter() {
-    }
-
-    @PostConstruct
-    public void init() {
-    }
-
-    @OnOpen
-    public void onOpen() {
-
     }
 
 }

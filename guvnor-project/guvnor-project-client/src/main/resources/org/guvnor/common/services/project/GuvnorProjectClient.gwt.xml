@@ -24,6 +24,8 @@
   <inherits name='org.guvnor.common.services.GuvnorServicesAPI'/>
   <inherits name='org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI'/>
 
+  <inherits name='org.gwtbootstrap3.GwtBootstrap3NoTheme'/>
+
   <source path='client'/>
 
 </module>

@@ -19,9 +19,6 @@ package org.guvnor.common.services.project.client;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Fieldset;
-import com.github.gwtbootstrap.client.ui.TextArea;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -33,6 +30,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.client.resources.ProjectResources;
 import org.guvnor.common.services.project.model.GAV;
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -65,7 +65,7 @@ public class POMEditorPanelViewImpl
     GAVEditor parentGavEditor;
 
     @UiField
-    Fieldset parentGavEditorFieldSet;
+    FieldSet parentGavEditorFieldSet;
 
     private Presenter presenter;
 

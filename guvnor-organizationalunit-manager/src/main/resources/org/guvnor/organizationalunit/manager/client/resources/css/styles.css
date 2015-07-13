@@ -15,9 +15,22 @@
  */
 
 .container {
-    margin: 5px;
+    padding-bottom: 15px;
+}
+
+.container table {
+    border-collapse: separate;
+    border-spacing: 5px;
+}
+
+.buttonContainer {
+    padding-left: 5px;
 }
 
 .shuffleButtons {
     vertical-align: middle;
+}
+
+.panel {
+    padding: 15px 10px;
 }

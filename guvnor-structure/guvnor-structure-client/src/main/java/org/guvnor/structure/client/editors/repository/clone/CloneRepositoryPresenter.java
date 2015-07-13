@@ -23,13 +23,13 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -90,7 +90,7 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
         boolean ouConditionsMet = setOrganizationalUnitGroupType();
         boolean nameConditionsMet = setNameGroupType();
 
-        if(urlConditionsMet && ouConditionsMet && nameConditionsMet ) {
+        if ( urlConditionsMet && ouConditionsMet && nameConditionsMet ) {
             repositoryService.call( getNormalizeRepositoryNameCallback() ).normalizeRepositoryName( view.getName() );
         }
     }
@@ -111,7 +111,7 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
                 final String scheme = "git";
                 final String alias = view.getName().trim();
                 repositoryService.call( getCreateRepositoryCallback(),
-                                        getErrorCallback() ).createRepository( availableOrganizationalUnits.get( view.getOrganizationalUnit( view.getSelectedOrganizationalUnit() ) ),
+                                        getErrorCallback() ).createRepository( availableOrganizationalUnits.get( view.getSelectedOrganizationalUnit() ),
                                                                                scheme,
                                                                                alias,
                                                                                getEnv() );
@@ -147,9 +147,9 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
                                   final Throwable throwable ) {
                 try {
                     throw throwable;
-                } catch (RepositoryAlreadyExistsException ex) {
+                } catch ( RepositoryAlreadyExistsException ex ) {
                     view.errorRepositoryAlreadyExist();
-                } catch (Throwable ex) {
+                } catch ( Throwable ex ) {
                     view.errorCloneRepositoryFail( ex );
                 }
                 unlockScreen();
@@ -160,40 +160,40 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
 
     private boolean setNameGroupType() {
         if ( view.isNameEmpty() ) {
-            view.setNameGroupType( ControlGroupType.ERROR );
+            view.setNameGroupType( ValidationState.ERROR );
             view.showNameHelpMandatoryMessage();
             return false;
         } else {
-            view.setNameGroupType( ControlGroupType.NONE );
+            view.setNameGroupType( ValidationState.NONE );
             return true;
         }
     }
 
     private boolean setOrganizationalUnitGroupType() {
-        if ( isOuMandatory() && !availableOrganizationalUnits.containsKey( view.getOrganizationalUnit( view.getSelectedOrganizationalUnit() ) ) ) {
-            view.setOrganizationalUnitGroupType( ControlGroupType.ERROR );
+        if ( isOuMandatory() && !availableOrganizationalUnits.containsKey( view.getSelectedOrganizationalUnit() ) ) {
+            view.setOrganizationalUnitGroupType( ValidationState.ERROR );
             view.showOrganizationalUnitHelpMandatoryMessage();
             return false;
 
         } else {
-            view.setOrganizationalUnitGroupType( ControlGroupType.NONE );
+            view.setOrganizationalUnitGroupType( ValidationState.NONE );
             return true;
         }
     }
 
     private boolean setUrl() {
         if ( view.isGitUrlEmpty() ) {
-            view.setUrlGroupType( ControlGroupType.ERROR );
+            view.setUrlGroupType( ValidationState.ERROR );
             view.showUrlHelpMandatoryMessage();
             return false;
 
         } else if ( !URIUtil.isValid( view.getGitUrl() ) ) {
-            view.setUrlGroupType( ControlGroupType.ERROR );
+            view.setUrlGroupType( ValidationState.ERROR );
             view.showUrlHelpInvalidFormatMessage();
             return false;
 
         } else {
-            view.setUrlGroupType( ControlGroupType.NONE );
+            view.setUrlGroupType( ValidationState.NONE );
             return true;
         }
     }

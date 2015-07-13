@@ -25,6 +25,8 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
+  <inherits name='org.gwtbootstrap3.GwtBootstrap3NoTheme'/>
+
   <inherits name="org.uberfire.UberfireClient"/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
 

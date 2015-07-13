@@ -18,132 +18,100 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
+             xmlns:b='urn:import:org.gwtbootstrap3.client.ui'>
 
-  <ui:with field="i18n"
-           type="org.guvnor.asset.management.client.i18n.Constants"/>
-  
+    <ui:with field="i18n" type="org.guvnor.asset.management.client.i18n.Constants"/>
 
-  <gwt:HTMLPanel>
-    <bootstrap:WellForm type="INLINE">
-      <bootstrap:FluidRow>
-        <bootstrap:Column size="5">
-          <bootstrap:ControlLabel for="chooseRepositoryBox">
-            <ui:text from="{i18n.Choose_Repository}"/>
-          </bootstrap:ControlLabel>
-        </bootstrap:Column>
-        <bootstrap:Column size="5">
-          <bootstrap:Controls>
-            <bootstrap:ListBox ui:field="chooseRepositoryBox"/>
-          </bootstrap:Controls>
-        </bootstrap:Column>
-      </bootstrap:FluidRow>
 
-      <bootstrap:FluidRow>
-        <bootstrap:Column size="5">
-          <bootstrap:ControlLabel for="chooseBranchBox">
-            <ui:text from="{i18n.Choose_Branch}"/>
-          </bootstrap:ControlLabel>
-        </bootstrap:Column>
-        <bootstrap:Column size="5">
-          <bootstrap:Controls>
-            <bootstrap:ListBox ui:field="chooseBranchBox"/>
-          </bootstrap:Controls>
-        </bootstrap:Column>
-      </bootstrap:FluidRow>
-      
-      <bootstrap:FluidRow>
-        <bootstrap:Column size="5">
-          <bootstrap:ControlLabel for="currentVersionText">
-            <ui:text from="{i18n.Current_Version}"/>
-          </bootstrap:ControlLabel>
-        </bootstrap:Column>
-        <bootstrap:Column size="5">
-          <bootstrap:Controls>
-            <bootstrap:TextBox ui:field="currentVersionText" placeholder="{i18n.Current_Version}"/>
-          </bootstrap:Controls>
-        </bootstrap:Column>
-       
-      </bootstrap:FluidRow>
-      
-      <bootstrap:FluidRow>
-        <bootstrap:Column size="5">
-          <bootstrap:ControlLabel for="versionText">
-            <ui:text from="{i18n.Version}"/>
-          </bootstrap:ControlLabel>
-        </bootstrap:Column>
-        <bootstrap:Column size="5">
-          <bootstrap:Controls>
-            <bootstrap:TextBox ui:field="versionText" placeholder="{i18n.Version}"/>
-          </bootstrap:Controls>
-        </bootstrap:Column>
-       
-      </bootstrap:FluidRow>
+    <gwt:HTMLPanel>
+        <b:Container fluid="true">
+            <b:Row>
+                <b:Column size="MD_12">
+                    <b:Form type="HORIZONTAL">
+                        <b:FieldSet>
 
-      <bootstrap:FluidRow ui:field="deployToRuntimeRow">
-        <bootstrap:Column size="5">
-          <bootstrap:ControlLabel for="deployToRuntimeCheck">
-            <ui:text from="{i18n.Deploy_To_Runtime}"/>
-          </bootstrap:ControlLabel>
-        </bootstrap:Column>
-        <bootstrap:Column size="5">
-          <bootstrap:Controls>
-            <bootstrap:CheckBox ui:field="deployToRuntimeCheck"/>
-          </bootstrap:Controls>
-        </bootstrap:Column>
+                            <b:FormGroup>
+                                <b:Column size="MD_2">
+                                    <b:FormLabel for="chooseRepositoryBox" text="{i18n.Choose_Repository}"/>
+                                </b:Column>
+                                <b:Column size="MD_5">
+                                    <b:ListBox ui:field="chooseRepositoryBox"/>
+                                </b:Column>
+                            </b:FormGroup>
 
-      </bootstrap:FluidRow>
+                            <b:FormGroup>
+                                <b:Column size="MD_2">
+                                    <b:FormLabel for="chooseBranchBox" text="{i18n.Choose_Branch}"/>
+                                </b:Column>
+                                <b:Column size="MD_5">
+                                    <b:ListBox ui:field="chooseBranchBox"/>
+                                </b:Column>
+                            </b:FormGroup>
 
-      <bootstrap:FluidRow ui:field="usernameRow">
-        <bootstrap:Column size="5">
-          <bootstrap:ControlLabel for="userNameText">
-            <ui:text from="{i18n.User_Name}"/>
-          </bootstrap:ControlLabel>
-        </bootstrap:Column>
-        <bootstrap:Column size="5">
-          <bootstrap:Controls>
-            <bootstrap:TextBox ui:field="userNameText" placeholder="{i18n.User_Name}"/>
-          </bootstrap:Controls>
-        </bootstrap:Column>
+                            <b:FormGroup>
+                                <b:Column size="MD_2">
+                                    <b:FormLabel for="currentVersionText" text="{i18n.Current_Version}"/>
+                                </b:Column>
+                                <b:Column size="MD_5">
+                                    <b:TextBox ui:field="currentVersionText" placeholder="{i18n.Current_Version}"/>
+                                </b:Column>
+                            </b:FormGroup>
 
-      </bootstrap:FluidRow>
+                            <b:FormGroup>
+                                <b:Column size="MD_2">
+                                    <b:FormLabel for="versionText" text="{i18n.Version}"/>
+                                </b:Column>
+                                <b:Column size="MD_5">
+                                    <b:TextBox ui:field="versionText" placeholder="{i18n.Version}"/>
+                                </b:Column>
+                            </b:FormGroup>
 
-      <bootstrap:FluidRow ui:field="passwordRow">
-        <bootstrap:Column size="5">
-          <bootstrap:ControlLabel for="passwordText">
-            <ui:text from="{i18n.Password}"/>
-          </bootstrap:ControlLabel>
-        </bootstrap:Column>
-        <bootstrap:Column size="5">
-          <bootstrap:Controls>
-            <bootstrap:PasswordTextBox ui:field="passwordText" placeholder="{i18n.Password}"/>
-          </bootstrap:Controls>
-        </bootstrap:Column>
+                            <b:FormGroup ui:field="deployToRuntimeRow">
+                                <b:Column size="MD_2">
+                                    <b:FormLabel for="deployToRuntimeCheck" text="{i18n.Deploy_To_Runtime}"/>
+                                </b:Column>
+                                <b:Column size="MD_5">
+                                    <b:CheckBox ui:field="deployToRuntimeCheck"/>
+                                </b:Column>
+                            </b:FormGroup>
 
-      </bootstrap:FluidRow>
-      <bootstrap:FluidRow ui:field="serverURLRow">
-        <bootstrap:Column size="5">
-          <bootstrap:ControlLabel for="serverURLText">
-            <ui:text from="{i18n.Server_URL}"/>
-          </bootstrap:ControlLabel>
-        </bootstrap:Column>
-        <bootstrap:Column size="5">
-          <bootstrap:Controls>
-            <bootstrap:TextBox ui:field="serverURLText" placeholder="{i18n.Server_URL}"/>
-          </bootstrap:Controls>
-        </bootstrap:Column>
+                            <b:FormGroup ui:field="usernameRow">
+                                <b:Column size="MD_2">
+                                    <b:FormLabel for="userNameText" text="{i18n.User_Name}"/>
+                                </b:Column>
+                                <b:Column size="MD_5">
+                                    <b:TextBox ui:field="userNameText" placeholder="{i18n.User_Name}"/>
+                                </b:Column>
+                            </b:FormGroup>
 
-      </bootstrap:FluidRow>
-      
+                            <b:FormGroup ui:field="passwordRow">
+                                <b:Column size="MD_2">
+                                    <b:FormLabel for="passwordText" text="{i18n.Password}"/>
+                                </b:Column>
+                                <b:Column size="MD_5">
+                                    <b:Input type="PASSWORD" ui:field="passwordText" placeholder="{i18n.Password}"/>
+                                </b:Column>
+                            </b:FormGroup>
 
-      <bootstrap:FluidRow>
-        <bootstrap:Column size="5">
-          <bootstrap:Button type="PRIMARY" ui:field='releaseButton'>
-            <ui:text from="{i18n.Release_Project}"/>
-          </bootstrap:Button>
-        </bootstrap:Column>
-        
-      </bootstrap:FluidRow>
-    </bootstrap:WellForm>
-  </gwt:HTMLPanel>
+                            <b:FormGroup ui:field="serverURLRow">
+                                <b:Column size="MD_2">
+                                    <b:FormLabel for="serverURLText" text="{i18n.Server_URL}"/>
+                                </b:Column>
+                                <b:Column size="MD_5">
+                                    <b:TextBox ui:field="serverURLText" placeholder="{i18n.Server_URL}"/>
+                                </b:Column>
+                            </b:FormGroup>
+
+                            <b:FormGroup>
+                                <b:Column size="MD_5" offset="MD_2">
+                                    <b:Button type="PRIMARY" ui:field='releaseButton' text="{i18n.Release_Project}"/>
+                                </b:Column>
+                            </b:FormGroup>
+
+                        </b:FieldSet>
+                    </b:Form>
+                </b:Column>
+            </b:Row>
+        </b:Container>
+    </gwt:HTMLPanel>
 </ui:UiBinder>

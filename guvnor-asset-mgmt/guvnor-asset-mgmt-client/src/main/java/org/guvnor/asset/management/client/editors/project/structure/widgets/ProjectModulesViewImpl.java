@@ -16,12 +16,6 @@
 
 package org.guvnor.asset.management.client.editors.project.structure.widgets;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ButtonCell;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -34,6 +28,12 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.i18n.Constants;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 
 public class ProjectModulesViewImpl extends Composite
@@ -53,7 +53,7 @@ public class ProjectModulesViewImpl extends Composite
     Button addModuleButton;
 
     @UiField
-    Label modulesLabel;
+    Heading modulesLabel;
 
     private Column<ProjectModuleRow, ?> modulesColumn;
 
@@ -118,9 +118,7 @@ public class ProjectModulesViewImpl extends Composite
     private void addDeleteModuleColumn() {
 
         //TODO add i18n constants.
-        final ButtonCell deleteModuleButton = new ButtonCell( ButtonSize.SMALL );
-        deleteModuleButton.setType( ButtonType.DANGER );
-        deleteModuleButton.setIcon( IconType.MINUS_SIGN );
+        final ButtonCell deleteModuleButton = new ButtonCell( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL );
         final Column<ProjectModuleRow, String> deleteModuleColumn = new Column<ProjectModuleRow, String>( deleteModuleButton ) {
             @Override
             public String getValue( final ProjectModuleRow moduleRow ) {
@@ -146,9 +144,7 @@ public class ProjectModulesViewImpl extends Composite
 
     private void addEditModuleColumn() {
 
-        final ButtonCell editModuleButton = new ButtonCell( ButtonSize.SMALL );
-        editModuleButton.setType( ButtonType.PRIMARY );
-        editModuleButton.setIcon( IconType.EDIT );
+        final ButtonCell editModuleButton = new ButtonCell( IconType.EDIT, ButtonType.PRIMARY, ButtonSize.SMALL );
         final Column<ProjectModuleRow, String> editModuleColumn = new Column<ProjectModuleRow, String>( editModuleButton ) {
             @Override
             public String getValue( final ProjectModuleRow moduleRow ) {

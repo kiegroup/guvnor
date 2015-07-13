@@ -16,21 +16,19 @@
 
 package org.guvnor.m2repo.client.editor;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Form;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import org.guvnor.m2repo.client.resources.images.M2RepoEditorImageResources;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class GAVEditor extends FormStylePopup {
 
     public GAVEditor( final Form form ) {
-        super( M2RepoEditorImageResources.INSTANCE.modelLarge(),
-               "GAV Editor" );
+        super( "GAV Editor" );
 
         TextBox groupIDTextBox = new TextBox();
         addAttribute( "GroupID:", groupIDTextBox );

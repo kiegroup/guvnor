@@ -15,34 +15,28 @@
  */
 package org.guvnor.asset.management.client.editors.forms.approve;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import org.guvnor.asset.management.client.i18n.Constants;
-import org.guvnor.asset.management.service.AssetManagementService;
-import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchScreen(identifier = "ApproveOperation Form")
+@WorkbenchScreen( identifier = "ApproveOperation Form" )
 public class ApproveOperationPresenter {
 
-    private Constants constants = GWT.create(Constants.class);
+    private Constants constants = GWT.create( Constants.class );
 
     public interface ApproveOperationView extends UberView<ApproveOperationPresenter> {
 
-        void displayNotification(String text);
+        void displayNotification( String text );
     }
 
     @Inject
@@ -54,11 +48,10 @@ public class ApproveOperationPresenter {
     private PlaceManager placeManager;
 
     @OnStartup
-    public void onStartup(final PlaceRequest place) {
+    public void onStartup( final PlaceRequest place ) {
         this.place = place;
     }
-    
-   
+
 
     @WorkbenchPartTitle
     public String getTitle() {
@@ -68,19 +61,6 @@ public class ApproveOperationPresenter {
     @WorkbenchPartView
     public UberView<ApproveOperationPresenter> getView() {
         return view;
-    }
-
-    public ApproveOperationPresenter() {
-    }
-
-    @PostConstruct
-    public void init() {
-    }
-
-    @OnOpen
-    public void onOpen() {
-        
-
     }
 
 }

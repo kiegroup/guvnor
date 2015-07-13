@@ -17,17 +17,17 @@ package org.guvnor.asset.management.client.editors.repository.structure.configur
 
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.i18n.Constants;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
@@ -46,46 +46,46 @@ public class ConfigureScreenPopupViewImpl extends BaseModal {
     private User identity;
 
     @UiField
-    ControlGroup repositoryTextGroup;
+    FormGroup repositoryTextGroup;
 
     @UiField
     TextBox repositoryText;
 
     @UiField
-    HelpInline repositoryTextHelpInline;
+    HelpBlock repositoryTextHelpBlock;
 
     @UiField
-    ControlGroup sourceBranchTextGroup;
+    FormGroup sourceBranchTextGroup;
 
     @UiField
     TextBox sourceBranchText;
 
     @UiField
-    HelpInline sourceBranchTextHelpInline;
+    HelpBlock sourceBranchTextHelpBlock;
 
     @UiField
-    ControlGroup devBranchTextGroup;
+    FormGroup devBranchTextGroup;
 
     @UiField
     TextBox devBranchText;
 
     @UiField
-    HelpInline devBranchTextHelpInline;
+    HelpBlock devBranchTextHelpBlock;
 
     @UiField
-    ControlGroup releaseBranchTextGroup;
+    FormGroup releaseBranchTextGroup;
 
     @UiField
     TextBox releaseBranchText;
 
     @UiField
-    HelpInline releaseBranchTextHelpInline;
+    HelpBlock releaseBranchTextHelpBlock;
 
     @UiField
-    HelpInline versionTextHelpInline;
+    HelpBlock versionTextHelpBlock;
 
     @UiField
-    ControlGroup versionTextGroup;
+    FormGroup versionTextGroup;
 
     @UiField
     TextBox versionText;
@@ -97,22 +97,22 @@ public class ConfigureScreenPopupViewImpl extends BaseModal {
         public void execute() {
 
             if ( isEmpty( devBranchText.getText() ) ) {
-                devBranchTextGroup.setType( ControlGroupType.ERROR );
-                devBranchTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "Dev Branch" ) );
+                devBranchTextGroup.setValidationState( ValidationState.ERROR );
+                devBranchTextHelpBlock.setText( Constants.INSTANCE.FieldMandatory0( "Dev Branch" ) );
 
                 return;
             }
 
             if ( isEmpty( releaseBranchText.getText() ) ) {
-                releaseBranchTextGroup.setType( ControlGroupType.ERROR );
-                releaseBranchTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "Release Branch" ) );
+                releaseBranchTextGroup.setValidationState( ValidationState.ERROR );
+                releaseBranchTextHelpBlock.setText( Constants.INSTANCE.FieldMandatory0( "Release Branch" ) );
 
                 return;
             }
 
             if ( isEmpty( versionText.getText() ) ) {
-                versionTextGroup.setType( ControlGroupType.ERROR );
-                versionTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "Version" ) );
+                versionTextGroup.setValidationState( ValidationState.ERROR );
+                versionTextHelpBlock.setText( Constants.INSTANCE.FieldMandatory0( "Version" ) );
 
                 return;
             }
@@ -144,12 +144,12 @@ public class ConfigureScreenPopupViewImpl extends BaseModal {
 
     public ConfigureScreenPopupViewImpl() {
         setTitle( Constants.INSTANCE.Configure_Repository() );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
+        setDataBackdrop( ModalBackdrop.STATIC );
+        setDataKeyboard( true );
+        setFade( true );
+        setRemoveOnHide( true );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         add( footer );
     }
 
@@ -159,14 +159,14 @@ public class ConfigureScreenPopupViewImpl extends BaseModal {
                            Command command ) {
         this.callbackCommand = command;
         this.devBranchText.setText( "dev" );
-        this.devBranchTextHelpInline.setText( "The branch will be called (dev)-" + repositoryVersion );
+        this.devBranchTextHelpBlock.setText( "The branch will be called (dev)-" + repositoryVersion );
         this.releaseBranchText.setText( "release" );
-        this.releaseBranchTextHelpInline.setText( "The branch will be called (release)-" + repositoryVersion );
+        this.releaseBranchTextHelpBlock.setText( "The branch will be called (release)-" + repositoryVersion );
         this.sourceBranchText.setText( branch );
         this.repositoryText.setText( repositoryAlias );
         this.sourceBranchText.setReadOnly( true );
         this.repositoryText.setReadOnly( true );
-        this.versionTextHelpInline.setText( "The current repository version is: " + repositoryVersion );
+        this.versionTextHelpBlock.setText( "The current repository version is: " + repositoryVersion );
         this.versionText.setText( repositoryVersion );
     }
 

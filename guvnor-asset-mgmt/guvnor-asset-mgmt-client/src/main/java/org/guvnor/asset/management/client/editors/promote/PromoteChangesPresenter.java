@@ -20,10 +20,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.ListBox;
 import org.guvnor.asset.management.client.editors.common.BaseAssetsMgmtPresenter;
 import org.guvnor.asset.management.client.editors.common.BaseAssetsMgmtView;
 import org.guvnor.structure.repositories.Repository;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;

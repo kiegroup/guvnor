@@ -15,15 +15,9 @@
 
 package org.guvnor.asset.management.client.editors.repository.structure.release;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -32,10 +26,18 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.i18n.Constants;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
+@Dependent
 public class ReleaseScreenPopupViewImpl extends BaseModal {
 
     interface ReleaseScreenPopupWidgetBinder
@@ -50,64 +52,64 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
     private User identity;
 
     @UiField
-    ControlGroup repositoryTextGroup;
+    FormGroup repositoryTextGroup;
 
     @UiField
     TextBox repositoryText;
 
     @UiField
-    HelpInline repositoryTextHelpInline;
+    HelpBlock repositoryTextHelpBlock;
 
     @UiField
-    ControlGroup sourceBranchTextGroup;
+    FormGroup sourceBranchTextGroup;
 
     @UiField
     TextBox sourceBranchText;
 
     @UiField
-    HelpInline sourceBranchTextHelpInline;
+    HelpBlock sourceBranchTextHelpBlock;
 
     @UiField
-    ControlGroup userNameTextGroup;
+    FormGroup userNameTextGroup;
 
     @UiField
     TextBox userNameText;
 
     @UiField
-    HelpInline userNameTextHelpInline;
+    HelpBlock userNameTextHelpBlock;
 
     @UiField
-    ControlGroup passwordTextGroup;
+    FormGroup passwordTextGroup;
 
     @UiField
-    PasswordTextBox passwordText;
+    Input passwordText;
 
     @UiField
-    HelpInline passwordTextHelpInline;
+    HelpBlock passwordTextHelpBlock;
 
     @UiField
-    ControlGroup serverURLTextGroup;
+    FormGroup serverURLTextGroup;
 
     @UiField
     TextBox serverURLText;
 
     @UiField
-    HelpInline serverURLTextHelpInline;
+    HelpBlock serverURLTextHelpBlock;
 
     @UiField
-    HelpInline deployToRuntimeHelpInline;
+    HelpBlock deployToRuntimeHelpBlock;
 
     @UiField
-    ControlGroup deployToRuntimeTextGroup;
+    FormGroup deployToRuntimeTextGroup;
 
     @UiField
     CheckBox deployToRuntimeCheck;
 
     @UiField
-    HelpInline versionTextHelpInline;
+    HelpBlock versionTextHelpBlock;
 
     @UiField
-    ControlGroup versionTextGroup;
+    FormGroup versionTextGroup;
 
     @UiField
     TextBox versionText;
@@ -118,36 +120,36 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
         @Override
         public void execute() {
             if ( isEmpty( versionText.getText() ) ) {
-                versionTextGroup.setType( ControlGroupType.ERROR );
-                versionTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "Version" ) );
+                versionTextGroup.setValidationState( ValidationState.ERROR );
+                versionTextHelpBlock.setText( Constants.INSTANCE.FieldMandatory0( "Version" ) );
 
                 return;
             }
             if ( isSnapshot( versionText.getText() ) ) {
-                versionTextGroup.setType( ControlGroupType.ERROR );
-                versionTextHelpInline.setText( Constants.INSTANCE.SnapshotNotAvailableForRelease( "-SNAPSHOT" ) );
+                versionTextGroup.setValidationState( ValidationState.ERROR );
+                versionTextHelpBlock.setText( Constants.INSTANCE.SnapshotNotAvailableForRelease( "-SNAPSHOT" ) );
 
                 return;
             }
             if ( deployToRuntimeCheck.getValue() ) {
 
                 if ( isEmpty( userNameText.getText() ) ) {
-                    userNameTextGroup.setType( ControlGroupType.ERROR );
-                    userNameTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "Username" ) );
+                    userNameTextGroup.setValidationState( ValidationState.ERROR );
+                    userNameTextHelpBlock.setText( Constants.INSTANCE.FieldMandatory0( "Username" ) );
 
                     return;
                 }
 
                 if ( isEmpty( passwordText.getText() ) ) {
-                    passwordTextGroup.setType( ControlGroupType.ERROR );
-                    passwordTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "Password" ) );
+                    passwordTextGroup.setValidationState( ValidationState.ERROR );
+                    passwordTextHelpBlock.setText( Constants.INSTANCE.FieldMandatory0( "Password" ) );
 
                     return;
                 }
 
                 if ( isEmpty( serverURLText.getText() ) ) {
-                    serverURLTextGroup.setType( ControlGroupType.ERROR );
-                    serverURLTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "ServerURL" ) );
+                    serverURLTextGroup.setValidationState( ValidationState.ERROR );
+                    serverURLTextHelpBlock.setText( Constants.INSTANCE.FieldMandatory0( "ServerURL" ) );
 
                     return;
                 }
@@ -187,12 +189,12 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
 
     public ReleaseScreenPopupViewImpl() {
         setTitle( Constants.INSTANCE.Release_Configuration() );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
+        setDataBackdrop( ModalBackdrop.STATIC );
+        setDataKeyboard( true );
+        setFade( true );
+        setRemoveOnHide( true );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         add( footer );
     }
 
@@ -210,7 +212,7 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
         // set default values for the fields
         userNameText.setText( identity.getIdentifier() );
         serverURLText.setText( GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "" ) );
-        this.versionTextHelpInline.setText( "The current repository version is: " + repositoryVersion );
+        this.versionTextHelpBlock.setText( "The current repository version is: " + repositoryVersion );
         this.versionText.setText( suggestedVersion );
         userNameText.setEnabled( false );
         passwordText.setEnabled( false );

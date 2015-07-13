@@ -18,7 +18,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:guvnor="urn:import:org.guvnor.client.widgets"
-             xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:bootstrap="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:style>
     .column {
@@ -28,106 +28,121 @@
 
   <gwt:VerticalPanel ui:field="base">
     <bootstrap:Breadcrumbs ui:field="bread1">
-      <bootstrap:NavLink>Demo</bootstrap:NavLink>
-      <bootstrap:NavLink>Settings</bootstrap:NavLink>
-      <bootstrap:NavLink>General</bootstrap:NavLink>
+      <bootstrap:AnchorListItem text="Demo"/>
+      <bootstrap:AnchorListItem text="Settings"/>
+      <bootstrap:AnchorListItem text="General"/>
     </bootstrap:Breadcrumbs>
 
     <gwt:HorizontalPanel>
-      <bootstrap:Column size="1" >
-        <bootstrap:Heading size="2" text="demo"/>
+      <bootstrap:Column size="MD_1">
+        <bootstrap:Heading size="H2" text="demo"/>
       </bootstrap:Column>
-      <bootstrap:Column size="3">
-        <bootstrap:Heading size="2" text="General Settings"/>
+      <bootstrap:Column size="MD_3">
+        <bootstrap:Heading size="H2" text="General Settings"/>
       </bootstrap:Column>
     </gwt:HorizontalPanel>
 
-    <bootstrap:Accordion>
-      <bootstrap:AccordionGroup heading="Required Settings" defaultOpen="true">
-        <bootstrap:Row addStyleNames='{style.column}'>
-          <bootstrap:Column size="3">
-            <gwt:Label text="Name"/>
-          </bootstrap:Column>
-          <bootstrap:Column size="3" addStyleNames='{style.column}'>
-            <bootstrap:TextBox ui:field="name"/>
-          </bootstrap:Column>
-        </bootstrap:Row>
-        <bootstrap:Row>
-          <bootstrap:Column size="3">
-            <gwt:Label text="Enabled"/>
-          </bootstrap:Column>
-          <bootstrap:Column size="3" addStyleNames='{style.column}'>
-            <guvnor:Toggle ui:field="enabled"/>
-          </bootstrap:Column>
-        </bootstrap:Row>
-      </bootstrap:AccordionGroup>
-    </bootstrap:Accordion>
-    <bootstrap:AccordionGroup heading="Login Options" defaultOpen="true">
+    <bootstrap:PanelGroup bootstrap:id="accordion">
+      <bootstrap:Panel>
+        <bootstrap:PanelHeader dataToggle="COLLAPSE" dataParent="#accordion" dataTarget="#collapse1">
+          <bootstrap:Heading size="H4" text="Required Settings"/>
+        </bootstrap:PanelHeader>
+        <bootstrap:PanelCollapse bootstrap:id="collapse1">
+          <bootstrap:PanelBody>
+            <bootstrap:Row addStyleNames='{style.column}'>
+              <bootstrap:Column size="MD_3">
+                <gwt:Label text="Name"/>
+              </bootstrap:Column>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <bootstrap:TextBox ui:field="name"/>
+              </bootstrap:Column>
+            </bootstrap:Row>
+            <bootstrap:Row>
+              <bootstrap:Column size="MD_3">
+                <gwt:Label text="Enabled"/>
+              </bootstrap:Column>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <guvnor:Toggle ui:field="enabled"/>
+              </bootstrap:Column>
+            </bootstrap:Row>
+          </bootstrap:PanelBody>
+        </bootstrap:PanelCollapse>
+      </bootstrap:Panel>
 
-      <bootstrap:Row>
-        <bootstrap:Column size="3" addStyleNames='{style.column}'>
-          <gwt:Label text="Social login"/>
-        </bootstrap:Column>
-        <bootstrap:Column size="3" addStyleNames='{style.column}'>
-          <guvnor:Toggle ui:field="socialLogin"/>
-        </bootstrap:Column>
-      </bootstrap:Row>
 
-      <bootstrap:Row >
-        <bootstrap:Column size="3" addStyleNames='{style.column}'>
-          <gwt:Label text="User registration"/>
-        </bootstrap:Column>
-        <bootstrap:Column size="3" addStyleNames='{style.column}'>
-          <guvnor:Toggle ui:field="userRegistration"/>
-        </bootstrap:Column>
-      </bootstrap:Row>
+      <bootstrap:Panel>
+        <bootstrap:PanelHeader dataToggle="COLLAPSE" dataParent="#accordion" dataTarget="#collapse2">
+          <bootstrap:Heading size="H4" text="Login Options"/>
+        </bootstrap:PanelHeader>
+        <bootstrap:PanelCollapse bootstrap:id="collapse2">
+          <bootstrap:PanelBody>
+            <bootstrap:Row>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <gwt:Label text="Social login"/>
+              </bootstrap:Column>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <guvnor:Toggle ui:field="socialLogin"/>
+              </bootstrap:Column>
+            </bootstrap:Row>
 
-      <bootstrap:Row>
-        <bootstrap:Column size="3"  addStyleNames='{style.column}'>
-          <gwt:Label text="Reset password"/>
-        </bootstrap:Column>
-        <bootstrap:Column size="3"  addStyleNames='{style.column}'>
-          <guvnor:Toggle ui:field="resetPassword"/>
-        </bootstrap:Column>
-      </bootstrap:Row>
+            <bootstrap:Row>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <gwt:Label text="User registration"/>
+              </bootstrap:Column>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <guvnor:Toggle ui:field="userRegistration"/>
+              </bootstrap:Column>
+            </bootstrap:Row>
 
-      <bootstrap:Row>
-        <bootstrap:Column size="3"  addStyleNames='{style.column}'>
-          <gwt:Label text="Verify email"/>
-        </bootstrap:Column>
-        <bootstrap:Column size="3"  addStyleNames='{style.column}'>
-          <guvnor:Toggle ui:field="verifyEmail"/>
-        </bootstrap:Column>
-      </bootstrap:Row>
+            <bootstrap:Row>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <gwt:Label text="Reset password"/>
+              </bootstrap:Column>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <guvnor:Toggle ui:field="resetPassword"/>
+              </bootstrap:Column>
+            </bootstrap:Row>
 
-      <bootstrap:Row>
-        <bootstrap:Column size="3"  addStyleNames='{style.column}'>
-          <gwt:Label text="User account management"/>
-        </bootstrap:Column>
-        <bootstrap:Column size="3"  addStyleNames='{style.column}'>
-          <guvnor:Toggle ui:field="userAccountManagement"/>
-        </bootstrap:Column>
-      </bootstrap:Row>
+            <bootstrap:Row>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <gwt:Label text="Verify email"/>
+              </bootstrap:Column>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <guvnor:Toggle ui:field="verifyEmail"/>
+              </bootstrap:Column>
+            </bootstrap:Row>
 
-      <bootstrap:Row>
-        <bootstrap:Column size="3"  addStyleNames='{style.column}'>
-          <gwt:Label text="Require SSL"/>
-        </bootstrap:Column>
-        <bootstrap:Column size="3"  addStyleNames='{style.column}'>
-          <guvnor:Toggle ui:field="requireSSL"/>
-        </bootstrap:Column>
-      </bootstrap:Row>
+            <bootstrap:Row>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <gwt:Label text="User account management"/>
+              </bootstrap:Column>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <guvnor:Toggle ui:field="userAccountManagement"/>
+              </bootstrap:Column>
+            </bootstrap:Row>
 
-      <bootstrap:Row>
-        <bootstrap:Column size="3"  addStyleNames='{style.column}'>
-          <gwt:Label text="Cookie login allowed"/>
-        </bootstrap:Column>
-        <bootstrap:Column size="3"  addStyleNames='{style.column}'>
-          <guvnor:Toggle ui:field="cookieLoginAllowed"/>
-        </bootstrap:Column>
-      </bootstrap:Row>
+            <bootstrap:Row>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <gwt:Label text="Require SSL"/>
+              </bootstrap:Column>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <guvnor:Toggle ui:field="requireSSL"/>
+              </bootstrap:Column>
+            </bootstrap:Row>
 
-    </bootstrap:AccordionGroup>
+            <bootstrap:Row>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <gwt:Label text="Cookie login allowed"/>
+              </bootstrap:Column>
+              <bootstrap:Column size="MD_3" addStyleNames='{style.column}'>
+                <guvnor:Toggle ui:field="cookieLoginAllowed"/>
+              </bootstrap:Column>
+            </bootstrap:Row>
+          </bootstrap:PanelBody>
+        </bootstrap:PanelCollapse>
+      </bootstrap:Panel>
+    </bootstrap:PanelGroup>
+
   </gwt:VerticalPanel>
 
 </ui:UiBinder>

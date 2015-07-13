@@ -10,6 +10,9 @@
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
+  <inherits name='org.gwtbootstrap3.GwtBootstrap3NoTheme'/>
+  <inherits name="org.gwtbootstrap3.extras.select.Select"/>
+
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
 

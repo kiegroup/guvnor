@@ -20,11 +20,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Form.SubmitCompleteEvent;
-import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
-import com.github.gwtbootstrap.client.ui.event.HideEvent;
-import com.github.gwtbootstrap.client.ui.event.HideHandler;
 import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
+import org.gwtbootstrap3.client.ui.base.form.AbstractForm;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 import static org.guvnor.m2repo.model.HTMLFileManagerFields.*;
@@ -43,9 +42,9 @@ public class UploadFormPresenter implements UploadFormView.Presenter {
                                 final SyncBeanManager iocManager ) {
         this.view = view;
         //When pop-up is closed destroy bean to avoid memory leak
-        view.addHideHandler( new HideHandler() {
+        view.addHideHandler( new ModalHideHandler() {
             @Override
-            public void onHide( HideEvent hideEvent ) {
+            public void onHide( ModalHideEvent hideEvent ) {
                 iocManager.destroyBean( UploadFormPresenter.this );
             }
         } );
@@ -58,7 +57,7 @@ public class UploadFormPresenter implements UploadFormView.Presenter {
     }
 
     @Override
-    public void handleSubmitComplete( final SubmitCompleteEvent event ) {
+    public void handleSubmitComplete( final AbstractForm.SubmitCompleteEvent event ) {
         view.hideUploadingBusy();
         if ( UPLOAD_OK.equalsIgnoreCase( event.getResults() ) ) {
             view.showUploadedSuccessfullyMessage();
@@ -82,7 +81,7 @@ public class UploadFormPresenter implements UploadFormView.Presenter {
     }
 
     @Override
-    public void handleSubmit( final SubmitEvent event ) {
+    public void handleSubmit( final AbstractForm.SubmitEvent event ) {
         String fileName = view.getFileName();
         if ( fileName == null || "".equals( fileName ) ) {
             view.showSelectFileUploadWarning();

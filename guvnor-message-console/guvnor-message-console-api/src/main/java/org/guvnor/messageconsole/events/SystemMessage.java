@@ -16,6 +16,7 @@
 
 package org.guvnor.messageconsole.events;
 
+import org.guvnor.common.services.shared.message.Level;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
@@ -157,11 +158,6 @@ public class SystemMessage {
         result = 31 * result + ( text != null ? text.hashCode() : 0 );
         result = ~~result;
         return result;
-    }
-
-    @Portable
-    public static enum Level {
-        ERROR, WARNING, INFO;
     }
 
 }

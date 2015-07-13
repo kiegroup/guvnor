@@ -18,22 +18,29 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
+             xmlns:b='urn:import:org.gwtbootstrap3.client.ui'>
 
-  <ui:with field="i18n"
-           type="org.guvnor.asset.management.client.i18n.Constants"/>
+    <ui:with field="i18n" type="org.guvnor.asset.management.client.i18n.Constants"/>
 
-  <g:HTMLPanel>
-    <b:Well>
-      <b:Fieldset>
-        <b:Legend>
-          <ui:text from="{i18n.RequiresRework}"/>
-        </b:Legend>
+    <g:HTMLPanel>
+        <b:Container fluid="true">
+            <b:Row>
+                <b:Column size="MD_12">
+                    <b:Form type="HORIZONTAL">
+                        <b:FieldSet>
+                            <b:Legend>
+                                <ui:text from="{i18n.RequiresRework}"/>
+                            </b:Legend>
 
-        <b:ControlGroup ui:field="reviewCommentGroup">
-          <b:TextArea ui:field="reviewCommentBox" size="10"/>
-        </b:ControlGroup>
-      </b:Fieldset>
-    </b:Well>
-  </g:HTMLPanel>
+                            <b:FormGroup ui:field="reviewCommentGroup">
+                                <b:Column size="MD_12">
+                                    <b:TextArea ui:field="reviewCommentBox"/>
+                                </b:Column>
+                            </b:FormGroup>
+                        </b:FieldSet>
+                    </b:Form>
+                </b:Column>
+            </b:Row>
+        </b:Container>
+    </g:HTMLPanel>
 </ui:UiBinder>

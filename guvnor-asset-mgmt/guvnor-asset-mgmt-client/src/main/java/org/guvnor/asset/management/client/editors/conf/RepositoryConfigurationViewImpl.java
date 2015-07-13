@@ -19,9 +19,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -32,6 +29,9 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.i18n.Constants;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -93,7 +93,7 @@ public class RepositoryConfigurationViewImpl extends Composite implements Reposi
 
             @Override
             public void onChange( ChangeEvent event ) {
-                String value = chooseRepositoryBox.getValue();
+                String value = chooseRepositoryBox.getSelectedValue();
                 GWT.log( value );
 
                 presenter.loadRepositoryStructure( value );
@@ -105,7 +105,7 @@ public class RepositoryConfigurationViewImpl extends Composite implements Reposi
     @UiHandler("configureButton")
     public void configureButton( ClickEvent e ) {
 
-        presenter.configureRepository( chooseRepositoryBox.getValue(), sourceBranchText.getText(), devBranchText.getText(), releaseBranchText.getText(), versionText.getText() );
+        presenter.configureRepository( chooseRepositoryBox.getSelectedValue(), sourceBranchText.getText(), devBranchText.getText(), releaseBranchText.getText(), versionText.getText() );
 
     }
 

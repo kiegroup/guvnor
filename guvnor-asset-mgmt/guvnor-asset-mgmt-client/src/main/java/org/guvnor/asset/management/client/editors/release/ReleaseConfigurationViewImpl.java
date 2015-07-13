@@ -19,12 +19,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.FluidRow;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -37,6 +31,12 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.i18n.Constants;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -68,7 +68,7 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
     public TextBox userNameText;
 
     @UiField
-    public PasswordTextBox passwordText;
+    public Input passwordText;
 
     @UiField
     public TextBox serverURLText;
@@ -83,16 +83,16 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
     public TextBox currentVersionText;
 
     @UiField
-    public FluidRow deployToRuntimeRow;
+    public FormGroup deployToRuntimeRow;
 
     @UiField
-    public FluidRow usernameRow;
+    public FormGroup usernameRow;
 
     @UiField
-    public FluidRow passwordRow;
+    public FormGroup passwordRow;
 
     @UiField
-    public FluidRow serverURLRow;
+    public FormGroup serverURLRow;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -112,7 +112,7 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
 
             @Override
             public void onChange( ChangeEvent event ) {
-                String value = chooseRepositoryBox.getValue();
+                String value = chooseRepositoryBox.getSelectedValue();
 
                 presenter.loadBranches( value );
                 presenter.loadRepositoryStructure( value );
@@ -161,7 +161,7 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
     @UiHandler("releaseButton")
     public void releaseButton( ClickEvent e ) {
 
-        presenter.releaseProject( chooseRepositoryBox.getValue(), chooseBranchBox.getValue(),
+        presenter.releaseProject( chooseRepositoryBox.getSelectedValue(), chooseBranchBox.getSelectedValue(),
                 userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue(), versionText.getText() );
     }
 

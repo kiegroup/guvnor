@@ -25,7 +25,6 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
@@ -35,14 +34,13 @@ import org.guvnor.client.resources.i18n.AppConstants;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.structure.client.editors.repository.clone.CloneRepositoryPresenter;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.VoidCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.menu.CustomSplashHelp;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
@@ -228,19 +226,41 @@ public class GuvnorWorkbenchEntryPoint {
                 .endMenu()
                 .endMenus()
                 .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.Logout() )
-                .respondsWith( new LogoutCommand() )
-                .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.Find() )
-                .position( MenuPosition.RIGHT )
+                .newTopLevelMenu( "Messages" )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo( "FindForm" );
+                        placeManager.goTo( new DefaultPlaceRequest( "MessagesPerspective" ) );
                     }
                 } )
                 .endMenu()
-                .newTopLevelCustomMenu( iocManager.lookupBean( CustomSplashHelp.class ).getInstance() )
+                .newTopLevelMenu( "Inbox" )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( new DefaultPlaceRequest( "InboxPerspective" ) );
+                    }
+                } )
+                .endMenu()
+                .newTopLevelMenu( "Assets" )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( new DefaultPlaceRequest( "AssetsPerspective" ) );
+                    }
+                } )
+                .endMenu()
+                .newTopLevelMenu( "Projects" )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( new DefaultPlaceRequest( "ProjectsPerspective" ) );
+                    }
+                } )
+                .endMenu()
+                .newTopLevelMenu( AppConstants.INSTANCE.Logout() )
+                .respondsWith( new LogoutCommand() )
+                .position( MenuPosition.RIGHT )
                 .endMenu()
                 .build();
 
@@ -308,18 +328,8 @@ public class GuvnorWorkbenchEntryPoint {
 
         @Override
         public void execute() {
-            authService.call( new RemoteCallback<Void>() {
-                @Override
-                public void callback( Void response ) {
-                    final String location = GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "/logout.jsp" );
-                    redirect( location );
-                }
-            } ).logout();
+            authService.call( new VoidCallback() ).logout();
         }
     }
-
-    public static native void redirect( String url )/*-{
-        $wnd.location = url;
-    }-*/;
 
 }

@@ -17,8 +17,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-
-             xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:bootstrap="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:style>
     .column {
@@ -34,60 +33,60 @@
 
   <gwt:VerticalPanel ui:field="base">
     <bootstrap:Breadcrumbs ui:field="bread1">
-      <bootstrap:NavLink>Demo</bootstrap:NavLink>
-      <bootstrap:NavLink>OAuth Clients</bootstrap:NavLink>
-      <bootstrap:NavLink>third-party</bootstrap:NavLink>
-      <bootstrap:NavLink>Settings</bootstrap:NavLink>
+      <bootstrap:AnchorListItem text="Demo"/>
+      <bootstrap:AnchorListItem text="OAuth Clients"/>
+      <bootstrap:AnchorListItem text="third-party"/>
+      <bootstrap:AnchorListItem text="Settings"/>
     </bootstrap:Breadcrumbs>
 
     <gwt:HorizontalPanel>
-      <bootstrap:Column size="2">
-        <bootstrap:Heading size="2" text="third-party "/>
+      <bootstrap:Column size="MD_2">
+        <bootstrap:Heading size="H2" text="third-party "/>
       </bootstrap:Column>
-      <bootstrap:Column size="1">
-        <bootstrap:Heading size="2" text="Settings"/>
+      <bootstrap:Column size="MD_1">
+        <bootstrap:Heading size="H2" text="Settings"/>
       </bootstrap:Column>
     </gwt:HorizontalPanel>
 
 
     <bootstrap:Row addStyleNames='{style.column}'>
-      <bootstrap:Column size="3">
+      <bootstrap:Column size="MD_3">
         <gwt:Label text="Name"/>
       </bootstrap:Column>
-      <bootstrap:Column size="3">
+      <bootstrap:Column size="MD_3">
         <bootstrap:TextArea>third-party</bootstrap:TextArea>
       </bootstrap:Column>
     </bootstrap:Row>
     <bootstrap:Row>
-      <bootstrap:Column size="3">
+      <bootstrap:Column size="MD_3">
         <gwt:Label text="Enabled"/>
       </bootstrap:Column>
-      <bootstrap:Column size="3">
-        <bootstrap:ButtonGroup toggle="radio">
-          <bootstrap:Button text="ON" active="true"/>
-          <bootstrap:Button text="OFF"/>
+      <bootstrap:Column size="MD_3">
+        <bootstrap:ButtonGroup dataToggle="BUTTONS">
+          <bootstrap:RadioButton name="groupName" active="true">ON</bootstrap:RadioButton>
+          <bootstrap:RadioButton name="groupName">OFF</bootstrap:RadioButton>
         </bootstrap:ButtonGroup>
       </bootstrap:Column>
     </bootstrap:Row>
     <bootstrap:Row>
-      <bootstrap:Column size="3">
+      <bootstrap:Column size="MD_3">
         <gwt:Label text="Web Origin"/>
       </bootstrap:Column>
-      <bootstrap:Column size="3">
+      <bootstrap:Column size="MD_3">
         <bootstrap:TextBox placeholder="New Web Origin..."/>
       </bootstrap:Column>
     </bootstrap:Row>
     <bootstrap:Row>
-      <bootstrap:Column size="3">
+      <bootstrap:Column size="MD_3">
         <gwt:Label text="Redirect URI"/>
       </bootstrap:Column>
-      <bootstrap:Column size="3">
+      <bootstrap:Column size="MD_3">
         <bootstrap:TextBox placeholder="New Redirect URI..."/>
       </bootstrap:Column>
     </bootstrap:Row>
     <bootstrap:Row>
-      <bootstrap:Column size="6"/>
-      <bootstrap:Column size="2">
+      <bootstrap:Column size="MD_6"/>
+      <bootstrap:Column size="MD_2">
         <bootstrap:Button addStyleNames='{style.delete}' text="Delete"/>
       </bootstrap:Column>
     </bootstrap:Row>

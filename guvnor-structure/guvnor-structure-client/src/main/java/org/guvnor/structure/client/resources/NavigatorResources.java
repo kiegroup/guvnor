@@ -26,14 +26,12 @@ public interface NavigatorResources
         extends
         ClientBundle {
 
-    public static final NavigatorResources INSTANCE = GWT.create( NavigatorResources.class );
+    NavigatorResources INSTANCE = GWT.create( NavigatorResources.class );
 
     @Source("css/Navigator.css")
     NavigatorStyle css();
 
-    public interface NavigatorStyle extends CssResource {
-
-        String container();
+    interface NavigatorStyle extends CssResource {
 
         String navigator();
 
@@ -43,28 +41,8 @@ public interface NavigatorResources
 
         String date();
 
-        @ClassName("navigator-folder-icon")
-        String navigatorFolderIcon();
-
-        @ClassName("navigator-file-icon")
-        String navigatoFileIcon();
-
         @ClassName("navigator-message")
         String navigatorMessage();
-
-        String breadcrumb();
-
-        @ClassName("breadcrumb-header")
-        String breadcrumbHeader();
-
-        @ClassName("breadcrumb-2nd-level")
-        String breadcrumb2ndLevel();
-
-        @ClassName("repo-name")
-        String repoName();
-
-        @ClassName("directory-name")
-        String directory();
 
         @ClassName("tree-nav")
         String treeNav();

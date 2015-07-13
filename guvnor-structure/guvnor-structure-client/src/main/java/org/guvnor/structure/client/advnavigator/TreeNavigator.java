@@ -53,13 +53,12 @@ public class TreeNavigator extends Composite implements Navigator {
 
     private NavigatorOptions options = NavigatorOptions.DEFAULT;
 
-    private final Tree tree = new Tree() {{
-        addStyleName( NavigatorResources.INSTANCE.css().treeNav() );
-    }};
+    private final Tree tree = new Tree();
     private ParameterizedCommand<Path> fileActionCommand = null;
 
     @PostConstruct
     public void init() {
+        tree.addStyleName( NavigatorResources.INSTANCE.css().treeNav() );
         initWidget( tree );
 
         tree.addOpenHandler( new OpenHandler<TreeItem>() {

@@ -22,14 +22,14 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.forms.GetFormParamsEvent;
 import org.uberfire.ext.widgets.common.client.forms.RequestFormParamsEvent;
@@ -58,31 +58,31 @@ public class ApproveOperationViewImpl extends Composite implements ApproveOperat
     private boolean readOnly;
 
     @UiField
-    ControlGroup requestorGroup;
+    FormGroup requestorGroup;
 
     @UiField
     TextBox requestorTextBox;
 
     @UiField
-    ControlGroup operationGroup;
+    FormGroup operationGroup;
 
     @UiField
     TextBox operationTextBox;
 
     @UiField
-    ControlGroup repositoryGroup;
+    FormGroup repositoryGroup;
 
     @UiField
     TextBox repositoryTextBox;
 
     @UiField
-    ControlGroup projectGroup;
+    FormGroup projectGroup;
 
     @UiField
     TextBox projectTextBox;
 
     @UiField
-    ControlGroup approvedGroup;
+    FormGroup approvedGroup;
 
     @UiField
     CheckBox approvedCheckBox;

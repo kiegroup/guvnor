@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.messageconsole.events.PublishMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.uberfire.ext.metadata.engine.Observer;
@@ -37,23 +38,23 @@ public class DefaultIndexEngineObserver implements Observer {
 
     public void information( final String message ) {
         publishMessagesEvent.fire( makeEvent( message,
-                                              SystemMessage.Level.INFO ) );
+                                              Level.INFO ) );
     }
 
     @Override
     public void warning( final String message ) {
         publishMessagesEvent.fire( makeEvent( message,
-                                              SystemMessage.Level.WARNING ) );
+                                              Level.WARNING ) );
     }
 
     @Override
     public void error( final String message ) {
         publishMessagesEvent.fire( makeEvent( message,
-                                              SystemMessage.Level.ERROR ) );
+                                              Level.ERROR ) );
     }
 
     private PublishMessagesEvent makeEvent( final String text,
-                                            final SystemMessage.Level level ) {
+                                            final Level level ) {
         final PublishMessagesEvent event = new PublishMessagesEvent();
         final List<SystemMessage> messages = new ArrayList<SystemMessage>();
         final SystemMessage message = new SystemMessage();

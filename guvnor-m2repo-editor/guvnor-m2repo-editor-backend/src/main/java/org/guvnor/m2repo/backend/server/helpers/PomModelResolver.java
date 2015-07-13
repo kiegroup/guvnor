@@ -57,10 +57,8 @@ public class PomModelResolver {
                 String pomProperties = GuvnorM2Repository.loadPomPropertiesFromJar( jarStream );
                 if ( pomProperties != null ) {
                     final ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString( pomProperties );
-                    if ( releaseId != null ) {
-                        pomModel = new PomModel.InternalModel();
-                        ( (PomModel.InternalModel) pomModel ).setReleaseId( releaseId );
-                    }
+                    pomModel = new PomModel.InternalModel();
+                    ( (PomModel.InternalModel) pomModel ).setReleaseId( releaseId );
                 }
             } catch ( Exception e ) {
                 log.info( "Failed to parse pom.properties for GAV information." );

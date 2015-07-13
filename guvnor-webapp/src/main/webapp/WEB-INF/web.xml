@@ -34,7 +34,7 @@
     <url-pattern>/guvnor-wb.html</url-pattern>
     <url-pattern>/uf_security_check</url-pattern>
     <url-pattern>*.erraiBus</url-pattern>
-    <url-pattern>/org.guvnor.GuvnorWorkbench/*</url-pattern>
+    <url-pattern>/org.guvnor.GuvnorWorkbench/org.guvnor.GuvnorWorkbench.nocache.js</url-pattern>
   </filter-mapping>
 
   <filter>

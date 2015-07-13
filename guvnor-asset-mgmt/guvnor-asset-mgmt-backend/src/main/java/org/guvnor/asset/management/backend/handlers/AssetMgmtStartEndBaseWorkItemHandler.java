@@ -25,6 +25,7 @@ import org.guvnor.asset.management.backend.utils.CDIUtils;
 import org.guvnor.asset.management.backend.utils.DataUtils;
 import org.guvnor.asset.management.social.ProcessEndEvent;
 import org.guvnor.asset.management.social.ProcessStartEvent;
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.messageconsole.events.MessageUtils;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
@@ -213,7 +214,7 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
                 }
 
                 SystemMessage infoMsg = new SystemMessage();
-                infoMsg.setLevel(SystemMessage.Level.INFO);
+                infoMsg.setLevel(Level.INFO);
                 infoMsg.setText(message.toString());
                 infoMsg.setMessageType( MessageUtils.BUILD_SYSTEM_MESSAGE );
 

@@ -18,32 +18,36 @@ package org.guvnor.structure.client.editors.repository.clone;
 
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.gwtbootstrap3.extras.select.client.ui.Option;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
 @Dependent
-public class CloneRepositoryViewImpl
-        extends BaseModal implements CloneRepositoryView {
+public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositoryView, HasCloseHandlers<CloneRepositoryViewImpl> {
 
     interface CloneRepositoryFormBinder
             extends
@@ -55,6 +59,7 @@ public class CloneRepositoryViewImpl
 
     private static CloneRepositoryFormBinder uiBinder = GWT.create( CloneRepositoryFormBinder.class );
 
+
     @UiField
     Button clone;
 
@@ -62,40 +67,43 @@ public class CloneRepositoryViewImpl
     Button cancel;
 
     @UiField
-    ControlGroup organizationalUnitGroup;
+    FormGroup organizationalUnitGroup;
 
     @UiField
-    ListBox organizationalUnitDropdown;
+    Select organizationalUnitDropdown;
 
     @UiField
-    HelpInline organizationalUnitHelpInline;
+    HelpBlock organizationalUnitHelpInline;
 
     @UiField
-    ControlGroup nameGroup;
+    FormGroup nameGroup;
 
     @UiField
     TextBox nameTextBox;
 
     @UiField
-    HelpInline nameHelpInline;
+    HelpBlock nameHelpInline;
 
     @UiField
-    ControlGroup urlGroup;
+    FormGroup urlGroup;
 
     @UiField
     TextBox gitURLTextBox;
 
     @UiField
-    HelpInline urlHelpInline;
+    HelpBlock urlHelpInline;
 
     @UiField
     TextBox usernameTextBox;
 
     @UiField
-    PasswordTextBox passwordTextBox;
+    Input passwordTextBox;
 
     @UiField
-    InlineHTML isOUMandatory;
+    FormLabel ouLabel;
+
+    @UiField
+    BaseModal popup;
 
     @UiHandler("clone")
     public void onCloneClick( final ClickEvent e ) {
@@ -112,24 +120,22 @@ public class CloneRepositoryViewImpl
                       final boolean isOuMandatory ) {
         this.presenter = presenter;
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         setTitle( CoreConstants.INSTANCE.CloneRepository() );
 
-        if ( !isOuMandatory ) {
-            isOUMandatory.removeFromParent();
-        }
+        ouLabel.setShowRequiredIndicator( isOuMandatory );
 
         nameTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
-                nameGroup.setType( ControlGroupType.NONE );
+                nameGroup.setValidationState( ValidationState.NONE );
                 nameHelpInline.setText( "" );
             }
         } );
         gitURLTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
-                urlGroup.setType( ControlGroupType.NONE );
+                urlGroup.setValidationState( ValidationState.NONE );
                 urlHelpInline.setText( "" );
             }
         } );
@@ -137,24 +143,25 @@ public class CloneRepositoryViewImpl
 
     @Override
     public void addOrganizationalUnitSelectEntry() {
-        organizationalUnitDropdown.addItem( CoreConstants.INSTANCE.SelectEntry() );
+        final Option option = new Option();
+        option.setText( CoreConstants.INSTANCE.SelectEntry() );
+        organizationalUnitDropdown.add( option );
+        organizationalUnitDropdown.refresh();
     }
 
     @Override
     public void addOrganizationalUnit( final String item,
                                        final String value ) {
-        organizationalUnitDropdown.addItem( item,
-                                            value );
+        final Option option = new Option();
+        option.setText( item );
+        option.setValue( value );
+        organizationalUnitDropdown.add( option );
+        organizationalUnitDropdown.refresh();
     }
 
     @Override
-    public int getSelectedOrganizationalUnit() {
-        return organizationalUnitDropdown.getSelectedIndex();
-    }
-
-    @Override
-    public String getOrganizationalUnit( final int index ) {
-        return organizationalUnitDropdown.getValue( index );
+    public String getSelectedOrganizationalUnit() {
+        return organizationalUnitDropdown.getValue();
     }
 
     @Override
@@ -203,8 +210,8 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void setUrlGroupType( final ControlGroupType type ) {
-        urlGroup.setType( type );
+    public void setUrlGroupType( final ValidationState state ) {
+        urlGroup.setValidationState( state );
     }
 
     @Override
@@ -213,8 +220,8 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void setNameGroupType( final ControlGroupType type ) {
-        nameGroup.setType( type );
+    public void setNameGroupType( final ValidationState state ) {
+        nameGroup.setValidationState( state );
     }
 
     @Override
@@ -223,8 +230,8 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void setOrganizationalUnitGroupType( final ControlGroupType type ) {
-        organizationalUnitGroup.setType( type );
+    public void setOrganizationalUnitGroupType( final ValidationState state ) {
+        organizationalUnitGroup.setValidationState( state );
     }
 
     @Override
@@ -235,6 +242,7 @@ public class CloneRepositoryViewImpl
     @Override
     public void setOrganizationalUnitEnabled( final boolean enabled ) {
         organizationalUnitDropdown.setEnabled( enabled );
+        organizationalUnitDropdown.refresh();
     }
 
     @Override
@@ -264,7 +272,7 @@ public class CloneRepositoryViewImpl
 
     @Override
     public void setPopupCloseVisible( final boolean closeVisible ) {
-        setCloseVisible( closeVisible );
+        setPopupCloseVisible( closeVisible );
     }
 
     @Override
@@ -302,4 +310,19 @@ public class CloneRepositoryViewImpl
         ErrorPopup.showMessage( CoreConstants.INSTANCE.CantLoadOrganizationalUnits() + " \n" + cause.getMessage() );
     }
 
+    @Override
+    public HandlerRegistration addCloseHandler( CloseHandler<CloneRepositoryViewImpl> handler ) {
+        return addHandler(handler, CloseEvent.getType());
+    }
+
+    @Override
+    public void show() {
+        popup.show();
+    }
+
+    @Override
+    public void hide() {
+        popup.hide();
+        CloseEvent.fire( this, this );
+    }
 }

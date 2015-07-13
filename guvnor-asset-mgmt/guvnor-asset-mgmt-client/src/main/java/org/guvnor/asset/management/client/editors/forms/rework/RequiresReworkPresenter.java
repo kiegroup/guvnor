@@ -15,49 +15,39 @@
  */
 package org.guvnor.asset.management.client.editors.forms.rework;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import org.guvnor.asset.management.client.i18n.Constants;
-import org.guvnor.asset.management.service.AssetManagementService;
-import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchScreen(identifier = "RequiresRework Form")
+@WorkbenchScreen( identifier = "RequiresRework Form" )
 public class RequiresReworkPresenter {
 
-    private Constants constants = GWT.create(Constants.class);
+    private Constants constants = GWT.create( Constants.class );
 
     public interface RequiresReworkView extends UberView<RequiresReworkPresenter> {
 
-        void displayNotification(String text);
+        void displayNotification( String text );
     }
 
     @Inject
     RequiresReworkView view;
 
-
     private PlaceRequest place;
 
-
     @OnStartup
-    public void onStartup(final PlaceRequest place) {
+    public void onStartup( final PlaceRequest place ) {
         this.place = place;
     }
-    
-   
+
 
     @WorkbenchPartTitle
     public String getTitle() {
@@ -67,19 +57,6 @@ public class RequiresReworkPresenter {
     @WorkbenchPartView
     public UberView<RequiresReworkPresenter> getView() {
         return view;
-    }
-
-    public RequiresReworkPresenter() {
-    }
-
-    @PostConstruct
-    public void init() {
-    }
-
-    @OnOpen
-    public void onOpen() {
-        
-
     }
 
 }

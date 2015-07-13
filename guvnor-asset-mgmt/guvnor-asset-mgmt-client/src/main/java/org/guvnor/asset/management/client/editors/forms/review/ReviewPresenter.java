@@ -15,26 +15,20 @@
  */
 package org.guvnor.asset.management.client.editors.forms.review;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import org.guvnor.asset.management.client.i18n.Constants;
-import org.guvnor.asset.management.service.AssetManagementService;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchScreen(identifier = "Review Form")
+@WorkbenchScreen( identifier = "Review Form" )
 public class ReviewPresenter {
 
     private Constants constants = GWT.create( Constants.class );
@@ -64,15 +58,4 @@ public class ReviewPresenter {
         return view;
     }
 
-    public ReviewPresenter() {
-    }
-
-    @PostConstruct
-    public void init() {
-    }
-
-    @OnOpen
-    public void onOpen() {
-
-    }
 }

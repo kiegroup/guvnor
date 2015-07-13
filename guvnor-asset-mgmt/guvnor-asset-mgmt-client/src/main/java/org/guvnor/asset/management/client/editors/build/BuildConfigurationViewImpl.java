@@ -19,12 +19,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.FluidRow;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -36,6 +30,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -71,7 +71,7 @@ public class BuildConfigurationViewImpl extends Composite
     public TextBox userNameText;
 
     @UiField
-    public PasswordTextBox passwordText;
+    public Input passwordText;
 
     @UiField
     public TextBox serverURLText;
@@ -80,16 +80,16 @@ public class BuildConfigurationViewImpl extends Composite
     public CheckBox deployToRuntimeCheck;
 
     @UiField
-    public FluidRow deployToRuntimeRow;
+    public FormGroup deployToRuntimeRow;
 
     @UiField
-    public FluidRow usernameRow;
+    public FormGroup usernameRow;
 
     @UiField
-    public FluidRow passwordRow;
+    public FormGroup passwordRow;
 
     @UiField
-    public FluidRow serverURLRow;
+    public FormGroup serverURLRow;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -106,7 +106,7 @@ public class BuildConfigurationViewImpl extends Composite
 
             @Override
             public void onChange( ChangeEvent event ) {
-                String value = chooseRepositoryBox.getValue();
+                String value = chooseRepositoryBox.getSelectedValue();
 
                 presenter.loadBranches( value );
             }
@@ -116,8 +116,8 @@ public class BuildConfigurationViewImpl extends Composite
 
             @Override
             public void onChange( ChangeEvent event ) {
-                String repo = chooseRepositoryBox.getValue();
-                String branch = chooseBranchBox.getValue();
+                String repo = chooseRepositoryBox.getSelectedValue();
+                String branch = chooseBranchBox.getSelectedValue();
 
                 presenter.loadProjects( repo, branch );
             }
@@ -163,8 +163,8 @@ public class BuildConfigurationViewImpl extends Composite
 
     @UiHandler( "buildButton" )
     public void buildButton( ClickEvent e ) {
-        presenter.buildProject( chooseRepositoryBox.getValue(), chooseBranchBox.getValue(), chooseProjectBox.getValue(),
-                userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue() );
+        presenter.buildProject( chooseRepositoryBox.getSelectedValue(), chooseBranchBox.getSelectedValue(), chooseProjectBox.getSelectedValue(),
+                                userNameText.getText(), passwordText.getText(), serverURLText.getText(), deployToRuntimeCheck.getValue() );
 
     }
 

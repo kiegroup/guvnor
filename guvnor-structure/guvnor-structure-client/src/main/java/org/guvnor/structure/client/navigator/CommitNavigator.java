@@ -17,8 +17,6 @@ package org.guvnor.structure.client.navigator;
 
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -29,6 +27,8 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.resources.NavigatorResources;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
@@ -136,7 +136,7 @@ public class CommitNavigator extends Composite {
                                                                                                         },
                                                                                                         null
                                                                                                       );
-                        yesNoCancelPopup.setCloseVisible( false );
+                        yesNoCancelPopup.setClosable( false );
                         yesNoCancelPopup.show();
                     }
                 } );

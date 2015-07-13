@@ -16,7 +16,7 @@
 
 package org.guvnor.structure.client.editors.repository.clone;
 
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 public interface CloneRepositoryView {
 
@@ -39,9 +39,7 @@ public interface CloneRepositoryView {
     void addOrganizationalUnit( String item,
                                 String value );
 
-    String getOrganizationalUnit( int index );
-
-    int getSelectedOrganizationalUnit();
+    String getSelectedOrganizationalUnit();
 
     boolean isGitUrlEmpty();
 
@@ -61,15 +59,15 @@ public interface CloneRepositoryView {
 
     void showUrlHelpInvalidFormatMessage();
 
-    void setUrlGroupType( ControlGroupType type );
+    void setUrlGroupType( ValidationState state );
 
     void showNameHelpMandatoryMessage();
 
-    void setNameGroupType( ControlGroupType type );
+    void setNameGroupType( ValidationState state );
 
     void showOrganizationalUnitHelpMandatoryMessage();
 
-    void setOrganizationalUnitGroupType( ControlGroupType type );
+    void setOrganizationalUnitGroupType( ValidationState state );
 
     void setNameEnabled( boolean enabled );
 

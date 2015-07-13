@@ -16,6 +16,14 @@
 
 package org.guvnor.server;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Collection;
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.cli.MavenCli;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
@@ -23,17 +31,10 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.shared.message.Level;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Collection;
-import java.util.Map;
 
 @Service
 @ApplicationScoped
@@ -72,7 +73,7 @@ public class BuildServiceImpl
                 BuildMessage message = new BuildMessage();
                 message.setId(123);
                 message.setText(new String(out.toByteArray()));
-                message.setLevel(BuildMessage.Level.ERROR);
+                message.setLevel(Level.ERROR);
                 buildResults.addBuildMessage(message);
             }
 
@@ -95,7 +96,7 @@ public class BuildServiceImpl
     private BuildMessage reportError(IOException e) {
         BuildMessage message = new BuildMessage();
         message.setText(e.getMessage());
-        message.setLevel(BuildMessage.Level.ERROR);
+        message.setLevel(Level.ERROR);
         return message;
     }
 

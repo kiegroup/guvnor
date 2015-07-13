@@ -19,12 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
@@ -46,6 +45,8 @@ import org.guvnor.common.services.project.model.ProjectWizard;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.security.impl.KieWorkbenchACLImpl;
 import org.guvnor.structure.repositories.Repository;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -81,6 +82,7 @@ import org.uberfire.workbench.model.menu.Menus;
 import static org.guvnor.asset.management.security.AssetsMgmtFeatures.*;
 import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
 
+@Dependent
 @WorkbenchScreen(identifier = "repositoryStructureScreen")
 public class RepositoryStructurePresenter
         implements RepositoryStructureView.Presenter,
@@ -592,7 +594,7 @@ public class RepositoryStructurePresenter
                                                                                       },
                                                                                       CommonConstants.INSTANCE.YES(),
                                                                                       ButtonType.DANGER,
-                                                                                      IconType.MINUS_SIGN,
+                                                                                      IconType.TRASH,
                                                                                       new Command() {
                                                                                           @Override
                                                                                           public void execute() {
@@ -613,7 +615,7 @@ public class RepositoryStructurePresenter
                                                                                       null
                                                                                     );
 
-            yesNoCancelPopup.setCloseVisible( false );
+            yesNoCancelPopup.setClosable( false );
             yesNoCancelPopup.show();
         }
     }
@@ -731,7 +733,7 @@ public class RepositoryStructurePresenter
                                                                                       null
                                                                                     );
 
-            yesNoCancelPopup.setCloseVisible( false );
+            yesNoCancelPopup.setClosable( false );
             yesNoCancelPopup.show();
         }
     }
@@ -789,7 +791,7 @@ public class RepositoryStructurePresenter
                                                                                   null
                                                                                 );
 
-        yesNoCancelPopup.setCloseVisible( false );
+        yesNoCancelPopup.setClosable( false );
         yesNoCancelPopup.show();
 
     }

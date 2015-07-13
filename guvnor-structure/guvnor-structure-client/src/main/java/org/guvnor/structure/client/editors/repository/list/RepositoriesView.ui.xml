@@ -18,13 +18,13 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
 
+  <ui:style>
 
-  <gwt:VerticalPanel>
-    <gwt:HTMLPanel>
-      <p></p>
-      <p></p>
-    </gwt:HTMLPanel>
-    <gwt:HTMLPanel ui:field="panel"/>
-  </gwt:VerticalPanel>
+    .panel {
+        padding: 15px;
+    }
+
+  </ui:style>
+  <gwt:FlowPanel ui:field="panel" addStyleNames="{style.panel}" />
 
 </ui:UiBinder> 

@@ -18,10 +18,10 @@ package org.guvnor.asset.management.client.editors.repository.wizard.pages;
 
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.editors.repository.wizard.CreateRepositoryWizardModel;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.service.RepositoryStructureService;
-import org.guvnor.common.services.project.model.POM;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.callbacks.Callback;
@@ -91,7 +91,6 @@ public class RepositoryStructurePage extends RepositoryWizardPage
     @Override
     public void initialise() {
         view.init( this );
-        content.setWidget( view );
     }
 
     @Override
@@ -119,6 +118,11 @@ public class RepositoryStructurePage extends RepositoryWizardPage
         model.setConfigureRepository( view.isConfigureRepository() );
 
         fireEvent();
+    }
+
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
     }
 
     @Override

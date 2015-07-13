@@ -19,10 +19,13 @@ package org.guvnor.client.screens.settings;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Tab;
-import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.client.screens.Empty;
+import org.gwtbootstrap3.client.ui.NavTabs;
+import org.gwtbootstrap3.client.ui.TabContent;
+import org.gwtbootstrap3.client.ui.TabListItem;
+import org.gwtbootstrap3.client.ui.TabPane;
+import org.gwtbootstrap3.client.ui.TabPanel;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -33,35 +36,48 @@ import org.uberfire.lifecycle.OnStartup;
 public class SettingsScreenPresenter {
 
     private TabPanel multiPage = new TabPanel();
+    private NavTabs navTabs = new NavTabs();
+    private TabContent multiPageContent = new TabContent();
 
     @Inject
     private GeneralTab generalTab;
 
+    public SettingsScreenPresenter() {
+        multiPage.add( navTabs );
+        multiPage.add( multiPageContent );
+    }
+
     @OnStartup
     public void onStartUp() {
-        multiPage.add(generalTab);
-        addPage("Social");
-        addPage("Registration");
-        addPage("Roles");
-        addPage("Credentials");
-        addPage("Token");
-        addPage("Keys");
-        addPage("SMTP");
+        multiPageContent.add( generalTab );
+        navTabs.add( new TabListItem( generalTab.getHeading() ) {{
+            setDataTargetWidget( generalTab );
+            setActive( true );
+        }} );
+        addPage( "Social" );
+        addPage( "Registration" );
+        addPage( "Roles" );
+        addPage( "Credentials" );
+        addPage( "Token" );
+        addPage( "Keys" );
+        addPage( "SMTP" );
 
-        multiPage.selectTab(0);
         generalTab.load();
     }
 
-    private void addPage(final String text) {
-        Tab tab = new Tab();
-        tab.setHeading(text);
-        tab.add(new Empty(text));
-        multiPage.add(tab);
+    private void addPage( final String text ) {
+        final TabPane tab = new TabPane();
+        tab.add( new Empty( text ) );
+        multiPageContent.add( tab );
+
+        navTabs.add( new TabListItem( text ) {{
+            setDataTargetWidget( tab );
+        }} );
     }
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return multiPage;
+        return multiPageContent;
     }
 
     @WorkbenchPartTitle

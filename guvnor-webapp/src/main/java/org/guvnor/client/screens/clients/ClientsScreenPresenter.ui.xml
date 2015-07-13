@@ -18,27 +18,20 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:uf="urn:import:org.uberfire.ext.widgets.common.client.tables"
-
-             xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
-
-  <ui:style>
-    .column {
-      padding: 2px 0px 0px 2px;
-    }
-  </ui:style>
+             xmlns:bootstrap="urn:import:org.gwtbootstrap3.client.ui">
 
   <gwt:VerticalPanel ui:field="base">
     <bootstrap:Breadcrumbs ui:field="bread1">
-      <bootstrap:NavLink>Demo</bootstrap:NavLink>
-      <bootstrap:NavLink>OAuth Clients</bootstrap:NavLink>
+      <bootstrap:AnchorListItem text="Demo"/>
+      <bootstrap:AnchorListItem text="OAuth Clients"/>
     </bootstrap:Breadcrumbs>
 
     <gwt:HorizontalPanel>
-      <bootstrap:Column size="1">
-        <bootstrap:Heading size="2" text="demo"/>
+      <bootstrap:Column size="MD_1">
+        <bootstrap:Heading size="H2" text="demo"/>
       </bootstrap:Column>
-      <bootstrap:Column size="3">
-        <bootstrap:Heading size="2" text="OAuth Clients"/>
+      <bootstrap:Column size="MD_3">
+        <bootstrap:Heading size="H2" text="OAuth Clients"/>
       </bootstrap:Column>
     </gwt:HorizontalPanel>
 

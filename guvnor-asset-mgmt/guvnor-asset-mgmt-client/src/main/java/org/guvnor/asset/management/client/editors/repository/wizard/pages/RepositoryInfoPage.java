@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.editors.repository.wizard.CreateRepositoryWizardModel;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
@@ -85,7 +86,6 @@ public class RepositoryInfoPage extends RepositoryWizardPage
     @Override
     public void initialise() {
         view.init( this );
-        content.setWidget( view );
     }
 
     @Override
@@ -125,11 +125,15 @@ public class RepositoryInfoPage extends RepositoryWizardPage
         fireEvent();
     }
 
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
+    }
+
     @PostConstruct
     private void init() {
 
         view.init( this );
-        content.setWidget( view );
 
         mandatoryOU = isOUMandatory();
 

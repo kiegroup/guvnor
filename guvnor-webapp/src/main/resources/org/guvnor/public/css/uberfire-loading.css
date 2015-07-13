@@ -16,37 +16,15 @@
 
 /* Loading indicator at Startup */
 #loading {
-    position:fixed;
-    top: 50%;
-    left: 50%;
-    width:30em;
-    height:18em;
-    margin-top: -150px;
-    margin-left: -150px;
-    border: 1px solid #ccc;
+    position: absolute;
+    left: 45%;
+    top: 40%;
     padding: 2px;
     z-index: 20001;
+    height: auto;
     border: 1px solid #ccc;
-    width: 300px;
-    height: 100px;
-    box-shadow: 10px 10px 50px #888888;
-    border-radius: 10px;
 }
 
 #loading a {
     color: #225588;
-}
-
-#loading .loading-indicator {
-    background: white;
-    color: #444;
-    font: bold 13px tahoma, arial, helvetica;
-    padding: 10px;
-    height: auto;
-    display: table;
-    margin: 0 auto;
-}
-
-#loading-msg {
-    font: normal 10px arial, tahoma, sans-serif;
 }

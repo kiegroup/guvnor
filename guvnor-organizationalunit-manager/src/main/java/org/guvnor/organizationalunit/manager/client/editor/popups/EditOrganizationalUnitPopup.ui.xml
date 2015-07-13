@@ -16,43 +16,40 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:p="urn:import:org.uberfire.client.views.pfly.widgets">
 
-  <ui:with field="i18n" type="org.guvnor.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants"/>
+    <ui:with field="i18n" type="org.guvnor.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants"/>
 
-  <b:Well>
-    <b:Fieldset>
-      <b:Legend>Organizational Unit Information</b:Legend>
-      <b:ControlGroup ui:field="nameGroup">
-        <b:ControlLabel for="name">
-          Name
-        </b:ControlLabel>
-        <b:Controls>
-          <b:TextBox b:id="name" ui:field="nameTextBox" enabled="false"/>
-        </b:Controls>
-      </b:ControlGroup>
-      <b:ControlGroup ui:field="defaultGroupIdGroup">
-        <b:ControlLabel for="groupId">
-          <font color="red">*</font>
-          Default Group ID
-        </b:ControlLabel>
-        <b:Controls>
-          <b:TextBox ui:field="defaultGroupIdTextBox"/>
-          <b:HelpInline ui:field="defaultGroupIdHelpInline"/>
-          <b:Popover placement="LEFT" trigger="HOVER" text="{i18n.GroupIdInfo}" heading="{i18n.DefaultGroupId}">
-            <b:Icon ui:field="groupIdHelpIcon" type="QUESTION_SIGN"></b:Icon>
-          </b:Popover>
-        </b:Controls>
-      </b:ControlGroup>
-      <b:ControlGroup ui:field="ownerGroup">
-        <b:ControlLabel for="owner">
-          Owner
-        </b:ControlLabel>
-        <b:Controls>
-          <b:TextBox b:id="owner" ui:field="ownerTextBox" placeholder="Organizational Unit owner..."/>
-        </b:Controls>
-      </b:ControlGroup>
-    </b:Fieldset>
-  </b:Well>
+    <b:Form type="HORIZONTAL">
+        <b:FieldSet>
+            <b:Legend>Organizational Unit Information</b:Legend>
+            <b:FormGroup ui:field="nameGroup">
+                <b:FormLabel for="name" addStyleNames="col-md-4">
+                    Name
+                </b:FormLabel>
+                <b:Column size="MD_8">
+                    <b:TextBox b:id="name" ui:field="nameTextBox" enabled="false"/>
+                </b:Column>
+            </b:FormGroup>
+            <b:FormGroup ui:field="defaultGroupIdGroup">
+                <p:FormLabelHelp for="groupId" addStyleNames="col-md-4" showRequiredIndicator="true" helpContent="{i18n.GroupIdInfo}" helpTitle="{i18n.DefaultGroupId}">
+                    Default Group ID
+                </p:FormLabelHelp>
+                <b:Column size="MD_8">
+                    <b:TextBox ui:field="defaultGroupIdTextBox" placeholder="Default Group Id..."/>
+                    <b:HelpBlock ui:field="defaultGroupIdHelpInline"/>
+                </b:Column>
+            </b:FormGroup>
+            <b:FormGroup ui:field="ownerGroup">
+                <b:FormLabel for="owner" addStyleNames="col-md-4">
+                    Owner
+                </b:FormLabel>
+                <b:Column size="MD_8">
+                    <b:TextBox b:id="owner" ui:field="ownerTextBox" placeholder="Organizational Unit owner..."/>
+                </b:Column>
+            </b:FormGroup>
+        </b:FieldSet>
+    </b:Form>
 
 </ui:UiBinder>

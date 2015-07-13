@@ -15,7 +15,7 @@
 
 package org.guvnor.asset.management.client.editors.common;
 
-import com.github.gwtbootstrap.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.ListBox;
 
 public interface BaseAssetsMgmtView {
 

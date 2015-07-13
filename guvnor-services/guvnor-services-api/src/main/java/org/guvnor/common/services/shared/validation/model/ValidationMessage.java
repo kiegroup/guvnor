@@ -16,6 +16,7 @@
 
 package org.guvnor.common.services.shared.validation.model;
 
+import org.guvnor.common.services.shared.message.Level;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
@@ -131,10 +132,4 @@ public class ValidationMessage {
         result = ~~result;
         return result;
     }
-
-    @Portable
-    public static enum Level {
-        ERROR, WARNING, INFO;
-    }
-
 }

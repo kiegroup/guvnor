@@ -19,7 +19,6 @@ package org.guvnor.structure.client.editors.repository.clone;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 import org.guvnor.structure.client.editors.repository.clone.answer.OuServiceAnswer;
 import org.guvnor.structure.client.editors.repository.clone.answer.RsCreateRepositoryAnswer;
@@ -30,6 +29,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -47,7 +47,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -115,7 +114,7 @@ public class CloneRepositoryFormTest {
 
         when( view.isNameEmpty() ).thenReturn( false );
         when( view.getName() ).thenReturn( REPO_NAME );
-        when( view.getOrganizationalUnit( any( Integer.class ) ) ).thenReturn( ORG_UNIT_ONE );
+        when( view.getSelectedOrganizationalUnit() ).thenReturn( ORG_UNIT_ONE );
         when( view.getUsername() ).thenReturn( USERNAME );
         when( view.getPassword() ).thenReturn( PASSWORD );
 
@@ -177,7 +176,7 @@ public class CloneRepositoryFormTest {
     public void testComponentsNonLockOuMandatory() {
         when( view.isGitUrlEmpty() ).thenReturn( false );
         when( view.getGitUrl() ).thenReturn( REPO_URL );
-        when( view.getOrganizationalUnit( any( Integer.class ) ) ).thenReturn( "non_existing" );
+        when( view.getSelectedOrganizationalUnit() ).thenReturn( "non_existing" );
         when( repositoryPreferences.isOUMandatory() ).thenReturn( true );
 
         presenter.handleCloneClick();
@@ -291,12 +290,12 @@ public class CloneRepositoryFormTest {
         when( view.isGitUrlEmpty() ).thenReturn( false );
         when( view.getGitUrl() ).thenReturn( REPO_URL );
         when( view.getName() ).thenReturn( REPO_NAME );
-        when( view.getOrganizationalUnit( anyInt() ) ).thenReturn( "" );
+        when( view.getSelectedOrganizationalUnit() ).thenReturn( "" );
 
         presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager );
         presenter.handleCloneClick();
 
-        verify( view ).setOrganizationalUnitGroupType( ControlGroupType.ERROR );
+        verify( view ).setOrganizationalUnitGroupType( ValidationState.ERROR );
         verify( view ).showOrganizationalUnitHelpMandatoryMessage();
         verifyRepoCloned( false );
     }
@@ -307,12 +306,12 @@ public class CloneRepositoryFormTest {
         when( view.isGitUrlEmpty() ).thenReturn( true );
         when( view.getGitUrl() ).thenReturn( "" );
         when( view.getName() ).thenReturn( REPO_NAME );
-        when( view.getOrganizationalUnit( anyInt() ) ).thenReturn( ORG_UNIT_ONE );
+        when( view.getSelectedOrganizationalUnit() ).thenReturn( ORG_UNIT_ONE );
 
         presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager );
         presenter.handleCloneClick();
 
-        verify( view ).setUrlGroupType( ControlGroupType.ERROR );
+        verify( view ).setUrlGroupType( ValidationState.ERROR );
         verify( view ).showUrlHelpMandatoryMessage();
         verifyRepoCloned( false );
     }

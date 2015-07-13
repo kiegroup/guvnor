@@ -15,19 +15,22 @@
  */
 package org.guvnor.m2repo.client.upload;
 
-import com.github.gwtbootstrap.client.ui.Form;
-import com.github.gwtbootstrap.client.ui.base.HasVisibleHandlers;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 import org.guvnor.m2repo.client.upload.UploadFormView.Presenter;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
+import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
+import org.gwtbootstrap3.client.ui.base.form.AbstractForm;
 import org.uberfire.client.mvp.UberView;
 
-public interface UploadFormView extends UberView<Presenter>,
-                                        HasVisibleHandlers {
+public interface UploadFormView extends UberView<Presenter> {
 
     interface Presenter {
 
-        void handleSubmitComplete( Form.SubmitCompleteEvent event );
+        void handleSubmitComplete( AbstractForm.SubmitCompleteEvent event );
 
-        void handleSubmit( Form.SubmitEvent event );
+        void handleSubmit( AbstractForm.SubmitEvent event );
     }
 
     String getFileName();
@@ -55,4 +58,7 @@ public interface UploadFormView extends UberView<Presenter>,
     void show();
 
     void hide();
+
+    HandlerRegistration addHideHandler(final ModalHideHandler modalHideHandler);
+
 }

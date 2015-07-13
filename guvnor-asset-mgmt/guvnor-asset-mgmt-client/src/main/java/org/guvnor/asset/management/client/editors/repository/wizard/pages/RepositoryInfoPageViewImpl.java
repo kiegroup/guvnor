@@ -18,11 +18,6 @@ package org.guvnor.asset.management.client.editors.repository.wizard.pages;
 
 import java.util.Collection;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -33,9 +28,14 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.extras.select.client.ui.Option;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
 public class RepositoryInfoPageViewImpl extends Composite
@@ -48,34 +48,28 @@ public class RepositoryInfoPageViewImpl extends Composite
     }
 
     @UiField
-    ControlGroup organizationalUnitGroup;
+    FormGroup organizationalUnitGroup;
 
     @UiField
-    HelpInline organizationalUnitHelpInline;
+    HelpBlock organizationalUnitHelpBlock;
 
     @UiField
-    ListBox organizationalUnitDropdown;
+    Select organizationalUnitDropdown;
 
     @UiField
-    ControlGroup nameGroup;
+    FormGroup nameGroup;
 
     @UiField
     TextBox nameTextBox;
 
     @UiField
-    HelpInline nameHelpInline;
+    HelpBlock nameHelpBlock;
 
     @UiField
-    InlineHTML isOUMandatory;
-
-    @UiField
-    ControlGroup managedReposiotryGroup;
+    FormGroup managedReposiotryGroup;
 
     @UiField
     CheckBox isManagedRepository;
-
-    @UiField
-    HelpInline isManagedRepositoryHelpInline;
 
     private String name;
 
@@ -129,14 +123,20 @@ public class RepositoryInfoPageViewImpl extends Composite
     @Override
     public void initOrganizationalUnits( Collection<OrganizationalUnit> organizationalUnits ) {
 
-        organizationalUnitDropdown.addItem( CoreConstants.INSTANCE.SelectEntry(), NOT_SELECTED );
+        final Option select = new Option();
+        select.setText( CoreConstants.INSTANCE.SelectEntry() );
+        select.setValue( NOT_SELECTED );
+        organizationalUnitDropdown.add( select );
         if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
             for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
-                organizationalUnitDropdown.addItem( organizationalUnit.getName(),
-                                                    organizationalUnit.getName() );
+                final Option option = new Option();
+                option.setText( organizationalUnit.getName() );
+                option.setValue( organizationalUnit.getName() );
+                organizationalUnitDropdown.add( option );
 
             }
         }
+        organizationalUnitDropdown.refresh();
     }
 
     @Override

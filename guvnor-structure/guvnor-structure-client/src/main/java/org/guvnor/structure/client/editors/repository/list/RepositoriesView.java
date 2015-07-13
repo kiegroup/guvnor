@@ -26,7 +26,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.repositories.Repository;
@@ -49,14 +49,13 @@ public class RepositoriesView extends Composite
     private RepositoriesPresenter presenter;
 
     @UiField
-    public HTMLPanel panel;
+    public FlowPanel panel;
 
     private Map<Repository, Widget> repositoryToWidgetMap = new HashMap<Repository, Widget>();
 
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
-        panel.setWidth( "800px" );
     }
 
     @Override
