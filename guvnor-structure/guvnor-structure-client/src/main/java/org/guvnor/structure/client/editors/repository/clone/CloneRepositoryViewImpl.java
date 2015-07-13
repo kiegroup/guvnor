@@ -52,7 +52,7 @@ public class CloneRepositoryViewImpl
 
     }
 
-    private Presenter presenter;
+    private CloneRepositoryView.Presenter presenter;
 
     private static CloneRepositoryFormBinder uiBinder = GWT.create( CloneRepositoryFormBinder.class );
 
@@ -109,8 +109,7 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void init( final Presenter presenter,
-                      final boolean isOuMandatory ) {
+    public void init(CloneRepositoryView.Presenter presenter, boolean isOuMandatory) {
         this.presenter = presenter;
 
         add( uiBinder.createAndBindUi( this ) );
@@ -207,7 +206,7 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void showNameHelpManatoryMessage() {
+    public void showNameHelpMandatoryMessage() {
         nameHelpInline.setText(CoreConstants.INSTANCE.RepositoryNaneMandatory());
     }
 

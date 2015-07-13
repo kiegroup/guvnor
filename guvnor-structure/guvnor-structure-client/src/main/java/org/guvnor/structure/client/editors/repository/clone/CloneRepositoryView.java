@@ -61,7 +61,7 @@ public interface CloneRepositoryView {
 
     void setUrlGroupType(ControlGroupType type);
 
-    void showNameHelpManatoryMessage();
+    void showNameHelpMandatoryMessage();
 
     void setNameGroupType(ControlGroupType type);
 

@@ -114,7 +114,7 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
 
         if ( view.isNameEmpty() ) {
             view.setNameGroupType( ControlGroupType.ERROR );
-            view.showNameHelpManatoryMessage();
+            view.showNameHelpMandatoryMessage();
             return;
 
         } else {
