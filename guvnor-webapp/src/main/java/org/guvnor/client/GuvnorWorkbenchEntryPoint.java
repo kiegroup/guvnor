@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.google.gwt.animation.client.Animation;
@@ -36,7 +36,9 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.guvnor.client.resources.i18n.AppConstants;
 import org.guvnor.common.services.shared.config.AppConfigService;
-import org.guvnor.structure.client.editors.repository.clone.CloneRepositoryForm;
+import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
+import org.guvnor.structure.client.editors.repository.clone.CloneRepositoryPresenter;
+import org.guvnor.structure.client.editors.repository.clone.CloneRepositoryViewImpl;
 import org.guvnor.structure.client.editors.repository.create.CreateRepositoryForm;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -53,11 +55,8 @@ import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
-
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
 
 /**
  * GWT's Entry-point for Drools Workbench
@@ -83,6 +82,8 @@ public class GuvnorWorkbenchEntryPoint {
     @Inject
     private Caller<AuthenticationService> authService;
 
+    private RepositoryPreferences repositoryPreferences;
+
     private Command newRepoCommand = null;
     private Command cloneRepoCommand = null;
 
@@ -93,23 +94,23 @@ public class GuvnorWorkbenchEntryPoint {
         hideLoadingPopup();
     }
 
+    @Produces
+    public RepositoryPreferences getRepositoryPreferences() {
+        if(repositoryPreferences == null) {
+            repositoryPreferences = new RepositoryPreferences(true);
+        }
+
+        return repositoryPreferences;
+    }
+
 
     private void buildCommands() {
         this.cloneRepoCommand = new Command() {
 
             @Override
             public void execute() {
-                final CloneRepositoryForm cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryForm.class ).getInstance();
-                //When pop-up is closed destroy bean to avoid memory leak
-                cloneRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
-
-                    @Override
-                    public void onClose( CloseEvent<PopupPanel> event ) {
-                        iocManager.destroyBean( cloneRepositoryWizard );
-                    }
-
-                } );
-                cloneRepositoryWizard.show();
+                final CloneRepositoryPresenter cloneRepositoryPresenter = iocManager.lookupBean( CloneRepositoryPresenter.class ).getInstance();
+                cloneRepositoryPresenter.showForm();
             }
 
         };
