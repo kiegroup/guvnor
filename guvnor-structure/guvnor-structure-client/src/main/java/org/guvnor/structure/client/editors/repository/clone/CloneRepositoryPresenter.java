@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -88,7 +87,7 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
     public void handleCloneClick() {
         if ( view.isGitUrlEmpty() ) {
             view.setUrlGroupType( ControlGroupType.ERROR );
-            view.showUrlHelpManatoryMessage();
+            view.showUrlHelpMandatoryMessage();
             return;
 
         } else if ( !URIUtil.isValid( view.getGitUrl() ) ) {
@@ -101,6 +100,7 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
         }
 
         final String organizationalUnit = view.getOrganizationalUnit( view.getSelectedOrganizationalUnit() );
+
         if ( isOuMandatory() && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
             view.setOrganizationalUnitGroupType( ControlGroupType.ERROR );
             view.showOrganizationalUnitHelpMandatoryMessage();
@@ -112,7 +112,7 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
 
         if ( view.isNameEmpty() ) {
             view.setNameGroupType( ControlGroupType.ERROR );
-            view.showNameHelpManatoryMessage();
+            view.showNameHelpMandatoryMessage();
             return;
 
         } else {
@@ -162,12 +162,10 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
                                                     unlockScreen();
                                                     return true;
                                                 }
-                                            }
-                                          ).createRepository( availableOrganizationalUnits.get( organizationalUnit ),
-                                                              scheme,
-                                                              alias,
-                                                              env );
-
+                                            } ).createRepository( availableOrganizationalUnits.get( organizationalUnit ),
+                                                                  scheme,
+                                                                  alias,
+                                                                  env );
                 }
             } ).normalizeRepositoryName( view.getName() );
         }
@@ -180,26 +178,27 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
     private void populateOrganizationalUnits() {
         //populate Organizational Units list box
         organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
-            @Override
-            public void callback( final Collection<OrganizationalUnit> organizationalUnits ) {
-                view.addOrganizationalUnitSelectEntry();
-                if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
-                    for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
-                        view.addOrganizationalUnit( organizationalUnit.getName(),
-                                                    organizationalUnit.getName() );
-                        availableOrganizationalUnits.put( organizationalUnit.getName(),
-                                                          organizationalUnit );
-                    }
-                }
-            }
-        }, new ErrorCallback<Message>() {
-            @Override
-            public boolean error( final Message message,
-                                  final Throwable throwable ) {
-                view.errorLoadOrganizationalUnitsFail( throwable );
-                return false;
-            }
-        } ).getOrganizationalUnits();
+                                            @Override
+                                            public void callback( final Collection<OrganizationalUnit> organizationalUnits ) {
+                                                view.addOrganizationalUnitSelectEntry();
+                                                if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
+                                                    for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
+                                                        view.addOrganizationalUnit( organizationalUnit.getName(),
+                                                                                    organizationalUnit.getName() );
+                                                        availableOrganizationalUnits.put( organizationalUnit.getName(),
+                                                                                          organizationalUnit );
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        new ErrorCallback<Message>() {
+                                            @Override
+                                            public boolean error( final Message message,
+                                                                  final Throwable throwable ) {
+                                                view.errorLoadOrganizationalUnitsFail( throwable );
+                                                return false;
+                                            }
+                                        } ).getOrganizationalUnits();
     }
 
     private void lockScreen() {

@@ -24,14 +24,14 @@ import org.mockito.stubbing.Answer;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-public class RepositoryServiceAnswer implements Answer<RepositoryService> {
+public class RsNormalizedNameAnswer implements Answer<RepositoryService> {
 
-    private String response;
+    private String normalizedName;
     private RepositoryService repoService;
 
-    public RepositoryServiceAnswer( String response,
-                                    RepositoryService repoService ) {
-        this.response = response;
+    public RsNormalizedNameAnswer( String normalizedName,
+                                   RepositoryService repoService ) {
+        this.normalizedName = normalizedName;
         this.repoService = repoService;
     }
 
@@ -42,13 +42,13 @@ public class RepositoryServiceAnswer implements Answer<RepositoryService> {
 
             @Override
             public String answer( InvocationOnMock invocation ) throws Throwable {
-                return response;
+                return normalizedName;
             }
         } );
 
         @SuppressWarnings("unchecked")
         final RemoteCallback<String> callback = (RemoteCallback<String>) invocation.getArguments()[ 0 ];
-        callback.callback( response );
+        callback.callback( normalizedName );
 
         return repoService;
     }

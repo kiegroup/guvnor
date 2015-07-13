@@ -16,7 +16,6 @@
 
 package org.guvnor.structure.client.editors.repository.clone;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -52,7 +51,7 @@ public class CloneRepositoryViewImpl
 
     }
 
-    private Presenter presenter;
+    private CloneRepositoryView.Presenter presenter;
 
     private static CloneRepositoryFormBinder uiBinder = GWT.create( CloneRepositoryFormBinder.class );
 
@@ -109,7 +108,7 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void init( final Presenter presenter,
+    public void init( final CloneRepositoryView.Presenter presenter,
                       final boolean isOuMandatory ) {
         this.presenter = presenter;
 
@@ -127,7 +126,6 @@ public class CloneRepositoryViewImpl
                 nameHelpInline.setText( "" );
             }
         } );
-
         gitURLTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
@@ -190,12 +188,12 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void setName( String name ) {
+    public void setName( final String name ) {
         nameTextBox.setText( name );
     }
 
     @Override
-    public void showUrlHelpManatoryMessage() {
+    public void showUrlHelpMandatoryMessage() {
         urlHelpInline.setText( CoreConstants.INSTANCE.URLMandatory() );
     }
 
@@ -205,12 +203,12 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void setUrlGroupType( ControlGroupType type ) {
+    public void setUrlGroupType( final ControlGroupType type ) {
         urlGroup.setType( type );
     }
 
     @Override
-    public void showNameHelpManatoryMessage() {
+    public void showNameHelpMandatoryMessage() {
         nameHelpInline.setText( CoreConstants.INSTANCE.RepositoryNaneMandatory() );
     }
 

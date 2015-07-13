@@ -57,13 +57,13 @@ public interface CloneRepositoryView {
 
     void setName( String name );
 
-    void showUrlHelpManatoryMessage();
+    void showUrlHelpMandatoryMessage();
 
     void showUrlHelpInvalidFormatMessage();
 
     void setUrlGroupType( ControlGroupType type );
 
-    void showNameHelpManatoryMessage();
+    void showNameHelpMandatoryMessage();
 
     void setNameGroupType( ControlGroupType type );
 
