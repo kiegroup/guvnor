@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 
@@ -32,11 +31,10 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.guvnor.client.resources.i18n.AppConstants;
 import org.guvnor.common.services.shared.config.AppConfigService;
-import org.guvnor.structure.client.editors.repository.clone.CloneRepositoryForm;
+import org.guvnor.structure.client.editors.repository.clone.CloneRepositoryPresenter;
 import org.guvnor.structure.client.editors.repository.create.CreateRepositoryForm;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -53,11 +51,8 @@ import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
-
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
 
 /**
  * GWT's Entry-point for Drools Workbench
@@ -83,6 +78,9 @@ public class GuvnorWorkbenchEntryPoint {
     @Inject
     private Caller<AuthenticationService> authService;
 
+    @Inject
+    private CloneRepositoryPresenter cloneRepositoryPresenter;
+
     private Command newRepoCommand = null;
     private Command cloneRepoCommand = null;
 
@@ -93,23 +91,12 @@ public class GuvnorWorkbenchEntryPoint {
         hideLoadingPopup();
     }
 
-
     private void buildCommands() {
         this.cloneRepoCommand = new Command() {
 
             @Override
             public void execute() {
-                final CloneRepositoryForm cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryForm.class ).getInstance();
-                //When pop-up is closed destroy bean to avoid memory leak
-                cloneRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
-
-                    @Override
-                    public void onClose( CloseEvent<PopupPanel> event ) {
-                        iocManager.destroyBean( cloneRepositoryWizard );
-                    }
-
-                } );
-                cloneRepositoryWizard.show();
+                cloneRepositoryPresenter.showForm();
             }
 
         };
@@ -176,47 +163,47 @@ public class GuvnorWorkbenchEntryPoint {
                 .endMenu()
                 .endMenus()
                 .endMenu()
-                .newTopLevelMenu( "Authoring" ).respondsWith(new Command() {
+                .newTopLevelMenu( "Authoring" ).respondsWith( new Command() {
                     @Override
                     public void execute() {
                         if ( defaultPerspective != null ) {
-                            placeManager.goTo(new DefaultPlaceRequest("AuthoringPerspective"));
+                            placeManager.goTo( new DefaultPlaceRequest( "AuthoringPerspective" ) );
                         } else {
                             Window.alert( " perspective not found." );
                         }
                     }
                 } )
                 .endMenu()
-                .newTopLevelMenu( "Artifacts" ).respondsWith(new Command() {
+                .newTopLevelMenu( "Artifacts" ).respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo(new DefaultPlaceRequest("org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective"));
+                        placeManager.goTo( new DefaultPlaceRequest( "org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective" ) );
                     }
                 } )
                 .endMenu()
                 .newTopLevelMenu( "Wires" )
                 .menus()
-                .menu("Scratch Pad")
-                .respondsWith(new Command() {
+                .menu( "Scratch Pad" )
+                .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                            placeManager.goTo(new DefaultPlaceRequest("WiresScratchPadPerspective"));
+                        placeManager.goTo( new DefaultPlaceRequest( "WiresScratchPadPerspective" ) );
                     }
                 } )
                 .endMenu()
-                .menu("Trees")
-                .respondsWith(new Command() {
+                .menu( "Trees" )
+                .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo(new DefaultPlaceRequest("WiresTreesPerspective"));
+                        placeManager.goTo( new DefaultPlaceRequest( "WiresTreesPerspective" ) );
                     }
                 } )
                 .endMenu()
-                .menu("Bayesian networks")
-                .respondsWith(new Command() {
+                .menu( "Bayesian networks" )
+                .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo(new DefaultPlaceRequest("WiresBayesianPerspective"));
+                        placeManager.goTo( new DefaultPlaceRequest( "WiresBayesianPerspective" ) );
                     }
                 } )
                 .endMenu()
@@ -224,19 +211,19 @@ public class GuvnorWorkbenchEntryPoint {
                 .endMenu()
                 .newTopLevelMenu( "Workbench" )
                 .menus()
-                .menu("Apps")
-                .respondsWith(new Command() {
+                .menu( "Apps" )
+                .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo(new DefaultPlaceRequest("AppsPerspective"));
+                        placeManager.goTo( new DefaultPlaceRequest( "AppsPerspective" ) );
                     }
                 } )
                 .endMenu()
-                .menu("Plugins")
-                .respondsWith(new Command() {
+                .menu( "Plugins" )
+                .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo(new DefaultPlaceRequest("PlugInAuthoringPerspective"));
+                        placeManager.goTo( new DefaultPlaceRequest( "PlugInAuthoringPerspective" ) );
                     }
                 } )
                 .endMenu()
@@ -325,7 +312,7 @@ public class GuvnorWorkbenchEntryPoint {
             authService.call( new RemoteCallback<Void>() {
                 @Override
                 public void callback( Void response ) {
-                    final String location = GWT.getModuleBaseURL().replaceFirst("/" + GWT.getModuleName() + "/",  "/logout.jsp");
+                    final String location = GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "/logout.jsp" );
                     redirect( location );
                 }
             } ).logout();
