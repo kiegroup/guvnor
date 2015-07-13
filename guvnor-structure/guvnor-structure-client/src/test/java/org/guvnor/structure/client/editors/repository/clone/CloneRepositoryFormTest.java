@@ -28,6 +28,7 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,36 +42,41 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.*;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.mvp.PlaceManager;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+
+
 @RunWith(MockitoJUnitRunner.class)
 public class CloneRepositoryFormTest {
 
     @Mock
     private PlaceManager placeManager;
-
     @Mock
     private RepositoryPreferences repositoryPreferences;
-
     @Mock
     private CloneRepositoryView view;
-
     @Mock
     private Caller<RepositoryService> repoServiceCaller;
-
     @Mock
     private Caller<OrganizationalUnitService> ouServiceCaller;
-
     @Mock
-    private OrganizationalUnitService ouService;
-
+    private OrganizationalUnitService  ouService;
     @Mock
     private RepositoryService repoService;
-
     @Mock
     private OrganizationalUnit ouUnit1;
-
     @Mock
     private OrganizationalUnit ouUnit2;
-
     @Mock
     private Repository repository;
 
@@ -78,29 +84,29 @@ public class CloneRepositoryFormTest {
     private ArgumentCaptor<Boolean> boolArgument;
 
     private CloneRepositoryPresenter presenter;
-
+    
     @Before
     public void initPresenter() {
         List<OrganizationalUnit> units = new ArrayList<OrganizationalUnit>();
-        units.add( ouUnit1 );
-        units.add( ouUnit2 );
+        units.add(ouUnit1);
+        units.add(ouUnit2);
 
-        when( ouUnit1.getName() ).thenReturn( "OU1" );
-        when( ouUnit2.getName() ).thenReturn( "OU2" );
+        when(ouUnit1.getName()).thenReturn("OU1");
+        when(ouUnit2.getName()).thenReturn("OU2");
 
-        when( view.getName() ).thenReturn( "OU1" );
+        when(view.getName()).thenReturn("OU1");
 
-        when( ouService.getOrganizationalUnits() ).thenReturn( new ArrayList<OrganizationalUnit>() );
-        when( ouServiceCaller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenReturn( ouService );
-        when( repoService.normalizeRepositoryName( any( String.class ) ) ).thenReturn( "OU1" );
-        when( repoServiceCaller.call( any( RemoteCallback.class ) ) ).thenAnswer( new RepositoryServiceAnswer( "OU1", repoService ) );
-        when( repoServiceCaller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenReturn( repoService );
-        when( view.getUsername() ).thenReturn( "username" );
-        when( view.getPassword() ).thenReturn( "password" );
+        when(ouService.getOrganizationalUnits()).thenReturn(new ArrayList<OrganizationalUnit>());
+        when(ouServiceCaller.call(any(RemoteCallback.class), any(ErrorCallback.class))).thenReturn(ouService);
+        when(repoService.normalizeRepositoryName(any(String.class))).thenReturn("OU1");
+        when(repoServiceCaller.call(any(RemoteCallback.class))).thenAnswer(new RepositoryServiceAnswer("OU1", repoService));
+        when(repoServiceCaller.call(any(RemoteCallback.class), any(ErrorCallback.class))).thenReturn(repoService);
+        when(view.getUsername()).thenReturn("username");
+        when(view.getPassword()).thenReturn("password");
 
-        when( repositoryPreferences.isOUMandatory() ).thenReturn( false );
+        when(repositoryPreferences.isOUMandatory()).thenReturn(false);
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager );
+        presenter = new CloneRepositoryPresenter(repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager);
 
         presenter.init();
     }
@@ -110,28 +116,28 @@ public class CloneRepositoryFormTest {
      */
     @Test
     public void testComponentsStaysOperational() {
-        when( view.isGitUrlEmpty() ).thenReturn( false );
-        when( view.getGitUrl() ).thenReturn( "some.git.url" );
+        when(view.isGitUrlEmpty()).thenReturn(false);
+        when(view.getGitUrl()).thenReturn("some.git.url");
 
         presenter.handleCloneClick();
 
-        verify( view ).setCloneEnabled( boolArgument.capture() );
-        assertEquals( false, boolArgument.getValue() );
+        verify(view).setCloneEnabled(boolArgument.capture());
+        assertEquals(false, boolArgument.getValue());
 
-        verify( view ).setGitUrlEnabled( boolArgument.capture() );
-        assertEquals( false, boolArgument.getValue() );
+        verify(view).setGitUrlEnabled(boolArgument.capture());
+        assertEquals(false, boolArgument.getValue());
 
-        verify( view ).setNameEnabled( boolArgument.capture() );
-        assertEquals( false, boolArgument.getValue() );
+        verify(view).setNameEnabled(boolArgument.capture());
+        assertEquals(false, boolArgument.getValue());
 
-        verify( view ).setOrganizationalUnitEnabled( boolArgument.capture() );
-        assertEquals( false, boolArgument.getValue() );
+        verify(view).setOrganizationalUnitEnabled(boolArgument.capture());
+        assertEquals(false, boolArgument.getValue());
 
-        verify( view ).setUsernameEnabled( boolArgument.capture() );
-        assertEquals( false, boolArgument.getValue() );
+        verify(view).setUsernameEnabled(boolArgument.capture());
+        assertEquals(false, boolArgument.getValue());
 
-        verify( view ).setPasswordEnabled( boolArgument.capture() );
-        assertEquals( false, boolArgument.getValue() );
+        verify(view).setPasswordEnabled(boolArgument.capture());
+        assertEquals(false, boolArgument.getValue());
     }
 
     /**
@@ -139,17 +145,17 @@ public class CloneRepositoryFormTest {
      */
     @Test
     public void testGitUrlValidation() {
-        when( view.isGitUrlEmpty() ).thenReturn( true );
-        when( view.getGitUrl() ).thenReturn( "" );
+        when(view.isGitUrlEmpty()).thenReturn(true);
+        when(view.getGitUrl()).thenReturn("");
 
         presenter.handleCloneClick();
-        verify( view ).showUrlHelpManatoryMessage();
+        verify(view).showUrlHelpManatoryMessage();
 
-        when( view.isGitUrlEmpty() ).thenReturn( false );
-        when( view.getGitUrl() ).thenReturn( "a b c" );
+        when(view.isGitUrlEmpty()).thenReturn(false);
+        when(view.getGitUrl()).thenReturn("a b c");
 
         presenter.handleCloneClick();
-        verify( view ).showUrlHelpInvalidFormatMessage();
+        verify(view).showUrlHelpInvalidFormatMessage();
     }
 
 }

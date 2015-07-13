@@ -22,20 +22,29 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static org.mockito.Matchers.any;
+<<<<<<< HEAD
 import static org.mockito.Mockito.*;
+=======
+import static org.mockito.Mockito.when;
+>>>>>>> clone repo form refacotred to MVP
 
 public class RepositoryServiceAnswer implements Answer<RepositoryService> {
 
     private String response;
     private RepositoryService repoService;
 
+<<<<<<< HEAD
     public RepositoryServiceAnswer( String response,
                                     RepositoryService repoService ) {
+=======
+    public RepositoryServiceAnswer(String response, RepositoryService repoService) {
+>>>>>>> clone repo form refacotred to MVP
         this.response = response;
         this.repoService = repoService;
     }
 
     @Override
+<<<<<<< HEAD
     public RepositoryService answer( InvocationOnMock invocation ) throws Throwable {
 
         when( repoService.normalizeRepositoryName( any( String.class ) ) ).then( new Answer<String>() {
@@ -49,6 +58,22 @@ public class RepositoryServiceAnswer implements Answer<RepositoryService> {
         @SuppressWarnings("unchecked")
         final RemoteCallback<String> callback = (RemoteCallback<String>) invocation.getArguments()[ 0 ];
         callback.callback( response );
+=======
+    public RepositoryService answer(InvocationOnMock invocation) throws Throwable {
+
+        when(repoService.normalizeRepositoryName(any(String.class))).then(new Answer<String>() {
+
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable {
+
+                return response;
+            }
+        });
+
+        @SuppressWarnings("unchecked")
+        final RemoteCallback<String> callback = (RemoteCallback<String>) invocation.getArguments()[0];
+        callback.callback(response);
+>>>>>>> clone repo form refacotred to MVP
 
         return repoService;
     }

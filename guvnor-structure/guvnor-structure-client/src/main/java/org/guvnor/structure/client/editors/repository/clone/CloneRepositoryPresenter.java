@@ -16,6 +16,7 @@
 
 package org.guvnor.structure.client.editors.repository.clone;
 
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -35,6 +35,7 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -86,21 +87,22 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
 
     @Override
     public void handleCloneClick() {
-        if ( view.isGitUrlEmpty() ) {
-            view.setUrlGroupType( ControlGroupType.ERROR );
+        if (view.isGitUrlEmpty()) {
+            view.setUrlGroupType(ControlGroupType.ERROR);
             view.showUrlHelpManatoryMessage();
             return;
 
-        } else if ( !URIUtil.isValid( view.getGitUrl() ) ) {
-            view.setUrlGroupType( ControlGroupType.ERROR );
+        } else if (!URIUtil.isValid(view.getGitUrl())) {
+            view.setUrlGroupType(ControlGroupType.ERROR);
             view.showUrlHelpInvalidFormatMessage();
             return;
 
         } else {
-            view.setUrlGroupType( ControlGroupType.NONE );
+            view.setUrlGroupType(ControlGroupType.NONE);
         }
 
         final String organizationalUnit = view.getOrganizationalUnit( view.getSelectedOrganizationalUnit() );
+
         if ( isOuMandatory() && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
             view.setOrganizationalUnitGroupType( ControlGroupType.ERROR );
             view.showOrganizationalUnitHelpMandatoryMessage();
@@ -138,36 +140,31 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
                     env.put( "crypt:password", password );
                     env.put( "origin", origin );
 
-                    repositoryService.call( new RemoteCallback<Repository>() {
-                                                @Override
-                                                public void callback( final Repository o ) {
-                                                    view.alertRepositoryCloned();
-                                                    unlockScreen();
-                                                    view.hide();
-                                                    placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias",
-                                                                                                                                   o.getAlias() ) );
-                                                }
-                                            },
-                                            new ErrorCallback<Message>() {
-                                                @Override
-                                                public boolean error( final Message message,
-                                                                      final Throwable throwable ) {
-                                                    try {
-                                                        throw throwable;
-                                                    } catch ( RepositoryAlreadyExistsException ex ) {
-                                                        view.errorRepositoryAlreadyExist();
-                                                    } catch ( Throwable ex ) {
-                                                        view.errorCloneRepositoryFail( ex );
-                                                    }
-                                                    unlockScreen();
-                                                    return true;
-                                                }
-                                            }
-                                          ).createRepository( availableOrganizationalUnits.get( organizationalUnit ),
-                                                              scheme,
-                                                              alias,
-                                                              env );
-
+                    repositoryService.call(
+                        new RemoteCallback<Repository>() {
+                            @Override
+                            public void callback( final Repository o ) {
+                                view.alertRepositoryCloned();
+                                unlockScreen();
+                                view.hide();
+                                placeManager.goTo(new DefaultPlaceRequest("RepositoryEditor").addParameter("alias", o.getAlias()));
+                            }
+                        },
+                        new ErrorCallback<Message>() {
+                            @Override
+                            public boolean error( final Message message,
+                                                  final Throwable throwable ) {
+                                try {
+                                    throw throwable;
+                                } catch ( RepositoryAlreadyExistsException ex ) {
+                                    view.errorRepositoryAlreadyExist();
+                                } catch ( Throwable ex ) {
+                                    view.errorCloneRepositoryFail( ex );
+                                }
+                                unlockScreen();
+                                return true;
+                            }
+                        }).createRepository(availableOrganizationalUnits.get(organizationalUnit), scheme, alias, env);
                 }
             } ).normalizeRepositoryName( view.getName() );
         }
