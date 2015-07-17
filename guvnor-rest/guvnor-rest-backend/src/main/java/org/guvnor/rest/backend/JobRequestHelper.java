@@ -207,7 +207,7 @@ public class JobRequestHelper {
             return result;
         } else {
             POM pom = new POM();
-            pom.getGav().setArtifactId( projectName.replaceAll("\\s","") );
+            pom.getGav().setArtifactId( projectName.replaceAll("\\s",""));
             pom.getGav().setGroupId( projectGroupId );
             pom.getGav().setVersion( projectVersion );
             pom.setDescription(projectDescription);
