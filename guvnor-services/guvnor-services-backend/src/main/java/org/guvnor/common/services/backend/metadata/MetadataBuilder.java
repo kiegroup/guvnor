@@ -54,7 +54,7 @@ public final class MetadataBuilder {
     private String description;
 
     //not dcore
-    private List<String> categories = new ArrayList<String>();
+    private List<String> tags = new ArrayList<String>();
     private List<DiscussionRecord> discussion = new ArrayList<DiscussionRecord>();
     private List<VersionRecord> version = new ArrayList<VersionRecord>();
 
@@ -126,8 +126,8 @@ public final class MetadataBuilder {
         return this;
     }
 
-    public MetadataBuilder withCategories( final List<String> categories ) {
-        this.categories = categories;
+    public MetadataBuilder withTags( final List<String> tags ) {
+        this.tags = tags;
         return this;
     }
 
@@ -159,7 +159,7 @@ public final class MetadataBuilder {
                              externalRelation,
                              externalSource,
                              description,
-                             categories,
+                             tags,
                              discussion,
                              version,
                              lockInfo );

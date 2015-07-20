@@ -162,8 +162,8 @@ public class MetadataServiceImpl
             attrs.putAll(OtherMetaAttributesUtil.toMap(
                     new OtherMetaAttributes() {
                         @Override
-                        public List<String> categories() {
-                            return metadata.getCategories();
+                        public List<String> tags() {
+                            return metadata.getTags();
                         }
 
                         @Override
