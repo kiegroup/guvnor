@@ -26,7 +26,7 @@ import org.uberfire.java.nio.file.attribute.FileTime;
 public class OtherMetaAttributesMock
         implements OtherMetaAttributes {
 
-    @Override public List<String> categories() {
+    @Override public List<String> tags() {
         return new ArrayList<String>();
     }
 

@@ -33,7 +33,7 @@ public final class OtherMetaAttributesUtil {
         final Map<String, Object> attrs = new HashMap<String, Object>( _attrs );
 
         for ( final String key : _attrs.keySet() ) {
-            if ( key.startsWith( OtherMetaView.CATEGORY ) || key.equals( OtherMetaView.MODE ) ) {
+            if ( key.startsWith( OtherMetaView.TAG ) || key.equals( OtherMetaView.MODE ) ) {
                 attrs.put( key, null );
             }
         }
@@ -48,9 +48,9 @@ public final class OtherMetaAttributesUtil {
                 for ( final String attribute : attributes ) {
                     checkNotEmpty( "attribute", attribute );
 
-                    if ( attribute.equals( "*" ) || attribute.equals( OtherMetaView.CATEGORY ) ) {
-                        for ( int i = 0; i < attrs.categories().size(); i++ ) {
-                            put( buildAttrName( OtherMetaView.CATEGORY, i ), attrs.categories().get( i ) );
+                    if ( attribute.equals( "*" ) || attribute.equals( OtherMetaView.TAG ) ) {
+                        for ( int i = 0; i < attrs.tags().size(); i++ ) {
+                            put( buildAttrName( OtherMetaView.TAG, i ), attrs.tags().get( i ) );
                         }
                     }
                     if ( attribute.equals( "*" ) ) {

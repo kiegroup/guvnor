@@ -79,7 +79,7 @@ public class MetadataCreator {
                 .withExternalRelation(getExternalRelation())
                 .withExternalSource(getExternalSource())
                 .withDescription(getDescription())
-                .withCategories(getCategories())
+                .withTags( getTags() )
                 .withDiscussion(getDiscussion())
                 .withLockInfo(retrieveLockInfo(Paths.convert(path)))
                 .withUnlockAllowed(sessionInfo.isAdmin())
@@ -99,8 +99,8 @@ public class MetadataCreator {
         return discussView.readAttributes().discussion();
     }
 
-    private List<String> getCategories() {
-        return otherMetaView.readAttributes().categories();
+    private List<String> getTags() {
+        return otherMetaView.readAttributes().tags();
     }
 
     private String getDescription() {

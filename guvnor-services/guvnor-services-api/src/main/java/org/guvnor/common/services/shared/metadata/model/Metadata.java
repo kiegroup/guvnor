@@ -52,7 +52,7 @@ public class Metadata {
     private String description;
 
     //not dcore
-    private List<String>           categories = new ArrayList<String>();
+    private List<String>           tags = new ArrayList<String>();
     private List<DiscussionRecord> discussion = new ArrayList<DiscussionRecord>();
     private List<VersionRecord>    version    = new ArrayList<VersionRecord>();
 
@@ -72,7 +72,7 @@ public class Metadata {
                      final String externalRelation,
                      final String externalSource,
                      final String description,
-                     final List<String> categories,
+                     final List<String> tags,
                      final List<DiscussionRecord> discussion,
                      final List<VersionRecord> version,
                      final LockInfo lockInfo,
@@ -89,7 +89,7 @@ public class Metadata {
         this.externalRelation = externalRelation;
         this.externalSource = externalSource;
         this.description = description;
-        this.categories = categories;
+        this.tags = tags;
         this.discussion = discussion;
         this.version = version;
         this.lockInfo = lockInfo;
@@ -144,8 +144,8 @@ public class Metadata {
         return description;
     }
 
-    public List<String> getCategories() {
-        return categories;
+    public List<String> getTags() {
+        return tags;
     }
 
     public List<DiscussionRecord> getDiscussion() {
@@ -192,12 +192,12 @@ public class Metadata {
         this.discussion.clear();
     }
 
-    public void addCategory( final String category ) {
-        categories.add( category );
+    public void addTag( final String tag ) {
+        tags.add( tag );
     }
 
-    public void removeCategory( final int idx ) {
-        categories.remove( idx );
+    public void removeTag( final int idx ) {
+        tags.remove( idx );
     }
 
     public void setDescription( final String description ) {
@@ -215,7 +215,7 @@ public class Metadata {
 
         Metadata metadata = ( Metadata ) o;
 
-        if ( categories != null ? !categories.equals( metadata.categories ) : metadata.categories != null ) {
+        if ( tags != null ? !tags.equals( metadata.tags ) : metadata.tags != null ) {
             return false;
         }
         if ( checkinComment != null ? !checkinComment.equals( metadata.checkinComment ) : metadata.checkinComment != null ) {
@@ -299,7 +299,7 @@ public class Metadata {
         result = ~~result;
         result = 31 * result + (unlockAllowed ? 1231 : 1237);
         result = ~~result;
-        result = 31 * result + ( categories != null ? categories.hashCode() : 0 );
+        result = 31 * result + ( tags != null ? tags.hashCode() : 0 );
         result = ~~result;
         result = 31 * result + ( discussion != null ? discussion.hashCode() : 0 );
         result = ~~result;
