@@ -84,7 +84,7 @@ public class MetadataCreatorTest {
         Metadata metadata = service.create();
 
         assertNotNull(metadata);
-        assertNotNull(metadata.getCategories());
+        assertNotNull(metadata.getTags());
         assertNotNull(metadata.getDiscussion());
         assertNotNull(metadata.getVersion());
     }

@@ -40,11 +40,11 @@ public class OtherMetaView
         extends AbstractBasicFileAttributeView<AbstractPath>
         implements NeedsPreloadedAttrs {
 
-    public static final String CATEGORY = "othermeta.category";
+    public static final String TAG = "othermeta.tag";
     public static final String MODE     = "othermeta.mode";
 
     private static final Set<String> PROPERTIES = new HashSet<String>() {{
-        add( CATEGORY );
+        add( TAG );
         add( MODE );
     }};
 
@@ -57,7 +57,7 @@ public class OtherMetaView
         final Map<Integer, String> _categories = new TreeMap<Integer, String>();
 
         for ( final Map.Entry<String, Object> entry : content.entrySet() ) {
-            if ( entry.getKey().startsWith( CATEGORY ) ) {
+            if ( entry.getKey().startsWith( TAG ) ) {
                 final Pair<Integer, Object> result = extractValue( entry );
                 _categories.put( result.getK1(), result.getK2().toString() );
             } 
@@ -70,7 +70,7 @@ public class OtherMetaView
         this.attrs = new OtherMetaAttributes() {
 
             @Override
-            public List<String> categories() {
+            public List<String> tags() {
                 return categories;
             }
 
