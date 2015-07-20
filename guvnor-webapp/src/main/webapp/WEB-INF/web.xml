@@ -92,6 +92,7 @@ profile in pom.xml to use that. -->
   <servlet-mapping>
     <servlet-name>M2Servlet</servlet-name>
     <url-pattern>/maven2/*</url-pattern>
+    <url-pattern>/maven2wb/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
