@@ -15,6 +15,9 @@
 
 package org.guvnor.structure.client.editors.repository;
 
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class RepositoryPreferences {
 
     private boolean ouMandatory;
