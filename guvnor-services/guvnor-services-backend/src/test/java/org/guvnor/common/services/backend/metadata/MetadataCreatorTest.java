@@ -16,6 +16,9 @@
 
 package org.guvnor.common.services.backend.metadata;
 
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -34,10 +37,7 @@ import org.uberfire.java.nio.base.version.VersionAttributes;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
-import org.uberfire.rpc.impl.SessionInfoWrapper;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.uberfire.rpc.SessionInfo;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MetadataCreatorTest {
@@ -45,7 +45,7 @@ public class MetadataCreatorTest {
     private SimpleFileSystemProvider fileSystemProvider;
 
     @Mock private IOService configIOService;
-    @Mock private SessionInfoWrapper sessionInfo;
+    @Mock private SessionInfo sessionInfo;
     @Mock private DublinCoreView       dcoreView;
     @Mock private DiscussionView       discussView;
     @Mock private OtherMetaView        otherMetaView;

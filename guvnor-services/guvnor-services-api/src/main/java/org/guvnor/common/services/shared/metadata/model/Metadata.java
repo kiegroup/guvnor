@@ -34,7 +34,6 @@ public class Metadata {
     private Path path;
     private Path realPath;
     private LockInfo lockInfo;
-    private boolean unlockAllowed;
 
     //git info
     private String checkinComment;
@@ -75,8 +74,7 @@ public class Metadata {
                      final List<String> categories,
                      final List<DiscussionRecord> discussion,
                      final List<VersionRecord> version,
-                     final LockInfo lockInfo,
-                     final boolean unlockAllowed) {
+                     final LockInfo lockInfo) {
         this.path = path;
         this.realPath = realPath;
         this.checkinComment = checkinComment;
@@ -93,7 +91,6 @@ public class Metadata {
         this.discussion = discussion;
         this.version = version;
         this.lockInfo = lockInfo;
-        this.unlockAllowed = unlockAllowed;
     }
 
     public Path getPath() {
@@ -162,10 +159,6 @@ public class Metadata {
     
     public void setLockInfo( LockInfo lockInfo ) {
         this.lockInfo = lockInfo;
-    }
-
-    public boolean isUnlockAllowed() {
-        return unlockAllowed;
     }
 
     public void setSubject( final String subject ) {
@@ -263,8 +256,6 @@ public class Metadata {
         if ( lockInfo != null ? !lockInfo.equals( metadata.lockInfo ) : metadata.lockInfo != null ) {
             return false;
         }
-        if ( unlockAllowed != metadata.unlockAllowed )
-            return false;
 
         return true;
     }
@@ -296,8 +287,6 @@ public class Metadata {
         result = 31 * result + ( description != null ? description.hashCode() : 0 );
         result = ~~result;
         result = 31 * result + ( lockInfo != null ? lockInfo.hashCode() : 0 );
-        result = ~~result;
-        result = 31 * result + (unlockAllowed ? 1231 : 1237);
         result = ~~result;
         result = 31 * result + ( categories != null ? categories.hashCode() : 0 );
         result = ~~result;

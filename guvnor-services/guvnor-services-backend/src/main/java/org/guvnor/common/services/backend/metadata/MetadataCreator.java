@@ -16,6 +16,8 @@
 
 package org.guvnor.common.services.backend.metadata;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,9 +37,7 @@ import org.uberfire.java.nio.base.version.VersionAttributes;
 import org.uberfire.java.nio.base.version.VersionHistory;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.rpc.impl.SessionInfoWrapper;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import org.uberfire.rpc.SessionInfo;
 
 public class MetadataCreator {
 
@@ -47,11 +47,11 @@ public class MetadataCreator {
     private final OtherMetaView otherMetaView;
     private final VersionAttributeView versionAttributeView;
     private final IOService configIOService;
-    private final SessionInfoWrapper sessionInfo;
+    private final SessionInfo sessionInfo;
 
     public MetadataCreator(Path path,
                            IOService configIOService,
-                           SessionInfoWrapper sessionInfo,
+                           SessionInfo sessionInfo,
                            DublinCoreView dublinCoreView,
                            DiscussionView discussionView,
                            OtherMetaView otherMetaView,
@@ -82,7 +82,6 @@ public class MetadataCreator {
                 .withCategories(getCategories())
                 .withDiscussion(getDiscussion())
                 .withLockInfo(retrieveLockInfo(Paths.convert(path)))
-                .withUnlockAllowed(sessionInfo.isAdmin())
                 .withVersion(getVersion())
                 .build();
     }

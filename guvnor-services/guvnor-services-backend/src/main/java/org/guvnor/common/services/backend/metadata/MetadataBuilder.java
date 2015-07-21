@@ -37,7 +37,6 @@ public final class MetadataBuilder {
     private Path path;
     private Path realPath;
     private LockInfo lockInfo;
-    private boolean unlockAllowed;
 
     //git info
     private String checkinComment;
@@ -147,11 +146,6 @@ public final class MetadataBuilder {
         return this;
     }
     
-    public MetadataBuilder withUnlockAllowed( final boolean unlockAllowed ) {
-        this.unlockAllowed = unlockAllowed;
-        return this;
-    }
-
     public Metadata build() {
         return new Metadata( path,
                              realPath,
@@ -168,8 +162,7 @@ public final class MetadataBuilder {
                              categories,
                              discussion,
                              version,
-                             lockInfo,
-                             unlockAllowed );
+                             lockInfo );
     }
 
 }

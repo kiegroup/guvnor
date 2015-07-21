@@ -48,7 +48,7 @@ import org.uberfire.java.nio.base.BasicFileAttributesUtil;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.rpc.impl.SessionInfoWrapper;
+import org.uberfire.rpc.SessionInfo;
 
 @Service
 @ApplicationScoped
@@ -62,7 +62,7 @@ public class MetadataServiceImpl
     private IOService configIOService;
     
     @Inject
-    private SessionInfoWrapper sessionInfo;
+    private SessionInfo sessionInfo;
 
     public MetadataServiceImpl() {
     }
