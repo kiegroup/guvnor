@@ -191,7 +191,7 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void showUrlHelpManatoryMessage() {
+    public void showUrlHelpMandatoryMessage() {
         urlHelpInline.setText(CoreConstants.INSTANCE.URLMandatory());
     }
 

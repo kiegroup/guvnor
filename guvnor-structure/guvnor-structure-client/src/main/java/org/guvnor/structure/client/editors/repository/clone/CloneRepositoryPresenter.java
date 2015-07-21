@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
@@ -87,9 +86,9 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
 
     @Override
     public void handleCloneClick() {
-        if (view.isGitUrlEmpty()) {
-            view.setUrlGroupType(ControlGroupType.ERROR);
-            view.showUrlHelpManatoryMessage();
+        if ( view.isGitUrlEmpty() ) {
+            view.setUrlGroupType( ControlGroupType.ERROR );
+            view.showUrlHelpMandatoryMessage();
             return;
 
         } else if (!URIUtil.isValid(view.getGitUrl())) {
