@@ -16,7 +16,7 @@
 
 package org.guvnor.structure.client.editors.repository.clone;
 
-import javax.enterprise.context.ApplicationScoped;
+
 import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -52,7 +52,7 @@ public class CloneRepositoryViewImpl
 
     }
 
-    private Presenter presenter;
+    private CloneRepositoryView.Presenter presenter;
 
     private static CloneRepositoryFormBinder uiBinder = GWT.create( CloneRepositoryFormBinder.class );
 
@@ -109,8 +109,7 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void init( final Presenter presenter,
-                      final boolean isOuMandatory ) {
+    public void init(CloneRepositoryView.Presenter presenter, boolean isOuMandatory) {
         this.presenter = presenter;
 
         add( uiBinder.createAndBindUi( this ) );
@@ -120,33 +119,30 @@ public class CloneRepositoryViewImpl
             isOUMandatory.removeFromParent();
         }
 
-        nameTextBox.addKeyPressHandler( new KeyPressHandler() {
+        nameTextBox.addKeyPressHandler(new KeyPressHandler() {
             @Override
-            public void onKeyPress( final KeyPressEvent event ) {
-                nameGroup.setType( ControlGroupType.NONE );
-                nameHelpInline.setText( "" );
+            public void onKeyPress(final KeyPressEvent event) {
+                nameGroup.setType(ControlGroupType.NONE);
+                nameHelpInline.setText("");
             }
-        } );
-
-        gitURLTextBox.addKeyPressHandler( new KeyPressHandler() {
+        });
+        gitURLTextBox.addKeyPressHandler(new KeyPressHandler() {
             @Override
-            public void onKeyPress( final KeyPressEvent event ) {
-                urlGroup.setType( ControlGroupType.NONE );
-                urlHelpInline.setText( "" );
+            public void onKeyPress(final KeyPressEvent event) {
+                urlGroup.setType(ControlGroupType.NONE);
+                urlHelpInline.setText("");
             }
-        } );
+        });
     }
 
     @Override
     public void addOrganizationalUnitSelectEntry() {
-        organizationalUnitDropdown.addItem( CoreConstants.INSTANCE.SelectEntry() );
+        organizationalUnitDropdown.addItem(CoreConstants.INSTANCE.SelectEntry());
     }
 
     @Override
-    public void addOrganizationalUnit( final String item,
-                                       final String value ) {
-        organizationalUnitDropdown.addItem( item,
-                                            value );
+    public void addOrganizationalUnit(String item, String value) {
+        organizationalUnitDropdown.addItem(item, value);
     }
 
     @Override
@@ -155,8 +151,8 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public String getOrganizationalUnit( final int index ) {
-        return organizationalUnitDropdown.getValue( index );
+    public String getOrganizationalUnit(int index) {
+        return organizationalUnitDropdown.getValue(index);
     }
 
     @Override
@@ -190,88 +186,88 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void setName( String name ) {
+    public void setName(String name) {
         nameTextBox.setText( name );
     }
 
     @Override
-    public void showUrlHelpManatoryMessage() {
-        urlHelpInline.setText( CoreConstants.INSTANCE.URLMandatory() );
+    public void showUrlHelpMandatoryMessage() {
+        urlHelpInline.setText(CoreConstants.INSTANCE.URLMandatory());
     }
 
     @Override
     public void showUrlHelpInvalidFormatMessage() {
-        urlHelpInline.setText( CoreConstants.INSTANCE.InvalidUrlFormat() );
+        urlHelpInline.setText(CoreConstants.INSTANCE.InvalidUrlFormat());
     }
 
     @Override
-    public void setUrlGroupType( ControlGroupType type ) {
-        urlGroup.setType( type );
+    public void setUrlGroupType(ControlGroupType type) {
+        urlGroup.setType(type);
     }
 
     @Override
-    public void showNameHelpManatoryMessage() {
-        nameHelpInline.setText( CoreConstants.INSTANCE.RepositoryNaneMandatory() );
+    public void showNameHelpMandatoryMessage() {
+        nameHelpInline.setText(CoreConstants.INSTANCE.RepositoryNaneMandatory());
     }
 
     @Override
-    public void setNameGroupType( final ControlGroupType type ) {
-        nameGroup.setType( type );
+    public void setNameGroupType(ControlGroupType type) {
+        nameGroup.setType(type);
     }
 
     @Override
     public void showOrganizationalUnitHelpMandatoryMessage() {
-        organizationalUnitHelpInline.setText( CoreConstants.INSTANCE.OrganizationalUnitMandatory() );
+        organizationalUnitHelpInline.setText(CoreConstants.INSTANCE.OrganizationalUnitMandatory());
     }
 
     @Override
-    public void setOrganizationalUnitGroupType( final ControlGroupType type ) {
-        organizationalUnitGroup.setType( type );
+    public void setOrganizationalUnitGroupType(ControlGroupType type) {
+        organizationalUnitGroup.setType(type);
     }
 
     @Override
-    public void setNameEnabled( final boolean enabled ) {
-        nameTextBox.setEnabled( enabled );
+    public void setNameEnabled(boolean enabled) {
+        nameTextBox.setEnabled(enabled);
     }
 
     @Override
-    public void setOrganizationalUnitEnabled( final boolean enabled ) {
-        organizationalUnitDropdown.setEnabled( enabled );
+    public void setOrganizationalUnitEnabled(boolean enabled) {
+        organizationalUnitDropdown.setEnabled(enabled);
     }
 
     @Override
-    public void setGitUrlEnabled( final boolean enabled ) {
-        gitURLTextBox.setEnabled( enabled );
+    public void setGitUrlEnabled(boolean enabled) {
+        gitURLTextBox.setEnabled(enabled);
     }
 
     @Override
-    public void setUsernameEnabled( final boolean enabled ) {
-        usernameTextBox.setEnabled( enabled );
+    public void setUsernameEnabled(boolean enabled) {
+        usernameTextBox.setEnabled(enabled);
     }
 
     @Override
-    public void setPasswordEnabled( final boolean enabled ) {
-        passwordTextBox.setEnabled( enabled );
+    public void setPasswordEnabled(boolean enabled) {
+        passwordTextBox.setEnabled(enabled);
     }
 
     @Override
-    public void setCloneEnabled( final boolean enabled ) {
-        clone.setEnabled( enabled );
+    public void setCloneEnabled(boolean enabled) {
+        clone.setEnabled(enabled);
     }
 
     @Override
-    public void setCancelEnabled( final boolean enabled ) {
-        cancel.setEnabled( enabled );
+    public void setCancelEnabled(boolean enabled) {
+        cancel.setEnabled(enabled);
     }
 
     @Override
-    public void setPopupCloseVisible( final boolean closeVisible ) {
-        setCloseVisible( closeVisible );
+    public void setPopupCloseVisible(boolean closeVisible) {
+        setCloseVisible(closeVisible);
     }
 
     @Override
     public void showBusyPopupMessage() {
-        BusyPopup.showMessage( CoreConstants.INSTANCE.Cloning() );
+        BusyPopup.showMessage(CoreConstants.INSTANCE.Cloning());
     }
 
     @Override
@@ -280,28 +276,27 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public boolean showAgreeNormalizeNameWindow( final String normalizedName ) {
-        return Window.confirm( CoreConstants.INSTANCE.RepositoryNameInvalid() + " \"" + normalizedName + "\". " + CoreConstants.INSTANCE.DoYouAgree() );
+    public boolean showAgreeNormalizeNameWindow(String normalizedName) {
+        return Window.confirm(CoreConstants.INSTANCE.RepositoryNameInvalid() + " \"" + normalizedName + "\". " + CoreConstants.INSTANCE.DoYouAgree());
     }
 
     @Override
     public void alertRepositoryCloned() {
-        Window.alert( CoreConstants.INSTANCE.RepoCloneSuccess() + "\n\n" + CommonConstants.INSTANCE.IndexClonedRepositoryWarning() );
+        Window.alert(CoreConstants.INSTANCE.RepoCloneSuccess() + "\n\n" + CommonConstants.INSTANCE.IndexClonedRepositoryWarning());
     }
 
     @Override
     public void errorRepositoryAlreadyExist() {
-        ErrorPopup.showMessage( CoreConstants.INSTANCE.RepoAlreadyExists() );
+        ErrorPopup.showMessage(CoreConstants.INSTANCE.RepoAlreadyExists());
     }
 
     @Override
-    public void errorCloneRepositoryFail( final Throwable cause ) {
-        ErrorPopup.showMessage( CoreConstants.INSTANCE.RepoCloneFail() + " \n" + cause.getMessage() );
+    public void errorCloneRepositoryFail(Throwable cause) {
+        ErrorPopup.showMessage(CoreConstants.INSTANCE.RepoCloneFail() + " \n" + cause.getMessage());
     }
 
     @Override
-    public void errorLoadOrganizationalUnitsFail( final Throwable cause ) {
-        ErrorPopup.showMessage( CoreConstants.INSTANCE.CantLoadOrganizationalUnits() + " \n" + cause.getMessage() );
+    public void errorLoadOrganizationalUnitsFail(Throwable cause) {
+        ErrorPopup.showMessage(CoreConstants.INSTANCE.CantLoadOrganizationalUnits() + " \n" + cause.getMessage());
     }
-
 }

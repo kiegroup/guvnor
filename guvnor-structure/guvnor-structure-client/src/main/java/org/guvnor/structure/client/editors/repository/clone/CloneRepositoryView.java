@@ -27,8 +27,7 @@ public interface CloneRepositoryView {
         void handleCloneClick();
     }
 
-    void init( Presenter presenter,
-               boolean isOuMandatory );
+    void init(Presenter presenter, boolean isOuMandatory);
 
     void hide();
 
@@ -36,10 +35,9 @@ public interface CloneRepositoryView {
 
     void addOrganizationalUnitSelectEntry();
 
-    void addOrganizationalUnit( String item,
-                                String value );
+    void addOrganizationalUnit(String item, String value);
 
-    String getOrganizationalUnit( int index );
+    String getOrganizationalUnit(int index);
 
     int getSelectedOrganizationalUnit();
 
@@ -55,49 +53,49 @@ public interface CloneRepositoryView {
 
     String getName();
 
-    void setName( String name );
+    void setName(String name);
 
-    void showUrlHelpManatoryMessage();
+    void showUrlHelpMandatoryMessage();
 
     void showUrlHelpInvalidFormatMessage();
 
-    void setUrlGroupType( ControlGroupType type );
+    void setUrlGroupType(ControlGroupType type);
 
-    void showNameHelpManatoryMessage();
+    void showNameHelpMandatoryMessage();
 
-    void setNameGroupType( ControlGroupType type );
+    void setNameGroupType(ControlGroupType type);
 
     void showOrganizationalUnitHelpMandatoryMessage();
 
-    void setOrganizationalUnitGroupType( ControlGroupType type );
+    void setOrganizationalUnitGroupType(ControlGroupType type);
 
-    void setNameEnabled( boolean enabled );
+    void setNameEnabled(boolean enabled);
 
-    void setOrganizationalUnitEnabled( boolean enabled );
+    void setOrganizationalUnitEnabled(boolean enabled);
 
-    void setGitUrlEnabled( boolean enabled );
+    void setGitUrlEnabled(boolean enabled);
 
-    void setUsernameEnabled( boolean enabled );
+    void setUsernameEnabled(boolean enabled);
 
-    void setPasswordEnabled( boolean enabled );
+    void setPasswordEnabled(boolean enabled);
 
-    void setCloneEnabled( boolean enabled );
+    void setCloneEnabled(boolean enabled);
 
-    void setCancelEnabled( boolean enabled );
+    void setCancelEnabled(boolean enabled);
 
-    void setPopupCloseVisible( boolean closeVisible );
+    void setPopupCloseVisible(boolean closeVisible);
 
     void showBusyPopupMessage();
 
     void closeBusyPopup();
 
-    boolean showAgreeNormalizeNameWindow( String normalizedName );
+    boolean showAgreeNormalizeNameWindow(String normalizedName);
 
     void alertRepositoryCloned();
 
     void errorRepositoryAlreadyExist();
 
-    void errorCloneRepositoryFail( Throwable cause );
+    void errorCloneRepositoryFail(Throwable cause);
 
-    void errorLoadOrganizationalUnitsFail( Throwable cause );
+    void errorLoadOrganizationalUnitsFail(Throwable cause);
 }

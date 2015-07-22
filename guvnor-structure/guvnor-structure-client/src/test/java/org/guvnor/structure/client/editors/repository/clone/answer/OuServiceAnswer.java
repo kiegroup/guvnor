@@ -24,15 +24,14 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 public class OuServiceAnswer implements Answer<OrganizationalUnitService> {
 
     private Collection<OrganizationalUnit> units;
     private OrganizationalUnitService ouService;
 
-    public OuServiceAnswer( Collection<OrganizationalUnit> units,
-                            OrganizationalUnitService ouService ) {
+    public OuServiceAnswer(Collection<OrganizationalUnit> units, OrganizationalUnitService ouService) {
         this.units = units;
         this.ouService = ouService;
     }

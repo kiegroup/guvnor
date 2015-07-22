@@ -22,33 +22,34 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
-public class RepositoryServiceAnswer implements Answer<RepositoryService> {
+public class RsNormalizedNameAnswer implements Answer<RepositoryService> {
 
-    private String response;
+    private String normalizedName;
     private RepositoryService repoService;
 
-    public RepositoryServiceAnswer( String response,
-                                    RepositoryService repoService ) {
-        this.response = response;
+
+    public RsNormalizedNameAnswer(String normalizedName, RepositoryService repoService) {
+        this.normalizedName = normalizedName;
         this.repoService = repoService;
     }
 
     @Override
-    public RepositoryService answer( InvocationOnMock invocation ) throws Throwable {
+    public RepositoryService answer(InvocationOnMock invocation) throws Throwable {
 
-        when( repoService.normalizeRepositoryName( any( String.class ) ) ).then( new Answer<String>() {
+        when(repoService.normalizeRepositoryName(any(String.class))).then(new Answer<String>() {
 
             @Override
-            public String answer( InvocationOnMock invocation ) throws Throwable {
-                return response;
+            public String answer(InvocationOnMock invocation) throws Throwable {
+
+                return normalizedName;
             }
-        } );
+        });
 
         @SuppressWarnings("unchecked")
-        final RemoteCallback<String> callback = (RemoteCallback<String>) invocation.getArguments()[ 0 ];
-        callback.callback( response );
+        final RemoteCallback<String> callback = (RemoteCallback<String>) invocation.getArguments()[0];
+        callback.callback(normalizedName);
 
         return repoService;
     }
