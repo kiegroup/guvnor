@@ -18,6 +18,6 @@ package org.guvnor.common.services.project.context;
 
 public interface ProjectContextChangeHandler {
 
-    public void onChange();
+    void onChange();
 
 }

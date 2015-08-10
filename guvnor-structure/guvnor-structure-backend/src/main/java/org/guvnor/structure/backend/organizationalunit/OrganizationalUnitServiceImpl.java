@@ -33,7 +33,7 @@ import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
-import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationaUnitEvent;
+import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
@@ -70,7 +70,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     private Event<RemoveOrganizationalUnitEvent> removeOrganizationalUnitEvent;
 
     @Inject
-    private Event<RepoAddedToOrganizationaUnitEvent> repoAddedToOrgUnitEvent;
+    private Event<RepoAddedToOrganizationalUnitEvent> repoAddedToOrgUnitEvent;
 
     @Inject
     private Event<RepoRemovedFromOrganizationalUnitEvent> repoRemovedFromOrgUnitEvent;
@@ -248,7 +248,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
             } finally {
                 configurationService.endBatch();
-                repoAddedToOrgUnitEvent.fire( new RepoAddedToOrganizationaUnitEvent( organizationalUnit, repository, getUserInfo( sessionInfo ) ) );
+                repoAddedToOrgUnitEvent.fire( new RepoAddedToOrganizationalUnitEvent( organizationalUnit, repository, getUserInfo( sessionInfo ) ) );
             }
         } else {
             throw new IllegalArgumentException( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );

@@ -22,7 +22,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationaUnitEvent;
+import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
@@ -32,14 +32,14 @@ import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
 @ApplicationScoped
 public class RepoAddedToOrganizationaUnitEventAdapter
-        implements SocialAdapter<RepoAddedToOrganizationaUnitEvent> {
+        implements SocialAdapter<RepoAddedToOrganizationalUnitEvent> {
 
     @Inject
     private SocialUserRepository socialUserRepository;
 
     @Override
-    public Class<RepoAddedToOrganizationaUnitEvent> eventToIntercept() {
-        return RepoAddedToOrganizationaUnitEvent.class;
+    public Class<RepoAddedToOrganizationalUnitEvent> eventToIntercept() {
+        return RepoAddedToOrganizationalUnitEvent.class;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class RepoAddedToOrganizationaUnitEventAdapter
 
     @Override
     public SocialActivitiesEvent toSocial( Object object ) {
-        RepoAddedToOrganizationaUnitEvent event = ( RepoAddedToOrganizationaUnitEvent ) object;
+        RepoAddedToOrganizationalUnitEvent event = (RepoAddedToOrganizationalUnitEvent) object;
 
         return new SocialActivitiesEvent(
                 socialUserRepository.findSocialUser( event.getUserName() ),
@@ -79,7 +79,7 @@ public class RepoAddedToOrganizationaUnitEventAdapter
         return new ArrayList<String>();
     }
 
-    private String getAdditionalInfo( RepoAddedToOrganizationaUnitEvent event ) {
+    private String getAdditionalInfo( RepoAddedToOrganizationalUnitEvent event ) {
         return "updated";
     }
 }

@@ -19,14 +19,14 @@ import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class RepoAddedToOrganizationaUnitEvent extends OrganizationalUnitEventBase {
+public class RepoAddedToOrganizationalUnitEvent extends OrganizationalUnitEventBase {
 
     private Repository repository;
 
-    public RepoAddedToOrganizationaUnitEvent() {
+    public RepoAddedToOrganizationalUnitEvent() {
     }
 
-    public RepoAddedToOrganizationaUnitEvent(final OrganizationalUnit organizationalUnit, final Repository repository, final String userName ) {
+    public RepoAddedToOrganizationalUnitEvent( final OrganizationalUnit organizationalUnit, final Repository repository, final String userName ) {
         super( organizationalUnit, userName );
         this.repository = repository;
     }
