@@ -31,11 +31,13 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.maven.project.ProjectBuildingException;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
+import org.kie.scanner.embedder.MavenEmbedderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -191,10 +193,9 @@ public class HttpPostHelper {
             // is available() safe?
             pomStream.mark( pomStream.available() );
 
-            PomModel pomModel = PomModelResolver.resolveFromPom( pomStream );
-
-            //If we were able to get a POM model we cannot upload file
-            if ( pomModel != null ) {
+            PomModel pomModel = null;
+            try {
+                pomModel = PomModelResolver.resolveFromPom(pomStream);
                 String groupId = pomModel.getReleaseId().getGroupId();
                 String artifactId = pomModel.getReleaseId().getArtifactId();
                 String version = pomModel.getReleaseId().getVersion();
@@ -206,8 +207,11 @@ public class HttpPostHelper {
                                    artifactId,
                                    version );
                 }
-
-            } else {
+            } catch (ProjectBuildingException pbe) {
+                return pbe.getMessage();
+            } catch (MavenEmbedderException mee) {
+                return mee.getMessage();
+            }catch (Exception e) {
                 return UPLOAD_UNABLE_TO_PARSE_POM;
             }
             pomStream.reset();

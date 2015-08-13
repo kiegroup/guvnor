@@ -17,11 +17,12 @@ package org.guvnor.m2repo.backend.server.helpers;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-
+import org.apache.maven.project.ProjectBuildingException;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.kie.api.builder.ReleaseId;
+import org.kie.scanner.embedder.MavenEmbedderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,19 +72,25 @@ public class PomModelResolver {
     /**
      * Construct a PomModel from a pom.xml file
      * @param pomStream InputStream to the pom.xml file
-     * @return a populated PomModel or null if the file could not be parsed
+     * @return a populated PomModel or throws exception if the file could not be parsed or deployed
      */
-    public static PomModel resolveFromPom( InputStream pomStream ) {
-        PomModel pomModel = null;
-        try {
-            pomModel = PomModel.Parser.parse( "pom.xml",
-                                              pomStream );
-        } catch ( Exception e ) {
-            log.info( "Failed to parse pom.xml for GAV information.",
-                      e );
-        }
+    public static PomModel resolveFromPom( InputStream pomStream ) throws Exception {
 
-        return pomModel;
+        try {
+            return PomModel.Parser.parse( "pom.xml", pomStream );
+        } catch ( final Exception e ) {
+            if( e.getCause() != null ) {
+                if( e.getCause() instanceof ProjectBuildingException ) {
+                    throw (ProjectBuildingException) e.getCause();
+                }
+                if( e.getCause() instanceof MavenEmbedderException ) {
+                    throw (MavenEmbedderException) e.getCause();
+                }
+            }
+
+            log.info( "Failed to process pom.xml for GAV information.", e );
+            throw e;
+        }
     }
 
 }
