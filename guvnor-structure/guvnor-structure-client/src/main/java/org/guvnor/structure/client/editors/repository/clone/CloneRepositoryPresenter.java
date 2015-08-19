@@ -85,15 +85,19 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
 
     @Override
     public void handleCloneClick() {
+        boolean urlConditionsMet = true;
+        boolean ouConditionsMet = true;
+        boolean nameConditionsMet = true;
+
         if ( view.isGitUrlEmpty() ) {
             view.setUrlGroupType( ControlGroupType.ERROR );
             view.showUrlHelpMandatoryMessage();
-            return;
+            urlConditionsMet = false;
 
         } else if ( !URIUtil.isValid( view.getGitUrl() ) ) {
-            view.setUrlGroupType( ControlGroupType.ERROR );
+            view.setUrlGroupType(ControlGroupType.ERROR);
             view.showUrlHelpInvalidFormatMessage();
-            return;
+            urlConditionsMet = false;
 
         } else {
             view.setUrlGroupType( ControlGroupType.NONE );
@@ -104,18 +108,21 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
         if ( isOuMandatory() && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
             view.setOrganizationalUnitGroupType( ControlGroupType.ERROR );
             view.showOrganizationalUnitHelpMandatoryMessage();
-            return;
+            ouConditionsMet = false;
 
         } else {
             view.setOrganizationalUnitGroupType( ControlGroupType.NONE );
         }
 
         if ( view.isNameEmpty() ) {
-            view.setNameGroupType( ControlGroupType.ERROR );
+            view.setNameGroupType(ControlGroupType.ERROR);
             view.showNameHelpMandatoryMessage();
-            return;
-
+            nameConditionsMet = false;
         } else {
+            view.setNameGroupType(ControlGroupType.NONE);
+        }
+
+        if(urlConditionsMet && ouConditionsMet && nameConditionsMet ) {
             repositoryService.call( new RemoteCallback<String>() {
                 @Override
                 public void callback( final String normalizedName ) {
