@@ -85,89 +85,116 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
 
     @Override
     public void handleCloneClick() {
+
+        boolean urlConditionsMet = setUrl();
+        boolean ouConditionsMet = setOrganizationalUnitGroupType();
+        boolean nameConditionsMet = setNameGroupType();
+
+        if(urlConditionsMet && ouConditionsMet && nameConditionsMet ) {
+            repositoryService.call( getNormalizeRepositoryNameCallback() ).normalizeRepositoryName( view.getName() );
+        }
+    }
+
+    private RemoteCallback<String> getNormalizeRepositoryNameCallback() {
+        return new RemoteCallback<String>() {
+            @Override
+            public void callback( final String normalizedName ) {
+                if ( !view.getName().equals( normalizedName ) ) {
+                    if ( !view.showAgreeNormalizeNameWindow( normalizedName ) ) {
+                        return;
+                    }
+                    view.setName( normalizedName );
+                }
+
+                lockScreen();
+
+                final String scheme = "git";
+                final String alias = view.getName().trim();
+                repositoryService.call( getCreateRepositoryCallback(),
+                                        getErrorCallback() ).createRepository( availableOrganizationalUnits.get( view.getOrganizationalUnit( view.getSelectedOrganizationalUnit() ) ),
+                                                                               scheme,
+                                                                               alias,
+                                                                               getEnv() );
+            }
+        };
+    }
+
+    private Map<String, Object> getEnv() {
+        final Map<String, Object> env = new HashMap<String, Object>( 3 );
+        env.put( "username", view.getUsername().trim() );
+        env.put( "crypt:password", view.getPassword().trim() );
+        env.put( "origin", view.getGitUrl() );
+        return env;
+    }
+
+    private RemoteCallback<Repository> getCreateRepositoryCallback() {
+        return new RemoteCallback<Repository>() {
+            @Override
+            public void callback( final Repository o ) {
+                view.alertRepositoryCloned();
+                unlockScreen();
+                view.hide();
+                placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias",
+                                                                                               o.getAlias() ) );
+            }
+        };
+    }
+
+    private ErrorCallback<Message> getErrorCallback() {
+        return new ErrorCallback<Message>() {
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                try {
+                    throw throwable;
+                } catch (RepositoryAlreadyExistsException ex) {
+                    view.errorRepositoryAlreadyExist();
+                } catch (Throwable ex) {
+                    view.errorCloneRepositoryFail( ex );
+                }
+                unlockScreen();
+                return true;
+            }
+        };
+    }
+
+    private boolean setNameGroupType() {
+        if ( view.isNameEmpty() ) {
+            view.setNameGroupType( ControlGroupType.ERROR );
+            view.showNameHelpMandatoryMessage();
+            return false;
+        } else {
+            view.setNameGroupType( ControlGroupType.NONE );
+            return true;
+        }
+    }
+
+    private boolean setOrganizationalUnitGroupType() {
+        if ( isOuMandatory() && !availableOrganizationalUnits.containsKey( view.getOrganizationalUnit( view.getSelectedOrganizationalUnit() ) ) ) {
+            view.setOrganizationalUnitGroupType( ControlGroupType.ERROR );
+            view.showOrganizationalUnitHelpMandatoryMessage();
+            return false;
+
+        } else {
+            view.setOrganizationalUnitGroupType( ControlGroupType.NONE );
+            return true;
+        }
+    }
+
+    private boolean setUrl() {
         if ( view.isGitUrlEmpty() ) {
             view.setUrlGroupType( ControlGroupType.ERROR );
             view.showUrlHelpMandatoryMessage();
-            return;
+            return false;
 
         } else if ( !URIUtil.isValid( view.getGitUrl() ) ) {
             view.setUrlGroupType( ControlGroupType.ERROR );
             view.showUrlHelpInvalidFormatMessage();
-            return;
+            return false;
 
         } else {
             view.setUrlGroupType( ControlGroupType.NONE );
-        }
-
-        final String organizationalUnit = view.getOrganizationalUnit( view.getSelectedOrganizationalUnit() );
-
-        if ( isOuMandatory() && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
-            view.setOrganizationalUnitGroupType( ControlGroupType.ERROR );
-            view.showOrganizationalUnitHelpMandatoryMessage();
-            return;
-
-        } else {
-            view.setOrganizationalUnitGroupType( ControlGroupType.NONE );
-        }
-
-        if ( view.isNameEmpty() ) {
-            view.setNameGroupType( ControlGroupType.ERROR );
-            view.showNameHelpMandatoryMessage();
-            return;
-
-        } else {
-            repositoryService.call( new RemoteCallback<String>() {
-                @Override
-                public void callback( final String normalizedName ) {
-                    if ( !view.getName().equals( normalizedName ) ) {
-                        if ( !view.showAgreeNormalizeNameWindow( normalizedName ) ) {
-                            return;
-                        }
-                        view.setName( normalizedName );
-                    }
-
-                    lockScreen();
-
-                    final String scheme = "git";
-                    final String alias = view.getName().trim();
-                    final String origin = view.getGitUrl();
-                    final String username = view.getUsername().trim();
-                    final String password = view.getPassword().trim();
-                    final Map<String, Object> env = new HashMap<String, Object>( 3 );
-                    env.put( "username", username );
-                    env.put( "crypt:password", password );
-                    env.put( "origin", origin );
-
-                    repositoryService.call( new RemoteCallback<Repository>() {
-                                                @Override
-                                                public void callback( final Repository o ) {
-                                                    view.alertRepositoryCloned();
-                                                    unlockScreen();
-                                                    view.hide();
-                                                    placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias",
-                                                                                                                                   o.getAlias() ) );
-                                                }
-                                            },
-                                            new ErrorCallback<Message>() {
-                                                @Override
-                                                public boolean error( final Message message,
-                                                                      final Throwable throwable ) {
-                                                    try {
-                                                        throw throwable;
-                                                    } catch ( RepositoryAlreadyExistsException ex ) {
-                                                        view.errorRepositoryAlreadyExist();
-                                                    } catch ( Throwable ex ) {
-                                                        view.errorCloneRepositoryFail( ex );
-                                                    }
-                                                    unlockScreen();
-                                                    return true;
-                                                }
-                                            } ).createRepository( availableOrganizationalUnits.get( organizationalUnit ),
-                                                                  scheme,
-                                                                  alias,
-                                                                  env );
-                }
-            } ).normalizeRepositoryName( view.getName() );
+            return true;
         }
     }
 
