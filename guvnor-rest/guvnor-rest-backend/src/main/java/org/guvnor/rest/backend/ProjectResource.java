@@ -15,12 +15,14 @@
 */
 package org.guvnor.rest.backend;
 
+import static org.kie.internal.remote.PermissionConstants.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -68,6 +70,7 @@ import org.guvnor.rest.client.UpdateOrganizationalUnitRequest;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.kie.internal.remote.PermissionConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
@@ -116,6 +119,7 @@ public class ProjectResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/jobs/{jobId}")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public JobResult getJobStatus( @PathParam("jobId") String jobId ) {
         logger.debug( "-----getJobStatus--- , jobId: {}", jobId );
 
@@ -134,6 +138,7 @@ public class ProjectResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/jobs/{jobId}")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public JobResult removeJob( @PathParam("jobId") String jobId ) {
         logger.debug( "-----removeJob--- , jobId: {}", jobId );
 
@@ -156,6 +161,7 @@ public class ProjectResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Collection<RepositoryResponse> getRepositories() {
         logger.debug( "-----getRepositories--- " );
 
@@ -173,6 +179,7 @@ public class ProjectResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public RepositoryResponse getRepository( @PathParam("repositoryName") String repositoryName ) {
         logger.debug( "-----getRepository---, repository name: {}", repositoryName );
         org.guvnor.structure.repositories.Repository origRepo = checkRepositoryExistence( repositoryName );
@@ -188,6 +195,7 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response createOrCloneRepository( RepositoryRequest repository ) {
         logger.debug( "-----createOrCloneRepository--- , repository name: {}", repository.getName() );
 
@@ -214,6 +222,7 @@ public class ProjectResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response removeRepository( @PathParam("repositoryName") String repositoryName ) {
         logger.debug( "-----removeRepository--- , repositoryName: {}", repositoryName );
 
@@ -234,6 +243,7 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response createProject(
             @PathParam("repositoryName") String repositoryName,
             ProjectRequest project ) {
@@ -260,6 +270,7 @@ public class ProjectResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Collection<ProjectResponse> getProjects( @PathParam("repositoryName") String repositoryName) {
         logger.info( "-----getProjects--- , repositoryName: {}", repositoryName );
 
@@ -288,6 +299,7 @@ public class ProjectResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response deleteProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
@@ -311,6 +323,7 @@ public class ProjectResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}/maven/compile")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response compileProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
@@ -334,6 +347,7 @@ public class ProjectResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}/maven/install")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response installProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
@@ -358,6 +372,7 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}/maven/test")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response testProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName,
@@ -383,6 +398,7 @@ public class ProjectResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}/maven/deploy")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response deployProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
@@ -406,6 +422,7 @@ public class ProjectResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Collection<OrganizationalUnit> getOrganizationalUnits() {
         logger.debug( "-----getOrganizationalUnits--- " );
         Collection<org.guvnor.structure.organizationalunit.OrganizationalUnit> origOrgUnits
@@ -431,6 +448,7 @@ public class ProjectResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public OrganizationalUnit getOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName ) {
         logger.debug( "-----getOrganizationalUnit ---, OrganizationalUnit name: {}", organizationalUnitName );
         org.guvnor.structure.organizationalunit.OrganizationalUnit origOrgUnit
@@ -453,6 +471,7 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response createOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
         logger.debug( "-----createOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {}, Default group id : {}",
                         organizationalUnit.getName(), organizationalUnit.getOwner(), organizationalUnit.getDefaultGroupId() );
@@ -477,6 +496,7 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}/")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response updateOrganizationalUnit(@PathParam("organizationalUnitName") String orgUnitName, UpdateOrganizationalUnit organizationalUnit ) {
        
         // use name in url if post entity name is null
@@ -513,6 +533,7 @@ public class ProjectResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}/repositories/{repositoryName}")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response addRepositoryToOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
                                                        @PathParam("repositoryName") String repositoryName ) {
         logger.debug( "-----addRepositoryToOrganizationalUnit--- , OrganizationalUnit name: {}, Repository name: {}", organizationalUnitName, repositoryName );
@@ -536,6 +557,7 @@ public class ProjectResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}/repositories/{repositoryName}")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response removeRepositoryFromOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
                                                             @PathParam("repositoryName") String repositoryName ) {
         logger.debug( "-----removeRepositoryFromOrganizationalUnit--- , OrganizationalUnit name: {}, Repository name: {}", organizationalUnitName, repositoryName );
@@ -559,6 +581,7 @@ public class ProjectResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response deleteOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName ) {
         logger.debug( "-----deleteOrganizationalUnit--- , OrganizationalUnit name: {}", organizationalUnitName );
         checkOrganizationalUnitExistence( organizationalUnitName );
