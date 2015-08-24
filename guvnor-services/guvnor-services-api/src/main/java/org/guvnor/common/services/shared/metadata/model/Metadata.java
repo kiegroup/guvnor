@@ -286,8 +286,6 @@ public class Metadata {
         result = ~~result;
         result = 31 * result + ( description != null ? description.hashCode() : 0 );
         result = ~~result;
-        result = 31 * result + ( lockInfo != null ? lockInfo.hashCode() : 0 );
-        result = ~~result;
         result = 31 * result + ( tags != null ? tags.hashCode() : 0 );
         result = ~~result;
         result = 31 * result + ( discussion != null ? discussion.hashCode() : 0 );
