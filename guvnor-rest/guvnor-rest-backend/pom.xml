@@ -120,6 +120,13 @@
       <groupId>org.apache.deltaspike.core</groupId>
       <artifactId>deltaspike-core-api</artifactId>
     </dependency>
+    
+    <!-- TEST: reflection -->
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.workbench.common.services.rest;
+package org.guvnor.rest.backend;
 
 /**
  * See the drools-wb-tests modules in kie-test.
