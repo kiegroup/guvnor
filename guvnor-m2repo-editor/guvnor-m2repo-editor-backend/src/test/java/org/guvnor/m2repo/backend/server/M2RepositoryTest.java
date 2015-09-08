@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
@@ -33,12 +34,19 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.helpers.FormData;
 import org.guvnor.m2repo.backend.server.helpers.HttpPostHelper;
 import org.guvnor.m2repo.model.JarListPageRequest;
-import org.junit.*;
+import org.guvnor.m2repo.model.JarListPageRow;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.paging.PageResponse;
 
-import static org.guvnor.m2repo.model.HTMLFileManagerFields.*;
 import static org.junit.Assert.*;
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.*;
 
 public class M2RepositoryTest {
 
@@ -303,6 +311,47 @@ public class M2RepositoryTest {
 
         assert ( helperMethod.invoke( helper,
                                       uploadItem ).equals( UPLOAD_OK ) );
+    }
+
+    /**
+     * Verify that
+     * {@link M2RepoServiceImpl#listArtifacts(org.guvnor.m2repo.model.JarListPageRequest) M2RepoServiceImpl.listArtifacts()}
+     * returns correct PageResponse.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testListArtifacts() throws Exception {
+        List<File> artifacts = new ArrayList<File>();
+        final int TOTAL = 5;
+        final int PAGE_START = 1;
+        final int PAGE_SIZE = 2;
+        for ( int i = 0; i < TOTAL; i++ ) {
+            artifacts.add( new File( GuvnorM2Repository.M2_REPO_DIR, "path/x" + i ) );
+        }
+        // Create a mock repository to make the test independent on any project deployment
+        GuvnorM2Repository mockRepo = Mockito.mock( GuvnorM2Repository.class );
+        Mockito.when( mockRepo.listFiles( Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean() ) )
+                .thenReturn( artifacts );
+
+        // Create a shell M2RepoService with injected mock M2Repository
+        M2RepoServiceImpl m2service = new M2RepoServiceImpl();
+        java.lang.reflect.Field repositoryField = M2RepoServiceImpl.class.getDeclaredField( "repository" );
+        repositoryField.setAccessible( true );
+        repositoryField.set( m2service,
+                             mockRepo );
+
+        // Verify PageResponse
+        JarListPageRequest request = new JarListPageRequest( PAGE_START, PAGE_SIZE, null, null, false );
+        PageResponse<JarListPageRow> response = m2service.listArtifacts( request );
+        assertEquals( PAGE_SIZE, response.getPageRowList().size() );
+        assertEquals( TOTAL, response.getTotalRowSize() );
+        int i = PAGE_START;
+        for ( JarListPageRow row : response.getPageRowList() ) {
+            assertEquals( "x" + i, row.getName() );
+            assertEquals( "path/x" + i, row.getPath() );
+            i += 1;
+        }
     }
 
     @Test
