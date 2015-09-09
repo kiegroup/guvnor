@@ -22,4 +22,6 @@ public interface ArtifactListPresenter {
     void search( String filter );
 
     void refresh();
+
+    void onOpenPom( String path );
 }

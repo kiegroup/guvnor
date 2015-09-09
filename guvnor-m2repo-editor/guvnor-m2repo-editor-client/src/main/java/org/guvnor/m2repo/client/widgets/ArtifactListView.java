@@ -23,17 +23,16 @@ import org.uberfire.client.mvp.UberView;
 
 public interface ArtifactListView extends UberView<ArtifactListPresenter> {
 
-    String getCurrentFilter();
-
-    void setCurrentFilter( String filter );
-
     void setContentHeight( String s );
 
     void addColumn( final Column<JarListPageRow, ?> column,
                     final String caption );
 
+    void showPom( String pomText );
+
     HasData<JarListPageRow> getDisplay();
 
     ColumnSortList getColumnSortList();
 
+    String getRefreshNotificationMessage();
 }
