@@ -23,7 +23,6 @@ import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.Range;
-import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
@@ -36,58 +35,66 @@ import org.uberfire.workbench.events.NotificationEvent;
 public class ArtifactListPresenterImpl
         implements ArtifactListPresenter {
 
-    @Inject
-    protected ArtifactListViewImpl view;
+    static final boolean DEFAULT_ORDER_ASCENDING = true;
+    private final ArtifactListView view;
 
-    @Inject
-    private Caller<M2RepoService> m2RepoService;
+    private final Caller<M2RepoService> m2RepoService;
 
-    @Inject
-    private Event<NotificationEvent> notification;
+    private final Event<NotificationEvent> notification;
 
     private RefreshableAsyncDataProvider dataProvider;
+
+    @Inject
+    public ArtifactListPresenterImpl( ArtifactListView view, Caller<M2RepoService> m2RepoService, Event<NotificationEvent> notification ) {
+        this.view = view;
+        this.m2RepoService = m2RepoService;
+        this.notification = notification;
+    }
 
     @PostConstruct
     public void init() {
         view.init( this );
+        dataProvider = new RefreshableAsyncDataProvider( view, m2RepoService );
+        dataProvider.addDataDisplay( view.getDisplay() );
+    }
+
+    @Override
+    public ArtifactListView getView() {
+        return view;
     }
 
     @Override
     public void refresh() {
-        // We couldn't attach the Display to the DataProvider in the @PostConstruct method
-        // as this initializes the Display with data using AsyncDataProvider.onRangeChanged()
-        // at which time the View may not have been initialised fully.
-        if ( dataProvider == null ) {
-            dataProvider = new RefreshableAsyncDataProvider( view,
-                                                             m2RepoService );
-            dataProvider.addDataDisplay( view.getDisplay() );
-        } else {
-            for ( HasData<JarListPageRow> display : dataProvider.getDataDisplays() ) {
-                dataProvider.refresh( display );
-            }
-            notification.fire( new NotificationEvent( M2RepoEditorConstants.INSTANCE.RefreshedSuccessfully() ) );
-        }
+        dataProvider.refresh();
+        notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
     }
 
     @Override
     public void search( final String filter ) {
-        view.setCurrentFilter( filter );
+        dataProvider.setFilter( filter );
         refresh();
     }
 
-    public ArtifactListViewImpl getView() {
-        return view;
+    @Override
+    public void onOpenPom( String path ) {
+        m2RepoService.call( new RemoteCallback<String>() {
+            @Override
+            public void callback( final String response ) {
+                view.showPom( response );
+            }
+        } ).getPomText( path );
     }
 
     /**
-     * Extension to AsyncDataProvider that supports refreshing the table
+     * Extension to AsyncDataProvider that supports refreshing the table.
      */
     private static class RefreshableAsyncDataProvider extends AsyncDataProvider<JarListPageRow> {
 
-        private ArtifactListViewImpl view;
-        private Caller<M2RepoService> m2RepoService;
+        private final ArtifactListView view;
+        private final Caller<M2RepoService> m2RepoService;
+        private String filter;
 
-        protected RefreshableAsyncDataProvider( final ArtifactListViewImpl view,
+        protected RefreshableAsyncDataProvider( final ArtifactListView view,
                                                 final Caller<M2RepoService> m2RepoService ) {
             this.view = PortablePreconditions.checkNotNull( "view",
                                                             view );
@@ -95,8 +102,14 @@ public class ArtifactListPresenterImpl
                                                                      m2RepoService );
         }
 
-        protected void refresh( final HasData<JarListPageRow> display ) {
-            onRangeChanged( display );
+        protected void setFilter( String filter ) {
+            this.filter = filter;
+        }
+
+        protected void refresh() {
+            for ( HasData<JarListPageRow> display : getDataDisplays() ) {
+                onRangeChanged( display );
+            }
         }
 
         @Override
@@ -104,7 +117,7 @@ public class ArtifactListPresenterImpl
             final Range range = display.getVisibleRange();
             JarListPageRequest request = new JarListPageRequest( range.getStart(),
                                                                  range.getLength(),
-                                                                 view.getCurrentFilter(),
+                                                                 filter,
                                                                  getSortColumnDataStoreName(),
                                                                  isSortColumnAscending() );
 
@@ -117,7 +130,6 @@ public class ArtifactListPresenterImpl
                                    response.getPageRowList() );
                 }
             } ).listArtifacts( request );
-
         }
 
         private String getSortColumnDataStoreName() {
@@ -127,9 +139,7 @@ public class ArtifactListPresenterImpl
 
         private boolean isSortColumnAscending() {
             final ColumnSortList columnSortList = view.getColumnSortList();
-            return ( columnSortList == null || columnSortList.size() == 0 ) ? false : columnSortList.get( 0 ).isAscending();
+            return ( columnSortList == null || columnSortList.size() == 0 ) ? DEFAULT_ORDER_ASCENDING : columnSortList.get( 0 ).isAscending();
         }
-
     }
-
 }

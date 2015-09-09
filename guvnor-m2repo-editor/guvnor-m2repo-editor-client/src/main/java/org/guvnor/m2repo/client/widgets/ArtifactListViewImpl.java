@@ -16,7 +16,6 @@
 package org.guvnor.m2repo.client.widgets;
 
 import java.util.Date;
-import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ButtonCell;
 import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
@@ -33,8 +32,6 @@ import org.guvnor.m2repo.client.editor.JarDetailPopup;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
-import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 
@@ -45,11 +42,6 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
     protected final PagedTable<JarListPageRow> dataGrid = new PagedTable<JarListPageRow>( PAGE_SIZE );
 
     protected ArtifactListPresenter presenter;
-
-    @Inject
-    protected Caller<M2RepoService> m2RepoService;
-
-    protected String currentFilter = "";
 
     public ArtifactListViewImpl() {
         dataGrid.setEmptyTableCaption( M2RepoEditorConstants.INSTANCE.NoArtifactAvailable() );
@@ -91,21 +83,17 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
         final Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell() {{
             setSize( ButtonSize.MINI );
         }} ) {
+            @Override
             public String getValue( JarListPageRow row ) {
                 return M2RepoEditorConstants.INSTANCE.Open();
             }
         };
         openColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
+            @Override
             public void update( int index,
                                 JarListPageRow row,
                                 String value ) {
-                m2RepoService.call( new RemoteCallback<String>() {
-                    @Override
-                    public void callback( final String response ) {
-                        JarDetailPopup popup = new JarDetailPopup( response );
-                        popup.show();
-                    }
-                } ).getPomText( row.getPath() );
+                presenter.onOpenPom( row.getPath() );
             }
         } );
         dataGrid.addColumn( openColumn,
@@ -134,13 +122,9 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
     }
 
     @Override
-    public String getCurrentFilter() {
-        return currentFilter;
-    }
-
-    @Override
-    public void setCurrentFilter( final String currentFilter ) {
-        this.currentFilter = currentFilter;
+    public void showPom( String pomText ) {
+        JarDetailPopup popup = new JarDetailPopup( pomText );
+        popup.show();
     }
 
     @Override
@@ -153,4 +137,8 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
         return dataGrid.getColumnSortList();
     }
 
+    @Override
+    public String getRefreshNotificationMessage() {
+        return M2RepoEditorConstants.INSTANCE.RefreshedSuccessfully();
+    }
 }
