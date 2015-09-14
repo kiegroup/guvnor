@@ -60,6 +60,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
+    </dependency>
+
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -70,7 +75,6 @@
       <groupId>org.gwtbootstrap3</groupId>
       <artifactId>gwtbootstrap3</artifactId>
     </dependency>
-
 
   </dependencies>
 
