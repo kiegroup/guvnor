@@ -977,7 +977,7 @@ public class GuvnorM2Repository {
                     Aether.getAether().getSession(),
                     request );
         } catch ( ArtifactResolutionException e ) {
-            log.error( e.getMessage(), e );
+            log.warn( e.getMessage(), e );
         }
 
         if ( result == null ) {
