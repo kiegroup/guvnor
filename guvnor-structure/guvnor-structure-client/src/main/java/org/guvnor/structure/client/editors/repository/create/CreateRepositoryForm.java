@@ -46,6 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -201,6 +202,10 @@ public class CreateRepositoryForm
                     final String alias = nameTextBox.getText().trim();
                     final Map<String, Object> env = new HashMap<String, Object>( 3 );
 
+                    //Cloned repositories are not managed by default.
+                    env.put( EnvironmentParameters.MANAGED,
+                             false );
+
                     repositoryService.call( new RemoteCallback<Repository>() {
                                                 @Override
                                                 public void callback( Repository o ) {
@@ -224,7 +229,10 @@ public class CreateRepositoryForm
                                                     return true;
                                                 }
                                             }
-                                          ).createRepository( availableOrganizationalUnits.get( organizationalUnit ), scheme, alias, env );
+                                          ).createRepository( availableOrganizationalUnits.get( organizationalUnit ),
+                                                              scheme,
+                                                              alias,
+                                                              env );
 
                 }
             } ).normalizeRepositoryName( nameTextBox.getText() );

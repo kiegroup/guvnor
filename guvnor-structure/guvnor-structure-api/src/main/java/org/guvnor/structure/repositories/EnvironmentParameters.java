@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.guvnor.structure.backend.repositories;
+package org.guvnor.structure.repositories;
 
 /**
  * Magic Strings for common environment parameter names

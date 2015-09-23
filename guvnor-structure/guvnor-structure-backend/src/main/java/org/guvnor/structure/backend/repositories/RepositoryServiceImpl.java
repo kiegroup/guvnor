@@ -57,7 +57,7 @@ import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.FileSystem;
 
-import static org.guvnor.structure.backend.repositories.EnvironmentParameters.*;
+import static org.guvnor.structure.repositories.EnvironmentParameters.*;
 import static org.guvnor.structure.server.config.ConfigType.*;
 import static org.uberfire.backend.server.util.Paths.*;
 
