@@ -272,7 +272,7 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
 
     @Override
     public void setPopupCloseVisible( final boolean closeVisible ) {
-        setPopupCloseVisible( closeVisible );
+        setClosable( closeVisible );
     }
 
     @Override
