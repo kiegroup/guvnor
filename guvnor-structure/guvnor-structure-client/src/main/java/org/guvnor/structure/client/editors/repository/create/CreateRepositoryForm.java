@@ -40,6 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -178,6 +179,7 @@ public class CreateRepositoryForm extends Composite implements HasCloseHandlers<
             organizationalUnitGroup.setValidationState( ValidationState.ERROR );
             organizationalUnitHelpBlock.setText( CoreConstants.INSTANCE.OrganizationalUnitMandatory() );
             return;
+
         } else {
             organizationalUnitGroup.setValidationState( ValidationState.NONE );
         }
@@ -185,6 +187,7 @@ public class CreateRepositoryForm extends Composite implements HasCloseHandlers<
         if ( nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty() ) {
             nameGroup.setValidationState( ValidationState.ERROR );
             nameHelpBlock.setText( CoreConstants.INSTANCE.RepositoryNaneMandatory() );
+
         } else {
             repositoryService.call( new RemoteCallback<String>() {
                 @Override
@@ -199,6 +202,10 @@ public class CreateRepositoryForm extends Composite implements HasCloseHandlers<
                     final String scheme = "git";
                     final String alias = nameTextBox.getText().trim();
                     final Map<String, Object> env = new HashMap<String, Object>( 3 );
+
+                    //Cloned repositories are not managed by default.
+                    env.put( EnvironmentParameters.MANAGED,
+                             false );
 
                     repositoryService.call( new RemoteCallback<Repository>() {
                                                 @Override
@@ -223,7 +230,10 @@ public class CreateRepositoryForm extends Composite implements HasCloseHandlers<
                                                     return true;
                                                 }
                                             }
-                                          ).createRepository( availableOrganizationalUnits.get( organizationalUnit ), scheme, alias, env );
+                                          ).createRepository( availableOrganizationalUnits.get( organizationalUnit ),
+                                                              scheme,
+                                                              alias,
+                                                              env );
 
                 }
             } ).normalizeRepositoryName( nameTextBox.getText() );

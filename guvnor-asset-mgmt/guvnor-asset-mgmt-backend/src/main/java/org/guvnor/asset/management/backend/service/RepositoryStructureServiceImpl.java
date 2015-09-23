@@ -44,13 +44,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 
-import static org.guvnor.structure.backend.repositories.EnvironmentParameters.*;
+import static org.guvnor.structure.repositories.EnvironmentParameters.*;
 
 @Service
 @ApplicationScoped

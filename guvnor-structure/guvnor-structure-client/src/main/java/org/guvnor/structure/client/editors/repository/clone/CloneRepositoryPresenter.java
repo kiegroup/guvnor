@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -121,9 +122,15 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
 
     private Map<String, Object> getEnv() {
         final Map<String, Object> env = new HashMap<String, Object>( 3 );
-        env.put( "username", view.getUsername().trim() );
-        env.put( "crypt:password", view.getPassword().trim() );
-        env.put( "origin", view.getGitUrl() );
+        env.put( "username",
+                 view.getUsername().trim() );
+        env.put( "crypt:password",
+                 view.getPassword().trim() );
+        env.put( "origin",
+                 view.getGitUrl() );
+        //Cloned repositories are not managed by default.
+        env.put( EnvironmentParameters.MANAGED,
+                 false );
         return env;
     }
 
