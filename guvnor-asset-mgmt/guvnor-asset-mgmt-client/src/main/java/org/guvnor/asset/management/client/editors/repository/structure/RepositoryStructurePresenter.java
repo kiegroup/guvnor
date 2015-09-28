@@ -238,7 +238,7 @@ public class RepositoryStructurePresenter
             this.branch = repository != null ? repository.getCurrentBranch() : null;
             this.project = project;
 
-            if ( repoOrBranchChanged || ( lastAddedModule == null || !lastAddedModule.equals( project ) ) && lastDeletedModule == null ) {
+            if ( repoOrBranchChanged || ( ( lastAddedModule == null || !lastAddedModule.equals( project ) ) && lastDeletedModule == null ) ) {
                 init();
             }
             lastAddedModule = null;
@@ -851,7 +851,10 @@ public class RepositoryStructurePresenter
     }
 
     private void addToModulesList( final Project project ) {
-        dataProvider.getList().add( new ProjectModuleRow( project.getProjectName() ) );
+        ProjectModuleRow row = new ProjectModuleRow( project.getProjectName() );
+        if ( !dataProvider.getList().contains( row ) ) {
+            dataProvider.getList().add( row );
+        }
     }
 
     private boolean repositoryOrBranchChanged( Repository selectedRepository ) {
