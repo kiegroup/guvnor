@@ -77,6 +77,9 @@
   <bpmn2:itemDefinition id="__C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_BP_DeployToRuntimeInputXItem" structureRef="Boolean"/>
   <bpmn2:itemDefinition id="__C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_BP_ExceptionInputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_ProcessNameInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_DeployOutcomeInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__C4ACDC27-96F3-425F-BFC6-D8F8DED2E062_InitiatorInputXItem" structureRef="String"/>
+
   <bpmn2:itemDefinition id="__4A70AB26-9A34-43F9-A50B-0A3CC14C50F2_RepositoryInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__4A70AB26-9A34-43F9-A50B-0A3CC14C50F2_OperationInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__4A70AB26-9A34-43F9-A50B-0A3CC14C50F2_RequestorInputXItem" structureRef="Object"/>
