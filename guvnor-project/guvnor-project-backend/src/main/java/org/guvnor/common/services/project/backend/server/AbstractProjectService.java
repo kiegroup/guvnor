@@ -65,8 +65,6 @@ import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil.*;
-
 public abstract class AbstractProjectService<T extends Project>
         implements ProjectService<T>,
                    ProjectFactory<T> {
@@ -733,14 +731,22 @@ public abstract class AbstractProjectService<T extends Project>
                 parent = pomService.load( Paths.convert( parentPom ) );
             }
 
-            ioService.delete( projectDirectory, StandardDeleteOption.NON_EMPTY_DIRECTORIES, optionsFactory.makeCommentedOption( comment, identity, sessionInfo ) );
-            deleteProjectEvent.fire( new DeleteProjectEvent( project2Delete ) );
-
+            ioService.delete( projectDirectory,
+                              StandardDeleteOption.NON_EMPTY_DIRECTORIES,
+                              optionsFactory.makeCommentedOption( comment,
+                                                                  identity,
+                                                                  sessionInfo ) );
+            //Note we do *not* raise a DeleteProjectEvent here, as that is handled by DeleteProjectObserverBridge
+            
             if ( parent != null ) {
                 parent.setMultiModule( true );
                 parent.getModules().remove( project2Delete.getProjectName() );
-                pomService.save( Paths.convert( parentPom ), parent, null, "Removing child module " + project2Delete.getProjectName() );
+                pomService.save( Paths.convert( parentPom ),
+                                 parent,
+                                 null,
+                                 "Removing child module " + project2Delete.getProjectName() );
             }
+
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
