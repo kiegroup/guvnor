@@ -27,6 +27,7 @@ import javax.inject.Named;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.project.ProjectFactory;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
@@ -34,20 +35,33 @@ import org.uberfire.workbench.events.ResourceChange;
 import org.uberfire.workbench.events.ResourceDeleted;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 
+/**
+ * A bridge between changes made to an underlying VFS and Project abstractions. Projects can be deleted
+ * either through the Workbench's UI or via REST or on a cloned repository that's pushed back to the Workbench.
+ * Interested observers are signaled of a Project deletion event when a pom.xml file is detected as deleted.
+ */
 @ApplicationScoped
-public class PathObserverService {
+public class DeleteProjectObserverBridge {
 
-    //TODO {porcelli} !rename/create!
-
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
     private ProjectFactory<? extends Project> projectFactory;
+    private Event<DeleteProjectEvent> deleteProjectEvent;
+
+    public DeleteProjectObserverBridge() {
+        //Zero-arg constructor for CDI proxying
+    }
 
     @Inject
-    private Event<DeleteProjectEvent> deleteProjectEvent;
+    public DeleteProjectObserverBridge( final @Named("ioStrategy") IOService ioService,
+                                        final ProjectFactory<? extends Project> projectFactory,
+                                        final Event<DeleteProjectEvent> deleteProjectEvent ) {
+        this.ioService = PortablePreconditions.checkNotNull( "ioService",
+                                                             ioService );
+        this.projectFactory = PortablePreconditions.checkNotNull( "projectFactory",
+                                                                  projectFactory );
+        this.deleteProjectEvent = PortablePreconditions.checkNotNull( "deleteProjectEvent",
+                                                                      deleteProjectEvent );
+    }
 
     public void onBatchResourceChanges( @Observes final ResourceDeletedEvent event ) {
         if ( event.getPath().getFileName().equals( "pom.xml" ) ) {
