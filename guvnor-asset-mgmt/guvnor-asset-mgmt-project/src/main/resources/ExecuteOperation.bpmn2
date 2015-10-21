@@ -9,6 +9,7 @@
   <bpmn2:itemDefinition id="_JobRequestItem" structureRef="org.guvnor.rest.client.JobRequest"/>
   <bpmn2:itemDefinition id="_RetriesItem" structureRef="Integer"/>
   <bpmn2:itemDefinition id="_OwnerItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="_BusinessKeyItem" structureRef="String"/>
   <bpmn2:error id="java.lang.RuntimeException" errorCode="java.lang.RuntimeException"/>
   <bpmn2:itemDefinition id="__5D7392FA-7863-4ECE-AE2E-2A55B32CA6E8_OperationInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__5D7392FA-7863-4ECE-AE2E-2A55B32CA6E8_RequestorInputXItem" structureRef="Object"/>
@@ -20,6 +21,7 @@
   <bpmn2:itemDefinition id="__DF37F979-03D2-4369-9B70-8BC61144CD80_JobRequestInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__DF37F979-03D2-4369-9B70-8BC61144CD80_retriesInputXItem" structureRef="Integer"/>
   <bpmn2:itemDefinition id="__DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__DF37F979-03D2-4369-9B70-8BC61144CD80_businessKeyInputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__DF37F979-03D2-4369-9B70-8BC61144CD80_ResultOutputXItem" structureRef="java.lang.Object"/>
   <bpmn2:process id="guvnor-asset-management.ExecuteOperation" drools:packageName="org.jbpm" drools:version="1.0" name="ExecuteOperation" isExecutable="true">
     <bpmn2:property id="Operation" itemSubjectRef="_OperationItem"/>
@@ -31,6 +33,7 @@
     <bpmn2:property id="JobRequest" itemSubjectRef="_JobRequestItem"/>
     <bpmn2:property id="Retries" itemSubjectRef="_RetriesItem"/>
     <bpmn2:property id="Owner" itemSubjectRef="_OwnerItem"/>
+    <bpmn2:property id="BusinessKey" itemSubjectRef="_BusinessKeyItem"/>
     <bpmn2:startEvent id="_0C2F9495-DDED-4E42-ABC2-8502AD179D8A" drools:bgcolor="#9acd32" drools:selectable="true" name="">
       <bpmn2:outgoing>_B964100D-B199-4D76-AF84-A24BCD30598B</bpmn2:outgoing>
     </bpmn2:startEvent>
@@ -104,6 +107,7 @@
         <bpmn2:dataInput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_JobRequestInputX" drools:dtype="Object" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_JobRequestInputXItem" name="JobRequest"/>
         <bpmn2:dataInput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_retriesInputX" drools:dtype="Integer" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_retriesInputXItem" name="Retries"/>
         <bpmn2:dataInput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputX" drools:dtype="Integer" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputXItem" name="Owner"/>
+        <bpmn2:dataInput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_businessKeyInputX" drools:dtype="String" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_businessKeyInputXItem" name="BusinessKey"/>
         <bpmn2:dataOutput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_ResultOutputX" drools:dtype="java.lang.Object" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_ResultOutputXItem" name="Result"/>
         <bpmn2:inputSet id="_qrgC4UsVEeSBnoD097BQOA">
           <bpmn2:dataInputRefs>_DF37F979-03D2-4369-9B70-8BC61144CD80_CommandClassInputX</bpmn2:dataInputRefs>
@@ -111,6 +115,7 @@
           <bpmn2:dataInputRefs>_DF37F979-03D2-4369-9B70-8BC61144CD80_retriesInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_DF37F979-03D2-4369-9B70-8BC61144CD80_TaskNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_DF37F979-03D2-4369-9B70-8BC61144CD80_businessKeyInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
         <bpmn2:outputSet id="_qrgC4ksVEeSBnoD097BQOA">
           <bpmn2:dataOutputRefs>_DF37F979-03D2-4369-9B70-8BC61144CD80_ResultOutputX</bpmn2:dataOutputRefs>
@@ -138,6 +143,10 @@
       <bpmn2:dataInputAssociation id="_qrgC6UsVEeSBnoD097BQOC">
         <bpmn2:sourceRef>Owner</bpmn2:sourceRef>
         <bpmn2:targetRef>_DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_qrgC6UsVEeSBnoD097BQOD">
+        <bpmn2:sourceRef>BusinessKey</bpmn2:sourceRef>
+        <bpmn2:targetRef>_DF37F979-03D2-4369-9B70-8BC61144CD80_businessKeyInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
     </bpmn2:task>
     <bpmn2:sequenceFlow id="_D9945BDE-2132-4824-875B-547A413949E9" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_DEEFF075-0306-4773-89AE-4C9D06B85B46" targetRef="_DF37F979-03D2-4369-9B70-8BC61144CD80">
