@@ -190,6 +190,7 @@ public class JobRequestScheduler {
     protected CommandContext getContext(JobRequest jobRequest) {
         CommandContext ctx = new CommandContext();
         ctx.setData(JOB_REQUEST_KEY, jobRequest);
+        ctx.setData("BusinessKey", jobRequest.getJobId());
         ctx.setData("Retries", 0);
         ctx.setData("Owner", ExecutorService.EXECUTOR_ID);
 

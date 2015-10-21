@@ -105,7 +105,10 @@ public abstract class AbstractJobCommand implements Command {
                 jobMgr.putJob(result);
             }
 
-            return getEmptyResult();
+            ExecutionResults results = getEmptyResult();
+            results.setData("JobResult", result);
+
+            return results;
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
