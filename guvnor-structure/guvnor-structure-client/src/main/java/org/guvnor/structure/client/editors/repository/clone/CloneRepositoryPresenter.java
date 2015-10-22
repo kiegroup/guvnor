@@ -21,10 +21,13 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
+import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
+import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.EnvironmentParameters;
@@ -86,7 +89,6 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
 
     @Override
     public void handleCloneClick() {
-
         boolean urlConditionsMet = setUrl();
         boolean ouConditionsMet = setOrganizationalUnitGroupType();
         boolean nameConditionsMet = setNameGroupType();
@@ -94,6 +96,25 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
         if(urlConditionsMet && ouConditionsMet && nameConditionsMet ) {
             repositoryService.call( getNormalizeRepositoryNameCallback() ).normalizeRepositoryName( view.getName() );
         }
+    }
+
+    public void onCreateOrganizationalUnit( @Observes final AfterCreateOrganizationalUnitEvent event ) {
+        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
+        if ( organizationalUnit == null ) {
+            return;
+        }
+        view.addOrganizationalUnit( organizationalUnit );
+        availableOrganizationalUnits.put( organizationalUnit.getName(),
+                                          organizationalUnit );
+    }
+
+    public void onDeleteOrganizationalUnit( @Observes final AfterDeleteOrganizationalUnitEvent event ) {
+        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
+        if ( organizationalUnit == null ) {
+            return;
+        }
+        view.deleteOrganizationalUnit( organizationalUnit );
+        availableOrganizationalUnits.remove( organizationalUnit.getName() );
     }
 
     private RemoteCallback<String> getNormalizeRepositoryNameCallback() {
@@ -206,6 +227,7 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
     }
 
     public void showForm() {
+        view.reset();
         view.show();
     }
 
@@ -217,8 +239,7 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
                                                 view.addOrganizationalUnitSelectEntry();
                                                 if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
                                                     for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
-                                                        view.addOrganizationalUnit( organizationalUnit.getName(),
-                                                                                    organizationalUnit.getName() );
+                                                        view.addOrganizationalUnit( organizationalUnit );
                                                         availableOrganizationalUnits.put( organizationalUnit.getName(),
                                                                                           organizationalUnit );
                                                     }

@@ -26,6 +26,8 @@ import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -36,6 +38,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
@@ -126,6 +129,15 @@ public class CloneRepositoryViewImpl
                 nameHelpInline.setText( "" );
             }
         } );
+
+        organizationalUnitDropdown.addChangeHandler( new ChangeHandler() {
+            @Override
+            public void onChange( final ChangeEvent event ) {
+                organizationalUnitGroup.setType( ControlGroupType.NONE );
+                organizationalUnitHelpInline.setText( "" );
+            }
+        } );
+
         gitURLTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
@@ -141,10 +153,26 @@ public class CloneRepositoryViewImpl
     }
 
     @Override
-    public void addOrganizationalUnit( final String item,
-                                       final String value ) {
-        organizationalUnitDropdown.addItem( item,
+    public void addOrganizationalUnit( final OrganizationalUnit ou ) {
+        final String text = ou.getName();
+        final String value = ou.getName();
+        organizationalUnitDropdown.addItem( text,
                                             value );
+    }
+
+    @Override
+    public void deleteOrganizationalUnit( final OrganizationalUnit ou ) {
+        Integer indexToDelete = null;
+        for ( int i = 0; i < organizationalUnitDropdown.getItemCount(); i++ ) {
+            final String item = organizationalUnitDropdown.getValue( i );
+            if ( item.equals( ou.getName() ) ) {
+                indexToDelete = i;
+                break;
+            }
+        }
+        if ( indexToDelete != null ) {
+            organizationalUnitDropdown.removeItem( indexToDelete );
+        }
     }
 
     @Override
@@ -300,6 +328,24 @@ public class CloneRepositoryViewImpl
     @Override
     public void errorLoadOrganizationalUnitsFail( final Throwable cause ) {
         ErrorPopup.showMessage( CoreConstants.INSTANCE.CantLoadOrganizationalUnits() + " \n" + cause.getMessage() );
+    }
+
+    @Override
+    public void reset() {
+        nameTextBox.setText( "" );
+        nameGroup.setType( ControlGroupType.NONE );
+        nameHelpInline.setText( "" );
+
+        organizationalUnitDropdown.setSelectedIndex( 0 );
+        organizationalUnitGroup.setType( ControlGroupType.NONE );
+        organizationalUnitHelpInline.setText( "" );
+
+        gitURLTextBox.setText( "" );
+        urlGroup.setType( ControlGroupType.NONE );
+        urlHelpInline.setText( "" );
+
+        usernameTextBox.setText( "" );
+        passwordTextBox.setText( "" );
     }
 
 }
