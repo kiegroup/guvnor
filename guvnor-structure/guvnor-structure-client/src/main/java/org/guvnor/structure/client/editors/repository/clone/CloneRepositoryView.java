@@ -16,6 +16,7 @@
 
 package org.guvnor.structure.client.editors.repository.clone;
 
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 public interface CloneRepositoryView {
@@ -36,8 +37,9 @@ public interface CloneRepositoryView {
 
     void addOrganizationalUnitSelectEntry();
 
-    void addOrganizationalUnit( String item,
-                                String value );
+    void addOrganizationalUnit( OrganizationalUnit ou );
+
+    void deleteOrganizationalUnit( OrganizationalUnit ou );
 
     String getSelectedOrganizationalUnit();
 
@@ -98,4 +100,7 @@ public interface CloneRepositoryView {
     void errorCloneRepositoryFail( Throwable cause );
 
     void errorLoadOrganizationalUnitsFail( Throwable cause );
+
+    void reset();
+
 }
