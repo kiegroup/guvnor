@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -27,6 +28,8 @@ import org.guvnor.organizationalunit.manager.client.editor.popups.AddOrganizatio
 import org.guvnor.organizationalunit.manager.client.editor.popups.EditOrganizationalUnitPopup;
 import org.guvnor.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
+import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
+import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
@@ -39,6 +42,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
@@ -48,24 +52,51 @@ import org.uberfire.lifecycle.OnStartup;
 @WorkbenchScreen(identifier = "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager")
 public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUnitManagerPresenter {
 
-    @Inject
     private OrganizationalUnitManagerView view;
 
-    @Inject
     private Caller<OrganizationalUnitService> organizationalUnitService;
 
-    @Inject
     private Caller<RepositoryService> repositoryService;
 
-    @Inject
     private AddOrganizationalUnitPopup addOrganizationalUnitPopup;
 
-    @Inject
     private EditOrganizationalUnitPopup editOrganizationalUnitPopup;
+
+    private Event<AfterCreateOrganizationalUnitEvent> createOUEvent;
+
+    private Event<AfterDeleteOrganizationalUnitEvent> deleteOUEvent;
 
     private Collection<Repository> allRepositories;
 
     private Collection<OrganizationalUnit> allOrganizationalUnits;
+
+    public OrganizationalUnitManagerPresenterImpl() {
+        //For CDI proxying
+    }
+
+    @Inject
+    public OrganizationalUnitManagerPresenterImpl( final OrganizationalUnitManagerView view,
+                                                   final Caller<OrganizationalUnitService> organizationalUnitService,
+                                                   final Caller<RepositoryService> repositoryService,
+                                                   final AddOrganizationalUnitPopup addOrganizationalUnitPopup,
+                                                   final EditOrganizationalUnitPopup editOrganizationalUnitPopup,
+                                                   final Event<AfterCreateOrganizationalUnitEvent> createOUEvent,
+                                                   final Event<AfterDeleteOrganizationalUnitEvent> deleteOUEvent ) {
+        this.view = PortablePreconditions.checkNotNull( "view",
+                                                        view );
+        this.organizationalUnitService = PortablePreconditions.checkNotNull( "organizationalUnitService",
+                                                                             organizationalUnitService );
+        this.repositoryService = PortablePreconditions.checkNotNull( "repositoryService",
+                                                                     repositoryService );
+        this.addOrganizationalUnitPopup = PortablePreconditions.checkNotNull( "addOrganizationalUnitPopup",
+                                                                              addOrganizationalUnitPopup );
+        this.editOrganizationalUnitPopup = PortablePreconditions.checkNotNull( "editOrganizationalUnitPopup",
+                                                                               editOrganizationalUnitPopup );
+        this.createOUEvent = PortablePreconditions.checkNotNull( "createOUEvent",
+                                                                 createOUEvent );
+        this.deleteOUEvent = PortablePreconditions.checkNotNull( "deleteOUEvent",
+                                                                 deleteOUEvent );
+    }
 
     @PostConstruct
     public void setup() {
@@ -78,12 +109,13 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         view.reset();
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
         repositoryService.call( new RemoteCallback<Collection<Repository>>() {
-            @Override
-            public void callback( final Collection<Repository> repositories ) {
-                OrganizationalUnitManagerPresenterImpl.this.allRepositories = repositories;
-                loadOrganizationalUnits();
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories();
+                                    @Override
+                                    public void callback( final Collection<Repository> repositories ) {
+                                        OrganizationalUnitManagerPresenterImpl.this.allRepositories = repositories;
+                                        loadOrganizationalUnits();
+                                    }
+                                },
+                                new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories();
     }
 
     @OnOpen
@@ -105,13 +137,14 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     public void loadOrganizationalUnits() {
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
         organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
-            @Override
-            public void callback( final Collection<OrganizationalUnit> organizationalUnits ) {
-                OrganizationalUnitManagerPresenterImpl.this.allOrganizationalUnits = organizationalUnits;
-                view.setOrganizationalUnits( organizationalUnits );
-                view.hideBusyIndicator();
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getOrganizationalUnits();
+                                            @Override
+                                            public void callback( final Collection<OrganizationalUnit> organizationalUnits ) {
+                                                OrganizationalUnitManagerPresenterImpl.this.allOrganizationalUnits = organizationalUnits;
+                                                view.setOrganizationalUnits( organizationalUnits );
+                                                view.hideBusyIndicator();
+                                            }
+                                        },
+                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).getOrganizationalUnits();
     }
 
     @Override
@@ -119,13 +152,14 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         //Reload rather than using cached Object as it could have been changed server-side (adding/deleting Repositories)
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
         organizationalUnitService.call( new RemoteCallback<OrganizationalUnit>() {
-            @Override
-            public void callback( final OrganizationalUnit organizationalUnit ) {
-                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories(),
-                                                        getAvailableRepositories() );
-                view.hideBusyIndicator();
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).getOrganizationalUnit( organizationalUnit.getName() );
+                                            @Override
+                                            public void callback( final OrganizationalUnit organizationalUnit ) {
+                                                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories(),
+                                                                                        getAvailableRepositories() );
+                                                view.hideBusyIndicator();
+                                            }
+                                        },
+                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).getOrganizationalUnit( organizationalUnit.getName() );
     }
 
     private Collection<Repository> getAvailableRepositories() {
@@ -168,16 +202,18 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
         organizationalUnitService.call( new RemoteCallback<OrganizationalUnit>() {
 
-            @Override
-            public void callback( final OrganizationalUnit newOrganizationalUnit ) {
-                allOrganizationalUnits.add( newOrganizationalUnit );
-                view.addOrganizationalUnit( newOrganizationalUnit );
-                view.hideBusyIndicator();
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).createOrganizationalUnit( organizationalUnitName,
-                                                                                        organizationalUnitOwner,
-                                                                                        defaultGroupId,
-                                                                                        repositories );
+                                            @Override
+                                            public void callback( final OrganizationalUnit newOrganizationalUnit ) {
+                                                createOUEvent.fire( new AfterCreateOrganizationalUnitEvent( newOrganizationalUnit ) );
+                                                allOrganizationalUnits.add( newOrganizationalUnit );
+                                                view.addOrganizationalUnit( newOrganizationalUnit );
+                                                view.hideBusyIndicator();
+                                            }
+                                        },
+                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).createOrganizationalUnit( organizationalUnitName,
+                                                                                                                     organizationalUnitOwner,
+                                                                                                                     defaultGroupId,
+                                                                                                                     repositories );
     }
 
     @Override
@@ -193,26 +229,29 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
         organizationalUnitService.call( new RemoteCallback<OrganizationalUnit>() {
 
-            @Override
-            public void callback( final OrganizationalUnit response ) {
-                loadOrganizationalUnits();
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).updateOrganizationalUnit( organizationalUnitName,
-                                                                                        organizationalUnitOwner,
-                                                                                        defaultGroupId );
+                                            @Override
+                                            public void callback( final OrganizationalUnit response ) {
+                                                loadOrganizationalUnits();
+                                            }
+                                        },
+                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).updateOrganizationalUnit( organizationalUnitName,
+                                                                                                                     organizationalUnitOwner,
+                                                                                                                     defaultGroupId );
     }
 
     @Override
     public void deleteOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
         organizationalUnitService.call( new RemoteCallback<Void>() {
-            @Override
-            public void callback( final Void v ) {
-                allOrganizationalUnits.remove( organizationalUnit );
-                view.deleteOrganizationalUnit( organizationalUnit );
-                view.hideBusyIndicator();
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).removeOrganizationalUnit( organizationalUnit.getName() );
+                                            @Override
+                                            public void callback( final Void v ) {
+                                                deleteOUEvent.fire( new AfterDeleteOrganizationalUnitEvent( organizationalUnit ) );
+                                                allOrganizationalUnits.remove( organizationalUnit );
+                                                view.deleteOrganizationalUnit( organizationalUnit );
+                                                view.hideBusyIndicator();
+                                            }
+                                        },
+                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).removeOrganizationalUnit( organizationalUnit.getName() );
     }
 
     @Override
@@ -221,14 +260,15 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
         organizationalUnit.getRepositories().add( repository );
         organizationalUnitService.call( new RemoteCallback<Void>() {
-            @Override
-            public void callback( final Void v ) {
-                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories(),
-                                                        getAvailableRepositories() );
-                view.hideBusyIndicator();
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).addRepository( organizationalUnit,
-                                                                             repository );
+                                            @Override
+                                            public void callback( final Void v ) {
+                                                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories(),
+                                                                                        getAvailableRepositories() );
+                                                view.hideBusyIndicator();
+                                            }
+                                        },
+                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).addRepository( organizationalUnit,
+                                                                                                          repository );
     }
 
     @Override
@@ -237,30 +277,29 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
         organizationalUnit.getRepositories().remove( repository );
         organizationalUnitService.call( new RemoteCallback<Void>() {
-            @Override
-            public void callback( final Void v ) {
-                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories(),
-                                                        getAvailableRepositories() );
-                view.hideBusyIndicator();
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).removeRepository( organizationalUnit,
-                                                                                repository );
+                                            @Override
+                                            public void callback( final Void v ) {
+                                                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories(),
+                                                                                        getAvailableRepositories() );
+                                                view.hideBusyIndicator();
+                                            }
+                                        },
+                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).removeRepository( organizationalUnit,
+                                                                                                             repository );
     }
 
     @Override
     public void checkValidGroupId( final String proposedGroupId,
                                    RemoteCallback<Boolean> callback ) {
-        organizationalUnitService.call(
-                callback,
-                new HasBusyIndicatorDefaultErrorCallback( view ) ).isValidGroupId( proposedGroupId );
+        organizationalUnitService.call( callback,
+                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).isValidGroupId( proposedGroupId );
     }
 
     @Override
     public void getSanitizedGroupId( String proposedGroupId,
                                      RemoteCallback<String> callback ) {
-        organizationalUnitService.call(
-                callback,
-                new HasBusyIndicatorDefaultErrorCallback( view ) ).getSanitizedDefaultGroupId( proposedGroupId );
+        organizationalUnitService.call( callback,
+                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).getSanitizedDefaultGroupId( proposedGroupId );
     }
 
     public void onRepositoryAddedEvent( @Observes NewRepositoryEvent event ) {

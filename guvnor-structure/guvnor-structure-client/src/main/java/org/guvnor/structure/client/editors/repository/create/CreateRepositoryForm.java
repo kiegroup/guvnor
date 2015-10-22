@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -38,6 +39,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
+import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
+import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.EnvironmentParameters;
@@ -59,6 +62,7 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
@@ -74,15 +78,6 @@ public class CreateRepositoryForm extends Composite implements HasCloseHandlers<
     }
 
     private static CreateRepositoryFormBinder uiBinder = GWT.create( CreateRepositoryFormBinder.class );
-
-    @Inject
-    private Caller<RepositoryService> repositoryService;
-
-    @Inject
-    private Caller<OrganizationalUnitService> organizationalUnitService;
-
-    @Inject
-    private PlaceManager placeManager;
 
     @UiField
     FormGroup organizationalUnitGroup;
@@ -108,8 +103,28 @@ public class CreateRepositoryForm extends Composite implements HasCloseHandlers<
     @UiField
     BaseModal popup;
 
+    private Caller<RepositoryService> repositoryService;
+    private Caller<OrganizationalUnitService> organizationalUnitService;
+    private PlaceManager placeManager;
+
     private Map<String, OrganizationalUnit> availableOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
     private boolean mandatoryOU = true;
+
+    public CreateRepositoryForm() {
+        //CDI proxy
+    }
+
+    @Inject
+    public CreateRepositoryForm( final Caller<RepositoryService> repositoryService,
+                                 final Caller<OrganizationalUnitService> organizationalUnitService,
+                                 final PlaceManager placeManager ) {
+        this.repositoryService = PortablePreconditions.checkNotNull( "repositoryService",
+                                                                     repositoryService );
+        this.organizationalUnitService = PortablePreconditions.checkNotNull( "organizationalUnitService",
+                                                                             organizationalUnitService );
+        this.placeManager = PortablePreconditions.checkNotNull( "placeManager",
+                                                                placeManager );
+    }
 
     @PostConstruct
     public void init() {
@@ -157,7 +172,7 @@ public class CreateRepositoryForm extends Composite implements HasCloseHandlers<
                                       ).getOrganizationalUnits();
     }
 
-    private boolean isOUMandatory() {
+    boolean isOUMandatory() {
         try {
             final IOCBeanDef<RepositoryPreferences> beanDef = IOC.getBeanManager().lookupBean( RepositoryPreferences.class );
             return beanDef == null || beanDef.getInstance().isOUMandatory();
@@ -252,6 +267,53 @@ public class CreateRepositoryForm extends Composite implements HasCloseHandlers<
 
     public void show() {
         popup.show();
+    }
+
+    public void onCreateOrganizationalUnit( @Observes final AfterCreateOrganizationalUnitEvent event ) {
+        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
+        if ( organizationalUnit == null ) {
+            return;
+        }
+        addOrganizationalUnit( organizationalUnit );
+        availableOrganizationalUnits.put( organizationalUnit.getName(),
+                                          organizationalUnit );
+    }
+
+    void addOrganizationalUnit( final OrganizationalUnit ou ) {
+        final String text = ou.getName();
+        final String value = ou.getName();
+        final Option option = new Option();
+        option.setText( text );
+        option.setValue( value );
+        organizationalUnitDropdown.add( option );
+        organizationalUnitDropdown.refresh();
+    }
+
+    public void onDeleteOrganizationalUnit( @Observes final AfterDeleteOrganizationalUnitEvent event ) {
+        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
+        if ( organizationalUnit == null ) {
+            return;
+        }
+        deleteOrganizationalUnit( organizationalUnit );
+        availableOrganizationalUnits.remove( organizationalUnit.getName() );
+    }
+
+    void deleteOrganizationalUnit( final OrganizationalUnit ou ) {
+        Option optToDelete = null;
+        for ( int i = 0; i < organizationalUnitDropdown.getWidgetCount(); i++ ) {
+            final Widget w = organizationalUnitDropdown.getWidget( i );
+            if ( w instanceof Option ) {
+                final Option o = (Option) w;
+                if ( o.getText().equals( ou.getName() ) ) {
+                    optToDelete = o;
+                    break;
+                }
+            }
+        }
+        if ( optToDelete != null ) {
+            organizationalUnitDropdown.remove( optToDelete );
+            organizationalUnitDropdown.refresh();
+        }
     }
 
 }

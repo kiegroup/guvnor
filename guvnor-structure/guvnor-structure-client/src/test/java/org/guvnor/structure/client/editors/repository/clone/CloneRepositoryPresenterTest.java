@@ -24,8 +24,11 @@ import org.guvnor.structure.client.editors.repository.clone.answer.OuServiceAnsw
 import org.guvnor.structure.client.editors.repository.clone.answer.RsCreateRepositoryAnswer;
 import org.guvnor.structure.client.editors.repository.clone.answer.RsCreateRepositoryFailAnswer;
 import org.guvnor.structure.client.editors.repository.clone.answer.RsNormalizedNameAnswer;
+import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
+import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -50,7 +53,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CloneRepositoryFormTest {
+public class CloneRepositoryPresenterTest {
 
     private static final String ORG_UNIT_ONE = "OrganizationalUnitOne";
     private static final String ORG_UNIT_TWO = "OrganizationalUnitTwo";
@@ -320,6 +323,36 @@ public class CloneRepositoryFormTest {
     public void testCancelButton() {
         presenter.handleCancelClick();
         verify( view ).hide();
+    }
+
+    @Test
+    public void testCreateOUEvent() {
+        final OrganizationalUnit ou = new OrganizationalUnitImpl( "ou1",
+                                                                  "owner1",
+                                                                  "ou" );
+        presenter.onCreateOrganizationalUnit( new AfterCreateOrganizationalUnitEvent( ou ) );
+
+        verify( view,
+                times( 1 ) ).addOrganizationalUnit( ou );
+    }
+
+    @Test
+    public void testDeleteOUEvent() {
+        final OrganizationalUnit ou = new OrganizationalUnitImpl( "ou1",
+                                                                  "owner1",
+                                                                  "ou" );
+        presenter.onDeleteOrganizationalUnit( new AfterDeleteOrganizationalUnitEvent( ou ) );
+
+        verify( view,
+                times( 1 ) ).deleteOrganizationalUnit( ou );
+    }
+
+    @Test
+    public void testResetWhenShown() {
+        presenter.showForm();
+
+        verify( view,
+                times( 1 ) ).reset();
     }
 
     private void componentsNotAffected() {

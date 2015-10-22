@@ -19,6 +19,8 @@ package org.guvnor.structure.client.editors.repository.clone;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -32,6 +34,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -47,7 +50,8 @@ import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
 @Dependent
-public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositoryView, HasCloseHandlers<CloneRepositoryViewImpl> {
+public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositoryView,
+                                                                  HasCloseHandlers<CloneRepositoryViewImpl> {
 
     interface CloneRepositoryFormBinder
             extends
@@ -58,7 +62,6 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
     private CloneRepositoryView.Presenter presenter;
 
     private static CloneRepositoryFormBinder uiBinder = GWT.create( CloneRepositoryFormBinder.class );
-
 
     @UiField
     Button clone;
@@ -132,6 +135,15 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
                 nameHelpInline.setText( "" );
             }
         } );
+
+        organizationalUnitDropdown.addChangeHandler( new ChangeHandler() {
+            @Override
+            public void onChange( final ChangeEvent event ) {
+                organizationalUnitGroup.setValidationState( ValidationState.NONE );
+                organizationalUnitHelpInline.setText( "" );
+            }
+        } );
+
         gitURLTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
@@ -150,13 +162,33 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
     }
 
     @Override
-    public void addOrganizationalUnit( final String item,
-                                       final String value ) {
+    public void addOrganizationalUnit( final OrganizationalUnit ou ) {
+        final String text = ou.getName();
+        final String value = ou.getName();
         final Option option = new Option();
-        option.setText( item );
+        option.setText( text );
         option.setValue( value );
         organizationalUnitDropdown.add( option );
         organizationalUnitDropdown.refresh();
+    }
+
+    @Override
+    public void deleteOrganizationalUnit( final OrganizationalUnit ou ) {
+        Option optToDelete = null;
+        for ( int i = 0; i < organizationalUnitDropdown.getWidgetCount(); i++ ) {
+            final Widget w = organizationalUnitDropdown.getWidget( i );
+            if ( w instanceof Option ) {
+                final Option o = (Option) w;
+                if ( o.getText().equals( ou.getName() ) ) {
+                    optToDelete = o;
+                    break;
+                }
+            }
+        }
+        if ( optToDelete != null ) {
+            organizationalUnitDropdown.remove( optToDelete );
+            organizationalUnitDropdown.refresh();
+        }
     }
 
     @Override
@@ -311,8 +343,28 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
     }
 
     @Override
-    public HandlerRegistration addCloseHandler( CloseHandler<CloneRepositoryViewImpl> handler ) {
-        return addHandler(handler, CloseEvent.getType());
+    public HandlerRegistration addCloseHandler( final CloseHandler<CloneRepositoryViewImpl> handler ) {
+        return addHandler( handler,
+                           CloseEvent.getType() );
+    }
+
+    @Override
+    public void reset() {
+        nameTextBox.setText( "" );
+        nameGroup.setValidationState( ValidationState.NONE );
+        nameHelpInline.setText( "" );
+
+        organizationalUnitDropdown.deselectAll();
+        organizationalUnitDropdown.refresh();
+        organizationalUnitGroup.setValidationState( ValidationState.NONE );
+        organizationalUnitHelpInline.setText( "" );
+
+        gitURLTextBox.setText( "" );
+        urlGroup.setValidationState( ValidationState.NONE );
+        urlHelpInline.setText( "" );
+
+        usernameTextBox.setText( "" );
+        passwordTextBox.setText( "" );
     }
 
     @Override

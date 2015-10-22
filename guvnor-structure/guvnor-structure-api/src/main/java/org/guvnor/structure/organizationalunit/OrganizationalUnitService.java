@@ -29,7 +29,7 @@ public interface OrganizationalUnitService {
 
     OrganizationalUnit createOrganizationalUnit( final String name,
                                                  final String owner,
-                                                 final String defaultGroupId);
+                                                 final String defaultGroupId );
 
     OrganizationalUnit createOrganizationalUnit( final String name,
                                                  final String owner,
@@ -37,8 +37,8 @@ public interface OrganizationalUnitService {
                                                  final Collection<Repository> repositories );
 
     OrganizationalUnit updateOrganizationalUnit( final String name,
-                                   final String owner,
-                                   final String defaultGroupId);
+                                                 final String owner,
+                                                 final String defaultGroupId );
 
     void addRepository( final OrganizationalUnit organizationalUnit,
                         final Repository repository );
