@@ -16,10 +16,10 @@
 
 package org.guvnor.common.services.project.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class POM {
@@ -30,8 +30,10 @@ public class POM {
     private GAV gav;
     private String name;
     private String description;
-    
-    private boolean multiModule;
+
+    private String packaging;
+
+    private Build build;
 
     private List<Dependency> dependencies = new ArrayList<Dependency>();
     private List<Repository> repositories = new ArrayList<Repository>();
@@ -42,32 +44,42 @@ public class POM {
     }
 
     // Kept this for backwards compatibility
-    public POM(GAV gav) {
+    public POM( final GAV gav ) {
         this(null, null, gav);
     }
 
-    public POM(String name, String description, GAV gav) {
+    public POM( final String name,
+                final String description,
+                final GAV gav ) {
         super();
         this.name = name;
         this.description = description;
         this.gav = gav;
-        this.multiModule = false;
     }
-    
-    public POM(String name, String description, GAV gav, boolean multiModule) {
+
+    public POM( final String name,
+                final String description,
+                final GAV gav,
+                final boolean multiModule ) {
         super();
         this.name = name;
         this.description = description;
         this.gav = gav;
-        this.multiModule = multiModule;
+        if ( multiModule ) {
+            packaging = "pom";
+        }
     }
 
     public GAV getGav() {
         return gav;
     }
 
-    public List<Dependency> getDependencies() {
-        return dependencies;
+    public Dependencies getDependencies() {
+        return new Dependencies( dependencies );
+    }
+
+    public void setDependencies( List<Dependency> dependencies ) {
+        this.dependencies = dependencies;
     }
 
     public void addRepository(Repository repository) {
@@ -110,16 +122,28 @@ public class POM {
       return modules;
     }
 
+    public Build getBuild() {
+        return build;
+    }
+
+    public void setBuild( Build build ) {
+        this.build = build;
+    }
+
     public void setModules(List<String> modules) {
       this.modules = modules;
     }
 
     public boolean isMultiModule() {
-      return multiModule;
+        return packaging.equals( "pom" );
     }
 
-    public void setMultiModule(boolean multiModule) {
-      this.multiModule = multiModule;
+    public void setPackaging( String packaging ) {
+        this.packaging = packaging;
+    }
+
+    public String getPackaging() {
+        return packaging;
     }
 
     public boolean hasParent() {
@@ -137,7 +161,7 @@ public class POM {
 
         POM pom = ( POM ) o;
 
-        if ( multiModule != pom.multiModule ) {
+        if ( packaging != null ? !packaging.equals( pom.packaging ) : pom.packaging != null ) {
             return false;
         }
         if ( dependencies != null ? !dependencies.equals( pom.dependencies ) : pom.dependencies != null ) {
@@ -175,7 +199,7 @@ public class POM {
         result = ~~result;
         result = 31 * result + ( description != null ? description.hashCode() : 0 );
         result = ~~result;
-        result = 31 * result + ( multiModule ? 1 : 0 );
+        result = 31 * result + (packaging != null ? packaging.hashCode() : 0);
         result = ~~result;
         result = 31 * result + ( dependencies != null ? dependencies.hashCode() : 0 );
         result = ~~result;

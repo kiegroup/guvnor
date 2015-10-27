@@ -15,24 +15,24 @@
 
 package org.guvnor.common.services.project.backend.server;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Repository;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
@@ -67,15 +67,11 @@ public class POMServiceImpl
 
     @Override
     public Path create( final Path projectRoot,
-                        final String baseURL,
+                        final String repositoryWebBaseURL,
                         final POM pomModel ) {
         org.uberfire.java.nio.file.Path pathToPOMXML = null;
         try {
-            final Repository repository = new Repository();
-            repository.setId( "guvnor-m2-repo" );
-            repository.setName( "Guvnor M2 Repo" );
-            repository.setUrl( m2RepoService.getRepositoryURL( baseURL ) );
-            pomModel.addRepository( repository );
+            pomModel.addRepository( getRepository( repositoryWebBaseURL ) );
 
             final org.uberfire.java.nio.file.Path nioRoot = Paths.convert( projectRoot );
             pathToPOMXML = nioRoot.resolve( "pom.xml" );
@@ -95,12 +91,18 @@ public class POMServiceImpl
         }
     }
 
+    private Repository getRepository( final String baseURL ) {
+        final Repository repository = new Repository();
+        repository.setId( "guvnor-m2-repo" );
+        repository.setName( "Guvnor M2 Repo" );
+        repository.setUrl( m2RepoService.getRepositoryURL( baseURL ) );
+        return repository;
+    }
+
     @Override
     public POM load( final Path path ) {
         try {
-            POM pom = pomContentHandler.toModel( loadPomXMLString( path ) );
-
-            return pom;
+            return pomContentHandler.toModel( loadPomXMLString( path ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -119,17 +121,7 @@ public class POMServiceImpl
                       final String comment ) {
         try {
 
-            if ( metadata == null ) {
-                ioService.write( Paths.convert( path ),
-                                 pomContentHandler.toString( content, loadPomXMLString( path ) ) );
-            } else {
-                ioService.write( Paths.convert( path ),
-                                 pomContentHandler.toString( content, loadPomXMLString( path ) ),
-                                 metadataService.setUpAttributes( path,
-                                                                  metadata ) );
-            }
-
-            return path;
+            return save( path, content, metadata );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -138,50 +130,23 @@ public class POMServiceImpl
 
     @Override
     public Path save( final Path path,
-            final POM content,
-            final Metadata metadata,
-            final String comment,
-            final boolean updateModules ) {
+                      final POM content,
+                      final Metadata metadata,
+                      final String comment,
+                      final boolean updateModules ) {
 
         try {
 
-            ioService.startBatch( new FileSystem[]{Paths.convert( path ).getFileSystem()}, optionsFactory.makeCommentedOption( comment != null ? comment : "" )  );
+            ioService.startBatch( new FileSystem[]{Paths.convert( path ).getFileSystem()},
+                                  optionsFactory.makeCommentedOption( comment != null ? comment : "" ) );
 
-            List<Pair<POM, org.uberfire.java.nio.file.Path >> modules = new ArrayList<Pair<POM, org.uberfire.java.nio.file.Path >>( );
-            if ( updateModules &&
-                    content.isMultiModule() &&
-                    content.getModules() != null ) {
-                POM child;
-                org.uberfire.java.nio.file.Path childPath;
-                org.uberfire.java.nio.file.Path rootPath = Paths.convert( path );
-                rootPath = rootPath.getParent();
-                for ( String module : content.getModules() ) {
-                    childPath = rootPath.resolve( module ).resolve( "pom.xml" );
-                    if ( ioService.exists( childPath ) ) {
-                        child = load( Paths.convert( childPath ) );
-                        if ( child != null ) {
-                            child.setParent( content.getGav() );
-                            child.getGav().setGroupId( content.getGav().getGroupId() );
-                            child.getGav().setVersion( content.getGav().getVersion() );
-                            modules.add( new Pair<POM, org.uberfire.java.nio.file.Path>( child, childPath ) );
-                        }
-                    }
-                }
-            }
+            save( path,
+                  content,
+                  metadata );
 
-            if ( metadata == null ) {
-                ioService.write( Paths.convert( path ),
-                        pomContentHandler.toString( content, loadPomXMLString( path ) ) );
-            } else {
-                ioService.write( Paths.convert( path ),
-                        pomContentHandler.toString( content, loadPomXMLString( path ) ),
-                        metadataService.setUpAttributes( path,
-                                metadata ) );
-            }
-
-            for ( Pair<POM, org.uberfire.java.nio.file.Path> modulePair : modules ) {
-                ioService.write( modulePair.getK2(), pomContentHandler.toString( modulePair.getK1(), loadPomXMLString( Paths.convert( modulePair.getK2() ) ) ) );
-            }
+            saveSubModules( path,
+                            content,
+                            updateModules );
 
             return path;
 
@@ -190,6 +155,55 @@ public class POMServiceImpl
         } finally {
             ioService.endBatch();
         }
+    }
+
+    private void saveSubModules( final Path path,
+                                 final POM content,
+                                 final boolean updateModules ) throws IOException, XmlPullParserException {
+        if ( updateModules &&
+                content.isMultiModule() &&
+                content.getModules() != null ) {
+            for (String module : content.getModules()) {
+
+                org.uberfire.java.nio.file.Path childPath = Paths.convert( path ).getParent().resolve( module ).resolve( "pom.xml" );
+
+                if ( ioService.exists( childPath ) ) {
+                    POM child = load( Paths.convert( childPath ) );
+                    if ( child != null ) {
+                        child.setParent( content.getGav() );
+                        child.getGav().setGroupId( content.getGav().getGroupId() );
+                        child.getGav().setVersion( content.getGav().getVersion() );
+
+                        save( Paths.convert( childPath ),
+                              child );
+                    }
+                }
+            }
+        }
+    }
+
+    private Path save( final Path path,
+                       final POM content,
+                       final Metadata metadata ) throws IOException, XmlPullParserException {
+        if ( metadata == null ) {
+            save( path,
+                  content );
+        } else {
+            ioService.write( Paths.convert( path ),
+                             pomContentHandler.toString( content,
+                                                         loadPomXMLString( path ) ),
+                             metadataService.setUpAttributes( path,
+                                                              metadata ) );
+        }
+
+        return path;
+    }
+
+    private void save( final Path path,
+                       final POM content ) throws IOException, XmlPullParserException {
+        ioService.write( Paths.convert( path ),
+                         pomContentHandler.toString( content,
+                                                     loadPomXMLString( path ) ) );
     }
 
 }

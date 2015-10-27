@@ -20,7 +20,7 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
 import org.uberfire.client.callbacks.Callback;
@@ -28,7 +28,9 @@ import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 
 @Dependent
-public class NewProjectWizard extends AbstractWizard implements ProjectWizard {
+public class NewProjectWizard
+        extends AbstractWizard
+        implements ProjectWizard {
 
     @Override
     public String getTitle() {
@@ -79,7 +81,7 @@ public class NewProjectWizard extends AbstractWizard implements ProjectWizard {
     }
 
     @Override
-    public void initialise( final GAV gav ) {
+    public void initialise( final POM pom ) {
 
     }
 

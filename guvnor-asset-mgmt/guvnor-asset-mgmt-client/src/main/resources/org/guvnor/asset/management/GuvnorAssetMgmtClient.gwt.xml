@@ -32,6 +32,7 @@
 
   <inherits name='org.guvnor.common.services.GuvnorServicesAPI'/>
   <inherits name="org.guvnor.asset.management.GuvnorAssetMgmtAPI" />
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI"/>
 
 
   <source path="client"/>

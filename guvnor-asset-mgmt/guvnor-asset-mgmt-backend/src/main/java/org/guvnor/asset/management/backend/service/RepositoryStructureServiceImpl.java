@@ -109,7 +109,7 @@ public class RepositoryStructureServiceImpl
 
         if ( multiProject ) {
 
-            pom.setMultiModule( true );
+            pom.setPackaging( "pom" );
 
             //Creating the parent pom
             final Path fsRoot = repo.getRoot();
@@ -125,7 +125,7 @@ public class RepositoryStructureServiceImpl
             return pathToPom;
 
         } else {
-            Project project = projectService.newProject( repo, pom.getName(), pom, baseUrl );
+            Project project = projectService.newProject( repo, pom, baseUrl );
             return project.getPomXMLPath();
         }
     }
@@ -179,7 +179,7 @@ public class RepositoryStructureServiceImpl
                 }
                 pomService.save( project.getPomXMLPath(), pom, null, comment );
 
-                parentPom.setMultiModule( true );
+                parentPom.setPackaging( "pom" );
                 parentPom.getModules().add( pom.getName() != null ? pom.getName() : pom.getGav().getArtifactId() );
                 saveParentPom = true;
             }

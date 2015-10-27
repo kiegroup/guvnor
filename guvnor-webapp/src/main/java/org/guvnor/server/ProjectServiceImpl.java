@@ -117,16 +117,15 @@ public class ProjectServiceImpl
 
     @Override
     public Project newProject( final org.guvnor.structure.repositories.Repository repository,
-                               final String projectName,
                                final POM pom,
                                final String baseUrl ) {
         final FileSystem fs = Paths.convert( repository.getRoot() ).getFileSystem();
         try {
             //Projects are always created in the FS root
             final Path fsRoot = repository.getRoot();
-            final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( projectName ) );
+            final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( pom.getName() ) );
 
-            ioService.startBatch( new FileSystem[]{fs}, makeCommentedOption( "New project [" + projectName + "]" ) );
+            ioService.startBatch( new FileSystem[]{fs}, makeCommentedOption( "New project [" + pom.getName() + "]" ) );
 
             //Create POM.xml
             pomService.create( projectRootPath,

@@ -215,7 +215,6 @@ public class JobRequestHelper {
 
             try {
                 projectService.newProject( makeRepository( Paths.convert( repositoryPath ) ),
-                                           projectName,
                                            pom,
                                            GUVNOR_BASE_URL );
             } catch ( org.uberfire.java.nio.file.FileAlreadyExistsException e ) {

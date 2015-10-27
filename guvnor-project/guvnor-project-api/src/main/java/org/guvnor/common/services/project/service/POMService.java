@@ -26,8 +26,15 @@ import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 public interface POMService extends SupportsRead<POM>,
                                     SupportsUpdate<POM> {
 
+    /**
+     *
+     * @param projectRoot Root of the project
+     * @param repositoryWebBaseURL The web-context of the webapp
+     * @param pom Model for the pom.xml
+     * @return
+     */
     Path create( final Path projectRoot,
-                 final String baseURL,
+                 final String repositoryWebBaseURL,
                  final POM pom );
 
     Path save( final Path path,

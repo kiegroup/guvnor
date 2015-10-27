@@ -15,27 +15,24 @@
  */
 package org.guvnor.common.services.backend.archive;
 
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.Files;
-import org.uberfire.java.nio.file.Path;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
 
 public class Archiver {
 
     private Path originalPath;
-    private ZipOutputStream outputStream;
 
+    private ZipWriter zipWriter;
 
     private IOService ioService;
 
@@ -47,8 +44,8 @@ public class Archiver {
         this.ioService = ioService;
     }
 
-    public void archive(ByteArrayOutputStream outputStream,
-                        String uri) throws IOException, URISyntaxException {
+    public void archive( final ByteArrayOutputStream outputStream,
+                         final String uri ) throws IOException, URISyntaxException {
 
         init(outputStream, uri);
         zip();
@@ -60,12 +57,13 @@ public class Archiver {
         } else {
             addFile(originalPath);
         }
-        outputStream.close();
+        zipWriter.close();
     }
 
-    private void init(ByteArrayOutputStream outputStream, String uri) throws URISyntaxException {
+    private void init( final ByteArrayOutputStream outputStream,
+                       final String uri ) throws URISyntaxException {
         this.originalPath = ioService.get(new URI(uri));
-        this.outputStream = new ZipOutputStream(new BufferedOutputStream(outputStream));
+        this.zipWriter = new ZipWriter( outputStream );
     }
 
     private void addPath(DirectoryStream<Path> directoryStream) throws IOException {
@@ -78,28 +76,19 @@ public class Archiver {
         }
     }
 
-    private void addFile(Path subPath) throws IOException {
-        final int BUFFER = 2048;
-        byte data[] = new byte[BUFFER];
-
-        BufferedInputStream origin = new BufferedInputStream(ioService.newInputStream(subPath), BUFFER);
-
-        outputStream.putNextEntry(getZipEntry(subPath));
-        int count;
-        while ((count = origin.read(data, 0, BUFFER)) != -1) {
-            outputStream.write(data, 0, count);
-        }
-
-        outputStream.flush();
-        origin.close();
+    private void addFile( final Path subPath ) throws IOException {
+        zipWriter.addFile( getZipEntry( subPath ),
+                           ioService.newInputStream( subPath ) );
     }
 
-    private ZipEntry getZipEntry(Path subPath) {
+    private ZipEntry getZipEntry( final Path subPath ) {
         return new ZipEntry(FileNameResolver.resolve(subPath.toUri().getPath(), originalPath.toUri().getPath()));
     }
 
     static class FileNameResolver {
-        static protected String resolve(String subPath, String originalPath) {
+
+        static protected String resolve( final String subPath,
+                                         final String originalPath ) {
             if ("/".equals(originalPath)) {
                 return subPath.substring(originalPath.length());
             } else {
@@ -107,7 +96,7 @@ public class Archiver {
             }
         }
 
-        private static String getBaseFolder(String originalPath) {
+        private static String getBaseFolder( final String originalPath ) {
             if (originalPath.contains("/")) {
                 return originalPath.substring(originalPath.lastIndexOf("/") + 1) + "/";
             } else {

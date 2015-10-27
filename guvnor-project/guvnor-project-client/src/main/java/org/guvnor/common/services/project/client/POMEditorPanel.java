@@ -23,6 +23,8 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.POM;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent
@@ -32,7 +34,7 @@ public class POMEditorPanel
 
     private ArrayList<NameChangeHandler> nameChangeHandlers = new ArrayList<NameChangeHandler>();
     private POMEditorPanelView view;
-    private PlaceManager placeManager;
+    private SyncBeanManager iocManager;
     private POM model;
 
     public POMEditorPanel() {
@@ -40,9 +42,9 @@ public class POMEditorPanel
 
     @Inject
     public POMEditorPanel( final POMEditorPanelView view,
-                           final PlaceManager placeManager ) {
+                           final SyncBeanManager iocManager ) {
         this.view = view;
-        this.placeManager = placeManager;
+        this.iocManager = iocManager;
         view.setPresenter( this );
     }
 
@@ -123,7 +125,9 @@ public class POMEditorPanel
 
     @Override
     public void onOpenProjectContext() {
-        placeManager.goTo( "repositoryStructureScreen" );
+
+        IOCBeanDef<PlaceManager> placeManagerIOCBeanDef = iocManager.lookupBean( PlaceManager.class );
+        placeManagerIOCBeanDef.getInstance().goTo( "repositoryStructureScreen" );
     }
 
     @Override
