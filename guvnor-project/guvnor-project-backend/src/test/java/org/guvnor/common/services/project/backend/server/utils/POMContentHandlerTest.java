@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.guvnor.common.services.project.backend.server;
+package org.guvnor.common.services.project.backend.server.utils;
 
 import java.io.IOException;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.junit.Test;
-
-import java.io.IOException;
 
 import static org.junit.Assert.*;
 
@@ -31,12 +30,6 @@ public class POMContentHandlerTest {
     private static final String GAV_GROUP_ID_XML = "<groupId>org.guvnor</groupId>";
     private static final String GAV_ARTIFACT_ID_XML = "<artifactId>test</artifactId>";
     private static final String GAV_VERSION_XML = "<version>0.0.1</version>";
-    private static final String PLUGIN_XML = "<plugin>"
-            + "<groupId>org.kie</groupId>"
-            + "<artifactId>kie-maven-plugin</artifactId>"
-            + "<version>" + POMContentHandler.getKiePluginVersion() + "</version>"
-            + "<extensions>true</extensions>"
-            + "</plugin>";
     private static final String EXISTING_PLUGIN_XML = "<plugin>"
             + "<groupId>org.kie</groupId>"
             + "<artifactId>kie-maven-plugin</artifactId>"
@@ -61,8 +54,6 @@ public class POMContentHandlerTest {
         assertContainsIgnoreWhitespace( GAV_ARTIFACT_ID_XML,
                                         xml );
         assertContainsIgnoreWhitespace( GAV_VERSION_XML,
-                                        xml );
-        assertContainsIgnoreWhitespace( PLUGIN_XML,
                                         xml );
     }
 
@@ -99,8 +90,6 @@ public class POMContentHandlerTest {
         assertContainsIgnoreWhitespace( GAV_ARTIFACT_ID_XML,
                                         enrichedXml );
         assertContainsIgnoreWhitespace( GAV_VERSION_XML,
-                                        enrichedXml );
-        assertContainsIgnoreWhitespace( PLUGIN_XML,
                                         enrichedXml );
     }
     @Test

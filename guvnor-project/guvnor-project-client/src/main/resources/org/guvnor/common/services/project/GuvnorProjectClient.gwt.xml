@@ -25,6 +25,8 @@
   <inherits name='org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI'/>
 
   <inherits name='org.gwtbootstrap3.GwtBootstrap3NoTheme'/>
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI"/>
+  <inherits name="org.uberfire.UberfireWorkbench"/>
 
   <source path='client'/>
 

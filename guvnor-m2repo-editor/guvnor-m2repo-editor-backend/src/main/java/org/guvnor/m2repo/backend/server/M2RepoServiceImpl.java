@@ -25,7 +25,6 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.backend.server.POMContentHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
@@ -42,9 +41,6 @@ public class M2RepoServiceImpl implements M2RepoService,
 
     @Inject
     private GuvnorM2Repository repository;
-
-    @Inject
-    private POMContentHandler pomContentHandler;
 
     @Override
     public void deployJar( final InputStream is,

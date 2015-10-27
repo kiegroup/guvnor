@@ -85,13 +85,11 @@ public interface ProjectService<T extends Project> {
     /**
      * Creates a new project to the given path.
      * @param repository
-     * @param name
      * @param pom
      * @param baseURL the base URL where the Guvnor is hosted in web container
      * @return
      */
     T newProject( final Repository repository,
-                  final String name,
                   final POM pom,
                   final String baseURL );
 

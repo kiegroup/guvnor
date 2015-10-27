@@ -18,24 +18,32 @@ package org.guvnor.common.services.project.client;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class POMEditorPanelTest {
 
+    @Mock
     private POMEditorPanelView view;
+
+    @Mock
+    private SyncBeanManager iocManager;
+
     private POMEditorPanel panel;
-    private PlaceManager placeManager;
     private POMEditorPanelView.Presenter presenter;
 
     @Before
     public void setUp() throws Exception {
-        view = mock( POMEditorPanelView.class );
-        placeManager = mock( PlaceManager.class );
-        panel = new POMEditorPanel( view, placeManager );
+        panel = new POMEditorPanel( view, iocManager );
         presenter = panel;
     }
 
@@ -100,6 +108,11 @@ public class POMEditorPanelTest {
 
     @Test
     public void testOpenProjectContext() throws Exception {
+        IOCBeanDef iocBeanDef = mock( IOCBeanDef.class );
+        PlaceManager placeManager = mock( PlaceManager.class );
+        when( iocBeanDef.getInstance() ).thenReturn( placeManager );
+        when( iocManager.lookupBean( eq( PlaceManager.class ) ) ).thenReturn( iocBeanDef );
+
         presenter.onOpenProjectContext();
         verify( placeManager ).goTo( "repositoryStructureScreen" );
     }

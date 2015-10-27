@@ -1,11 +1,11 @@
 /*
- * Copyright 2014 JBoss by Red Hat.
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.guvnor.common.services.project.model;
 
-import org.uberfire.client.callbacks.Callback;
+import java.util.ArrayList;
 
-public interface ProjectWizard {
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-    void initialise(  );
-    
-    void initialise( final POM pom );
+@Portable
+public class Build {
 
-    void start( final Callback<Project> callback,
-                final boolean openEditor );
+    private ArrayList<Plugin> plugins = new ArrayList<Plugin>();
 
+    public ArrayList<Plugin> getPlugins() {
+        return plugins;
+    }
+
+    public void setPlugins( ArrayList<Plugin> plugins ) {
+        this.plugins = plugins;
+    }
 }

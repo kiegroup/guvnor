@@ -1,11 +1,11 @@
 /*
- * Copyright 2014 JBoss by Red Hat.
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.guvnor.common.services.project.backend.server.utils;
 
-package org.guvnor.common.services.project.model;
+public class NullSafeEquals {
 
-import org.uberfire.client.callbacks.Callback;
-
-public interface ProjectWizard {
-
-    void initialise(  );
-    
-    void initialise( final POM pom );
-
-    void start( final Callback<Project> callback,
-                final boolean openEditor );
-
+    static boolean areValuesEqual( final String a, final String b ) {
+        if ( a == null || b == null ) {
+            return false;
+        } else {
+            return a.equals( b );
+        }
+    }
 }

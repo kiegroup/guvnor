@@ -516,7 +516,6 @@ public abstract class AbstractProjectService<T extends Project>
     @Override
     public abstract T newProject(
             final org.guvnor.structure.repositories.Repository repository,
-            final String projectName,
             final POM pom,
             final String baseUrl );
 
@@ -739,7 +738,7 @@ public abstract class AbstractProjectService<T extends Project>
             //Note we do *not* raise a DeleteProjectEvent here, as that is handled by DeleteProjectObserverBridge
             
             if ( parent != null ) {
-                parent.setMultiModule( true );
+                parent.setPackaging( "pom" );
                 parent.getModules().remove( project2Delete.getProjectName() );
                 pomService.save( Paths.convert( parentPom ),
                                  parent,

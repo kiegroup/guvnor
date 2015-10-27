@@ -26,14 +26,19 @@ public class GAV {
     private String version;
 
     public GAV() {
-        this.groupId = null;
-        this.artifactId = null;
-        this.version = null;
+        this( null, null, null );
     }
 
-    public GAV( String groupId,
-                String artifactId,
-                String version ) {
+    public GAV( final String gavString ) {
+        String[] split = gavString.split( ":" );
+        this.groupId = split[0];
+        this.artifactId = split[1];
+        this.version = split[2];
+    }
+
+    public GAV( final String groupId,
+                final String artifactId,
+                final String version ) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
@@ -68,6 +73,10 @@ public class GAV {
         return groupId + ":" + artifactId + ":" + version;
     }
 
+    public boolean isGAVEqual( Object o ) {
+        return equals( o );
+    }
+    
     @Override
     public boolean equals( Object o ) {
         if ( this == o ) {
