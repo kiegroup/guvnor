@@ -666,6 +666,7 @@
             <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-social-activities-api</compileSourcesArtifact>
 
             <!-- Dashbuilder -->
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-json</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-validations</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-shared</compileSourcesArtifact>
