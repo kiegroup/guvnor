@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.editors.repository.wizard.CreateRepositoryWizardModel;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.service.RepositoryStructureService;
+import org.jboss.errai.bus.client.api.base.DefaultErrorCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.callbacks.Callback;
@@ -30,13 +31,25 @@ public class RepositoryStructurePage extends RepositoryWizardPage
         implements
         RepositoryStructurePageView.Presenter {
 
-    @Inject
     private RepositoryStructurePageView view;
 
-    private boolean isComplete = false;
+    private boolean isProjectValid = false;
+
+    private boolean isGroupIdValid = false;
+
+    private boolean isArtifactIdValid = false;
+
+    private boolean isValidVersion = false;
+
+    private Caller<RepositoryStructureService> repositoryStructureService;
 
     @Inject
-    private Caller<RepositoryStructureService> repositoryStructureService;
+    public RepositoryStructurePage( RepositoryStructurePageView view,
+                                    Caller <RepositoryStructureService> repositoryStructureService ) {
+        this.view = view;
+        view.init( this );
+        this.repositoryStructureService = repositoryStructureService;
+    }
 
     @Override
     public String getTitle() {
@@ -46,78 +59,30 @@ public class RepositoryStructurePage extends RepositoryWizardPage
     @Override
     public void isComplete( final Callback<Boolean> callback ) {
 
-        isComplete = structurePageWasVisited;
+        boolean isComplete = structurePageWasVisited &&
+                isProjectValid &&
+                isGroupIdValid &&
+                isArtifactIdValid &&
+                isValidVersion;
 
-        //check if project name is valid
-        repositoryStructureService.call( new RemoteCallback<Boolean>() {
-            @Override
-            public void callback( Boolean isValid ) {
-                isComplete = isComplete && isValid;
-
-                //check if group id is valid
-                repositoryStructureService.call( new RemoteCallback<Boolean>() {
-                    @Override
-                    public void callback( Boolean isValid ) {
-                        isComplete = isComplete && isValid;
-
-                        //check if artifact id is valid
-                        repositoryStructureService.call( new RemoteCallback<Boolean>() {
-                            @Override public void callback( Boolean isValid ) {
-                                isComplete = isComplete && isValid;
-
-                                //check if version id is valid
-                                repositoryStructureService.call( new RemoteCallback<Boolean>() {
-                                    @Override
-                                    public void callback( Boolean isValid ) {
-                                        isComplete = isComplete && isValid;
-                                        callback.callback( isComplete );
-                                    }
-                                } ).isValidVersion( model.getVersion() );
-                            }
-                        } ).isValidArtifactId( model.getArtifactId() );
-                    }
-                } ).isValidGroupId( model.getGroupId() );
-            }
-        } ).isValidProjectName( model.getProjectName() );
-
+        callback.callback( isComplete );
     }
 
     @Override
     public void setModel( CreateRepositoryWizardModel model ) {
         super.setModel( model );
         model.setConfigureRepository( view.isConfigureRepository() );
+        model.setMultiModule( view.isMultiModule() );
     }
 
     @Override
     public void initialise() {
-        view.init( this );
+        //no additional processing required
     }
 
     @Override
     public void prepareView() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void stateChanged() {
-
-        //TODO complete this validation.
-        isComplete = isValid( view.getProjectName() );
-        isComplete = isComplete && isValid( view.getGroupId() );
-        isComplete = isComplete && isValid( view.getArtifactId() );
-        isComplete = isComplete && isValid( view.getVersion() );
-
-        model.setProjectName( view.getProjectName() );
-        if ( view.getProjectName() != null ) {
-            model.setProjectDescription( view.getProjectDescription().trim() );
-        }
-        model.setGroupId( view.getGroupId() );
-        model.setArtifactId( view.getArtifactId() );
-        model.setVersion( view.getVersion() );
-        model.setMultiModule( view.isMultiModule() );
-        model.setConfigureRepository( view.isConfigureRepository() );
-
-        fireEvent();
+        //no additional processing required
     }
 
     @Override
@@ -129,6 +94,34 @@ public class RepositoryStructurePage extends RepositoryWizardPage
     public void setProjectName( String projectName ) {
         model.setProjectName( projectName );
         view.setProjectName( projectName );
+        view.clearProjectNameErrorMessage();
+        isProjectValid = true;
+    }
+
+    @Override
+    public void onProjectNameChange() {
+        String projectName = view.getProjectName();
+        projectName = projectName != null ? projectName.trim() : null;
+        if ( projectName != null && !projectName.equals( view.getProjectName() ) ) {
+            view.setProjectName( projectName );
+        }
+        model.setProjectName( projectName );
+
+        repositoryStructureService.call( new RemoteCallback<Boolean>() {
+            @Override
+            public void callback( Boolean isValid ) {
+                if ( isValid ) {
+                    view.clearProjectNameErrorMessage();
+                } else {
+                    view.setProjectNameErrorMessage( Constants.INSTANCE.InvalidProjectName() );
+                }
+                if ( isValid != isProjectValid ) {
+                    isProjectValid = isValid;
+                    fireEvent();
+                }
+            }
+        },
+        new DefaultErrorCallback() ).isValidProjectName( projectName );
     }
 
     @Override
@@ -138,15 +131,77 @@ public class RepositoryStructurePage extends RepositoryWizardPage
     }
 
     @Override
+    public void onProjectDescriptionChange() {
+        model.setProjectDescription( view.getProjectDescription().trim() );
+    }
+
+    @Override
     public void setGroupId( String groupId ) {
         model.setGroupId( groupId );
         view.setGroupId( groupId );
+        view.clearGroupIdErrorMessage();
+        isGroupIdValid = true;
+    }
+
+    @Override
+    public void onGroupIdChange() {
+        String groupId = view.getGroupId();
+        groupId = groupId != null ? groupId.trim() : null;
+        if ( groupId != null && !groupId.equals( view.getGroupId() ) ) {
+            view.setGroupId( groupId );
+        }
+        model.setGroupId( groupId );
+
+        repositoryStructureService.call( new RemoteCallback<Boolean>() {
+                                             @Override
+                                             public void callback( Boolean isValid ) {
+                                                 if ( isValid ) {
+                                                     view.clearGroupIdErrorMessage();
+                                                 } else {
+                                                     view.setGroupIdErrorMessage( Constants.INSTANCE.InvalidGroupId() );
+                                                 }
+                                                 if ( isValid != isGroupIdValid ) {
+                                                     isGroupIdValid = isValid;
+                                                     fireEvent();
+                                                 }
+                                             }
+                                         },
+                new DefaultErrorCallback() ).isValidGroupId( groupId );
     }
 
     @Override
     public void setArtifactId( String artifactId ) {
         model.setArtifactId( artifactId );
         view.setArtifactId( artifactId );
+        view.clearArtifactIdErrorMessage();
+        isArtifactIdValid = true;
+    }
+
+    @Override
+    public void onArtifactIdChange() {
+        String artifactId = view.getArtifactId();
+        artifactId = artifactId != null ? artifactId.trim() : null;
+        if ( artifactId != null && !artifactId.equals( view.getArtifactId() ) ) {
+            view.setArtifactId( artifactId );
+        }
+        model.setArtifactId( artifactId );
+
+        repositoryStructureService.call( new RemoteCallback<Boolean>() {
+                                             @Override
+                                             public void callback( Boolean isValid ) {
+                                                 if ( isValid ) {
+                                                     view.clearArtifactIdErrorMessage();
+                                                 } else {
+                                                     view.setArtifactIdErrorMessage( Constants.INSTANCE.InvalidArtifactId() );
+                                                 }
+                                                 if ( isValid != isArtifactIdValid ) {
+                                                     isArtifactIdValid = isValid;
+                                                     fireEvent();
+                                                 }
+                                             }
+                                         },
+                new DefaultErrorCallback() ).isValidArtifactId( artifactId );
+
     }
 
     @Override
@@ -159,9 +214,50 @@ public class RepositoryStructurePage extends RepositoryWizardPage
     public void setVersion( String version ) {
         model.setVersion( version );
         view.setVersion( version );
+        view.clearVersionErrorMessage();
+        isValidVersion = true;
     }
 
-    private boolean isValid( String value ) {
-        return value != null && !"".equals( value.trim() );
+    @Override
+    public void onVersionChange() {
+        String version = view.getVersion();
+        version = version != null ? version.trim() : null;
+        if ( version != null && !version.equals( view.getVersion() ) ) {
+            view.setVersion( version );
+        }
+        model.setVersion( version );
+
+        repositoryStructureService.call( new RemoteCallback<Boolean>() {
+                                             @Override
+                                             public void callback( Boolean isValid ) {
+                                                 if ( isValid ) {
+                                                     view.clearVersionErrorMessage();
+                                                 } else {
+                                                     view.setVersionErrorMessage( Constants.INSTANCE.InvalidVersion() );
+                                                 }
+                                                 if ( isValid != isValidVersion ) {
+                                                     isValidVersion = isValid;
+                                                     fireEvent();
+                                                 }
+                                             }
+                                         },
+                new DefaultErrorCallback() ).isValidVersion( version );
+
     }
+
+    @Override
+    public void onSingleModuleChange() {
+        model.setMultiModule( !view.isSingleModule() );
+    }
+
+    @Override
+    public void onMultiModuleChange() {
+        model.setMultiModule( view.isMultiModule() );
+    }
+
+    @Override
+    public void onConfigureRepositoryChange() {
+        model.setConfigureRepository( view.isConfigureRepository() );
+    }
+
 }
