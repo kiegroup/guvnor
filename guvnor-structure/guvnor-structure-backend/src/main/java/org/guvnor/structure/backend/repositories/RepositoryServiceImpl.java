@@ -234,6 +234,11 @@ public class RepositoryServiceImpl implements RepositoryService {
         return TextUtil.normalizeRepositoryName( name );
     }
 
+    @Override
+    public boolean validateRepositoryName( String name ) {
+        return name != null && !"".equals( name ) && name.equals( normalizeRepositoryName( name ) );
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void addGroup( Repository repository,

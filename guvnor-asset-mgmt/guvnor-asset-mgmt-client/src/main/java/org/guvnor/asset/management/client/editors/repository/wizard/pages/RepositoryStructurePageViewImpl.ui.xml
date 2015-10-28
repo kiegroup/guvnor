@@ -30,13 +30,6 @@
   <b:Well>
     <b:Fieldset>
 
-      <!--b:Legend>
-        <ui:text from="{i18n.StructureTypeDescription}"/>
-        <small>
-          <ui:text from="{i18n.IsRequired}"/>
-        </small>
-      </b:Legend-->
-
       <b:ControlLabel><strong><g:Label text="{i18n.RepositoryType}"/></strong></b:ControlLabel>
       <b:Controls>
         <b:RadioButton name="moduleType" b:id="isSingleModule" ui:field="isSingleModuleRadioButton" text="{i18n.SingleModule}"/>
@@ -58,10 +51,10 @@
       <b:ControlLabel for="projectNameTextBox">
         <span class="{style.mandatory-field}">*</span>
         <ui:text from="{i18n.ProjectName}"/>
-        <!--g:Label ui:field="projectName" text="{i18n.ProjectName}"/-->
       </b:ControlLabel>
       <b:Controls>
         <b:TextBox b:id="projectName" ui:field="projectNameTextBox" placeholder="{i18n.ProjectNameHolder}"/>
+        <b:HelpInline ui:field="projectNameTextBoxHelpInline"></b:HelpInline>
       </b:Controls>
 
       <b:ControlLabel for="projectDescriptionTextBox">
@@ -74,31 +67,28 @@
       <b:ControlLabel for="groupIdTextBox">
         <span class="{style.mandatory-field}">*</span>
         <ui:text from="{i18n.ProjectGroup}"/>
-        <!--g:Label ui:field="groupId" text="{i18n.ProjectGroup}"/-->
       </b:ControlLabel>
       <b:Controls>
         <b:TextBox b:id="groupId" ui:field="groupIdTextBox" placeholder="{i18n.ProjectGroupHolder}"/>
-        <!--b:HelpInline ui:field="groupIdTextBoxHelpInline"/-->
+        <b:HelpInline ui:field="groupIdTextBoxHelpInline"/>
       </b:Controls>
 
       <b:ControlLabel for="artifactIdTextBox">
         <span class="{style.mandatory-field}">*</span>
         <ui:text from="{i18n.ProjectArtifact}"/>
-        <!--g:Label ui:field="artifactId" text="{i18n.ProjectArtifact}"/-->
       </b:ControlLabel>
       <b:Controls>
         <b:TextBox b:id="artifactId" ui:field="artifactIdTextBox" placeholder="{i18n.ProjectArtifactHolder}"/>
-        <!--b:HelpInline ui:field="artifactIdTextBoxHelpInline"/-->
+        <b:HelpInline ui:field="artifactIdTextBoxHelpInline"/>
       </b:Controls>
 
       <b:ControlLabel for="versionTextBox">
         <span class="{style.mandatory-field}">*</span>
         <ui:text from="{i18n.ProjectVersion}"/>
-        <!--g:Label ui:field="version" text="{i18n.ProjectVersion}"/-->
       </b:ControlLabel>
       <b:Controls>
         <b:TextBox b:id="version" ui:field="versionTextBox" placeholder="{i18n.ProjectVersionHolder}"/>
-        <!--b:HelpInline ui:field="versionTextBoxHelpInline"/-->
+        <b:HelpInline ui:field="versionTextBoxHelpInline"/>
       </b:Controls>
 
     </b:Fieldset>

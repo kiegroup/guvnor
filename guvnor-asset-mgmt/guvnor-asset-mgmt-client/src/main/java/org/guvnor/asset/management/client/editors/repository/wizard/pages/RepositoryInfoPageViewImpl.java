@@ -16,7 +16,7 @@
 
 package org.guvnor.asset.management.client.editors.repository.wizard.pages;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
@@ -32,10 +32,11 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
 public class RepositoryInfoPageViewImpl extends Composite
@@ -77,10 +78,6 @@ public class RepositoryInfoPageViewImpl extends Composite
     @UiField
     HelpInline isManagedRepositoryHelpInline;
 
-    private String name;
-
-    private String organizationalUnitName;
-
     private boolean managedRepository = false;
 
     private static RepositoryInfoPageBinder uiBinder = GWT.create( RepositoryInfoPageBinder.class );
@@ -97,28 +94,30 @@ public class RepositoryInfoPageViewImpl extends Composite
 
     @Override
     public String getName() {
-        return name;
+        return nameTextBox.getText();
     }
 
     @Override
     public String getOrganizationalUnitName() {
-        return organizationalUnitName;
+        return organizationalUnitDropdown.getValue();
     }
 
     @Override
     public void setName( String name ) {
-        this.name = name;
         this.nameTextBox.setText( name );
     }
 
-    @Override
-    public void setValidName( boolean isValid ) {
-        //TODO enable disable error messages.
+    public void setNameErrorMessage( String message ) {
+        nameHelpInline.setText( message );
+    }
+
+    public void clearNameErrorMessage( ) {
+        nameHelpInline.setText( null );
     }
 
     @Override
     public void setValidOU( boolean ouValid ) {
-        //TODO enable disable error messages.
+        //not apply for this case
     }
 
     @Override
@@ -127,13 +126,14 @@ public class RepositoryInfoPageViewImpl extends Composite
     }
 
     @Override
-    public void initOrganizationalUnits( Collection<OrganizationalUnit> organizationalUnits ) {
+    public void initOrganizationalUnits( List<Pair<String, String>> organizationalUnits ) {
 
+        organizationalUnitDropdown.clear();
         organizationalUnitDropdown.addItem( CoreConstants.INSTANCE.SelectEntry(), NOT_SELECTED );
-        if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
-            for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
-                organizationalUnitDropdown.addItem( organizationalUnit.getName(),
-                                                    organizationalUnit.getName() );
+        if ( organizationalUnits != null ) {
+            for ( Pair<String, String> organizationalUnitInfo : organizationalUnits ) {
+                organizationalUnitDropdown.addItem( organizationalUnitInfo.getK1(),
+                                                    organizationalUnitInfo.getK2() );
 
             }
         }
@@ -149,20 +149,24 @@ public class RepositoryInfoPageViewImpl extends Composite
         managedReposiotryGroup.setVisible( enabled );
     }
 
+    @Override
+    public void alert( String message ) {
+        Window.alert( message );
+    }
+
     private void initialiseFields() {
+
         nameTextBox.addKeyUpHandler( new KeyUpHandler() {
             @Override
             public void onKeyUp( KeyUpEvent event ) {
-                name = nameTextBox.getText();
-                presenter.stateChanged();
+                presenter.onNameChange();
             }
         } );
 
         organizationalUnitDropdown.addChangeHandler( new ChangeHandler() {
             @Override
             public void onChange( ChangeEvent event ) {
-                organizationalUnitName = organizationalUnitDropdown.getValue();
-                presenter.stateChanged();
+                presenter.onOUChange();
             }
         } );
 
@@ -170,7 +174,7 @@ public class RepositoryInfoPageViewImpl extends Composite
             @Override
             public void onValueChange( ValueChangeEvent<Boolean> event ) {
                 managedRepository = event.getValue();
-                presenter.stateChanged();
+                presenter.onManagedRepositoryChange();
             }
         } );
     }

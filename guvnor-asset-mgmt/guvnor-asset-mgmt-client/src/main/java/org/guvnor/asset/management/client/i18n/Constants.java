@@ -304,6 +304,16 @@ public interface Constants extends Messages {
 
     String RepoConfigurationStartFailed();
 
+    String InvalidRepositoryName();
+
+    String InvalidProjectName();
+
+    String InvalidGroupId();
+
+    String InvalidArtifactId();
+
+    String InvalidVersion();
+
     //end of create repository wizard.
 
 

@@ -19,26 +19,18 @@ package org.guvnor.asset.management.client.editors.repository.wizard.pages;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.editors.repository.wizard.CreateRepositoryWizardModel;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
 public abstract class RepositoryWizardPage implements WizardPage {
 
-    protected SimplePanel content = new SimplePanel();
-
     protected CreateRepositoryWizardModel model;
 
     @Inject
     protected Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
-    protected boolean structurePageWasVisited = false;
 
-    @Override
-    public Widget asWidget() {
-        return content;
-    }
+    protected boolean structurePageWasVisited = false;
 
     public void fireEvent() {
         final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );

@@ -23,12 +23,11 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class RepositoryStructurePageViewImpl extends Composite
@@ -42,10 +41,11 @@ public class RepositoryStructurePageViewImpl extends Composite
 
     private Presenter presenter;
 
-    Label infoLabelLabel;
-
     @UiField
     TextBox projectNameTextBox;
+
+    @UiField
+    HelpInline projectNameTextBoxHelpInline;
 
     @UiField
     TextBox projectDescriptionTextBox;
@@ -53,26 +53,20 @@ public class RepositoryStructurePageViewImpl extends Composite
     @UiField
     TextBox groupIdTextBox;
 
-    /*
     @UiField
     HelpInline groupIdTextBoxHelpInline;
-    */
 
     @UiField
     TextBox artifactIdTextBox;
 
-    /*
     @UiField
     HelpInline artifactIdTextBoxHelpInline;
-    */
 
     @UiField
     TextBox versionTextBox;
 
-    /*
     @UiField
     HelpInline versionTextBoxHelpInline;
-    */
 
     @UiField
     RadioButton isSingleModuleRadioButton;
@@ -109,9 +103,28 @@ public class RepositoryStructurePageViewImpl extends Composite
     }
 
     @Override
+    public void setProjectNameErrorMessage( String errorMessage ) {
+        projectNameTextBoxHelpInline.setText( errorMessage );
+    }
+
+    @Override
+    public void clearProjectNameErrorMessage( ) {
+        projectNameTextBoxHelpInline.setText( null );
+    }
+
+    @Override
     public void setGroupId( String groupId ) {
         groupIdTextBox.setText( groupId );
+    }
 
+    @Override
+    public void setGroupIdErrorMessage( String errorMessage ) {
+        groupIdTextBoxHelpInline.setText( errorMessage );
+    }
+
+    @Override
+    public void clearGroupIdErrorMessage() {
+        groupIdTextBoxHelpInline.setText( null );
     }
 
     @Override
@@ -120,8 +133,28 @@ public class RepositoryStructurePageViewImpl extends Composite
     }
 
     @Override
+    public void setArtifactIdErrorMessage( String errorMessage ) {
+        artifactIdTextBoxHelpInline.setText( errorMessage );
+    }
+
+    @Override
+    public void clearArtifactIdErrorMessage() {
+        artifactIdTextBoxHelpInline.setText( null );
+    }
+
+    @Override
     public void setVersion( String version ) {
         versionTextBox.setText( version );
+    }
+
+    @Override
+    public void setVersionErrorMessage( String errorMessage ) {
+        versionTextBoxHelpInline.setText( errorMessage );
+    }
+
+    @Override
+    public void clearVersionErrorMessage() {
+        versionTextBoxHelpInline.setText( null );
     }
 
     @Override
@@ -160,6 +193,11 @@ public class RepositoryStructurePageViewImpl extends Composite
     }
 
     @Override
+    public boolean isSingleModule() {
+        return isSingleModuleRadioButton.getValue();
+    }
+
+    @Override
     public boolean isConfigureRepository() {
         return isConfigureRepositoryCheckBox.getValue();
     }
@@ -176,56 +214,54 @@ public class RepositoryStructurePageViewImpl extends Composite
         projectNameTextBox.addChangeHandler( new ChangeHandler() {
             @Override
             public void onChange( ChangeEvent event ) {
-                presenter.stateChanged();
+                presenter.onProjectNameChange();
             }
         } );
 
         projectDescriptionTextBox.addChangeHandler( new ChangeHandler() {
             @Override
             public void onChange( ChangeEvent event ) {
-                presenter.stateChanged();
+                presenter.onProjectDescriptionChange();
             }
         } );
 
         groupIdTextBox.addChangeHandler( new ChangeHandler() {
             @Override
             public void onChange( ChangeEvent event ) {
-                presenter.stateChanged();
+                presenter.onGroupIdChange();
             }
         } );
 
         artifactIdTextBox.addChangeHandler( new ChangeHandler() {
             @Override public void onChange( ChangeEvent event ) {
-                presenter.stateChanged();
+                presenter.onArtifactIdChange();
             }
         } );
 
         versionTextBox.addChangeHandler( new ChangeHandler() {
             @Override
             public void onChange( ChangeEvent event ) {
-                presenter.stateChanged();
+                presenter.onVersionChange();
             }
         } );
 
-        isSingleModuleRadioButton.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange( ValueChangeEvent<Boolean> event ) {
-                presenter.stateChanged();
+        isSingleModuleRadioButton.addClickHandler( new ClickHandler() {
+            @Override public void onClick( ClickEvent event ) {
+                presenter.onSingleModuleChange();
             }
         } );
 
-        isMultiModuleRadioButton.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange( ValueChangeEvent<Boolean> event ) {
-                presenter.stateChanged();
+        isMultiModuleRadioButton.addClickHandler( new ClickHandler() {
+            @Override public void onClick( ClickEvent event ) {
+                presenter.onMultiModuleChange();
             }
         } );
 
-        isConfigureRepositoryCheckBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange( ValueChangeEvent<Boolean> event ) {
-                presenter.stateChanged();
+        isConfigureRepositoryCheckBox.addClickHandler( new ClickHandler() {
+            @Override public void onClick( ClickEvent event ) {
+                presenter.onConfigureRepositoryChange();
             }
         } );
+
     }
 }
