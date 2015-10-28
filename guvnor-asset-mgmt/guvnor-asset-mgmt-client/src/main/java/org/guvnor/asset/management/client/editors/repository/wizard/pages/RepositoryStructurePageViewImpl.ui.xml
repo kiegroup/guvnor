@@ -60,6 +60,7 @@
                                 </b:Column>
                                 <b:Column size="MD_8">
                                     <b:TextBox b:id="projectName" ui:field="projectNameTextBox" placeholder="{i18n.ProjectNameHolder}"/>
+                                    <b:HelpBlock ui:field="projectNameTextBoxHelpBlock"/>
                                 </b:Column>
                             </b:FormGroup>
 
@@ -109,5 +110,4 @@
             </b:Row>
         </b:Container>
     </g:HTMLPanel>
-
 </ui:UiBinder>

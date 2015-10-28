@@ -29,6 +29,7 @@ public abstract class RepositoryWizardPage implements WizardPage {
 
     @Inject
     protected Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
+
     protected boolean structurePageWasVisited = false;
 
     public void fireEvent() {
