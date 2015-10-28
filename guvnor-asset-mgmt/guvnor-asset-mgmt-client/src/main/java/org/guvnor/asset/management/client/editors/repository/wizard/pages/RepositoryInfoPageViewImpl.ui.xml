@@ -31,13 +31,6 @@
     <b:Well>
       <b:Fieldset>
 
-        <!--b:Legend>
-          <ui:text from="{i18n.RepoInformation}"/>
-          <small>
-            <ui:text from="{i18n.IsRequired}"/>
-          </small>
-        </b:Legend-->
-
         <b:ControlGroup ui:field="nameGroup">
           <b:ControlLabel for="name">
             <span class="{style.mandatory-field}">*</span>

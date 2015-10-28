@@ -16,22 +16,24 @@
 
 package org.guvnor.asset.management.client.editors.repository.wizard.pages;
 
-import java.util.Collection;
+import java.util.List;
 
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.commons.data.Pair;
 
 public interface RepositoryInfoPageView
         extends
         UberView<RepositoryInfoPageView.Presenter> {
 
-    static final String NOT_SELECTED = "NOT_SELECTED";
+    String NOT_SELECTED = "NOT_SELECTED";
 
     interface Presenter {
 
-        void stateChanged();
+        void onNameChange();
 
-        String getName();
+        void onOUChange();
+
+        void onManagedRepositoryChange();
 
     }
 
@@ -39,9 +41,11 @@ public interface RepositoryInfoPageView
 
     void setName( String name );
 
-    void setValidName( final boolean isValid );
+    void setNameErrorMessage( String message );
 
-    void initOrganizationalUnits( Collection<OrganizationalUnit> organizationalUnits );
+    void clearNameErrorMessage( );
+
+    void initOrganizationalUnits( List<Pair<String, String>> organizationalUnits );
 
     String getOrganizationalUnitName();
 
@@ -52,5 +56,7 @@ public interface RepositoryInfoPageView
     boolean isManagedRepository();
 
     void enabledManagedRepositoryCreation( boolean enabled );
+
+    void alert( String message );
 
 }

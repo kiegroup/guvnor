@@ -55,6 +55,8 @@ public interface RepositoryService {
 
     String normalizeRepositoryName( final String name );
 
+    boolean validateRepositoryName( final String name );
+
     void addGroup( final Repository repository,
                    final String group );
 
