@@ -37,6 +37,7 @@
     <as.version>8.1.0.Final</as.version>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
     <errai.jboss.home>${project.build.directory}/wildfly-${as.version}</errai.jboss.home>
+    <gwt.user.agent.all>gecko1_8,safari</gwt.user.agent.all>
   </properties>
 
   <dependencies>
@@ -189,22 +190,6 @@
     </dependency>
 
     <!-- Guvnor -->
-    <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-asset-mgmt-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-asset-mgmt-backend</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-asset-mgmt-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-structure-backend</artifactId>
@@ -587,7 +572,19 @@
   <build>
     <finalName>${project.artifactId}</finalName>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
-
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>org/guvnor/GuvnorWorkbench.gwt.xml</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -692,7 +689,7 @@
           <execution>
             <id>gwt-compile</id>
             <goals>
-              <goal>resources</goal>
+              <!-- Do not use 'resources' goal as it does not play well with filtered resources. -->
               <goal>compile</goal>
             </goals>
           </execution>
