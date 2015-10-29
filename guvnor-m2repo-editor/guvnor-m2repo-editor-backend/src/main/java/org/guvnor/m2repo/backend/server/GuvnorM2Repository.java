@@ -53,6 +53,7 @@ import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.util.IOUtil;
@@ -63,16 +64,18 @@ import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.deployment.DeploymentException;
 import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.installation.InstallationException;
+import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
-import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.kie.scanner.Aether;
+import org.kie.scanner.embedder.MavenEmbedder;
+import org.kie.scanner.embedder.MavenEmbedderException;
 import org.kie.scanner.embedder.MavenProjectLoader;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
@@ -368,7 +371,8 @@ public class GuvnorM2Repository {
 
             //Deploy into remote repository defined in <distributionManagement>
             try {
-                DistributionManagement distributionManagement = getDistributionManagement( pomXML );
+                MavenEmbedder embedder = MavenProjectLoader.newMavenEmbedder(false);
+                DistributionManagement distributionManagement = getDistributionManagement(pomXML, embedder);
 
                 if ( distributionManagement != null ) {
 
@@ -390,13 +394,11 @@ public class GuvnorM2Repository {
                     //If credentials are required those credentials must be provisioned in the user's settings.xml file
                     if ( remoteRepository != null ) {
                         DeployRequest remoteRequest = new DeployRequest();
-                        remoteRequest
-                                .addArtifact( jarArtifact )
-                                .addArtifact( pomXMLArtifact )
-                                .setRepository( getRemoteRepoFromDeployment( remoteRepository ) );
+                        remoteRequest.addArtifact( jarArtifact ).addArtifact( pomXMLArtifact )
+                                .setRepository( getRemoteRepoFromDeployment( remoteRepository, embedder ) );
 
                         Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
-                                                               remoteRequest );
+                                remoteRequest );
                     }
                 }
 
@@ -449,15 +451,17 @@ public class GuvnorM2Repository {
         }
     }
 
-    private DistributionManagement getDistributionManagement( final String pomXML ) {
+    private DistributionManagement getDistributionManagement( final String pomXML, MavenEmbedder embedder ) {
         final InputStream is = new ByteArrayInputStream( pomXML.getBytes( Charset.forName( "UTF-8" ) ) );
+        MavenProject project = null;
         try {
-            //Get the effective POM as the DistributionManagement section may be in a parent POM
-            final MavenProject project = MavenProjectLoader.parseMavenPom( is );
-            final DistributionManagement distributionManagement = project.getDistributionManagement();
-
-            return distributionManagement;
-
+            project = embedder.readProject( is );
+        } catch ( ProjectBuildingException e ) {
+            e.printStackTrace();
+            throw new RuntimeException( e );
+        } catch ( MavenEmbedderException e ) {
+            e.printStackTrace();
+            throw new RuntimeException( e );
         } finally {
             try {
                 is.close();
@@ -465,7 +469,7 @@ public class GuvnorM2Repository {
                 //Swallow
             }
         }
-
+        return project.getDistributionManagement();
     }
 
     private RemoteRepository getGuvnorM2Repository() {
@@ -495,7 +499,7 @@ public class GuvnorM2Repository {
         }
     }
 
-    private RemoteRepository getRemoteRepoFromDeployment( DeploymentRepository repo ) {
+    private RemoteRepository getRemoteRepoFromDeployment(DeploymentRepository repo, MavenEmbedder embedder) {
 
         RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder( repo.getId(), repo.getLayout(), repo.getUrl() )
                 .setSnapshotPolicy( new RepositoryPolicy( true,
@@ -509,11 +513,9 @@ public class GuvnorM2Repository {
         Server server = settings.getServer( repo.getId() );
 
         if ( server != null ) {
-            remoteRepoBuilder.setAuthentication(
-                    new AuthenticationBuilder()
-                            .addUsername( server.getUsername() )
-                            .addPassword( server.getPassword() )
-                            .build() );
+            Authentication authentication = embedder.getMavenSession().getRepositorySession()
+                    .getAuthenticationSelector().getAuthentication( remoteRepoBuilder.build() );
+            remoteRepoBuilder.setAuthentication( authentication );
         }
 
         return remoteRepoBuilder.build();
