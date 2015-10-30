@@ -457,10 +457,10 @@ public class GuvnorM2Repository {
         try {
             project = embedder.readProject( is );
         } catch ( ProjectBuildingException e ) {
-            e.printStackTrace();
+            log.error( "Unable to build Maven project from POM", e );
             throw new RuntimeException( e );
         } catch ( MavenEmbedderException e ) {
-            e.printStackTrace();
+            log.error( "Unable to build Maven project from POM", e );
             throw new RuntimeException( e );
         } finally {
             try {
