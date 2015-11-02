@@ -14,11 +14,9 @@ package org.guvnor.m2repo.backend.server;/*
  * limitations under the License.
  */
 
-import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 
-import org.apache.maven.execution.MavenSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.deployment.DeployRequest;
@@ -35,7 +33,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.scanner.Aether;
-import org.kie.scanner.embedder.MavenProjectLoader;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
@@ -61,11 +58,13 @@ public class GuvnorM2RepositoryTest {
 
     }
 
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
     @Before
     public void setup() throws Exception {
         log.info("Deleting existing Repositories instance..");
-
-        File dir = new File("repositories");
 
         repo = new GuvnorM2Repository();
         repo.init();
@@ -85,15 +84,8 @@ public class GuvnorM2RepositoryTest {
         }
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @Test
     public void testDeployArtifactWitdeployArtifacthDistributionManagement() throws Exception {
-        GuvnorM2Repository repo = new GuvnorM2Repository();
-        repo.init();
-
         GAV gav = new GAV("org.kie.guvnor", "guvnor-m2repo-editor-backend", "0.0.1-SNAPSHOT");
 
         InputStream is = this.getClass()
@@ -134,16 +126,13 @@ public class GuvnorM2RepositoryTest {
                         if (!equals) {
                             return false;
                         }
-                        String string2 = "ChainedAuthentication";
                         Authentication auth = repo.getAuthentication();
                         Class<? extends Authentication> class1 = auth.getClass();
-                        boolean equals2 = string2.equals(class1.getSimpleName());
                         try {
                             Field declaredField = class1.getDeclaredField("authentications");
                             declaredField.setAccessible(true);
                             Authentication[] object = (Authentication[]) declaredField.get(auth);
                             Authentication authentication = object[1];
-                            MavenSession mavenSession = MavenProjectLoader.newMavenEmbedder(false).getMavenSession();
                             Class<? extends Authentication> class2 = authentication.getClass();
                             boolean equals3 = "SecretAuthentication".equals(class2.getSimpleName());
                             if (equals3) {
