@@ -45,21 +45,27 @@ import static org.mockito.Mockito.*;
 
 public class GuvnorM2RepositoryTest {
 
+    public static final String KIE_SETTINGS_CUSTOM_KEY = "kie.maven.settings.custom";
+    public static final String SETTINGS_SECURITY_KEY = "settings.security";
     private static final Logger log = LoggerFactory.getLogger(GuvnorM2RepositoryTest.class);
-
+    private static String settingsSecurityOriginalValue;
+    private static String kieSettingsCustomOriginalValue;
     private GuvnorM2Repository repo;
     private RepositorySystem repositorySystem = mock(RepositorySystem.class);
     private RepositorySystemSession repositorySystemSession = mock(RepositorySystemSession.class);
 
     @BeforeClass
     public static void setupClass() {
-        System.setProperty("settings.security", "src/test/resources/settings-security.xml");
-        System.setProperty("kie.maven.settings.custom", "src/test/resources/settings.xml");
-
+        settingsSecurityOriginalValue = System.getProperty(SETTINGS_SECURITY_KEY);
+        System.setProperty(SETTINGS_SECURITY_KEY, "src/test/resources/settings-security.xml");
+        kieSettingsCustomOriginalValue = System.getProperty(KIE_SETTINGS_CUSTOM_KEY);
+        System.setProperty(KIE_SETTINGS_CUSTOM_KEY, "src/test/resources/settings.xml");
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        System.setProperty(SETTINGS_SECURITY_KEY, settingsSecurityOriginalValue);
+        System.setProperty(KIE_SETTINGS_CUSTOM_KEY, kieSettingsCustomOriginalValue);
     }
 
     @Before
