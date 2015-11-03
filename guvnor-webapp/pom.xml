@@ -37,7 +37,6 @@
     <as.version>8.1.0.Final</as.version>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
     <errai.jboss.home>${project.build.directory}/wildfly-${as.version}</errai.jboss.home>
-    <gwt.user.agent.all>gecko1_8,safari</gwt.user.agent.all>
   </properties>
 
   <dependencies>
@@ -743,34 +742,6 @@
       </plugin>
     </plugins>
 
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>gwt-maven-plugin</artifactId>
-                    <versionRange>[2.3.0,)</versionRange>
-                    <goals>
-                      <goal>resources</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute/>
-                    <execute/>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <profiles>
@@ -782,6 +753,10 @@
           <name>full</name>
         </property>
       </activation>
+
+      <properties>
+        <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
+      </properties>
 
       <dependencies>
         <!-- Add back ANT when building full profile as it's needed by AS7 and Tomcat -->
@@ -800,8 +775,7 @@
               <!-- Build all GWT permutations and optimize them -->
               <module>org.guvnor.GuvnorWorkbench</module>
               <draftCompile>false</draftCompile>
-              <localWorkers>4</localWorkers>
-              <extraJvmArgs>-Xmx4096m -XX:MaxPermSize=256m -Xms2048m -XX:PermSize=128m -Xss1M</extraJvmArgs>
+              <extraJvmArgs>-Xms512m -Xmx1024m -XX:PermSize=128m -XX:MaxPermSize=256m -Xss1M</extraJvmArgs>
             </configuration>
           </plugin>
         </plugins>
