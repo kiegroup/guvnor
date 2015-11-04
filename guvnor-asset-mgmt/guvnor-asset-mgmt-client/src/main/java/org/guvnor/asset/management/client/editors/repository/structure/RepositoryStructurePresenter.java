@@ -399,7 +399,7 @@ public class RepositoryStructurePresenter
 
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "- > "
+                    Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "→ "
                                                                             + model.getPOM().getGav().getArtifactId() + ":"
                                                                             + model.getPOM().getGav().getGroupId() + ":"
                                                                             + model.getPOM().getGav().getVersion() ) ) );
@@ -407,7 +407,7 @@ public class RepositoryStructurePresenter
         } else if ( model.isSingleProject() ) {
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                     placeRequest,
-                    Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "- > " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
+                    Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "→ " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
 
         } else {
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
