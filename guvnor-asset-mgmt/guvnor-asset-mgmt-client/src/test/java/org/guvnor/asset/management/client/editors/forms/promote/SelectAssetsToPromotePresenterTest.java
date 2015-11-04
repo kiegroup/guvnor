@@ -17,18 +17,22 @@ package org.guvnor.asset.management.client.editors.forms.promote;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import junit.framework.TestCase;
-import org.guvnor.asset.management.client.editors.forms.promote.mock.GetFormParamsEventMock;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.ext.widgets.common.client.forms.GetFormParamsEvent;
 import org.uberfire.ext.widgets.common.client.forms.RequestFormParamsEvent;
 import org.uberfire.ext.widgets.common.client.forms.SetFormParamsEvent;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
@@ -56,13 +60,13 @@ public class SelectAssetsToPromotePresenterTest extends TestCase {
     @Mock
     protected SelectAssetsToPromotePresenter.SelectAssetsToPromoteView view;
 
-    protected GetFormParamsEventMock eventMock;
+    @Mock
+    protected EventSourceMock<GetFormParamsEvent> eventMock;
 
     protected SelectAssetsToPromotePresenter presenter;
 
     @Before
     public void init() {
-        eventMock = new GetFormParamsEventMock();
         presenter = new SelectAssetsToPromotePresenter(view, eventMock, new SelectAssetsToPromotePresenter.CommitsReader() {
             @Override
             public Map<String, String> getCommitsPerFile(String commitsPerFileString) {
@@ -84,7 +88,7 @@ public class SelectAssetsToPromotePresenterTest extends TestCase {
     }
 
     @Test
-    public void doTest() {
+    public void testBasicMethods() {
         presenter.onStartup( placeRequest );
 
         assertEquals( "Presenter has wrong view.", view, presenter.getView() );
@@ -93,28 +97,19 @@ public class SelectAssetsToPromotePresenterTest extends TestCase {
 
         verify( constants ).Promote_Assets();
 
-        Map<String, String> params = new HashMap<String, String>();
-        params.put( "in_source_branch_name", branch );
-        params.put( "in_list_of_files", filesInBranch );
-        params.put( "in_commits_per_file", "" ); // no need to send commits per file json, they will be mocked later.
+        presenter.setRequiresReview(Boolean.TRUE);
+    }
 
-        SetFormParamsEvent setFormParamsEvent = new SetFormParamsEvent( params, false );
+    @Test
+    public void testAssetSelection() {
 
-        presenter.setInputMap(setFormParamsEvent);
-
-        verify( view ).setSourceBranch( branch );
-        verify(view, times(5)).addFieldInBranch( anyString() );
-        verify( view ).setReadOnly( Boolean.FALSE );
-
-        assertEquals( "Presenter must contain " + commitsLog.size() + " files in branch. ", commitsLog.size(), presenter.getCommitsPerFile().size() );
+        startTest();
 
         int promotedFiles = 1;
 
-        presenter.setRequiresReview( Boolean.TRUE );
-
         for ( FileCommitsLog log : commitsLog ) {
             presenter.addFileToPromotedList( log.getPath() );
-            verify( view ).addFileToPromote( log.getPath() );
+            verify( view ).addFileToPromote(log.getPath());
             checkPromotedFiles( promotedFiles );
             promotedFiles ++;
         }
@@ -127,18 +122,26 @@ public class SelectAssetsToPromotePresenterTest extends TestCase {
             verify( view, atLeastOnce() ).addFieldInBranch( log.getPath() );
             checkPromotedFiles( promotedFiles );
         }
+    }
+
+    @Test
+    public void testSelectAssetsFormResult() {
+
+        startTest();
 
         presenter.addFileToPromotedList( employeeLog.getPath() );
         presenter.addFileToPromotedList( departmentLog.getPath() );
         presenter.addFileToPromotedList( projectLog.getPath() );
 
-        presenter.getOutputMap( new RequestFormParamsEvent() );
+        presenter.getOutputMap(new RequestFormParamsEvent());
 
-        GetFormParamsEvent result = eventMock.getFiredEvent();
+        ArgumentCaptor<GetFormParamsEvent> getFormParamsCaptor = ArgumentCaptor.forClass( GetFormParamsEvent.class );
 
-        assertNotNull( "No GetFormParamsEvent generated.", result );
+        verify( eventMock ).fire( getFormParamsCaptor.capture() );
 
-        Map<String, Object> resultParams = result.getParams();
+        assertNotNull( "No GetFormParamsEvent generated.", getFormParamsCaptor.getValue() );
+
+        Map<String, Object> resultParams = getFormParamsCaptor.getValue().getParams();
 
         String commits = (String) resultParams.get( "out_commits" );
 
@@ -150,9 +153,27 @@ public class SelectAssetsToPromotePresenterTest extends TestCase {
         assertEquals("Result contains wrong value for 'out_requires_review'.", presenter.getRequiresReview(), requiresReview);
     }
 
+    protected void startTest() {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put( "in_source_branch_name", branch );
+        params.put( "in_list_of_files", filesInBranch );
+        params.put( "in_commits_per_file", "" ); // no need to send commits per file json, they will be mocked later.
+
+        SetFormParamsEvent setFormParamsEvent = new SetFormParamsEvent( params, false );
+
+        presenter.setInputMap( setFormParamsEvent );
+
+        verify( view ).setSourceBranch( branch );
+        verify( view, times( 5 ) ).addFieldInBranch( anyString() );
+        verify( view ).setReadOnly( Boolean.FALSE );
+
+        assertEquals( "Presenter must contain " + commitsLog.size() + " files in branch. ", commitsLog.size(), presenter.getCommitsPerFile().size() );
+    }
+
     protected void checkFileCommits( String commits, String[] fileCommits ) {
         for ( String commit : fileCommits ) {
-            assertTrue( "Commits list '" + commits + "' must contain commit '" + commit + "'.", commits.contains( commit ));
+            assertTrue( "Commits list '" + commits + "' must contain commit '" + commit + "'.", commits.contains( commit ) );
         }
     }
 
@@ -161,6 +182,7 @@ public class SelectAssetsToPromotePresenterTest extends TestCase {
     }
 
     protected void initLogInfo() {
+        // Mock asset commits
         employeeLog = new FileCommitsLog(
                 "src/main/java/org/guvnor/asset/management/test/Employee.java",
                 new String[] { "d7b6f69712291cd94a16800ac6a01e12c6119e3d",
@@ -207,7 +229,7 @@ public class SelectAssetsToPromotePresenterTest extends TestCase {
         private String path;
         private String[] commits;
 
-        public FileCommitsLog(String path, String[] commits) {
+        public FileCommitsLog( String path, String[] commits ) {
             this.path = path;
             this.commits = commits;
         }
@@ -216,7 +238,7 @@ public class SelectAssetsToPromotePresenterTest extends TestCase {
             return path;
         }
 
-        public void setPath(String path) {
+        public void setPath( String path ) {
             this.path = path;
         }
 
@@ -224,7 +246,7 @@ public class SelectAssetsToPromotePresenterTest extends TestCase {
             return commits;
         }
 
-        public void setCommits(String[] commits) {
+        public void setCommits( String[] commits ) {
             this.commits = commits;
         }
     }
