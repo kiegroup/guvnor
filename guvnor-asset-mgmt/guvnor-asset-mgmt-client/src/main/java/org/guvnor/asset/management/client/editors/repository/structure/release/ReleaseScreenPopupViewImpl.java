@@ -114,81 +114,9 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
 
     private Command callbackCommand;
 
-    private final Command okCommand = new Command() {
-        @Override
-        public void execute() {
-            if ( isEmpty( versionText.getText() ) ) {
-                versionTextGroup.setType( ControlGroupType.ERROR );
-                versionTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "Version" ) );
-
-                return;
-            }
-            if ( isSnapshot( versionText.getText() ) ) {
-                versionTextGroup.setType( ControlGroupType.ERROR );
-                versionTextHelpInline.setText( Constants.INSTANCE.SnapshotNotAvailableForRelease( "-SNAPSHOT" ) );
-
-                return;
-            }
-            if( !sourceBranchText.getText().startsWith("release")){
-                sourceBranchTextGroup.setType( ControlGroupType.ERROR );
-                sourceBranchTextHelpInline.setText( Constants.INSTANCE.ReleaseCanOnlyBeDoneFromAReleaseBranch());
-                return;
-            }
-            if ( deployToRuntimeCheck.getValue() ) {
-
-                if ( isEmpty( userNameText.getText() ) ) {
-                    userNameTextGroup.setType( ControlGroupType.ERROR );
-                    userNameTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "Username" ) );
-
-                    return;
-                }
-
-                if ( isEmpty( passwordText.getText() ) ) {
-                    passwordTextGroup.setType( ControlGroupType.ERROR );
-                    passwordTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "Password" ) );
-
-                    return;
-                }
-
-                if ( isEmpty( serverURLText.getText() ) ) {
-                    serverURLTextGroup.setType( ControlGroupType.ERROR );
-                    serverURLTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( "ServerURL" ) );
-
-                    return;
-                }
-
-            }
-
-            if ( callbackCommand != null ) {
-                callbackCommand.execute();
-            }
-            hide();
-        }
-
-        private boolean isEmpty( String value ) {
-            if ( value == null || value.isEmpty() || value.trim().isEmpty() ) {
-                return true;
-            }
-
-            return false;
-        }
-
-        private boolean isSnapshot( String value ) {
-            if ( value != null && trim( value ).endsWith( "-SNAPSHOT" ) ) {
-                return true;
-            }
-            return false;
-        }
-    };
-
-    private final Command cancelCommand = new Command() {
-        @Override
-        public void execute() {
-            hide();
-        }
-    };
-
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand, cancelCommand );
+    private final ModalFooterOKCancelButtons footer;
+    
+    private ReleaseScreenPopupPresenter presenter;
 
     public ReleaseScreenPopupViewImpl() {
         setTitle( Constants.INSTANCE.Release_Configuration() );
@@ -196,7 +124,8 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
         setKeyboard( true );
         setAnimation( true );
         setDynamicSafe( true );
-
+        presenter = new ReleaseScreenPopupPresenter(this, callbackCommand);
+        footer = new ModalFooterOKCancelButtons( presenter.getOkCommand(), presenter.getCancelCommand() );
         add( uiBinder.createAndBindUi( this ) );
         add( footer );
     }
@@ -257,7 +186,7 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
         return this.deployToRuntimeCheck.getValue();
     }
 
-    private String trim( String value ) {
+    public String trim( String value ) {
         return value != null ? value.trim() : value;
     }
 
@@ -316,6 +245,40 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
     public ControlGroup getVersionTextGroup() {
         return versionTextGroup;
     }
+
+    public TextBox getRepositoryText() {
+        return repositoryText;
+    }
+
+    public TextBox getSourceBranchText() {
+        return sourceBranchText;
+    }
+
+    public TextBox getUserNameText() {
+        return userNameText;
+    }
+
+    public PasswordTextBox getPasswordText() {
+        return passwordText;
+    }
+
+    public TextBox getServerURLText() {
+        return serverURLText;
+    }
+
+    public TextBox getVersionText() {
+        return versionText;
+    }
+
+    public CheckBox getDeployToRuntimeCheck() {
+        return deployToRuntimeCheck;
+    }
+
+    public Command getCallbackCommand() {
+        return callbackCommand;
+    }
+    
+    
 
     public void clearWidgetsState() {
         repositoryTextGroup.setType(ControlGroupType.NONE);
