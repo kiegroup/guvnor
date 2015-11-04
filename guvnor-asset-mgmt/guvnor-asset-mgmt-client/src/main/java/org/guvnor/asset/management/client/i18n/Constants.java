@@ -316,5 +316,7 @@ public interface Constants extends Messages {
 
     //end of create repository wizard.
 
+    String ReleaseCanOnlyBeDoneFromAReleaseBranch();
+
 
 }
