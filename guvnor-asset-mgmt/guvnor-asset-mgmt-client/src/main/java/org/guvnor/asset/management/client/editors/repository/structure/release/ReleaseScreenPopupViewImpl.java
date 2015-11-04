@@ -129,6 +129,11 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
 
                 return;
             }
+            if( !sourceBranchText.getText().startsWith("release")){
+                sourceBranchTextGroup.setType( ControlGroupType.ERROR );
+                sourceBranchTextHelpInline.setText( Constants.INSTANCE.ReleaseCanOnlyBeDoneFromAReleaseBranch());
+                return;
+            }
             if ( deployToRuntimeCheck.getValue() ) {
 
                 if ( isEmpty( userNameText.getText() ) ) {
@@ -201,6 +206,7 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
                            String suggestedVersion,
                            String repositoryVersion,
                            Command command ) {
+        clearWidgetsState();
         this.callbackCommand = command;
 
         this.sourceBranchText.setText( branch );
@@ -255,4 +261,79 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
         return value != null ? value.trim() : value;
     }
 
+    public ControlGroup getRepositoryTextGroup() {
+        return repositoryTextGroup;
+    }
+
+    public HelpInline getRepositoryTextHelpInline() {
+        return repositoryTextHelpInline;
+    }
+
+    public ControlGroup getSourceBranchTextGroup() {
+        return sourceBranchTextGroup;
+    }
+
+    public HelpInline getSourceBranchTextHelpInline() {
+        return sourceBranchTextHelpInline;
+    }
+
+    public ControlGroup getUserNameTextGroup() {
+        return userNameTextGroup;
+    }
+
+    public HelpInline getUserNameTextHelpInline() {
+        return userNameTextHelpInline;
+    }
+
+    public ControlGroup getPasswordTextGroup() {
+        return passwordTextGroup;
+    }
+
+    public HelpInline getPasswordTextHelpInline() {
+        return passwordTextHelpInline;
+    }
+
+    public ControlGroup getServerURLTextGroup() {
+        return serverURLTextGroup;
+    }
+
+    public HelpInline getServerURLTextHelpInline() {
+        return serverURLTextHelpInline;
+    }
+
+    public HelpInline getDeployToRuntimeHelpInline() {
+        return deployToRuntimeHelpInline;
+    }
+
+    public ControlGroup getDeployToRuntimeTextGroup() {
+        return deployToRuntimeTextGroup;
+    }
+
+    public HelpInline getVersionTextHelpInline() {
+        return versionTextHelpInline;
+    }
+
+    public ControlGroup getVersionTextGroup() {
+        return versionTextGroup;
+    }
+
+    public void clearWidgetsState() {
+        repositoryTextGroup.setType(ControlGroupType.NONE);
+        repositoryTextHelpInline.setText("");
+        sourceBranchTextGroup.setType(ControlGroupType.NONE);
+        sourceBranchTextHelpInline.setText("");
+        userNameTextGroup.setType(ControlGroupType.NONE);
+        userNameTextHelpInline.setText("");
+        passwordTextGroup.setType(ControlGroupType.NONE);
+        passwordTextHelpInline.setText("");
+        serverURLTextGroup.setType(ControlGroupType.NONE);
+        serverURLTextHelpInline.setText("");
+        deployToRuntimeTextGroup.setType(ControlGroupType.NONE);
+        deployToRuntimeHelpInline.setText("");
+        versionTextGroup.setType(ControlGroupType.NONE);
+        versionTextHelpInline.setText("");
+    }
+    
+    
+    
 }
