@@ -28,6 +28,7 @@ import org.guvnor.asset.management.client.editors.project.structure.widgets.Proj
 import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataView;
 import org.guvnor.asset.management.client.editors.repository.structure.configure.ConfigureScreenPopupViewImpl;
 import org.guvnor.asset.management.client.editors.repository.structure.promote.PromoteScreenPopupViewImpl;
+import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupPresenter;
 import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupViewImpl;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.POM;
@@ -62,7 +63,7 @@ public class RepositoryStructureViewImpl
     ProjectModulesView modulesView;
 
     @Inject
-    ReleaseScreenPopupViewImpl releaseScreenPopupView;
+    ReleaseScreenPopupPresenter releaseScreenPopupPresenter;
 
     @Inject
     ConfigureScreenPopupViewImpl configureScreenPopupView;
@@ -85,8 +86,8 @@ public class RepositoryStructureViewImpl
     }
 
     @Override
-    public ReleaseScreenPopupViewImpl getReleaseScreenPopupView() {
-        return releaseScreenPopupView;
+    public ReleaseScreenPopupPresenter getReleaseScreenPopupPresenter() {
+        return releaseScreenPopupPresenter;
     }
 
     @Override

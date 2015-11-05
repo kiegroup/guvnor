@@ -15,7 +15,6 @@
 
 package org.guvnor.asset.management.client.editors.repository.structure.release;
 
-import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
@@ -25,18 +24,20 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import javax.enterprise.context.Dependent;
 import org.guvnor.asset.management.client.i18n.Constants;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-public class ReleaseScreenPopupViewImpl extends BaseModal {
+@Dependent
+public class ReleaseScreenPopupViewImpl extends BaseModal implements ReleaseScreenPopupView {
+
+    
 
     interface ReleaseScreenPopupWidgetBinder
             extends
@@ -46,8 +47,6 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
 
     private ReleaseScreenPopupWidgetBinder uiBinder = GWT.create( ReleaseScreenPopupWidgetBinder.class );
 
-    @Inject
-    private User identity;
 
     @UiField
     ControlGroup repositoryTextGroup;
@@ -124,60 +123,38 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
         setKeyboard( true );
         setAnimation( true );
         setDynamicSafe( true );
-        presenter = new ReleaseScreenPopupPresenter(this, callbackCommand);
         footer = new ModalFooterOKCancelButtons( presenter.getOkCommand(), presenter.getCancelCommand() );
         add( uiBinder.createAndBindUi( this ) );
         add( footer );
     }
 
-    public void configure( String repositoryAlias,
-                           String branch,
-                           String suggestedVersion,
-                           String repositoryVersion,
-                           Command command ) {
-        clearWidgetsState();
-        this.callbackCommand = command;
-
-        this.sourceBranchText.setText( branch );
-        this.repositoryText.setText( repositoryAlias );
-        this.sourceBranchText.setReadOnly( true );
-        this.repositoryText.setReadOnly( true );
-        // set default values for the fields
-        userNameText.setText( identity.getIdentifier() );
-        serverURLText.setText( GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "" ) );
-        this.versionTextHelpInline.setText( "The current repository version is: " + repositoryVersion );
-        this.versionText.setText( suggestedVersion );
-        userNameText.setEnabled( false );
-        passwordText.setEnabled( false );
-        serverURLText.setEnabled( false );
-        deployToRuntimeCheck.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange( ValueChangeEvent<Boolean> event ) {
-                if ( event.getValue() ) {
-                    userNameText.setEnabled( true );
-                    passwordText.setEnabled( true );
-                    serverURLText.setEnabled( true );
-                } else {
-                    userNameText.setEnabled( false );
-                    passwordText.setEnabled( false );
-                    serverURLText.setEnabled( false );
-                }
-            }
-        } );
+    public ReleaseScreenPopupPresenter getPresenter() {
+        return presenter;
     }
 
-    public String getUsername() {
+    @Override
+    public void show() {
+        super.show(); //To change body of generated methods, choose Tools | Templates.
+        clearWidgetsState();
+    }
+
+
+    @Override
+    public String getUserName() {
         return trim( this.userNameText.getText() );
     }
 
+    @Override
     public String getPassword() {
         return trim( this.passwordText.getText() );
     }
 
+    @Override
     public String getServerURL() {
         return trim( this.serverURLText.getText() );
     }
 
+    @Override
     public String getVersion() {
         return trim( this.versionText.getText() );
     }
@@ -190,96 +167,126 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
         return value != null ? value.trim() : value;
     }
 
-    public ControlGroup getRepositoryTextGroup() {
-        return repositoryTextGroup;
+    @Override
+    public void setVersionStatus(ControlGroupType status) {
+        versionTextGroup.setType(status);
     }
 
-    public HelpInline getRepositoryTextHelpInline() {
-        return repositoryTextHelpInline;
+    @Override
+    public void setVersionHelpText(String helpText) {
+        versionTextHelpInline.setText(helpText);
     }
 
-    public ControlGroup getSourceBranchTextGroup() {
-        return sourceBranchTextGroup;
+    @Override
+    public String getSourceBranch() {
+        return sourceBranchText.getText();
     }
 
-    public HelpInline getSourceBranchTextHelpInline() {
-        return sourceBranchTextHelpInline;
+    @Override
+    public void setSourceBranchStatus(ControlGroupType status) {
+        sourceBranchTextGroup.setType(status);
     }
 
-    public ControlGroup getUserNameTextGroup() {
-        return userNameTextGroup;
+    @Override
+    public void setSourceBranchHelpText(String helpText) {
+        sourceBranchTextHelpInline.setText(helpText);
     }
 
-    public HelpInline getUserNameTextHelpInline() {
-        return userNameTextHelpInline;
+    @Override
+    public boolean isDeployToRuntime() {
+        return deployToRuntimeCheck.getValue();
     }
 
-    public ControlGroup getPasswordTextGroup() {
-        return passwordTextGroup;
+    @Override
+    public void setUserNameStatus(ControlGroupType status) {
+        userNameTextGroup.setType(status);
     }
 
-    public HelpInline getPasswordTextHelpInline() {
-        return passwordTextHelpInline;
+    @Override
+    public void setUserNameTextHelp(String helpText) {
+        userNameTextHelpInline.setText(helpText);
     }
 
-    public ControlGroup getServerURLTextGroup() {
-        return serverURLTextGroup;
+    @Override
+    public void setPasswordStatus(ControlGroupType status) {
+        passwordTextGroup.setType(status);
     }
 
-    public HelpInline getServerURLTextHelpInline() {
-        return serverURLTextHelpInline;
+    @Override
+    public void setPasswordHelpText(String helpText) {
+        passwordTextHelpInline.setText(helpText);
     }
 
-    public HelpInline getDeployToRuntimeHelpInline() {
-        return deployToRuntimeHelpInline;
+    @Override
+    public void setServerURLStatus(ControlGroupType status) {
+        serverURLTextGroup.setType(status);
     }
 
-    public ControlGroup getDeployToRuntimeTextGroup() {
-        return deployToRuntimeTextGroup;
+    @Override
+    public void setServerURLHelpText(String helpText) {
+        serverURLTextHelpInline.setText(helpText);
     }
 
-    public HelpInline getVersionTextHelpInline() {
-        return versionTextHelpInline;
+    @Override
+    public void setSourceBranch(String branch) {
+        sourceBranchText.setText(branch);
     }
 
-    public ControlGroup getVersionTextGroup() {
-        return versionTextGroup;
+    @Override
+    public void setRepository(String repositoryAlias) {
+        repositoryText.setText(repositoryAlias);
     }
 
-    public TextBox getRepositoryText() {
-        return repositoryText;
+    @Override
+    public void setSourceBranchReadOnly(boolean b) {
+        sourceBranchText.setReadOnly(b);
     }
 
-    public TextBox getSourceBranchText() {
-        return sourceBranchText;
+    @Override
+    public void setRepositoryReadOnly(boolean b) {
+        repositoryText.setReadOnly(b);
     }
 
-    public TextBox getUserNameText() {
-        return userNameText;
+    @Override
+    public void setServerURL(String serverUrl) {
+        serverURLText.setText(serverUrl);
     }
 
-    public PasswordTextBox getPasswordText() {
-        return passwordText;
+    @Override
+    public void setVersion(String version) {
+        versionText.setText(version);
     }
 
-    public TextBox getServerURLText() {
-        return serverURLText;
+    @Override
+    public void setUserNameEnabled(boolean b) {
+        userNameText.setEnabled(b);
     }
 
-    public TextBox getVersionText() {
-        return versionText;
+    @Override
+    public void setPasswordEnabled(boolean b) {
+        passwordText.setEnabled(b);
     }
 
-    public CheckBox getDeployToRuntimeCheck() {
-        return deployToRuntimeCheck;
+    @Override
+    public void setServerURLEnabled(boolean b) {
+        serverURLText.setEnabled(b);
     }
 
-    public Command getCallbackCommand() {
-        return callbackCommand;
+    @Override
+    public void init(ReleaseScreenPopupPresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void setUserName(String username) {
+        userNameText.setText(username);
+    }
+
+    @Override
+    public void setDeployToRuntimeValueChangeHandler(ValueChangeHandler<Boolean> valueChangeHandler) {
+        deployToRuntimeCheck.addValueChangeHandler(valueChangeHandler);
     }
     
-    
-
     public void clearWidgetsState() {
         repositoryTextGroup.setType(ControlGroupType.NONE);
         repositoryTextHelpInline.setText("");
@@ -296,6 +303,7 @@ public class ReleaseScreenPopupViewImpl extends BaseModal {
         versionTextGroup.setType(ControlGroupType.NONE);
         versionTextHelpInline.setText("");
     }
+    
     
     
     

@@ -21,6 +21,7 @@ import org.guvnor.asset.management.client.editors.project.structure.widgets.Proj
 import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataView;
 import org.guvnor.asset.management.client.editors.repository.structure.configure.ConfigureScreenPopupViewImpl;
 import org.guvnor.asset.management.client.editors.repository.structure.promote.PromoteScreenPopupViewImpl;
+import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupPresenter;
 import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupViewImpl;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -45,7 +46,7 @@ public interface RepositoryStructureView
 
     void clear();
 
-    ReleaseScreenPopupViewImpl getReleaseScreenPopupView();
+    ReleaseScreenPopupPresenter getReleaseScreenPopupPresenter();
 
     ConfigureScreenPopupViewImpl getConfigureScreenPopupView();
 

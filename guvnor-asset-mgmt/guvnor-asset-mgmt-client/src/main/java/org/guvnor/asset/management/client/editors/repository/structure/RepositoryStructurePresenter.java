@@ -1005,23 +1005,23 @@ public class RepositoryStructurePresenter
                 if ( model != null && ( model.isSingleProject() || model.isMultiModule() ) ) {
                     pom = model.isMultiModule() ? model.getPOM() : model.getSingleProjectPOM();
 
-                    view.getReleaseScreenPopupView().configure( repository.getAlias(),
+                    view.getReleaseScreenPopupPresenter().configure( repository.getAlias(),
                                                                 branch,
                                                                 trimSnapshotFromVersion( pom.getGav().getVersion() ),
                                                                 pom.getGav().getVersion(),
                                                                 new com.google.gwt.user.client.Command() {
                                                                     @Override
                                                                     public void execute() {
-                                                                        String username = view.getReleaseScreenPopupView().getUsername();
-                                                                        String password = view.getReleaseScreenPopupView().getPassword();
-                                                                        String serverURL = view.getReleaseScreenPopupView().getServerURL();
-                                                                        String version = view.getReleaseScreenPopupView().getVersion();
-                                                                        Boolean deployToRuntime = view.getReleaseScreenPopupView().getDeployToRuntime();
+                                                                        String username = view.getReleaseScreenPopupPresenter().getView().getUserName();
+                                                                        String password = view.getReleaseScreenPopupPresenter().getView().getPassword();
+                                                                        String serverURL = view.getReleaseScreenPopupPresenter().getView().getServerURL();
+                                                                        String version = view.getReleaseScreenPopupPresenter().getView().getVersion();
+                                                                        Boolean deployToRuntime = view.getReleaseScreenPopupPresenter().getView().isDeployToRuntime();
                                                                         releaseProject( repository.getAlias(), branch, username, password, serverURL, deployToRuntime, version );
-                                                                        view.getReleaseScreenPopupView().hide();
+                                                                        view.getReleaseScreenPopupPresenter().hide();
                                                                     }
                                                                 } );
-                    view.getReleaseScreenPopupView().show();
+                    view.getReleaseScreenPopupPresenter().show();
                 }
             }
         };

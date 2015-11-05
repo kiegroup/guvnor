@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.guvnor.asset.management.client.editors.project.structure;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupPresenter;
-import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupViewImpl;
+import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupView;
 import org.guvnor.asset.management.client.i18n.Constants;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -34,132 +31,93 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ReleaseRepositoryPresenterTest {
 
     @GwtMock
-    private ReleaseScreenPopupViewImpl releasePopupView;
-    
+    private ReleaseScreenPopupView releasePopupView;
+
     private ReleaseScreenPopupPresenter presenter;
-    
-    @Mock
-    private TextBox versionText;
-    
-    @Mock
-    private ControlGroup versionTextGroup;
-    
-    @Mock
-    private HelpInline versionTextHelpInline;
-    
+
     @Mock
     private Command callbackCommand;
     
     @Mock
-    private TextBox sourceBranchText;
+    private User identity;
     
-    @Mock
-    private ControlGroup sourceBranchTextGroup;
-    
-    @Mock
-    private HelpInline sourceBranchTextHelpInline;
-    
-    @Mock
-    private CheckBox deployToRuntimeCheck;
-    
+    @Before
+    public void setup(){
+        presenter = new ReleaseScreenPopupPresenter(releasePopupView);
+        presenter.setIdentity(identity);
+        when(identity.getIdentifier()).thenReturn("salaboy");
+        
+    }
+
     @Test
     public void testNotReleasingDueVersion() throws Exception {
-        
-        presenter = new ReleaseScreenPopupPresenter(releasePopupView, callbackCommand);
-        when( releasePopupView.getVersionText()).thenReturn(versionText);
-        when( releasePopupView.getVersionText().getText() ).thenReturn( "" );
-        
-        when( releasePopupView.getVersionTextGroup()).thenReturn(versionTextGroup);
-        when( releasePopupView.getVersionTextHelpInline()).thenReturn(versionTextHelpInline);
-        
-        
+
+        presenter.configure("", "dev-1.0", "", "", callbackCommand);
+        when(releasePopupView.getVersion()).thenReturn("");
+        when(releasePopupView.getSourceBranch()).thenReturn("dev-1.0");
         
         presenter.getOkCommand().execute();
-        
-        verify( releasePopupView.getVersionTextGroup(),  times( 1 )).setType(ControlGroupType.ERROR);
-        verify( releasePopupView.getVersionTextHelpInline(), times( 1 ) ).setText(Constants.INSTANCE.FieldMandatory0( "Version" ) );
-        
+
+        verify(releasePopupView, times(1)).setVersionStatus(ControlGroupType.ERROR);
+        verify(releasePopupView, times(1)).setVersionHelpText(Constants.INSTANCE.FieldMandatory0("Version"));
+
         verify(callbackCommand, times(0)).execute();
         verify(releasePopupView, times(0)).hide();
-        
+
     }
-    
+
     @Test
     public void testNotReleasingDueSnapshotVersion() throws Exception {
+
+        presenter.configure("", "dev-1.0", "XXX-SNAPSHOT", "XXX-SNAPSHOT", callbackCommand);
         
-        presenter = new ReleaseScreenPopupPresenter(releasePopupView, callbackCommand);
-        when( releasePopupView.getVersionText()).thenReturn(versionText);
-        when( releasePopupView.getVersionText().getText() ).thenReturn( "XXX-SNAPSHOT" );
-        
-        when( releasePopupView.getVersionTextGroup()).thenReturn(versionTextGroup);
-        when( releasePopupView.getVersionTextHelpInline()).thenReturn(versionTextHelpInline);
-        
+        when(releasePopupView.getVersion()).thenReturn("XXX-SNAPSHOT");
+        when(releasePopupView.getSourceBranch()).thenReturn("dev-1.0");
+
         presenter.getOkCommand().execute();
-        
-        verify( releasePopupView.getVersionTextGroup(),  times( 1 )).setType(ControlGroupType.ERROR);
-        verify( releasePopupView.getVersionTextHelpInline(), times( 1 ) ).setText(Constants.INSTANCE.SnapshotNotAvailableForRelease( "-SNAPSHOT" ) );
-        
+
+        verify(releasePopupView, times(1)).setVersionStatus(ControlGroupType.ERROR);
+        verify(releasePopupView, times(1)).setVersionHelpText(Constants.INSTANCE.SnapshotNotAvailableForRelease("-SNAPSHOT"));
+
         verify(callbackCommand, times(0)).execute();
         verify(releasePopupView, times(0)).hide();
-        
+
     }
-    
+
     @Test
     public void testNotReleasingDueWrongBranchName() throws Exception {
+
+        presenter.configure("", "dev-1.0", "1.0", "1.0", callbackCommand);
         
-        presenter = new ReleaseScreenPopupPresenter(releasePopupView, callbackCommand);
-        when( releasePopupView.getVersionText()).thenReturn(versionText);
-        when( releasePopupView.getVersionText().getText() ).thenReturn( "1.0" );
-        
-        when( releasePopupView.getVersionTextGroup()).thenReturn(versionTextGroup);
-        when( releasePopupView.getVersionTextHelpInline()).thenReturn(versionTextHelpInline);
-        
-        when( releasePopupView.getSourceBranchText()).thenReturn(sourceBranchText);
-        when( releasePopupView.getSourceBranchText().getText() ).thenReturn( "dev-1.0" );
-        
-        when( releasePopupView.getSourceBranchTextGroup()).thenReturn(sourceBranchTextGroup);
-        when( releasePopupView.getSourceBranchTextHelpInline()).thenReturn(sourceBranchTextHelpInline);
-        
-        
+        when(releasePopupView.getVersion()).thenReturn("1.0");
+        when(releasePopupView.getSourceBranch()).thenReturn("dev-1.0");
+
         presenter.getOkCommand().execute();
-        
-        verify( releasePopupView.getSourceBranchTextGroup(),  times( 1 )).setType(ControlGroupType.ERROR);
-        verify( releasePopupView.getSourceBranchTextHelpInline(), times( 1 ) ).setText( Constants.INSTANCE.ReleaseCanOnlyBeDoneFromAReleaseBranch() );
-        
+
+        verify(releasePopupView, times(1)).setSourceBranchStatus(ControlGroupType.ERROR);
+        verify(releasePopupView, times(1)).setSourceBranchHelpText(Constants.INSTANCE.ReleaseCanOnlyBeDoneFromAReleaseBranch());
         verify(callbackCommand, times(0)).execute();
         verify(releasePopupView, times(0)).hide();
-        
+
     }
-    
+
     @Test
     public void testSuccess() throws Exception {
-        
-        presenter = new ReleaseScreenPopupPresenter(releasePopupView, callbackCommand);
-        when( releasePopupView.getVersionText()).thenReturn(versionText);
-        when( releasePopupView.getVersionText().getText() ).thenReturn( "1.0" );
-        
-        when( releasePopupView.getVersionTextGroup()).thenReturn(versionTextGroup);
-        when( releasePopupView.getVersionTextHelpInline()).thenReturn(versionTextHelpInline);
-        
-        when( releasePopupView.getSourceBranchText()).thenReturn(sourceBranchText);
-        when( releasePopupView.getSourceBranchText().getText() ).thenReturn( "release-1.0" );
-        
-        when( releasePopupView.getSourceBranchTextGroup()).thenReturn(sourceBranchTextGroup);
-        when( releasePopupView.getSourceBranchTextHelpInline()).thenReturn(sourceBranchTextHelpInline);
-        
-        when( releasePopupView.getDeployToRuntimeCheck()).thenReturn(deployToRuntimeCheck);
-        when( releasePopupView.getDeployToRuntimeCheck().getValue()).thenReturn(false);
-        
-        
+
+        presenter.configure("", "release-1.0", "1.0", "1.0", callbackCommand);
+        when(releasePopupView.getVersion()).thenReturn("1.0");
+        when(releasePopupView.getSourceBranch()).thenReturn("release-1.0");
+        when(releasePopupView.isDeployToRuntime()).thenReturn(false);
+
         presenter.getOkCommand().execute();
-        
+
         verify(callbackCommand, times(1)).execute();
         verify(releasePopupView, times(1)).hide();
-        
+
     }
-    
+
 }
