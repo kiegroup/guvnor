@@ -69,10 +69,10 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
     @UiField
     public CheckBox requiresReviewCheckBox;
 
-    @UiField(provided = true)
+    @UiField
     public ListBox filesInTheBranchList;
 
-    @UiField(provided = true)
+    @UiField
     public ListBox filesToPromoteList;
 
     @UiField
@@ -90,12 +90,6 @@ public class SelectAssetsToPromoteViewImpl extends Composite implements SelectAs
     private Map<String, String> commitsPerFile;
 
     public SelectAssetsToPromoteViewImpl() {
-
-        filesInTheBranchList = new ListBox();
-        filesInTheBranchList.setMultipleSelect( true );
-
-        filesToPromoteList = new ListBox();
-        filesToPromoteList.setMultipleSelect( true );
 
         initWidget( uiBinder.createAndBindUi( this ) );
 
