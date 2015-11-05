@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.guvnor.asset.management.client.editors.project.structure;
 
+import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -61,6 +62,9 @@ public class ReleaseRepositoryPresenterTest {
     
     @Mock
     private HelpInline sourceBranchTextHelpInline;
+    
+    @Mock
+    private CheckBox deployToRuntimeCheck;
     
     @Test
     public void testNotReleasingDueVersion() throws Exception {
@@ -130,4 +134,32 @@ public class ReleaseRepositoryPresenterTest {
         verify(releasePopupView, times(0)).hide();
         
     }
+    
+    @Test
+    public void testSuccess() throws Exception {
+        
+        presenter = new ReleaseScreenPopupPresenter(releasePopupView, callbackCommand);
+        when( releasePopupView.getVersionText()).thenReturn(versionText);
+        when( releasePopupView.getVersionText().getText() ).thenReturn( "1.0" );
+        
+        when( releasePopupView.getVersionTextGroup()).thenReturn(versionTextGroup);
+        when( releasePopupView.getVersionTextHelpInline()).thenReturn(versionTextHelpInline);
+        
+        when( releasePopupView.getSourceBranchText()).thenReturn(sourceBranchText);
+        when( releasePopupView.getSourceBranchText().getText() ).thenReturn( "release-1.0" );
+        
+        when( releasePopupView.getSourceBranchTextGroup()).thenReturn(sourceBranchTextGroup);
+        when( releasePopupView.getSourceBranchTextHelpInline()).thenReturn(sourceBranchTextHelpInline);
+        
+        when( releasePopupView.getDeployToRuntimeCheck()).thenReturn(deployToRuntimeCheck);
+        when( releasePopupView.getDeployToRuntimeCheck().getValue()).thenReturn(false);
+        
+        
+        presenter.getOkCommand().execute();
+        
+        verify(callbackCommand, times(1)).execute();
+        verify(releasePopupView, times(1)).hide();
+        
+    }
+    
 }
