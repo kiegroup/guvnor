@@ -22,60 +22,57 @@
 
   <ui:with field="i18n"
            type="org.guvnor.asset.management.client.i18n.Constants"/>
-  
+
 
   <gwt:HTMLPanel>
     <bootstrap:WellForm type="INLINE">
-     
-      
+
       <bootstrap:FluidRow>
         <bootstrap:Column size="2">
           <bootstrap:ControlLabel for="sourceBranchBox">
             <ui:text from="{i18n.Source_Branch}"/>
           </bootstrap:ControlLabel>
         </bootstrap:Column>
-        <bootstrap:Column size="2">
+        <bootstrap:Column size="10">
           <bootstrap:Controls>
-            <bootstrap:TextBox ui:field="sourceBranchBox" placeholder="{i18n.Source_Branch}"/>
+            <bootstrap:TextBox ui:field="sourceBranchBox" placeholder="{i18n.Source_Branch}" addStyleNames="span12"/>
           </bootstrap:Controls>
         </bootstrap:Column>
-       
       </bootstrap:FluidRow>
-      
+
       <bootstrap:FluidRow>
         <bootstrap:Column size="2">
           <bootstrap:ControlLabel for="filesInTheBranchList">
             <ui:text from="{i18n.Files_In_The_Branch}"/>
           </bootstrap:ControlLabel>
         </bootstrap:Column>
-        <bootstrap:Column size="2">
+        <bootstrap:Column size="10">
           <bootstrap:Controls>
-            <bootstrap:ListBox ui:field="filesInTheBranchList"/>
+            <bootstrap:ListBox ui:field="filesInTheBranchList" addStyleNames="span12" multipleSelect="true" visibleItemCount="6"/>
           </bootstrap:Controls>
         </bootstrap:Column>
       </bootstrap:FluidRow>
-      
+
       <bootstrap:FluidRow>
-        <bootstrap:Column size="2" offset="2">
-          <bootstrap:Button type="PRIMARY" ui:field='promoteSelectedFilesButton'>
-            <ui:text from="{i18n.Promote_Selected}"/>
-          </bootstrap:Button>
-          <bootstrap:Button type="PRIMARY" ui:field='promoteAllFilesButton'>
-            <ui:text from="{i18n.Promote_All}"/> 
-          </bootstrap:Button>
+        <bootstrap:Column size="10" offset="2">
+            <bootstrap:Button type="PRIMARY" ui:field='promoteSelectedFilesButton'>
+              <ui:text from="{i18n.Promote_Selected}"/>
+            </bootstrap:Button>
+            <bootstrap:Button type="PRIMARY" ui:field='promoteAllFilesButton'>
+              <ui:text from="{i18n.Promote_All}"/>
+            </bootstrap:Button>
         </bootstrap:Column>
-        
       </bootstrap:FluidRow>
-      
+
       <bootstrap:FluidRow>
         <bootstrap:Column size="2">
           <bootstrap:ControlLabel for="filesToPromoteList">
             <ui:text from="{i18n.Files_To_Promote}"/>
           </bootstrap:ControlLabel>
         </bootstrap:Column>
-        <bootstrap:Column size="2">
+        <bootstrap:Column size="10">
           <bootstrap:Controls>
-            <bootstrap:ListBox ui:field="filesToPromoteList"/>
+            <bootstrap:ListBox ui:field="filesToPromoteList" addStyleNames="span12" multipleSelect="true" visibleItemCount="6"/>
           </bootstrap:Controls>
         </bootstrap:Column>
       </bootstrap:FluidRow>
@@ -86,14 +83,13 @@
             <ui:text from="{i18n.Requires_Review}"/>
           </bootstrap:ControlLabel>
         </bootstrap:Column>
-        <bootstrap:Column size="2">
+        <bootstrap:Column size="10">
           <bootstrap:Controls>
             <bootstrap:CheckBox ui:field="requiresReviewCheckBox" />
           </bootstrap:Controls>
         </bootstrap:Column>
-       
       </bootstrap:FluidRow>
-      
+
     </bootstrap:WellForm>
   </gwt:HTMLPanel>
 </ui:UiBinder>
