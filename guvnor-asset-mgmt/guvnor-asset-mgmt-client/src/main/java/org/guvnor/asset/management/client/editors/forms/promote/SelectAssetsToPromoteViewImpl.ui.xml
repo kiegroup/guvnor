@@ -33,7 +33,7 @@
                             <b:Column size="MD_2">
                                 <b:FormLabel for="sourceBranchBox" text="{i18n.Source_Branch}"/>
                             </b:Column>
-                            <b:Column size="MD_3">
+                            <b:Column size="MD_10">
                                 <b:TextBox ui:field="sourceBranchBox" placeholder="{i18n.Source_Branch}"/>
                             </b:Column>
                         </b:FormGroup>
@@ -42,15 +42,17 @@
                             <b:Column size="MD_2">
                                 <b:FormLabel for="filesInTheBranchList" text="{i18n.Files_In_The_Branch}"/>
                             </b:Column>
-                            <b:Column size="MD_3">
-                                <b:ListBox ui:field="filesInTheBranchList"/>
+                            <b:Column size="MD_10">
+                                <b:ListBox ui:field="filesInTheBranchList" multipleSelect="true" visibleItemCount="6"/>
                             </b:Column>
                         </b:FormGroup>
 
                         <b:FormGroup>
-                            <b:Column size="MD_3" offset="MD_2">
-                                <b:Button type="PRIMARY" ui:field='promoteSelectedFilesButton' text="{i18n.Promote_Selected}"/>
-                                <b:Button type="PRIMARY" ui:field='promoteAllFilesButton' text="{i18n.Promote_All}" pull="RIGHT"/>
+                            <b:Column size="MD_10" offset="MD_2">
+                                <b:ButtonGroup>
+                                    <b:Button type="PRIMARY" ui:field='promoteSelectedFilesButton' text="{i18n.Promote_Selected}"/>
+                                    <b:Button type="PRIMARY" ui:field='promoteAllFilesButton' text="{i18n.Promote_All}" pull="RIGHT"/>
+                                </b:ButtonGroup>
                             </b:Column>
                         </b:FormGroup>
 
@@ -58,8 +60,8 @@
                             <b:Column size="MD_2">
                                 <b:FormLabel for="filesToPromoteList" text="{i18n.Files_To_Promote}"/>
                             </b:Column>
-                            <b:Column size="MD_3">
-                                <b:ListBox ui:field="filesToPromoteList"/>
+                            <b:Column size="MD_10">
+                                <b:ListBox ui:field="filesToPromoteList" multipleSelect="true" visibleItemCount="6"/>
                             </b:Column>
                         </b:FormGroup>
 
@@ -67,7 +69,7 @@
                             <b:Column size="MD_2">
                                 <b:FormLabel for="requiresReviewCheckBox" text="{i18n.Requires_Review}"/>
                             </b:Column>
-                            <b:Column size="MD_3">
+                            <b:Column size="MD_10">
                                 <b:CheckBox ui:field="requiresReviewCheckBox"/>
                             </b:Column>
                         </b:FormGroup>
