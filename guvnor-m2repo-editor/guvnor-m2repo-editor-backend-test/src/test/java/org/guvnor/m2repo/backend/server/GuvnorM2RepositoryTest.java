@@ -14,8 +14,11 @@ package org.guvnor.m2repo.backend.server;/*
  * limitations under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
 
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -55,17 +58,25 @@ public class GuvnorM2RepositoryTest {
     private RepositorySystemSession repositorySystemSession = mock(RepositorySystemSession.class);
 
     @BeforeClass
-    public static void setupClass() {
+    public static void setupClass() throws IOException, URISyntaxException {
         settingsSecurityOriginalValue = System.getProperty(SETTINGS_SECURITY_KEY);
-        System.setProperty(SETTINGS_SECURITY_KEY, "src/test/resources/settings-security.xml");
+        System.setProperty(SETTINGS_SECURITY_KEY, resolveFilePath("settings-security.xml"));
         kieSettingsCustomOriginalValue = System.getProperty(KIE_SETTINGS_CUSTOM_KEY);
-        System.setProperty(KIE_SETTINGS_CUSTOM_KEY, "src/test/resources/settings.xml");
+        System.setProperty(KIE_SETTINGS_CUSTOM_KEY, resolveFilePath("settings.xml"));
+    }
+
+    private static String resolveFilePath(String value) throws URISyntaxException {
+        return new File(GuvnorM2RepositoryTest.class.getResource(value).toURI()).getAbsolutePath();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        System.setProperty(SETTINGS_SECURITY_KEY, settingsSecurityOriginalValue);
-        System.setProperty(KIE_SETTINGS_CUSTOM_KEY, kieSettingsCustomOriginalValue);
+        nullSafeSetProperty(SETTINGS_SECURITY_KEY, GuvnorM2RepositoryTest.settingsSecurityOriginalValue);
+        nullSafeSetProperty(KIE_SETTINGS_CUSTOM_KEY, kieSettingsCustomOriginalValue);
+    }
+
+    private static void nullSafeSetProperty(String propertyKey, String propertyValue) {
+        System.setProperty(propertyKey, propertyValue == null ? "" : propertyValue);
     }
 
     @Before
