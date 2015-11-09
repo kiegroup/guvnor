@@ -15,18 +15,20 @@
  */
 package org.guvnor.asset.management.client.editors.repository.structure.release;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.jboss.errai.security.shared.api.identity.User;
 
 @Dependent
-public class ReleaseScreenPopupPresenter implements ReleaseScreenPopupView.Presenter{
+public class ReleaseScreenPopupPresenter implements ReleaseScreenPopupView.Presenter {
 
     private ReleaseScreenPopupView view;
 
@@ -34,10 +36,15 @@ public class ReleaseScreenPopupPresenter implements ReleaseScreenPopupView.Prese
 
     @Inject
     private User identity;
-    
+
     @Inject
-    public ReleaseScreenPopupPresenter(ReleaseScreenPopupView view) {    
+    public ReleaseScreenPopupPresenter( ReleaseScreenPopupView view ) {
         this.view = view;
+    }
+
+    @PostConstruct
+    public void setup() {
+        this.view.init( this );
     }
 
     public void show() {
@@ -55,60 +62,60 @@ public class ReleaseScreenPopupPresenter implements ReleaseScreenPopupView.Prese
     private final Command okCommand = new Command() {
         @Override
         public void execute() {
-            if (isEmpty(view.getVersion())) {
-                view.setVersionStatus(ControlGroupType.ERROR);
-                view.setVersionHelpText(Constants.INSTANCE.FieldMandatory0("Version"));
+            if ( isEmpty( view.getVersion() ) ) {
+                view.setVersionStatus( ControlGroupType.ERROR );
+                view.setVersionHelpText( Constants.INSTANCE.FieldMandatory0( "Version" ) );
 
                 return;
             }
-            if (isSnapshot(view.getVersion())) {
-                view.setVersionStatus(ControlGroupType.ERROR);
-                view.setVersionHelpText(Constants.INSTANCE.SnapshotNotAvailableForRelease("-SNAPSHOT"));
+            if ( isSnapshot( view.getVersion() ) ) {
+                view.setVersionStatus( ControlGroupType.ERROR );
+                view.setVersionHelpText( Constants.INSTANCE.SnapshotNotAvailableForRelease( "-SNAPSHOT" ) );
 
                 return;
             }
-            if (!view.getSourceBranch().startsWith("release")) {
-                view.setSourceBranchStatus(ControlGroupType.ERROR);
-                view.setSourceBranchHelpText(Constants.INSTANCE.ReleaseCanOnlyBeDoneFromAReleaseBranch());
+            if ( !view.getSourceBranch().startsWith( "release" ) ) {
+                view.setSourceBranchStatus( ControlGroupType.ERROR );
+                view.setSourceBranchHelpText( Constants.INSTANCE.ReleaseCanOnlyBeDoneFromAReleaseBranch() );
                 return;
             }
-            if (view.isDeployToRuntime()) {
+            if ( view.isDeployToRuntime() ) {
 
-                if (isEmpty(view.getUserName())) {
-                    view.setUserNameStatus(ControlGroupType.ERROR);
-                    view.setUserNameTextHelp(Constants.INSTANCE.FieldMandatory0("Username"));
+                if ( isEmpty( view.getUserName() ) ) {
+                    view.setUserNameStatus( ControlGroupType.ERROR );
+                    view.setUserNameTextHelp( Constants.INSTANCE.FieldMandatory0( "Username" ) );
 
                     return;
                 }
 
-                if (isEmpty(view.getPassword())) {
-                    view.setPasswordStatus(ControlGroupType.ERROR);
-                    view.setPasswordHelpText(Constants.INSTANCE.FieldMandatory0("Password"));
+                if ( isEmpty( view.getPassword() ) ) {
+                    view.setPasswordStatus( ControlGroupType.ERROR );
+                    view.setPasswordHelpText( Constants.INSTANCE.FieldMandatory0( "Password" ) );
 
                     return;
                 }
 
-                if (isEmpty(view.getServerURL())) {
-                    view.setServerURLStatus(ControlGroupType.ERROR);
-                    view.setServerURLHelpText(Constants.INSTANCE.FieldMandatory0("ServerURL"));
+                if ( isEmpty( view.getServerURL() ) ) {
+                    view.setServerURLStatus( ControlGroupType.ERROR );
+                    view.setServerURLHelpText( Constants.INSTANCE.FieldMandatory0( "ServerURL" ) );
 
                     return;
                 }
 
             }
 
-            if (callbackCommand != null) {
+            if ( callbackCommand != null ) {
                 callbackCommand.execute();
             }
             view.hide();
         }
 
-        private boolean isEmpty(String value) {
+        private boolean isEmpty( String value ) {
             return value == null || value.isEmpty() || value.trim().isEmpty();
         }
 
-        private boolean isSnapshot(String value) {
-            return value != null && value.trim().endsWith("-SNAPSHOT");
+        private boolean isSnapshot( String value ) {
+            return value != null && value.trim().endsWith( "-SNAPSHOT" );
         }
     };
 
@@ -127,18 +134,16 @@ public class ReleaseScreenPopupPresenter implements ReleaseScreenPopupView.Prese
         return cancelCommand;
     }
 
-    public void setIdentity(User identity) {
+    public void setIdentity( User identity ) {
         this.identity = identity;
     }
-    
-    
-    
+
     public void configure( String repositoryAlias,
                            String branch,
                            String suggestedVersion,
                            String repositoryVersion,
                            Command command ) {
-        
+
         this.callbackCommand = command;
 
         view.setSourceBranch( branch );
@@ -153,7 +158,7 @@ public class ReleaseScreenPopupPresenter implements ReleaseScreenPopupView.Prese
         view.setUserNameEnabled( false );
         view.setPasswordEnabled( false );
         view.setServerURLEnabled( false );
-        view.setDeployToRuntimeValueChangeHandler(new ValueChangeHandler<Boolean>() {
+        view.setDeployToRuntimeValueChangeHandler( new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange( ValueChangeEvent<Boolean> event ) {
                 if ( event.getValue() ) {
