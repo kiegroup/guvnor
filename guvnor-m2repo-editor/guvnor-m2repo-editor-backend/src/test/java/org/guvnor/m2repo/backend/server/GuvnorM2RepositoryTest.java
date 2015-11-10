@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.guvnor.m2repo.backend.server;
 
 import java.io.File;
@@ -73,7 +74,6 @@ public class GuvnorM2RepositoryTest {
     private GuvnorM2Repository repo;
     private RepositorySystem repositorySystem = mock( RepositorySystem.class );
     private RepositorySystemSession repositorySystemSession = mock( RepositorySystemSession.class );
-    private Collection<RemoteRepository> repositories = new ArrayList<RemoteRepository>();
 
     @BeforeClass
     public static void setupClass() throws IOException, URISyntaxException {
@@ -95,7 +95,7 @@ public class GuvnorM2RepositoryTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
         nullSafeSetProperty( SETTINGS_SECURITY_KEY,
-                             GuvnorM2RepositoryTest.settingsSecurityOriginalValue );
+                             settingsSecurityOriginalValue );
         nullSafeSetProperty( KIE_SETTINGS_CUSTOM_KEY,
                              kieSettingsCustomOriginalValue );
     }
@@ -116,7 +116,6 @@ public class GuvnorM2RepositoryTest {
         Aether aether = mock( Aether.class );
         when( aether.getSession() ).thenReturn( repositorySystemSession );
         when( aether.getSystem() ).thenReturn( repositorySystem );
-        when( aether.getRepositories() ).thenReturn( repositories );
 
         mockStatic( Aether.class );
         when( Aether.getAether() ).thenReturn( aether );

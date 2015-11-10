@@ -33,6 +33,5 @@
     <module>guvnor-m2repo-editor-api</module>
     <module>guvnor-m2repo-editor-client</module>
     <module>guvnor-m2repo-editor-backend</module>
-    <module>guvnor-m2repo-editor-backend-test</module>
   </modules>
 </project>

@@ -371,8 +371,8 @@ public class GuvnorM2Repository {
 
             //Deploy into remote repository defined in <distributionManagement>
             try {
-                MavenEmbedder embedder = MavenProjectLoader.newMavenEmbedder(false);
-                DistributionManagement distributionManagement = getDistributionManagement(pomXML, embedder);
+                MavenEmbedder embedder = MavenProjectLoader.newMavenEmbedder( false );
+                DistributionManagement distributionManagement = getDistributionManagement( pomXML, embedder );
 
                 if ( distributionManagement != null ) {
 
@@ -394,11 +394,13 @@ public class GuvnorM2Repository {
                     //If credentials are required those credentials must be provisioned in the user's settings.xml file
                     if ( remoteRepository != null ) {
                         DeployRequest remoteRequest = new DeployRequest();
-                        remoteRequest.addArtifact( jarArtifact ).addArtifact( pomXMLArtifact )
+                        remoteRequest
+                                .addArtifact( jarArtifact )
+                                .addArtifact( pomXMLArtifact )
                                 .setRepository( getRemoteRepoFromDeployment( remoteRepository, embedder ) );
 
                         Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
-                                remoteRequest );
+                                                               remoteRequest );
                     }
                 }
 
@@ -499,9 +501,10 @@ public class GuvnorM2Repository {
         }
     }
 
-    private RemoteRepository getRemoteRepoFromDeployment(DeploymentRepository repo, MavenEmbedder embedder) {
+    private RemoteRepository getRemoteRepoFromDeployment( DeploymentRepository repo, MavenEmbedder embedder ) {
 
-        RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder( repo.getId(), repo.getLayout(), repo.getUrl() )
+        RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder( repo.getId(), repo.getLayout(), repo
+                .getUrl() )
                 .setSnapshotPolicy( new RepositoryPolicy( true,
                                                           RepositoryPolicy.UPDATE_POLICY_DAILY,
                                                           RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
@@ -514,7 +517,8 @@ public class GuvnorM2Repository {
 
         if ( server != null ) {
             Authentication authentication = embedder.getMavenSession().getRepositorySession()
-                    .getAuthenticationSelector().getAuthentication( remoteRepoBuilder.build() );
+                                                    .getAuthenticationSelector()
+                                                    .getAuthentication( remoteRepoBuilder.build() );
             remoteRepoBuilder.setAuthentication( authentication );
         }
 
