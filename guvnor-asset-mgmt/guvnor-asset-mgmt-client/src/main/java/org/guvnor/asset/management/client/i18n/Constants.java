@@ -318,5 +318,6 @@ public interface Constants extends Messages {
 
     String ReleaseCanOnlyBeDoneFromAReleaseBranch();
 
+    String CurrentRepositoryVersion( final String version );
 
 }

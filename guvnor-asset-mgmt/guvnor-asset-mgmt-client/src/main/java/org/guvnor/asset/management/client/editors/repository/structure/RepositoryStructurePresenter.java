@@ -1006,21 +1006,22 @@ public class RepositoryStructurePresenter
                     pom = model.isMultiModule() ? model.getPOM() : model.getSingleProjectPOM();
 
                     view.getReleaseScreenPopupPresenter().configure( repository.getAlias(),
-                                                                branch,
-                                                                trimSnapshotFromVersion( pom.getGav().getVersion() ),
-                                                                pom.getGav().getVersion(),
-                                                                new com.google.gwt.user.client.Command() {
-                                                                    @Override
-                                                                    public void execute() {
-                                                                        String username = view.getReleaseScreenPopupPresenter().getView().getUserName();
-                                                                        String password = view.getReleaseScreenPopupPresenter().getView().getPassword();
-                                                                        String serverURL = view.getReleaseScreenPopupPresenter().getView().getServerURL();
-                                                                        String version = view.getReleaseScreenPopupPresenter().getView().getVersion();
-                                                                        Boolean deployToRuntime = view.getReleaseScreenPopupPresenter().getView().isDeployToRuntime();
-                                                                        releaseProject( repository.getAlias(), branch, username, password, serverURL, deployToRuntime, version );
-                                                                        view.getReleaseScreenPopupPresenter().hide();
-                                                                    }
-                                                                } );
+                                                                     branch,
+                                                                     trimSnapshotFromVersion( pom.getGav().getVersion() ),
+                                                                     pom.getGav().getVersion(),
+                                                                     new ReleaseCommand() {
+                                                                         @Override
+                                                                         public void execute( ReleaseInfo parameter ) {
+                                                                             releaseProject(
+                                                                                     repository.getAlias(),
+                                                                                     branch,
+                                                                                     parameter.getUsername(),
+                                                                                     parameter.getPassword(),
+                                                                                     parameter.getServerUrl(),
+                                                                                     parameter.isDeployToRuntime(),
+                                                                                     parameter.getVersion() );
+                                                                         }
+                                                                     } );
                     view.getReleaseScreenPopupPresenter().show();
                 }
             }
