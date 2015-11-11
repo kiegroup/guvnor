@@ -21,6 +21,7 @@ import java.util.Collections;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.data.Cacheable;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.security.authz.RuntimeContentResource;
 
@@ -28,7 +29,8 @@ import org.uberfire.security.authz.RuntimeContentResource;
  * An item representing a project
  */
 @Portable
-public class Project implements RuntimeContentResource {
+public class Project implements RuntimeContentResource,
+                                Cacheable {
 
     protected Path rootPath;
     protected Path pomXMLPath;
@@ -36,6 +38,7 @@ public class Project implements RuntimeContentResource {
     protected Collection<String> modules = new ArrayList<String>();
 
     private Collection<String> groups = new ArrayList<String>();
+    private boolean requiresRefresh = true;
 
     // only loaded by ProjectService.getProjects()
     private POM pom;
@@ -88,6 +91,16 @@ public class Project implements RuntimeContentResource {
     @Override
     public Collection<String> getTraits() {
         return Collections.emptySet();
+    }
+
+    @Override
+    public void markAsCached() {
+        this.requiresRefresh = false;
+    }
+
+    @Override
+    public boolean requiresRefresh() {
+        return requiresRefresh;
     }
 
     public Collection<String> getModules() {
