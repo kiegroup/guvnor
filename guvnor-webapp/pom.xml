@@ -571,19 +571,6 @@
   <build>
     <finalName>${project.artifactId}</finalName>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>org/guvnor/GuvnorWorkbench.gwt.xml</include>
-        </includes>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -591,7 +578,7 @@
         <configuration>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms1024m -XX:PermSize=128m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.marshalling.server.classOutput=${project.build.outputDirectory}</extraJvmArgs>
-          <module>org.guvnor.FastCompiledGuvnorWorkbench</module>
+          <module>org.guvnor.GuvnorWorkbench</module>
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>
           <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
@@ -743,44 +730,5 @@
     </plugins>
 
   </build>
-
-  <profiles>
-    <profile>
-      <id>fullProfile</id>
-
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-
-      <properties>
-        <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
-      </properties>
-
-      <dependencies>
-        <!-- Add back ANT when building full profile as it's needed by AS7 and Tomcat -->
-        <dependency>
-          <groupId>org.apache.ant</groupId>
-          <artifactId>ant</artifactId>
-        </dependency>
-      </dependencies>
-
-      <build>
-        <plugins>
-          <plugin><!-- Keep in sync with soa profile -->
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <configuration>
-              <!-- Build all GWT permutations and optimize them -->
-              <module>org.guvnor.GuvnorWorkbench</module>
-              <draftCompile>false</draftCompile>
-              <extraJvmArgs>-Xms512m -Xmx1024m -XX:PermSize=128m -XX:MaxPermSize=256m -Xss1M</extraJvmArgs>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>
