@@ -71,4 +71,6 @@ public interface ProjectConstants
 
     String invalidVersion();
 
+    String invalidName();
+
 }

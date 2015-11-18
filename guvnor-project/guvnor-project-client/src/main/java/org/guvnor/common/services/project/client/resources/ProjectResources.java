@@ -24,6 +24,6 @@ public interface ProjectResources
         extends
         ClientBundle {
 
-    public ProjectConstants CONSTANTS = GWT.create(ProjectConstants.class);
+    ProjectConstants CONSTANTS = GWT.create(ProjectConstants.class);
 
 }

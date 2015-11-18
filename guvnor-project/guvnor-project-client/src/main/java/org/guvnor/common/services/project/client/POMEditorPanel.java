@@ -143,6 +143,11 @@ public class POMEditorPanel
     }
 
     @Override
+    public void setValidName( final boolean isValid ) {
+        view.setValidName( isValid );
+    }
+
+    @Override
     public void setValidGroupID( final boolean isValid ) {
         view.setValidGroupID( isValid );
     }
