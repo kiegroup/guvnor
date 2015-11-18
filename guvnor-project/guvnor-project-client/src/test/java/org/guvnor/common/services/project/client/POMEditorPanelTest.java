@@ -22,8 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.client.mvp.PlaceManager;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class POMEditorPanelTest {
 
@@ -34,46 +33,88 @@ public class POMEditorPanelTest {
 
     @Before
     public void setUp() throws Exception {
-        view = mock(POMEditorPanelView.class);
-        placeManager = mock(PlaceManager.class);
-        panel = new POMEditorPanel(view, placeManager);
+        view = mock( POMEditorPanelView.class );
+        placeManager = mock( PlaceManager.class );
+        panel = new POMEditorPanel( view, placeManager );
         presenter = panel;
     }
 
     @Test
     public void testLoad() throws Exception {
-        POM gavModel = createTestModel("group", "artifact", "1.1.1");
-        gavModel.setParent(new GAV("org.parent", "parent", "1.1.1"));
-        panel.setPOM(gavModel, false);
+        POM gavModel = createTestModel( "group", "artifact", "1.1.1" );
+        gavModel.setParent( new GAV( "org.parent", "parent", "1.1.1" ) );
+        panel.setPOM( gavModel, false );
 
-        verify(view).setGAV(gavModel.getGav());
-        verify(view).setTitleText("artifact");
-        verify(view).setParentGAV(gavModel.getParent());
-        verify(view).disableGroupID("");
-        verify(view).disableVersion("");
-        verify(view).showParentGAV();
+        verify( view ).setGAV( gavModel.getGav() );
+        verify( view ).setTitleText( "artifact" );
+        verify( view ).setParentGAV( gavModel.getParent() );
+        verify( view ).disableGroupID( "" );
+        verify( view ).disableVersion( "" );
+        verify( view ).showParentGAV();
 
-        gavModel = createTestModel("pomName", "pomDescription", "group", "artifact", "1.1.1");
-        panel.setPOM(gavModel, false);
+        gavModel = createTestModel( "pomName", "pomDescription", "group", "artifact", "1.1.1" );
+        panel.setPOM( gavModel, false );
 
-        verify(view).setName("pomName");
-        verify(view).setDescription("pomDescription");
-        verify(view).enableGroupID();
-        verify(view).enableVersion();
-        verify(view).hideParentGAV();
+        verify( view ).setName( "pomName" );
+        verify( view ).setDescription( "pomDescription" );
+        verify( view ).enableGroupID();
+        verify( view ).enableVersion();
+        verify( view ).hideParentGAV();
+    }
+
+    @Test
+    public void testProjectNameValidation() throws Exception {
+        panel.setValidName( true );
+        verify( view ).setValidName( true );
+
+        panel.setValidName( false );
+        verify( view ).setValidName( false );
+    }
+
+    @Test
+    public void testGroupIDValidation() throws Exception {
+        panel.setValidGroupID( true );
+        verify( view ).setValidGroupID( true );
+
+        panel.setValidGroupID( false );
+        verify( view ).setValidGroupID( false );
+    }
+
+    @Test
+    public void testArtifactIDValidation() throws Exception {
+        panel.setValidArtifactID( true );
+        verify( view ).setValidArtifactID( true );
+
+        panel.setValidArtifactID( false );
+        verify( view ).setValidArtifactID( false );
+    }
+
+    @Test
+    public void testVersionValidation() throws Exception {
+        panel.setValidVersion( true );
+        verify( view ).setValidVersion( true );
+
+        panel.setValidVersion( false );
+        verify( view ).setValidVersion( false );
     }
 
     @Test
     public void testOpenProjectContext() throws Exception {
         presenter.onOpenProjectContext();
-        verify(placeManager).goTo("repositoryStructureScreen");
+        verify( placeManager ).goTo( "repositoryStructureScreen" );
     }
 
-    private POM createTestModel(String group, String artifact, String version) {
-        return new POM(new GAV(group, artifact, version));
+    private POM createTestModel( String group,
+                                 String artifact,
+                                 String version ) {
+        return new POM( new GAV( group, artifact, version ) );
     }
 
-    private POM createTestModel(String name, String description, String group, String artifact, String version) {
-        return new POM(name, description, new GAV(group, artifact, version));
+    private POM createTestModel( String name,
+                                 String description,
+                                 String group,
+                                 String artifact,
+                                 String version ) {
+        return new POM( name, description, new GAV( group, artifact, version ) );
     }
 }

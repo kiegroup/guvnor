@@ -31,8 +31,11 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.client.resources.ProjectResources;
 import org.guvnor.common.services.project.model.GAV;
 import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -54,6 +57,12 @@ public class POMEditorPanelViewImpl
 
     @UiField
     TextBox pomNameTextBox;
+
+    @UiField
+    FormGroup pomNameGroup;
+
+    @UiField
+    HelpBlock pomNameHelpBlock;
 
     @UiField
     TextArea pomDescriptionTextArea;
@@ -185,6 +194,17 @@ public class POMEditorPanelViewImpl
     @Override
     public void hideBusyIndicator() {
         BusyPopup.close();
+    }
+
+    @Override
+    public void setValidName( final boolean isValid ) {
+        if ( isValid ) {
+            pomNameGroup.setValidationState( ValidationState.NONE );
+            pomNameHelpBlock.setText( "" );
+        } else {
+            pomNameGroup.setValidationState( ValidationState.ERROR );
+            pomNameHelpBlock.setText( ProjectResources.CONSTANTS.invalidName() );
+        }
     }
 
     @Override

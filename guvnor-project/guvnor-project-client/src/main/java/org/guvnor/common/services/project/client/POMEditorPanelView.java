@@ -46,6 +46,8 @@ public interface POMEditorPanelView extends HasBusyIndicator,
 
         POM getPom();
 
+        void setValidName( boolean isValid );
+
         void setValidGroupID( boolean isValid );
 
         void setValidArtifactID( boolean isValid );
@@ -91,6 +93,8 @@ public interface POMEditorPanelView extends HasBusyIndicator,
     void enableGroupID();
 
     void enableVersion();
+
+    void setValidName( boolean isValid );
 
     void setValidGroupID( boolean isValid );
 
