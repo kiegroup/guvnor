@@ -17,7 +17,6 @@
 package org.guvnor.asset.management.backend.handlers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -116,13 +115,7 @@ public abstract class AssetMgmtStartEndBaseWorkItemHandler
         RepositoryInfo repositoryInfo = null;
 
 
-        if ( isStart() ) {
-            logger.debug( "Start assets management process: " + _ProcessName + "  " + new java.util.Date() );
-            System.out.println( "Start assets management process: " + _ProcessName + "  " + new java.util.Date() );
-        } else {
-            logger.debug( "End assets management process: " + _ProcessName + "  " + new java.util.Date() );
-            System.out.println( "End assets management process: " + _ProcessName + "  " + new java.util.Date() );
-        }
+        logger.info( "{} asset management process: {}", isStart() ? "Start" : "End", _ProcessName );
 
         try {
             beanManager = CDIUtils.lookUpBeanManager( null );
