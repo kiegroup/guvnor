@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2015 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -40,21 +40,32 @@ public class MailboxService {
     private static final Logger log = LoggerFactory.getLogger( MailboxService.class );
     public static final String MAIL_MAN = "mailman";
 
-    @Inject
     private InboxBackend inboxBackend;
-
-    @Inject
-    @Named("configIO")
     private IOService ioService;
+    private FileSystem bootstrapFS;
+
+    //Proxyable
+    public MailboxService(){
+    }
 
     @Inject
-    @Named("systemFS")
-    private FileSystem bootstrapFS;
+    public MailboxService( final InboxBackend inboxBackend,
+                           @Named("configIO") final IOService ioService,
+                           @Named("systemFS") final FileSystem bootstrapFS ) {
+        this.inboxBackend = inboxBackend;
+        this.ioService = ioService;
+        this.bootstrapFS = bootstrapFS;
+    }
 
     @PostConstruct
     public void setup() {
         log.info( "mailbox service is up" );
-        processOutgoing();
+        try {
+            ioService.startBatch( bootstrapFS.getRootDirectories().iterator().next().getFileSystem() );
+            processOutgoing();
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     /**
