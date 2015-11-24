@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2015 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,19 +43,25 @@ public class InboxBackendImpl implements InboxBackend {
     private static final String INCOMING_ID = "incoming";
     private static final String INBOX = "inbox";
 
-    @Inject
-    @Named("configIO")
     private IOService ioService;
-
-    @Inject
-    @Named("systemFS")
     private FileSystem bootstrapFS;
-
-    @Inject
     private UserServicesBackendImpl userServicesBackend;
+    private MailboxService mailboxService;
+
+    //Proxyable
+    public InboxBackendImpl() {
+    }
 
     @Inject
-    private MailboxService mailboxService;
+    public InboxBackendImpl( @Named("configIO") final IOService ioService,
+                             @Named("systemFS") final FileSystem bootstrapFS,
+                             final UserServicesBackendImpl userServicesBackend,
+                             final MailboxService mailboxService ) {
+        this.ioService = ioService;
+        this.bootstrapFS = bootstrapFS;
+        this.userServicesBackend = userServicesBackend;
+        this.mailboxService = mailboxService;
+    }
 
     @Override
     public List<InboxEntry> loadRecentEdited( String userName ) {
@@ -70,7 +76,7 @@ public class InboxBackendImpl implements InboxBackend {
     @Override
     public List<InboxEntry> readEntries( String userName,
                                          String boxName ) {
-        Path path = userServicesBackend.buildPath( userName, INBOX, boxName );
+        final Path path = userServicesBackend.buildPath( userName, INBOX, boxName );
 
         if ( ioService.exists( path ) ) {
             final String xml = ioService.readAllString( path );
@@ -99,13 +105,23 @@ public class InboxBackendImpl implements InboxBackend {
     public void recordOpeningEvent( @Observes final ResourceOpenedEvent event ) {
         checkNotNull( "event", event );
         final org.uberfire.backend.vfs.Path resourcePath = event.getPath();
-        recordOpeningEvent( resourcePath.toURI(), resourcePath.getFileName().toString(), event.getSessionInfo().getIdentity().getIdentifier() );
+        try {
+            ioService.startBatch( bootstrapFS.getRootDirectories().iterator().next().getFileSystem() );
+            recordOpeningEvent( resourcePath.toURI(), resourcePath.getFileName().toString(), event.getSessionInfo().getIdentity().getIdentifier() );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     public void recordUserEditEvent( @Observes final ResourceUpdatedEvent event ) {
         checkNotNull( "event", event );
 
-        recordUserEditEvent( event.getPath().toURI(), event.getPath().getFileName(), event.getSessionInfo().getIdentity().getIdentifier() );
+        try {
+            ioService.startBatch( bootstrapFS.getRootDirectories().iterator().next().getFileSystem() );
+            recordUserEditEvent( event.getPath().toURI(), event.getPath().getFileName(), event.getSessionInfo().getIdentity().getIdentifier() );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     /**
