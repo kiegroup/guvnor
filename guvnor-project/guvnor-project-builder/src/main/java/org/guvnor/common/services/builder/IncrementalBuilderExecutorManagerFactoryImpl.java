@@ -25,9 +25,15 @@ import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class IncrementalBuilderExecutorManagerFactoryImpl implements IncrementalBuilderExecutorManagerFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger( IncrementalBuilderExecutorManagerFactoryImpl.class );
+
+    private final boolean USE_EXECUTOR_SAFE_MODE = Boolean.parseBoolean( System.getProperty( "org.uberfire.async.executor.safemode", "false" ) );
 
     @Inject
     private ProjectService<? extends Project> projectService;
@@ -47,9 +53,20 @@ public class IncrementalBuilderExecutorManagerFactoryImpl implements Incremental
     public synchronized IncrementalBuilderExecutorManager getExecutorManager() {
         if ( executorManager == null ) {
             IncrementalBuilderExecutorManager _executorManager = null;
-            try {
-                _executorManager = InitialContext.doLookup( "java:module/IncrementalBuilderExecutorManager" );
-            } catch ( final Exception ignored ) {
+
+            //Unless overridden, delegate instantiation of the ExecutorService to the container
+            //See https://issues.jboss.org/browse/UF-244 and https://issues.jboss.org/browse/WFLY-4198
+            //When running in Hosted Mode (on Wildfly 8.1 at present) the System Property should be set
+            //to "true"
+            if ( !USE_EXECUTOR_SAFE_MODE ) {
+                try {
+                    _executorManager = InitialContext.doLookup( "java:module/IncrementalBuilderExecutorManager" );
+                } catch ( final Exception e ) {
+                    LOG.warn( "Unable to instantiate EJB Asynchronous Bean. Falling back to Executors' CachedThreadPool.",
+                              e );
+                }
+            } else {
+                LOG.info( "Use of to Executors' CachedThreadPool has been requested; overriding container provisioning." );
             }
 
             if ( _executorManager == null ) {
@@ -65,4 +82,5 @@ public class IncrementalBuilderExecutorManagerFactoryImpl implements Incremental
 
         return executorManager;
     }
+
 }
