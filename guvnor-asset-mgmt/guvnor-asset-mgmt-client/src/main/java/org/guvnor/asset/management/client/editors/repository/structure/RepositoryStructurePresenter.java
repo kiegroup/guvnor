@@ -130,7 +130,7 @@ public class RepositoryStructurePresenter
     private ProjectContext workbenchContext;
 
     @Inject
-    private ProjectWizard wizzard;
+    private ProjectWizard wizard;
 
     @Inject
     protected Event<ProjectContextChangeEvent> contextChangedEvent;
@@ -350,8 +350,8 @@ public class RepositoryStructurePresenter
                         repository );
 
             } else if ( model.isSingleProject() ) {
-                wizzard.setContent( null, null, null );
-                wizzard.start( new Callback<Project>() {
+                wizard.initialise();
+                wizard.start( new Callback<Project>() {
                     @Override
                     public void callback( Project result ) {
                         lastAddedModule = result;
@@ -495,7 +495,6 @@ public class RepositoryStructurePresenter
     }
 
     private void enableActions( boolean value ) {
-
         view.getModulesView().enableActions( value );
     }
 
@@ -511,17 +510,16 @@ public class RepositoryStructurePresenter
     @Override
     public void onAddModule() {
         if ( model.isMultiModule() ) {
-            wizzard.setContent( null,
-                                view.getDataView().getGroupId(),
-                                view.getDataView().getVersionId() );
+            final GAV gav = new GAV( view.getDataView().getGroupId(),
+                                     null,
+                                     view.getDataView().getVersionId() );
+            wizard.initialise( gav );
         } else {
-            wizzard.setContent( null,
-                                null,
-                                null );
+            wizard.initialise();
 
         }
 
-        wizzard.start( getModuleAddedSuccessCallback(), false );
+        wizard.start( getModuleAddedSuccessCallback(), false );
     }
 
     private Callback<Project> getModuleAddedSuccessCallback() {

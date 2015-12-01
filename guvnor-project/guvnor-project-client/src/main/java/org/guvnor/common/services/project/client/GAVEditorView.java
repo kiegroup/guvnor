@@ -23,64 +23,66 @@ public interface GAVEditorView
 
     interface Presenter {
 
-        void setGAV( GAV gav );
+        void setGAV( final GAV gav );
 
-        void onGroupIdChange( String groupId );
+        void setArtifactID( final String artifactID );
 
-        void onArtifactIdChange( String artifactId );
+        void onGroupIdChange( final String groupId );
 
-        void onVersionChange( String version );
+        void onArtifactIdChange( final String artifactId );
 
-        void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler );
+        void onVersionChange( final String version );
 
-        void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler );
+        void addGroupIdChangeHandler( final GroupIdChangeHandler changeHandler );
 
-        void addVersionChangeHandler( VersionChangeHandler changeHandler );
+        void addArtifactIdChangeHandler( final ArtifactIdChangeHandler changeHandler );
+
+        void addVersionChangeHandler( final VersionChangeHandler changeHandler );
 
         void setReadOnly();
 
-        void disableGroupID( String reason );
+        void disableGroupID( final String reason );
 
-        void disableVersion( String reason );
+        void disableVersion( final String reason );
 
-        void disableArtifactID( String reason );
+        void disableArtifactID( final String reason );
 
         void enableGroupID();
 
         void enableVersion();
 
-        void setValidGroupID( boolean isValid );
+        void setValidGroupID( final boolean isValid );
 
-        void setValidArtifactID( boolean isValid );
+        void setValidArtifactID( final boolean isValid );
 
-        void setValidVersion( boolean isValid );
+        void setValidVersion( final boolean isValid );
 
     }
 
-    void setPresenter( Presenter presenter );
+    void setPresenter( final Presenter presenter );
 
-    void setGroupId( String id );
+    void setGroupId( final String id );
 
-    void setArtifactId( String id );
+    void setArtifactId( final String id );
 
     void setReadOnly();
 
-    void setVersion( String version );
+    void setVersion( final String version );
 
-    void disableGroupID( String reason );
+    void disableGroupID( final String reason );
 
-    void disableArtifactID( String reason );
+    void disableArtifactID( final String reason );
 
-    void disableVersion( String reason );
+    void disableVersion( final String reason );
 
     void enableGroupID();
 
     void enableVersion();
 
-    void setValidGroupID( boolean isValid );
+    void setValidGroupID( final boolean isValid );
 
-    void setValidArtifactID( boolean isValid );
+    void setValidArtifactID( final boolean isValid );
 
-    void setValidVersion( boolean isValid );
+    void setValidVersion( final boolean isValid );
 
 }

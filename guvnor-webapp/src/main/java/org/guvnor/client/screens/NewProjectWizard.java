@@ -20,6 +20,7 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
 import org.uberfire.client.callbacks.Callback;
@@ -73,13 +74,19 @@ public class NewProjectWizard extends AbstractWizard implements ProjectWizard {
     }
 
     @Override
-    public void start( Callback<Project> callback,
-                       boolean openEditor ) {
-        super.start();
+    public void initialise() {
+
     }
 
     @Override
-    public void setContent( String projectName, String groupId, String version ) {
+    public void initialise( final GAV gav ) {
 
     }
+
+    @Override
+    public void start( final Callback<Project> callback,
+                       final boolean openEditor ) {
+        super.start();
+    }
+
 }

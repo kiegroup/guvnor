@@ -76,6 +76,10 @@ public class POMEditorPanel
         setTitle( model.getGav().getArtifactId() );
     }
 
+    public void setArtifactID( final String artifactID ) {
+        view.setArtifactID( artifactID );
+    }
+
     private void setTitle( final String titleText ) {
         if ( titleText == null || titleText.isEmpty() ) {
             view.setProjectModelTitleText();
@@ -85,27 +89,27 @@ public class POMEditorPanel
     }
 
     @Override
-    public void addNameChangeHandler( NameChangeHandler changeHandler ) {
+    public void addNameChangeHandler( final NameChangeHandler changeHandler ) {
         nameChangeHandlers.add( changeHandler );
     }
 
     @Override
-    public void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler ) {
+    public void addGroupIdChangeHandler( final GroupIdChangeHandler changeHandler ) {
         this.view.addGroupIdChangeHandler( changeHandler );
     }
 
     @Override
-    public void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler ) {
+    public void addArtifactIdChangeHandler( final ArtifactIdChangeHandler changeHandler ) {
         this.view.addArtifactIdChangeHandler( changeHandler );
     }
 
     @Override
-    public void addVersionChangeHandler( VersionChangeHandler changeHandler ) {
+    public void addVersionChangeHandler( final VersionChangeHandler changeHandler ) {
         this.view.addVersionChangeHandler( changeHandler );
     }
 
     @Override
-    public void onNameChange( String name ) {
+    public void onNameChange( final String name ) {
         this.model.setName( name );
         for ( NameChangeHandler changeHandler : nameChangeHandlers ) {
             changeHandler.onChange( name );
@@ -113,7 +117,7 @@ public class POMEditorPanel
     }
 
     @Override
-    public void onDescriptionChange( String description ) {
+    public void onDescriptionChange( final String description ) {
         this.model.setDescription( description );
     }
 
@@ -128,12 +132,12 @@ public class POMEditorPanel
     }
 
     @Override
-    public void disableGroupID( String reason ) {
+    public void disableGroupID( final String reason ) {
         view.disableGroupID( reason );
     }
 
     @Override
-    public void disableVersion( String reason ) {
+    public void disableVersion( final String reason ) {
         view.disableVersion( reason );
     }
 
