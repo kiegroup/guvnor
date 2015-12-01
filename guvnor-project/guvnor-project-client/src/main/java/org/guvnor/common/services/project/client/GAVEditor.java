@@ -33,13 +33,13 @@ public class GAVEditor
     private ArrayList<VersionChangeHandler> versionChangeHandlers = new ArrayList<VersionChangeHandler>();
 
     @Inject
-    public GAVEditor( GAVEditorView view ) {
+    public GAVEditor( final GAVEditorView view ) {
         this.view = view;
         view.setPresenter( this );
     }
 
     @Override
-    public void setGAV( GAV gav ) {
+    public void setGAV( final GAV gav ) {
         this.gav = gav;
         view.setGroupId( gav.getGroupId() );
         view.setArtifactId( gav.getArtifactId() );
@@ -47,7 +47,13 @@ public class GAVEditor
     }
 
     @Override
-    public void onGroupIdChange( String groupId ) {
+    public void setArtifactID( final String artifactID ) {
+        view.setArtifactId( artifactID );
+        gav.setArtifactId( artifactID );
+    }
+
+    @Override
+    public void onGroupIdChange( final String groupId ) {
         gav.setGroupId( groupId );
         for ( GroupIdChangeHandler handler : groupIdChangeHandlers ) {
             handler.onChange( groupId );
@@ -55,7 +61,7 @@ public class GAVEditor
     }
 
     @Override
-    public void onArtifactIdChange( String artifactId ) {
+    public void onArtifactIdChange( final String artifactId ) {
         gav.setArtifactId( artifactId );
         for ( ArtifactIdChangeHandler handler : artifactIdChangeHandlers ) {
             handler.onChange( artifactId );
@@ -63,7 +69,7 @@ public class GAVEditor
     }
 
     @Override
-    public void onVersionChange( String version ) {
+    public void onVersionChange( final String version ) {
         gav.setVersion( version );
         for ( VersionChangeHandler handler : versionChangeHandlers ) {
             handler.onChange( version );
@@ -71,17 +77,17 @@ public class GAVEditor
     }
 
     @Override
-    public void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler ) {
+    public void addGroupIdChangeHandler( final GroupIdChangeHandler changeHandler ) {
         groupIdChangeHandlers.add( changeHandler );
     }
 
     @Override
-    public void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler ) {
+    public void addArtifactIdChangeHandler( final ArtifactIdChangeHandler changeHandler ) {
         artifactIdChangeHandlers.add( changeHandler );
     }
 
     @Override
-    public void addVersionChangeHandler( VersionChangeHandler changeHandler ) {
+    public void addVersionChangeHandler( final VersionChangeHandler changeHandler ) {
         versionChangeHandlers.add( changeHandler );
     }
 
@@ -96,17 +102,17 @@ public class GAVEditor
     }
 
     @Override
-    public void disableGroupID( String reason ) {
+    public void disableGroupID( final String reason ) {
         view.disableGroupID( reason );
     }
 
     @Override
-    public void disableVersion( String reason ) {
+    public void disableVersion( final String reason ) {
         view.disableVersion( reason );
     }
 
     @Override
-    public void disableArtifactID( String reason ) {
+    public void disableArtifactID( final String reason ) {
         view.disableArtifactID( reason );
     }
 

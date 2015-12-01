@@ -16,14 +16,15 @@
 
 package org.guvnor.common.services.project.model;
 
-import  org.uberfire.client.callbacks.Callback;
+import org.uberfire.client.callbacks.Callback;
 
 public interface ProjectWizard {
 
-    void setContent(final String projectName, final String groupId, final String version);
+    void initialise();
 
-    void start();
+    void initialise( final GAV gav );
 
-    void start( Callback<Project> callback, boolean openEditor );
+    void start( final Callback<Project> callback,
+                final boolean openEditor );
 
 }

@@ -73,39 +73,39 @@ public class GAVEditorViewImpl
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter( final Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setGroupId( String id ) {
+    public void setGroupId( final String id ) {
         groupIdTextBox.setText( id );
     }
 
     @Override
-    public void setArtifactId( String id ) {
+    public void setArtifactId( final String id ) {
         artifactIdTextBox.setText( id );
     }
 
     @Override
-    public void setVersion( String version ) {
+    public void setVersion( final String version ) {
         versionTextBox.setText( version );
     }
 
     @Override
-    public void disableGroupID( String reason ) {
+    public void disableGroupID( final String reason ) {
         groupIdTextBox.setEnabled( false );
         groupIdTextBox.setTitle( reason );
     }
 
     @Override
-    public void disableArtifactID( String reason ) {
+    public void disableArtifactID( final String reason ) {
         artifactIdTextBox.setEnabled( false );
         artifactIdTextBox.setTitle( reason );
     }
 
     @Override
-    public void disableVersion( String reason ) {
+    public void disableVersion( final String reason ) {
         versionTextBox.setEnabled( false );
         versionTextBox.setTitle( reason );
     }
@@ -164,19 +164,19 @@ public class GAVEditorViewImpl
 
     @UiHandler("groupIdTextBox")
     //Use KeyUpEvent as ValueChangeEvent is only fired when the focus is lost
-    public void onGroupIdChange( KeyUpEvent event ) {
+    public void onGroupIdChange( final KeyUpEvent event ) {
         presenter.onGroupIdChange( groupIdTextBox.getText() );
     }
 
     @UiHandler("artifactIdTextBox")
     //Use KeyUpEvent as ValueChangeEvent is only fired when the focus is lost
-    public void onArtifactIdChange( KeyUpEvent event ) {
+    public void onArtifactIdChange( final KeyUpEvent event ) {
         presenter.onArtifactIdChange( artifactIdTextBox.getText() );
     }
 
     @UiHandler("versionTextBox")
     //Use KeyUpEvent as ValueChangeEvent is only fired when the focus is lost
-    public void onVersionChange( KeyUpEvent event ) {
+    public void onVersionChange( final KeyUpEvent event ) {
         presenter.onVersionChange( versionTextBox.getText() );
     }
 
