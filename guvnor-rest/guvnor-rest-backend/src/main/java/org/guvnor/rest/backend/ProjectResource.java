@@ -16,6 +16,7 @@
 package org.guvnor.rest.backend;
 
 import static org.kie.internal.remote.PermissionConstants.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -109,6 +110,30 @@ public class ProjectResource {
 
     private AtomicLong counter = new AtomicLong( 0 );
 
+    /**
+     * WELCOME TO REGULAR EXPRESSION MADNESS! But the good kind of madness.. ;D
+     *
+     * In the below explanation, {uberfireValid} refers to the set of characters
+     * for which *none* are one of the illegal characters specified in Uberfire ValidationUtils 
+     * 
+     * In short, the following regular expression looks for the a string that: 
+     * 
+     * 1. starts with a character that is BOTH
+     *   - in {uberfireValid}
+     *   - not a .
+     *   
+     * 2. followed by (0 or 1 occurrences) of
+     *    A. 0 or more occurences of 
+     *      i. a string that does *not* contain 2 '.' characters in a row
+     *      ii. AND a character that is in {uberfireValid}, but in this case also *can* be a '.'
+     *    C. ending with the same thing described in 1.
+     *    
+     * MUHAHAHAHAhahaha.... HAHha.. ha.. ha.    
+     * 
+     * Read the GuvnorRestTest.regexTest method for more insight into what is allowed and not.
+     */
+    static final String REGEX = "^([^/\n\r\t\0\f'\\?\\*\\<>|\": ~^\\[\\]@\\.])(((?![\\.]{2})[^/\n\r\t\0\f'\\?\\*\\<>|\": ~^\\[\\]@])*\\1)?$";
+    
     private void addAcceptedJobResult( String jobId ) {
         JobResult jobResult = new JobResult();
         jobResult.setJobId( jobId );
@@ -118,7 +143,7 @@ public class ProjectResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/jobs/{jobId}")
+    @Path("/jobs/{jobId: [\\d-]+}")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public JobResult getJobStatus( @PathParam("jobId") String jobId ) {
         logger.debug( "-----getJobStatus--- , jobId: {}", jobId );
@@ -137,7 +162,7 @@ public class ProjectResource {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/jobs/{jobId}")
+    @Path("/jobs/{jobId: [\\d-]+}")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public JobResult removeJob( @PathParam("jobId") String jobId ) {
         logger.debug( "-----removeJob--- , jobId: {}", jobId );
@@ -178,7 +203,7 @@ public class ProjectResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/repositories/{repositoryName}")
+    @Path("/repositories/{repositoryName: " + REGEX + "}")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public RepositoryResponse getRepository( @PathParam("repositoryName") String repositoryName ) {
         logger.debug( "-----getRepository---, repository name: {}", repositoryName );
@@ -221,7 +246,7 @@ public class ProjectResource {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/repositories/{repositoryName}")
+    @Path("/repositories/{repositoryName: " + REGEX + "}")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response removeRepository( @PathParam("repositoryName") String repositoryName ) {
         logger.debug( "-----removeRepository--- , repositoryName: {}", repositoryName );
@@ -242,7 +267,7 @@ public class ProjectResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/repositories/{repositoryName}/projects")
+    @Path("/repositories/{repositoryName: " + REGEX + "}/projects")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response createProject(
             @PathParam("repositoryName") String repositoryName,
@@ -269,7 +294,7 @@ public class ProjectResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/repositories/{repositoryName}/projects")
+    @Path("/repositories/{repositoryName: " + REGEX + "}/projects")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Collection<ProjectResponse> getProjects( @PathParam("repositoryName") String repositoryName) {
         logger.info( "-----getProjects--- , repositoryName: {}", repositoryName );
@@ -298,7 +323,7 @@ public class ProjectResource {
     
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/repositories/{repositoryName}/projects/{projectName}")
+    @Path("/repositories/{repositoryName: " + REGEX + "}/projects/{projectName: " + REGEX + "}")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response deleteProject(
             @PathParam("repositoryName") String repositoryName,
@@ -322,7 +347,7 @@ public class ProjectResource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/repositories/{repositoryName}/projects/{projectName}/maven/compile")
+    @Path("/repositories/{repositoryName: " + REGEX + "}/projects/{projectName: " + REGEX + "}/maven/compile")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response compileProject(
             @PathParam("repositoryName") String repositoryName,
@@ -346,7 +371,7 @@ public class ProjectResource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/repositories/{repositoryName}/projects/{projectName}/maven/install")
+    @Path("/repositories/{repositoryName: " + REGEX + "}/projects/{projectName: " + REGEX +"}/maven/install")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response installProject(
             @PathParam("repositoryName") String repositoryName,
@@ -371,7 +396,7 @@ public class ProjectResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/repositories/{repositoryName}/projects/{projectName}/maven/test")
+    @Path("/repositories/{repositoryName: " + REGEX + "}/projects/{projectName: " + REGEX + "}/maven/test")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response testProject(
             @PathParam("repositoryName") String repositoryName,
@@ -397,8 +422,9 @@ public class ProjectResource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/repositories/{repositoryName}/projects/{projectName}/maven/deploy")
+    @Path("/repositories/{repositoryName: " + REGEX + "}/projects/{projectName: " + REGEX + "}/maven/deploy")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
+    @Deprecated // remove with 7.0.x
     public Response deployProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
@@ -447,7 +473,7 @@ public class ProjectResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/organizationalunits/{organizationalUnitName}")
+    @Path("/organizationalunits/{organizationalUnitName: " + REGEX + "}")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public OrganizationalUnit getOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName ) {
         logger.debug( "-----getOrganizationalUnit ---, OrganizationalUnit name: {}", organizationalUnitName );
@@ -495,7 +521,7 @@ public class ProjectResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/organizationalunits/{organizationalUnitName}/")
+    @Path("/organizationalunits/{organizationalUnitName: " + REGEX + "}/")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response updateOrganizationalUnit(@PathParam("organizationalUnitName") String orgUnitName, UpdateOrganizationalUnit organizationalUnit ) {
        
@@ -532,7 +558,7 @@ public class ProjectResource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/organizationalunits/{organizationalUnitName}/repositories/{repositoryName}")
+    @Path("/organizationalunits/{organizationalUnitName: " + REGEX + "}/repositories/{repositoryName: " + REGEX + "}")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response addRepositoryToOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
                                                        @PathParam("repositoryName") String repositoryName ) {
@@ -556,7 +582,7 @@ public class ProjectResource {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/organizationalunits/{organizationalUnitName}/repositories/{repositoryName}")
+    @Path("/organizationalunits/{organizationalUnitName: " + REGEX + "}/repositories/{repositoryName: " + REGEX + "}")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response removeRepositoryFromOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
                                                             @PathParam("repositoryName") String repositoryName ) {
@@ -580,7 +606,7 @@ public class ProjectResource {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/organizationalunits/{organizationalUnitName}")
+    @Path("/organizationalunits/{organizationalUnitName: " + REGEX + "}")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response deleteOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName ) {
         logger.debug( "-----deleteOrganizationalUnit--- , OrganizationalUnit name: {}", organizationalUnitName );

@@ -14,7 +14,7 @@
 */
 package org.guvnor.rest.backend;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
@@ -35,7 +35,7 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 
-public class PermissionsTest {
+public class GuvnorRestTest {
 
     
     private static Reflections reflections = new Reflections(
@@ -65,6 +65,58 @@ public class PermissionsTest {
           assertTrue( pathMethod.getDeclaringClass() + "." +  pathMethod.getName() + "(...) is does not have the " + PermissionConstants.REST_ROLE + " role",
                   basicRestRoleFound);
        }
+    }
+    
+    @Test
+    public void regexTest() {
+        String regex = ProjectResource.REGEX;
+        
+        assertTrue( "a", "a".matches(regex));
+        assertTrue( "aa", "aa".matches(regex));
+        assertTrue( "aaa", "aaa".matches(regex));
+        
+        String [] badStrings = { 
+                "/", "\n", "\r", "\t", "\0", "\f",
+                "'", "?", "*", "<", ">", "|", "\"", ":",
+                " ", "~", "^", "[", "]", "@"
+        };
+        for( String bad : badStrings ) { 
+           assertFalse( bad, bad.matches(regex) );
+        }
+       
+        String [] badDoubleAndSingleDotStrings =  { 
+                // double dots
+               "..", "a..", "..a",
+               "a..a", "aa..a", "a..aa",
+               // start or begin with . 
+               ".", ".a", "a.",
+               ".a.a", "a.a.", ".a.a.",
+        };
+        for( String bad : badDoubleAndSingleDotStrings ) { 
+           assertFalse( bad, bad.matches(regex) );
+        }
+        
+        String [] goodDotStrings = { 
+                "a.a",
+                "aa.a",
+                "a.a.a",
+                "aa.aa.aa",
+                "a.a",
+        };
+        for( String bad : goodDotStrings ) { 
+           assertTrue( bad, bad.matches(regex) );
+        }
+        
+       
+        // does the negative lookahead ( ?!\d{2} ) 
+        // allow 2 of the bad characters?
+        String [] badComplexStrings = { 
+                "a//",
+                "a//a"
+        };
+        for( String bad : badComplexStrings ) { 
+           assertFalse( bad, bad.matches(regex) );
+        }
     }
     
 }
