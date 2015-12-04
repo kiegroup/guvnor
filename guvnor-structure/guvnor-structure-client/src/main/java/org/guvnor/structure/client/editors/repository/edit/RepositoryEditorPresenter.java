@@ -43,13 +43,9 @@ import org.uberfire.mvp.PlaceRequest;
 @WorkbenchScreen(identifier = "RepositoryEditor")
 public class RepositoryEditorPresenter {
 
-    @Inject
+    private View view;
     private Caller<RepositoryService> repositoryService;
-
-    @Inject
     private Caller<RepositoryServiceEditor> repositoryServiceEditor;
-
-    @Inject
     private PlaceManager placeManager;
 
     private String alias = null;
@@ -58,8 +54,6 @@ public class RepositoryEditorPresenter {
 
     public interface View
             extends UberView<RepositoryEditorPresenter> {
-
-        void clear();
 
         void setRepositoryInfo( final String repositoryName,
                                 final String owner,
@@ -72,10 +66,18 @@ public class RepositoryEditorPresenter {
         void addHistory( final List<VersionRecord> versionList );
     }
 
-    @Inject
-    public View view;
-
     public RepositoryEditorPresenter() {
+    }
+
+    @Inject
+    public RepositoryEditorPresenter( final View view,
+                                      final Caller<RepositoryService> repositoryService,
+                                      final Caller<RepositoryServiceEditor> repositoryServiceEditor,
+                                      final PlaceManager placeManager ) {
+        this.view = view;
+        this.repositoryService = repositoryService;
+        this.repositoryServiceEditor = repositoryServiceEditor;
+        this.placeManager = placeManager;
     }
 
     @OnStartup
@@ -96,29 +98,6 @@ public class RepositoryEditorPresenter {
         } ).getRepositoryInfo( alias );
     }
 
-    public void getLoadMoreHistory( final int lastIndex ) {
-        repositoryService.call( new RemoteCallback<List<VersionRecord>>() {
-            @Override
-            public void callback( final List<VersionRecord> versionList ) {
-                view.addHistory( versionList );
-            }
-        } ).getRepositoryHistory( alias, lastIndex );
-    }
-
-    public void revert( final VersionRecord record ) {
-        revert( record, null );
-    }
-
-    public void revert( final VersionRecord record,
-                        final String comment ) {
-        repositoryServiceEditor.call( new RemoteCallback<List<VersionRecord>>() {
-            @Override
-            public void callback( final List<VersionRecord> content ) {
-                view.reloadHistory( content );
-            }
-        } ).revertHistory( alias, root, comment, record );
-    }
-
     @WorkbenchPartTitle
     public String getTitle() {
         return CoreConstants.INSTANCE.RepositoryEditor() + " [" + alias + "]";
@@ -127,6 +106,34 @@ public class RepositoryEditorPresenter {
     @WorkbenchPartView
     public UberView<RepositoryEditorPresenter> getView() {
         return view;
+    }
+
+    void onLoadMoreHistory( final int lastIndex ) {
+        repositoryService.call( new RemoteCallback<List<VersionRecord>>() {
+            @Override
+            public void callback( final List<VersionRecord> versionList ) {
+                view.addHistory( versionList );
+            }
+        } ).getRepositoryHistory( alias,
+                                  lastIndex );
+    }
+
+    void onRevert( final VersionRecord record ) {
+        onRevert( record,
+                  null );
+    }
+
+    void onRevert( final VersionRecord record,
+                   final String comment ) {
+        repositoryServiceEditor.call( new RemoteCallback<List<VersionRecord>>() {
+            @Override
+            public void callback( final List<VersionRecord> content ) {
+                view.reloadHistory( content );
+            }
+        } ).revertHistory( alias,
+                           root,
+                           comment,
+                           record );
     }
 
     public void onRepositoryRemovedEvent( @Observes RepositoryRemovedEvent event ) {

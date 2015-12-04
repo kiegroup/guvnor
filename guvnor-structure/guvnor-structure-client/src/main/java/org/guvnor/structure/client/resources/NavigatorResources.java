@@ -37,6 +37,15 @@ public interface NavigatorResources
 
         String message();
 
+        @ClassName("message-left")
+        String messageLeftContainer();
+
+        @ClassName("message-right")
+        String messageRightContainer();
+
+        @ClassName("author-date-container")
+        String authorDateContainer();
+
         String author();
 
         String date();

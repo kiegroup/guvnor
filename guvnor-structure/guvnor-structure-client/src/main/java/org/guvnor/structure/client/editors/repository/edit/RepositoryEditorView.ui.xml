@@ -20,61 +20,62 @@
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:html="urn:import:org.gwtbootstrap3.client.ui.html">
 
-    <ui:with field="i18n" type="org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants"/>
+  <ui:with field="i18n" type="org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants"/>
+  <ui:with field="resources" type="org.guvnor.structure.client.resources.NavigatorResources"/>
 
-    <ui:style>
+  <ui:style>
 
-        .panel-body {
-            padding: 15px !important;
-        }
+    .panel-body {
+      padding: 15px !important;
+    }
 
-        .panel {
-            padding: 15px;
-        }
+    .panel {
+      padding: 15px;
+    }
 
-    </ui:style>
+  </ui:style>
 
-    <g:HTMLPanel addStyleNames="{style.panel}">
-        <b:Heading size="H4" ui:field="repoName">
-            <b:Icon type="BOOK" size="LARGE" pull="LEFT"/>
-        </b:Heading>
+  <g:HTMLPanel addStyleNames="{style.panel}">
+    <b:Heading size="H4" ui:field="repoName">
+      <b:Icon type="BOOK" size="LARGE" pull="LEFT"/>
+    </b:Heading>
 
-        <b:Panel>
-            <b:PanelHeader>
-                <b:Heading size="H3" text="{i18n.GeneralInformation}"/>
-            </b:PanelHeader>
-            <b:PanelBody addStyleNames="{style.panel-body}">
-                <html:Div addStyleNames="row">
-                    <g:FlowPanel addStyleNames="col-md-12">
-                        <html:Paragraph ui:field="repoDesc"/>
-                        <html:Hr/>
-                    </g:FlowPanel>
-                </html:Div>
-                <html:Div addStyleNames="row">
-                    <g:FlowPanel addStyleNames="col-md-6">
-                        <b:InputGroup>
-                            <b:TextBox ui:field="gitDaemonURI" enabled="false"/>
-                            <b:InputGroupAddon ui:field="myGitCopyButton" icon="COPY"/>
-                        </b:InputGroup>
-                    </g:FlowPanel>
-                    <html:Paragraph ui:field="linksPanel" addStyleNames="col-md-6"/>
-                </html:Div>
-            </b:PanelBody>
-        </b:Panel>
+    <b:Panel>
+      <b:PanelHeader>
+        <b:Heading size="H3" text="{i18n.GeneralInformation}"/>
+      </b:PanelHeader>
+      <b:PanelBody addStyleNames="{style.panel-body}">
+        <html:Div addStyleNames="row">
+          <g:FlowPanel addStyleNames="col-md-12">
+            <html:Paragraph ui:field="repoDesc"/>
+            <html:Hr/>
+          </g:FlowPanel>
+        </html:Div>
+        <html:Div addStyleNames="row">
+          <g:FlowPanel addStyleNames="col-md-6">
+            <b:InputGroup>
+              <b:TextBox ui:field="gitDaemonURI" enabled="false"/>
+              <b:InputGroupAddon ui:field="myGitCopyButton" icon="COPY"/>
+            </b:InputGroup>
+          </g:FlowPanel>
+          <html:Paragraph ui:field="linksPanel" addStyleNames="col-md-6"/>
+        </html:Div>
+      </b:PanelBody>
+    </b:Panel>
 
-        <b:Panel>
-            <b:PanelHeader>
-                <b:Heading size="H3" text="{i18n.CommitHistory}"/>
+    <b:Panel>
+      <b:PanelHeader>
+        <b:Heading size="H3" text="{i18n.CommitHistory}"/>
 
-            </b:PanelHeader>
-            <b:PanelBody addStyleNames="{style.panel-body}">
-                <g:FlowPanel ui:field="history"/>
-                <b:Button ui:field="loadMore" block="true">
-                    <ui:text from="{i18n.LoadMore}"/>
-                </b:Button>
-            </b:PanelBody>
-        </b:Panel>
+      </b:PanelHeader>
+      <b:PanelBody addStyleNames="{style.panel-body}">
+        <g:FlowPanel ui:field="history" addStyleNames="{resources.css.navigator}"/>
+        <b:Button ui:field="loadMore" block="true">
+          <ui:text from="{i18n.LoadMore}"/>
+        </b:Button>
+      </b:PanelBody>
+    </b:Panel>
 
-    </g:HTMLPanel>
+  </g:HTMLPanel>
 
 </ui:UiBinder> 
