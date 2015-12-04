@@ -28,9 +28,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.structure.client.navigator.CommitNavigator;
+import org.guvnor.structure.client.navigator.CommitNavigatorEntry;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.guvnor.structure.repositories.PublicURI;
 import org.gwtbootstrap3.client.ui.Button;
@@ -45,7 +44,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 public class RepositoryEditorView extends Composite
         implements
-        RequiresResize,
         RepositoryEditorPresenter.View {
 
     interface RepositoryEditorViewBinder
@@ -77,8 +75,6 @@ public class RepositoryEditorView extends Composite
     @UiField
     public Button loadMore;
 
-    private CommitNavigator commitNavigator = null;
-
     private RepositoryEditorPresenter presenter;
 
     @PostConstruct
@@ -91,6 +87,7 @@ public class RepositoryEditorView extends Composite
         this.presenter = presenter;
     }
 
+    @Override
     public void setRepositoryInfo( final String repositoryName,
                                    final String owner,
                                    final List<PublicURI> publicURIs,
@@ -127,17 +124,8 @@ public class RepositoryEditorView extends Composite
         }
 
         if ( initialVersionList != null && !initialVersionList.isEmpty() ) {
-            commitNavigator = new CommitNavigator() {{
-                setOnRevertCommand( new ParameterizedCommand<VersionRecord>() {
-                    @Override
-                    public void execute( final VersionRecord record ) {
-                        BusyPopup.showMessage( CoreConstants.INSTANCE.Reverting() );
-                        presenter.revert( record );
-                    }
-                } );
-                loadContent( initialVersionList );
-            }};
-            history.add( commitNavigator );
+            loadContent( initialVersionList );
+
         } else {
             history.setVisible( false );
         }
@@ -145,9 +133,7 @@ public class RepositoryEditorView extends Composite
         loadMore.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                if ( commitNavigator != null ) {
-                    presenter.getLoadMoreHistory( commitNavigator.getLastIndex() );
-                }
+                presenter.onLoadMoreHistory( history.getWidgetCount() );
             }
         } );
 
@@ -164,30 +150,31 @@ public class RepositoryEditorView extends Composite
 
     @Override
     public void reloadHistory( final List<VersionRecord> versionList ) {
-        commitNavigator.loadContent( versionList );
+        loadContent( versionList );
         BusyPopup.close();
     }
 
     @Override
     public void addHistory( List<VersionRecord> versionList ) {
-        if ( commitNavigator != null ) {
-            if ( !versionList.isEmpty() ) {
-                commitNavigator.addContent( versionList );
-            } else {
-                loadMore.setEnabled( false );
-            }
+        if ( !versionList.isEmpty() ) {
+            loadContent( versionList );
+        } else {
+            loadMore.setEnabled( false );
         }
     }
 
-    @Override
-    public void clear() {
-    }
+    private void loadContent( final List<VersionRecord> versionRecordList ) {
+        for ( VersionRecord vr : versionRecordList ) {
+            history.add( new CommitNavigatorEntry( vr,
+                                                   new ParameterizedCommand<VersionRecord>() {
+                                                       @Override
+                                                       public void execute( final VersionRecord record ) {
+                                                           BusyPopup.showMessage( CoreConstants.INSTANCE.Reverting() );
+                                                           presenter.onRevert( record );
+                                                       }
+                                                   } ) );
+        }
 
-    @Override
-    public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        setPixelSize( width, height );
     }
 
     public static native void glueCopy( final Element element ) /*-{

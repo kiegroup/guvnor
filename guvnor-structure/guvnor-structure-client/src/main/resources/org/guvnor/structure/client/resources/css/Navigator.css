@@ -1,7 +1,7 @@
 .navigator {
     width: 100%;
     margin: 0;
-    border-bottom: 1px solid #cacaca;
+    margin-bottom: 15px;
     border-left: none;
     border-right: none;
 }
@@ -19,7 +19,11 @@
 }
 
 .navigator-message {
-    max-width: 420px;
+    color: #484848;
+    border-bottom: 1px solid #eee;
+    padding: 7px 3px;
+    vertical-align: middle;
+    white-space: nowrap;
 }
 
 .message {
@@ -29,6 +33,22 @@
     font-weight: bold;
     height: auto;
     line-height: 19px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.message-left {
+    float: none;
+    width: auto;
+}
+
+.message-right {
+    float: right;
+}
+
+.author-date-container {
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .date {

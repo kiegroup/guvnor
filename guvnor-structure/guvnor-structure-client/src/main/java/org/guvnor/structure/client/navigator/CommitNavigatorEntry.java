@@ -15,18 +15,17 @@
 
 package org.guvnor.structure.client.navigator;
 
-import java.util.List;
-
-import com.google.gwt.dom.client.Element;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.DOM;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.structure.client.resources.NavigatorResources;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
@@ -36,87 +35,46 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
-public class CommitNavigator extends Composite {
+public class CommitNavigatorEntry extends Composite {
 
-    private FlowPanel container = new FlowPanel();
-    private FlexTable navigator = null;
-    private int lastIndex;
-    private ParameterizedCommand<VersionRecord> onRevertCommand = null;
+    interface CommitNavigatorEntryViewBinder
+            extends
+            UiBinder<Widget, CommitNavigatorEntry> {
 
-    public CommitNavigator() {
-        initWidget( container );
     }
 
-    public void setOnRevertCommand( final ParameterizedCommand<VersionRecord> command ) {
-        this.onRevertCommand = command;
+    private static final DateTimeFormat fmt = DateTimeFormat.getFormat( "yyyy-MM-dd h:mm a" );
+
+    private static CommitNavigatorEntryViewBinder uiBinder = GWT.create( CommitNavigatorEntryViewBinder.class );
+
+    @UiField
+    Label message;
+
+    @UiField
+    InlineLabel author;
+
+    @UiField
+    InlineLabel date;
+
+    @UiField
+    SimplePanel revertButtonContainer;
+
+    public CommitNavigatorEntry( final VersionRecord versionRecord,
+                                 final ParameterizedCommand<VersionRecord> onRevertCommand ) {
+        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget( versionRecord,
+                    onRevertCommand );
     }
 
-    public void loadContent( final List<VersionRecord> versionRecords ) {
-        lastIndex = 0;
-        container.clear();
-        if ( navigator != null ) {
-            navigator.clear();
-        }
-        navigator = new FlexTable();
-        navigator.setStyleName( NavigatorResources.INSTANCE.css().navigator() );
-
-        setupContent( versionRecords );
-    }
-
-    public void addContent( final List<VersionRecord> content ) {
-        int base = navigator.getRowCount();
-        for ( int i = 0; i < content.size(); i++ ) {
-            final VersionRecord dataContent = content.get( i );
-            createElement( base + i, dataContent );
-        }
-    }
-
-    private void setupContent( final List<VersionRecord> content ) {
-        addContent( content );
-
-        container.add( navigator );
-    }
-
-    private void createElement( final int row,
-                                final VersionRecord dataContent ) {
-        int col = 0;
-
-        final Element messageCol = DOM.createDiv();
-        messageCol.addClassName( NavigatorResources.INSTANCE.css().navigatorMessage() );
-        {
-            { //comment
-                final Element message = DOM.createSpan();
-                message.addClassName( NavigatorResources.INSTANCE.css().message() );
-                message.setInnerText( dataContent.comment() );
-                messageCol.appendChild( message );
-            }
-
-            final Element metadata = DOM.createDiv();
-
-            {//author
-                final Element author = DOM.createSpan();
-                author.addClassName( NavigatorResources.INSTANCE.css().author() );
-                author.setInnerText( dataContent.author() + " - " );
-                metadata.appendChild( author );
-            }
-
-            {//date
-                final Element date = DOM.createSpan();
-                date.addClassName( NavigatorResources.INSTANCE.css().date() );
-                DateTimeFormat fmt = DateTimeFormat.getFormat( "yyyy-MM-dd h:mm a" );
-                date.setInnerText( fmt.format( dataContent.date() ) );
-                metadata.appendChild( date );
-            }
-
-            messageCol.appendChild( metadata );
-        }
-
-        navigator.setWidget( row, col, new Widget() {{
-            setElement( messageCol );
-        }} );
+    private void initWidget( final VersionRecord versionRecord,
+                             final ParameterizedCommand<VersionRecord> onRevertCommand ) {
+        message.setText( versionRecord.comment() );
+        author.setText( versionRecord.author() + " - " );
+        date.setText( fmt.format( versionRecord.date() ) );
 
         if ( onRevertCommand != null ) {
-            navigator.setWidget( row, ++col, new Button( CoreConstants.INSTANCE.RevertToThis() ) {{
+            revertButtonContainer.setWidget( new Button( CoreConstants.INSTANCE.RevertToThis() ) {{
+                setBlock( true );
                 setType( ButtonType.DANGER );
                 addClickHandler( new ClickHandler() {
                     @Override
@@ -126,7 +84,7 @@ public class CommitNavigator extends Composite {
                                                                                                         new Command() {
                                                                                                             @Override
                                                                                                             public void execute() {
-                                                                                                                onRevertCommand.execute( dataContent );
+                                                                                                                onRevertCommand.execute( versionRecord );
                                                                                                             }
                                                                                                         },
                                                                                                         new Command() {
@@ -142,12 +100,6 @@ public class CommitNavigator extends Composite {
                 } );
             }} );
         }
-
-        lastIndex++;
-    }
-
-    public int getLastIndex() {
-        return lastIndex;
     }
 
 }
