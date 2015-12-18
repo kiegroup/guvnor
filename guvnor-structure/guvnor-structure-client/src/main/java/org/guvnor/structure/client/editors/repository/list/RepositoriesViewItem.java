@@ -27,11 +27,11 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.structure.client.editors.repository.common.CopyRepositoryUrlBtn;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Heading;
-import org.gwtbootstrap3.client.ui.InputGroupAddon;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.html.Paragraph;
 import org.gwtbootstrap3.extras.select.client.ui.Option;
@@ -58,7 +58,7 @@ public class RepositoriesViewItem extends Composite {
     public TextBox gitDaemonURI;
 
     @UiField
-    public InputGroupAddon myGitCopyButton;
+    public CopyRepositoryUrlBtn myGitCopyButton;
 
     @UiField
     public Paragraph linksPanel;
@@ -114,10 +114,8 @@ public class RepositoriesViewItem extends Composite {
 
         final String uriId = "view-uri-for-" + repositoryName;
         gitDaemonURI.getElement().setId( uriId );
-        myGitCopyButton.getElement().setAttribute( "data-clipboard-target", uriId );
-        myGitCopyButton.getElement().setAttribute( "data-clipboard-text", gitDaemonURI.getText() );
 
-        myGitCopyButton.getElement().setId( "view-button-" + uriId );
+        myGitCopyButton.init(true, uriId, gitDaemonURI.getText());
 
         // populate branches
         for ( String branch : branches ) {

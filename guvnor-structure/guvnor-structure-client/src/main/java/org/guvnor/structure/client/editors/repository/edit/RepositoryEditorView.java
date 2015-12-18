@@ -29,12 +29,11 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.structure.client.editors.repository.common.CopyRepositoryUrlBtn;
 import org.guvnor.structure.client.navigator.CommitNavigatorEntry;
-import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.guvnor.structure.repositories.PublicURI;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Heading;
-import org.gwtbootstrap3.client.ui.InputGroupAddon;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.html.Paragraph;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
@@ -64,7 +63,7 @@ public class RepositoryEditorView extends Composite
     public TextBox gitDaemonURI;
 
     @UiField
-    public InputGroupAddon myGitCopyButton;
+    public CopyRepositoryUrlBtn myGitCopyButton;
 
     @UiField
     public Paragraph linksPanel;
@@ -130,22 +129,19 @@ public class RepositoryEditorView extends Composite
             history.setVisible( false );
         }
 
-        loadMore.addClickHandler( new ClickHandler() {
+        loadMore.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                presenter.onLoadMoreHistory( history.getWidgetCount() );
+            public void onClick(ClickEvent event) {
+                presenter.onLoadMoreHistory(history.getWidgetCount());
             }
-        } );
+        });
 
         final String uriId = "uri-for-" + repositoryName;
         gitDaemonURI.getElement().setId( uriId );
-        myGitCopyButton.getElement().setAttribute( "data-clipboard-target", uriId );
-        myGitCopyButton.getElement().setAttribute( "data-clipboard-text", gitDaemonURI.getText() );
 
-        myGitCopyButton.getElement().setId( "button-" + uriId );
-        myGitCopyButton.getElement().setTitle( CommonConstants.INSTANCE.copyRepositoryUrl() );
+        myGitCopyButton.init(false, uriId, gitDaemonURI.getText());
 
-        glueCopy( myGitCopyButton.getElement() );
+        glueCopy(myGitCopyButton.getElement());
     }
 
     @Override
