@@ -16,6 +16,7 @@
 package org.guvnor.common.services.project.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -37,13 +38,31 @@ public class Dependencies
         this.dependencies = dependencies;
     }
 
-    public boolean containsDependency( final Dependency other ) {
+    public boolean containsDependency( final GAV other ) {
         for (Dependency dependency : dependencies) {
             if ( dependency.isGAVEqual( other ) ) {
                 return true;
             }
         }
         return false;
+    }
+
+    public Collection<GAV> getGavs( final String... scopes ) {
+        final List<String> scopesAsList = Arrays.asList( scopes );
+
+        if ( scopesAsList.isEmpty() ) {
+            return new ArrayList<GAV>( dependencies );
+        } else {
+            final ArrayList<GAV> result = new ArrayList<GAV>();
+
+            for ( Dependency dependency : dependencies ) {
+                if ( scopesAsList.contains( dependency.getScope() ) ) {
+                    result.add( dependency );
+                }
+            }
+
+            return result;
+        }
     }
 
     @Override public int size() {

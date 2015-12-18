@@ -17,12 +17,27 @@ package org.guvnor.common.services.backend.util;
 
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.DeleteOption;
 import org.uberfire.rpc.SessionInfo;
 
 public interface CommentedOptionFactory {
 
     CommentedOption makeCommentedOption( final String commitMessage );
 
-    CommentedOption makeCommentedOption( final String commitMessage, final User identity, final SessionInfo sessionInfo );
+    CommentedOption makeCommentedOption( final String commitMessage,
+                                         final User identity,
+                                         final SessionInfo sessionInfo );
+
+    CommentedOption makeCommentedOption( final String sessionId,
+                                         final String commitMessage );
+    /**
+     * @return Safe session id, even when SessionInfo does not exist
+     */
+    String getSafeSessionId();
+
+    /**
+     * @return Safe identity name, even when Identity does not exist
+     */
+    String getSafeIdentityName();
 
 }

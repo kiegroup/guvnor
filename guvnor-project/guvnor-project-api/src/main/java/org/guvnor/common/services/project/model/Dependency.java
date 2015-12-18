@@ -16,6 +16,9 @@
 
 package org.guvnor.common.services.project.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
@@ -24,18 +27,28 @@ public class Dependency
 
     private String scope;
 
+    private Set<String> packages = new HashSet<String>();
+
     public Dependency() {
     }
 
-    public Dependency(GAV gav) {
-        super(gav.getGroupId(), gav.getArtifactId(), gav.getVersion());
+    public Dependency( GAV gav ) {
+        super( gav.getGroupId(), gav.getArtifactId(), gav.getVersion() );
     }
 
     public String getScope() {
         return scope;
     }
 
-    public void setScope(String scope) {
+    public void setScope( String scope ) {
         this.scope = scope;
+    }
+
+    public Set<String> getPackages() {
+        return packages;
+    }
+
+    public void addPackages( final Set<String> packages ) {
+        this.packages.addAll( packages );
     }
 }

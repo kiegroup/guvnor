@@ -16,19 +16,16 @@
 
 package org.guvnor.server.editors;
 
-import org.guvnor.shared.editors.DefaultEditorService;
-import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.rpc.SessionInfo;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Date;
+
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.shared.editors.DefaultEditorService;
+import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 
 @Service
 @ApplicationScoped
@@ -40,27 +37,17 @@ public class DefaultEditorServiceImpl
     private IOService ioService;
 
     @Inject
-    protected User identity;
-
-    @Inject
-    protected SessionInfo sessionInfo;
+    protected CommentedOptionFactory commentedOptionFactory;
 
     @Override
-    public Path save(Path path, String content, String commitMessage) {
+    public Path save( final Path path,
+                      final String content,
+                      final String commitMessage ) {
 
-        ioService.write(Paths.convert(path),
-                content,
-                makeCommentedOption(commitMessage));
+        ioService.write( Paths.convert( path ),
+                         content,
+                         commentedOptionFactory.makeCommentedOption( commitMessage ) );
 
         return path;
-    }
-
-    protected CommentedOption makeCommentedOption(final String commitMessage) {
-        return new CommentedOption(
-                sessionInfo.getId(),
-                identity.getIdentifier(),
-                null,
-                commitMessage,
-                new Date());
     }
 }
