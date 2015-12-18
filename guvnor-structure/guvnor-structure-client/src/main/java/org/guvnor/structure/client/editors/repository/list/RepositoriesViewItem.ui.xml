@@ -19,7 +19,8 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:html="urn:import:org.gwtbootstrap3.client.ui.html"
-             xmlns:select="urn:import:org.gwtbootstrap3.extras.select.client.ui">
+             xmlns:select="urn:import:org.gwtbootstrap3.extras.select.client.ui"
+             xmlns:common="urn:import:org.guvnor.structure.client.editors.repository.common">
 
     <ui:with field="i18n" type="org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants"/>
 
@@ -54,7 +55,7 @@
                 <g:FlowPanel addStyleNames="col-md-6">
                     <b:InputGroup>
                         <b:TextBox ui:field="gitDaemonURI" enabled="false"/>
-                        <b:InputGroupAddon ui:field="myGitCopyButton" icon="COPY"/>
+                        <common:CopyRepositoryUrlBtn ui:field="myGitCopyButton" icon="COPY"/>
                     </b:InputGroup>
                 </g:FlowPanel>
                 <html:Paragraph ui:field="linksPanel" addStyleNames="col-md-6"/>
