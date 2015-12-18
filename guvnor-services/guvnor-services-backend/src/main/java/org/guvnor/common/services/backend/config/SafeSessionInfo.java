@@ -19,7 +19,9 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.uberfire.rpc.SessionInfo;
 
-public class SafeSessionInfo implements SessionInfo {
+
+public class SafeSessionInfo
+        implements SessionInfo {
 
     private SessionInfo delegate;
 

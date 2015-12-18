@@ -17,56 +17,73 @@ package org.guvnor.common.services.backend.util;
 
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 
 @ApplicationScoped
-public class CommentedOptionFactoryImpl implements CommentedOptionFactory {
+public class CommentedOptionFactoryImpl
+        implements CommentedOptionFactory {
 
     private static final String UNKNOWN_IDENTITY = "unknown";
 
-    private static final String UNKNOWN_SESSION = "--";
+    private SafeSessionInfo safeSessionInfo;
+
+    public CommentedOptionFactoryImpl() {
+    }
 
     @Inject
-    private User identity;
-
-    @Inject
-    private SessionInfo sessionInfo;
+    public CommentedOptionFactoryImpl( SessionInfo safeSessionInfo ) {
+        this.safeSessionInfo = new SafeSessionInfo( safeSessionInfo );
+    }
 
     @Override
     public CommentedOption makeCommentedOption( final String commitMessage ) {
-        return makeCommentedOption( commitMessage, identity, sessionInfo );
+        new SafeSessionInfo( safeSessionInfo );
+        return makeCommentedOption( commitMessage,
+                                    safeSessionInfo.getIdentity(),
+                                    safeSessionInfo );
     }
 
     @Override
-    public CommentedOption makeCommentedOption( final String commitMessage, final User identity, final SessionInfo sessionInfo ) {
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( getSessionId( sessionInfo ),
-                getIdentityName( identity ),
-                null,
-                commitMessage,
-                when );
-        return co;
+    public CommentedOption makeCommentedOption( final String commitMessage,
+                                                final User identity,
+                                                final SessionInfo sessionInfo ) {
+        return new CommentedOption( new SafeSessionInfo( sessionInfo ).getId(),
+                                    getIdentityName( identity ),
+                                    null,
+                                    commitMessage,
+                                    new Date() );
     }
 
-    protected String getIdentityName( User identity ) {
+    @Override
+    public CommentedOption makeCommentedOption( final String sessionId,
+                                                final String commitMessage ) {
+        return new CommentedOption( sessionId,
+                                    safeSessionInfo.getIdentity().getIdentifier(),
+                                    null,
+                                    commitMessage,
+                                    new Date() );
+    }
+
+    @Override
+    public String getSafeSessionId() {
+        return safeSessionInfo.getId();
+    }
+
+    @Override
+    public String getSafeIdentityName() {
+        return safeSessionInfo.getIdentity().getIdentifier();
+    }
+
+    protected String getIdentityName( final User identity ) {
         try {
-            return identity != null ? identity.getIdentifier() : UNKNOWN_IDENTITY;
-        } catch ( ContextNotActiveException e ) {
+            return identity.getIdentifier();
+        } catch ( Exception e ) {
             return UNKNOWN_IDENTITY;
         }
     }
-
-    protected String getSessionId( SessionInfo sessionInfo ) {
-        try {
-            return sessionInfo != null ? sessionInfo.getId() : UNKNOWN_SESSION;
-        } catch ( ContextNotActiveException e ) {
-            return UNKNOWN_SESSION;
-        }
-    }
-
 }
