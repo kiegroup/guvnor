@@ -16,6 +16,7 @@
 
 package org.guvnor.m2repo.model;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.paging.PageRequest;
 
@@ -35,15 +36,11 @@ public class JarListPageRequest extends PageRequest {
     private String dataSourceName;
     private boolean isAscending;
 
-    public JarListPageRequest() {
-        //Errai marshalling
-    }
-
-    public JarListPageRequest( final int startRowIndex,
-                               final Integer pageSize,
-                               final String filters,
-                               final String dataSourceName,
-                               final boolean isAscending ) {
+    public JarListPageRequest( @MapsTo("startRowIndex") final int startRowIndex,
+                               @MapsTo("pageSize") final Integer pageSize,
+                               @MapsTo("filters") final String filters,
+                               @MapsTo("dataSourceName") final String dataSourceName,
+                               @MapsTo("isAscending") final boolean isAscending ) {
         super( startRowIndex,
                pageSize );
         this.filters = filters;

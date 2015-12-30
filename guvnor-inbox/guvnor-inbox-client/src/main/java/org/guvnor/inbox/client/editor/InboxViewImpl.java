@@ -100,10 +100,7 @@ public class InboxViewImpl extends PagedTable<InboxPageRow> implements InboxView
 
         setDataProvider( new AsyncDataProvider<InboxPageRow>() {
             protected void onRangeChanged( HasData<InboxPageRow> display ) {
-                InboxPageRequest request = new InboxPageRequest();
-                request.setInboxName( inboxName );
-                request.setStartRowIndex( dataGrid.getPageStart() );
-                request.setPageSize( PAGE_SIZE );
+                InboxPageRequest request = new InboxPageRequest( inboxName, dataGrid.getPageStart(), PAGE_SIZE );
 
                 inboxService.call( new RemoteCallback<PageResponse<InboxPageRow>>() {
                     @Override
