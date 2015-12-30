@@ -102,7 +102,7 @@ public class DeleteProjectObserverBridgeTest {
         final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>() {{
             put( path,
                  new ArrayList<ResourceChange>() {{
-                     add( new ResourceUpdated() );
+                     add( new ResourceUpdated( "" ) );
                  }} );
         }};
 
@@ -125,7 +125,7 @@ public class DeleteProjectObserverBridgeTest {
         final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>() {{
             put( path,
                  new ArrayList<ResourceChange>() {{
-                     add( new ResourceUpdated() );
+                     add( new ResourceUpdated( "" ) );
                  }} );
         }};
 
@@ -148,7 +148,7 @@ public class DeleteProjectObserverBridgeTest {
         final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>() {{
             put( path,
                  new ArrayList<ResourceChange>() {{
-                     add( new ResourceDeleted() );
+                     add( new ResourceDeleted( "" ) );
                  }} );
         }};
 
@@ -171,7 +171,7 @@ public class DeleteProjectObserverBridgeTest {
         final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>() {{
             put( path,
                  new ArrayList<ResourceChange>() {{
-                     add( new ResourceDeleted() );
+                     add( new ResourceDeleted( "" ) );
                  }} );
         }};
 

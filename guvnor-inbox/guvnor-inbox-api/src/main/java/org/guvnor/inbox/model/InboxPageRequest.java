@@ -15,6 +15,7 @@
  */
 package org.guvnor.inbox.model;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.paging.PageRequest;
 
@@ -26,13 +27,9 @@ public class InboxPageRequest extends PageRequest {
 
     private String inboxName;
 
-    // For GWT serialisation
-    public InboxPageRequest() {
-    }
-
-    public InboxPageRequest( String inboxName,
-                             int startRowIndex,
-                             Integer pageSize ) {
+    public InboxPageRequest( @MapsTo("inboxName") String inboxName,
+                             @MapsTo("startRowIndex") int startRowIndex,
+                             @MapsTo("pageSize") Integer pageSize ) {
         super( startRowIndex,
                pageSize );
         validateInboxName( inboxName );
