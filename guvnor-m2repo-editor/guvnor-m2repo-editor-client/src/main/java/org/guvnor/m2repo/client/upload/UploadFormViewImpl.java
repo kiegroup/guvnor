@@ -98,9 +98,9 @@ public class UploadFormViewImpl
         hiddenVersionIdField.setName( HTMLFileManagerFields.VERSION_ID );
 
         form.addAttribute( "File", uploader );
-        groupIdItem = (FormStyleItem) form.getWidget( form.addAttribute( "Group ID", hiddenGroupIdField ) );
-        artifactIdItem = (FormStyleItem) form.getWidget( form.addAttribute( "Artifact ID", hiddenArtifactIdField ) );
-        versionIdItem = (FormStyleItem) form.getWidget( form.addAttribute( "Version ID", hiddenVersionIdField ) );
+        groupIdItem = form.addAttribute( "Group ID", hiddenGroupIdField );
+        artifactIdItem = form.addAttribute( "Artifact ID", hiddenArtifactIdField );
+        versionIdItem = form.addAttribute( "Version ID", hiddenVersionIdField );
 
         hideGAVInputs();
 
