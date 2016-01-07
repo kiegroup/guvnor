@@ -16,6 +16,8 @@
 
 package org.guvnor.common.services.backend.metadata;
 
+import java.util.List;
+
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.uberfire.java.nio.file.Path;
@@ -24,5 +26,7 @@ public interface MetadataServerSideService
         extends MetadataService {
 
     Metadata getMetadata(Path resource);
+
+    List<String> getTags(Path resource);
 
 }

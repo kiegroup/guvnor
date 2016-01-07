@@ -95,6 +95,22 @@ public class MetadataServiceImpl
     }
 
     @Override
+    public List<String> getTags(final Path pathToResource) {
+        return getTags(Paths.convert(pathToResource));
+    }
+
+    @Override
+    public List<String> getTags(org.uberfire.java.nio.file.Path path) {
+
+        OtherMetaView otherMetaView = ioService.getFileAttributeView(path, OtherMetaView.class);
+        if(otherMetaView != null) {
+           return otherMetaView.readAttributes().tags();
+        } else {
+           return new ArrayList<String>();
+        }
+    }
+
+    @Override
     public Map<String, Object> configAttrs(final Map<String, Object> _attrs,
                                            final Metadata metadata) {
         try {
