@@ -16,6 +16,7 @@
 
 package org.guvnor.common.services.shared.metadata;
 
+import java.util.List;
 import java.util.Map;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -30,11 +31,12 @@ public interface MetadataService {
 
     Metadata getMetadata( final Path resource );
 
+    List<String> getTags( final Path resource );
+
     Map<String, Object> configAttrs( final Map<String, Object> attrs,
                                      final Metadata metadata );
 
-    Map<String, Object> setUpAttributes( Path path,
-                                         Metadata metadata );
-
+    Map<String, Object> setUpAttributes( final Path path,
+                                         final Metadata metadata );
 
 }
