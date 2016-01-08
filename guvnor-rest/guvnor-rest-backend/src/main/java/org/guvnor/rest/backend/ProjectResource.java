@@ -200,7 +200,7 @@ public class ProjectResource {
         logger.debug( "-----createOrCloneRepository--- , repository name: {}", repository.getName() );
 
         checkOrganizationalUnitExistence(repository.getOrganizationalUnitName());
-        
+
         String id = newId();
         CreateOrCloneRepositoryRequest jobRequest = new CreateOrCloneRepositoryRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
@@ -208,15 +208,15 @@ public class ProjectResource {
         jobRequest.setRepository( repository );
 
         String reqType = repository.getRequestType();
-        if ( reqType == null || reqType.trim().isEmpty() 
+        if ( reqType == null || reqType.trim().isEmpty()
              || !( "new".equals( reqType ) || "clone".equals( reqType ) ) ) {
             jobRequest.setStatus(JobStatus.BAD_REQUEST);
             return Response.status( Status.BAD_REQUEST ).entity( jobRequest ).variant( defaultVariant ).build();
-        } else { 
+        } else {
             addAcceptedJobResult( id );
             jobRequestObserver.createOrCloneRepositoryRequest( jobRequest );
             return createAcceptedStatusResponse( jobRequest );
-        } 
+        }
     }
 
     @DELETE
@@ -275,27 +275,26 @@ public class ProjectResource {
         logger.info( "-----getProjects--- , repositoryName: {}", repositoryName );
 
         Repository repository = repositoryService.getRepository(repositoryName);
-        if( repository == null ) { 
+        if( repository == null ) {
             throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( repositoryName ).build() );
         }
-        
+
         Set<Project> projects = projectService.getProjects(repository, repository.getCurrentBranch());
-        
+
         List<ProjectResponse> projectRequests = new ArrayList<ProjectResponse>(projects.size());
-        for( Project project : projects ) { 
+        for( Project project : projects ) {
            ProjectResponse projectReq = new ProjectResponse();
            GAV projectGAV = project.getPom().getGav();
            projectReq.setGroupId(projectGAV.getGroupId());
-           projectReq.setName(projectGAV.getArtifactId());
            projectReq.setVersion(projectGAV.getVersion());
            projectReq.setName(project.getProjectName());
            projectReq.setDescription(project.getPom().getDescription());
            projectRequests.add(projectReq);
         }
-        
+
         return projectRequests;
     }
-    
+
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}")
@@ -498,23 +497,23 @@ public class ProjectResource {
     @Path("/organizationalunits/{organizationalUnitName}/")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response updateOrganizationalUnit(@PathParam("organizationalUnitName") String orgUnitName, UpdateOrganizationalUnit organizationalUnit ) {
-       
+
         // use name in url if post entity name is null
-        if( organizationalUnit.getName() == null ) { 
+        if( organizationalUnit.getName() == null ) {
             organizationalUnit.setName(orgUnitName);
         }
-        
+
         logger.debug( "-----updateOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {}, Default group id : {}",
                         organizationalUnit.getName(), organizationalUnit.getOwner(), organizationalUnit.getDefaultGroupId() );
 
         org.guvnor.structure.organizationalunit.OrganizationalUnit origOrgUnit
                 = checkOrganizationalUnitExistence(orgUnitName);
-        
+
         // use owner in existing OU if post owner is null
-        if( organizationalUnit.getOwner() == null ) { 
+        if( organizationalUnit.getOwner() == null ) {
             organizationalUnit.setOwner(origOrgUnit.getOwner());
         }
-        
+
         String id = newId();
         UpdateOrganizationalUnitRequest jobRequest = new UpdateOrganizationalUnitRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
@@ -608,10 +607,10 @@ public class ProjectResource {
     }
 
     private org.guvnor.structure.organizationalunit.OrganizationalUnit checkOrganizationalUnitExistence( String orgUnitName ) {
-        if( orgUnitName == null || orgUnitName.isEmpty() ) { 
+        if( orgUnitName == null || orgUnitName.isEmpty() ) {
             throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( orgUnitName ).build() );
         }
-        
+
         org.guvnor.structure.organizationalunit.OrganizationalUnit origOrgUnit
                 = organizationalUnitService.getOrganizationalUnit( orgUnitName );
 
@@ -627,7 +626,7 @@ public class ProjectResource {
         return Response.status( Status.ACCEPTED ).entity( jobRequest ).variant( defaultVariant ).build();
     }
 
-    private String newId() { 
-        return "" + System.currentTimeMillis() + "-" + counter.incrementAndGet(); 
+    private String newId() {
+        return "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
     }
 }
