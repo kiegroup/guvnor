@@ -16,15 +16,8 @@
 
 package org.guvnor.common.services.project.service;
 
-import java.util.Set;
-
-import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.workingset.client.model.WorkingSetSettings;
-import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.vfs.Path;
 
 /**
  *

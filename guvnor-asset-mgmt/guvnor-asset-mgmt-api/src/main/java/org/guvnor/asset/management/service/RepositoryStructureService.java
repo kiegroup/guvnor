@@ -21,6 +21,7 @@ import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
@@ -28,35 +29,43 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface RepositoryStructureService {
 
-    Path initRepositoryStructure( final GAV gav, final Repository repo);
+    Path initRepositoryStructure( final GAV gav,
+                                  final Repository repo,
+                                  final DeploymentMode mode );
 
-    Path initRepositoryStructure( POM pom, String baseUrl, Repository repo, boolean multiProject );
+    Path initRepositoryStructure( final POM pom,
+                                  final String baseUrl,
+                                  final Repository repo,
+                                  final boolean multiProject,
+                                  final DeploymentMode mode );
 
-    Repository initRepository( final Repository repo, boolean managed );
+    Repository initRepository( final Repository repo,
+                               final boolean managed );
 
     Path convertToMultiProjectStructure( final List<Project> projects,
-            final GAV parentGav,
-            final Repository repo,
-            final boolean updateChildrenGav,
-            final String comment );
+                                         final GAV parentGav,
+                                         final Repository repo,
+                                         final boolean updateChildrenGav,
+                                         final String comment );
 
     RepositoryStructureModel load( final Repository repository );
 
-
-    RepositoryStructureModel load( final Repository repository, boolean includeModules );
+    RepositoryStructureModel load( final Repository repository,
+                                   final boolean includeModules );
 
     void save( final Path pathToPomXML,
-            final RepositoryStructureModel model,
-            final String comment );
+               final RepositoryStructureModel model,
+               final String comment );
 
-    boolean isValidProjectName( String name );
+    boolean isValidProjectName( final String name );
 
-    boolean isValidGroupId( String groupId );
+    boolean isValidGroupId( final String groupId );
 
-    boolean isValidArtifactId( String artifactId );
+    boolean isValidArtifactId( final String artifactId );
 
-    boolean isValidVersion( String version );
+    boolean isValidVersion( final String version );
 
-    void delete( final Path pathToPomXML, final String comment );
+    void delete( final Path pathToPomXML,
+                 final String comment );
 
 }

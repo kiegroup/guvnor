@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.LinkedDirectoryFilter;
@@ -49,16 +48,16 @@ import static org.guvnor.common.services.project.backend.server.ProjectResourceP
 public abstract class ResourceResolver<T extends Project>
         implements ProjectResourceResolver<T> {
 
-    protected IOService              ioService;
-    protected POMService             pomService;
-    protected ConfigurationService   configurationService;
-    private   CommentedOptionFactory commentedOptionFactory;
+    protected IOService ioService;
+    protected POMService pomService;
+    protected ConfigurationService configurationService;
+    protected CommentedOptionFactory commentedOptionFactory;
     protected BackwardCompatibleUtil backward;
 
     public ResourceResolver() {
     }
 
-    public ResourceResolver( final @Named( "ioStrategy" ) IOService ioService,
+    public ResourceResolver( final IOService ioService,
                              final POMService pomService,
                              final ConfigurationService configurationService,
                              final CommentedOptionFactory commentedOptionFactory,

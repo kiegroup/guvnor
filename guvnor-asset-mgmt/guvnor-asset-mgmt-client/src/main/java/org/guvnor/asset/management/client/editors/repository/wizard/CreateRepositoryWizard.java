@@ -16,6 +16,7 @@
 
 package org.guvnor.asset.management.client.editors.repository.wizard;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,10 @@ import org.guvnor.asset.management.client.editors.repository.wizard.pages.Reposi
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.RepositoryStructureService;
+import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
@@ -54,6 +58,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
+import org.uberfire.mvp.Command;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -82,20 +87,27 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
     private SessionInfo sessionInfo;
 
+    private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
+
     private Callback<Void> onCloseCallback = null;
 
     private boolean assetsManagementIsGranted = false;
 
+    public CreateRepositoryWizard() {
+        //Zero-parameter constructor for CDI proxies
+    }
+
     @Inject
-    public CreateRepositoryWizard( RepositoryInfoPage infoPage,
-            RepositoryStructurePage structurePage,
-            CreateRepositoryWizardModel model,
-            Caller<RepositoryService> repositoryService,
-            Caller<RepositoryStructureService> repositoryStructureService,
-            Caller<AssetManagementService> assetManagementService,
-            Event<NotificationEvent> notification,
-            KieWorkbenchACL kieACL,
-            SessionInfo sessionInfo ) {
+    public CreateRepositoryWizard( final RepositoryInfoPage infoPage,
+                                   final RepositoryStructurePage structurePage,
+                                   final CreateRepositoryWizardModel model,
+                                   final Caller<RepositoryService> repositoryService,
+                                   final Caller<RepositoryStructureService> repositoryStructureService,
+                                   final Caller<AssetManagementService> assetManagementService,
+                                   final Event<NotificationEvent> notification,
+                                   final KieWorkbenchACL kieACL,
+                                   final SessionInfo sessionInfo,
+                                   final ConflictingRepositoriesPopup conflictingRepositoriesPopup ) {
         this.infoPage = infoPage;
         this.structurePage = structurePage;
         this.model = model;
@@ -105,6 +117,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
         this.notification = notification;
         this.kieACL = kieACL;
         this.sessionInfo = sessionInfo;
+        this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
     }
 
     @PostConstruct
@@ -133,7 +146,6 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
     @Override
     public Widget getPageWidget( int pageNumber ) {
-
         final RepositoryWizardPage page = (RepositoryWizardPage) this.pages.get( pageNumber );
         final Widget w = page.asWidget();
         return w;
@@ -156,27 +168,25 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
     @Override
     public void isComplete( final Callback<Boolean> callback ) {
-
-        final int[] unCompletedPages = {this.pages.size()};
-        final boolean[] completed = {false};
+        final int[] unCompletedPages = { this.pages.size() };
+        final boolean[] completed = { false };
 
         //only when all pages are complete we can say the wizard is complete.
         for ( WizardPage page : this.pages ) {
             page.isComplete( new Callback<Boolean>() {
                 @Override
                 public void callback( final Boolean result ) {
-
                     if ( Boolean.TRUE.equals( result ) ) {
-                        unCompletedPages[0]--;
-                        if ( unCompletedPages[0] == 0 ) {
-                            completed[0] = true;
+                        unCompletedPages[ 0 ]--;
+                        if ( unCompletedPages[ 0 ] == 0 ) {
+                            completed[ 0 ] = true;
                         }
                     }
                 }
             } );
         }
 
-        callback.callback( completed[0] );
+        callback.callback( completed[ 0 ] );
     }
 
     @Override
@@ -194,7 +204,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
         this.onCloseCallback = callback;
     }
 
-    private void managedRepositorySelected( boolean selected ) {
+    private void managedRepositorySelected( final boolean selected ) {
         if ( assetsManagementIsGranted ) {
             boolean updateDefaultValues = false;
             if ( selected && !pages.contains( structurePage ) ) {
@@ -220,10 +230,9 @@ public class CreateRepositoryWizard extends AbstractWizard {
     }
 
     private void doComplete() {
-
         repositoryService.call( new RemoteCallback<String>() {
             @Override
-            public void callback( String normalizedName ) {
+            public void callback( final String normalizedName ) {
                 if ( !model.getRepositoryName().equals( normalizedName ) ) {
                     if ( !Window.confirm( CoreConstants.INSTANCE.RepositoryNameInvalid() + " \"" + normalizedName + "\". " + CoreConstants.INSTANCE.DoYouAgree() ) ) {
                         return;
@@ -248,7 +257,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
                 repositoryService.call( new RemoteCallback<Repository>() {
                                             @Override
-                                            public void callback( Repository repository ) {
+                                            public void callback( final Repository repository ) {
                                                 hideBusyIndicator();
                                                 notification.fire( new NotificationEvent( Constants.INSTANCE.RepoCreationSuccess() ) );
                                                 getRepositoryCreatedSuccessCallback().callback( repository );
@@ -270,7 +279,10 @@ public class CreateRepositoryWizard extends AbstractWizard {
                                                 return true;
                                             }
                                         }
-                                      ).createRepository( model.getOrganizationalUnit(), scheme, alias, env );
+                                      ).createRepository( model.getOrganizationalUnit(),
+                                                          scheme,
+                                                          alias,
+                                                          env );
             }
         } ).normalizeRepositoryName( model.getRepositoryName() );
     }
@@ -284,9 +296,6 @@ public class CreateRepositoryWizard extends AbstractWizard {
             @Override
             public void callback( final Repository repository ) {
                 if ( model.isManged() ) {
-
-                    showBusyIndicator( Constants.INSTANCE.InitializingRepository() );
-
                     POM pom = new POM();
                     pom.setName( model.getProjectName() );
                     pom.setDescription( model.getProjectDescription() );
@@ -296,28 +305,11 @@ public class CreateRepositoryWizard extends AbstractWizard {
                     final String url = GWT.getModuleBaseURL();
                     final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
 
-                    repositoryStructureService.call(
-                            new RemoteCallback<Path>() {
-                                @Override
-                                public void callback( Path path ) {
-                                    hideBusyIndicator();
-                                    notification.fire( new NotificationEvent( Constants.INSTANCE.RepoInitializationSuccess() ) );
-                                    getRepositoryInitializedSuccessCallback().callback( new Pair<Repository, Path>( repository, path ) );
-                                }
-                            },
+                    doRepositoryInitialization( pom,
+                                                repository,
+                                                baseUrl,
+                                                DeploymentMode.VALIDATED );
 
-                            new ErrorCallback<Message>() {
-                                @Override
-                                public boolean error( final Message message,
-                                                      final Throwable throwable ) {
-
-                                    hideBusyIndicator();
-                                    showErrorPopup( Constants.INSTANCE.RepoInitializationFail() + " \n" + throwable.getMessage() );
-                                    invokeOnCloseCallback();
-                                    return true;
-                                }
-                            }
-                                                   ).initRepositoryStructure( pom, baseUrl, repository, model.isMultiModule() );
                 } else {
                     invokeOnCloseCallback();
                 }
@@ -325,29 +317,84 @@ public class CreateRepositoryWizard extends AbstractWizard {
         };
     }
 
-    private RemoteCallback<Pair<Repository, Path>> getRepositoryInitializedSuccessCallback() {
+    private void doRepositoryInitialization( final POM pom,
+                                             final Repository repository,
+                                             final String baseUrl,
+                                             final DeploymentMode mode ) {
+        showBusyIndicator( Constants.INSTANCE.InitializingRepository() );
+        repositoryStructureService.call( new RemoteCallback<Path>() {
+                                             @Override
+                                             public void callback( Path path ) {
+                                                 hideBusyIndicator();
+                                                 notification.fire( new NotificationEvent( Constants.INSTANCE.RepoInitializationSuccess() ) );
+                                                 getRepositoryInitializedSuccessCallback().callback( new Pair<Repository, Path>( repository,
+                                                                                                                                 path ) );
+                                             }
+                                         },
+                                         new ErrorCallback<Message>() {
+                                             @Override
+                                             public boolean error( final Message message,
+                                                                   final Throwable throwable ) {
+                                                 hideBusyIndicator();
 
+                                                 // The *real* Throwable is wrapped in an InvocationTargetException when ran as a Unit Test and invoked with Reflection.
+                                                 final Throwable _throwable = ( throwable.getCause() == null ? throwable : throwable.getCause() );
+                                                 if ( _throwable instanceof GAVAlreadyExistsException ) {
+                                                     final GAVAlreadyExistsException gae = (GAVAlreadyExistsException) _throwable;
+                                                     conflictingRepositoriesPopup.setContent( gae.getGAV(),
+                                                                                              gae.getRepositories(),
+                                                                                              new Command() {
+                                                                                                  @Override
+                                                                                                  public void execute() {
+                                                                                                      conflictingRepositoriesPopup.hide();
+                                                                                                      doRepositoryInitialization( pom,
+                                                                                                                                  repository,
+                                                                                                                                  baseUrl,
+                                                                                                                                  DeploymentMode.FORCED );
+                                                                                                  }
+                                                                                              } );
+                                                     conflictingRepositoriesPopup.show();
+
+                                                 } else {
+                                                     showErrorPopup( Constants.INSTANCE.RepoInitializationFail() + " \n" + _throwable.getMessage() );
+                                                     invokeOnCloseCallback();
+                                                 }
+                                                 return true;
+                                             }
+
+                                         } ).initRepositoryStructure( pom,
+                                                                      baseUrl,
+                                                                      repository,
+                                                                      model.isMultiModule(),
+                                                                      mode );
+    }
+
+    private RemoteCallback<Pair<Repository, Path>> getRepositoryInitializedSuccessCallback() {
         return new RemoteCallback<Pair<Repository, Path>>() {
             @Override
             public void callback( Pair<Repository, Path> pair ) {
                 if ( model.isConfigureRepository() ) {
                     assetManagementService.call( new RemoteCallback<Void>() {
                                                      @Override
-                                                     public void callback( Void o ) {
+                                                     public void callback( final Void o ) {
                                                          notification.fire( new NotificationEvent( Constants.INSTANCE.RepoConfigurationStarted() ) );
                                                          invokeOnCloseCallback();
                                                      }
                                                  },
                                                  new ErrorCallback<Message>() {
                                                      @Override
-                                                     public boolean error( Message message,
-                                                                           Throwable throwable ) {
+                                                     public boolean error( final Message message,
+                                                                           final Throwable throwable ) {
                                                          showErrorPopup( Constants.INSTANCE.RepoConfigurationStartFailed() + " \n" + throwable.getMessage() );
                                                          invokeOnCloseCallback();
                                                          return true;
                                                      }
                                                  }
-                                               ).configureRepository( pair.getK1().getAlias(), "master", "dev", "release", normalizeVersionNumber( model.getVersion() ) );
+                                               ).configureRepository( pair.getK1().getAlias(),
+                                                                      "master",
+                                                                      "dev",
+                                                                      "release",
+                                                                      normalizeVersionNumber( model.getVersion() ) );
                 } else {
                     invokeOnCloseCallback();
                 }
@@ -383,7 +430,6 @@ public class CreateRepositoryWizard extends AbstractWizard {
     }
 
     private void setStructureDefaultValues() {
-
         if ( model.getRepositoryName() != null ) {
             structurePage.setProjectName( model.getRepositoryName() );
             structurePage.setArtifactId( model.getRepositoryName() );
@@ -399,7 +445,6 @@ public class CreateRepositoryWizard extends AbstractWizard {
     }
 
     private void setAssetsManagementGrant() {
-
         Set<String> grantedRoles = kieACL.getGrantedRoles( CONFIGURE_REPOSITORY );
         assetsManagementIsGranted = false;
 

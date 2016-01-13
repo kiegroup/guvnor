@@ -24,17 +24,36 @@ import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
 public interface AssetManagementService {
-    void configureRepository(String repository, String sourceBranch, String devBranch, String releaseBranch, String version);
-    
-    void buildProject(String repository, String branch, String project,
-                            String userName, String password, String serverURL, Boolean deployToRuntime);
-    
-    void promoteChanges(String repository, String sourceBranch, String destBranch);
 
-    void releaseProject(String repository, String branch,
-            String userName, String password, String serverURL, Boolean deployToRuntime, String version);
+    void configureRepository( final String repository,
+                              final String sourceBranch,
+                              final String devBranch,
+                              final String releaseBranch,
+                              final String version );
+
+    void buildProject( final String repository,
+                       final String branch,
+                       final String project,
+                       final String userName,
+                       final String password,
+                       final String serverURL,
+                       final Boolean deployToRuntime );
+
+    void promoteChanges( final String repository,
+                         final String sourceBranch,
+                         final String destBranch );
+
+    void releaseProject( final String repository,
+                         final String branch,
+                         final String userName,
+                         final String password,
+                         final String serverURL,
+                         final Boolean deployToRuntime,
+                         final String version );
 
     boolean supportRuntimeDeployment();
 
-    Set<Project> getProjects(Repository repository, String branch);
+    Set<Project> getProjects( final Repository repository,
+                              final String branch );
+
 }

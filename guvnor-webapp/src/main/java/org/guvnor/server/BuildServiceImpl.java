@@ -31,6 +31,7 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.shared.message.Level;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.vfs.Path;
@@ -48,87 +49,101 @@ public class BuildServiceImpl
     private Deployer deployer;
 
     @Override
-    public BuildResults build(final Project project) {
+    public BuildResults build( final Project project ) {
         return new BuildResults();
     }
 
     @Override
-    public BuildResults buildAndDeploy(final Project project) {
+    public BuildResults buildAndDeploy( final Project project ) {
 
         BuildResults buildResults = new BuildResults();
 
         try {
 
-            projectVisitor.visit(project);
+            projectVisitor.visit( project );
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            PrintStream printStream = new PrintStream(out);
+            PrintStream printStream = new PrintStream( out );
 
             MavenCli cli = new MavenCli();
-            int result = cli.doMain(new String[]{"clean", "install"},
-                    projectVisitor.getRootFolder().getAbsolutePath(),
-                    printStream, printStream);
+            int result = cli.doMain( new String[]{ "clean", "install" },
+                                     projectVisitor.getRootFolder().getAbsolutePath(),
+                                     printStream, printStream );
 
-            if (result != 0) {
+            if ( result != 0 ) {
                 BuildMessage message = new BuildMessage();
-                message.setId(123);
-                message.setText(new String(out.toByteArray()));
-                message.setLevel(Level.ERROR);
-                buildResults.addBuildMessage(message);
+                message.setId( 123 );
+                message.setText( new String( out.toByteArray() ) );
+                message.setLevel( Level.ERROR );
+                buildResults.addBuildMessage( message );
             }
 
-            deployer.deploy(projectVisitor.getTargetFolder());
+            deployer.deploy( projectVisitor.getTargetFolder() );
 
-        } catch (IOException e) {
-            buildResults.addBuildMessage(reportError(e));
+        } catch ( IOException e ) {
+            buildResults.addBuildMessage( reportError( e ) );
         } finally {
 
             try {
-                FileUtils.deleteDirectory(projectVisitor.getGuvnorTempFolder());
-            } catch (IOException e) {
-                buildResults.addBuildMessage(reportError(e));
+                FileUtils.deleteDirectory( projectVisitor.getGuvnorTempFolder() );
+            } catch ( IOException e ) {
+                buildResults.addBuildMessage( reportError( e ) );
             }
         }
 
         return buildResults;
     }
 
-    private BuildMessage reportError(IOException e) {
-        BuildMessage message = new BuildMessage();
-        message.setText(e.getMessage());
-        message.setLevel(Level.ERROR);
-        return message;
+    @Override
+    public BuildResults buildAndDeploy( final Project project,
+                                        final DeploymentMode mode ) {
+        return buildAndDeploy( project );
     }
 
-
     @Override
-    public BuildResults buildAndDeploy(final Project project, boolean suppressHandlers) {
+    public BuildResults buildAndDeploy( final Project project,
+                                        final boolean suppressHandlers ) {
         return new BuildResults();
     }
 
     @Override
-    public boolean isBuilt(final Project project) {
+    public BuildResults buildAndDeploy( final Project project,
+                                        final boolean suppressHandlers,
+                                        final DeploymentMode mode ) {
+        return buildAndDeploy( project,
+                               suppressHandlers );
+    }
+
+    private BuildMessage reportError( IOException e ) {
+        BuildMessage message = new BuildMessage();
+        message.setText( e.getMessage() );
+        message.setLevel( Level.ERROR );
+        return message;
+    }
+
+    @Override
+    public boolean isBuilt( final Project project ) {
         return true;
     }
 
     @Override
-    public IncrementalBuildResults addPackageResource(final Path resource) {
+    public IncrementalBuildResults addPackageResource( final Path resource ) {
         return new IncrementalBuildResults();
     }
 
     @Override
-    public IncrementalBuildResults deletePackageResource(final Path resource) {
+    public IncrementalBuildResults deletePackageResource( final Path resource ) {
         return new IncrementalBuildResults();
     }
 
     @Override
-    public IncrementalBuildResults updatePackageResource(final Path resource) {
+    public IncrementalBuildResults updatePackageResource( final Path resource ) {
         return new IncrementalBuildResults();
     }
 
     @Override
-    public IncrementalBuildResults applyBatchResourceChanges(final Project project,
-                                                             final Map<Path, Collection<ResourceChange>> changes) {
+    public IncrementalBuildResults applyBatchResourceChanges( final Project project,
+                                                              final Map<Path, Collection<ResourceChange>> changes ) {
         return new IncrementalBuildResults();
     }
 

@@ -34,14 +34,15 @@ import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.RepositoryStructureService;
-import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
+import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.security.impl.KieWorkbenchACLImpl;
 import org.guvnor.structure.repositories.Repository;
@@ -60,7 +61,6 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -73,7 +73,6 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuVisitor;
@@ -91,55 +90,32 @@ public class RepositoryStructurePresenter
 
     private RepositoryStructureView view;
 
-    @Inject
-    private Caller<RepositoryStructureService> repositoryStructureService;
-
-    @Inject
     private Caller<POMService> pomService;
 
-    @Inject
-    private Caller<BuildService> buildServiceCaller;
+    private Caller<RepositoryStructureService> repositoryStructureService;
 
-    @Inject
-    private Event<BuildResults> buildResultsEvent;
+    private Caller<AssetManagementService> assetManagementServices;
 
-    @Inject
-    private Event<NotificationEvent> notificationEvent;
-
-    @Inject
     private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
-    @Inject
-    private Event<BeforeClosePlaceEvent> beforeCloseEvent;
-
-    @Inject
     private Event<ProjectContextChangeEvent> contextChangeEvent;
+
+    private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
     /**
      * WM, Impl class was injected here due to an errai IOC issue. I we inject just KieWorkbenchACL then
      * we have errors at ProjectScreenPresenter when the webapp is being built. So it was decided to just us the Impl
      * class here.
      */
-    @Inject
     private KieWorkbenchACLImpl kieACL;
 
-    @Inject
     private PlaceManager placeManager;
 
-    @Inject
     private ProjectContext workbenchContext;
 
-    @Inject
     private ProjectWizard wizard;
 
-    @Inject
-    protected Event<ProjectContextChangeEvent> contextChangedEvent;
-
-    @Inject
-    protected Caller<AssetManagementService> assetManagementServices;
-
-    @Inject
-    protected ErrorPopupPresenter errorPopup;
+    private ErrorPopupPresenter errorPopup;
 
     private RepositoryStructureModel model;
 
@@ -176,12 +152,41 @@ public class RepositoryStructurePresenter
     private boolean releaseIsGranted = false;
 
     public enum MenuItems {
-        CONFIGURE_MENU_ITEM, PROMOTE_MENU_ITEM, RELEASE_MENU_ITEM
+        CONFIGURE_MENU_ITEM,
+        PROMOTE_MENU_ITEM,
+        RELEASE_MENU_ITEM
+    }
+
+    public RepositoryStructurePresenter() {
+        //Zero-parameter constructor for CDI proxies
     }
 
     @Inject
-    public RepositoryStructurePresenter( RepositoryStructureView view ) {
+    public RepositoryStructurePresenter( final RepositoryStructureView view,
+                                         final Caller<POMService> pomService,
+                                         final Caller<RepositoryStructureService> repositoryStructureService,
+                                         final Caller<AssetManagementService> assetManagementService,
+                                         final Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent,
+                                         final Event<ProjectContextChangeEvent> contextChangeEvent,
+                                         final ErrorPopupPresenter errorPopup,
+                                         final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
+                                         final KieWorkbenchACLImpl kieACL,
+                                         final PlaceManager placeManager,
+                                         final ProjectContext workbenchContext,
+                                         final ProjectWizard wizard ) {
         this.view = view;
+        this.pomService = pomService;
+        this.repositoryStructureService = repositoryStructureService;
+        this.assetManagementServices = assetManagementService;
+        this.changeTitleWidgetEvent = changeTitleWidgetEvent;
+        this.contextChangeEvent = contextChangeEvent;
+        this.errorPopup = errorPopup;
+        this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
+        this.kieACL = kieACL;
+        this.placeManager = placeManager;
+        this.workbenchContext = workbenchContext;
+        this.wizard = wizard;
+
         view.setPresenter( this );
         view.getDataView().setPresenter( this );
         view.getModulesView().setPresenter( this );
@@ -190,8 +195,9 @@ public class RepositoryStructurePresenter
     @OnStartup
     public void onStartup( final PlaceRequest placeRequest ) {
         this.placeRequest = placeRequest;
-        processContextChange( workbenchContext.getActiveRepository(), workbenchContext.getActiveProject() );
         makeMenuBar();
+        processContextChange( workbenchContext.getActiveRepository(),
+                              workbenchContext.getActiveProject() );
     }
 
     @WorkbenchPartTitle
@@ -220,7 +226,8 @@ public class RepositoryStructurePresenter
     }
 
     private void onContextChange( @Observes final ProjectContextChangeEvent event ) {
-        processContextChange( event.getRepository(), event.getProject() );
+        processContextChange( event.getRepository(),
+                              event.getProject() );
     }
 
     private void processContextChange( final Repository repository,
@@ -229,11 +236,10 @@ public class RepositoryStructurePresenter
 
         if ( repository == null ) {
             clearView();
-
             view.setModulesViewVisible( false );
             enableActions( false );
-        } else if ( ( repoOrBranchChanged = repositoryOrBranchChanged( repository ) ) || ( project != null && !project.equals( this.project ) ) ) {
 
+        } else if ( ( repoOrBranchChanged = repositoryOrBranchChanged( repository ) ) || ( project != null && !project.equals( this.project ) ) ) {
             this.repository = repository;
             this.branch = repository != null ? repository.getCurrentBranch() : null;
             this.project = project;
@@ -247,32 +253,26 @@ public class RepositoryStructurePresenter
     }
 
     private void init() {
-
         view.showBusyIndicator( Constants.INSTANCE.Loading() );
         clearView();
         repositoryStructureService.call( getLoadModelSuccessCallback(),
                                          new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository );
-
     }
 
     private RemoteCallback<RepositoryStructureModel> getLoadModelSuccessCallback() {
-
         return new RemoteCallback<RepositoryStructureModel>() {
             @Override
             public void callback( final RepositoryStructureModel model ) {
-
                 view.hideBusyIndicator();
-
                 RepositoryStructurePresenter.this.model = model;
                 boolean initialized = false;
                 dataProvider.getList().clear();
                 if ( pathToRepositoryStructure != null ) {
-                    pathToRepositoryStructure.dispose();
+                    destroyObservablePath( pathToRepositoryStructure );
                 }
                 concurrentUpdateSessionInfo = null;
 
                 if ( model == null ) {
-
                     RepositoryStructurePresenter.this.model = new RepositoryStructureModel();
                     view.getDataView().setMode( RepositoryStructureDataView.ViewMode.CREATE_STRUCTURE );
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.MODULES_VIEW );
@@ -283,31 +283,28 @@ public class RepositoryStructurePresenter
                     pathToRepositoryStructure = null;
 
                 } else if ( model.isMultiModule() ) {
-
                     view.getDataView().setMode( RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT );
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.MODULES_VIEW );
                     view.setModel( model );
                     view.setModulesViewVisible( true );
                     initialized = true;
 
-                    pathToRepositoryStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getPathToPOM() );
+                    pathToRepositoryStructure = createObservablePath( model.getPathToPOM() );
 
                     updateModulesList( model.getModules() );
                     enableAssetsManagementMenu( true );
 
                 } else if ( model.isSingleProject() ) {
-
                     view.getDataView().setMode( RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT );
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
                     view.setModel( model );
                     view.setModulesViewVisible( false );
                     initialized = true;
 
-                    pathToRepositoryStructure = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( model.getOrphanProjects().get( 0 ).getPomXMLPath() );
+                    pathToRepositoryStructure = createObservablePath( model.getOrphanProjects().get( 0 ).getPomXMLPath() );
                     enableAssetsManagementMenu( true );
 
                 } else {
-
                     view.getDataView().setMode( RepositoryStructureDataView.ViewMode.EDIT_UNMANAGED_REPOSITORY );
                     view.getModulesView().setMode( ProjectModulesView.ViewMode.PROJECTS_VIEW );
                     view.setModulesViewVisible( true );
@@ -320,9 +317,18 @@ public class RepositoryStructurePresenter
 
                 addStructureChangeListeners();
                 updateEditorTitle( initialized );
-
             }
         };
+    }
+
+    //Package-protected to override for Unit Tests
+    ObservablePath createObservablePath( final Path path ) {
+        return IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( path );
+    }
+
+    //Package-protected to override for Unit Tests
+    void destroyObservablePath( final ObservablePath path ) {
+        path.dispose();
     }
 
     private void reload() {
@@ -334,96 +340,122 @@ public class RepositoryStructurePresenter
         //TODO add parameters validation
         if ( model != null ) {
             if ( model.isMultiModule() ) {
-                view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
-                repositoryStructureService.call( new RemoteCallback<Path>() {
-
-                    @Override
-                    public void callback( Path response ) {
-                        view.hideBusyIndicator();
-                        init();
-                    }
-
-                }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepositoryStructure(
-                        new GAV( view.getDataView().getGroupId(),
-                                 view.getDataView().getArtifactId(),
-                                 view.getDataView().getVersionId() ),
-                        repository );
+                doRepositoryInitialization( DeploymentMode.VALIDATED );
 
             } else if ( model.isSingleProject() ) {
                 wizard.initialise( new POM() );
                 wizard.start( new Callback<Project>() {
-                    @Override
-                    public void callback( Project result ) {
-                        lastAddedModule = result;
-                        if ( result != null ) {
-                            view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
-                            repositoryStructureService.call( new RemoteCallback<Repository>() {
-                                @Override
-                                public void callback( Repository repository ) {
-                                    view.hideBusyIndicator();
-                                    RepositoryStructurePresenter.this.repository = repository;
-                                    init();
+                                  @Override
+                                  public void callback( Project result ) {
+                                      lastAddedModule = result;
+                                      if ( result != null ) {
+                                          view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
+                                          repositoryStructureService.call( new RemoteCallback<Repository>() {
+                                                                               @Override
+                                                                               public void callback( Repository repository ) {
+                                                                                   view.hideBusyIndicator();
+                                                                                   RepositoryStructurePresenter.this.repository = repository;
+                                                                                   init();
+                                                                               }
+                                                                           },
+                                                                           new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepository( repository,
+                                                                                                                                              true );
 
-                                }
-                            }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepository( repository, true );
+                                      }
+                                  }
+                              },
+                              false );
 
-                        }
-                    }
-                }, false );
             } else if ( !model.isManaged() ) {
                 view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
                 repositoryStructureService.call( new RemoteCallback<Repository>() {
-                    @Override
-                    public void callback( Repository repository ) {
-                        view.hideBusyIndicator();
-                        RepositoryStructurePresenter.this.repository = repository;
-                        init();
-                    }
-                }, new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepository( repository, false );
+                                                     @Override
+                                                     public void callback( Repository repository ) {
+                                                         view.hideBusyIndicator();
+                                                         RepositoryStructurePresenter.this.repository = repository;
+                                                         init();
+                                                     }
+                                                 },
+                                                 new HasBusyIndicatorDefaultErrorCallback( view ) ).initRepository( repository,
+                                                                                                                    false );
             }
         }
     }
 
-    private void updateEditorTitle( boolean initialized ) {
+    private void doRepositoryInitialization( final DeploymentMode mode ) {
+        view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
+        repositoryStructureService.call( new RemoteCallback<Path>() {
 
+                                             @Override
+                                             public void callback( Path response ) {
+                                                 view.hideBusyIndicator();
+                                                 init();
+                                             }
+
+                                         },
+                                         new HasBusyIndicatorDefaultErrorCallback( view ) {
+                                             @Override
+                                             public boolean error( final Message message,
+                                                                   final Throwable throwable ) {
+                                                 // The *real* Throwable is wrapped in an InvocationTargetException when ran as a Unit Test and invoked with Reflection.
+                                                 final Throwable _throwable = ( throwable.getCause() == null ? throwable : throwable.getCause() );
+                                                 if ( _throwable instanceof GAVAlreadyExistsException ) {
+                                                     final GAVAlreadyExistsException gae = (GAVAlreadyExistsException) _throwable;
+                                                     conflictingRepositoriesPopup.setContent( gae.getGAV(),
+                                                                                              gae.getRepositories(),
+                                                                                              new Command() {
+                                                                                                  @Override
+                                                                                                  public void execute() {
+                                                                                                      conflictingRepositoriesPopup.hide();
+                                                                                                      doRepositoryInitialization( DeploymentMode.FORCED );
+                                                                                                  }
+                                                                                              } );
+                                                     conflictingRepositoriesPopup.show();
+                                                     return true;
+
+                                                 } else {
+                                                     return super.error( message,
+                                                                         _throwable );
+                                                 }
+                                             }
+                                         } ).initRepositoryStructure( new GAV( view.getDataView().getGroupId(),
+                                                                               view.getDataView().getArtifactId(),
+                                                                               view.getDataView().getVersion() ),
+                                                                      repository,
+                                                                      mode );
+    }
+
+    private void updateEditorTitle( final boolean initialized ) {
         if ( repository == null ) {
-
             changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
                                                                      Constants.INSTANCE.RepositoryNotSelected() ) );
 
         } else if ( !initialized ) {
-
-            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
-                    placeRequest,
-                    Constants.INSTANCE.UnInitializedStructure( getRepositoryLabel( repository ) ) ) );
+            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
+                                                                     Constants.INSTANCE.UnInitializedStructure( getRepositoryLabel( repository ) ) ) );
 
         } else if ( model.isMultiModule() ) {
-
-            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
-                    placeRequest,
-                    Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "→ "
-                                                                            + model.getPOM().getGav().getArtifactId() + ":"
-                                                                            + model.getPOM().getGav().getGroupId() + ":"
-                                                                            + model.getPOM().getGav().getVersion() ) ) );
+            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
+                                                                     Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "→ "
+                                                                                                                             + model.getPOM().getGav().getArtifactId() + ":"
+                                                                                                                             + model.getPOM().getGav().getGroupId() + ":"
+                                                                                                                             + model.getPOM().getGav().getVersion() ) ) );
 
         } else if ( model.isSingleProject() ) {
-            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
-                    placeRequest,
-                    Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "→ " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
+            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
+                                                                     Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel( repository ) + "→ " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
 
         } else {
-            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
-                    placeRequest,
-                    Constants.INSTANCE.UnmanagedRepository( getRepositoryLabel( repository ) ) ) );
+            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
+                                                                     Constants.INSTANCE.UnmanagedRepository( getRepositoryLabel( repository ) ) ) );
         }
     }
 
-    private String getRepositoryLabel( Repository repository ) {
+    private String getRepositoryLabel( final Repository repository ) {
         return repository != null ? ( repository.getAlias() + " (" + repository.getCurrentBranch() + ") " ) : "";
     }
 
     private void addStructureChangeListeners() {
-
         if ( pathToRepositoryStructure != null ) {
 
             pathToRepositoryStructure.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
@@ -478,7 +510,7 @@ public class RepositoryStructurePresenter
         }
     }
 
-    private void updateModulesList( List<String> modules ) {
+    private void updateModulesList( final List<String> modules ) {
         if ( modules != null ) {
             for ( String module : model.getModules() ) {
                 dataProvider.getList().add( new ProjectModuleRow( module ) );
@@ -486,7 +518,7 @@ public class RepositoryStructurePresenter
         }
     }
 
-    private void updateProjectsList( List<Project> projects ) {
+    private void updateProjectsList( final List<Project> projects ) {
         if ( projects != null ) {
             for ( Project project : projects ) {
                 dataProvider.getList().add( new ProjectModuleRow( project.getProjectName() ) );
@@ -494,7 +526,7 @@ public class RepositoryStructurePresenter
         }
     }
 
-    private void enableActions( boolean value ) {
+    private void enableActions( final boolean value ) {
         view.getModulesView().enableActions( value );
     }
 
@@ -509,17 +541,22 @@ public class RepositoryStructurePresenter
      */
     @Override
     public void onAddModule() {
-        POM pom = new POM();
+        final POM pom = new POM();
         if ( model.isMultiModule() ) {
-            GAV parentGAV = new GAV();
+            final GAV parentGAV = new GAV();
             parentGAV.setGroupId( view.getDataView().getGroupId() );
-            parentGAV.setVersion( view.getDataView().getVersionId() );
+            parentGAV.setArtifactId( view.getDataView().getArtifactId() );
+            parentGAV.setVersion( view.getDataView().getVersion() );
             pom.setParent( parentGAV );
+
+            pom.getGav().setGroupId( parentGAV.getGroupId() );
+            pom.getGav().setVersion( parentGAV.getVersion() );
         }
 
         wizard.initialise( pom );
 
-        wizard.start( getModuleAddedSuccessCallback(), false );
+        wizard.start( getModuleAddedSuccessCallback(),
+                      false );
     }
 
     private Callback<Project> getModuleAddedSuccessCallback() {
@@ -533,30 +570,35 @@ public class RepositoryStructurePresenter
                     if ( model.isMultiModule() ) {
                         view.showBusyIndicator( Constants.INSTANCE.Loading() );
                         repositoryStructureService.call( new RemoteCallback<RepositoryStructureModel>() {
-                            @Override
-                            public void callback( RepositoryStructureModel _model ) {
-                                view.hideBusyIndicator();
-                                if ( _model != null ) {
-                                    model.setPOM( _model.getPOM() );
-                                    model.setPOMMetaData( _model.getPOMMetaData() );
-                                    model.setModules( _model.getModules() );
-                                    model.getModulesProject().put( _project.getProjectName(), _project );
-                                    addToModulesList( _project );
-                                }
-                            }
-                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository, false );
+                                                             @Override
+                                                             public void callback( RepositoryStructureModel _model ) {
+                                                                 view.hideBusyIndicator();
+                                                                 if ( _model != null ) {
+                                                                     model.setPOM( _model.getPOM() );
+                                                                     model.setPOMMetaData( _model.getPOMMetaData() );
+                                                                     model.setModules( _model.getModules() );
+                                                                     model.getModulesProject().put( _project.getProjectName(),
+                                                                                                    _project );
+                                                                     addToModulesList( _project );
+                                                                 }
+                                                             }
+                                                         },
+                                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository,
+                                                                                                                  false );
 
                     } else {
                         view.showBusyIndicator( Constants.INSTANCE.Loading() );
                         pomService.call( new RemoteCallback<POM>() {
-                            @Override
-                            public void callback( POM _pom ) {
-                                view.hideBusyIndicator();
-                                model.getOrphanProjects().add( _project );
-                                model.getOrphanProjectsPOM().put( _project.getSignatureId(), _pom );
-                                addToModulesList( _project );
-                            }
-                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( _project.getPomXMLPath() );
+                                             @Override
+                                             public void callback( POM _pom ) {
+                                                 view.hideBusyIndicator();
+                                                 model.getOrphanProjects().add( _project );
+                                                 model.getOrphanProjectsPOM().put( _project.getSignatureId(),
+                                                                                   _pom );
+                                                 addToModulesList( _project );
+                                             }
+                                         },
+                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).load( _project.getPomXMLPath() );
                     }
                 }
             }
@@ -564,13 +606,12 @@ public class RepositoryStructurePresenter
     }
 
     @Override
-    public void addDataDisplay( HasData<ProjectModuleRow> display ) {
+    public void addDataDisplay( final HasData<ProjectModuleRow> display ) {
         dataProvider.addDataDisplay( display );
     }
 
     @Override
-    public void onDeleteModule( ProjectModuleRow moduleRow ) {
-
+    public void onDeleteModule( final ProjectModuleRow moduleRow ) {
         final Project project = getSelectedModule( moduleRow.getName() );
         String message = null;
 
@@ -619,10 +660,11 @@ public class RepositoryStructurePresenter
     }
 
     private void deleteSelectedModule( final Project project ) {
-
         view.showBusyIndicator( Constants.INSTANCE.Deleting() );
         lastDeletedModule = project;
-        repositoryStructureService.call( getModuleDeletedSuccessCallback( project ), new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( project.getPomXMLPath(), "Module removed" );
+        repositoryStructureService.call( getModuleDeletedSuccessCallback( project ),
+                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).delete( project.getPomXMLPath(),
+                                                                                                    "Module removed" );
     }
 
     private RemoteCallback<Void> getModuleDeletedSuccessCallback( final Project _project ) {
@@ -635,18 +677,19 @@ public class RepositoryStructurePresenter
                     if ( model.isMultiModule() ) {
                         view.showBusyIndicator( Constants.INSTANCE.Loading() );
                         repositoryStructureService.call( new RemoteCallback<RepositoryStructureModel>() {
-                            @Override
-                            public void callback( RepositoryStructureModel _model ) {
-                                view.hideBusyIndicator();
-                                if ( _model != null ) {
-                                    model.setPOM( _model.getPOM() );
-                                    model.setPOMMetaData( _model.getPOMMetaData() );
-                                    model.setModules( _model.getModules() );
-                                    model.getModulesProject().remove( _project.getProjectName() );
-                                    removeFromModulesList( _project.getProjectName() );
-                                }
-                            }
-                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository, false );
+                                                             @Override
+                                                             public void callback( RepositoryStructureModel _model ) {
+                                                                 view.hideBusyIndicator();
+                                                                 if ( _model != null ) {
+                                                                     model.setPOM( _model.getPOM() );
+                                                                     model.setPOMMetaData( _model.getPOMMetaData() );
+                                                                     model.setModules( _model.getModules() );
+                                                                     model.getModulesProject().remove( _project.getProjectName() );
+                                                                     removeFromModulesList( _project.getProjectName() );
+                                                                 }
+                                                             }
+                                                         },
+                                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository, false );
 
                     } else {
                         model.getOrphanProjects().remove( _project );
@@ -659,8 +702,7 @@ public class RepositoryStructurePresenter
     }
 
     @Override
-    public void onEditModule( ProjectModuleRow moduleRow ) {
-
+    public void onEditModule( final ProjectModuleRow moduleRow ) {
         Project project = getSelectedModule( moduleRow.getName() );
         if ( project != null ) {
             contextChangeEvent.fire( new ProjectContextChangeEvent( workbenchContext.getActiveOrganizationalUnit(),
@@ -671,35 +713,13 @@ public class RepositoryStructurePresenter
     }
 
     @Override
-    public void onArtifactIdChange( String artifactId ) {
-        //Window.alert( "onArtifactIdChange: " + artifactId );
-    }
-
-    @Override
-    public void onGroupIdChange( String groupId ) {
-        //Window.alert( "onGroupIdChange: " + groupId );
-    }
-
-    @Override
-    public void onVersionChange( String version ) {
-        //Window.alert( "onVersionChange: " + version );
-    }
-
-    @Override
-    public void onProjectModeChange() {
-
-    }
-
-    @Override
     public void onInitRepositoryStructure() {
         initRepositoryStructure();
     }
 
     @Override
     public void onSaveRepositoryStructure() {
-
         if ( model.getPOM() != null ) {
-
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
                                                                                       Constants.INSTANCE.ConfirmSaveRepositoryStructure(),
                                                                                       new Command() {
@@ -737,12 +757,10 @@ public class RepositoryStructurePresenter
     }
 
     private void saveRepositoryStructure() {
-
         if ( model.getPOM() != null ) {
-
             model.getPOM().getGav().setGroupId( view.getDataView().getGroupId() );
             model.getPOM().getGav().setArtifactId( view.getDataView().getArtifactId() );
-            model.getPOM().getGav().setVersion( view.getDataView().getVersionId() );
+            model.getPOM().getGav().setVersion( view.getDataView().getVersion() );
 
             view.showBusyIndicator( Constants.INSTANCE.Saving() );
             repositoryStructureService.call( new RemoteCallback<Void>() {
@@ -751,13 +769,14 @@ public class RepositoryStructurePresenter
                     view.hideBusyIndicator();
                     init();
                 }
-            } ).save( model.getPathToPOM(), model, "" );
+            } ).save( model.getPathToPOM(),
+                      model,
+                      "" );
         }
     }
 
     @Override
     public void onConvertToMultiModule() {
-
         YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
                                                                                   Constants.INSTANCE.ConfirmConvertToMultiModuleStructure(),
                                                                                   new Command() {
@@ -791,13 +810,14 @@ public class RepositoryStructurePresenter
 
         yesNoCancelPopup.setClosable( false );
         yesNoCancelPopup.show();
-
     }
 
     private void convertToMultiModule() {
         Project project = model.getOrphanProjects().get( 0 );
         POM pom = model.getOrphanProjectsPOM().get( project.getSignatureId() );
-        GAV gav = new GAV( view.getDataView().getGroupId(), view.getDataView().getArtifactId(), view.getDataView().getVersionId() );
+        GAV gav = new GAV( view.getDataView().getGroupId(),
+                           view.getDataView().getArtifactId(),
+                           view.getDataView().getVersion() );
 
         view.showBusyIndicator( Constants.INSTANCE.ConvertingToMultiModuleProject() );
         repositoryStructureService.call( new RemoteCallback<Path>() {
@@ -806,7 +826,11 @@ public class RepositoryStructurePresenter
                 view.hideBusyIndicator();
                 init();
             }
-        } ).convertToMultiProjectStructure( model.getOrphanProjects(), gav, repository, true, null );
+        } ).convertToMultiProjectStructure( model.getOrphanProjects(),
+                                            gav,
+                                            repository,
+                                            true,
+                                            null );
     }
 
     @Override
@@ -816,7 +840,7 @@ public class RepositoryStructurePresenter
         }
     }
 
-    private Project getSelectedModule( String name ) {
+    private Project getSelectedModule( final String name ) {
         Project project = null;
         if ( model != null && name != null ) {
             if ( model.isMultiModule() ) {
@@ -833,7 +857,7 @@ public class RepositoryStructurePresenter
         return project;
     }
 
-    private void removeFromModulesList( String module ) {
+    private void removeFromModulesList( final String module ) {
         if ( module != null ) {
             int index = -1;
             for ( ProjectModuleRow row : dataProvider.getList() ) {
@@ -855,14 +879,13 @@ public class RepositoryStructurePresenter
         }
     }
 
-    private boolean repositoryOrBranchChanged( Repository selectedRepository ) {
+    private boolean repositoryOrBranchChanged( final Repository selectedRepository ) {
         return selectedRepository != null
                 && ( !selectedRepository.equals( this.repository )
                 || !selectedRepository.getCurrentBranch().equals( this.branch ) );
     }
 
     private void makeMenuBar() {
-
         final List<MenuItem> items = new ArrayList<MenuItem>();
 
         configure = MenuFactory
@@ -901,9 +924,12 @@ public class RepositoryStructurePresenter
 
                 return new HashMap<Object, MenuItem>() {
                     {
-                        put( MenuItems.CONFIGURE_MENU_ITEM, configure );
-                        put( MenuItems.PROMOTE_MENU_ITEM, promote );
-                        put( MenuItems.RELEASE_MENU_ITEM, release );
+                        put( MenuItems.CONFIGURE_MENU_ITEM,
+                             configure );
+                        put( MenuItems.PROMOTE_MENU_ITEM,
+                             promote );
+                        put( MenuItems.RELEASE_MENU_ITEM,
+                             release );
                     }
                 };
             }
@@ -935,25 +961,25 @@ public class RepositoryStructurePresenter
         releaseIsGranted = item != null && item.isEnabled();
     }
 
-    private void enableAssetsManagementMenu( boolean enable ) {
+    private void enableAssetsManagementMenu( final boolean enable ) {
         enableConfigure( configureIsGranted && enable );
         enablePromote( promoteIsGranted && enable );
         enableRelease( releaseIsGranted && enable );
     }
 
-    private void enableConfigure( boolean enable ) {
+    private void enableConfigure( final boolean enable ) {
         configure.setEnabled( enable );
     }
 
-    private void enablePromote( boolean enable ) {
+    private void enablePromote( final boolean enable ) {
         promote.setEnabled( enable );
     }
 
-    private void enableRelease( boolean enable ) {
+    private void enableRelease( final boolean enable ) {
         release.setEnabled( enable );
     }
 
-    private MenuItem getItem( MenuItems itemKey ) {
+    private MenuItem getItem( final MenuItems itemKey ) {
         return menus != null ? menus.getItemsMap().get( itemKey ) : null;
     }
 
@@ -964,48 +990,57 @@ public class RepositoryStructurePresenter
                 POM pom = null;
                 if ( model != null && ( model.isSingleProject() || model.isMultiModule() ) ) {
                     pom = model.isMultiModule() ? model.getPOM() : model.getSingleProjectPOM();
-                    view.getConfigureScreenPopupView().configure( repository.getAlias(), branch, pom.getGav().getVersion(), new com.google.gwt.user.client.Command() {
-                        @Override
-                        public void execute() {
-                            String devBranch = view.getConfigureScreenPopupView().getDevBranch();
-                            String releaseBranch = view.getConfigureScreenPopupView().getReleaseBranch();
+                    view.getConfigureScreenPopupView().configure( repository.getAlias(),
+                                                                  branch,
+                                                                  pom.getGav().getVersion(),
+                                                                  new com.google.gwt.user.client.Command() {
+                                                                      @Override
+                                                                      public void execute() {
+                                                                          String devBranch = view.getConfigureScreenPopupView().getDevBranch();
+                                                                          String releaseBranch = view.getConfigureScreenPopupView().getReleaseBranch();
 
-                            String version = view.getConfigureScreenPopupView().getVersion();
+                                                                          String version = view.getConfigureScreenPopupView().getVersion();
 
-                            configureRepository( repository.getAlias(), branch, devBranch, releaseBranch, version );
-                            view.getConfigureScreenPopupView().hide();
-                        }
-                    } );
+                                                                          configureRepository( repository.getAlias(),
+                                                                                               branch,
+                                                                                               devBranch,
+                                                                                               releaseBranch,
+                                                                                               version );
+                                                                          view.getConfigureScreenPopupView().hide();
+                                                                      }
+                                                                  } );
                     view.getConfigureScreenPopupView().show();
                 }
             }
         };
-
     }
 
     private Command getPromoteCommand() {
         return new Command() {
             @Override
             public void execute() {
-                view.getPromoteScreenPopupView().configure( repository.getAlias(), branch, repository.getBranches(), new com.google.gwt.user.client.Command() {
-                    @Override
-                    public void execute() {
-                        String targetBranch = view.getPromoteScreenPopupView().getTargetBranch();
-                        promoteChanges( repository.getAlias(), branch, targetBranch );
-                        view.getPromoteScreenPopupView().hide();
-                    }
-                } );
+                view.getPromoteScreenPopupView().configure( repository.getAlias(),
+                                                            branch,
+                                                            repository.getBranches(),
+                                                            new com.google.gwt.user.client.Command() {
+                                                                @Override
+                                                                public void execute() {
+                                                                    String targetBranch = view.getPromoteScreenPopupView().getTargetBranch();
+                                                                    promoteChanges( repository.getAlias(),
+                                                                                    branch,
+                                                                                    targetBranch );
+                                                                    view.getPromoteScreenPopupView().hide();
+                                                                }
+                                                            } );
                 view.getPromoteScreenPopupView().show();
             }
         };
-
     }
 
     private Command getReleaseCommand() {
         return new Command() {
             @Override
             public void execute() {
-
                 POM pom = null;
                 if ( model != null && ( model.isSingleProject() || model.isMultiModule() ) ) {
                     pom = model.isMultiModule() ? model.getPOM() : model.getSingleProjectPOM();
@@ -1022,7 +1057,13 @@ public class RepositoryStructurePresenter
                                                                         String serverURL = view.getReleaseScreenPopupView().getServerURL();
                                                                         String version = view.getReleaseScreenPopupView().getVersion();
                                                                         Boolean deployToRuntime = view.getReleaseScreenPopupView().getDeployToRuntime();
-                                                                        releaseProject( repository.getAlias(), branch, username, password, serverURL, deployToRuntime, version );
+                                                                        releaseProject( repository.getAlias(),
+                                                                                        branch,
+                                                                                        username,
+                                                                                        password,
+                                                                                        serverURL,
+                                                                                        deployToRuntime,
+                                                                                        version );
                                                                         view.getReleaseScreenPopupView().hide();
                                                                     }
                                                                 } );
@@ -1030,7 +1071,6 @@ public class RepositoryStructurePresenter
                 }
             }
         };
-
     }
 
     private String trimSnapshotFromVersion( String version ) {
@@ -1040,38 +1080,41 @@ public class RepositoryStructurePresenter
         return version;
     }
 
-    public void configureRepository( String repository,
-                                     String sourceBranch,
-                                     String devBranch,
-                                     String releaseBranch,
-                                     String version ) {
-
+    public void configureRepository( final String repository,
+                                     final String sourceBranch,
+                                     final String devBranch,
+                                     final String releaseBranch,
+                                     final String version ) {
         assetManagementServices.call( new RemoteCallback<Long>() {
                                           @Override
                                           public void callback( Long taskId ) {
                                               //view.displayNotification( "Repository Configuration Started!" );
                                           }
-                                      }, new ErrorCallback<Message>() {
+                                      },
+                                      new ErrorCallback<Message>() {
                                           @Override
                                           public boolean error( Message message,
                                                                 Throwable throwable ) {
                                               errorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
                                               return true;
                                           }
-                                      }
-                                    ).configureRepository( repository, sourceBranch, devBranch, releaseBranch, version );
-
+                                      } ).configureRepository( repository,
+                                                               sourceBranch,
+                                                               devBranch,
+                                                               releaseBranch,
+                                                               version );
     }
 
-    public void promoteChanges( String repository,
-                                String sourceBranch,
-                                String destinationBranch ) {
+    public void promoteChanges( final String repository,
+                                final String sourceBranch,
+                                final String destinationBranch ) {
         assetManagementServices.call( new RemoteCallback<Long>() {
                                           @Override
                                           public void callback( Long taskId ) {
                                               // view.displayNotification( "Promote Changes Process Started!" );
                                           }
-                                      }, new ErrorCallback<Message>() {
+                                      },
+                                      new ErrorCallback<Message>() {
                                           @Override
                                           public boolean error( Message message,
                                                                 Throwable throwable ) {
@@ -1079,21 +1122,23 @@ public class RepositoryStructurePresenter
                                               errorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
                                               return true;
                                           }
-                                      }
-                                    ).promoteChanges( repository, sourceBranch, destinationBranch );
+                                      } ).promoteChanges( repository,
+                                                          sourceBranch,
+                                                          destinationBranch );
 
     }
 
-    public void releaseProject( String repository,
-                                String branch,
-                                String userName,
-                                String password,
-                                String serverURL,
-                                Boolean deployToRuntime,
-                                String version ) {
-
-        if ( serverURL != null && !serverURL.isEmpty() && serverURL.endsWith( "/" ) ) {
-            serverURL = serverURL.substring( 0, serverURL.length() - 1 );
+    public void releaseProject( final String repository,
+                                final String branch,
+                                final String userName,
+                                final String password,
+                                final String serverURL,
+                                final Boolean deployToRuntime,
+                                final String version ) {
+        String _serverURL = serverURL;
+        if ( _serverURL != null && !_serverURL.isEmpty() && _serverURL.endsWith( "/" ) ) {
+            _serverURL = _serverURL.substring( 0,
+                                               _serverURL.length() - 1 );
         }
 
         assetManagementServices.call( new RemoteCallback<Long>() {
@@ -1101,20 +1146,26 @@ public class RepositoryStructurePresenter
                                           public void callback( Long taskId ) {
 //                                              view.displayNotification( "Release project process started" );
                                           }
-                                      }, new ErrorCallback<Message>() {
+                                      },
+                                      new ErrorCallback<Message>() {
                                           @Override
                                           public boolean error( Message message,
                                                                 Throwable throwable ) {
                                               ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
                                               return true;
                                           }
-                                      }
-                                    ).releaseProject( repository, branch, userName, password, serverURL, deployToRuntime, version );
-
+                                      } ).releaseProject( repository,
+                                                          branch,
+                                                          userName,
+                                                          password,
+                                                          _serverURL,
+                                                          deployToRuntime,
+                                                          version );
     }
 
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
     }
+
 }

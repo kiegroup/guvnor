@@ -124,6 +124,12 @@ public class GAVEditorViewImpl
     }
 
     @Override
+    public void enableArtifactID() {
+        artifactIdTextBox.setEnabled( true );
+        artifactIdTextBox.setTitle( "" );
+    }
+
+    @Override
     public void enableVersion() {
         versionTextBox.setEnabled( true );
         versionTextBox.setTitle( "" );
