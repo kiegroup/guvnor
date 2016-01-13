@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -27,16 +28,20 @@ import javax.inject.Named;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.ValidationUtils;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -56,55 +61,83 @@ import static org.guvnor.structure.repositories.EnvironmentParameters.*;
 public class RepositoryStructureServiceImpl
         implements RepositoryStructureService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RepositoryStructureServiceImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger( RepositoryStructureServiceImpl.class );
 
-    @Inject
-    private POMService pomService;
-
-    @Inject
-    private ProjectService<? extends Project> projectService;
-
-    @Inject
-    private RepositoryService repositoryService;
-
-    @Inject
-    private MetadataService metadataService;
-
-    @Inject
-    private GuvnorM2Repository m2service;
-
-    @Inject
-    private CommentedOptionFactory optionsFactory;
-
-    @Inject
-    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
-
-    @Inject
-    @Named( "ioStrategy" )
     private IOService ioService;
+    private POMService pomService;
+    private ProjectService<? extends Project> projectService;
+    private RepositoryService repositoryService;
+    private MetadataService metadataService;
+    private GuvnorM2Repository m2service;
+    private CommentedOptionFactory optionsFactory;
+    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
+    private ProjectRepositoryResolver<? extends Project> repositoryResolver;
 
-    public Path initRepositoryStructure( GAV gav, Repository repo ) {
+    public RepositoryStructureServiceImpl() {
+        //Zero-parameter constructor for CDI proxies
+    }
 
-        POM pom = new POM( repo.getAlias(), repo.getAlias(), gav
-                , true );
+    @Inject
+    public RepositoryStructureServiceImpl( final @Named("ioStrategy") IOService ioService,
+                                           final POMService pomService,
+                                           final ProjectService<? extends Project> projectService,
+                                           final RepositoryService repositoryService,
+                                           final MetadataService metadataService,
+                                           final GuvnorM2Repository m2service,
+                                           final CommentedOptionFactory optionsFactory,
+                                           final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent,
+                                           final ProjectRepositoryResolver<? extends Project> repositoryResolver ) {
+        this.ioService = ioService;
+        this.pomService = pomService;
+        this.projectService = projectService;
+        this.repositoryService = repositoryService;
+        this.metadataService = metadataService;
+        this.m2service = m2service;
+        this.optionsFactory = optionsFactory;
+        this.repositoryUpdatedEvent = repositoryUpdatedEvent;
+        this.repositoryResolver = repositoryResolver;
+    }
+
+    @Override
+    public Path initRepositoryStructure( final GAV gav,
+                                         final Repository repo,
+                                         final DeploymentMode mode ) {
+        POM pom = new POM( repo.getAlias(),
+                           repo.getAlias(),
+                           gav,
+                           true );
+
+        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
+            checkRepositories( pom );
+        }
+
         //Creating the parent pom
         final Path fsRoot = repo.getRoot();
         final Path pathToPom = pomService.create( fsRoot,
-                "",
-                pom );
+                                                  "",
+                                                  pom );
         //Deploying the parent pom artifact,
         // it needs to be deployed before the first child is created
         m2service.deployParentPom( gav );
 
-        updateManagedStatus( repo, true );
+        updateManagedStatus( repo,
+                             true );
 
         return pathToPom;
     }
 
-    public Path initRepositoryStructure( POM pom, String baseUrl, Repository repo, boolean multiProject ) {
-
+    @Override
+    public Path initRepositoryStructure( final POM pom,
+                                         final String baseUrl,
+                                         final Repository repo,
+                                         final boolean multiProject,
+                                         final DeploymentMode mode ) {
         if ( pom == null || baseUrl == null || repo == null ) {
             return null;
+        }
+
+        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
+            checkRepositories( pom );
         }
 
         if ( multiProject ) {
@@ -114,43 +147,62 @@ public class RepositoryStructureServiceImpl
             //Creating the parent pom
             final Path fsRoot = repo.getRoot();
             final Path pathToPom = pomService.create( fsRoot,
-                    "",
-                    pom );
+                                                      "",
+                                                      pom );
             //Deploying the parent pom artifact,
             // it needs to be deployed before the first child is created
             m2service.deployParentPom( pom.getGav() );
 
-            updateManagedStatus( repo, true );
+            updateManagedStatus( repo,
+                                 true );
 
             return pathToPom;
 
         } else {
-            Project project = projectService.newProject( repo, pom, baseUrl );
+            Project project = projectService.newProject( repo,
+                                                         pom,
+                                                         baseUrl,
+                                                         mode );
             return project.getPomXMLPath();
         }
     }
 
-    @Override
-    public Repository initRepository( final Repository repo, boolean managed ) {
-        return updateManagedStatus( repo, managed );
+    private void checkRepositories( final POM pom ) {
+        // Check is the POM's GAV resolves to any pre-existing artifacts. We don't need to filter
+        // resolved Repositories by those enabled for the Project since this is a new Project.
+        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact( pom.getGav() );
+        if ( repositories.size() > 0 ) {
+            throw new GAVAlreadyExistsException( pom.getGav(),
+                                                 repositories );
+        }
     }
 
-    private Repository updateManagedStatus( final Repository repo, final boolean managed) {
-        Map<String, Object> config = new HashMap<String, Object>( );
+    @Override
+    public Repository initRepository( final Repository repo,
+                                      final boolean managed ) {
+        return updateManagedStatus( repo,
+                                    managed );
+    }
+
+    private Repository updateManagedStatus( final Repository repo,
+                                            final boolean managed ) {
+        Map<String, Object> config = new HashMap<String, Object>();
 
         config.put( MANAGED, managed );
-        Repository updatedRepo = repositoryService.updateRepository( repo, config );
-        repositoryUpdatedEvent.fire( new RepositoryUpdatedEvent( repo, updatedRepo ) );
+        Repository updatedRepo = repositoryService.updateRepository( repo,
+                                                                     config );
+        repositoryUpdatedEvent.fire( new RepositoryUpdatedEvent( repo,
+                                                                 updatedRepo ) );
 
         return updatedRepo;
     }
 
     @Override
     public Path convertToMultiProjectStructure( final List<Project> projects,
-            final GAV parentGav,
-            final Repository repo,
-            final boolean updateChildrenGav,
-            final String comment ) {
+                                                final GAV parentGav,
+                                                final Repository repo,
+                                                final boolean updateChildrenGav,
+                                                final String comment ) {
 
         if ( projects == null || parentGav == null || repo == null ) {
             return null;
@@ -158,7 +210,9 @@ public class RepositoryStructureServiceImpl
 
         try {
             POM parentPom;
-            Path path = initRepositoryStructure( parentGav, repo );
+            Path path = initRepositoryStructure( parentGav,
+                                                 repo,
+                                                 DeploymentMode.FORCED );
 
             parentPom = pomService.load( path );
             if ( parentPom == null ) {
@@ -166,7 +220,8 @@ public class RepositoryStructureServiceImpl
                 return null;
             }
 
-            ioService.startBatch( new FileSystem[] { Paths.convert( path ).getFileSystem() }, optionsFactory.makeCommentedOption( comment != null ? comment : "" ) );
+            ioService.startBatch( new FileSystem[]{ Paths.convert( path ).getFileSystem() },
+                                  optionsFactory.makeCommentedOption( comment != null ? comment : "" ) );
 
             POM pom;
             boolean saveParentPom = false;
@@ -177,7 +232,10 @@ public class RepositoryStructureServiceImpl
                     pom.getGav().setGroupId( parentGav.getGroupId() );
                     pom.getGav().setVersion( parentGav.getVersion() );
                 }
-                pomService.save( project.getPomXMLPath(), pom, null, comment );
+                pomService.save( project.getPomXMLPath(),
+                                 pom,
+                                 null,
+                                 comment );
 
                 parentPom.setPackaging( "pom" );
                 parentPom.getModules().add( pom.getName() != null ? pom.getName() : pom.getGav().getArtifactId() );
@@ -185,10 +243,14 @@ public class RepositoryStructureServiceImpl
             }
 
             if ( saveParentPom ) {
-                pomService.save( path, parentPom, null, comment );
+                pomService.save( path,
+                                 parentPom,
+                                 null,
+                                 comment );
             }
 
             return path;
+
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         } finally {
@@ -202,16 +264,20 @@ public class RepositoryStructureServiceImpl
     }
 
     @Override
-    public RepositoryStructureModel load( final Repository repository, boolean includeModules ) {
-
-        if ( repository == null ) return null;
+    public RepositoryStructureModel load( final Repository repository,
+                                          final boolean includeModules ) {
+        if ( repository == null ) {
+            return null;
+        }
         Repository _repository = repositoryService.getRepository( repository.getAlias() );
 
-        if ( _repository == null ) return null;
+        if ( _repository == null ) {
+            return null;
+        }
 
         RepositoryStructureModel model = new RepositoryStructureModel();
-        Boolean managedStatus = _repository.getEnvironment() != null ? (Boolean)_repository.getEnvironment().get( MANAGED ) : null;
-        if ( managedStatus != null) {
+        Boolean managedStatus = _repository.getEnvironment() != null ? (Boolean) _repository.getEnvironment().get( MANAGED ) : null;
+        if ( managedStatus != null ) {
             model.setManaged( managedStatus );
         }
 
@@ -221,7 +287,8 @@ public class RepositoryStructureServiceImpl
         if ( project != null ) {
             if ( !model.isManaged() ) {
                 //uncommon case, the repository is managed. Update managed status.
-                updateManagedStatus( _repository, true );
+                updateManagedStatus( _repository,
+                                     true );
                 model.setManaged( true );
             }
             model.setPOM( pomService.load( project.getPomXMLPath() ) );
@@ -233,7 +300,8 @@ public class RepositoryStructureServiceImpl
                 Project moduleProject;
                 for ( String module : project.getModules() ) {
                     moduleProject = projectService.resolveProject( Paths.convert( parentPath.resolve( module ) ) );
-                    model.getModulesProject().put( module, moduleProject );
+                    model.getModulesProject().put( module,
+                                                   moduleProject );
                 }
             }
 
@@ -245,14 +313,16 @@ public class RepositoryStructureServiceImpl
                 POM pom;
                 for ( Project orphanProject : repositoryProjects ) {
                     pom = pomService.load( orphanProject.getPomXMLPath() );
-                    model.getOrphanProjectsPOM().put( orphanProject.getSignatureId(), pom );
+                    model.getOrphanProjectsPOM().put( orphanProject.getSignatureId(),
+                                                      pom );
                 }
                 if ( managedStatus == null && repositoryProjects.size() > 1 ) {
                     //update managed status
-                    updateManagedStatus( _repository, false );
+                    updateManagedStatus( _repository,
+                                         false );
                 }
 
-            } else if ( managedStatus == null) {
+            } else if ( managedStatus == null ) {
                 //there are no projects and the managed attribute is not set, means the repository was never initialized.
                 model = null;
             }
@@ -262,52 +332,69 @@ public class RepositoryStructureServiceImpl
     }
 
     @Override
+    @SuppressWarnings("unused")
     public void save( final Path pathToPomXML,
-            final RepositoryStructureModel model,
-            final String comment ) {
+                      final RepositoryStructureModel model,
+                      final String comment ) {
         final FileSystem fs = Paths.convert( pathToPomXML ).getFileSystem();
         try {
             pomService.save( pathToPomXML,
-                    model.getPOM(),
-                    model.getPOMMetaData(),
-                    comment,
-                    true );
+                             model.getPOM(),
+                             model.getPOMMetaData(),
+                             comment,
+                             true );
 
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
     }
 
-    public boolean isValidProjectName( String name ) {
+    @Override
+    public boolean isValidProjectName( final String name ) {
         return ValidationUtils.isFileName( name );
     }
 
-    public boolean isValidGroupId( String groupId ) {
-        if ( groupId == null || "".equals( groupId.trim() ) ) return false;
+    @Override
+    public boolean isValidGroupId( final String groupId ) {
+        if ( groupId == null || "".equals( groupId.trim() ) ) {
+            return false;
+        }
         final String[] groupIdComponents = groupId.split( "\\.", -1 );
         for ( String s : groupIdComponents ) {
-            if ( !ValidationUtils.isArtifactIdentifier( s ) ) return false;
+            if ( !ValidationUtils.isArtifactIdentifier( s ) ) {
+                return false;
+            }
         }
         return true;
     }
 
-    public boolean isValidArtifactId( String artifactId ) {
-        if ( artifactId == null || "".equals( artifactId.trim() ) ) return false;
+    @Override
+    public boolean isValidArtifactId( final String artifactId ) {
+        if ( artifactId == null || "".equals( artifactId.trim() ) ) {
+            return false;
+        }
         final String[] artifactIdComponents = artifactId.split( "\\.", -1 );
         for ( String s : artifactIdComponents ) {
-            if ( !ValidationUtils.isArtifactIdentifier( s ) ) return false;
+            if ( !ValidationUtils.isArtifactIdentifier( s ) ) {
+                return false;
+            }
         }
         return true;
     }
 
-    public boolean isValidVersion( String version ) {
-        if ( version == null || "".equals( version.trim() ) )  return false;
+    @Override
+    public boolean isValidVersion( final String version ) {
+        if ( version == null || "".equals( version.trim() ) ) {
+            return false;
+        }
         return version.matches( "^[a-zA-Z0-9\\.\\-_]+$" );
     }
 
     @Override
-    public void delete( final Path pathToPomXML, final String comment ) {
-        projectService.delete( pathToPomXML, comment );
+    public void delete( final Path pathToPomXML,
+                        final String comment ) {
+        projectService.delete( pathToPomXML,
+                               comment );
     }
 
     private List<Project> getProjects( final Repository repository ) {

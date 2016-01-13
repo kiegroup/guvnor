@@ -43,57 +43,74 @@ public class POMEditorPanelTest {
 
     @Before
     public void setUp() throws Exception {
-        panel = new POMEditorPanel( view, iocManager );
+        panel = new POMEditorPanel( view,
+                                    iocManager );
         presenter = panel;
 
-        verify(view, times(1)).setPresenter(presenter);
+        verify( view,
+                times( 1 ) ).setPresenter( presenter );
     }
 
     @Test
     public void testAddArtifactChangeHandler() {
-        ArtifactIdChangeHandler handler = mock(ArtifactIdChangeHandler.class);
-        panel.addArtifactIdChangeHandler(handler);
+        ArtifactIdChangeHandler handler = mock( ArtifactIdChangeHandler.class );
+        panel.addArtifactIdChangeHandler( handler );
 
-        verify(view, times(1)).addArtifactIdChangeHandler(handler);
+        verify( view, times( 1 ) ).addArtifactIdChangeHandler( handler );
     }
 
     @Test
     public void testAddGroupChangeHandler() {
-        GroupIdChangeHandler handler = mock(GroupIdChangeHandler.class);
-        panel.addGroupIdChangeHandler(handler);
+        GroupIdChangeHandler handler = mock( GroupIdChangeHandler.class );
+        panel.addGroupIdChangeHandler( handler );
 
-        verify(view, times(1)).addGroupIdChangeHandler(handler);
+        verify( view, times( 1 ) ).addGroupIdChangeHandler( handler );
     }
 
     @Test
     public void testAddVersionChangeHandler() {
-        VersionChangeHandler handler = mock(VersionChangeHandler.class);
-        panel.addVersionChangeHandler(handler);
+        VersionChangeHandler handler = mock( VersionChangeHandler.class );
+        panel.addVersionChangeHandler( handler );
 
-        verify(view, times(1)).addVersionChangeHandler(handler);
+        verify( view, times( 1 ) ).addVersionChangeHandler( handler );
     }
 
     @Test
-    public void testLoad() throws Exception {
-        POM gavModel = createTestModel( "group", "artifact", "1.1.1" );
-        gavModel.setParent( new GAV( "org.parent", "parent", "1.1.1" ) );
-        panel.setPOM( gavModel, false );
+    public void testLoadSingleModule() throws Exception {
+        POM gavModel = createTestModel( "pomName",
+                                        "pomDescription",
+                                        "group",
+                                        "artifact",
+                                        "1.1.1" );
+        panel.setPOM( gavModel,
+                      false );
+
+        verify( view ).setName( "pomName" );
+        verify( view ).setDescription( "pomDescription" );
+        verify( view ).enableGroupID();
+        verify( view ).enableArtifactID();
+        verify( view ).enableVersion();
+        verify( view ).hideParentGAV();
+    }
+
+    @Test
+    public void testLoadMultiModule() throws Exception {
+        POM gavModel = createTestModel( "group",
+                                        "artifact",
+                                        "1.1.1" );
+        gavModel.setParent( new GAV( "org.parent",
+                                     "parent",
+                                     "1.1.1" ) );
+        panel.setPOM( gavModel,
+                      false );
 
         verify( view ).setGAV( gavModel.getGav() );
         verify( view ).setTitleText( "artifact" );
         verify( view ).setParentGAV( gavModel.getParent() );
         verify( view ).disableGroupID( "" );
+        verify( view ).enableArtifactID();
         verify( view ).disableVersion( "" );
         verify( view ).showParentGAV();
-
-        gavModel = createTestModel( "pomName", "pomDescription", "group", "artifact", "1.1.1" );
-        panel.setPOM( gavModel, false );
-
-        verify( view ).setName( "pomName" );
-        verify( view ).setDescription( "pomDescription" );
-        verify( view ).enableGroupID();
-        verify( view ).enableVersion();
-        verify( view ).hideParentGAV();
     }
 
     @Test
@@ -143,17 +160,24 @@ public class POMEditorPanelTest {
         verify( placeManager ).goTo( "repositoryStructureScreen" );
     }
 
-    private POM createTestModel( String group,
-                                 String artifact,
-                                 String version ) {
-        return new POM( new GAV( group, artifact, version ) );
+    private POM createTestModel( final String group,
+                                 final String artifact,
+                                 final String version ) {
+        return new POM( new GAV( group,
+                                 artifact,
+                                 version ) );
     }
 
-    private POM createTestModel( String name,
-                                 String description,
-                                 String group,
-                                 String artifact,
-                                 String version ) {
-        return new POM( name, description, new GAV( group, artifact, version ) );
+    private POM createTestModel( final String name,
+                                 final String description,
+                                 final String group,
+                                 final String artifact,
+                                 final String version ) {
+        return new POM( name,
+                        description,
+                        new GAV( group,
+                                 artifact,
+                                 version ) );
     }
+
 }

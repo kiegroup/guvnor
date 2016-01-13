@@ -26,6 +26,7 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
 @RunWith(GwtMockitoTestRunner.class)
 public class GAVEditorTest {
 
@@ -49,20 +50,24 @@ public class GAVEditorTest {
     public void setUp() throws Exception {
         editor = new GAVEditor( view );
 
-        verify(view, times(1)).setPresenter(editor);
+        verify( view,
+                times( 1 ) ).setPresenter( editor );
 
         gav = new GAV( "groupId",
-                "artifactId",
-                "version" );
+                       "artifactId",
+                       "version" );
     }
 
     @Test
     public void testSetGav() {
-        editor.setGAV(gav);
+        editor.setGAV( gav );
 
-        verify(view, times(1)).setGroupId( gav.getGroupId() );
-        verify(view, times(1)).setArtifactId( gav.getArtifactId() );
-        verify(view, times(1)).setVersion( gav.getVersion() );
+        verify( view,
+                times( 1 ) ).setGroupId( gav.getGroupId() );
+        verify( view,
+                times( 1 ) ).setArtifactId( gav.getArtifactId() );
+        verify( view,
+                times( 1 ) ).setVersion( gav.getVersion() );
     }
 
     @Test
@@ -78,36 +83,42 @@ public class GAVEditorTest {
     }
 
     @Test
-    public void testGroupChangeHandler()  {
-        editor.addGroupIdChangeHandler(groupIdChangeHandler);
+    public void testGroupChangeHandler() {
+        editor.addGroupIdChangeHandler( groupIdChangeHandler );
         editor.setGAV( gav );
 
-        editor.onGroupIdChange("changedGroup");
+        editor.onGroupIdChange( "changedGroup" );
 
-        verify(groupIdChangeHandler, times(1)).onChange("changedGroup");
-        assertEquals("changedGroup", gav.getGroupId());
+        verify( groupIdChangeHandler,
+                times( 1 ) ).onChange( "changedGroup" );
+        assertEquals( "changedGroup",
+                      gav.getGroupId() );
     }
 
     @Test
-    public void testArtifactChangeHandler()  {
-        editor.addArtifactIdChangeHandler(artifactIdChangeHandler);
+    public void testArtifactChangeHandler() {
+        editor.addArtifactIdChangeHandler( artifactIdChangeHandler );
         editor.setGAV( gav );
 
-        editor.onArtifactIdChange("artifactChanged");
+        editor.onArtifactIdChange( "artifactChanged" );
 
-        verify(artifactIdChangeHandler, times(1)).onChange("artifactChanged");
-        assertEquals("artifactChanged", gav.getArtifactId());
+        verify( artifactIdChangeHandler,
+                times( 1 ) ).onChange( "artifactChanged" );
+        assertEquals( "artifactChanged",
+                      gav.getArtifactId() );
     }
 
     @Test
-    public void testVersionChangeHandler()  {
-        editor.addVersionChangeHandler(versionChangeHandler);
+    public void testVersionChangeHandler() {
+        editor.addVersionChangeHandler( versionChangeHandler );
         editor.setGAV( gav );
 
-        editor.onVersionChange("versionChanged");
+        editor.onVersionChange( "versionChanged" );
 
-        verify(versionChangeHandler, times(1)).onChange("versionChanged");
-        assertEquals("versionChanged", gav.getVersion());
+        verify( versionChangeHandler,
+                times( 1 ) ).onChange( "versionChanged" );
+        assertEquals( "versionChanged",
+                      gav.getVersion() );
     }
 
 }

@@ -73,4 +73,28 @@ public interface ProjectConstants
 
     String invalidName();
 
+    String ConflictingRepositoriesTitle();
+
+    String ConflictingRepositoriesGAVDescription( String groupId,
+                                                  String artifactId,
+                                                  String version );
+
+    String ConflictingRepositoriesOverride();
+
+    String RepositoryId();
+
+    String RepositoryUrl();
+
+    String RepositorySource();
+
+    String RepositorySourceLocal();
+
+    String RepositorySourceProject();
+
+    String RepositorySourceSettings();
+
+    String RepositorySourceDistributionManagement();
+
+    String RepositorySourceUnknown();
+
 }

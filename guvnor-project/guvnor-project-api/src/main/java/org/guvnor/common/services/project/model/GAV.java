@@ -16,10 +16,12 @@
 
 package org.guvnor.common.services.project.model;
 
+import java.io.Serializable;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class GAV {
+public class GAV implements Serializable {
 
     private String groupId;
     private String artifactId;
@@ -31,9 +33,9 @@ public class GAV {
 
     public GAV( final String gavString ) {
         String[] split = gavString.split( ":" );
-        this.groupId = split[0];
-        this.artifactId = split[1];
-        this.version = split[2];
+        this.groupId = split[ 0 ];
+        this.artifactId = split[ 1 ];
+        this.version = split[ 2 ];
     }
 
     public GAV( final String groupId,
@@ -76,7 +78,7 @@ public class GAV {
     public boolean isGAVEqual( Object o ) {
         return equals( o );
     }
-    
+
     @Override
     public boolean equals( Object o ) {
         if ( this == o ) {

@@ -60,7 +60,6 @@ public abstract class AbstractProjectService<T extends Project>
                    ProjectFactory<T> {
 
     protected IOService ioService;
-
     protected POMService pomService;
 
     private ConfigurationService configurationService;
@@ -78,7 +77,7 @@ public abstract class AbstractProjectService<T extends Project>
     private BackwardCompatibleUtil backward;
 
     protected CommentedOptionFactory commentedOptionFactory;
-    protected  ResourceResolver       resourceResolver;
+    protected ResourceResolver resourceResolver;
 
     protected SessionInfo sessionInfo;
 
@@ -113,11 +112,11 @@ public abstract class AbstractProjectService<T extends Project>
         this.sessionInfo = new SafeSessionInfo( sessionInfo );
     }
 
+    @Override
     public WorkingSetSettings loadWorkingSetConfig( final Path project ) {
         //TODO {porcelli}
         return new WorkingSetSettings();
     }
-
 
     @Override
     public Set<Project> getProjects( final Repository repository,
@@ -148,12 +147,6 @@ public abstract class AbstractProjectService<T extends Project>
         }
         return authorizedProjects;
     }
-
-    @Override
-    public abstract T newProject(
-            final org.guvnor.structure.repositories.Repository repository,
-            final POM pom,
-            final String baseUrl );
 
     @Override
     public Package newPackage( final Package parentPackage,
@@ -297,7 +290,6 @@ public abstract class AbstractProjectService<T extends Project>
             throw ExceptionUtilities.handleException( e );
         }
     }
-
 
     @Override
     public void copy( final Path pathToPomXML,

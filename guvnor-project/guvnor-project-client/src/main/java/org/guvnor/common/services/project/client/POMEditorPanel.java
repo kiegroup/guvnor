@@ -62,10 +62,12 @@ public class POMEditorPanel
             view.setParentGAV( model.getParent() );
             view.showParentGAV();
             view.disableGroupID( "" );
+            view.enableArtifactID();
             view.disableVersion( "" );
         } else {
             view.hideParentGAV();
             view.enableGroupID();
+            view.enableArtifactID();
             view.enableVersion();
         }
         view.setGAV( model.getGav() );
@@ -125,7 +127,6 @@ public class POMEditorPanel
 
     @Override
     public void onOpenProjectContext() {
-
         IOCBeanDef<PlaceManager> placeManagerIOCBeanDef = iocManager.lookupBean( PlaceManager.class );
         placeManagerIOCBeanDef.getInstance().goTo( "repositoryStructureScreen" );
     }
