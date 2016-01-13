@@ -122,6 +122,11 @@ public class GAVEditor
     }
 
     @Override
+    public void enableArtifactID() {
+        view.enableArtifactID();
+    }
+
+    @Override
     public void enableVersion() {
         view.enableVersion();
     }

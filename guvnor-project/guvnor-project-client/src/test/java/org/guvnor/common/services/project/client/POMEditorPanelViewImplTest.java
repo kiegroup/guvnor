@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 public class POMEditorPanelViewImplTest {
 
     @Mock
-    POMEditorPanelView.Presenter presneter;
+    POMEditorPanelView.Presenter presenter;
 
     @GwtMock
     TextBox pomName;
@@ -56,7 +56,7 @@ public class POMEditorPanelViewImplTest {
     @Before
     public void setup() {
         view = new POMEditorPanelViewImpl();
-        view.setPresenter(presneter);
+        view.setPresenter( presenter );
         view.pomNameTextBox = pomName;
         view.pomDescriptionTextArea = pomDescription;
         view.pomNameHelpBlock = pomNameHelp;
@@ -65,37 +65,46 @@ public class POMEditorPanelViewImplTest {
 
     @Test
     public void testNameChangeHanlder() {
-        when(pomName.getText()).thenReturn("name");
+        when( pomName.getText() ).thenReturn( "name" );
 
-        view.onNameChange(mock(KeyUpEvent.class));
-        verify(presneter, times(1)).onNameChange("name");
+        view.onNameChange( mock( KeyUpEvent.class ) );
+        verify( presenter,
+                times( 1 ) ).onNameChange( "name" );
     }
 
     @Test
-    public void testDescritionChangeHanlder() {
-        when(pomDescription.getText()).thenReturn("descr");
+    public void testDescriptionChangeHandler() {
+        when( pomDescription.getText() ).thenReturn( "descr" );
 
-        view.onDescriptionChange(mock(ValueChangeEvent.class));
-        verify(presneter, times(1)).onDescriptionChange("descr");
+        view.onDescriptionChange( mock( ValueChangeEvent.class ) );
+        verify( presenter,
+                times( 1 ) ).onDescriptionChange( "descr" );
     }
 
     @Test
     public void testValidName() {
-        view.setValidName(true);
+        view.setValidName( true );
 
-        verify(pomNameGroup, times(1)).setValidationState(ValidationState.NONE);
-        verify(pomNameHelp, times(1)).setText("");
+        verify( pomNameGroup,
+                times( 1 ) ).setValidationState( ValidationState.NONE );
+        verify( pomNameHelp,
+                times( 1 ) ).setText( "" );
 
-        verify(pomNameGroup, never()).setValidationState(ValidationState.ERROR);
+        verify( pomNameGroup,
+                never() ).setValidationState( ValidationState.ERROR );
     }
 
     @Test
     public void testInvalidName() {
-        view.setValidName(false);
+        view.setValidName( false );
 
-        verify(pomNameGroup, times(1)).setValidationState(ValidationState.ERROR);
-        verify(pomNameHelp, times(1)).setText(ProjectResources.CONSTANTS.invalidName());
+        verify( pomNameGroup,
+                times( 1 ) ).setValidationState( ValidationState.ERROR );
+        verify( pomNameHelp,
+                times( 1 ) ).setText( ProjectResources.CONSTANTS.invalidName() );
 
-        verify(pomNameGroup, never()).setValidationState(ValidationState.NONE);
+        verify( pomNameGroup,
+                never() ).setValidationState( ValidationState.NONE );
     }
+
 }

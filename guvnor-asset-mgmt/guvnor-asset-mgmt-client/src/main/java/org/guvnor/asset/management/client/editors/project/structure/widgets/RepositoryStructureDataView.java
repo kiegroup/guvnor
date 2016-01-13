@@ -28,14 +28,6 @@ public interface RepositoryStructureDataView extends IsWidget {
 
     interface Presenter {
 
-        void onProjectModeChange( );
-
-        void onGroupIdChange( String groupId );
-
-        void onArtifactIdChange( String artifactId );
-
-        void onVersionChange( String version );
-
         void onInitRepositoryStructure();
 
         void onSaveRepositoryStructure();
@@ -45,23 +37,22 @@ public interface RepositoryStructureDataView extends IsWidget {
         void onOpenSingleProject();
     }
 
-    void setMode( ViewMode mode );
+    void setMode( final ViewMode mode );
 
-    void setPresenter( Presenter presenter );
+    void setPresenter( final Presenter presenter );
 
-    void setGroupId( String id );
+    void setGroupId( final String id );
 
     String getGroupId();
 
-    void setArtifactId( String id );
+    void setArtifactId( final String id );
 
     String getArtifactId();
 
-    void setVersion( String version );
+    void setVersion( final String version );
 
-    String getVersionId();
+    String getVersion();
 
     void clear();
-
 
 }

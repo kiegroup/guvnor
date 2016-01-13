@@ -34,9 +34,11 @@ import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
+import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -49,7 +51,6 @@ import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.guvnor.common.services.project.backend.server.ProjectResourcePaths.*;
 
-
 @Service
 @ApplicationScoped
 public class MavenProjectServiceImpl
@@ -61,7 +62,7 @@ public class MavenProjectServiceImpl
     }
 
     @Inject
-    public MavenProjectServiceImpl( final @Named( "ioStrategy" ) IOService ioService,
+    public MavenProjectServiceImpl( final @Named("ioStrategy") IOService ioService,
                                     final POMService pomService,
                                     final ConfigurationService configurationService,
                                     final ConfigurationFactory configurationFactory,
@@ -99,7 +100,7 @@ public class MavenProjectServiceImpl
             final Path fsRoot = repository.getRoot();
             final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( pom.getName() ) );
 
-            ioService.startBatch( new FileSystem[]{fs},
+            ioService.startBatch( new FileSystem[]{ fs },
                                   commentedOptionFactory.makeCommentedOption( "New project [" + pom.getName() + "]" ) );
 
             //Create POM.xml
@@ -138,6 +139,16 @@ public class MavenProjectServiceImpl
         } finally {
             ioService.endBatch();
         }
+    }
+
+    @Override
+    public Project newProject( final Repository repository,
+                               final POM pom,
+                               final String baseURL,
+                               final DeploymentMode mode ) {
+        return newProject( repository,
+                           pom,
+                           baseURL );
     }
 
     @Override
@@ -189,4 +200,5 @@ public class MavenProjectServiceImpl
     public Project simpleProjectInstance( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
         return resourceResolver.simpleProjectInstance( nioProjectRootPath );
     }
+
 }

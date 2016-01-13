@@ -90,9 +90,13 @@ public interface POMEditorPanelView extends HasBusyIndicator,
 
     void disableGroupID( final String reason );
 
+    void disableArtifactID( final String reason );
+
     void disableVersion( final String reason );
 
     void enableGroupID();
+
+    void enableArtifactID();
 
     void enableVersion();
 

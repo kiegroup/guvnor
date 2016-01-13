@@ -52,13 +52,13 @@ public class RepositoryStructureViewImpl
     @UiField
     Row dataViewContainer;
 
-    @UiField( provided = true )
+    @UiField(provided = true)
     RepositoryStructureDataView dataView;
 
     @UiField
     Row modulesViewContainer;
 
-    @UiField( provided = true )
+    @UiField(provided = true)
     ProjectModulesView modulesView;
 
     @Inject
@@ -71,16 +71,14 @@ public class RepositoryStructureViewImpl
     PromoteScreenPopupViewImpl promoteScreenPopupView;
 
     @Inject
-    public RepositoryStructureViewImpl( RepositoryStructureDataView dataView,
-                                        ProjectModulesView modulesView ) {
-
+    public RepositoryStructureViewImpl( final RepositoryStructureDataView dataView,
+                                        final ProjectModulesView modulesView ) {
         this.dataView = dataView;
         this.modulesView = modulesView;
-
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void setPresenter( RepositoryStructurePresenter presenter ) {
+    public void setPresenter( final RepositoryStructurePresenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -120,12 +118,12 @@ public class RepositoryStructureViewImpl
     }
 
     @Override
-    public void setModulesViewVisible( boolean visible ) {
+    public void setModulesViewVisible( final boolean visible ) {
         modulesViewContainer.setVisible( visible );
     }
 
     @Override
-    public void setModel( RepositoryStructureModel model ) {
+    public void setModel( final RepositoryStructureModel model ) {
         if ( model == null ) {
             return;
         }
@@ -134,6 +132,7 @@ public class RepositoryStructureViewImpl
             getDataView().setGroupId( model.getPOM().getGav().getGroupId() );
             getDataView().setArtifactId( model.getPOM().getGav().getArtifactId() );
             getDataView().setVersion( model.getPOM().getGav().getVersion() );
+
         } else if ( model.isSingleProject() ) {
             Project project = model.getOrphanProjects().get( 0 );
             POM pom = model.getOrphanProjectsPOM().get( project.getSignatureId() );

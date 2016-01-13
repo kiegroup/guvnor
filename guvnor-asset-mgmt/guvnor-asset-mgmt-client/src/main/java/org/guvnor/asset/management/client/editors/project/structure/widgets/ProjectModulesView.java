@@ -21,7 +21,6 @@ import com.google.gwt.view.client.HasData;
 
 public interface ProjectModulesView extends IsWidget {
 
-
     enum ViewMode {
         MODULES_VIEW,
         PROJECTS_VIEW
@@ -33,15 +32,15 @@ public interface ProjectModulesView extends IsWidget {
 
         void addDataDisplay( final HasData<ProjectModuleRow> display );
 
-        void onDeleteModule( ProjectModuleRow moduleRow );
+        void onDeleteModule( final ProjectModuleRow moduleRow );
 
-        void onEditModule( ProjectModuleRow moduleRow );
+        void onEditModule( final ProjectModuleRow moduleRow );
     }
 
-    void setPresenter( Presenter presenter );
+    void setPresenter( final Presenter presenter );
 
-    void setMode( ViewMode mode );
+    void setMode( final ViewMode mode );
 
-    void enableActions( boolean value );
+    void enableActions( final boolean value );
 
 }
