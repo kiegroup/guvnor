@@ -22,6 +22,7 @@ import java.util.Map;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.DeploymentMode;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
@@ -42,11 +43,31 @@ public interface BuildService {
     BuildResults buildAndDeploy( final Project project );
 
     /**
+     * Full build with forced deployment to Maven. Pre-existing artifacts with the same GAV will be overwritten.
+     * @param project Project to be built
+     * @param mode The deployment mode
+     */
+    BuildResults buildAndDeploy( final Project project,
+                                 final DeploymentMode mode );
+
+    /**
      * Full build with deployment with ability to suppress any post operations handlers to ensure
      * that only build and deploy was invoked
      * @param project
      */
-    BuildResults buildAndDeploy( final Project project, boolean suppressHandlers );
+    BuildResults buildAndDeploy( final Project project,
+                                 final boolean suppressHandlers );
+
+    /**
+     * Full build with forced deployment to Maven. Pre-existing artifacts with the same GAV will be overwritten. This
+     * method has the ability to suppress any post operations handlers to ensure * that only build and deploy is invoked
+     * @param project Project to be built
+     * @param suppressHandlers true to ignore post-processing
+     * @param mode The deployment mode
+     */
+    BuildResults buildAndDeploy( final Project project,
+                                 final boolean suppressHandlers,
+                                 final DeploymentMode mode );
 
     /**
      * Check whether a Project has been built

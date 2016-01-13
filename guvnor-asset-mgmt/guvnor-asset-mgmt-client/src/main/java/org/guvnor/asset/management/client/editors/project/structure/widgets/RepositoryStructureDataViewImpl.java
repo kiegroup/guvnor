@@ -54,7 +54,6 @@ public class RepositoryStructureDataViewImpl extends Composite
     @UiField
     FormLabel versionTextBoxHelpInline;
 
-
     @UiField
     Legend projectTypeLabel;
 
@@ -70,12 +69,12 @@ public class RepositoryStructureDataViewImpl extends Composite
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter( final Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setGroupId( String groupId ) {
+    public void setGroupId( final String groupId ) {
         groupIdTextBox.setText( groupId );
     }
 
@@ -85,7 +84,7 @@ public class RepositoryStructureDataViewImpl extends Composite
     }
 
     @Override
-    public void setArtifactId( String artifactId ) {
+    public void setArtifactId( final String artifactId ) {
         artifactIdTextBox.setText( artifactId );
     }
 
@@ -95,31 +94,27 @@ public class RepositoryStructureDataViewImpl extends Composite
     }
 
     @Override
-    public void setVersion( String version ) {
+    public void setVersion( final String version ) {
         versionTextBox.setText( version );
     }
 
     @Override
-    public String getVersionId() {
+    public String getVersion() {
         return versionTextBox.getText();
     }
 
     @Override
-    public void setMode( ViewMode mode ) {
+    public void setMode( final ViewMode mode ) {
         this.mode = mode;
 
         if ( mode == ViewMode.CREATE_STRUCTURE ) {
-
             projectTypeLabel.setText( Constants.INSTANCE.Repository_structure_view_create_projectTypeLabel() );
-
             groupIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_create_groupIdTextBoxHelpInline() );
             artifactIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_create_artifactIdTextBoxHelpInline() );
             versionTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_create_versionTextBoxHelpInline() );
 
         } else if ( mode == ViewMode.EDIT_SINGLE_MODULE_PROJECT ) {
-
             projectTypeLabel.setText( Constants.INSTANCE.Repository_structure_view_edit_single_projectTypeLabel() );
-
             groupIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_single_groupIdTextBoxHelpInline() );
             artifactIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_single_artifactIdTextBoxHelpInline() );
             versionTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_single_versionTextBoxHelpInline() );
@@ -132,9 +127,7 @@ public class RepositoryStructureDataViewImpl extends Composite
             versionTextBoxHelpInline.setVisible( true );
 
         } else if ( mode == ViewMode.EDIT_MULTI_MODULE_PROJECT ) {
-
             projectTypeLabel.setText( Constants.INSTANCE.Repository_structure_view_edit_multi_projectTypeLabel() );
-
             groupIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_multi_groupIdTextBoxHelpInline() );
             artifactIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_multi_artifactIdTextBoxHelpInline() );
             versionTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_multi_versionTextBoxHelpInline() );
@@ -147,39 +140,20 @@ public class RepositoryStructureDataViewImpl extends Composite
             versionTextBoxHelpInline.setVisible( true );
 
         } else if ( mode == ViewMode.EDIT_UNMANAGED_REPOSITORY ) {
-
             projectTypeLabel.setText( Constants.INSTANCE.Repository_structure_view_edit_unmanaged_projectTypeLabel() );
-
             groupIdTextBox.setVisible( false );
             groupIdTextBoxHelpInline.setVisible( false );
             artifactIdTextBox.setVisible( false );
             artifactIdTextBoxHelpInline.setVisible( false );
             versionTextBox.setVisible( false );
             versionTextBoxHelpInline.setVisible( false );
-
         }
-    }
-
-    public void enableUnmanagedStructureMode() {
-        //TODO
     }
 
     public void clear() {
         groupIdTextBox.setText( null );
         artifactIdTextBox.setText( null );
         versionTextBox.setText( null );
-    }
-
-    private void enableModeParams( ViewMode mode ) {
-
-        if ( mode == ViewMode.EDIT_MULTI_MODULE_PROJECT || mode == ViewMode.EDIT_SINGLE_MODULE_PROJECT ) {
-            groupIdTextBox.setVisible( true );
-            groupIdTextBoxHelpInline.setVisible( true );
-            artifactIdTextBox.setVisible( true );
-            artifactIdTextBoxHelpInline.setVisible( true );
-            versionTextBox.setVisible( true );
-            versionTextBoxHelpInline.setVisible( true );
-        }
     }
 
 }

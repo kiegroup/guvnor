@@ -49,6 +49,8 @@ public interface GAVEditorView
 
         void enableGroupID();
 
+        void enableArtifactID();
+
         void enableVersion();
 
         void setValidGroupID( final boolean isValid );
@@ -76,6 +78,8 @@ public interface GAVEditorView
     void disableVersion( final String reason );
 
     void enableGroupID();
+
+    void enableArtifactID();
 
     void enableVersion();
 

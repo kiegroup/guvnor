@@ -85,10 +85,15 @@ public class POMEditorPanelViewImpl
     public POMEditorPanelViewImpl( final Event<NotificationEvent> notificationEvent,
                                    final GAVEditor parentGavEditor,
                                    final GAVEditor gavEditor ) {
+        this.notificationEvent = notificationEvent;
         this.parentGavEditor = parentGavEditor;
         this.gavEditor = gavEditor;
+
         initWidget( uiBinder.createAndBindUi( this ) );
-        this.notificationEvent = notificationEvent;
+
+        parentGavEditor.disableGroupID( "" );
+        parentGavEditor.disableArtifactID( "" );
+        parentGavEditor.disableVersion( "" );
     }
 
     @Override
@@ -167,6 +172,11 @@ public class POMEditorPanelViewImpl
     }
 
     @Override
+    public void disableArtifactID( final String reason ) {
+        gavEditor.disableArtifactID( reason );
+    }
+
+    @Override
     public void disableVersion( final String reason ) {
         gavEditor.disableVersion( reason );
     }
@@ -174,6 +184,11 @@ public class POMEditorPanelViewImpl
     @Override
     public void enableGroupID() {
         gavEditor.enableGroupID();
+    }
+
+    @Override
+    public void enableArtifactID() {
+        gavEditor.enableArtifactID();
     }
 
     @Override

@@ -41,7 +41,7 @@ import static org.guvnor.asset.management.client.editors.repository.wizard.Wizar
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class RepositoryInfoPageTest {
 
     @GwtMock
@@ -61,18 +61,17 @@ public class RepositoryInfoPageTest {
 
     WizardPageStatusChangeHandler statusChangeHandler = mock( WizardPageStatusChangeHandler.class );
 
-
     @Before
     public void initPage() {
         WizardTestUtils.WizardPageStatusChangeEventMock event = new WizardTestUtils.WizardPageStatusChangeEventMock();
 
         infoPage = new RepositoryInfoPageExtended( view,
-                new OrganizationalUnitServiceCallerMock( organizationalUnitService ),
-                new RepositoryServiceCallerMock( repositoryService ),
-                true,
-                event );
+                                                   new OrganizationalUnitServiceCallerMock( organizationalUnitService ),
+                                                   new RepositoryServiceCallerMock( repositoryService ),
+                                                   true,
+                                                   event );
 
-        event.addEventHandler(statusChangeHandler);
+        event.addEventHandler( statusChangeHandler );
 
         model = new CreateRepositoryWizardModel();
         infoPage.setModel( model );
@@ -128,7 +127,7 @@ public class RepositoryInfoPageTest {
         infoPage.onOUChange();
 
         verify( view, times( 1 ) ).getOrganizationalUnitName();
-        verify( statusChangeHandler, times(1) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
+        verify( statusChangeHandler, times( 1 ) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
 
         assertEquals( organizationalUnits.get( 0 ), model.getOrganizationalUnit() );
 
@@ -139,19 +138,17 @@ public class RepositoryInfoPageTest {
      * Tests that the page reacts properly when a valid repository name is entered.
      */
     @Test
-    public void testValidRepositoryNameChange( ) {
+    public void testValidRepositoryNameChange() {
 
         when( repositoryService.validateRepositoryName( "ValidRepo" ) ).thenReturn( true );
         when( repositoryService.validateRepositoryName( "InvalidRepo" ) ).thenReturn( false );
-
 
         when( view.getName() ).thenReturn( "ValidRepo" );
         infoPage.onNameChange();
 
         verify( view, times( 2 ) ).getName();
         verify( view, times( 1 ) ).clearNameErrorMessage();
-        verify( statusChangeHandler, times(1) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
-
+        verify( statusChangeHandler, times( 1 ) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
 
         assertEquals( "ValidRepo", model.getRepositoryName() );
 
@@ -162,11 +159,10 @@ public class RepositoryInfoPageTest {
      * Tests that the page reacts properly when an invalid repository name is typed.
      */
     @Test
-    public void testInvalidRepositoryNameChange( ) {
+    public void testInvalidRepositoryNameChange() {
 
         when( repositoryService.validateRepositoryName( "ValidRepo" ) ).thenReturn( true );
         when( repositoryService.validateRepositoryName( "InvalidRepo" ) ).thenReturn( false );
-
 
         when( view.getName() ).thenReturn( "InvalidRepo" );
         infoPage.onNameChange();
@@ -186,7 +182,7 @@ public class RepositoryInfoPageTest {
     @Test
     public void testManagedRepositorySelected() {
         testManagedRepositoryChange( true );
-        verify( statusChangeHandler, times(1) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
+        verify( statusChangeHandler, times( 1 ) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
     }
 
     /**
@@ -225,7 +221,7 @@ public class RepositoryInfoPageTest {
         infoPage.onNameChange();
         infoPage.onOUChange();
 
-        verify( statusChangeHandler, times(2) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
+        verify( statusChangeHandler, times( 2 ) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
 
         assertEquals( organizationalUnits.get( 0 ), model.getOrganizationalUnit() );
         assertEquals( "ValidRepo", model.getRepositoryName() );
@@ -234,34 +230,33 @@ public class RepositoryInfoPageTest {
     }
 
     public static List<OrganizationalUnit> buildOrganiztionalUnits() {
-        List<OrganizationalUnit> organizationalUnits = new ArrayList<OrganizationalUnit>(  );
+        List<OrganizationalUnit> organizationalUnits = new ArrayList<OrganizationalUnit>();
 
-        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl( "OrganizationalUnit1", "user1", "group1");
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl( "OrganizationalUnit1", "user1", "group1" );
         organizationalUnits.add( organizationalUnit );
 
-        organizationalUnit = new OrganizationalUnitImpl( "OrganizationalUnit2", "user2", "group2");
+        organizationalUnit = new OrganizationalUnitImpl( "OrganizationalUnit2", "user2", "group2" );
         organizationalUnits.add( organizationalUnit );
         return organizationalUnits;
     }
 
     public static List<Pair<String, String>> buildOrganiztionalUnitsInfo( Collection<OrganizationalUnit> organizationalUnits ) {
-        List<Pair<String, String>> organizationalUnitsInfo = new ArrayList<Pair<String, String>>(  );
+        List<Pair<String, String>> organizationalUnitsInfo = new ArrayList<Pair<String, String>>();
         for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
             organizationalUnitsInfo.add( new Pair( organizationalUnit.getName(), organizationalUnit.getName() ) );
         }
         return organizationalUnitsInfo;
     }
 
-
     public static class RepositoryInfoPageExtended extends RepositoryInfoPage {
 
         private boolean ouMandatory = false;
 
         public RepositoryInfoPageExtended( RepositoryInfoPageView view,
-                Caller<OrganizationalUnitService> organizationalUnitService,
-                Caller<RepositoryService> repositoryService,
-                boolean ouMandatory,
-                WizardPageStatusChangeEventMock event ) {
+                                           Caller<OrganizationalUnitService> organizationalUnitService,
+                                           Caller<RepositoryService> repositoryService,
+                                           boolean ouMandatory,
+                                           WizardPageStatusChangeEventMock event ) {
 
             super( view, organizationalUnitService, repositoryService );
             this.ouMandatory = ouMandatory;

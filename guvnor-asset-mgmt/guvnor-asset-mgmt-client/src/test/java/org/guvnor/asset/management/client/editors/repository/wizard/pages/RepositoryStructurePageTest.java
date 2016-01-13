@@ -18,19 +18,19 @@ package org.guvnor.asset.management.client.editors.repository.wizard.pages;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.asset.management.backend.service.RepositoryStructureServiceCallerMock;
 import org.guvnor.asset.management.client.editors.repository.wizard.CreateRepositoryWizardModel;
 import org.guvnor.asset.management.client.editors.repository.wizard.WizardTestUtils;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.mocks.CallerMock;
 
 import static org.guvnor.asset.management.client.editors.repository.wizard.WizardTestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class RepositoryStructurePageTest {
 
     private static final String VALID_VALUE = "Valid";
@@ -45,7 +45,7 @@ public class RepositoryStructurePageTest {
     @Test
     public void testPageLoad() {
         RepositoryStructurePage structurePage = new RepositoryStructurePage( view,
-                new RepositoryStructureServiceCallerMock( repositoryStructureService ) );
+                                                                             new CallerMock<RepositoryStructureService>( repositoryStructureService ) );
 
     }
 
@@ -68,8 +68,8 @@ public class RepositoryStructurePageTest {
     private void testProjectNameChange( boolean testValidChange ) {
 
         RepositoryStructurePageExtended structurePage = new RepositoryStructurePageExtended( view,
-                new RepositoryStructureServiceCallerMock( repositoryStructureService ),
-                new WizardTestUtils.WizardPageStatusChangeEventMock() );
+                                                                                             new CallerMock<RepositoryStructureService>( repositoryStructureService ),
+                                                                                             new WizardTestUtils.WizardPageStatusChangeEventMock() );
 
         CreateRepositoryWizardModel model = new CreateRepositoryWizardModel();
         structurePage.setModel( model );
@@ -88,7 +88,7 @@ public class RepositoryStructurePageTest {
         verify( view, times( 2 ) ).getProjectName();
 
         if ( testValidChange ) {
-            verify( view, times( 1 ) ).clearProjectNameErrorMessage( );
+            verify( view, times( 1 ) ).clearProjectNameErrorMessage();
             assertEquals( VALID_VALUE, model.getProjectName() );
         } else {
             verify( view, times( 1 ) ).setProjectNameErrorMessage( anyString() );
@@ -117,8 +117,8 @@ public class RepositoryStructurePageTest {
     private void testGroupIdChange( boolean testValidChange ) {
 
         RepositoryStructurePageExtended structurePage = new RepositoryStructurePageExtended( view,
-                new RepositoryStructureServiceCallerMock( repositoryStructureService ),
-                new WizardTestUtils.WizardPageStatusChangeEventMock() );
+                                                                                             new CallerMock<RepositoryStructureService>( repositoryStructureService ),
+                                                                                             new WizardTestUtils.WizardPageStatusChangeEventMock() );
 
         CreateRepositoryWizardModel model = new CreateRepositoryWizardModel();
         structurePage.setModel( model );
@@ -166,8 +166,8 @@ public class RepositoryStructurePageTest {
     private void testArtifactIdChange( boolean testValidChange ) {
 
         RepositoryStructurePageExtended structurePage = new RepositoryStructurePageExtended( view,
-                new RepositoryStructureServiceCallerMock( repositoryStructureService ),
-                new WizardTestUtils.WizardPageStatusChangeEventMock() );
+                                                                                             new CallerMock<RepositoryStructureService>( repositoryStructureService ),
+                                                                                             new WizardTestUtils.WizardPageStatusChangeEventMock() );
 
         CreateRepositoryWizardModel model = new CreateRepositoryWizardModel();
         structurePage.setModel( model );
@@ -215,8 +215,8 @@ public class RepositoryStructurePageTest {
     private void testVersionChange( boolean testValidChange ) {
 
         RepositoryStructurePageExtended structurePage = new RepositoryStructurePageExtended( view,
-                new RepositoryStructureServiceCallerMock( repositoryStructureService ),
-                new WizardTestUtils.WizardPageStatusChangeEventMock() );
+                                                                                             new CallerMock<RepositoryStructureService>( repositoryStructureService ),
+                                                                                             new WizardTestUtils.WizardPageStatusChangeEventMock() );
 
         CreateRepositoryWizardModel model = new CreateRepositoryWizardModel();
         structurePage.setModel( model );
@@ -245,7 +245,6 @@ public class RepositoryStructurePageTest {
         assertPageComplete( false, structurePage );
     }
 
-
     /**
      * Test a sequence of steps that will successfully complete the page.
      */
@@ -258,8 +257,8 @@ public class RepositoryStructurePageTest {
         String version = "Version";
 
         RepositoryStructurePageExtended structurePage = new RepositoryStructurePageExtended( view,
-                new RepositoryStructureServiceCallerMock( repositoryStructureService ),
-                new WizardTestUtils.WizardPageStatusChangeEventMock() );
+                                                                                             new CallerMock<RepositoryStructureService>( repositoryStructureService ),
+                                                                                             new WizardTestUtils.WizardPageStatusChangeEventMock() );
 
         CreateRepositoryWizardModel model = new CreateRepositoryWizardModel();
         structurePage.setModel( model );
@@ -295,8 +294,8 @@ public class RepositoryStructurePageTest {
     public static class RepositoryStructurePageExtended extends RepositoryStructurePage {
 
         public RepositoryStructurePageExtended( RepositoryStructurePageView view,
-                Caller<RepositoryStructureService> repositoryStructureService,
-                WizardPageStatusChangeEventMock event ) {
+                                                Caller<RepositoryStructureService> repositoryStructureService,
+                                                WizardPageStatusChangeEventMock event ) {
             super( view, repositoryStructureService );
             super.wizardPageStatusChangeEvent = event;
         }

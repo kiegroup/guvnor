@@ -71,19 +71,20 @@ public class ProjectModulesViewImpl extends Composite
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter( final Presenter presenter ) {
         this.presenter = presenter;
         presenter.addDataDisplay( modulesTable );
     }
 
     @Override
-    public void setMode( ViewMode mode ) {
+    public void setMode( final ViewMode mode ) {
         if ( mode == ViewMode.PROJECTS_VIEW ) {
             addModuleButton.setText( Constants.INSTANCE.NewProject() );
             modulesLabel.setText( Constants.INSTANCE.Projects() );
             if ( modulesColumn != null ) {
                 modulesColumn.setDataStoreName( Constants.INSTANCE.Project() );
             }
+
         } else {
             addModuleButton.setText( Constants.INSTANCE.AddModule() );
             modulesLabel.setText( Constants.INSTANCE.Modules() );
@@ -94,31 +95,29 @@ public class ProjectModulesViewImpl extends Composite
     }
 
     @Override
-    public void enableActions( boolean value ) {
+    public void enableActions( final boolean value ) {
         addModuleButton.setEnabled( value );
         actionsEnabled = value;
     }
 
     private void addModuleColumn() {
-
-        //Column<ProjectModuleRow, ?> column
         modulesColumn = new Column<ProjectModuleRow, String>( new TextCell() ) {
             @Override
-            public String getValue( ProjectModuleRow row ) {
+            public String getValue( final ProjectModuleRow row ) {
                 return row.getName();
             }
         };
-        modulesTable.addColumn( modulesColumn, Constants.INSTANCE.Module() );
+        modulesTable.addColumn( modulesColumn,
+                                Constants.INSTANCE.Module() );
         modulesTable.setColumnWidth( modulesColumn,
                                      70,
                                      Style.Unit.PCT );
-
     }
 
     private void addDeleteModuleColumn() {
-
-        //TODO add i18n constants.
-        final ButtonCell deleteModuleButton = new ButtonCell( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL );
+        final ButtonCell deleteModuleButton = new ButtonCell( IconType.TRASH,
+                                                              ButtonType.DANGER,
+                                                              ButtonSize.SMALL );
         final Column<ProjectModuleRow, String> deleteModuleColumn = new Column<ProjectModuleRow, String>( deleteModuleButton ) {
             @Override
             public String getValue( final ProjectModuleRow moduleRow ) {
@@ -135,7 +134,8 @@ public class ProjectModulesViewImpl extends Composite
             }
         } );
 
-        modulesTable.addColumn( deleteModuleColumn, "" );
+        modulesTable.addColumn( deleteModuleColumn,
+                                "" );
         modulesTable.setColumnWidth( deleteModuleColumn,
                                      15,
                                      Style.Unit.PCT );
@@ -143,8 +143,9 @@ public class ProjectModulesViewImpl extends Composite
     }
 
     private void addEditModuleColumn() {
-
-        final ButtonCell editModuleButton = new ButtonCell( IconType.EDIT, ButtonType.PRIMARY, ButtonSize.SMALL );
+        final ButtonCell editModuleButton = new ButtonCell( IconType.EDIT,
+                                                            ButtonType.PRIMARY,
+                                                            ButtonSize.SMALL );
         final Column<ProjectModuleRow, String> editModuleColumn = new Column<ProjectModuleRow, String>( editModuleButton ) {
             @Override
             public String getValue( final ProjectModuleRow moduleRow ) {

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -31,8 +31,10 @@ import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestService;
@@ -61,7 +63,7 @@ public class JobRequestHelper {
     private static final Logger logger = LoggerFactory.getLogger( JobRequestHelper.class );
 
     public static final String GUVNOR_BASE_URL = "/";
-    
+
     @Inject
     private RepositoryService repositoryService;
 
@@ -96,14 +98,14 @@ public class JobRequestHelper {
         final String scheme = "git";
 
         String orgUnitName = repository.getOrganizationalUnitName();
-        OrganizationalUnit orgUnit = organizationalUnitService.getOrganizationalUnit(repository.getOrganizationalUnitName());
-        if( orgUnit == null ) { 
+        OrganizationalUnit orgUnit = organizationalUnitService.getOrganizationalUnit( repository.getOrganizationalUnitName() );
+        if ( orgUnit == null ) {
             // double check, this is also checked at input
             result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "Organizational unit '" + orgUnitName + "' does not exist!" );
             return result;
         }
-        
+
         if ( "new".equals( repository.getRequestType() ) ) {
             if ( repository.getName() == null || "".equals( repository.getName() ) ) {
                 result.setStatus( JobStatus.BAD_REQUEST );
@@ -121,10 +123,10 @@ public class JobRequestHelper {
             }
             env.put( "init", true );
 
-            org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( 
+            org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository(
                     orgUnit,
-                    scheme, 
-                    repository.getName(), 
+                    scheme,
+                    repository.getName(),
                     env );
             if ( newlyCreatedRepo != null ) {
                 result.setStatus( JobStatus.SUCCESS );
@@ -150,10 +152,10 @@ public class JobRequestHelper {
             }
             env.put( "origin", repository.getGitURL() );
 
-            org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( 
+            org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository(
                     orgUnit,
-                    scheme, 
-                    repository.getName(), 
+                    scheme,
+                    repository.getName(),
                     env );
             if ( newlyCreatedRepo != null ) {
                 result.setStatus( JobStatus.SUCCESS );
@@ -188,19 +190,19 @@ public class JobRequestHelper {
                                     final String projectName,
                                     String projectGroupId,
                                     String projectVersion,
-                                    String projectDescription) {
+                                    String projectDescription ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
-        if( projectGroupId == null || projectGroupId.trim().isEmpty() ) { 
+        if ( projectGroupId == null || projectGroupId.trim().isEmpty() ) {
             projectGroupId = projectName;
         }
-        if( projectVersion == null || projectVersion.trim().isEmpty() ) { 
+        if ( projectVersion == null || projectVersion.trim().isEmpty() ) {
             projectVersion = "1.0";
         }
-        
+
         if ( repositoryPath == null ) {
             result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
@@ -210,13 +212,19 @@ public class JobRequestHelper {
             pom.getGav().setArtifactId( projectName );
             pom.getGav().setGroupId( projectGroupId );
             pom.getGav().setVersion( projectVersion );
-            pom.setDescription(projectDescription);
-            pom.setName(projectName);
+            pom.setDescription( projectDescription );
+            pom.setName( projectName );
 
             try {
                 projectService.newProject( makeRepository( Paths.convert( repositoryPath ) ),
                                            pom,
                                            GUVNOR_BASE_URL );
+
+            } catch ( GAVAlreadyExistsException gae ) {
+                result.setStatus( JobStatus.DUPLICATE_RESOURCE );
+                result.setResult( "Project's GAV [" + gae.getGAV().toString() + "] already exists at [" + toString( gae.getRepositories() ) + "]" );
+                return result;
+
             } catch ( org.uberfire.java.nio.file.FileAlreadyExistsException e ) {
                 result.setStatus( JobStatus.DUPLICATE_RESOURCE );
                 result.setResult( "Project [" + projectName + "] already exists" );
@@ -230,6 +238,16 @@ public class JobRequestHelper {
         }
     }
 
+    private String toString( final Set<MavenRepositoryMetadata> repositories ) {
+        final StringBuilder sb = new StringBuilder();
+        for ( MavenRepositoryMetadata md : repositories ) {
+            sb.append( md.getId() ).append( " : " ).append( md.getUrl() ).append( " : " ).append( md.getSource() ).append( ", " );
+        }
+        sb.delete( sb.length() - 2,
+                   sb.length() - 1 );
+        return sb.toString();
+    }
+
     private org.guvnor.structure.repositories.Repository makeRepository( final Path repositoryRoot ) {
         return new GitRepository() {
             @Override
@@ -239,7 +257,9 @@ public class JobRequestHelper {
         };
     }
 
-    public JobResult deleteProject( String jobId, String repositoryName, String projectName ) {
+    public JobResult deleteProject( String jobId,
+                                    String repositoryName,
+                                    String projectName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -251,27 +271,27 @@ public class JobRequestHelper {
             return result;
         } else {
             String repoPathStr = repositoryPath.toUri().toString();
-            StringBuilder projectPomUriStrBdr = new StringBuilder(repoPathStr);
-            if( ! repoPathStr.endsWith("/") ) { 
-                projectPomUriStrBdr.append("/");
+            StringBuilder projectPomUriStrBdr = new StringBuilder( repoPathStr );
+            if ( !repoPathStr.endsWith( "/" ) ) {
+                projectPomUriStrBdr.append( "/" );
             }
-            projectPomUriStrBdr.append(projectName).append("/pom.xml");
-            URI projectPomUri = URI.create(projectPomUriStrBdr.toString());
-            Path projectPomPath = Paths.convert(org.uberfire.java.nio.file.Paths.get(projectPomUri));
+            projectPomUriStrBdr.append( projectName ).append( "/pom.xml" );
+            URI projectPomUri = URI.create( projectPomUriStrBdr.toString() );
+            Path projectPomPath = Paths.convert( org.uberfire.java.nio.file.Paths.get( projectPomUri ) );
             try {
                 projectService.delete( projectPomPath, "Deleting project via REST request" );
             } catch ( Exception e ) {
                 result.setStatus( JobStatus.FAIL );
                 result.setResult( "Project [" + projectName + "] could not be deleted: " + e.getMessage() );
-                logger.error("Unable to delete project '" + projectName + "': " + e.getMessage(), e );
+                logger.error( "Unable to delete project '" + projectName + "': " + e.getMessage(), e );
                 return result;
             }
 
             result.setStatus( JobStatus.SUCCESS );
             return result;
         }
-    }        
-    
+    }
+
     public JobResult compileProject( final String jobId,
                                      final String repositoryName,
                                      final String projectName ) {
@@ -339,6 +359,12 @@ public class JobRequestHelper {
 
                 result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
                 result.setStatus( buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
+
+            } catch ( GAVAlreadyExistsException gae ) {
+                result.setStatus( JobStatus.DUPLICATE_RESOURCE );
+                result.setResult( "Project's GAV [" + gae.getGAV().toString() + "] already exists at [" + toString( gae.getRepositories() ) + "]" );
+                return result;
+
             } catch ( Throwable t ) {
                 List<String> errorResult = new ArrayList<String>();
                 errorResult.add( t.getMessage() );
@@ -382,26 +408,27 @@ public class JobRequestHelper {
             }
 
             //TODO: Get session from BuildConfig or create a default session for testing if no session is provided.
-            testService.runAllTests(project.getPomXMLPath(), new Event<TestResultMessage>() {
+            testService.runAllTests( project.getPomXMLPath(), new Event<TestResultMessage>() {
                 @Override
-                public void fire(TestResultMessage event) {
-                    result.setDetailedResult(event.getResultStrings());
-                    result.setStatus(event.wasSuccessful() ? JobStatus.SUCCESS : JobStatus.FAIL);
+                public void fire( TestResultMessage event ) {
+                    result.setDetailedResult( event.getResultStrings() );
+                    result.setStatus( event.wasSuccessful() ? JobStatus.SUCCESS : JobStatus.FAIL );
                 }
 
                 @Override
-                public Event<TestResultMessage> select(Annotation... qualifiers) {
+                public Event<TestResultMessage> select( Annotation... qualifiers ) {
                     // not used
                     return null;
                 }
 
                 @Override
-                public <U extends TestResultMessage> Event<U> select( Class<U> subtype, Annotation... qualifiers ) {
+                public <U extends TestResultMessage> Event<U> select( Class<U> subtype,
+                                                                      Annotation... qualifiers ) {
                     // not used
                     return null;
                 }
 
-            });
+            } );
             return result;
         }
     }
@@ -427,10 +454,19 @@ public class JobRequestHelper {
                 return result;
             }
 
-            BuildResults buildResults = buildService.buildAndDeploy( project );
+            BuildResults buildResults = null;
+            try {
+                buildResults = buildService.buildAndDeploy( project );
 
-            result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
-            result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
+                result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
+                result.setStatus( buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
+
+            } catch ( GAVAlreadyExistsException gae ) {
+                result.setStatus( JobStatus.DUPLICATE_RESOURCE );
+                result.setResult( "Project's GAV [" + gae.getGAV().toString() + "] already exists at [" + toString( gae.getRepositories() ) + "]" );
+                return result;
+            }
+
             return result;
         }
     }
@@ -481,14 +517,14 @@ public class JobRequestHelper {
             if ( !organizationalUnitService.isValidGroupId( defaultGroupId ) ) {
                 result.setStatus( JobStatus.BAD_REQUEST );
                 result.setResult( "Invalid default group id, only alphanumerical characters are admitted, " +
-                        "as well as '\"_\"', '\"-\"' or '\".\"'." );
+                                          "as well as '\"_\"', '\"-\"' or '\".\"'." );
                 return result;
             } else {
                 _defaultGroupId = defaultGroupId;
             }
         }
 
-        OrganizationalUnit organizationalUnit = organizationalUnitService.getOrganizationalUnit(organizationalUnitName);
+        OrganizationalUnit organizationalUnit = organizationalUnitService.getOrganizationalUnit( organizationalUnitName );
         if ( organizationalUnit != null ) {
             result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "OrganizationalUnit with name " + organizationalUnitName + " already exists" );
@@ -528,9 +564,9 @@ public class JobRequestHelper {
     }
 
     public JobResult updateOrganizationalUnit( final String jobId,
-            final String organizationalUnitName,
-            final String organizationalUnitOwner,
-            final String defaultGroupId ) {
+                                               final String organizationalUnitName,
+                                               final String organizationalUnitOwner,
+                                               final String defaultGroupId ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -548,7 +584,7 @@ public class JobRequestHelper {
             if ( !organizationalUnitService.isValidGroupId( defaultGroupId ) ) {
                 result.setStatus( JobStatus.BAD_REQUEST );
                 result.setResult( "Invalid default group id, only alphanumerical characters are admitted, " +
-                        "as well as '\"_\"', '\"-\"' or '\".\"'." );
+                                          "as well as '\"_\"', '\"-\"' or '\".\"'." );
                 return result;
             } else {
                 _defaultGroupId = defaultGroupId;

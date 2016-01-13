@@ -33,15 +33,15 @@ public interface RepositoryStructureView
 
     }
 
-    void setPresenter( RepositoryStructurePresenter repositoryStructurePresenter );
+    void setPresenter( final RepositoryStructurePresenter repositoryStructurePresenter );
 
     RepositoryStructureDataView getDataView();
 
     ProjectModulesView getModulesView();
 
-    void setModel( RepositoryStructureModel model );
+    void setModel( final RepositoryStructureModel model );
 
-    void setModulesViewVisible( boolean visible );
+    void setModulesViewVisible( final boolean visible );
 
     void clear();
 
