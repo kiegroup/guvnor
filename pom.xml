@@ -55,6 +55,7 @@
   </repositories>
 
   <modules>
+    <module>guvnor-test-utils</module>
     <module>guvnor-structure</module>
     <module>guvnor-services</module>
     <module>guvnor-rest</module>
