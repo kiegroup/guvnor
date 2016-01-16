@@ -174,12 +174,8 @@ public class CreateRepositoryWizardTest {
     @Test
     public void testUnmanagedRepositoryCompletedTest() {
 
-        when( infoPageView.getName() ).thenReturn( REPOSITORY_NAME );
-        when( infoPageView.getOrganizationalUnitName() ).thenReturn( ORGANIZATIONAL_UNIT );
+        setupNameAndOrgUnitMocks(true, ORGANIZATIONAL_UNIT);
         when( infoPageView.isManagedRepository() ).thenReturn( false );
-
-        when( repositoryService.validateRepositoryName( REPOSITORY_NAME ) ).thenReturn( true );
-        when( repositoryService.normalizeRepositoryName( REPOSITORY_NAME ) ).thenReturn( REPOSITORY_NAME );
 
         createRepositoryWizard.start();
 
@@ -208,12 +204,8 @@ public class CreateRepositoryWizardTest {
     public void testManagedRepositoryMultiCompletedTest() {
 
         //user completes the first page
-        when( infoPageView.getName() ).thenReturn( REPOSITORY_NAME );
-        when( infoPageView.getOrganizationalUnitName() ).thenReturn( ORGANIZATIONAL_UNIT );
+        setupNameAndOrgUnitMocks(true, ORGANIZATIONAL_UNIT);
         when( infoPageView.isManagedRepository() ).thenReturn( true );
-
-        when( repositoryService.validateRepositoryName( REPOSITORY_NAME ) ).thenReturn( true );
-        when( repositoryService.normalizeRepositoryName( REPOSITORY_NAME ) ).thenReturn( REPOSITORY_NAME );
 
         createRepositoryWizard.start();
 
@@ -291,6 +283,69 @@ public class CreateRepositoryWizardTest {
         assertEquals( VERSION, model.getVersion() );
 
         WizardTestUtils.assertWizardComplete( true, createRepositoryWizard );
+    }
+
+    @Test
+    public void testCompletionStatusSuccess() {
+        setupNameAndOrgUnitMocks(true, ORGANIZATIONAL_UNIT);
+
+        createRepositoryWizard.start();
+
+        infoPage.onNameChange();
+        infoPage.onOUChange();
+
+        verify(view, times(2)).setCompletionStatus(false);
+        verify(view, times(2)).setPageCompletionState(0, false);
+
+        verify(view, times(1)).setCompletionStatus(true);
+        verify(view, times(1)).setPageCompletionState(0, true);
+    }
+
+    @Test
+    public void testCompletionInvalidName() {
+        setupNameAndOrgUnitMocks(false, ORGANIZATIONAL_UNIT);
+
+        createRepositoryWizard.start();
+
+        infoPage.onNameChange();
+        infoPage.onOUChange();
+
+        verify(view, times(2)).setCompletionStatus(false);
+        verify(view, times(2)).setPageCompletionState(0, false);
+    }
+
+    @Test
+    public void testCompletionNoOrganizationalUnit() {
+        setupNameAndOrgUnitMocks(true, null);
+
+        createRepositoryWizard.start();
+
+        infoPage.onNameChange();
+        infoPage.onOUChange();
+
+        verify(view, times(2)).setCompletionStatus(false);
+        verify(view, times(2)).setPageCompletionState(0, false);
+    }
+
+    @Test
+    public void testCompletionInvalidNameAndNoOrganizationalUnit() {
+        setupNameAndOrgUnitMocks(false, null);
+
+        createRepositoryWizard.start();
+
+        infoPage.onNameChange();
+        infoPage.onOUChange();
+
+        verify(view, times(1)).setCompletionStatus(false);
+        verify(view, times(1)).setPageCompletionState(0, false);
+    }
+
+    private void setupNameAndOrgUnitMocks(boolean isRepoNameValid, String orgUnit) {
+        when( infoPageView.getName() ).thenReturn( REPOSITORY_NAME );
+        when( infoPageView.getOrganizationalUnitName() ).thenReturn( orgUnit );
+
+        when( repositoryService.validateRepositoryName( REPOSITORY_NAME ) ).thenReturn( isRepoNameValid );
+        when( repositoryService.normalizeRepositoryName( REPOSITORY_NAME ) ).thenReturn( REPOSITORY_NAME );
     }
 
     public static class CreateRepositoryWizardExtended
