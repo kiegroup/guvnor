@@ -31,9 +31,11 @@ import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.RepositoryServiceCallerMock;
 import org.jboss.errai.common.client.api.Caller;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
 import static org.guvnor.asset.management.client.editors.repository.wizard.WizardTestUtils.*;
 import static org.junit.Assert.*;
@@ -53,20 +55,34 @@ public class RepositoryInfoPageTest {
 
     List<Pair<String, String>> organizationalUnitsInfo = buildOrganiztionalUnitsInfo( organizationalUnits );
 
+    RepositoryInfoPage infoPage;
+
+    CreateRepositoryWizardModel model;
+
+    WizardPageStatusChangeHandler statusChangeHandler = mock( WizardPageStatusChangeHandler.class );
+
+
+    @Before
+    public void initPage() {
+        WizardTestUtils.WizardPageStatusChangeEventMock event = new WizardTestUtils.WizardPageStatusChangeEventMock();
+
+        infoPage = new RepositoryInfoPageExtended( view,
+                new OrganizationalUnitServiceCallerMock( organizationalUnitService ),
+                new RepositoryServiceCallerMock( repositoryService ),
+                true,
+                event );
+
+        event.addEventHandler(statusChangeHandler);
+
+        model = new CreateRepositoryWizardModel();
+        infoPage.setModel( model );
+    }
+
     /**
      * Tests that organizational units information is properly loaded when the page is initialized.
      */
     @Test
     public void testPageLoad() {
-
-        RepositoryInfoPage infoPage = new RepositoryInfoPageExtended( view,
-                new OrganizationalUnitServiceCallerMock( organizationalUnitService ),
-                new RepositoryServiceCallerMock( repositoryService ),
-                true,
-                new WizardTestUtils.WizardPageStatusChangeEventMock() );
-
-        CreateRepositoryWizardModel model = new CreateRepositoryWizardModel();
-        infoPage.setModel( model );
 
         when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( organizationalUnits );
 
@@ -74,6 +90,27 @@ public class RepositoryInfoPageTest {
 
         verify( view, times( 1 ) ).init( infoPage );
         verify( view ).initOrganizationalUnits( eq( organizationalUnitsInfo ) );
+        verify( statusChangeHandler, never() ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
+
+        assertPageComplete( false, infoPage );
+    }
+
+    /**
+     * Tests that the page reacts properly when there is no selected organizational unit.
+     */
+    @Test
+    public void testNoSelectedOrganizationalUnit() {
+
+        when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( organizationalUnits );
+        when( view.getOrganizationalUnitName() ).thenReturn( RepositoryInfoPageView.NOT_SELECTED );
+
+        infoPage.prepareView();
+        infoPage.onOUChange();
+
+        verify( view, times( 1 ) ).getOrganizationalUnitName();
+        verify( statusChangeHandler, never() ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
+
+        assertEquals( null, model.getOrganizationalUnit() );
 
         assertPageComplete( false, infoPage );
     }
@@ -84,15 +121,6 @@ public class RepositoryInfoPageTest {
     @Test
     public void testOrganizationalUnitChange() {
 
-        RepositoryInfoPage infoPage = new RepositoryInfoPageExtended( view,
-                new OrganizationalUnitServiceCallerMock( organizationalUnitService ),
-                new RepositoryServiceCallerMock( repositoryService ),
-                true,
-                new WizardTestUtils.WizardPageStatusChangeEventMock() );
-
-        CreateRepositoryWizardModel model = new CreateRepositoryWizardModel();
-        infoPage.setModel( model );
-
         when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( organizationalUnits );
         when( view.getOrganizationalUnitName() ).thenReturn( "OrganizationalUnit1" );
 
@@ -100,6 +128,7 @@ public class RepositoryInfoPageTest {
         infoPage.onOUChange();
 
         verify( view, times( 1 ) ).getOrganizationalUnitName();
+        verify( statusChangeHandler, times(1) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
 
         assertEquals( organizationalUnits.get( 0 ), model.getOrganizationalUnit() );
 
@@ -112,15 +141,6 @@ public class RepositoryInfoPageTest {
     @Test
     public void testValidRepositoryNameChange( ) {
 
-        RepositoryInfoPage infoPage = new RepositoryInfoPageExtended( view,
-                new OrganizationalUnitServiceCallerMock( organizationalUnitService ),
-                new RepositoryServiceCallerMock( repositoryService ),
-                true,
-                new WizardTestUtils.WizardPageStatusChangeEventMock() );
-
-        CreateRepositoryWizardModel model = new CreateRepositoryWizardModel();
-        infoPage.setModel( model );
-
         when( repositoryService.validateRepositoryName( "ValidRepo" ) ).thenReturn( true );
         when( repositoryService.validateRepositoryName( "InvalidRepo" ) ).thenReturn( false );
 
@@ -130,6 +150,7 @@ public class RepositoryInfoPageTest {
 
         verify( view, times( 2 ) ).getName();
         verify( view, times( 1 ) ).clearNameErrorMessage();
+        verify( statusChangeHandler, times(1) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
 
 
         assertEquals( "ValidRepo", model.getRepositoryName() );
@@ -143,15 +164,6 @@ public class RepositoryInfoPageTest {
     @Test
     public void testInvalidRepositoryNameChange( ) {
 
-        RepositoryInfoPage infoPage = new RepositoryInfoPageExtended( view,
-                new OrganizationalUnitServiceCallerMock( organizationalUnitService ),
-                new RepositoryServiceCallerMock( repositoryService ),
-                true,
-                new WizardTestUtils.WizardPageStatusChangeEventMock() );
-
-        CreateRepositoryWizardModel model = new CreateRepositoryWizardModel();
-        infoPage.setModel( model );
-
         when( repositoryService.validateRepositoryName( "ValidRepo" ) ).thenReturn( true );
         when( repositoryService.validateRepositoryName( "InvalidRepo" ) ).thenReturn( false );
 
@@ -161,6 +173,7 @@ public class RepositoryInfoPageTest {
 
         verify( view, times( 2 ) ).getName();
         verify( view, times( 1 ) ).setNameErrorMessage( anyString() );
+        verify( statusChangeHandler, never() ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
 
         assertEquals( "InvalidRepo", model.getRepositoryName() );
 
@@ -173,6 +186,7 @@ public class RepositoryInfoPageTest {
     @Test
     public void testManagedRepositorySelected() {
         testManagedRepositoryChange( true );
+        verify( statusChangeHandler, times(1) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
     }
 
     /**
@@ -181,18 +195,10 @@ public class RepositoryInfoPageTest {
     @Test
     public void testUnManagedRepositorySelected() {
         testManagedRepositoryChange( false );
+        verify( statusChangeHandler, never() ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
     }
 
     private void testManagedRepositoryChange( boolean isManaged ) {
-
-        RepositoryInfoPage infoPage = new RepositoryInfoPageExtended( view,
-                new OrganizationalUnitServiceCallerMock( organizationalUnitService ),
-                new RepositoryServiceCallerMock( repositoryService ),
-                true,
-                new WizardTestUtils.WizardPageStatusChangeEventMock() );
-
-        CreateRepositoryWizardModel model = new CreateRepositoryWizardModel();
-        infoPage.setModel( model );
 
         when( view.isManagedRepository() ).thenReturn( isManaged );
         infoPage.onManagedRepositoryChange();
@@ -210,15 +216,6 @@ public class RepositoryInfoPageTest {
     @Test
     public void testPageCompleted() {
 
-        RepositoryInfoPage infoPage = new RepositoryInfoPageExtended( view,
-                new OrganizationalUnitServiceCallerMock( organizationalUnitService ),
-                new RepositoryServiceCallerMock( repositoryService ),
-                true,
-                new WizardTestUtils.WizardPageStatusChangeEventMock() );
-
-        CreateRepositoryWizardModel model = new CreateRepositoryWizardModel();
-        infoPage.setModel( model );
-
         when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( organizationalUnits );
         when( repositoryService.validateRepositoryName( "ValidRepo" ) ).thenReturn( true );
         when( view.getOrganizationalUnitName() ).thenReturn( "OrganizationalUnit1" );
@@ -227,6 +224,8 @@ public class RepositoryInfoPageTest {
         infoPage.prepareView();
         infoPage.onNameChange();
         infoPage.onOUChange();
+
+        verify( statusChangeHandler, times(2) ).handleEvent( any( WizardPageStatusChangeEvent.class ) );
 
         assertEquals( organizationalUnits.get( 0 ), model.getOrganizationalUnit() );
         assertEquals( "ValidRepo", model.getRepositoryName() );
