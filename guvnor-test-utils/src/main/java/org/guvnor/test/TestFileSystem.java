@@ -19,19 +19,12 @@ package org.guvnor.test;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.environment.se.StartMain;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-public class TestFileSystem {
+public class TestFileSystem
+        extends CDITestSetup {
 
-    private final SimpleFileSystemProvider fileSystemProvider;
-    private final Paths                    paths;
     private final TempFiles                tempFiles;
     private final HashMap<Path, File> pathToFile = new HashMap<Path, File>();
 
@@ -39,25 +32,25 @@ public class TestFileSystem {
 
         tempFiles = new TempFiles();
 
-        fileSystemProvider = new SimpleFileSystemProvider();
-
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[0] );
-        BeanManager beanManager = startMain.go().getBeanManager();
-
-        //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = ( Bean ) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
-        paths = ( Paths ) beanManager.getReference( pathsBean,
-                                                    Paths.class,
-                                                    cc );
-
-        //Ensure URLs use the default:// scheme
-        fileSystemProvider.forceAsDefault();
+        try {
+            setUp();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
     }
 
     public Path createTempFile( final String fullFileName ) throws IOException {
         final File file = tempFiles.createTempFile( fullFileName );
+        final Path path = paths.convert( fileSystemProvider.getPath( file.toURI() ) );
+
+        pathToFile.put( path,
+                        file );
+
+        return path;
+    }
+
+    public Path createTempDirectory( final String fullDirectoryName ) throws IOException {
+        final File file = tempFiles.createTempDirectory( fullDirectoryName );
         final Path path = paths.convert( fileSystemProvider.getPath( file.toURI() ) );
 
         pathToFile.put( path,

@@ -14,53 +14,63 @@
 */
 package org.guvnor.common.services.project.backend.server;
 
-import java.net.URL;
-
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.test.GuvnorTestAppSetup;
+import org.guvnor.test.TestFileSystem;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class POMServiceImplCreateTest
-        extends CDITestBase {
+public class POMServiceImplCreateTest {
 
-    @Mock IOService ioService;
 
-    private POMService service;
+    private POMService     service;
+    private TestFileSystem testFileSystem;
+    private IOService      ioService;
 
     @Before
     public void setUp() throws Exception {
+        ioService = mock( IOService.class );
 
-        TestAppSetup.ioService = ioService;
+        GuvnorTestAppSetup.ioService = ioService;
 
-        super.setUp();
+        testFileSystem = new TestFileSystem();
 
-        service = getReference( POMService.class );
+        service = testFileSystem.getReference( POMService.class );
+    }
 
+    @After
+    public void tearDown() throws Exception {
+        testFileSystem.tearDown();
+        GuvnorTestAppSetup.reset();
     }
 
     @Test
     public void testCreate() throws Exception {
 
-        final URL url = this.getClass().getResource( "/TestProject" );
-        service.create( Paths.convert( fs.getPath( url.toURI() ) ),
+        final Path path = testFileSystem.createTempDirectory( "/MyTestProject" );
+
+        service.create( path,
                         "baseurl?",
                         new POM() );
 
         ArgumentCaptor<org.uberfire.java.nio.file.Path> pathArgumentCaptor = ArgumentCaptor.forClass( org.uberfire.java.nio.file.Path.class );
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass( String.class );
+
         verify( ioService ).write( pathArgumentCaptor.capture(), stringArgumentCaptor.capture() );
-        assertTrue( pathArgumentCaptor.getValue().toUri().toString().endsWith( "TestProject/pom.xml" ) );
+
+        assertEquals( pathArgumentCaptor.getValue().toUri().toString(),
+                      path.toURI() + "/pom.xml" );
 
         String pomXML = stringArgumentCaptor.getValue();
 

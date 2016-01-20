@@ -35,20 +35,6 @@ import static org.mockito.Mockito.*;
 @Alternative
 public class TestAppSetup {
 
-    private static final IOService DEFAULT_IO_SERVICE = new IOServiceDotFileImpl();
-
-    public static IOService ioService = DEFAULT_IO_SERVICE;
-
-    public static void reset() {
-        ioService = DEFAULT_IO_SERVICE;
-    }
-
-    @Produces
-    @Named("ioStrategy")
-    public IOService ioService() {
-        return ioService;
-    }
-
     @Produces
     @Alternative
     public M2RepoService m2RepoService() {
@@ -57,20 +43,9 @@ public class TestAppSetup {
 
     @Produces
     @Alternative
-    public SessionInfo sessionInfo() {
-        return mock( SessionInfo.class );
-    }
-
-    @Produces
-    @Alternative
     @Named("uf")
     public ServletContext servletContext() {
         return mock( ServletContext.class );
-    }
-
-    @Produces
-    public AuthorizationManager getAuthManager() {
-        return new RuntimeAuthorizationManager();
     }
 
 }

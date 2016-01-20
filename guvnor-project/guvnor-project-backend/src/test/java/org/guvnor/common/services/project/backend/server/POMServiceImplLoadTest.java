@@ -20,6 +20,8 @@ import java.util.List;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.test.TestFileSystem;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,23 +31,28 @@ import org.uberfire.backend.server.util.Paths;
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class POMServiceImplLoadTest
-        extends CDITestBase {
+public class POMServiceImplLoadTest {
 
-    private POMService service;
+    private POMService     service;
+    private TestFileSystem testFileSystem;
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
+        testFileSystem = new TestFileSystem();
 
-        service = getReference( POMService.class );
+        service = testFileSystem.getReference( POMService.class );
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        testFileSystem.tearDown();
     }
 
     @Test
     public void testLoad() throws Exception {
         final URL url = this.getClass().getResource( "/TestProject/pom.xml" );
 
-        POM pom = service.load( Paths.convert( fs.getPath( url.toURI() ) ) );
+        POM pom = service.load( Paths.convert( testFileSystem.fileSystemProvider.getPath( url.toURI() ) ) );
 
         assertEquals( "org.test", pom.getGav().getGroupId() );
         assertEquals( "my-test", pom.getGav().getArtifactId() );
