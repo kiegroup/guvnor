@@ -1,7 +1,8 @@
 <beans>
   <alternatives>
     <class>org.guvnor.common.services.project.backend.server.TestAppSetup</class>
-    <class>org.guvnor.common.services.project.backend.server.TestIdentityFactory</class>
+    <class>org.guvnor.test.GuvnorTestAppSetup</class>
+    <class>org.guvnor.test.TestIdentityFactory</class>
     <class>org.guvnor.common.services.project.backend.server.TestProjectService</class>
   </alternatives>
 </beans>
