@@ -23,14 +23,13 @@ import javax.inject.Inject;
 import org.guvnor.asset.management.client.editors.repository.structure.configure.ConfigureScreenPopupViewImpl;
 import org.guvnor.asset.management.client.editors.repository.structure.promote.PromoteScreenPopupViewImpl;
 import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupViewImpl;
-import org.guvnor.asset.management.client.perspectives.AssetManagementPerspective;
+import org.guvnor.asset.management.client.perspectives.BaseAssetPerspective;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -43,13 +42,7 @@ import org.uberfire.workbench.model.menu.Menus;
  */
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "AssetsPerspective")
-public class AssetsPerspective extends AssetManagementPerspective {
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
-    private ProjectMenu projectMenu;
+public class AssetsPerspective extends BaseAssetPerspective {
 
     @Inject
     private SyncBeanManager iocManager;

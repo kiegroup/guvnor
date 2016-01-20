@@ -18,7 +18,7 @@ package org.guvnor.common.services.project.client;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -134,7 +134,7 @@ public class POMEditorPanelTest {
 
     @Test
     public void testOpenProjectContext() throws Exception {
-        IOCBeanDef iocBeanDef = mock( IOCBeanDef.class );
+        SyncBeanDef iocBeanDef = mock( SyncBeanDef.class );
         PlaceManager placeManager = mock( PlaceManager.class );
         when( iocBeanDef.getInstance() ).thenReturn( placeManager );
         when( iocManager.lookupBean( eq( PlaceManager.class ) ) ).thenReturn( iocBeanDef );

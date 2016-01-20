@@ -18,7 +18,7 @@ package org.guvnor.client.perspectives;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.guvnor.asset.management.client.perspectives.AssetManagementPerspective;
+import org.guvnor.asset.management.client.perspectives.BaseAssetPerspective;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
@@ -32,7 +32,7 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
  */
 @ApplicationScoped
 @WorkbenchPerspective( identifier = "ProjectsPerspective" )
-public class ProjectsPerspective extends AssetManagementPerspective {
+public class ProjectsPerspective extends BaseAssetPerspective {
 
     @Perspective
     public PerspectiveDefinition getPerspective() {

@@ -16,87 +16,13 @@
 package org.guvnor.asset.management.client.perspectives;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
-import org.uberfire.client.annotations.Perspective;
-import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * A Perspective
  */
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "Asset Management")
-public class AssetManagementPerspective {
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Perspective
-    public PerspectiveDefinition getPerspective() {
-        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( "Asset Management" );
-
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Repository Configuration" ) ) );
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Promote Changes" ) ) );
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Build Management" ) ) );
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Release Management" ) ) );
-
-        return perspective;
-    }
-
-    @WorkbenchMenu
-    public Menus getMenus() {
-        return MenuFactory
-                .newTopLevelMenu( "Screens" )
-                .menus()
-                .menu( "Repository Configuration" )
-                .respondsWith(
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.goTo( "Repository Configuration" );
-                            }
-                        } )
-                .endMenu()
-                .menu( "Promote Changes" )
-                .respondsWith(
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.goTo( "Promote Changes" );
-                            }
-                        } )
-                .endMenu()
-                .menu( "Build Management" )
-                .respondsWith(
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.goTo( "Build Management" );
-                            }
-                        } )
-                .endMenu()
-                .menu( "Release Management" )
-                .respondsWith(
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.goTo( "Release Management" );
-                            }
-                        } )
-                .endMenu()
-                .endMenus()
-                .endMenu()
-                .build();
-    }
+public class AssetManagementPerspective extends BaseAssetPerspective {
 }

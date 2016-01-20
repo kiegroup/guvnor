@@ -36,7 +36,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.data.Pair;
@@ -211,7 +211,7 @@ public class RepositoryInfoPage extends RepositoryWizardPage
 
     protected boolean isOUMandatory() {
         try {
-            final IOCBeanDef<RepositoryPreferences> beanDef = IOC.getBeanManager().lookupBean( RepositoryPreferences.class );
+            final SyncBeanDef<RepositoryPreferences> beanDef = IOC.getBeanManager().lookupBean( RepositoryPreferences.class );
             return beanDef == null || beanDef.getInstance().isOUMandatory();
         } catch ( IOCResolutionException exception ) {
         }
