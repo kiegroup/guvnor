@@ -30,7 +30,7 @@ import org.guvnor.messageconsole.events.PublishMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.guvnor.messageconsole.whitelist.MessageConsoleWhiteList;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.PlaceManager;
@@ -212,7 +212,7 @@ public class MessageConsoleService {
     private boolean checkWhiteList() {
 
         // I herd you like lists so I put a list into your list
-        Collection<IOCBeanDef<MessageConsoleWhiteList>> whiteListList = getAvailableWhiteLists();
+        Collection<SyncBeanDef<MessageConsoleWhiteList>> whiteListList = getAvailableWhiteLists();
 
         if (whiteListList.isEmpty()) {
             return true;
@@ -221,11 +221,11 @@ public class MessageConsoleService {
         }
     }
 
-    private IOCBeanDef<MessageConsoleWhiteList> reLookupBean( IOCBeanDef<MessageConsoleWhiteList> baseBean ) {
-        return (IOCBeanDef<MessageConsoleWhiteList>) iocManager.lookupBean( baseBean.getBeanClass() );
+    private SyncBeanDef<MessageConsoleWhiteList> reLookupBean( SyncBeanDef<MessageConsoleWhiteList> baseBean ) {
+        return (SyncBeanDef<MessageConsoleWhiteList>) iocManager.lookupBean( baseBean.getBeanClass() );
     }
 
-    private Collection<IOCBeanDef<MessageConsoleWhiteList>> getAvailableWhiteLists() {
+    private Collection<SyncBeanDef<MessageConsoleWhiteList>> getAvailableWhiteLists() {
         return iocManager.lookupBeans(MessageConsoleWhiteList.class);
     }
 }
