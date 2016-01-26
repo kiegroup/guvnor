@@ -45,6 +45,32 @@ public class POMEditorPanelTest {
     public void setUp() throws Exception {
         panel = new POMEditorPanel( view, iocManager );
         presenter = panel;
+
+        verify(view, times(1)).setPresenter(presenter);
+    }
+
+    @Test
+    public void testAddArtifactChangeHandler() {
+        ArtifactIdChangeHandler handler = mock(ArtifactIdChangeHandler.class);
+        panel.addArtifactIdChangeHandler(handler);
+
+        verify(view, times(1)).addArtifactIdChangeHandler(handler);
+    }
+
+    @Test
+    public void testAddGroupChangeHandler() {
+        GroupIdChangeHandler handler = mock(GroupIdChangeHandler.class);
+        panel.addGroupIdChangeHandler(handler);
+
+        verify(view, times(1)).addGroupIdChangeHandler(handler);
+    }
+
+    @Test
+    public void testAddVersionChangeHandler() {
+        VersionChangeHandler handler = mock(VersionChangeHandler.class);
+        panel.addVersionChangeHandler(handler);
+
+        verify(view, times(1)).addVersionChangeHandler(handler);
     }
 
     @Test
