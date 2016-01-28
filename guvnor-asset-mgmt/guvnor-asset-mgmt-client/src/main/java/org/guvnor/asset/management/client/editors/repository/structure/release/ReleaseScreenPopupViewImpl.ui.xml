@@ -17,92 +17,75 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:b='urn:import:org.gwtbootstrap3.client.ui'>
 
     <ui:with field="i18n" type="org.guvnor.asset.management.client.i18n.Constants"/>
 
-    <g:HTMLPanel>
-        <b:Container fluid="true">
-            <b:Row>
-                <b:Column size="MD_12">
-                    <b:Form type="HORIZONTAL">
-                        <b:FieldSet>
+    <b:Container fluid="true">
+        <b:Row>
+            <b:Column size="MD_12">
+                <b:Form type="HORIZONTAL">
+                    <b:FieldSet>
 
-                            <b:FormGroup ui:field="repositoryTextGroup">
-                                <b:Column size="MD_4">
-                                    <b:FormLabel for="repositoryText" text="{i18n.Repository}"/>
-                                </b:Column>
-                                <b:Column size="MD_8">
-                                    <b:TextBox b:id="repositoryText" ui:field="repositoryText" placeholder="{i18n.Repository}"/>
-                                    <b:HelpBlock ui:field="repositoryTextHelpBlock"/>
-                                </b:Column>
-                            </b:FormGroup>
+                        <b:FormGroup ui:field="repositoryTextGroup">
+                            <b:FormLabel for="repositoryText" text="{i18n.Repository}" addStyleNames="col-md-4"/>
+                            <b:Column size="MD_8">
+                                <b:TextBox b:id="repositoryText" ui:field="repositoryText" placeholder="{i18n.Repository}"/>
+                                <b:HelpBlock ui:field="repositoryTextHelpBlock"/>
+                            </b:Column>
+                        </b:FormGroup>
 
-                            <b:FormGroup ui:field="sourceBranchTextGroup">
-                                <b:Column size="MD_4">
-                                    <b:FormLabel for="sourceBranchText" text="{i18n.Source_Branch}"/>
-                                </b:Column>
-                                <b:Column size="MD_8">
-                                    <b:TextBox b:id="sourceBranchText" ui:field="sourceBranchText" placeholder="{i18n.Source_Branch}"/>
-                                    <b:HelpBlock ui:field="sourceBranchTextHelpBlock"/>
-                                </b:Column>
-                            </b:FormGroup>
+                        <b:FormGroup ui:field="sourceBranchTextGroup">
+                            <b:FormLabel for="sourceBranchText" text="{i18n.Source_Branch}" addStyleNames="col-md-4"/>
+                            <b:Column size="MD_8">
+                                <b:TextBox b:id="sourceBranchText" ui:field="sourceBranchText" placeholder="{i18n.Source_Branch}"/>
+                                <b:HelpBlock ui:field="sourceBranchTextHelpBlock"/>
+                            </b:Column>
+                        </b:FormGroup>
 
-                            <b:FormGroup ui:field="versionTextGroup">
-                                <b:Column size="MD_4">
-                                    <b:FormLabel for="verionText" text="{i18n.ReleaseVersion}" showRequiredIndicator="true"/>
-                                </b:Column>
-                                <b:Column size="MD_8">
-                                    <b:TextBox b:id="versionText" ui:field="versionText" placeholder="{i18n.Version}"/>
-                                    <b:HelpBlock ui:field="versionTextHelpBlock"/>
-                                </b:Column>
-                            </b:FormGroup>
+                        <b:FormGroup ui:field="versionTextGroup">
+                            <b:FormLabel for="verionText" text="{i18n.ReleaseVersion}" showRequiredIndicator="true" addStyleNames="col-md-4"/>
+                            <b:Column size="MD_8">
+                                <b:TextBox b:id="versionText" ui:field="versionText" placeholder="{i18n.Version}"/>
+                                <b:HelpBlock ui:field="versionTextHelpBlock"/>
+                            </b:Column>
+                        </b:FormGroup>
 
-                            <b:FormGroup ui:field="deployToRuntimeTextGroup">
-                                <b:Column size="MD_4">
-                                    <b:FormLabel for="deployToRuntimeCheck" text="{i18n.Deploy_To_Runtime}" showRequiredIndicator="true"/>
-                                </b:Column>
-                                <b:Column size="MD_8">
-                                    <b:CheckBox b:id="deployToRuntimeCheck" ui:field="deployToRuntimeCheck"/>
-                                    <b:HelpBlock ui:field="deployToRuntimeHelpBlock"/>
-                                </b:Column>
-                            </b:FormGroup>
+                        <b:FormGroup ui:field="deployToRuntimeTextGroup">
+                            <b:FormLabel for="deployToRuntimeCheck" text="{i18n.Deploy_To_Runtime}" showRequiredIndicator="true" addStyleNames="col-md-4"/>
+                            <b:Column size="MD_8">
+                                <b:CheckBox b:id="deployToRuntimeCheck" ui:field="deployToRuntimeCheck"/>
+                                <b:HelpBlock ui:field="deployToRuntimeHelpBlock"/>
+                            </b:Column>
+                        </b:FormGroup>
 
-                            <b:FormGroup ui:field="userNameTextGroup">
-                                <b:Column size="MD_4">
-                                    <b:FormLabel for="userNameText" text="{i18n.User_Name}" showRequiredIndicator="true"/>
-                                </b:Column>
-                                <b:Column size="MD_8">
-                                    <b:TextBox b:id="userNameText" ui:field="userNameText" placeholder="{i18n.User_Name}"/>
-                                    <b:HelpBlock ui:field="userNameTextHelpBlock"/>
-                                </b:Column>
-                            </b:FormGroup>
+                        <b:FormGroup ui:field="userNameTextGroup">
+                            <b:FormLabel for="userNameText" text="{i18n.User_Name}" showRequiredIndicator="true" addStyleNames="col-md-4"/>
+                            <b:Column size="MD_8">
+                                <b:TextBox b:id="userNameText" ui:field="userNameText" placeholder="{i18n.User_Name}"/>
+                                <b:HelpBlock ui:field="userNameTextHelpBlock"/>
+                            </b:Column>
+                        </b:FormGroup>
 
-                            <b:FormGroup ui:field="passwordTextGroup">
-                                <b:Column size="MD_4">
-                                    <b:FormLabel for="passwordText" text="{i18n.Password}" showRequiredIndicator="true"/>
-                                </b:Column>
-                                <b:Column size="MD_8">
-                                    <b:Input type="PASSWORD" b:id="passwordText" ui:field="passwordText" placeholder="{i18n.Password}"/>
-                                    <b:HelpBlock ui:field="passwordTextHelpBlock"/>
-                                </b:Column>
-                            </b:FormGroup>
+                        <b:FormGroup ui:field="passwordTextGroup">
+                            <b:FormLabel for="passwordText" text="{i18n.Password}" showRequiredIndicator="true" addStyleNames="col-md-4"/>
+                            <b:Column size="MD_8">
+                                <b:Input type="PASSWORD" b:id="passwordText" ui:field="passwordText" placeholder="{i18n.Password}"/>
+                                <b:HelpBlock ui:field="passwordTextHelpBlock"/>
+                            </b:Column>
+                        </b:FormGroup>
 
-                            <b:FormGroup ui:field="serverURLTextGroup">
-                                <b:Column size="MD_4">
-                                    <b:FormLabel for="serverURLText" text="{i18n.Server_URL}" showRequiredIndicator="true"/>
-                                </b:Column>
-                                <b:Column size="MD_8">
-                                    <b:TextBox b:id="serverURLText" ui:field="serverURLText" placeholder="{i18n.Server_URL}"/>
-                                    <b:HelpBlock ui:field="serverURLTextHelpBlock"/>
-                                </b:Column>
-                            </b:FormGroup>
+                        <b:FormGroup ui:field="serverURLTextGroup">
+                            <b:FormLabel for="serverURLText" text="{i18n.Server_URL}" showRequiredIndicator="true" addStyleNames="col-md-4"/>
+                            <b:Column size="MD_8">
+                                <b:TextBox b:id="serverURLText" ui:field="serverURLText" placeholder="{i18n.Server_URL}"/>
+                                <b:HelpBlock ui:field="serverURLTextHelpBlock"/>
+                            </b:Column>
+                        </b:FormGroup>
 
-                        </b:FieldSet>
-                    </b:Form>
-                </b:Column>
-            </b:Row>
-        </b:Container>
-    </g:HTMLPanel>
+                    </b:FieldSet>
+                </b:Form>
+            </b:Column>
+        </b:Row>
+    </b:Container>
 </ui:UiBinder>
