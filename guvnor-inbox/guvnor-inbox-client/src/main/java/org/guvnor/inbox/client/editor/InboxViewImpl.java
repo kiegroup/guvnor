@@ -21,12 +21,17 @@ import java.util.Date;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import org.guvnor.inbox.client.InboxPresenter;
@@ -47,14 +52,23 @@ import org.uberfire.paging.PageResponse;
 /**
  * Widget with a table of inbox entries results.
  */
-public class InboxViewImpl extends PagedTable<InboxPageRow> implements InboxView {
+public class InboxViewImpl extends Composite implements InboxView {
 
     private static final int PAGE_SIZE = 10;
+
+    interface InboxViewImplWidgetBinder
+            extends
+            UiBinder<Widget, InboxViewImpl> {
+    }
+
+    private InboxViewImplWidgetBinder uiBinder = GWT.create( InboxViewImplWidgetBinder.class );
+
+    @UiField(provided = true)
+    final PagedTable<InboxPageRow> table = new PagedTable<InboxPageRow>( PAGE_SIZE );
 
     public InboxViewImpl( final Caller<InboxService> inboxService,
                           final String inboxName,
                           final InboxPresenter presenter ) {
-        super( PAGE_SIZE );
         Column<InboxPageRow, String> openColumn = new Column<InboxPageRow, String>( new ButtonCell() ) {
             public String getValue( final InboxPageRow row ) {
                 return InboxConstants.INSTANCE.open();
@@ -69,8 +83,8 @@ public class InboxViewImpl extends PagedTable<InboxPageRow> implements InboxView
             }
         } );
 
-        addColumn( openColumn,
-                   InboxConstants.INSTANCE.open() );
+        table.addColumn( openColumn,
+                InboxConstants.INSTANCE.open() );
 
         Column<InboxPageRow, ComparableImageResource> formatColumn = new Column<InboxPageRow, ComparableImageResource>( new ComparableImageResourceCell() ) {
 
@@ -79,28 +93,28 @@ public class InboxViewImpl extends PagedTable<InboxPageRow> implements InboxView
                                                     new Image( ImageResources.INSTANCE.fileIcon() ) );
             }
         };
-        addColumn( formatColumn,
-                   InboxConstants.INSTANCE.format() );
+        table.addColumn( formatColumn,
+                InboxConstants.INSTANCE.format() );
 
         TextColumn<InboxPageRow> noteColumn = new TextColumn<InboxPageRow>() {
             public String getValue( InboxPageRow row ) {
                 return row.getNote();
             }
         };
-        addColumn( noteColumn,
-                   InboxConstants.INSTANCE.name() );
+        table.addColumn( noteColumn,
+                InboxConstants.INSTANCE.name() );
 
         Column<InboxPageRow, Date> dateColumn = new Column<InboxPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
             public Date getValue( InboxPageRow row ) {
                 return row.getTimestamp();
             }
         };
-        addColumn( dateColumn,
-                   InboxConstants.INSTANCE.createdDate() );
+        table.addColumn( dateColumn,
+                InboxConstants.INSTANCE.createdDate() );
 
-        setDataProvider( new AsyncDataProvider<InboxPageRow>() {
+        table.setDataProvider( new AsyncDataProvider<InboxPageRow>() {
             protected void onRangeChanged( HasData<InboxPageRow> display ) {
-                InboxPageRequest request = new InboxPageRequest( inboxName, dataGrid.getPageStart(), PAGE_SIZE );
+                InboxPageRequest request = new InboxPageRequest( inboxName, table.dataGrid.getPageStart(), PAGE_SIZE );
 
                 inboxService.call( new RemoteCallback<PageResponse<InboxPageRow>>() {
                     @Override
@@ -121,10 +135,12 @@ public class InboxViewImpl extends PagedTable<InboxPageRow> implements InboxView
         refreshButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                refresh();
+                table.refresh();
             }
         } );
-        getToolbar().add( refreshButton );
+        table.getToolbar().add( refreshButton );
+
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
 }

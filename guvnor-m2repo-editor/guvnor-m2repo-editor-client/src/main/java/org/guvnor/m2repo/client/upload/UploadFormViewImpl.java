@@ -27,6 +27,7 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.FormType;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.FileUpload;
 import org.uberfire.ext.widgets.common.client.common.FormStyleItem;
@@ -40,9 +41,9 @@ public class UploadFormViewImpl
 
     private FormStyleLayout form = new FormStyleLayout();
 
-    private final TextBox hiddenGroupIdField = new TextBox();
-    private final TextBox hiddenArtifactIdField = new TextBox();
-    private final TextBox hiddenVersionIdField = new TextBox();
+    private final TextBox hiddenGroupIdField = GWT.create( TextBox.class );
+    private final TextBox hiddenArtifactIdField = GWT.create( TextBox.class );
+    private final TextBox hiddenVersionIdField = GWT.create( TextBox.class );
     private FormStyleItem groupIdItem;
     private FormStyleItem artifactIdItem;
     private FormStyleItem versionIdItem;
@@ -70,6 +71,7 @@ public class UploadFormViewImpl
         form.setAction( getWebContext() + "/maven2wb" );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
+        form.setType( FormType.HORIZONTAL );
 
         form.addSubmitHandler( new Form.SubmitHandler() {
             @Override
