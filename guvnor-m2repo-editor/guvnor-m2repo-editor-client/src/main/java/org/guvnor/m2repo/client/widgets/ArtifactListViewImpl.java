@@ -21,11 +21,15 @@ import javax.enterprise.context.Dependent;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import org.guvnor.m2repo.client.editor.JarDetailPopup;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
@@ -38,7 +42,15 @@ import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 @Dependent
 public class ArtifactListViewImpl extends Composite implements ArtifactListView {
 
-    protected final PagedTable<JarListPageRow> dataGrid = new PagedTable<JarListPageRow>();
+    interface ArtifactListViewImplWidgetBinder
+            extends
+            UiBinder<Widget, ArtifactListViewImpl> {
+    }
+
+    private ArtifactListViewImplWidgetBinder uiBinder = GWT.create( ArtifactListViewImplWidgetBinder.class );
+
+    @UiField( provided = true )
+    final PagedTable<JarListPageRow> dataGrid = new PagedTable<JarListPageRow>();
 
     protected ArtifactListPresenter presenter;
 
@@ -98,7 +110,7 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
 
         dataGrid.addColumnSortHandler( new ColumnSortEvent.AsyncHandler( dataGrid ) );
 
-        initWidget( dataGrid );
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override

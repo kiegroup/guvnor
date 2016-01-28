@@ -2,22 +2,36 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:b='urn:import:org.gwtbootstrap3.client.ui'>
 
-  <ui:with field="i18n"
-           type="org.guvnor.asset.management.client.i18n.Constants"/>
+    <ui:with field="i18n"
+             type="org.guvnor.asset.management.client.i18n.Constants"/>
 
-    <b:FieldSet>
+    <b:Form type="HORIZONTAL">
+        <b:FieldSet>
 
-      <b:Heading ui:field="projectTypeLabel" size="H4"/>
+            <b:Legend ui:field="projectTypeLabel"/>
 
-      <b:HelpBlock ui:field="groupIdTextBoxHelpInline"/>
-      <b:Label ui:field="groupIdTextBox"/>
+            <b:FormGroup>
+                <b:FormLabel ui:field="groupIdTextBoxHelpInline" addStyleNames="col-md-3"/>
+                <b:Column size="MD_9">
+                    <b:FormControlStatic ui:field="groupIdTextBox"/>
+                </b:Column>
+            </b:FormGroup>
 
-      <b:HelpBlock ui:field="artifactIdTextBoxHelpInline"/>
-      <b:Label ui:field="artifactIdTextBox"/>
+            <b:FormGroup>
+                <b:FormLabel ui:field="artifactIdTextBoxHelpInline" addStyleNames="col-md-3"/>
+                <b:Column size="MD_9">
+                    <b:FormControlStatic ui:field="artifactIdTextBox"/>
+                </b:Column>
+            </b:FormGroup>
 
-      <b:HelpBlock ui:field="versionTextBoxHelpInline"/>
-      <b:Label ui:field="versionTextBox"/>
+            <b:FormGroup>
+                <b:FormLabel ui:field="versionTextBoxHelpInline" addStyleNames="col-md-3"/>
+                <b:Column size="MD_9">
+                    <b:FormControlStatic ui:field="versionTextBox"/>
+                </b:Column>
+            </b:FormGroup>
 
-    </b:FieldSet>
+        </b:FieldSet>
+    </b:Form>
 
 </ui:UiBinder>
