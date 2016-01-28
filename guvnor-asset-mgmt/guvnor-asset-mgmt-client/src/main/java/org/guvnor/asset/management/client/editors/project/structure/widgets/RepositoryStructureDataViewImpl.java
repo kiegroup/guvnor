@@ -22,9 +22,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.i18n.Constants;
-import org.gwtbootstrap3.client.ui.Heading;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.FormControlStatic;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.Legend;
 
 public class RepositoryStructureDataViewImpl extends Composite
         implements RepositoryStructureDataView {
@@ -37,26 +37,26 @@ public class RepositoryStructureDataViewImpl extends Composite
     private static NewRepositoryStructureDataViewImplUIBinder uiBinder = GWT.create( NewRepositoryStructureDataViewImplUIBinder.class );
 
     @UiField
-    Label groupIdTextBox;
+    FormControlStatic groupIdTextBox;
 
     @UiField
-    Label artifactIdTextBox;
+    FormControlStatic artifactIdTextBox;
 
     @UiField
-    Label versionTextBox;
+    FormControlStatic versionTextBox;
 
     @UiField
-    HelpBlock groupIdTextBoxHelpInline;
+    FormLabel groupIdTextBoxHelpInline;
 
     @UiField
-    HelpBlock artifactIdTextBoxHelpInline;
+    FormLabel artifactIdTextBoxHelpInline;
 
     @UiField
-    HelpBlock versionTextBoxHelpInline;
+    FormLabel versionTextBoxHelpInline;
 
 
     @UiField
-    Heading projectTypeLabel;
+    Legend projectTypeLabel;
 
     private Presenter presenter;
 

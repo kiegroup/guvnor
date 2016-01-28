@@ -41,7 +41,7 @@ public class InboxIncomingViewImpl extends InboxViewImpl implements InboxIncomin
                 return ( (InboxIncomingPageRow) row ).getFrom();
             }
         };
-        addColumn( fromColumn,
+        table.addColumn( fromColumn,
                    InboxConstants.INSTANCE.from() );
 
     }
