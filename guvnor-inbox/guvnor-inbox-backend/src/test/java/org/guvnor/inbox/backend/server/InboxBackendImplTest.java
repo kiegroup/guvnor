@@ -16,10 +16,9 @@
 
 package org.guvnor.inbox.backend.server;
 
-import java.net.URI;
-import java.util.Arrays;
-
+import org.guvnor.inbox.backend.server.security.InboxEntrySecurity;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.backend.vfs.Path;
@@ -30,27 +29,46 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 
-/**
- * TODO: update me
- */
 public class InboxBackendImplTest {
 
-    @Test
-    public void testCheckBatch() {
-        final IOService ioService = mock( IOService.class );
-        final FileSystem systemFS = mock( FileSystem.class );
-        final UserServicesBackendImpl userServicesBackend = mock( UserServicesBackendImpl.class );
-        final MailboxService mailboxService = mock( MailboxService.class );
-        final SessionInfo sessionInfo = mock( SessionInfo.class );
+    private InboxBackendImpl inboxBackend;
+    private Path resourcePath;
+    private SessionInfo sessionInfo;
+    private FileSystem mockedFSId;
+    private IOService ioService;
+    private InboxEntrySecurity securitySpy;
+    private UserServicesBackendImpl userServicesBackend;
+    private MailboxService mailboxService;
+    private FileSystem systemFS;
+
+    @Before
+    public void setup() {
+        ioService = mock( IOService.class );
+        systemFS = mock( FileSystem.class );
+        final InboxEntrySecurity security = new InboxEntrySecurity() {
+            @Override
+            public List<InboxEntry> secure( List<InboxEntry> inboxEntries ) {
+                return inboxEntries;
+            }
+        };
+        securitySpy = spy( security );
+        userServicesBackend = mock( UserServicesBackendImpl.class );
+        mailboxService = mock( MailboxService.class );
+        sessionInfo = mock( SessionInfo.class );
         final User user = mock( User.class );
 
         when( sessionInfo.getIdentity() ).thenReturn( user );
         when( user.getIdentifier() ).thenReturn( "user1" );
 
-        final Path resourcePath = mock( Path.class );
-        final FileSystem mockedFSId = mock( FileSystem.class, withSettings().extraInterfaces( FileSystemId.class ) );
+        resourcePath = mock( Path.class );
+        mockedFSId = mock( FileSystem.class, withSettings().extraInterfaces( FileSystemId.class ) );
 
         when( resourcePath.toURI() ).thenReturn( URI.create( "jgit://repo/my-file.txt" ).toString() );
         when( resourcePath.getFileName() ).thenReturn( "my-file.txt" );
@@ -61,9 +79,13 @@ public class InboxBackendImplTest {
         when( mockedFSId.getRootDirectories() ).thenReturn( Arrays.asList( rootPath ) );
 
         when( rootPath.getFileSystem() ).thenReturn( mockedFSId );
-        when( ( (FileSystemId) mockedFSId ).id() ).thenReturn( "my-fsid" );
+        when( ( ( FileSystemId ) mockedFSId ).id() ).thenReturn( "my-fsid" );
 
-        final InboxBackendImpl inboxBackend = new InboxBackendImpl( ioService, systemFS, userServicesBackend, mailboxService );
+    }
+
+    @Test
+    public void testCheckBatch() {
+        inboxBackend = new InboxBackendImpl( ioService, systemFS, userServicesBackend, mailboxService, securitySpy );
 
         inboxBackend.recordOpeningEvent( new ResourceOpenedEvent( resourcePath, sessionInfo ) );
 
@@ -76,5 +98,29 @@ public class InboxBackendImplTest {
         verify( ioService, times( 2 ) ).startBatch( mockedFSId );
 
         verify( ioService, times( 2 ) ).endBatch();
+
+    }
+
+    @Test
+    public void readShouldSecureItems() {
+        org.uberfire.java.nio.file.Path path = mock( org.uberfire.java.nio.file.Path.class );
+        when( userServicesBackend.buildPath( "userName", "inbox", "boxName" ) ).thenReturn( path );
+        when( ioService.exists( path ) ).thenReturn( true );
+        when( ioService.readAllString( path ) ).thenReturn( " " );
+        final List<InboxEntry> entries = new ArrayList<InboxEntry>();
+        final InboxEntry inboxEntry1 = new InboxEntry( "path1", "note1", "user1" );
+        entries.add( inboxEntry1 );
+
+        inboxBackend = new InboxBackendImpl( ioService, systemFS, userServicesBackend, mailboxService, securitySpy ) {
+            @Override
+            List<InboxEntry> getInboxEntries( String xml ) {
+
+                return entries;
+            }
+        };
+
+        inboxBackend.readEntries( "userName", "boxName" );
+
+        verify( securitySpy ).secure( entries );
     }
 }
