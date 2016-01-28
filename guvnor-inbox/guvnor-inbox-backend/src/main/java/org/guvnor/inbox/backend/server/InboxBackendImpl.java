@@ -15,15 +15,8 @@
  */
 package org.guvnor.inbox.backend.server;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import com.thoughtworks.xstream.XStream;
+import org.guvnor.inbox.backend.server.security.InboxEntrySecurity;
 import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
@@ -31,7 +24,15 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class InboxBackendImpl implements InboxBackend {
@@ -47,20 +48,23 @@ public class InboxBackendImpl implements InboxBackend {
     private FileSystem bootstrapFS;
     private UserServicesBackendImpl userServicesBackend;
     private MailboxService mailboxService;
+    private InboxEntrySecurity inboxEntrySecurity;
 
     //Proxyable
     public InboxBackendImpl() {
     }
 
     @Inject
-    public InboxBackendImpl( @Named("configIO") final IOService ioService,
-                             @Named("systemFS") final FileSystem bootstrapFS,
+    public InboxBackendImpl( @Named( "configIO" ) final IOService ioService,
+                             @Named( "systemFS" ) final FileSystem bootstrapFS,
                              final UserServicesBackendImpl userServicesBackend,
-                             final MailboxService mailboxService ) {
+                             final MailboxService mailboxService,
+                             final InboxEntrySecurity inboxEntrySecurity ) {
         this.ioService = ioService;
         this.bootstrapFS = bootstrapFS;
         this.userServicesBackend = userServicesBackend;
         this.mailboxService = mailboxService;
+        this.inboxEntrySecurity = inboxEntrySecurity;
     }
 
     @Override
@@ -81,13 +85,19 @@ public class InboxBackendImpl implements InboxBackend {
         if ( ioService.exists( path ) ) {
             final String xml = ioService.readAllString( path );
             if ( !( xml == null || xml.equals( "" ) ) ) {
-                return (List<InboxEntry>) getXStream().fromXML( xml );
+                final List<InboxEntry> inboxEntries = getInboxEntries( xml );
+
+                return inboxEntrySecurity.secure( inboxEntries );
             } else {
                 return new ArrayList<InboxEntry>();
             }
         }
 
         return new ArrayList<InboxEntry>();
+    }
+
+    List<InboxEntry> getInboxEntries( String xml ) {
+        return ( List<InboxEntry> ) getXStream().fromXML( xml );
     }
 
     @Override
@@ -107,7 +117,8 @@ public class InboxBackendImpl implements InboxBackend {
         final org.uberfire.backend.vfs.Path resourcePath = event.getPath();
         try {
             ioService.startBatch( bootstrapFS.getRootDirectories().iterator().next().getFileSystem() );
-            recordOpeningEvent( resourcePath.toURI(), resourcePath.getFileName().toString(), event.getSessionInfo().getIdentity().getIdentifier() );
+            recordOpeningEvent( resourcePath.toURI(), resourcePath.getFileName().toString(),
+                                event.getSessionInfo().getIdentity().getIdentifier() );
         } finally {
             ioService.endBatch();
         }
@@ -118,7 +129,8 @@ public class InboxBackendImpl implements InboxBackend {
 
         try {
             ioService.startBatch( bootstrapFS.getRootDirectories().iterator().next().getFileSystem() );
-            recordUserEditEvent( event.getPath().toURI(), event.getPath().getFileName(), event.getSessionInfo().getIdentity().getIdentifier() );
+            recordUserEditEvent( event.getPath().toURI(), event.getPath().getFileName(),
+                                 event.getSessionInfo().getIdentity().getIdentifier() );
         } finally {
             ioService.endBatch();
         }
@@ -180,7 +192,8 @@ public class InboxBackendImpl implements InboxBackend {
                              String note,
                              String userFrom,
                              String userName ) {
-        assert boxName.equals( RECENT_EDITED_ID ) || boxName.equals( RECENT_VIEWED_ID ) || boxName.equals( INCOMING_ID );
+        assert boxName.equals( RECENT_EDITED_ID ) || boxName.equals( RECENT_VIEWED_ID ) || boxName
+                .equals( INCOMING_ID );
         List<InboxEntry> entries = removeAnyExisting( itemPath,
                                                       readEntries( userName, boxName ) );
 
