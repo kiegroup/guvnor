@@ -16,13 +16,13 @@
 package org.guvnor.inbox.backend.server.security;
 
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.inbox.backend.server.InboxEntry;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
@@ -35,19 +35,14 @@ import java.util.*;
 @ApplicationScoped
 public class InboxEntrySecurity {
 
-    @Inject
     private User identity;
 
-    @Inject
     private AuthorizationManager authorizationManager;
 
-    @Inject
     private OrganizationalUnitService organizationalUnitService;
 
-    @Inject
-    private KieProjectService projectService;
+    private ProjectService<? extends Project> projectService;
 
-    @Inject
     private RepositoryServiceImpl repositoryService;
 
     public InboxEntrySecurity() {
@@ -55,8 +50,9 @@ public class InboxEntrySecurity {
 
     @Inject
     public InboxEntrySecurity( User identity, AuthorizationManager authorizationManager,
-                               OrganizationalUnitService organizationalUnitService, KieProjectService projectService,
-                               RepositoryServiceImpl repositoryService) {
+                               OrganizationalUnitService organizationalUnitService,
+                               ProjectService<? extends Project> projectService,
+                               RepositoryServiceImpl repositoryService ) {
         this.identity = identity;
         this.authorizationManager = authorizationManager;
         this.organizationalUnitService = organizationalUnitService;
