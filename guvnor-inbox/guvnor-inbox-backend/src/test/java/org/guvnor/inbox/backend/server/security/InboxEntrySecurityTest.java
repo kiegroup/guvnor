@@ -15,6 +15,7 @@
 package org.guvnor.inbox.backend.server.security;
 
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.inbox.backend.server.InboxEntry;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -24,7 +25,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.security.authz.AuthorizationManager;
 
@@ -44,7 +44,7 @@ public class InboxEntrySecurityTest {
     private User user;
     private AuthorizationManager authorizationManager;
     private OrganizationalUnitService organizationalUnitService;
-    private KieProjectService projectService;
+    private ProjectService<? extends Project> projectService;
     private RepositoryServiceImpl repositoryService;
     private Project project1;
 
