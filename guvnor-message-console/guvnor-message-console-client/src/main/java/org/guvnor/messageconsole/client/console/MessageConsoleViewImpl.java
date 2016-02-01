@@ -21,9 +21,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.messageconsole.client.console.resources.MessageConsoleResources;
 import org.guvnor.messageconsole.client.console.widget.MessageTableWidget;
@@ -33,12 +37,19 @@ import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 @ApplicationScoped
 public class MessageConsoleViewImpl extends Composite implements MessageConsoleView {
 
+    interface MessageConsoleViewImplWidgetBinder extends
+            UiBinder<Widget, MessageConsoleViewImpl> {
+    }
+
+    private MessageConsoleViewImplWidgetBinder uiBinder = GWT.create(MessageConsoleViewImplWidgetBinder.class);
+
     @Inject
     private PlaceManager placeManager;
 
     @Inject
     private MessageConsoleService consoleService;
 
+    @UiField(provided = true)
     protected final MessageTableWidget<MessageConsoleServiceRow> dataGrid = new MessageTableWidget<MessageConsoleServiceRow>();
 
     public MessageConsoleViewImpl() {
@@ -59,7 +70,7 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
         addColumnColumn();
         addLineColumn();
 
-        initWidget( dataGrid );
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @PostConstruct
