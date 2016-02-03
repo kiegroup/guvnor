@@ -17,7 +17,6 @@ package org.guvnor.structure.repositories;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -47,11 +46,11 @@ public interface RepositoryService {
     Repository createRepository( final OrganizationalUnit organizationalUnit,
                                  final String scheme,
                                  final String alias,
-                                 final Map<String, Object> env ) throws RepositoryAlreadyExistsException;
+                                 final RepositoryEnvironmentConfigurations configurations ) throws RepositoryAlreadyExistsException;
 
     Repository createRepository( final String scheme,
                                  final String alias,
-                                 final Map<String, Object> env ) throws RepositoryAlreadyExistsException;
+                                 final RepositoryEnvironmentConfigurations configurations ) throws RepositoryAlreadyExistsException;
 
     String normalizeRepositoryName( final String name );
 
@@ -65,6 +64,7 @@ public interface RepositoryService {
 
     void removeRepository( final String alias );
 
-    Repository updateRepository( Repository repository, Map<String, Object> config );
+    Repository updateRepositoryConfiguration( final Repository repository,
+                                              final RepositoryEnvironmentConfigurations repositoryConfigurationonfig );
 
 }

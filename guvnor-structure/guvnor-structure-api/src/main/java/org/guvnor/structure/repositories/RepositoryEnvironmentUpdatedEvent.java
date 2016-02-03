@@ -17,27 +17,19 @@ package org.guvnor.structure.repositories;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+/**
+ * Fired if the Environment settings for a Repository change.
+ */
 @Portable
-public class RepositoryUpdatedEvent {
-
-    private Repository repository;
+public class RepositoryEnvironmentUpdatedEvent {
 
     private Repository updatedRepository;
 
-    public RepositoryUpdatedEvent() {
+    public RepositoryEnvironmentUpdatedEvent() {
     }
 
-    public RepositoryUpdatedEvent(final Repository repository, final Repository updatedRepository) {
-        this.repository = repository;
+    public RepositoryEnvironmentUpdatedEvent( final Repository updatedRepository ) {
         this.updatedRepository = updatedRepository;
-    }
-
-    public Repository getRepository() {
-        return repository;
-    }
-
-    public void setRepository( final Repository repository ) {
-        this.repository = repository;
     }
 
     public Repository getUpdatedRepository() {

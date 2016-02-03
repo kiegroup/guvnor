@@ -52,6 +52,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -215,11 +216,8 @@ public class CreateRepositoryForm
 
                     final String scheme = "git";
                     final String alias = nameTextBox.getText().trim();
-                    final Map<String, Object> env = new HashMap<String, Object>( 3 );
-
-                    //Cloned repositories are not managed by default.
-                    env.put( EnvironmentParameters.MANAGED,
-                             false );
+                    final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
+                    configurations.setManaged( false );
 
                     repositoryService.call( new RemoteCallback<Repository>() {
                                                 @Override
@@ -247,7 +245,7 @@ public class CreateRepositoryForm
                                           ).createRepository( availableOrganizationalUnits.get( organizationalUnit ),
                                                               scheme,
                                                               alias,
-                                                              env );
+                                                              configurations );
 
                 }
             } ).normalizeRepositoryName( nameTextBox.getText() );

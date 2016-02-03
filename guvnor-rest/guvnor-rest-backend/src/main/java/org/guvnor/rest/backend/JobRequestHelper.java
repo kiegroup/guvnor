@@ -18,10 +18,8 @@ package org.guvnor.rest.backend;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -43,6 +41,7 @@ import org.guvnor.rest.client.RepositoryRequest;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.slf4j.Logger;
@@ -112,20 +111,20 @@ public class JobRequestHelper {
             }
 
             // username and password are optional
-            final Map<String, Object> env = new HashMap<String, Object>( 3 );
+            final RepositoryEnvironmentConfigurations configuration = new RepositoryEnvironmentConfigurations();
             if ( repository.getUserName() != null && !"".equals( repository.getUserName() ) ) {
-                env.put( "username", repository.getUserName() );
+                configuration.setUserName( repository.getUserName() );
             }
             if ( repository.getPassword() != null && !"".equals( repository.getPassword() ) ) {
-                env.put( "crypt:password", repository.getPassword() );
+                configuration.setPassword( repository.getPassword() );
             }
-            env.put( "init", true );
+            configuration.setInit( true );
 
             org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( 
                     orgUnit,
-                    scheme, 
-                    repository.getName(), 
-                    env );
+                    scheme,
+                    repository.getName(),
+                    configuration );
             if ( newlyCreatedRepo != null ) {
                 result.setStatus( JobStatus.SUCCESS );
                 result.setResult( "Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri() );
@@ -141,20 +140,20 @@ public class JobRequestHelper {
             }
 
             // username and password are optional
-            final Map<String, Object> env = new HashMap<String, Object>( 3 );
+            final RepositoryEnvironmentConfigurations configuration = new RepositoryEnvironmentConfigurations();
             if ( repository.getUserName() != null && !"".equals( repository.getUserName() ) ) {
-                env.put( "username", repository.getUserName() );
+                configuration.setUserName( repository.getUserName() );
             }
             if ( repository.getPassword() != null && !"".equals( repository.getPassword() ) ) {
-                env.put( "crypt:password", repository.getPassword() );
+                configuration.setPassword( repository.getPassword() );
             }
-            env.put( "origin", repository.getGitURL() );
+            configuration.setOrigin( repository.getGitURL() );
 
             org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( 
                     orgUnit,
-                    scheme, 
-                    repository.getName(), 
-                    env );
+                    scheme,
+                    repository.getName(),
+                    configuration );
             if ( newlyCreatedRepo != null ) {
                 result.setStatus( JobStatus.SUCCESS );
                 result.setResult( "Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri() );

@@ -16,10 +16,9 @@
 
 package org.guvnor.structure.client.editors.repository.clone.answer;
 
-import java.util.Map;
-
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -50,7 +49,7 @@ public class RsCreateRepositoryFailAnswer implements Answer<RepositoryService> {
     public RepositoryService answer( InvocationOnMock invocation ) throws Throwable {
 
         when( repoService.createRepository( any( OrganizationalUnit.class ), any( String.class ), any( String.class ),
-                                            any( Map.class ) ) ).then( new Answer<Repository>() {
+                                            any( RepositoryEnvironmentConfigurations.class ) ) ).then( new Answer<Repository>() {
 
             @Override
             public Repository answer( InvocationOnMock invocation ) throws Throwable {

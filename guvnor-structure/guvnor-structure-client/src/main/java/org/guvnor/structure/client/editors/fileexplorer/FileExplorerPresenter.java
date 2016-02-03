@@ -17,23 +17,20 @@
 package org.guvnor.structure.client.editors.fileexplorer;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.structure.client.editors.context.GuvnorStructureContext;
+import org.guvnor.structure.client.editors.context.GuvnorStructureContextBranchChangeHandler;
+import org.guvnor.structure.client.editors.context.GuvnorStructureContextChangeHandler;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
-import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryRemovedEvent;
-import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
@@ -42,9 +39,10 @@ import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
+import org.uberfire.lifecycle.OnShutdown;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.ResourceAddedEvent;
@@ -57,16 +55,14 @@ import org.uberfire.workbench.model.Position;
 
 @Dependent
 @WorkbenchScreen(identifier = "FileExplorer")
-public class FileExplorerPresenter {
+public class FileExplorerPresenter
+        implements GuvnorStructureContextChangeHandler,
+                   GuvnorStructureContextBranchChangeHandler {
 
-    @Inject
-    private View view;
+    private FileExplorerView view;
 
     @Inject
     private Caller<VFSService> vfsService;
-
-    @Inject
-    private Caller<RepositoryService> repositoryService;
 
     @Inject
     private Event<PathSelectedEvent> pathSelectedEvent;
@@ -74,51 +70,54 @@ public class FileExplorerPresenter {
     @Inject
     private PlaceManager placeManager;
 
-    private Set<Repository> repositories = new HashSet<Repository>();
+    private GuvnorStructureContext guvnorStructureContext;
 
-    public interface View
-            extends
-            UberView<FileExplorerPresenter> {
+    private Map<String, Repository> repositories = new HashMap<String, Repository>();
+    private GuvnorStructureContextChangeHandler.HandlerRegistration       changeHandlerRegistration;
+    private GuvnorStructureContextBranchChangeHandler.HandlerRegistration branchChangeHandlerRegistration;
 
-        void reset();
-
-        void removeRepository( final Repository repo );
-
-        void addNewRepository( final Repository repo );
+    public FileExplorerPresenter() {
     }
 
-    public static interface FileExplorerItem {
+    @Inject
+    public FileExplorerPresenter( final FileExplorerView view,
+                                  final GuvnorStructureContext guvnorStructureContext ) {
+        this.view = view;
+        this.guvnorStructureContext = guvnorStructureContext;
+        this.changeHandlerRegistration = this.guvnorStructureContext.addGuvnorStructureContextChangeHandler( this );
+        this.branchChangeHandlerRegistration = this.guvnorStructureContext.addGuvnorStructureContextBranchChangeHandler( this );
 
-        void addDirectory( final Path child );
+        view.init( this );
+    }
 
-        void addFile( final Path child );
+    private boolean isDirectory( final Map response ) {
+        return response != null && response.containsKey( "isDirectory" ) && ( Boolean ) response.get( "isDirectory" );
     }
 
     @OnStartup
-    public void onStartup() {
+    public void reset() {
 
         view.reset();
-        repositories.clear();
 
-        repositoryService.call( new RemoteCallback<Collection<Repository>>() {
-                                    @Override
-                                    public void callback( Collection<Repository> response ) {
-                                        for ( final Repository root : response ) {
-                                            if ( repositories.contains( root ) ) {
-                                                view.removeRepository( root );
-                                            }
-                                            view.addNewRepository( root );
-                                            repositories.add( root );
-                                        }
-                                    }
-                                }, new ErrorCallback<Message>() {
-                                    @Override
-                                    public boolean error( final Message o,
-                                                          final Throwable throwable ) {
-                                        return false;
-                                    }
-                                }
-                              ).getRepositories();
+        guvnorStructureContext.getRepositories( new Callback<Collection<Repository>>() {
+            @Override
+            public void callback( final Collection<Repository> response ) {
+                for ( final Repository root : response ) {
+                    if ( repositories.containsKey( root.getAlias() ) ) {
+                        view.removeRepository( root );
+                    }
+                    view.addNewRepository( root,
+                                           guvnorStructureContext.getCurrentBranch( root.getAlias() ) );
+                    repositories.put( root.getAlias(), root );
+                }
+            }
+        } );
+    }
+
+    @OnShutdown
+    public void onShutdown() {
+        guvnorStructureContext.removeHandler( changeHandlerRegistration );
+        guvnorStructureContext.removeHandler( branchChangeHandlerRegistration );
     }
 
     public void loadDirectoryContent( final FileExplorerItem item,
@@ -142,22 +141,18 @@ public class FileExplorerPresenter {
         } ).newDirectoryStream( path );
     }
 
-    private boolean isDirectory( final Map response ) {
-        return response != null && response.containsKey( "isDirectory" ) && (Boolean) response.get( "isDirectory" );
+    @WorkbenchPartView
+    public IsWidget getWidget() {
+        return view;
     }
 
     private boolean isRegularFile( final Map response ) {
-        return response != null && response.containsKey( "isRegularFile" ) && (Boolean) response.get( "isRegularFile" );
+        return response != null && response.containsKey( "isRegularFile" ) && ( Boolean ) response.get( "isRegularFile" );
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
         return CoreConstants.INSTANCE.FileExplorer();
-    }
-
-    @WorkbenchPartView
-    public UberView<FileExplorerPresenter> getWidget() {
-        return view;
     }
 
     @DefaultPosition
@@ -187,44 +182,45 @@ public class FileExplorerPresenter {
         placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias", repo.getAlias() ) );
     }
 
-    public void newRootDirectory( @Observes NewRepositoryEvent event ) {
-        final Repository repository = event.getNewRepository();
+    @Override
+    public void onNewRepositoryAdded( final Repository repository ) {
         if ( repository == null ) {
             return;
         }
-        if ( repositories.contains( repository ) ) {
+        if ( repositories.containsKey( repository.getAlias() ) ) {
             view.removeRepository( repository );
         }
-        view.addNewRepository( repository );
-        repositories.add( repository );
+        view.addNewRepository( repository,
+                               repository.getDefaultBranch() );
+        repositories.put( repository.getAlias(), repository );
     }
 
-    public void removeRootDirectory( @Observes RepositoryRemovedEvent event ) {
-        final Repository repository = event.getRepository();
+    @Override
+    public void onRepositoryDeleted( final Repository repository ) {
         if ( repository == null ) {
             return;
         }
-        if ( repositories.contains( repository ) ) {
+        if ( repositories.containsKey( repository.getAlias() ) ) {
             view.removeRepository( repository );
             repositories.remove( repository );
         }
     }
 
-    public void updateRootDirectory( @Observes RepositoryUpdatedEvent event ) {
-        final Repository repository = event.getRepository();
-        final Repository updatedRepository = event.getUpdatedRepository();
-        if ( repository == null ) {
+    @Override
+    public void onBranchChange( final String alias,
+                                final String branch ) {
+        if ( alias == null ) {
             return;
         }
 
-        if ( repositories.contains( repository ) ) {
+        if ( repositories.containsKey( alias ) ) {
+            final Repository repository = repositories.get( alias );
             view.removeRepository( repository );
-            repositories.remove( repository );
-        }
-        // add refreshed repository
-        view.addNewRepository( updatedRepository );
-        repositories.add( updatedRepository );
 
+            // refresh repository
+            view.addNewRepository( repository,
+                                   branch );
+        }
     }
 
     // Refresh when a Resource has been added
@@ -249,22 +245,21 @@ public class FileExplorerPresenter {
 
     // Refresh when a batch Resource change has occurred
     public void onBatchResourceChange( @Observes final ResourceBatchChangesEvent event ) {
-        onStartup();
+        reset();
     }
 
     public void onSystemRepositoryChanged( @Observes SystemRepositoryChangedEvent event ) {
-        onStartup();
+        reset();
     }
 
     private void refreshView( final Path path ) {
         final String pathUri = path.toURI();
-        for ( Repository repository : repositories ) {
+        for ( Repository repository : repositories.values() ) {
             final String repositoryUri = repository.getRoot().toURI();
             if ( pathUri.startsWith( repositoryUri ) ) {
-                onStartup();
+                reset();
                 break;
             }
         }
     }
-
 }

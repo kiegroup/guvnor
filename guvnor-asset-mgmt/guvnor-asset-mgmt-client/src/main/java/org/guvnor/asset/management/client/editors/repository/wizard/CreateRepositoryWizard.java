@@ -17,9 +17,7 @@
 package org.guvnor.asset.management.client.editors.repository.wizard;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -37,9 +35,9 @@ import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
-import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -241,9 +239,8 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
                 final String scheme = "git";
                 final String alias = model.getRepositoryName().trim();
-                final Map<String, Object> env = new HashMap<String, Object>( 3 );
-                env.put( EnvironmentParameters.MANAGED,
-                         assetsManagementIsGranted && model.isManged() );
+                final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
+                configurations.setManaged( assetsManagementIsGranted && model.isManged() );
                 showBusyIndicator( Constants.INSTANCE.CreatingRepository() );
 
                 repositoryService.call( new RemoteCallback<Repository>() {
@@ -270,7 +267,10 @@ public class CreateRepositoryWizard extends AbstractWizard {
                                                 return true;
                                             }
                                         }
-                                      ).createRepository( model.getOrganizationalUnit(), scheme, alias, env );
+                                      ).createRepository( model.getOrganizationalUnit(),
+                                                          scheme,
+                                                          alias,
+                                                          configurations );
             }
         } ).normalizeRepositoryName( model.getRepositoryName() );
     }

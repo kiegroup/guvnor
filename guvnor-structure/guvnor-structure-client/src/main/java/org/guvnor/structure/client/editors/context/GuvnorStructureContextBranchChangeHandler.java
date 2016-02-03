@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package org.guvnor.structure.client.editors.repository.list;
+package org.guvnor.structure.client.editors.context;
 
-import com.google.gwt.user.client.ui.IsWidget;
+
 import org.guvnor.structure.repositories.Repository;
 
-public interface RepositoriesView
-        extends IsWidget {
+public interface GuvnorStructureContextBranchChangeHandler {
 
-    RepositoryItemPresenter addRepository( final Repository repository,
-                                           final String branch );
+    void onBranchChange( final String alias,
+                         final String branch );
 
-    boolean confirmDeleteRepository( final Repository repository );
+    class HandlerRegistration {
 
-    void removeIfExists( final RepositoryItemPresenter repositoryItem );
-
-    void clear();
-
-    void setPresenter( final RepositoriesPresenter presenter );
+    }
 
 }
