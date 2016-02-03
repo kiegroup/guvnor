@@ -37,6 +37,7 @@ public class ProjectContext {
 
     private OrganizationalUnit activeOrganizationalUnit;
     private Repository activeRepository;
+    private String activeBranch;
     private Project activeProject;
     private Package activePackage;
 
@@ -48,7 +49,7 @@ public class ProjectContext {
     }
 
     @Inject
-    public ProjectContext(Event<ProjectContextChangeEvent> contextChangeEvent) {
+    public ProjectContext(final Event<ProjectContextChangeEvent> contextChangeEvent) {
         this.contextChangeEvent = contextChangeEvent;
     }
 
@@ -65,6 +66,7 @@ public class ProjectContext {
     public void onProjectContextChanged(@Observes final ProjectContextChangeEvent event) {
         this.setActiveOrganizationalUnit(event.getOrganizationalUnit());
         this.setActiveRepository(event.getRepository());
+        this.setActiveBranch(event.getBranch());
         this.setActiveProject(event.getProject());
         this.setActivePackage(event.getPackage());
 
@@ -83,6 +85,14 @@ public class ProjectContext {
 
     public void setActiveRepository(final Repository activeRepository) {
         this.activeRepository = activeRepository;
+    }
+
+    public String getActiveBranch() {
+        return activeBranch;
+    }
+
+    public void setActiveBranch( final String activeBranch ) {
+        this.activeBranch = activeBranch;
     }
 
     public Repository getActiveRepository() {
@@ -105,13 +115,13 @@ public class ProjectContext {
         this.activePackage = activePackage;
     }
 
-    public ProjectContextChangeHandle addChangeHandler(ProjectContextChangeHandler changeHandler) {
+    public ProjectContextChangeHandle addChangeHandler(final ProjectContextChangeHandler changeHandler) {
         ProjectContextChangeHandle handle = new ProjectContextChangeHandle();
         changeHandlers.put(handle, changeHandler);
         return handle;
     }
 
-    public void removeChangeHandler(ProjectContextChangeHandle projectContextChangeHandle) {
+    public void removeChangeHandler(final ProjectContextChangeHandle projectContextChangeHandle) {
         changeHandlers.remove(projectContextChangeHandle);
     }
 }

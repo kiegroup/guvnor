@@ -279,7 +279,7 @@ public class ProjectResource {
             throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( repositoryName ).build() );
         }
 
-        Set<Project> projects = projectService.getProjects(repository, repository.getCurrentBranch());
+        Set<Project> projects = projectService.getProjects(repository, "master");
 
         List<ProjectResponse> projectRequests = new ArrayList<ProjectResponse>(projects.size());
         for( Project project : projects ) {

@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package org.guvnor.structure.client.editors.repository.list;
+package org.guvnor.structure.client.editors;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.Arrays;
+
 import org.guvnor.structure.repositories.Repository;
 
-public interface RepositoriesView
-        extends IsWidget {
+import static org.mockito.Mockito.*;
 
-    RepositoryItemPresenter addRepository( final Repository repository,
-                                           final String branch );
+public class TestUtil {
 
-    boolean confirmDeleteRepository( final Repository repository );
+    public static Repository makeRepository( final String alias,
+                                             final String... branches ) {
+        final Repository repository = mock( Repository.class );
 
-    void removeIfExists( final RepositoryItemPresenter repositoryItem );
+        when( repository.getAlias() ).thenReturn( alias );
 
-    void clear();
+        when( repository.getBranches() ).thenReturn( Arrays.asList( branches ) );
 
-    void setPresenter( final RepositoriesPresenter presenter );
+        when( repository.getDefaultBranch() ).thenReturn( "master" );
 
+        return repository;
+    }
 }

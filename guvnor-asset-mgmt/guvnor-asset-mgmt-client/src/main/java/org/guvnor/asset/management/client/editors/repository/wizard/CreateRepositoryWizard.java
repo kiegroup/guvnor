@@ -17,9 +17,7 @@
 package org.guvnor.asset.management.client.editors.repository.wizard;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -43,9 +41,9 @@ import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
-import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -296,9 +294,8 @@ public class CreateRepositoryWizard extends AbstractWizard {
     private void doRepositoryCreation( final DeploymentMode mode ) {
         final String scheme = "git";
         final String alias = model.getRepositoryName().trim();
-        final Map<String, Object> env = new HashMap<String, Object>( 3 );
-        env.put( EnvironmentParameters.MANAGED,
-                 assetsManagementIsGranted && model.isManged() );
+        final RepositoryEnvironmentConfigurations configuration = new RepositoryEnvironmentConfigurations();
+        configuration.setManaged( assetsManagementIsGranted && model.isManged() );
 
         parentComplete();
 
@@ -331,7 +328,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
                               ).createRepository( model.getOrganizationalUnit(),
                                                   scheme,
                                                   alias,
-                                                  env );
+                                                  configuration );
     }
 
     private RemoteCallback<Repository> getRepositoryCreatedSuccessCallback( final DeploymentMode mode ) {

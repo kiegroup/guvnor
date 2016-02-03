@@ -197,6 +197,7 @@ public class RepositoryStructurePresenter
         this.placeRequest = placeRequest;
         makeMenuBar();
         processContextChange( workbenchContext.getActiveRepository(),
+                              workbenchContext.getActiveBranch(),
                               workbenchContext.getActiveProject() );
     }
 
@@ -227,10 +228,12 @@ public class RepositoryStructurePresenter
 
     private void onContextChange( @Observes final ProjectContextChangeEvent event ) {
         processContextChange( event.getRepository(),
+                              event.getBranch(),
                               event.getProject() );
     }
 
     private void processContextChange( final Repository repository,
+                                       final String branch,
                                        final Project project ) {
         boolean repoOrBranchChanged = false;
 
@@ -239,9 +242,9 @@ public class RepositoryStructurePresenter
             view.setModulesViewVisible( false );
             enableActions( false );
 
-        } else if ( ( repoOrBranchChanged = repositoryOrBranchChanged( repository ) ) || ( project != null && !project.equals( this.project ) ) ) {
+        } else if ( ( repoOrBranchChanged = repositoryOrBranchChanged( repository, branch ) ) || ( project != null && !project.equals( this.project ) ) ) {
             this.repository = repository;
-            this.branch = repository != null ? repository.getCurrentBranch() : null;
+            this.branch = branch;
             this.project = project;
 
             if ( repoOrBranchChanged || ( ( lastAddedModule == null || !lastAddedModule.equals( project ) ) && lastDeletedModule == null ) ) {
@@ -452,7 +455,7 @@ public class RepositoryStructurePresenter
     }
 
     private String getRepositoryLabel( final Repository repository ) {
-        return repository != null ? ( repository.getAlias() + " (" + repository.getCurrentBranch() + ") " ) : "";
+        return repository != null ? ( repository.getAlias() + " (" + branch + ") " ) : "";
     }
 
     private void addStructureChangeListeners() {
@@ -707,6 +710,7 @@ public class RepositoryStructurePresenter
         if ( project != null ) {
             contextChangeEvent.fire( new ProjectContextChangeEvent( workbenchContext.getActiveOrganizationalUnit(),
                                                                     repository,
+                                                                    branch,
                                                                     project ) );
             placeManager.goTo( "projectScreen" );
         }
@@ -879,10 +883,11 @@ public class RepositoryStructurePresenter
         }
     }
 
-    private boolean repositoryOrBranchChanged( final Repository selectedRepository ) {
+    private boolean repositoryOrBranchChanged( final Repository selectedRepository,
+                                               final String branch) {
         return selectedRepository != null
                 && ( !selectedRepository.equals( this.repository )
-                || !selectedRepository.getCurrentBranch().equals( this.branch ) );
+                || !branch.equals( this.branch ) );
     }
 
     private void makeMenuBar() {

@@ -17,11 +17,8 @@
 package org.guvnor.structure.client.editors.repository.clone;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
@@ -35,9 +32,9 @@ import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
-import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -61,6 +58,7 @@ import org.uberfire.rpc.SessionInfo;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -123,6 +121,9 @@ public class CloneRepositoryPresenterTest {
 
     @Captor
     private ArgumentCaptor<Throwable> throwableArgument;
+
+    @Captor
+    private ArgumentCaptor<RepositoryEnvironmentConfigurations> repositoryEnvironmentConfigurationsArgumentCaptor;
 
     private CloneRepositoryPresenter presenter;
 
@@ -398,18 +399,22 @@ public class CloneRepositoryPresenterTest {
         when( view.getName() ).thenReturn( REPO_NAME );
         when( view.isManagedRepository() ).thenReturn( true );
 
-        final Map<String, Object> managedEnvironment = new HashMap<String, Object>( 4 );
-        managedEnvironment.put("username", USERNAME);
-        managedEnvironment.put("crypt:password", PASSWORD);
-        managedEnvironment.put("origin", REPO_URL);
-        managedEnvironment.put(EnvironmentParameters.MANAGED, true);
 
         presenter.handleCloneClick();
 
         verifyRepoCloned( true );
 
-        verify( repoService, times(1) ).createRepository( any(OrganizationalUnit.class), anyString(), anyString(), eq(managedEnvironment) );
+        verify( repoService, times( 1 ) ).createRepository( any( OrganizationalUnit.class ),
+                                                            anyString(),
+                                                            anyString(),
+                                                            repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
 
+        final RepositoryEnvironmentConfigurations configurations = repositoryEnvironmentConfigurationsArgumentCaptor.getValue();
+
+        assertEquals( USERNAME, configurations.getUserName() );
+        assertEquals( PASSWORD, configurations.getPassword() );
+        assertEquals( REPO_URL, configurations.getOrigin() );
+        assertTrue( configurations.isManaged() );
     }
 
     @Test
@@ -420,18 +425,20 @@ public class CloneRepositoryPresenterTest {
         when( view.getName() ).thenReturn( REPO_NAME );
         when( view.isManagedRepository() ).thenReturn( false );
 
-        final Map<String, Object> unmanagedEnvironment = new HashMap<String, Object>( 4 );
-        unmanagedEnvironment.put("username", USERNAME);
-        unmanagedEnvironment.put("crypt:password", PASSWORD);
-        unmanagedEnvironment.put("origin", REPO_URL);
-        unmanagedEnvironment.put(EnvironmentParameters.MANAGED, false);
-
         presenter.handleCloneClick();
 
         verifyRepoCloned( true );
 
-        verify( repoService, times(1) ).createRepository( any(OrganizationalUnit.class), anyString(), anyString(), eq(unmanagedEnvironment) );
+        verify( repoService, times( 1 ) ).createRepository( any( OrganizationalUnit.class ),
+                                                            anyString(),
+                                                            anyString(),
+                                                            repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
+        final RepositoryEnvironmentConfigurations configurations = repositoryEnvironmentConfigurationsArgumentCaptor.getValue();
 
+        assertEquals( USERNAME, configurations.getUserName() );
+        assertEquals( PASSWORD, configurations.getPassword() );
+        assertEquals( REPO_URL, configurations.getOrigin() );
+        assertFalse( configurations.isManaged() );
     }
 
     private void componentsNotAffected() {
