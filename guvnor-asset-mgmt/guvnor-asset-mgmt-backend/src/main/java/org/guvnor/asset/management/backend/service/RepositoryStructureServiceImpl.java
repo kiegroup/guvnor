@@ -16,9 +16,7 @@
 package org.guvnor.asset.management.backend.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -27,6 +25,7 @@ import javax.inject.Named;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.ValidationUtils;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
@@ -36,9 +35,9 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
+import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,32 +55,39 @@ import static org.guvnor.structure.repositories.EnvironmentParameters.*;
 public class RepositoryStructureServiceImpl
         implements RepositoryStructureService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RepositoryStructureServiceImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger( RepositoryStructureServiceImpl.class );
+
+    private IOService                                ioService;
+    private POMService                               pomService;
+    private ProjectService<? extends Project>        projectService;
+    private RepositoryService                        repositoryService;
+    private MetadataService                          metadataService;
+    private GuvnorM2Repository                       m2service;
+    private CommentedOptionFactory                   optionsFactory;
+    private Event<RepositoryEnvironmentUpdatedEvent> repositoryUpdatedEvent;
+
+    public RepositoryStructureServiceImpl() {
+        //Zero-parameter constructor for CDI proxies
+    }
 
     @Inject
-    private POMService pomService;
-
-    @Inject
-    private ProjectService<? extends Project> projectService;
-
-    @Inject
-    private RepositoryService repositoryService;
-
-    @Inject
-    private MetadataService metadataService;
-
-    @Inject
-    private GuvnorM2Repository m2service;
-
-    @Inject
-    private CommentedOptionFactory optionsFactory;
-
-    @Inject
-    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
-
-    @Inject
-    @Named( "ioStrategy" )
-    private IOService ioService;
+    public RepositoryStructureServiceImpl( final @Named( "ioStrategy" ) IOService ioService,
+                                           final POMService pomService,
+                                           final ProjectService<? extends Project> projectService,
+                                           final RepositoryService repositoryService,
+                                           final MetadataService metadataService,
+                                           final GuvnorM2Repository m2service,
+                                           final CommentedOptionFactory optionsFactory,
+                                           final Event<RepositoryEnvironmentUpdatedEvent> repositoryUpdatedEvent ) {
+        this.ioService = ioService;
+        this.pomService = pomService;
+        this.projectService = projectService;
+        this.repositoryService = repositoryService;
+        this.metadataService = metadataService;
+        this.m2service = m2service;
+        this.optionsFactory = optionsFactory;
+        this.repositoryUpdatedEvent = repositoryUpdatedEvent;
+    }
 
     public Path initRepositoryStructure( GAV gav, Repository repo ) {
 
@@ -90,8 +96,8 @@ public class RepositoryStructureServiceImpl
         //Creating the parent pom
         final Path fsRoot = repo.getRoot();
         final Path pathToPom = pomService.create( fsRoot,
-                "",
-                pom );
+                                                  "",
+                                                  pom );
         //Deploying the parent pom artifact,
         // it needs to be deployed before the first child is created
         m2service.deployParentPom( gav );
@@ -114,8 +120,8 @@ public class RepositoryStructureServiceImpl
             //Creating the parent pom
             final Path fsRoot = repo.getRoot();
             final Path pathToPom = pomService.create( fsRoot,
-                    "",
-                    pom );
+                                                      "",
+                                                      pom );
             //Deploying the parent pom artifact,
             // it needs to be deployed before the first child is created
             m2service.deployParentPom( pom.getGav() );
@@ -135,12 +141,14 @@ public class RepositoryStructureServiceImpl
         return updateManagedStatus( repo, managed );
     }
 
-    private Repository updateManagedStatus( final Repository repo, final boolean managed) {
-        Map<String, Object> config = new HashMap<String, Object>( );
+    private Repository updateManagedStatus( final Repository repo,
+                                            final boolean managed ) {
+        final RepositoryEnvironmentConfigurations config = new RepositoryEnvironmentConfigurations();
 
-        config.put( MANAGED, managed );
-        Repository updatedRepo = repositoryService.updateRepository( repo, config );
-        repositoryUpdatedEvent.fire( new RepositoryUpdatedEvent( repo, updatedRepo ) );
+        config.setManaged( managed );
+        Repository updatedRepo = repositoryService.updateRepositoryConfiguration( repo,
+                                                                                  config );
+        repositoryUpdatedEvent.fire( new RepositoryEnvironmentUpdatedEvent( updatedRepo ) );
 
         return updatedRepo;
     }

@@ -15,15 +15,24 @@
 
 package org.guvnor.structure.repositories;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 /**
  * Magic Strings for common environment parameter names
  */
+@Portable
 public class EnvironmentParameters {
 
     public static final String SCHEME = "scheme";
 
-    public static final String BRANCH = "branch";
-
     public static final String MANAGED = "managed";
+
+    public static final String ORIGIN = "origin";
+
+    public static final String USER_NAME = "username";
+
+    public static final String PASSWORD = "crypt:password";
+
+    public static final String INIT = "init";
 
 }

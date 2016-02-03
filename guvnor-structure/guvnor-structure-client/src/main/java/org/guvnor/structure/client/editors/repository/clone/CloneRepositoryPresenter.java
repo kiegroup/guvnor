@@ -30,9 +30,9 @@ import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -136,23 +136,20 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
                                         getErrorCallback() ).createRepository( availableOrganizationalUnits.get( view.getOrganizationalUnit( view.getSelectedOrganizationalUnit() ) ),
                                                                                scheme,
                                                                                alias,
-                                                                               getEnv() );
+                                                                               getRepositoryConfiguration() );
             }
         };
     }
 
-    private Map<String, Object> getEnv() {
-        final Map<String, Object> env = new HashMap<String, Object>( 3 );
-        env.put( "username",
-                 view.getUsername().trim() );
-        env.put( "crypt:password",
-                 view.getPassword().trim() );
-        env.put( "origin",
-                 view.getGitUrl() );
+    private RepositoryEnvironmentConfigurations getRepositoryConfiguration() {
+        final RepositoryEnvironmentConfigurations configuration = new RepositoryEnvironmentConfigurations();
+
+        configuration.setUserName( view.getUsername().trim() );
+        configuration.setPassword( view.getPassword().trim() );
+        configuration.setOrigin( view.getGitUrl() );
         //Cloned repositories are not managed by default.
-        env.put( EnvironmentParameters.MANAGED,
-                 false );
-        return env;
+        configuration.setManaged( false );
+        return configuration;
     }
 
     private RemoteCallback<Repository> getCreateRepositoryCallback() {

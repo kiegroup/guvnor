@@ -16,21 +16,10 @@
 
 package org.guvnor.structure.client.editors.repository.list;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.structure.repositories.Repository;
 
-public interface RepositoriesView
-        extends IsWidget {
+public interface HasRemoveRepositoryHandlers {
 
-    RepositoryItemPresenter addRepository( final Repository repository,
-                                           final String branch );
-
-    boolean confirmDeleteRepository( final Repository repository );
-
-    void removeIfExists( final RepositoryItemPresenter repositoryItem );
-
-    void clear();
-
-    void setPresenter( final RepositoriesPresenter presenter );
+    void removeRepository( final Repository repository );
 
 }

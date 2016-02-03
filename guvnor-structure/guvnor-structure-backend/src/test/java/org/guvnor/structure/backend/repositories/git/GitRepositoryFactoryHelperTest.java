@@ -16,6 +16,9 @@
 
 package org.guvnor.structure.backend.repositories.git;
 
+import java.net.URI;
+import java.util.ArrayList;
+
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -26,14 +29,10 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
-import java.net.URI;
-import java.util.ArrayList;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class GitRepositoryFactoryHelperTest {
 
@@ -73,7 +72,7 @@ public class GitRepositoryFactoryHelperTest {
     public void testBranches() throws Exception {
 
         rootDirectories.add(createPath("default://origin@uf-playground"));
-        rootDirectories.add(createPath("default://master@uf-playground"));
+        rootDirectories.add( createPath("default://master@uf-playground"));
         rootDirectories.add(createPath("default://branch1@uf-playground"));
 
         ConfigGroup configGroup = getConfigGroup();
@@ -82,23 +81,7 @@ public class GitRepositoryFactoryHelperTest {
         Repository repository = helper.newRepository(configGroup);
 
         assertEquals(3, repository.getBranches().size());
-        assertEquals("master",repository.getCurrentBranch());
-    }
-
-    @Test
-    public void testLoadBranch1() throws Exception {
-
-        rootDirectories.add(createPath("default://origin@uf-playground"));
-        rootDirectories.add(createPath("default://master@uf-playground"));
-        rootDirectories.add(createPath("default://branch1@uf-playground"));
-
-        ConfigGroup configGroup = getConfigGroup();
-        configGroup.setName("test");
-
-        Repository repository = helper.newRepository(configGroup,"branch1");
-
-        assertEquals(3, repository.getBranches().size());
-        assertEquals("branch1",repository.getCurrentBranch());
+        assertTrue(repository.getRoot().toURI().contains( "master" ));
     }
 
     private Path createPath(String uri) {

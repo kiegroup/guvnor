@@ -18,7 +18,6 @@ package org.guvnor.structure.repositories;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.Caller;
@@ -58,7 +57,8 @@ public class RepositoryServiceCallerMock
         return repositoryServiceWrapper;
     }
 
-    private class RepositoryServiceWrapper implements RepositoryService {
+    private class RepositoryServiceWrapper
+            implements RepositoryService {
 
         RepositoryService repositoryService;
 
@@ -116,15 +116,20 @@ public class RepositoryServiceCallerMock
         }
 
         @Override
-        public Repository createRepository( OrganizationalUnit organizationalUnit, String scheme, String alias, Map<String, Object> env ) throws RepositoryAlreadyExistsException {
-            Repository result = repositoryService.createRepository( organizationalUnit, scheme, alias, env );
+        public Repository createRepository( final OrganizationalUnit organizationalUnit,
+                                            final String scheme,
+                                            final String alias,
+                                            final RepositoryEnvironmentConfigurations configuration ) throws RepositoryAlreadyExistsException {
+            Repository result = repositoryService.createRepository( organizationalUnit, scheme, alias, configuration );
             remoteCallback.callback( result );
             return result;
         }
 
         @Override
-        public Repository createRepository( String scheme, String alias, Map<String, Object> env ) throws RepositoryAlreadyExistsException {
-            Repository result = repositoryService.createRepository( scheme, alias, env );
+        public Repository createRepository( final String scheme,
+                                            final String alias,
+                                            final RepositoryEnvironmentConfigurations configuration ) throws RepositoryAlreadyExistsException {
+            Repository result = repositoryService.createRepository( scheme, alias, configuration );
             remoteCallback.callback( result );
             return result;
         }
@@ -159,8 +164,9 @@ public class RepositoryServiceCallerMock
         }
 
         @Override
-        public Repository updateRepository( Repository repository, Map<String, Object> config ) {
-            Repository result = repositoryService.updateRepository( repository, config );
+        public Repository updateRepositoryConfiguration( final Repository repository,
+                                                         final RepositoryEnvironmentConfigurations config ) {
+            Repository result = repositoryService.updateRepositoryConfiguration( repository, config );
             remoteCallback.callback( result );
             return result;
         }

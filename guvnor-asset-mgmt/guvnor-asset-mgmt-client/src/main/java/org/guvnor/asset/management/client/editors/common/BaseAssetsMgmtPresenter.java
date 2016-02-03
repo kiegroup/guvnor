@@ -29,7 +29,7 @@ import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
+import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -109,7 +109,7 @@ public abstract class BaseAssetsMgmtPresenter {
         loadRepositories();
     }
 
-    private void onRepositoryUpdatedEvent( @Observes RepositoryUpdatedEvent event ) {
+    private void onRepositoryUpdatedEvent( @Observes RepositoryEnvironmentUpdatedEvent event ) {
         loadRepositories();
     }
 }

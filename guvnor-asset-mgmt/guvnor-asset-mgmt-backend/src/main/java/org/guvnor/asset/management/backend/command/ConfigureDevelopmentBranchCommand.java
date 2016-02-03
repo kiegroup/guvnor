@@ -15,11 +15,8 @@
 
 package org.guvnor.asset.management.backend.command;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.TypeLiteral;
 
@@ -85,10 +82,7 @@ public class ConfigureDevelopmentBranchCommand extends AbstractCommand {
 
                     Repository repo = repositoryService.getRepository(repository);
 
-                    Map<String, Object> config = new HashMap<String, Object>();
-                    config.put("branch", branchToUpdate + "-" + version);
-
-                    repo = repositoryService.updateRepository(repo, config);
+                    repo = repositoryService.getRepository( repo.getBranchRoot( branchToUpdate + "-" + version ) );
                     logger.debug("Updated repository " + repo);
 
                     // update all pom.xml files of projects on the dev branch

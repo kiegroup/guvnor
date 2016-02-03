@@ -17,7 +17,6 @@
 package org.guvnor.server;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -26,6 +25,7 @@ import javax.inject.Inject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
@@ -100,15 +100,16 @@ public class AppSetup {
                                          final String password ) {
         Repository repository = repositoryService.getRepository( alias );
         if ( repository == null ) {
+            RepositoryEnvironmentConfigurations repositoryEnvironmentConfigurations =new RepositoryEnvironmentConfigurations();
+            if ( origin != null ) {
+                repositoryEnvironmentConfigurations.setOrigin( origin );
+            }
+            repositoryEnvironmentConfigurations.setUserName(user);
+            repositoryEnvironmentConfigurations.setPassword(password);
+
             repository = repositoryService.createRepository( scheme,
                                                              alias,
-                                                             new HashMap<String, Object>() {{
-                                                                 if ( origin != null ) {
-                                                                     put( "origin", origin );
-                                                                 }
-                                                                 put( "username", user );
-                                                                 put( "crypt:password", password );
-                                                             }} );
+                                                             repositoryEnvironmentConfigurations );
         }
         return repository;
     }
