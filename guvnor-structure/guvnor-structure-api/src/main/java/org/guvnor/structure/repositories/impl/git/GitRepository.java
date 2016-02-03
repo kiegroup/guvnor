@@ -28,7 +28,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
-public class GitRepository implements Repository {
+public class GitRepository
+        implements Repository {
 
     public static final String SCHEME = "git";
 
@@ -94,18 +95,6 @@ public class GitRepository implements Repository {
     }
 
     @Override
-    public String getCurrentBranch() {
-
-        for ( String branchName : branches.keySet() ) {
-            if ( branches.get( branchName ).equals( root ) ) {
-                return branchName;
-            }
-        }
-
-        return "master";
-    }
-
-    @Override
     public Path getRoot() {
         return root;
     }
@@ -113,7 +102,6 @@ public class GitRepository implements Repository {
     @Override
     public Path getBranchRoot( String branch ) {
         return branches.get( branch );
-
     }
 
     @Override
@@ -155,6 +143,17 @@ public class GitRepository implements Repository {
     @Override
     public Collection<String> getTraits() {
         return Collections.emptySet();
+    }
+
+    @Override
+    public String getDefaultBranch() {
+        if ( branches.containsKey( "master" ) ) {
+            return "master";
+        } else if ( !branches.isEmpty() ) {
+            return branches.keySet().iterator().next();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -223,12 +222,8 @@ public class GitRepository implements Repository {
         return requiresRefresh;
     }
 
-    public void changeBranch( String branch ) {
-        setRoot( branches.get( branch ) );
-    }
-
-    public void addBranch( String branchName,
-                           Path path ) {
+    public void addBranch( final String branchName,
+                           final Path path ) {
         branches.put( branchName, path );
     }
 }

@@ -36,7 +36,10 @@ public class NewRepositoryEvent {
     /*
      * For Managed Repositories
     */
-    public NewRepositoryEvent(Repository newRepository, String groupId, String artifactId, String version) {
+    public NewRepositoryEvent(final Repository newRepository,
+                              final String groupId,
+                              final String artifactId,
+                              final String version) {
       this.newRepository = newRepository;
       this.groupId = groupId;
       this.artifactId = artifactId;
@@ -45,10 +48,6 @@ public class NewRepositoryEvent {
 
     public Repository getNewRepository() {
         return newRepository;
-    }
-
-    public void setNewRepository( final Repository newRepository ) {
-        this.newRepository = newRepository;
     }
 
     public String getGroupId() {

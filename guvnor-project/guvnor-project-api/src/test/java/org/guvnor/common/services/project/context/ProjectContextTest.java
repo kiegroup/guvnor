@@ -98,6 +98,7 @@ public class ProjectContextTest {
 
         OrganizationalUnit newOrganizationalUnit = mock(OrganizationalUnit.class);
         Repository newRepository = mock(Repository.class);
+        String newBranch = "master";
         Package newPackage = new Package();
         Project newProject = new Project();
 
@@ -106,6 +107,7 @@ public class ProjectContextTest {
 
         context.onProjectContextChanged(new ProjectContextChangeEvent(newOrganizationalUnit,
                                                                       newRepository,
+                                                                      newBranch,
                                                                       newProject,
                                                                       newPackage));
 

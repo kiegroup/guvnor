@@ -17,6 +17,7 @@
 package org.guvnor.structure.client.editors.repository.list;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -24,80 +25,84 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.structure.client.editors.context.GuvnorStructureContext;
+import org.guvnor.structure.client.editors.context.GuvnorStructureContextChangeHandler;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
-import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryRemovedEvent;
+import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
+import org.uberfire.lifecycle.OnShutdown;
 import org.uberfire.lifecycle.OnStartup;
 
 @Dependent
 @WorkbenchScreen(identifier = "RepositoriesEditor")
-public class RepositoriesPresenter {
+public class RepositoriesPresenter
+        implements GuvnorStructureContextChangeHandler,
+                   HasRemoveRepositoryHandlers {
 
     @Inject
     private Caller<VFSService> vfsService;
 
-    @Inject
     private Caller<RepositoryService> repositoryService;
 
     @Inject
-    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
+    private Event<RepositoryEnvironmentUpdatedEvent> repositoryUpdatedEvent;
 
-    @Inject
-    private SyncBeanManager iocManager;
+    private GuvnorStructureContext guvnorStructureContext;
 
-    public interface View
-            extends
-            UberView<RepositoriesPresenter> {
-
-        void addRepository( Repository repository );
-
-        boolean confirmDeleteRepository( Repository repository );
-
-        void removeIfExists( Repository repository );
-
-        void clear();
-
-        void updateRepository( final Repository old,
-                               final Repository updated );
-    }
-
-    @Inject
-    public View view;
+    private Map<Repository, RepositoryItemPresenter> repositoryToWidgetMap = new HashMap<Repository, RepositoryItemPresenter>();
+    private RepositoriesView    view;
+    private HandlerRegistration changeHandlerRegistration;
 
     public RepositoriesPresenter() {
     }
 
+    @Inject
+    public RepositoriesPresenter( final RepositoriesView view,
+                                  final GuvnorStructureContext guvnorStructureContext,
+                                  final Caller<RepositoryService> repositoryService ) {
+        this.view = view;
+        this.guvnorStructureContext = guvnorStructureContext;
+        this.repositoryService = repositoryService;
+
+        changeHandlerRegistration = guvnorStructureContext.addGuvnorStructureContextChangeHandler( this );
+
+        view.setPresenter( this );
+    }
+
     @OnStartup
     public void onStartup() {
-        view.init( this );
         loadContent();
     }
 
+    @OnShutdown
+    public void shutdown() {
+        guvnorStructureContext.removeHandler( changeHandlerRegistration );
+    }
+
     private void loadContent() {
+        repositoryToWidgetMap.clear();
         view.clear();
 
-        repositoryService.call( new RemoteCallback<Collection<Repository>>() {
+        guvnorStructureContext.getRepositories( new Callback<Collection<Repository>>() {
             @Override
             public void callback( final Collection<Repository> response ) {
-                view.clear();
                 for ( final Repository repo : response ) {
-                    view.addRepository( repo );
+                    repositoryToWidgetMap.put( repo,
+                                               addRepositoryItem( repo,
+                                                                  guvnorStructureContext.getCurrentBranch( repo.getAlias() ) ) );
                 }
             }
-        } ).getRepositories();
+        } );
     }
+
 
     @WorkbenchPartTitle
     public String getTitle() {
@@ -106,20 +111,7 @@ public class RepositoriesPresenter {
 
     @WorkbenchPartView
     public IsWidget getView() {
-        return view;
-    }
-
-    public void updateRepository( final Repository repository,
-                                  final Map<String, Object> config ) {
-        repositoryService.call( new RemoteCallback<Repository>() {
-
-            @Override
-            public void callback( Repository updatedRepository ) {
-                view.updateRepository( repository, updatedRepository );
-                repositoryUpdatedEvent.fire( new RepositoryUpdatedEvent( repository, updatedRepository ) );
-            }
-        } ).updateRepository( repository, config );
-
+        return view.asWidget();
     }
 
     public void removeRepository( final Repository repository ) {
@@ -128,21 +120,29 @@ public class RepositoriesPresenter {
         }
     }
 
-    public void newRepository( @Observes final NewRepositoryEvent event ) {
-        vfsService.call( new RemoteCallback<Map>() {
-            @Override
-            public void callback( Map response ) {
-                view.addRepository( event.getNewRepository() );
-            }
-        } ).readAttributes( event.getNewRepository().getRoot() );
+    @Override
+    public void onNewRepositoryAdded( final Repository repository ) {
+        addRepositoryItem( repository,
+                           repository.getDefaultBranch() );
     }
 
-    public void removeRootDirectory( @Observes RepositoryRemovedEvent event ) {
-        view.removeIfExists( event.getRepository() );
+    @Override
+    public void onRepositoryDeleted( final Repository repository ) {
+        final RepositoryItemPresenter repositoryItem = repositoryToWidgetMap.remove( repository );
+        view.removeIfExists( repositoryItem );
     }
 
-    public void onSystemRepositoryChanged( @Observes SystemRepositoryChangedEvent event ) {
+    private RepositoryItemPresenter addRepositoryItem( final Repository newRepository,
+                                                       final String branch ) {
+        final RepositoryItemPresenter repositoryItemPresenter = view.addRepository( newRepository,
+                                                                                    branch );
+        repositoryItemPresenter.addRemoveRepositoryCommand( this );
+
+
+        return repositoryItemPresenter;
+    }
+
+    public void onSystemRepositoryChanged( @Observes final SystemRepositoryChangedEvent event ) {
         loadContent();
     }
-
 }
