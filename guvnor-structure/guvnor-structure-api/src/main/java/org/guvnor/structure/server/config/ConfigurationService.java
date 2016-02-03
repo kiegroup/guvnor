@@ -25,12 +25,12 @@ public interface ConfigurationService {
 
     void endBatch();
 
-    List<ConfigGroup> getConfiguration( ConfigType type );
+    List<ConfigGroup> getConfiguration( final ConfigType type );
 
-    boolean addConfiguration( ConfigGroup configGroup );
+    boolean addConfiguration( final ConfigGroup configGroup );
 
-    boolean updateConfiguration( ConfigGroup configGroup );
+    boolean updateConfiguration( final ConfigGroup configGroup );
 
-    boolean removeConfiguration( ConfigGroup configGroup );
+    boolean removeConfiguration( final ConfigGroup configGroup );
 
 }

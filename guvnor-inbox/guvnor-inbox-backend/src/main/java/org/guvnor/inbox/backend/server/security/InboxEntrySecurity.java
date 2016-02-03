@@ -18,7 +18,7 @@ package org.guvnor.inbox.backend.server.security;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.inbox.backend.server.InboxEntry;
-import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
+import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
@@ -43,21 +43,22 @@ public class InboxEntrySecurity {
 
     private ProjectService<? extends Project> projectService;
 
-    private RepositoryServiceImpl repositoryService;
+    private ConfiguredRepositories configuredRepositories;
 
     public InboxEntrySecurity() {
     }
 
     @Inject
-    public InboxEntrySecurity( User identity, AuthorizationManager authorizationManager,
-                               OrganizationalUnitService organizationalUnitService,
-                               ProjectService<? extends Project> projectService,
-                               RepositoryServiceImpl repositoryService ) {
+    public InboxEntrySecurity( final User identity,
+                               final AuthorizationManager authorizationManager,
+                               final OrganizationalUnitService organizationalUnitService,
+                               final ProjectService<? extends Project> projectService,
+                               final ConfiguredRepositories configuredRepositories ) {
         this.identity = identity;
         this.authorizationManager = authorizationManager;
         this.organizationalUnitService = organizationalUnitService;
         this.projectService = projectService;
-        this.repositoryService = repositoryService;
+        this.configuredRepositories = configuredRepositories;
     }
 
 
@@ -115,7 +116,7 @@ public class InboxEntrySecurity {
     Repository getInboxEntryRepository( InboxEntry inboxEntry ) {
         final Path path = Paths.get( inboxEntry.getItemPath() );
         final FileSystem fileSystem = path.getFileSystem();
-        return repositoryService.getRepository( fileSystem );
+        return configuredRepositories.getRepositoryByRepositoryFileSystem( fileSystem );
     }
 
     private Set<Repository> getAuthorizedRepositories() {

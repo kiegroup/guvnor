@@ -37,7 +37,7 @@ import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEven
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
+import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
@@ -407,7 +407,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     }
 
     // refresh org unit in case repository changed otherwise it will have outdated information
-    public void updateRegisteredOUonRepoChange( @Observes RepositoryUpdatedEvent changedEvent ) {
+    public void updateRegisteredOUonRepoChange( @Observes RepositoryEnvironmentUpdatedEvent changedEvent ) {
         registeredOrganizationalUnits.clear();
         loadOrganizationalUnits();
     }

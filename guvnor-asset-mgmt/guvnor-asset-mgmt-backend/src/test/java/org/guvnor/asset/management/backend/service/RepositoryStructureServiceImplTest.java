@@ -36,7 +36,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
+import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -76,9 +76,9 @@ public class RepositoryStructureServiceImplTest {
     @Mock
     private CommentedOptionFactory optionsFactory;
 
-    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent = new EventSourceMock<RepositoryUpdatedEvent>() {
+    private Event<RepositoryEnvironmentUpdatedEvent> repositoryUpdatedEvent = new EventSourceMock<RepositoryEnvironmentUpdatedEvent>() {
         @Override
-        public void fire( RepositoryUpdatedEvent event ) {
+        public void fire( RepositoryEnvironmentUpdatedEvent event ) {
             //Override as the default implementation throws an Exception
         }
     };

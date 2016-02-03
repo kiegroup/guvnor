@@ -16,10 +16,8 @@
 
 package org.guvnor.asset.management.client.editors.repository.wizard;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
@@ -44,8 +42,8 @@ import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.Role;
@@ -55,6 +53,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.ext.widgets.core.client.wizards.WizardView;
@@ -96,6 +95,9 @@ public class CreateRepositoryWizardTest {
 
     @GwtMock
     WizardView view;
+
+    @Captor
+    ArgumentCaptor<RepositoryEnvironmentConfigurations> repositoryEnvironmentConfigurationsArgumentCaptor;
 
     CreateRepositoryWizard createRepositoryWizard;
 
@@ -191,16 +193,14 @@ public class CreateRepositoryWizardTest {
         infoPage.onOUChange();
         infoPage.onManagedRepositoryChange();
 
-        Map<String, Object> env = new HashMap<String, Object>();
-        env.put( EnvironmentParameters.MANAGED,
-                 false );
 
-        when( repositoryService.createRepository( organizationalUnits.get( 0 ),
-                                                  "git",
-                                                  REPOSITORY_NAME,
-                                                  env ) ).thenReturn( expectedRepository );
+        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
+                                                  eq( "git" ),
+                                                  eq( REPOSITORY_NAME ),
+                                                  any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
 
         createRepositoryWizard.complete();
+
 
         verify( repositoryResolverService,
                 never() ).getRepositoriesResolvingArtifact( any( GAV.class ) );
@@ -209,7 +209,10 @@ public class CreateRepositoryWizardTest {
                 times( 1 ) ).createRepository( eq( organizationalUnits.get( 0 ) ),
                                                eq( "git" ),
                                                eq( REPOSITORY_NAME ),
-                                               eq( env ) );
+                                               repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
+
+        assertFalse( repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged() );
+
 
         //the model should have the UI loaded values.
         assertEquals( REPOSITORY_NAME,
@@ -261,24 +264,22 @@ public class CreateRepositoryWizardTest {
         structurePage.onConfigureRepositoryChange();
         structurePage.onMultiModuleChange();
 
-        Map<String, Object> env = new HashMap<String, Object>();
-        env.put( EnvironmentParameters.MANAGED,
-                 true );
-
-        when( repositoryService.createRepository( organizationalUnits.get( 0 ),
-                                                  "git",
-                                                  REPOSITORY_NAME,
-                                                  env ) ).thenReturn( expectedRepository );
+        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
+                                                  eq( "git" ),
+                                                  eq( REPOSITORY_NAME ),
+                                                  any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
         when( expectedRepository.getAlias() ).thenReturn( REPOSITORY_NAME );
 
         createRepositoryWizard.complete();
+
 
         //the repository should be created.
         verify( repositoryService,
                 times( 1 ) ).createRepository( eq( organizationalUnits.get( 0 ) ),
                                                eq( "git" ),
                                                eq( REPOSITORY_NAME ),
-                                               eq( env ) );
+                                               repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
+        assertTrue( repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged() );
 
         //when repository was created the next wizard actions is to initialize the structure
 
@@ -379,14 +380,10 @@ public class CreateRepositoryWizardTest {
         structurePage.onConfigureRepositoryChange();
         structurePage.onMultiModuleChange();
 
-        Map<String, Object> env = new HashMap<String, Object>();
-        env.put( EnvironmentParameters.MANAGED,
-                 true );
-
-        when( repositoryService.createRepository( organizationalUnits.get( 0 ),
-                                                  "git",
-                                                  REPOSITORY_NAME,
-                                                  env ) ).thenReturn( expectedRepository );
+        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
+                                                  eq( "git" ),
+                                                  eq( REPOSITORY_NAME ),
+                                                  any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
         when( expectedRepository.getAlias() ).thenReturn( REPOSITORY_NAME );
 
         //mock the pom created internally by the wizard to emulate the cascaded initializations.
@@ -417,7 +414,8 @@ public class CreateRepositoryWizardTest {
                 times( 1 ) ).createRepository( eq( organizationalUnits.get( 0 ) ),
                                                eq( "git" ),
                                                eq( REPOSITORY_NAME ),
-                                               eq( env ) );
+                                               repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
+        assertTrue( repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged() );
 
         verify( conflictingRepositoriesPopup,
                 times( 1 ) ).setContent( eq( pom.getGav() ),
@@ -487,14 +485,10 @@ public class CreateRepositoryWizardTest {
         structurePage.onConfigureRepositoryChange();
         structurePage.onMultiModuleChange();
 
-        Map<String, Object> env = new HashMap<String, Object>();
-        env.put( EnvironmentParameters.MANAGED,
-                 true );
-
-        when( repositoryService.createRepository( organizationalUnits.get( 0 ),
-                                                  "git",
-                                                  REPOSITORY_NAME,
-                                                  env ) ).thenReturn( expectedRepository );
+        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
+                                                  eq( "git" ),
+                                                  eq( REPOSITORY_NAME ),
+                                                  any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
         when( expectedRepository.getAlias() ).thenReturn( REPOSITORY_NAME );
 
         //mock the pom created internally by the wizard to emulate the cascaded initializations.
@@ -525,7 +519,8 @@ public class CreateRepositoryWizardTest {
                 times( 1 ) ).createRepository( eq( organizationalUnits.get( 0 ) ),
                                                eq( "git" ),
                                                eq( REPOSITORY_NAME ),
-                                               eq( env ) );
+                                               repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
+        assertTrue( repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged() );
 
         //when repository was created the next wizard actions is to initialize the structure
 
@@ -615,14 +610,10 @@ public class CreateRepositoryWizardTest {
         structurePage.onConfigureRepositoryChange();
         structurePage.onMultiModuleChange();
 
-        Map<String, Object> env = new HashMap<String, Object>();
-        env.put( EnvironmentParameters.MANAGED,
-                 true );
-
-        when( repositoryService.createRepository( organizationalUnits.get( 0 ),
-                                                  "git",
-                                                  REPOSITORY_NAME,
-                                                  env ) ).thenReturn( expectedRepository );
+        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
+                                                  eq( "git" ),
+                                                  eq( REPOSITORY_NAME ),
+                                                  any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
         when( expectedRepository.getAlias() ).thenReturn( REPOSITORY_NAME );
 
         //mock the pom created internally by the wizard to emulate the cascaded initializations.
@@ -647,7 +638,8 @@ public class CreateRepositoryWizardTest {
                 never() ).createRepository( eq( organizationalUnits.get( 0 ) ),
                                             eq( "git" ),
                                             eq( REPOSITORY_NAME ),
-                                            eq( env ) );
+                                            any( RepositoryEnvironmentConfigurations.class ) );
+
         verify( repositoryStructureService,
                 never() ).initRepositoryStructure( eq( pom ),
                                                    eq( baseUrl ),
@@ -714,14 +706,10 @@ public class CreateRepositoryWizardTest {
         structurePage.onConfigureRepositoryChange();
         structurePage.onMultiModuleChange();
 
-        Map<String, Object> env = new HashMap<String, Object>();
-        env.put( EnvironmentParameters.MANAGED,
-                 true );
-
-        when( repositoryService.createRepository( organizationalUnits.get( 0 ),
-                                                  "git",
-                                                  REPOSITORY_NAME,
-                                                  env ) ).thenReturn( expectedRepository );
+        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
+                                                  eq( "git" ),
+                                                  eq( REPOSITORY_NAME ),
+                                                  any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
         when( expectedRepository.getAlias() ).thenReturn( REPOSITORY_NAME );
 
         //mock the pom created internally by the wizard to emulate the cascaded initializations.
@@ -746,7 +734,8 @@ public class CreateRepositoryWizardTest {
                 never() ).createRepository( eq( organizationalUnits.get( 0 ) ),
                                             eq( "git" ),
                                             eq( REPOSITORY_NAME ),
-                                            eq( env ) );
+                                            any( RepositoryEnvironmentConfigurations.class ) );
+
         verify( repositoryStructureService,
                 never() ).initRepositoryStructure( eq( pom ),
                                                    eq( baseUrl ),
@@ -780,7 +769,9 @@ public class CreateRepositoryWizardTest {
                 times( 1 ) ).createRepository( eq( organizationalUnits.get( 0 ) ),
                                                eq( "git" ),
                                                eq( REPOSITORY_NAME ),
-                                               eq( env ) );
+                                               repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
+        assertTrue( repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged() );
+
         verify( repositoryStructureService,
                 times( 1 ) ).initRepositoryStructure( eq( pom ),
                                                       eq( baseUrl ),

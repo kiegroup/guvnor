@@ -23,7 +23,9 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Cacheable;
 import org.uberfire.security.authz.RuntimeContentResource;
 
-public interface Repository extends RuntimeContentResource, Cacheable {
+public interface Repository
+        extends RuntimeContentResource,
+                Cacheable {
 
     /**
      * Most of the time, this can not be used as an unique ID.
@@ -47,7 +49,7 @@ public interface Repository extends RuntimeContentResource, Cacheable {
 
     Path getRoot();
 
-    Path getBranchRoot( String branch );
+    Path getBranchRoot( final String branch );
 
     void setRoot( final Path root );
 
@@ -58,11 +60,8 @@ public interface Repository extends RuntimeContentResource, Cacheable {
     Collection<String> getBranches();
 
     /**
-     * Returns current branch that is configured for this repository.
-     * It will always provide branch name even if there was no explicit
-     * branch selected/created - which in that case is always 'master'
-     * @return
+     * In the case of Git repository this would be master.
+     * @return null if there are no branches.
      */
-    String getCurrentBranch();
-
+    String getDefaultBranch();
 }

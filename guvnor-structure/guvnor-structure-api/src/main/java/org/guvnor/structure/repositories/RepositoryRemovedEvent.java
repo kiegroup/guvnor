@@ -22,6 +22,11 @@ public class RepositoryRemovedEvent {
 
     private Repository repository;
 
+    /**
+     * You should always use the constructor with parameters.
+     * This constructor is here just keep this Portable.
+     */
+    @Deprecated()
     public RepositoryRemovedEvent() {
     }
 
@@ -33,7 +38,4 @@ public class RepositoryRemovedEvent {
         return repository;
     }
 
-    public void setRepository( final Repository repository ) {
-        this.repository = repository;
-    }
 }

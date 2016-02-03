@@ -31,9 +31,9 @@ import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -150,22 +150,19 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
                                         getErrorCallback() ).createRepository( availableOrganizationalUnits.get( view.getSelectedOrganizationalUnit() ),
                                                                                scheme,
                                                                                alias,
-                                                                               getEnv() );
+                                                                               getRepositoryConfiguration() );
             }
         };
     }
 
-    private Map<String, Object> getEnv() {
-        final Map<String, Object> env = new HashMap<String, Object>( 4 );
-        env.put( "username",
-                 view.getUsername().trim() );
-        env.put( "crypt:password",
-                 view.getPassword().trim() );
-        env.put( "origin",
-                 view.getGitUrl() );
-        env.put( EnvironmentParameters.MANAGED,
-                 view.isManagedRepository() );
-        return env;
+    private RepositoryEnvironmentConfigurations getRepositoryConfiguration() {
+        final RepositoryEnvironmentConfigurations configuration = new RepositoryEnvironmentConfigurations();
+
+        configuration.setUserName( view.getUsername().trim() );
+        configuration.setPassword( view.getPassword().trim() );
+        configuration.setOrigin( view.getGitUrl() );
+        configuration.setManaged( view.isManagedRepository() );
+        return configuration;
     }
 
     private RemoteCallback<Repository> getCreateRepositoryCallback() {
