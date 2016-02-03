@@ -15,10 +15,9 @@
 package org.guvnor.inbox.backend.server.security;
 
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectResourceResolver;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.inbox.backend.server.InboxEntry;
-import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
+import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
@@ -40,14 +39,14 @@ import static org.mockito.Mockito.when;
 @RunWith( MockitoJUnitRunner.class )
 public class InboxEntrySecurityTest {
 
-    private Repository repo1;
-    private Repository repo2;
-    private User user;
-    private AuthorizationManager authorizationManager;
-    private OrganizationalUnitService organizationalUnitService;
+    private Repository                        repo1;
+    private Repository                        repo2;
+    private User                              user;
+    private AuthorizationManager              authorizationManager;
+    private OrganizationalUnitService         organizationalUnitService;
     private ProjectService<? extends Project> projectService;
-    private RepositoryServiceImpl repositoryService;
-    private Project project1;
+    private ConfiguredRepositories            configuredRepositories;
+    private Project                           project1;
 
     @Before
     public void setup() {
@@ -70,7 +69,7 @@ public class InboxEntrySecurityTest {
         when( ou.getRepositories() ).thenReturn( repositories );
 
         projectService = null;
-        repositoryService = null;
+        configuredRepositories = null;
 
 
     }
@@ -80,7 +79,7 @@ public class InboxEntrySecurityTest {
     public void testSecureNullRepoNullProject() throws Exception {
         InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
                                                            projectService,
-                                                           repositoryService ) {
+                                                           configuredRepositories ) {
             @Override
             Repository getInboxEntryRepository( InboxEntry inboxEntry ) {
                 return null;
@@ -108,7 +107,7 @@ public class InboxEntrySecurityTest {
     public void testSecureRepoWithoutProject() throws Exception {
         InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
                                                            projectService,
-                                                           repositoryService ) {
+                                                           configuredRepositories ) {
             @Override
             Repository getInboxEntryRepository( InboxEntry inboxEntry ) {
                 if ( inboxEntry.getItemPath().equals( "path1" ) ) {
@@ -139,7 +138,7 @@ public class InboxEntrySecurityTest {
     public void testSecureRepoInsecureProject() throws Exception {
         InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
                                                            projectService,
-                                                           repositoryService ) {
+                                                           configuredRepositories ) {
             @Override
             Repository getInboxEntryRepository( InboxEntry inboxEntry ) {
                 return repo1;
@@ -167,7 +166,7 @@ public class InboxEntrySecurityTest {
     public void testSecureRepoSecureProject() throws Exception {
         InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
                                                            projectService,
-                                                           repositoryService ) {
+                                                           configuredRepositories ) {
             @Override
             Repository getInboxEntryRepository( InboxEntry inboxEntry ) {
                 return repo1;
