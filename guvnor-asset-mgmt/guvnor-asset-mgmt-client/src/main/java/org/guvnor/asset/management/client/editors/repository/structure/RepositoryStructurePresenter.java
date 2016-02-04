@@ -917,6 +917,11 @@ public class RepositoryStructurePresenter
                     visitor.visitLeave( this );
                 }
             }
+
+            @Override
+            public int getOrder() {
+                return 0;
+            }
         };
 
         MenuItem item;
