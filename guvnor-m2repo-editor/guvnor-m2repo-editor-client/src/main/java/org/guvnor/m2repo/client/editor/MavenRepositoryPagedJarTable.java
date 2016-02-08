@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -53,7 +54,27 @@ public class MavenRepositoryPagedJarTable
 
     @PostConstruct
     public void init() {
-        //If the current user is not an Administrator do not include the download button
+        // Add "View KJAR's pom" button column
+        final Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell( ButtonSize.EXTRA_SMALL ) ) {
+            @Override
+            public String getValue( JarListPageRow row ) {
+                return M2RepoEditorConstants.INSTANCE.Open();
+            }
+        };
+        openColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
+            @Override
+            public void update( int index,
+                                JarListPageRow row,
+                                String value ) {
+                presenter.onOpenPom( row.getPath() );
+            }
+        } );
+        presenter.getView().addColumn( openColumn,
+                                       M2RepoEditorConstants.INSTANCE.Open(),
+                                       100.0,
+                                       Style.Unit.PX );
+
+        //If the current user is an Administrator include the download button
         if ( identity.getRoles().contains( new RoleImpl( "admin" ) ) ) {
             final Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>( new ButtonCell( ButtonSize.EXTRA_SMALL ) ) {
                 public String getValue( JarListPageRow row ) {
@@ -72,7 +93,9 @@ public class MavenRepositoryPagedJarTable
             } );
 
             presenter.getView().addColumn( downloadColumn,
-                                           M2RepoEditorConstants.INSTANCE.Download() );
+                                           M2RepoEditorConstants.INSTANCE.Download(),
+                                           100.0,
+                                           Style.Unit.PX );
         }
 
         initWidget( presenter.getView().asWidget() );

@@ -45,12 +45,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.paging.PageResponse;
 
-import static org.junit.Assert.*;
 import static org.guvnor.m2repo.model.HTMLFileManagerFields.*;
+import static org.junit.Assert.*;
 
-public class M2RepositoryTest {
+public class M2RepositoryServiceImplTest {
 
-    private static final Logger log = LoggerFactory.getLogger( M2RepositoryTest.class );
+    private static final Logger log = LoggerFactory.getLogger( M2RepositoryServiceImplTest.class );
     private static GAV gavBackend;
     private static GAV gavBackend1;
     private static GAV gavBackend2;
@@ -64,20 +64,20 @@ public class M2RepositoryTest {
     @BeforeClass
     public static void setupClass() {
         gavBackend = new GAV( "org.kie.guvnor",
-                "guvnor-m2repo-editor-backend",
-                "0.0.1-SNAPSHOT" );
+                              "guvnor-m2repo-editor-backend",
+                              "0.0.1-SNAPSHOT" );
 
         gavBackend1 = new GAV( "org.kie.guvnor",
-                "guvnor-m2repo-editor-backend1",
-                "0.0.1-SNAPSHOT" );
+                               "guvnor-m2repo-editor-backend1",
+                               "0.0.1-SNAPSHOT" );
 
         gavBackend2 = new GAV( "org.kie.guvnor",
-                "guvnor-m2repo-editor-backend2",
-                "0.0.1-SNAPSHOT" );
+                               "guvnor-m2repo-editor-backend2",
+                               "0.0.1-SNAPSHOT" );
 
         gavArquillian = new GAV( "org.jboss.arquillian.core",
-                "arquillian-core-api",
-                "1.0.2.Final" );
+                                 "arquillian-core-api",
+                                 "1.0.2.Final" );
     }
 
     @Before
@@ -85,9 +85,9 @@ public class M2RepositoryTest {
         log.info( "Deleting existing Repositories instance.." );
 
         File dir = new File( "repositories" );
-        log.info("DELETING test repo: " + dir.getAbsolutePath());
-        deleteDir(dir);
-        log.info("TEST repo was deleted.");
+        log.info( "DELETING test repo: " + dir.getAbsolutePath() );
+        deleteDir( dir );
+        log.info( "TEST repo was deleted." );
 
         repo = new GuvnorM2Repository();
         repo.init();
@@ -96,17 +96,17 @@ public class M2RepositoryTest {
         service = new M2RepoServiceImpl();
         java.lang.reflect.Field repositoryField = M2RepoServiceImpl.class.getDeclaredField( "repository" );
         repositoryField.setAccessible( true );
-        repositoryField.set(service, repo );
+        repositoryField.set( service, repo );
 
         //Make private method accessible for testing
         helper = new HttpPostHelper();
         helperMethod = HttpPostHelper.class.getDeclaredMethod( "upload", FormData.class );
-        helperMethod.setAccessible(true);
+        helperMethod.setAccessible( true );
 
         //Set the repository service created above in the HttpPostHelper
         java.lang.reflect.Field m2RepoServiceField = HttpPostHelper.class.getDeclaredField( "m2RepoService" );
         m2RepoServiceField.setAccessible( true );
-        m2RepoServiceField.set(helper, service);
+        m2RepoServiceField.set( helper, service );
     }
 
     @AfterClass
@@ -174,8 +174,8 @@ public class M2RepositoryTest {
     @Test
     public void testDeployPom() throws Exception {
         InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test-pom.xml" );
-        repo.deployPom(is,
-                gavBackend);
+        repo.deployPom( is,
+                        gavBackend );
 
         Collection<File> files = repo.listFiles();
 
@@ -230,7 +230,7 @@ public class M2RepositoryTest {
         boolean found1 = false;
         Collection<File> files = repo.listFiles( "1.0.2" );
         final String VERSION_NUMBER_SEARCH_FILTER = "arquillian-core-api-1.0.2";
-        for (File file : files ) {
+        for ( File file : files ) {
             String fileName = file.getName();
             if ( fileName.startsWith( VERSION_NUMBER_SEARCH_FILTER ) && fileName.endsWith( ".jar" ) ) {
                 found1 = true;
@@ -272,7 +272,7 @@ public class M2RepositoryTest {
         FormData uploadItem = new FormData();
         FileItem file = new MockFileItem( "guvnor-m2repo-editor-backend-test-with-pom.jar",
                                           this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test-with-pom.jar" ) );
-        uploadItem.setFile(file);
+        uploadItem.setFile( file );
 
         assert ( helperMethod.invoke( helper,
                                       uploadItem ).equals( UPLOAD_OK ) );
@@ -283,7 +283,7 @@ public class M2RepositoryTest {
         FormData uploadItem = new FormData();
         FileItem file = new MockFileItem( "guvnor-m2repo-editor-backend-test-with-pom.kjar",
                                           this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test-with-pom.jar" ) );
-        uploadItem.setFile(file);
+        uploadItem.setFile( file );
 
         assert ( helperMethod.invoke( helper,
                                       uploadItem ).equals( UPLOAD_OK ) );
@@ -295,7 +295,7 @@ public class M2RepositoryTest {
         uploadItem.setGav( gavBackend );
         FileItem file = new MockFileItem( "guvnor-m2repo-editor-backend-test-without-pom.jar",
                                           this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test-without-pom.jar" ) );
-        uploadItem.setFile(file);
+        uploadItem.setFile( file );
 
         assert ( helperMethod.invoke( helper,
                                       uploadItem ).equals( UPLOAD_OK ) );
@@ -307,7 +307,7 @@ public class M2RepositoryTest {
         uploadItem.setGav( gavBackend );
         FileItem file = new MockFileItem( "guvnor-m2repo-editor-backend-test.kjar",
                                           this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test-without-pom.jar" ) );
-        uploadItem.setFile(file);
+        uploadItem.setFile( file );
 
         assert ( helperMethod.invoke( helper,
                                       uploadItem ).equals( UPLOAD_OK ) );
@@ -317,7 +317,6 @@ public class M2RepositoryTest {
      * Verify that
      * {@link M2RepoServiceImpl#listArtifacts(org.guvnor.m2repo.model.JarListPageRequest) M2RepoServiceImpl.listArtifacts()}
      * returns correct PageResponse.
-     *
      * @throws java.lang.Exception
      */
     @Test
@@ -331,7 +330,7 @@ public class M2RepositoryTest {
         }
         // Create a mock repository to make the test independent on any project deployment
         GuvnorM2Repository mockRepo = Mockito.mock( GuvnorM2Repository.class );
-        Mockito.when( mockRepo.listFiles( Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean() ) )
+        Mockito.when( mockRepo.listFiles( Mockito.anyString() ) )
                 .thenReturn( artifacts );
 
         // Create a shell M2RepoService with injected mock M2Repository
@@ -359,12 +358,12 @@ public class M2RepositoryTest {
         FormData uploadItem = new FormData();
         FileItem file = new MockFileItem( "pom.xml",
                                           this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test-pom.xml" ) );
-        uploadItem.setFile(file);
+        uploadItem.setFile( file );
 
         assert ( helperMethod.invoke( helper,
                                       uploadItem ).equals( UPLOAD_OK ) );
 
-        assertFilesCount(null, null, false, 1);
+        assertFilesCount( null, null, false, 1 );
     }
 
     @Test
@@ -373,12 +372,15 @@ public class M2RepositoryTest {
         deployArtifact( gavBackend2 );
 
         //Sort by Name ascending
-        List<File> files = assertFilesCount(null, JarListPageRequest.COLUMN_NAME, true, 4);
-
+        final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        JarListPageRequest.COLUMN_NAME,
+                                                                        true,
+                                                                        4 );
+        final List<JarListPageRow> files = response.getPageRowList();
         final String fileName0 = files.get( 0 ).getName();
-        final String fileName2 = files.get(2).getName();
-        assertTrue(fileName0.startsWith("guvnor-m2repo-editor-backend1"));
-        assertTrue(fileName2.startsWith("guvnor-m2repo-editor-backend2"));
+        final String fileName2 = files.get( 2 ).getName();
+        assertTrue( fileName0.startsWith( "guvnor-m2repo-editor-backend1" ) );
+        assertTrue( fileName2.startsWith( "guvnor-m2repo-editor-backend2" ) );
     }
 
     @Test
@@ -387,12 +389,15 @@ public class M2RepositoryTest {
         deployArtifact( gavBackend2 );
 
         //Sort by Name descending
-        List<File> files = assertFilesCount(null, JarListPageRequest.COLUMN_NAME, false, 4);
-
+        final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        JarListPageRequest.COLUMN_NAME,
+                                                                        false,
+                                                                        4 );
+        final List<JarListPageRow> files = response.getPageRowList();
         final String fileName0 = files.get( 0 ).getName();
         final String fileName2 = files.get( 2 ).getName();
-        assertTrue( fileName0.startsWith("guvnor-m2repo-editor-backend2"));
-        assertTrue(fileName2.startsWith( "guvnor-m2repo-editor-backend1" ) );
+        assertTrue( fileName0.startsWith( "guvnor-m2repo-editor-backend2" ) );
+        assertTrue( fileName2.startsWith( "guvnor-m2repo-editor-backend1" ) );
     }
 
     @Test
@@ -401,12 +406,15 @@ public class M2RepositoryTest {
         deployArtifact( gavBackend2 );
 
         //Sort by Path ascending
-        List<File> files = assertFilesCount(null, JarListPageRequest.COLUMN_PATH, true, 4);
-
+        final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        JarListPageRequest.COLUMN_PATH,
+                                                                        true,
+                                                                        4 );
+        final List<JarListPageRow> files = response.getPageRowList();
         final String filePath0 = files.get( 0 ).getPath();
         final String filePath2 = files.get( 2 ).getPath();
-        assertTrue( filePath0.contains("guvnor-m2repo-editor-backend1"));
-        assertTrue(filePath2.contains("guvnor-m2repo-editor-backend2") );
+        assertTrue( filePath0.contains( "guvnor-m2repo-editor-backend1" ) );
+        assertTrue( filePath2.contains( "guvnor-m2repo-editor-backend2" ) );
     }
 
     @Test
@@ -415,8 +423,11 @@ public class M2RepositoryTest {
         deployArtifact( gavBackend2 );
 
         //Sort by Path descending
-        List<File> files = assertFilesCount(null, JarListPageRequest.COLUMN_PATH, false, 4);
-
+        final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        JarListPageRequest.COLUMN_PATH,
+                                                                        false,
+                                                                        4 );
+        final List<JarListPageRow> files = response.getPageRowList();
         final String filePath0 = files.get( 0 ).getPath();
         final String filePath2 = files.get( 2 ).getPath();
         assertTrue( filePath0.contains( "guvnor-m2repo-editor-backend2" ) );
@@ -424,20 +435,61 @@ public class M2RepositoryTest {
     }
 
     @Test
+    public void testListFilesWithSortOnGavAscending() throws Exception {
+        deployArtifact( gavBackend1 );
+        deployArtifact( gavBackend2 );
+
+        //Sort by Name ascending
+        final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        JarListPageRequest.COLUMN_GAV,
+                                                                        true,
+                                                                        4 );
+        final List<JarListPageRow> files = response.getPageRowList();
+        final GAV gav0 = files.get( 0 ).getGav();
+        final GAV gav2 = files.get( 2 ).getGav();
+        assertEquals( "guvnor-m2repo-editor-backend1",
+                      gav0.getArtifactId() );
+        assertEquals( "guvnor-m2repo-editor-backend2",
+                      gav2.getArtifactId() );
+    }
+
+    @Test
+    public void testListFilesWithSortOnGavDescending() throws Exception {
+        deployArtifact( gavBackend1 );
+        deployArtifact( gavBackend2 );
+
+        //Sort by Name descending
+        final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        JarListPageRequest.COLUMN_GAV,
+                                                                        false,
+                                                                        4 );
+        final List<JarListPageRow> files = response.getPageRowList();
+        final GAV gav0 = files.get( 0 ).getGav();
+        final GAV gav2 = files.get( 2 ).getGav();
+        assertEquals( "guvnor-m2repo-editor-backend2",
+                      gav0.getArtifactId() );
+        assertEquals( "guvnor-m2repo-editor-backend1",
+                      gav2.getArtifactId() );
+    }
+
+    @Test
     public void testListFilesWithSortOnLastModifiedAscending() throws Exception {
         deployArtifact( gavBackend1 );
 
         //Wait a bit before deploying other file (to ensure different Last Modified times)
-        Thread.sleep(2000);
+        Thread.sleep( 2000 );
 
         //This installs a JAR and a POM
         deployArtifact( gavBackend2 );
 
         //Sort by Last Modified ascending
-        List<File> files = assertFilesCount( null, JarListPageRequest.COLUMN_LAST_MODIFIED, true, 4 );
-
-        final Long fileTime0 = files.get( 0 ).lastModified();
-        final Long fileTime2 = files.get( 2 ).lastModified();
+        final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        JarListPageRequest.COLUMN_LAST_MODIFIED,
+                                                                        true,
+                                                                        4 );
+        final List<JarListPageRow> files = response.getPageRowList();
+        final Long fileTime0 = files.get( 0 ).getLastModified().getTime();
+        final Long fileTime2 = files.get( 2 ).getLastModified().getTime();
         assertTrue( fileTime0.compareTo( fileTime2 ) < 0 );
     }
 
@@ -451,10 +503,13 @@ public class M2RepositoryTest {
         deployArtifact( gavBackend2 );
 
         //Sort by Last Modified descending
-        List<File> files = assertFilesCount( null, JarListPageRequest.COLUMN_LAST_MODIFIED, false, 4 );
-
-        final Long fileTime0 = files.get( 0 ).lastModified();
-        final Long fileTime2 = files.get( 2 ).lastModified();
+        final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        JarListPageRequest.COLUMN_LAST_MODIFIED,
+                                                                        false,
+                                                                        4 );
+        final List<JarListPageRow> files = response.getPageRowList();
+        final Long fileTime0 = files.get( 0 ).getLastModified().getTime();
+        final Long fileTime2 = files.get( 2 ).getLastModified().getTime();
         assertTrue( fileTime0.compareTo( fileTime2 ) > 0 );
     }
 
@@ -464,27 +519,36 @@ public class M2RepositoryTest {
 
         //This installs a POM
         GAV gavBackendParent = new GAV( "org.kie.guvnor",
-                       "guvnor-m2repo-editor-backend-parent",
-                       "0.0.1-SNAPSHOT" );
+                                        "guvnor-m2repo-editor-backend-parent",
+                                        "0.0.1-SNAPSHOT" );
         InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test-pom.xml" );
         repo.deployPom( is,
                         gavBackendParent );
 
-        assertFilesCount(null, null, false, 3);
+        assertFilesCount( null, null, false, 3 );
     }
 
-    private List<File> assertFilesCount(String filters, String dataSource, boolean ascending, int filesCount) {
-        List<File> files = repo.listFiles( filters, dataSource, ascending );
-        assertEquals(filesCount, files.size());
-        return files;
+    private PageResponse<JarListPageRow> assertFilesCount( final String filters,
+                                                           final String dataSourceName,
+                                                           final boolean isAscending,
+                                                           final int filesCount ) {
+        final JarListPageRequest request = new JarListPageRequest( 0,
+                                                                   null,
+                                                                   filters,
+                                                                   dataSourceName,
+                                                                   isAscending );
+        final PageResponse<JarListPageRow> response = service.listArtifacts( request );
+        assertEquals( filesCount,
+                      response.getPageRowList().size() );
+        return response;
     }
 
-    private void deployArtifact( GAV gav) {
+    private void deployArtifact( GAV gav ) {
         //This installs a JAR and a POM
         InputStream is = this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test-without-pom.jar" );
         repo.deployArtifact( is,
-                gav,
-                false );
+                             gav,
+                             false );
     }
 
     //Create a mock FileItem setting an InputStream to test with

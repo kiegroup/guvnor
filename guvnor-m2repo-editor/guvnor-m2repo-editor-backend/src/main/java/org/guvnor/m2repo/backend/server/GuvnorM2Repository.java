@@ -30,8 +30,6 @@ import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -72,7 +70,6 @@ import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.m2repo.model.JarListPageRequest;
 import org.kie.scanner.Aether;
 import org.kie.scanner.embedder.MavenEmbedder;
 import org.kie.scanner.embedder.MavenEmbedderException;
@@ -453,7 +450,8 @@ public class GuvnorM2Repository {
         }
     }
 
-    private DistributionManagement getDistributionManagement( final String pomXML, MavenEmbedder embedder ) {
+    private DistributionManagement getDistributionManagement( final String pomXML,
+                                                              final MavenEmbedder embedder ) {
         final InputStream is = new ByteArrayInputStream( pomXML.getBytes( Charset.forName( "UTF-8" ) ) );
         MavenProject project = null;
         try {
@@ -501,10 +499,12 @@ public class GuvnorM2Repository {
         }
     }
 
-    private RemoteRepository getRemoteRepoFromDeployment( DeploymentRepository repo, MavenEmbedder embedder ) {
-
-        RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder( repo.getId(), repo.getLayout(), repo
-                .getUrl() )
+    private RemoteRepository getRemoteRepoFromDeployment( final DeploymentRepository repo,
+                                                          final MavenEmbedder embedder ) {
+        RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder( repo.getId(),
+                                                                                   repo.getLayout(),
+                                                                                   repo
+                                                                                           .getUrl() )
                 .setSnapshotPolicy( new RepositoryPolicy( true,
                                                           RepositoryPolicy.UPDATE_POLICY_DAILY,
                                                           RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
@@ -517,8 +517,8 @@ public class GuvnorM2Repository {
 
         if ( server != null ) {
             Authentication authentication = embedder.getMavenSession().getRepositorySession()
-                                                    .getAuthenticationSelector()
-                                                    .getAuthentication( remoteRepoBuilder.build() );
+                    .getAuthenticationSelector()
+                    .getAuthentication( remoteRepoBuilder.build() );
             remoteRepoBuilder.setAuthentication( authentication );
         }
 
@@ -530,34 +530,16 @@ public class GuvnorM2Repository {
      * @return an collection of java.io.File with the matching files
      */
     public Collection<File> listFiles() {
-        return listFiles( null,
-                          null,
-                          false );
-    }
-
-    /**
-     * Finds files within the repository with the given filters.
-     * @param filters filter to apply when finding files. The filter is used to create a wildcard matcher, ie., "*fileter*.*", in which "*" is
-     * to represent a multiple wildcard characters.
-     * @return an collection of java.io.File with the matching files
-     */
-    public Collection<File> listFiles( final String filters ) {
-        return listFiles( filters,
-                          null,
-                          false );
+        return listFiles( null );
     }
 
     /**
      * Finds files within the repository with the given filters.
      * @param filters filter to apply when finding files. The filter is used to create a wildcard matcher, ie., "*filter*.*", in which "*" is
      * to represent a multiple wildcard characters.
-     * @param dataSourceName An optional column name by which to sort the results
-     * @param isAscending An optional sort order by which to sort the results
      * @return an collection of java.io.File with the matching files
      */
-    public List<File> listFiles( final String filters,
-                                 final String dataSourceName,
-                                 final boolean isAscending ) {
+    public List<File> listFiles( final String filters ) {
         final List<String> wildcards = new ArrayList<String>();
         if ( filters == null ) {
             wildcards.add( "*.jar" );
@@ -568,49 +550,11 @@ public class GuvnorM2Repository {
             wildcards.add( "*" + filters + "*.kjar" );
             wildcards.add( "*" + filters + "*.pom" );
         }
-        List<File> files = new ArrayList<File>( FileUtils.listFiles( new File( M2_REPO_DIR ),
-                                                                     new WildcardFileFilter( wildcards,
-                                                                                             IOCase.INSENSITIVE ),
-                                                                     DirectoryFileFilter.DIRECTORY ) );
-        if ( dataSourceName == null ) {
-            return files;
-        }
-        final int order = ( isAscending ? 1 : -1 );
-        final List<File> sortedFiles = new ArrayList<File>( files );
-        if ( dataSourceName.equals( JarListPageRequest.COLUMN_NAME ) ) {
-            Collections.sort( sortedFiles,
-                              new Comparator<File>() {
-                                  @Override
-                                  public int compare( final File o1,
-                                                      final File o2 ) {
-                                      return o1.getName().compareTo( o2.getName() ) * order;
-                                  }
-                              } );
-
-        } else if ( dataSourceName.equals( JarListPageRequest.COLUMN_PATH ) ) {
-            Collections.sort( sortedFiles,
-                              new Comparator<File>() {
-                                  @Override
-                                  public int compare( final File o1,
-                                                      final File o2 ) {
-                                      return o1.getPath().compareTo( o2.getPath() ) * order;
-                                  }
-                              } );
-
-        } else if ( dataSourceName.equals( JarListPageRequest.COLUMN_LAST_MODIFIED ) ) {
-            Collections.sort( sortedFiles,
-                              new Comparator<File>() {
-                                  @Override
-                                  public int compare( final File o1,
-                                                      final File o2 ) {
-                                      final Long ft1 = o1.lastModified();
-                                      final Long ft2 = o2.lastModified();
-                                      return ft1.compareTo( ft2 ) * order;
-                                  }
-                              } );
-        }
-
-        return sortedFiles;
+        final List<File> files = new ArrayList<File>( FileUtils.listFiles( new File( M2_REPO_DIR ),
+                                                                           new WildcardFileFilter( wildcards,
+                                                                                                   IOCase.INSENSITIVE ),
+                                                                           DirectoryFileFilter.DIRECTORY ) );
+        return files;
     }
 
     public static String getPomText( final String path ) {
@@ -969,7 +913,6 @@ public class GuvnorM2Repository {
     }
 
     public File getArtifactFileFromRepository( final GAV gav ) {
-
         ArtifactRequest request = new ArtifactRequest();
         request.addRepository( getGuvnorM2Repository() );
         DefaultArtifact artifact = new DefaultArtifact( gav.getGroupId(),
@@ -998,5 +941,3 @@ public class GuvnorM2Repository {
         return artifactFile;
     }
 }
-
-
