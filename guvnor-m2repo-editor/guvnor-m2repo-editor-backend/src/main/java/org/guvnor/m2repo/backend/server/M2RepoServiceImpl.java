@@ -16,15 +16,22 @@
 
 package org.guvnor.m2repo.backend.server;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.compiler.kproject.xml.MinimalPomParser;
+import org.drools.compiler.kproject.xml.PomModel;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
@@ -78,30 +85,84 @@ public class M2RepoServiceImpl implements M2RepoService,
 
     @Override
     public PageResponse<JarListPageRow> listArtifacts( final JarListPageRequest pageRequest ) {
-        final Collection<File> files = repository.listFiles( pageRequest.getFilters(),
-                                                             pageRequest.getDataSourceName(),
-                                                             pageRequest.isAscending() );
+        //Get unsorted files matching filter
+        final String filters = pageRequest.getFilters();
+        final String dataSourceName = pageRequest.getDataSourceName();
+        final boolean isAscending = pageRequest.isAscending();
+        final Collection<File> files = repository.listFiles( filters );
 
-        final PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
+        //Convert files to JarListPageRow
         final List<JarListPageRow> jarPageRowList = new ArrayList<JarListPageRow>();
-
-        int i = 0;
         for ( File file : files ) {
-            if ( i >= pageRequest.getStartRowIndex() + pageRequest.getPageSize() ) {
-                break;
-            }
-            if ( i >= pageRequest.getStartRowIndex() ) {
-                JarListPageRow jarListPageRow = new JarListPageRow();
-                jarListPageRow.setName( file.getName() );
-                jarListPageRow.setPath( getJarPath( file.getPath(),
-                                                    File.separator ) );
-                jarListPageRow.setLastModified( new Date( file.lastModified() ) );
-                jarPageRowList.add( jarListPageRow );
-            }
-            i++;
+            JarListPageRow jarListPageRow = new JarListPageRow();
+            jarListPageRow.setName( file.getName() );
+            jarListPageRow.setPath( getJarPath( file.getPath(),
+                                                File.separator ) );
+            jarListPageRow.setGav( getGAV( jarListPageRow.getPath() ) );
+            jarListPageRow.setLastModified( new Date( file.lastModified() ) );
+            jarPageRowList.add( jarListPageRow );
         }
 
-        response.setPageRowList( jarPageRowList );
+        //Sort JarListPageRow entries, if required
+        if ( dataSourceName != null ) {
+            final int order = ( isAscending ? 1 : -1 );
+            if ( dataSourceName.equals( JarListPageRequest.COLUMN_NAME ) ) {
+                Collections.sort( jarPageRowList,
+                                  new Comparator<JarListPageRow>() {
+                                      @Override
+                                      public int compare( final JarListPageRow o1,
+                                                          final JarListPageRow o2 ) {
+                                          return o1.getName().compareTo( o2.getName() ) * order;
+                                      }
+                                  } );
+
+            } else if ( dataSourceName.equals( JarListPageRequest.COLUMN_PATH ) ) {
+                Collections.sort( jarPageRowList,
+                                  new Comparator<JarListPageRow>() {
+                                      @Override
+                                      public int compare( final JarListPageRow o1,
+                                                          final JarListPageRow o2 ) {
+                                          return o1.getPath().compareTo( o2.getPath() ) * order;
+                                      }
+                                  } );
+
+            } else if ( dataSourceName.equals( JarListPageRequest.COLUMN_GAV ) ) {
+                Collections.sort( jarPageRowList,
+                                  new Comparator<JarListPageRow>() {
+                                      @Override
+                                      public int compare( final JarListPageRow o1,
+                                                          final JarListPageRow o2 ) {
+                                          final GAV gav1 = o1.getGav();
+                                          final GAV gav2 = o2.getGav();
+                                          return gav1.toString().compareToIgnoreCase( gav2.toString() ) * order;
+                                      }
+                                  } );
+
+            } else if ( dataSourceName.equals( JarListPageRequest.COLUMN_LAST_MODIFIED ) ) {
+                Collections.sort( jarPageRowList,
+                                  new Comparator<JarListPageRow>() {
+                                      @Override
+                                      public int compare( final JarListPageRow o1,
+                                                          final JarListPageRow o2 ) {
+                                          final Long ft1 = o1.getLastModified().getTime();
+                                          final Long ft2 = o2.getLastModified().getTime();
+                                          return ft1.compareTo( ft2 ) * order;
+                                      }
+                                  } );
+            }
+        }
+
+        //Copy request "page" of entries to response
+        final Integer pageSize = pageRequest.getPageSize();
+        final int startRowIndex = pageRequest.getStartRowIndex();
+        final int endRowIndex = ( pageSize == null ? jarPageRowList.size() : startRowIndex + pageSize );
+        final List<JarListPageRow> responsePageRowList = new ArrayList<JarListPageRow>();
+        for ( int i = startRowIndex; i < endRowIndex; i++ ) {
+            responsePageRowList.add( jarPageRowList.get( i ) );
+        }
+
+        final PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
+        response.setPageRowList( responsePageRowList );
         response.setStartRowIndex( pageRequest.getStartRowIndex() );
         response.setTotalRowSize( files.size() );
         response.setTotalRowSizeExact( true );
@@ -119,6 +180,35 @@ public class M2RepoServiceImpl implements M2RepoService,
         jarPath = jarPath.replaceAll( "\\" + separator,
                                       "/" );
         return jarPath;
+    }
+
+    GAV getGAV( final String path ) {
+        GAV gav = null;
+        InputStream is = null;
+        try {
+            final String pom = getPomText( path );
+            is = new ByteArrayInputStream( pom.getBytes( Charset.forName( "UTF-8" ) ) );
+            final PomModel model = MinimalPomParser.parse( path,
+                                                           is );
+            gav = new GAV( model.getReleaseId().getGroupId(),
+                           model.getReleaseId().getArtifactId(),
+                           model.getReleaseId().getVersion() );
+
+        } catch ( RuntimeException rte ) {
+            //RuntimeException is thrown by MinimalPomParser for any Exception..
+            gav = new GAV( "<undetermined>",
+                           "<undetermined>",
+                           "<undetermined>" );
+        } finally {
+            if ( is != null ) {
+                try {
+                    is.close();
+                } catch ( IOException ioe ) {
+                    //Swallow
+                }
+            }
+        }
+        return gav;
     }
 
     /**

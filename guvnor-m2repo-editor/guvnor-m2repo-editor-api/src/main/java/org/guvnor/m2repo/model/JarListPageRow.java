@@ -18,6 +18,7 @@ package org.guvnor.m2repo.model;
 
 import java.util.Date;
 
+import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.paging.AbstractPageRow;
 
@@ -29,7 +30,7 @@ public class JarListPageRow extends AbstractPageRow {
 
     private String name;
     private String path;
-    //private GAV gav;
+    private GAV gav;
     private Date lastModified;
 
     public String getName() {
@@ -48,13 +49,13 @@ public class JarListPageRow extends AbstractPageRow {
         this.path = path;
     }
 
-/*    public GAV getGav() {
+    public GAV getGav() {
         return gav;
     }
 
-    public void setGav(GAV gav) {
+    public void setGav( GAV gav ) {
         this.gav = gav;
-    }*/
+    }
 
     public Date getLastModified() {
         return lastModified;
