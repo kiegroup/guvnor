@@ -94,6 +94,8 @@ public interface M2RepoEditorConstants
 
     String Path();
 
+    String GAV();
+
     String LastModified();
 
     String Open();

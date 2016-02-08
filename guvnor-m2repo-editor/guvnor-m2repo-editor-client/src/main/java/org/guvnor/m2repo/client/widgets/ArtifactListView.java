@@ -15,6 +15,7 @@
  */
 package org.guvnor.m2repo.client.widgets;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.view.client.HasData;
@@ -27,6 +28,21 @@ public interface ArtifactListView extends UberView<ArtifactListPresenter> {
 
     void addColumn( final Column<JarListPageRow, ?> column,
                     final String caption );
+
+    void addColumn( final Column<JarListPageRow, ?> column,
+                    final String caption,
+                    final boolean visible );
+
+    void addColumn( final Column<JarListPageRow, ?> column,
+                    final String caption,
+                    final double width,
+                    final Style.Unit unit );
+
+    void addColumn( final Column<JarListPageRow, ?> column,
+                    final String caption,
+                    final boolean visible,
+                    final double width,
+                    final Style.Unit unit );
 
     void showPom( String pomText );
 
