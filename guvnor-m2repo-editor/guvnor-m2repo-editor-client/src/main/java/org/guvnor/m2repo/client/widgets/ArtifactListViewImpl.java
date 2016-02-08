@@ -19,9 +19,9 @@ import java.util.Date;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.cell.client.DateCell;
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -35,8 +35,6 @@ import org.guvnor.m2repo.client.editor.JarDetailPopup;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 
 @Dependent
@@ -45,11 +43,12 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
     interface ArtifactListViewImplWidgetBinder
             extends
             UiBinder<Widget, ArtifactListViewImpl> {
+
     }
 
     private ArtifactListViewImplWidgetBinder uiBinder = GWT.create( ArtifactListViewImplWidgetBinder.class );
 
-    @UiField( provided = true )
+    @UiField(provided = true)
     final PagedTable<JarListPageRow> dataGrid = new PagedTable<JarListPageRow>();
 
     protected ArtifactListPresenter presenter;
@@ -65,19 +64,19 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
         };
         nameColumn.setSortable( true );
         nameColumn.setDataStoreName( JarListPageRequest.COLUMN_NAME );
-        dataGrid.addColumn( nameColumn,
-                            M2RepoEditorConstants.INSTANCE.Name() );
+        addColumn( nameColumn,
+                   M2RepoEditorConstants.INSTANCE.Name() );
 
-        final Column<JarListPageRow, String> pathColumn = new Column<JarListPageRow, String>( new TextCell() ) {
+        final Column<JarListPageRow, String> gavColumn = new Column<JarListPageRow, String>( new TextCell() ) {
             @Override
             public String getValue( JarListPageRow row ) {
-                return row.getPath();
+                return row.getGav().toString();
             }
         };
-        pathColumn.setSortable( true );
-        pathColumn.setDataStoreName( JarListPageRequest.COLUMN_PATH );
-        dataGrid.addColumn( pathColumn,
-                            M2RepoEditorConstants.INSTANCE.Path() );
+        gavColumn.setSortable( true );
+        gavColumn.setDataStoreName( JarListPageRequest.COLUMN_GAV );
+        addColumn( gavColumn,
+                   M2RepoEditorConstants.INSTANCE.GAV() );
 
         final Column<JarListPageRow, Date> lastModifiedColumn = new Column<JarListPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
             @Override
@@ -87,26 +86,9 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
         };
         lastModifiedColumn.setSortable( true );
         lastModifiedColumn.setDataStoreName( JarListPageRequest.COLUMN_LAST_MODIFIED );
-        dataGrid.addColumn( lastModifiedColumn,
-                            M2RepoEditorConstants.INSTANCE.LastModified() );
-
-        // Add "View kjar detail" button column
-        final Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell( ButtonSize.EXTRA_SMALL ) ) {
-            @Override
-            public String getValue( JarListPageRow row ) {
-                return M2RepoEditorConstants.INSTANCE.Open();
-            }
-        };
-        openColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
-            @Override
-            public void update( int index,
-                                JarListPageRow row,
-                                String value ) {
-                presenter.onOpenPom( row.getPath() );
-            }
-        } );
-        dataGrid.addColumn( openColumn,
-                            M2RepoEditorConstants.INSTANCE.Open() );
+        addColumn( lastModifiedColumn,
+                   M2RepoEditorConstants.INSTANCE.LastModified(),
+                   false );
 
         dataGrid.addColumnSortHandler( new ColumnSortEvent.AsyncHandler( dataGrid ) );
 
@@ -128,6 +110,41 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
                            final String caption ) {
         dataGrid.addColumn( column,
                             caption );
+    }
+
+    @Override
+    public void addColumn( final Column<JarListPageRow, ?> column,
+                           final String caption,
+                           final boolean visible ) {
+        dataGrid.addColumn( column,
+                            caption,
+                            visible );
+    }
+
+    @Override
+    public void addColumn( final Column<JarListPageRow, ?> column,
+                           final String caption,
+                           final double width,
+                           final Style.Unit unit ) {
+        dataGrid.addColumn( column,
+                            caption );
+        dataGrid.setColumnWidth( column,
+                                 width,
+                                 unit );
+    }
+
+    @Override
+    public void addColumn( final Column<JarListPageRow, ?> column,
+                           final String caption,
+                           final boolean visible,
+                           final double width,
+                           final Style.Unit unit ) {
+        dataGrid.addColumn( column,
+                            caption,
+                            visible );
+        dataGrid.setColumnWidth( column,
+                                 width,
+                                 unit );
     }
 
     @Override

@@ -30,6 +30,8 @@ public class JarListPageRequest extends PageRequest {
 
     public static final String COLUMN_PATH = "org.guvnor.m2repo.model.path";
 
+    public static final String COLUMN_GAV = "org.guvnor.m2repo.model.gav";
+
     public static final String COLUMN_LAST_MODIFIED = "org.guvnor.m2repo.model.last.modified";
 
     private String filters;
