@@ -526,7 +526,7 @@ public class GuvnorM2Repository {
     }
 
     /**
-     * Finds files within the repository with the given filters.
+     * Finds files within the repository.
      * @return an collection of java.io.File with the matching files
      */
     public Collection<File> listFiles() {
@@ -540,21 +540,45 @@ public class GuvnorM2Repository {
      * @return an collection of java.io.File with the matching files
      */
     public List<File> listFiles( final String filters ) {
+        return listFiles( filters, null );
+    }
+
+    /**
+     * Finds files within the repository with the given filters and formats.
+     * @param filters filter to apply when finding files. The filter is used to create a wildcard matcher, ie., "*filter*.*", in which "*" is
+     * to represent a multiple wildcard characters.
+     * @param fileFormats file formats to apply when finding files, ie., [ "jar", "kjar" ].
+     * @return an collection of java.io.File with the matching files
+     */
+    public List<File> listFiles( final String filters, List<String> fileFormats ) {
         final List<String> wildcards = new ArrayList<String>();
-        if ( filters == null ) {
-            wildcards.add( "*.jar" );
-            wildcards.add( "*.kjar" );
-            wildcards.add( "*.pom" );
-        } else {
-            wildcards.add( "*" + filters + "*.jar" );
-            wildcards.add( "*" + filters + "*.kjar" );
-            wildcards.add( "*" + filters + "*.pom" );
+        String wildcardPrefix = "";
+
+        if ( filters != null ) {
+            wildcardPrefix = "*" + filters;
         }
-        final List<File> files = new ArrayList<File>( FileUtils.listFiles( new File( M2_REPO_DIR ),
-                                                                           new WildcardFileFilter( wildcards,
-                                                                                                   IOCase.INSENSITIVE ),
-                                                                           DirectoryFileFilter.DIRECTORY ) );
+
+        if ( fileFormats == null ) {
+            fileFormats = new ArrayList<String>();
+            fileFormats.add( "jar" );
+            fileFormats.add( "kjar" );
+            fileFormats.add( "pom" );
+        }
+
+        for ( String fileFormat : fileFormats ) {
+            wildcards.add( wildcardPrefix + "*." + fileFormat );
+        }
+
+        final List<File> files = new ArrayList<File>( getFiles( wildcards ) );
+
         return files;
+    }
+
+    protected Collection<File> getFiles( final List<String> wildcards ) {
+        return FileUtils.listFiles( new File( M2_REPO_DIR ),
+                                    new WildcardFileFilter( wildcards,
+                                                            IOCase.INSENSITIVE ),
+                                    DirectoryFileFilter.DIRECTORY );
     }
 
     public static String getPomText( final String path ) {

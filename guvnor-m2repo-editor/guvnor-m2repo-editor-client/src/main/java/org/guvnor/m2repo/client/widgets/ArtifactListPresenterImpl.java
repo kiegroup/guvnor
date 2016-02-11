@@ -15,6 +15,7 @@
  */
 package org.guvnor.m2repo.client.widgets;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -44,7 +45,7 @@ public class ArtifactListPresenterImpl
 
     private final Event<NotificationEvent> notification;
 
-    private RefreshableAsyncDataProvider dataProvider;
+    RefreshableAsyncDataProvider dataProvider;
 
     @Inject
     public ArtifactListPresenterImpl( ArtifactListView view,
@@ -59,7 +60,6 @@ public class ArtifactListPresenterImpl
     public void init() {
         view.init( this );
         dataProvider = new RefreshableAsyncDataProvider( view, m2RepoService );
-        dataProvider.addDataDisplay( view.getDisplay() );
     }
 
     @Override
@@ -75,8 +75,21 @@ public class ArtifactListPresenterImpl
 
     @Override
     public void search( final String filter ) {
+        search( filter, null );
+    }
+
+    @Override
+    public void search( final String filter, final List<String> fileFormats ) {
         dataProvider.setFilter( filter );
-        refresh();
+        dataProvider.setFileFormats( fileFormats );
+
+        if ( dataProvider.getDataDisplays().isEmpty() ) {
+            dataProvider.addDataDisplay( view.getDisplay() );
+        } else {
+            dataProvider.goToFirstPage();
+        }
+
+        notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
     }
 
     @Override
@@ -92,11 +105,12 @@ public class ArtifactListPresenterImpl
     /**
      * Extension to AsyncDataProvider that supports refreshing the table.
      */
-    private static class RefreshableAsyncDataProvider extends AsyncDataProvider<JarListPageRow> {
+    static class RefreshableAsyncDataProvider extends AsyncDataProvider<JarListPageRow> {
 
         private final ArtifactListView view;
         private final Caller<M2RepoService> m2RepoService;
         private String filter;
+        private List<String> fileFormats;
 
         protected RefreshableAsyncDataProvider( final ArtifactListView view,
                                                 final Caller<M2RepoService> m2RepoService ) {
@@ -108,6 +122,20 @@ public class ArtifactListPresenterImpl
 
         protected void setFilter( String filter ) {
             this.filter = filter;
+        }
+
+        protected void setFileFormats( List<String> fileFormats ) {
+            this.fileFormats = fileFormats;
+        }
+
+        protected void goToFirstPage() {
+            for ( HasData<JarListPageRow> display : getDataDisplays() ) {
+                boolean wasOnFirstPage = ( display.getVisibleRange().getStart() == 0 );
+                display.setVisibleRange( 0, display.getVisibleRange().getLength() );
+                if ( wasOnFirstPage ) {
+                    onRangeChanged( display );
+                }
+            }
         }
 
         protected void refresh() {
@@ -122,6 +150,7 @@ public class ArtifactListPresenterImpl
             JarListPageRequest request = new JarListPageRequest( range.getStart(),
                                                                  range.getLength(),
                                                                  filter,
+                                                                 fileFormats,
                                                                  getSortColumnDataStoreName(),
                                                                  isSortColumnAscending() );
 

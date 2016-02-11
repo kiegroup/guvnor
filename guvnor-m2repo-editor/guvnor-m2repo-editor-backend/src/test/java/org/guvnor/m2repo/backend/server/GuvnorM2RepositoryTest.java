@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -43,6 +44,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.scanner.Aether;
+import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -55,8 +57,11 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
@@ -202,4 +207,55 @@ public class GuvnorM2RepositoryTest {
                                      } ) );
     }
 
+    @Test
+    public void testListFilesWithoutParameters() {
+        List<String> wildcards = new ArrayList<String>();
+        wildcards.add( "*.jar" );
+        wildcards.add( "*.kjar" );
+        wildcards.add( "*.pom" );
+
+        GuvnorM2Repository spiedRepo = spy( repo );
+
+        doReturn( new ArrayList<String>() ).when( spiedRepo ).getFiles( Matchers.<List<String>>any() );
+
+        spiedRepo.listFiles();
+        verify( spiedRepo ).getFiles( wildcards );
+    }
+
+    @Test
+    public void testListFilesWithFilter() {
+        final String filter = "filter";
+
+        List<String> wildcards = new ArrayList<String>();
+        wildcards.add( "*" + filter + "*.jar" );
+        wildcards.add( "*" + filter + "*.kjar" );
+        wildcards.add( "*" + filter + "*.pom" );
+
+        GuvnorM2Repository spiedRepo = spy( repo );
+
+        doReturn( new ArrayList<String>() ).when( spiedRepo ).getFiles( Matchers.<List<String>>any() );
+
+        spiedRepo.listFiles( filter );
+        verify( spiedRepo ).getFiles( wildcards );
+    }
+
+    @Test
+    public void testListFilesWithFilterAndFileFormats() {
+        final String filter = "filter";
+
+        List<String> fileFormats = new ArrayList<String>();
+        fileFormats.add( "xml" );
+        fileFormats.add( "war" );
+
+        List<String> wildcards = new ArrayList<String>();
+        wildcards.add( "*" + filter + "*.xml" );
+        wildcards.add( "*" + filter + "*.war" );
+
+        GuvnorM2Repository spiedRepo = spy( repo );
+
+        doReturn( new ArrayList<String>() ).when( spiedRepo ).getFiles( Matchers.<List<String>>any() );
+
+        spiedRepo.listFiles( filter, fileFormats );
+        verify( spiedRepo ).getFiles( wildcards );
+    }
 }

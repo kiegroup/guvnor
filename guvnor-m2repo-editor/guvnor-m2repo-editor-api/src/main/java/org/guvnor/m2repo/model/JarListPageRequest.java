@@ -16,6 +16,8 @@
 
 package org.guvnor.m2repo.model;
 
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.paging.PageRequest;
@@ -35,23 +37,30 @@ public class JarListPageRequest extends PageRequest {
     public static final String COLUMN_LAST_MODIFIED = "org.guvnor.m2repo.model.last.modified";
 
     private String filters;
+    private List<String> fileFormats;
     private String dataSourceName;
     private boolean isAscending;
 
     public JarListPageRequest( @MapsTo("startRowIndex") final int startRowIndex,
                                @MapsTo("pageSize") final Integer pageSize,
                                @MapsTo("filters") final String filters,
+                               @MapsTo("fileFormats") final List<String> fileFormats,
                                @MapsTo("dataSourceName") final String dataSourceName,
                                @MapsTo("isAscending") final boolean isAscending ) {
         super( startRowIndex,
                pageSize );
         this.filters = filters;
+        this.fileFormats = fileFormats;
         this.dataSourceName = dataSourceName;
         this.isAscending = isAscending;
     }
 
     public String getFilters() {
         return filters;
+    }
+
+    public List<String> getFileFormats() {
+        return fileFormats;
     }
 
     public String getDataSourceName() {
