@@ -15,11 +15,15 @@
  */
 package org.guvnor.m2repo.client.widgets;
 
+import java.util.List;
+
 public interface ArtifactListPresenter {
 
     ArtifactListView getView();
 
     void search( String filter );
+
+    void search( String filter, List<String> fileFormats );
 
     void refresh();
 

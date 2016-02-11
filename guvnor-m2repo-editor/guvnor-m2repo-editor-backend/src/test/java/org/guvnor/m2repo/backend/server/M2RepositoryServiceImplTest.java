@@ -40,6 +40,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -330,7 +331,7 @@ public class M2RepositoryServiceImplTest {
         }
         // Create a mock repository to make the test independent on any project deployment
         GuvnorM2Repository mockRepo = Mockito.mock( GuvnorM2Repository.class );
-        Mockito.when( mockRepo.listFiles( Mockito.anyString() ) )
+        Mockito.when( mockRepo.listFiles( Mockito.anyString(), Matchers.<List<String>>any() ) )
                 .thenReturn( artifacts );
 
         // Create a shell M2RepoService with injected mock M2Repository
@@ -341,7 +342,7 @@ public class M2RepositoryServiceImplTest {
                              mockRepo );
 
         // Verify PageResponse
-        JarListPageRequest request = new JarListPageRequest( PAGE_START, PAGE_SIZE, null, null, false );
+        JarListPageRequest request = new JarListPageRequest( PAGE_START, PAGE_SIZE, null, null, null, false );
         PageResponse<JarListPageRow> response = m2service.listArtifacts( request );
         assertEquals( PAGE_SIZE, response.getPageRowList().size() );
         assertEquals( TOTAL, response.getTotalRowSize() );
@@ -363,7 +364,7 @@ public class M2RepositoryServiceImplTest {
         assert ( helperMethod.invoke( helper,
                                       uploadItem ).equals( UPLOAD_OK ) );
 
-        assertFilesCount( null, null, false, 1 );
+        assertFilesCount( null, null, null, false, 1 );
     }
 
     @Test
@@ -373,6 +374,7 @@ public class M2RepositoryServiceImplTest {
 
         //Sort by Name ascending
         final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        null,
                                                                         JarListPageRequest.COLUMN_NAME,
                                                                         true,
                                                                         4 );
@@ -390,6 +392,7 @@ public class M2RepositoryServiceImplTest {
 
         //Sort by Name descending
         final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        null,
                                                                         JarListPageRequest.COLUMN_NAME,
                                                                         false,
                                                                         4 );
@@ -407,6 +410,7 @@ public class M2RepositoryServiceImplTest {
 
         //Sort by Path ascending
         final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        null,
                                                                         JarListPageRequest.COLUMN_PATH,
                                                                         true,
                                                                         4 );
@@ -424,6 +428,7 @@ public class M2RepositoryServiceImplTest {
 
         //Sort by Path descending
         final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        null,
                                                                         JarListPageRequest.COLUMN_PATH,
                                                                         false,
                                                                         4 );
@@ -441,6 +446,7 @@ public class M2RepositoryServiceImplTest {
 
         //Sort by GAV ascending
         final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        null,
                                                                         JarListPageRequest.COLUMN_GAV,
                                                                         true,
                                                                         4 );
@@ -460,6 +466,7 @@ public class M2RepositoryServiceImplTest {
 
         //Sort by GAV descending
         final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        null,
                                                                         JarListPageRequest.COLUMN_GAV,
                                                                         false,
                                                                         4 );
@@ -484,6 +491,7 @@ public class M2RepositoryServiceImplTest {
 
         //Sort by Last Modified ascending
         final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        null,
                                                                         JarListPageRequest.COLUMN_LAST_MODIFIED,
                                                                         true,
                                                                         4 );
@@ -504,6 +512,7 @@ public class M2RepositoryServiceImplTest {
 
         //Sort by Last Modified descending
         final PageResponse<JarListPageRow> response = assertFilesCount( null,
+                                                                        null,
                                                                         JarListPageRequest.COLUMN_LAST_MODIFIED,
                                                                         false,
                                                                         4 );
@@ -525,12 +534,13 @@ public class M2RepositoryServiceImplTest {
         repo.deployPom( is,
                         gavBackendParent );
 
-        assertFilesCount( null, null, false, 3 );
+        assertFilesCount( null, null, null, false, 3 );
     }
 
     @Test
     public void testListFilesWhenNoneExist() throws Exception {
         assertFilesCount( null,
+                          null,
                           JarListPageRequest.COLUMN_GAV,
                           false,
                           0 );
@@ -544,6 +554,7 @@ public class M2RepositoryServiceImplTest {
 
         final JarListPageRequest request = new JarListPageRequest( 0,
                                                                    10,
+                                                                   null,
                                                                    null,
                                                                    null,
                                                                    true );
@@ -562,6 +573,7 @@ public class M2RepositoryServiceImplTest {
                                                                    10,
                                                                    null,
                                                                    null,
+                                                                   null,
                                                                    true );
         final PageResponse<JarListPageRow> response = service.listArtifacts( request );
         assertEquals( 0,
@@ -569,12 +581,14 @@ public class M2RepositoryServiceImplTest {
     }
 
     private PageResponse<JarListPageRow> assertFilesCount( final String filters,
+                                                           final List<String> fileFormats,
                                                            final String dataSourceName,
                                                            final boolean isAscending,
                                                            final int filesCount ) {
         final JarListPageRequest request = new JarListPageRequest( 0,
                                                                    null,
                                                                    filters,
+                                                                   fileFormats,
                                                                    dataSourceName,
                                                                    isAscending );
         final PageResponse<JarListPageRow> response = service.listArtifacts( request );
