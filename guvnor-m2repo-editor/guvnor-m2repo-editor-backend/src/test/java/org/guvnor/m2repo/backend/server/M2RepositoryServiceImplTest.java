@@ -439,7 +439,7 @@ public class M2RepositoryServiceImplTest {
         deployArtifact( gavBackend1 );
         deployArtifact( gavBackend2 );
 
-        //Sort by Name ascending
+        //Sort by GAV ascending
         final PageResponse<JarListPageRow> response = assertFilesCount( null,
                                                                         JarListPageRequest.COLUMN_GAV,
                                                                         true,
@@ -458,7 +458,7 @@ public class M2RepositoryServiceImplTest {
         deployArtifact( gavBackend1 );
         deployArtifact( gavBackend2 );
 
-        //Sort by Name descending
+        //Sort by GAV descending
         final PageResponse<JarListPageRow> response = assertFilesCount( null,
                                                                         JarListPageRequest.COLUMN_GAV,
                                                                         false,
@@ -526,6 +526,46 @@ public class M2RepositoryServiceImplTest {
                         gavBackendParent );
 
         assertFilesCount( null, null, false, 3 );
+    }
+
+    @Test
+    public void testListFilesWhenNoneExist() throws Exception {
+        assertFilesCount( null,
+                          JarListPageRequest.COLUMN_GAV,
+                          false,
+                          0 );
+    }
+
+    @Test
+    public void testListFilesWithPageSize() throws Exception {
+        //Deploy 2 files (equating to 4 files)
+        deployArtifact( gavBackend1 );
+        deployArtifact( gavBackend2 );
+
+        final JarListPageRequest request = new JarListPageRequest( 0,
+                                                                   10,
+                                                                   null,
+                                                                   null,
+                                                                   true );
+        final PageResponse<JarListPageRow> response = service.listArtifacts( request );
+        assertEquals( 4,
+                      response.getPageRowList().size() );
+    }
+
+    @Test
+    public void testListFilesWithStartBeyondMaximum() throws Exception {
+        //Deploy 2 files (equating to 4 files)
+        deployArtifact( gavBackend1 );
+        deployArtifact( gavBackend2 );
+
+        final JarListPageRequest request = new JarListPageRequest( 10,
+                                                                   10,
+                                                                   null,
+                                                                   null,
+                                                                   true );
+        final PageResponse<JarListPageRow> response = service.listArtifacts( request );
+        assertEquals( 0,
+                      response.getPageRowList().size() );
     }
 
     private PageResponse<JarListPageRow> assertFilesCount( final String filters,

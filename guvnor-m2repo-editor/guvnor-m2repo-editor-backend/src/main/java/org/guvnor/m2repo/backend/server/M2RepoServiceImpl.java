@@ -157,8 +157,12 @@ public class M2RepoServiceImpl implements M2RepoService,
         final int startRowIndex = pageRequest.getStartRowIndex();
         final int endRowIndex = ( pageSize == null ? jarPageRowList.size() : startRowIndex + pageSize );
         final List<JarListPageRow> responsePageRowList = new ArrayList<JarListPageRow>();
-        for ( int i = startRowIndex; i < endRowIndex; i++ ) {
-            responsePageRowList.add( jarPageRowList.get( i ) );
+        if ( startRowIndex < jarPageRowList.size() ) {
+            int i = startRowIndex;
+            while ( i < endRowIndex && i < jarPageRowList.size() ) {
+                responsePageRowList.add( jarPageRowList.get( i ) );
+                i++;
+            }
         }
 
         final PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
