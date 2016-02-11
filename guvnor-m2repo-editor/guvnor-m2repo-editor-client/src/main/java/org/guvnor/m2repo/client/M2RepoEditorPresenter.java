@@ -38,7 +38,7 @@ public class M2RepoEditorPresenter {
 
     @OnStartup
     public void onStartup() {
-        view.refresh();
+        view.search( "" );
     }
 
     @WorkbenchPartView

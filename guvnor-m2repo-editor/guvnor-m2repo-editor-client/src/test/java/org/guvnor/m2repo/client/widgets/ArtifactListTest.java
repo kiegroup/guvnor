@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -36,6 +37,7 @@ import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 
 @RunWith( MockitoJUnitRunner.class )
 public class ArtifactListTest {
@@ -72,7 +74,7 @@ public class ArtifactListTest {
     @Before
     @SuppressWarnings( "unchecked" )
     public void setUp() {
-        Mockito.when( m2service.listArtifacts( Mockito.any( JarListPageRequest.class ) ) ).thenReturn( response );
+        Mockito.when( m2service.listArtifacts( any( JarListPageRequest.class ) ) ).thenReturn( response );
         Mockito.when( m2service.getPomText( Mockito.anyString() ) ).thenReturn( POM_TEXT );
         Mockito.when( response.getTotalRowSize() ).thenReturn( RESPONSE_ROWS_COUNT );
         Mockito.when( response.isTotalRowSizeExact() ).thenReturn( RESPONSE_EXACT_ROWS );
@@ -98,22 +100,15 @@ public class ArtifactListTest {
         // Disable sort info for this test
         Mockito.when( view.getColumnSortList() ).thenReturn( null );
         presenter.init();
-
-        // Initial request without filter
-        Mockito.verify( m2service ).listArtifacts( request.capture() );
-        JarListPageRequest initialRequest = request.getValue();
-        verifyRequest( initialRequest,
-                       null,
-                       null,
-                       REQUEST_RANGE_LENGTH,
-                       REQUEST_RANGE_START,
-                       ArtifactListPresenterImpl.DEFAULT_ORDER_ASCENDING );
-
-        presenter.search( "filters" );
-        Mockito.verify( event ).fire( Mockito.any( NotificationEvent.class ) );
+        ArtifactListPresenterImpl.RefreshableAsyncDataProvider dataProvider = Mockito.spy( presenter.dataProvider );
+        presenter.dataProvider = dataProvider;
 
         // Search request with filter
-        Mockito.verify( m2service, Mockito.times( 2 ) ).listArtifacts( request.capture() );
+        presenter.search( "filters" );
+        Mockito.verify( event ).fire( any( NotificationEvent.class ) );
+        Mockito.verify( dataProvider ).addDataDisplay( Matchers.<HasData<JarListPageRow>>any() );
+        Mockito.verify( dataProvider, Mockito.never() ).goToFirstPage();
+        Mockito.verify( m2service ).listArtifacts( request.capture() );
         JarListPageRequest searchRequest = request.getValue();
         verifyRequest( searchRequest,
                        null,
@@ -123,8 +118,16 @@ public class ArtifactListTest {
                        ArtifactListPresenterImpl.DEFAULT_ORDER_ASCENDING );
 
         // Row data updated
-        Mockito.verify( table, Mockito.times( 2 ) ).setRowCount( RESPONSE_ROWS_COUNT,
-                                                                 RESPONSE_EXACT_ROWS );
+        Mockito.verify( table ).setRowCount( RESPONSE_ROWS_COUNT,
+                                             RESPONSE_EXACT_ROWS );
+
+        // Second search does not add the display again
+        Mockito.reset( event );
+        Mockito.reset( dataProvider );
+        presenter.search( "other filters" );
+        Mockito.verify( event ).fire( any( NotificationEvent.class ) );
+        Mockito.verify( dataProvider, Mockito.never() ).addDataDisplay( Matchers.<HasData<JarListPageRow>>any() );
+        Mockito.verify( dataProvider ).goToFirstPage();
     }
 
     @Test
@@ -134,32 +137,23 @@ public class ArtifactListTest {
                                                                              event );
         presenter.init();
 
-        // Initial request with default sort parameters
-        Mockito.verify( m2service ).listArtifacts( request.capture() );
-        verifyRequest( request.getValue(),
-                       REQUEST_SORT_COLUMN,
-                       null,
-                       REQUEST_RANGE_LENGTH,
-                       REQUEST_RANGE_START,
-                       REQUEST_SORT_ORDER );
-
         // Change sort parameters and refresh
         Mockito.when( sortInfo.isAscending() ).thenReturn( !REQUEST_SORT_ORDER );
         Mockito.when( column.getDataStoreName() ).thenReturn( "X" );
-        presenter.refresh();
+        presenter.search( "" );
 
         // Verify request
-        Mockito.verify( m2service, Mockito.times( 2 ) ).listArtifacts( request.capture() );
+        Mockito.verify( m2service ).listArtifacts( request.capture() );
         verifyRequest( request.getValue(),
                        "X",
-                       null,
+                       "",
                        REQUEST_RANGE_LENGTH,
                        REQUEST_RANGE_START,
                        !REQUEST_SORT_ORDER );
 
         // Row data updated
-        Mockito.verify( table, Mockito.times( 2 ) ).setRowCount( RESPONSE_ROWS_COUNT,
-                                                                 RESPONSE_EXACT_ROWS );
+        Mockito.verify( table ).setRowCount( RESPONSE_ROWS_COUNT,
+                                             RESPONSE_EXACT_ROWS );
     }
 
     @Test
