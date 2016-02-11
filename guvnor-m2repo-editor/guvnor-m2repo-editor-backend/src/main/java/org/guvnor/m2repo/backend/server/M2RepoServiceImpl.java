@@ -87,9 +87,10 @@ public class M2RepoServiceImpl implements M2RepoService,
     public PageResponse<JarListPageRow> listArtifacts( final JarListPageRequest pageRequest ) {
         //Get unsorted files matching filter
         final String filters = pageRequest.getFilters();
+        final List<String> fileFormats = pageRequest.getFileFormats();
         final String dataSourceName = pageRequest.getDataSourceName();
         final boolean isAscending = pageRequest.isAscending();
-        final Collection<File> files = repository.listFiles( filters );
+        final Collection<File> files = repository.listFiles( filters, fileFormats );
 
         //Convert files to JarListPageRow
         final List<JarListPageRow> jarPageRowList = new ArrayList<JarListPageRow>();
@@ -155,7 +156,7 @@ public class M2RepoServiceImpl implements M2RepoService,
         //Copy request "page" of entries to response
         final Integer pageSize = pageRequest.getPageSize();
         final int startRowIndex = pageRequest.getStartRowIndex();
-        final int endRowIndex = ( pageSize == null ? jarPageRowList.size() : startRowIndex + pageSize );
+        final int endRowIndex = Math.min( jarPageRowList.size(), ( pageSize == null ? jarPageRowList.size() : startRowIndex + pageSize ) );
         final List<JarListPageRow> responsePageRowList = new ArrayList<JarListPageRow>();
         if ( startRowIndex < jarPageRowList.size() ) {
             int i = startRowIndex;
