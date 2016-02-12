@@ -79,6 +79,10 @@ public class GAV implements Serializable {
         return equals( o );
     }
 
+    public boolean isSnapshot() {
+        return this.version.endsWith( "-SNAPSHOT" );
+    }
+
     @Override
     public boolean equals( Object o ) {
         if ( this == o ) {

@@ -26,7 +26,9 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
+import org.guvnor.common.services.project.service.ProjectResourceResolver;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -41,13 +43,16 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProjectRepositoriesServiceTest {
+public class AbstractProjectRepositoriesServiceImplTest {
 
     @Mock
     private IOService ioService;
 
     @Mock
-    private ProjectRepositoryResolver<Project> repositoryResolver;
+    private ProjectRepositoryResolver repositoryResolver;
+
+    @Mock
+    private ProjectResourceResolver resourceResolver;
 
     @Mock
     private CommentedOptionFactory commentedOptionFactory;
@@ -55,18 +60,33 @@ public class ProjectRepositoriesServiceTest {
     private ProjectRepositoriesService service;
     private ProjectRepositoriesContentHandler contentHandler;
 
+    @BeforeClass
+    public static void setupSystemProperties() {
+        //These are not needed for the tests
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                            "true" );
+    }
+
     @Before
     public void setup() {
         contentHandler = spy( new ProjectRepositoriesContentHandler() );
-        service = new AbstractProjectRepositoriesService<Project>( ioService,
-                                                               repositoryResolver,
-                                                               contentHandler,
-                                                               commentedOptionFactory ) {
+        service = new AbstractProjectRepositoriesServiceImpl<Project>( ioService,
+                                                                       repositoryResolver,
+                                                                       contentHandler,
+                                                                       commentedOptionFactory ) {
+            @Override
+            protected Project getProject( final Path path ) {
+                return resourceResolver.resolveProject( path );
+            }
         };
     }
 
     @Test
-    public void testCreate() {
+    public void testCreateWithoutProject() {
         final String xml = "<project-repositories>\n" +
                 "  <repositories>\n" +
                 "    <repository>\n" +
@@ -89,8 +109,59 @@ public class ProjectRepositoriesServiceTest {
                                                    "local-url",
                                                    MavenRepositorySource.LOCAL ) );
         when( repositoryResolver.getRemoteRepositoriesMetaData() ).thenReturn( metadata );
+        when( resourceResolver.resolveProject( path ) ).thenReturn( null );
 
         service.create( path );
+
+        verify( resourceResolver,
+                times( 1 ) ).resolveProject( path );
+        verify( repositoryResolver,
+                times( 1 ) ).getRemoteRepositoriesMetaData();
+
+        verify( ioService,
+                times( 1 ) ).startBatch( any( FileSystem.class ),
+                                         any( CommentedOption.class ) );
+        verify( ioService,
+                times( 1 ) ).write( eq( nioPath ),
+                                    eq( xml ) );
+        verify( ioService,
+                times( 1 ) ).endBatch();
+    }
+
+    @Test
+    public void testCreateWithProject() {
+        final String xml = "<project-repositories>\n" +
+                "  <repositories>\n" +
+                "    <repository>\n" +
+                "      <include>true</include>\n" +
+                "      <metadata>\n" +
+                "        <id>local</id>\n" +
+                "        <url>local-url</url>\n" +
+                "        <source>LOCAL</source>\n" +
+                "      </metadata>\n" +
+                "    </repository>\n" +
+                "  </repositories>\n" +
+                "</project-repositories>";
+
+        final Path path = mock( Path.class );
+        when( path.toURI() ).thenReturn( "default://p0/project.repositories" );
+        final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
+
+        final Project project = mock( Project.class );
+
+        final Set<MavenRepositoryMetadata> metadata = new HashSet<MavenRepositoryMetadata>();
+        metadata.add( new MavenRepositoryMetadata( "local",
+                                                   "local-url",
+                                                   MavenRepositorySource.LOCAL ) );
+        when( repositoryResolver.getRemoteRepositoriesMetaData( eq( project ) ) ).thenReturn( metadata );
+        when( resourceResolver.resolveProject( path ) ).thenReturn( project );
+
+        service.create( path );
+
+        verify( resourceResolver,
+                times( 1 ) ).resolveProject( path );
+        verify( repositoryResolver,
+                times( 1 ) ).getRemoteRepositoriesMetaData( eq( project ) );
 
         verify( ioService,
                 times( 1 ) ).startBatch( any( FileSystem.class ),
@@ -228,6 +299,54 @@ public class ProjectRepositoriesServiceTest {
         verify( ioService,
                 times( 1 ) ).write( eq( nioPath ),
                                     eq( xml ) );
+    }
+
+    @Test
+    public void testFiltered() {
+        final String xml = "<project-repositories>\n" +
+                "  <repositories>\n" +
+                "    <repository>\n" +
+                "      <include>true</include>\n" +
+                "      <metadata>\n" +
+                "        <id>id1</id>\n" +
+                "        <url>url1</url>\n" +
+                "        <source>LOCAL</source>\n" +
+                "      </metadata>\n" +
+                "    </repository>\n" +
+                "    <repository>\n" +
+                "      <include>false</include>\n" +
+                "      <metadata>\n" +
+                "        <id>id2</id>\n" +
+                "        <url>url2</url>\n" +
+                "        <source>LOCAL</source>\n" +
+                "      </metadata>\n" +
+                "    </repository>\n" +
+                "  </repositories>\n" +
+                "</project-repositories>";
+
+        final Path path = mock( Path.class );
+        when( path.toURI() ).thenReturn( "default://p0/project.repositories" );
+        final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
+        when( ioService.exists( eq( nioPath ) ) ).thenReturn( true );
+        when( ioService.readAllString( eq( nioPath ) ) ).thenReturn( xml );
+
+        final ProjectRepositories repositories = service.load( path );
+        assertNotNull( repositories );
+        assertNotNull( repositories.getRepositories() );
+        assertEquals( 2,
+                      repositories.getRepositories().size() );
+
+        final MavenRepositoryMetadata[] metadatas = repositories.filterByIncluded();
+        assertEquals( 1,
+                      metadatas.length );
+
+        final MavenRepositoryMetadata metadata = metadatas[ 0 ];
+        assertEquals( "id1",
+                      metadata.getId() );
+        assertEquals( "url1",
+                      metadata.getUrl() );
+        assertEquals( MavenRepositorySource.LOCAL,
+                      metadata.getSource() );
     }
 
 }

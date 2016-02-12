@@ -28,6 +28,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Server;
@@ -49,6 +52,7 @@ import org.guvnor.common.services.project.model.MavenRepositorySource;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.scanner.Aether;
 import org.kie.scanner.embedder.MavenEmbedder;
 import org.kie.scanner.embedder.MavenProjectLoader;
@@ -62,19 +66,28 @@ import org.uberfire.java.nio.file.NoSuchFileException;
 
 import static org.guvnor.common.services.project.backend.server.MavenLocalRepositoryUtils.*;
 
-public abstract class RepositoryResolver<T extends Project>
-        implements ProjectRepositoryResolver<T> {
+@Service
+@ApplicationScoped
+public class ProjectRepositoryResolverImpl
+        implements ProjectRepositoryResolver {
 
-    private static final Logger log = LoggerFactory.getLogger( RepositoryResolver.class );
+    private static final Logger log = LoggerFactory.getLogger( ProjectRepositoryResolverImpl.class );
+
+    //Package protected for tests
+    boolean isCheckConflictingGAVDisabled = false;
 
     private IOService ioService;
     private POMContentHandler pomContentHandler = new POMContentHandler();
 
-    public RepositoryResolver() {
-        //WELD proxy
+    public ProjectRepositoryResolverImpl() {
+        //WELD proxy and setup
+        this.isCheckConflictingGAVDisabled = Boolean.parseBoolean( System.getProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
+                                                                                       "false" ) );
     }
 
-    public RepositoryResolver( final IOService ioService ) {
+    @Inject
+    public ProjectRepositoryResolverImpl( final @Named("ioStrategy") IOService ioService ) {
+        this();
         this.ioService = ioService;
     }
 
@@ -98,7 +111,7 @@ public abstract class RepositoryResolver<T extends Project>
     }
 
     @Override
-    public Set<MavenRepositoryMetadata> getRemoteRepositoriesMetaData( final T project ) {
+    public Set<MavenRepositoryMetadata> getRemoteRepositoriesMetaData( final Project project ) {
         if ( project == null ) {
             return Collections.emptySet();
         }
@@ -177,6 +190,9 @@ public abstract class RepositoryResolver<T extends Project>
     @Override
     public Set<MavenRepositoryMetadata> getRepositoriesResolvingArtifact( final GAV gav,
                                                                           final MavenRepositoryMetadata... filter ) {
+        if ( isCheckConflictingGAVDisabled ) {
+            return Collections.EMPTY_SET;
+        }
         final Set<MavenRepositoryMetadata> repositoriesResolvingArtifact = new HashSet<MavenRepositoryMetadata>();
 
         try {
@@ -203,8 +219,11 @@ public abstract class RepositoryResolver<T extends Project>
 
     @Override
     public Set<MavenRepositoryMetadata> getRepositoriesResolvingArtifact( final GAV gav,
-                                                                          final T project,
+                                                                          final Project project,
                                                                           final MavenRepositoryMetadata... filter ) {
+        if ( isCheckConflictingGAVDisabled ) {
+            return Collections.EMPTY_SET;
+        }
         final Set<MavenRepositoryMetadata> repositoriesResolvingArtifact = new HashSet<MavenRepositoryMetadata>();
 
         try {
@@ -242,6 +261,9 @@ public abstract class RepositoryResolver<T extends Project>
     @Override
     public Set<MavenRepositoryMetadata> getRepositoriesResolvingArtifact( final String pomXML,
                                                                           final MavenRepositoryMetadata... filter ) {
+        if ( isCheckConflictingGAVDisabled ) {
+            return Collections.EMPTY_SET;
+        }
         final InputStream pomStream = new ByteArrayInputStream( pomXML.getBytes( StandardCharsets.UTF_8 ) );
         final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
         final GAV gav = new GAV( mavenProject.getGroupId(),

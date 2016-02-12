@@ -71,7 +71,7 @@ public class RepositoryStructureServiceImpl
     private GuvnorM2Repository m2service;
     private CommentedOptionFactory optionsFactory;
     private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
-    private ProjectRepositoryResolver<? extends Project> repositoryResolver;
+    private ProjectRepositoryResolver repositoryResolver;
 
     public RepositoryStructureServiceImpl() {
         //Zero-parameter constructor for CDI proxies
@@ -86,7 +86,7 @@ public class RepositoryStructureServiceImpl
                                            final GuvnorM2Repository m2service,
                                            final CommentedOptionFactory optionsFactory,
                                            final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent,
-                                           final ProjectRepositoryResolver<? extends Project> repositoryResolver ) {
+                                           final ProjectRepositoryResolver repositoryResolver ) {
         this.ioService = ioService;
         this.pomService = pomService;
         this.projectService = projectService;
