@@ -18,15 +18,10 @@ package org.guvnor.common.services.project.backend.server;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.project.ProjectFactory;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
@@ -40,36 +35,30 @@ import org.uberfire.workbench.events.ResourceDeletedEvent;
  * either through the Workbench's UI or via REST or on a cloned repository that's pushed back to the Workbench.
  * Interested observers are signaled of a Project deletion event when a pom.xml file is detected as deleted.
  */
-@ApplicationScoped
-public class DeleteProjectObserverBridge {
+public abstract class AbstractDeleteProjectObserverBridge<T extends Project> {
 
     private IOService ioService;
-    private ProjectFactory<? extends Project> projectFactory;
     private Event<DeleteProjectEvent> deleteProjectEvent;
 
-    public DeleteProjectObserverBridge() {
+    public AbstractDeleteProjectObserverBridge() {
         //Zero-arg constructor for CDI proxying
     }
 
-    @Inject
-    public DeleteProjectObserverBridge( final @Named("ioStrategy") IOService ioService,
-                                        final ProjectFactory<? extends Project> projectFactory,
-                                        final Event<DeleteProjectEvent> deleteProjectEvent ) {
+    public AbstractDeleteProjectObserverBridge( final IOService ioService,
+                                                final Event<DeleteProjectEvent> deleteProjectEvent ) {
         this.ioService = PortablePreconditions.checkNotNull( "ioService",
                                                              ioService );
-        this.projectFactory = PortablePreconditions.checkNotNull( "projectFactory",
-                                                                  projectFactory );
         this.deleteProjectEvent = PortablePreconditions.checkNotNull( "deleteProjectEvent",
                                                                       deleteProjectEvent );
     }
 
-    public void onBatchResourceChanges( @Observes final ResourceDeletedEvent event ) {
+    public void onBatchResourceChanges( final ResourceDeletedEvent event ) {
         if ( event.getPath().getFileName().equals( "pom.xml" ) ) {
             fireDeleteEvent( event.getPath() );
         }
     }
 
-    public void onBatchResourceChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
+    public void onBatchResourceChanges( final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
         for ( final Map.Entry<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> entry : resourceBatchChangesEvent.getBatch().entrySet() ) {
             if ( entry.getKey().getFileName().equals( "pom.xml" ) && isDelete( entry.getValue() ) ) {
                 fireDeleteEvent( entry.getKey() );
@@ -88,7 +77,10 @@ public class DeleteProjectObserverBridge {
 
     private void fireDeleteEvent( final org.uberfire.backend.vfs.Path _path ) {
         final Path path = ioService.get( URI.create( _path.toURI() ) );
-        final Project project = projectFactory.simpleProjectInstance( path.getParent() );
+        final T project = getProject( path.getParent() );
         deleteProjectEvent.fire( new DeleteProjectEvent( project ) );
     }
+
+    protected abstract T getProject( final Path path );
+
 }

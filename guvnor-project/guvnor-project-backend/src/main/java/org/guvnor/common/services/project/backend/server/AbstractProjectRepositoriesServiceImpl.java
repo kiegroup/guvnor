@@ -31,21 +31,22 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 
-public abstract class AbstractProjectRepositoriesService<T extends Project>
+public abstract class AbstractProjectRepositoriesServiceImpl<T extends Project>
         implements ProjectRepositoriesService {
 
     protected IOService ioService;
-    protected ProjectRepositoryResolver<T> repositoryResolver;
+    protected ProjectRepositoryResolver repositoryResolver;
     protected ProjectRepositoriesContentHandler contentHandler;
     protected CommentedOptionFactory commentedOptionFactory;
 
-    public AbstractProjectRepositoriesService() {
+    public AbstractProjectRepositoriesServiceImpl() {
+        //WELD proxy
     }
 
-    public AbstractProjectRepositoriesService( final IOService ioService,
-                                               final ProjectRepositoryResolver<T> repositoryResolver,
-                                               final ProjectRepositoriesContentHandler contentHandler,
-                                               final CommentedOptionFactory commentedOptionFactory ) {
+    public AbstractProjectRepositoriesServiceImpl( final IOService ioService,
+                                                   final ProjectRepositoryResolver repositoryResolver,
+                                                   final ProjectRepositoriesContentHandler contentHandler,
+                                                   final CommentedOptionFactory commentedOptionFactory ) {
         this.ioService = ioService;
         this.repositoryResolver = repositoryResolver;
         this.contentHandler = contentHandler;
@@ -63,7 +64,14 @@ public abstract class AbstractProjectRepositoriesService<T extends Project>
             ioService.startBatch( nioPath.getFileSystem(),
                                   commentedOptionFactory.makeCommentedOption( "Creating " + path.toString() + "..." ) );
 
-            final Set<MavenRepositoryMetadata> content = repositoryResolver.getRemoteRepositoriesMetaData();
+            final T project = getProject( path );
+            final Set<MavenRepositoryMetadata> content = new HashSet<MavenRepositoryMetadata>();
+            if ( project == null ) {
+                content.addAll( repositoryResolver.getRemoteRepositoriesMetaData() );
+            } else {
+                content.addAll( repositoryResolver.getRemoteRepositoriesMetaData( project ) );
+            }
+
             final ProjectRepositories repositories = createProjectRepositories( content );
             ioService.write( Paths.convert( path ),
                              contentHandler.toString( repositories ) );
@@ -109,4 +117,7 @@ public abstract class AbstractProjectRepositoriesService<T extends Project>
             throw ExceptionUtilities.handleException( e );
         }
     }
+
+    protected abstract T getProject( final Path path );
+
 }

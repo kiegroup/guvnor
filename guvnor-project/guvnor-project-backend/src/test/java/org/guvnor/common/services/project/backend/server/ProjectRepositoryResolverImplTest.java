@@ -29,6 +29,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -47,15 +48,26 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RepositoryResolverTest {
+public class ProjectRepositoryResolverImplTest {
 
     @Mock
     private IOService ioService;
 
-    private RepositoryResolver<Project> service;
+    private ProjectRepositoryResolverImpl service;
 
     private static File m2Folder = null;
     private static File settingsXmlPath = null;
+
+    @BeforeClass
+    public static void setupSystemProperties() {
+        //These are not needed for the tests
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                            "true" );
+    }
 
     @BeforeClass
     public static void setupMavenRepository() {
@@ -71,8 +83,7 @@ public class RepositoryResolverTest {
 
     @Before
     public void setup() {
-        service = new RepositoryResolver<Project>( ioService ) {
-        };
+        service = new ProjectRepositoryResolverImpl( ioService );
     }
 
     @AfterClass
@@ -1253,6 +1264,171 @@ public class RepositoryResolverTest {
             if ( oldSettingsXmlPath != null ) {
                 System.setProperty( "kie.maven.settings.custom",
                                     oldSettingsXmlPath );
+            }
+        }
+    }
+
+    @Test
+    public void testGetRepositoriesResolvingArtifact_Disabled1() {
+        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldConflictingGavCheckSetting = System.getProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
+
+        try {
+            final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
+                    "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                    "  <modelVersion>4.0.0</modelVersion>\n" +
+                    "  <groupId>org.guvnor</groupId>\n" +
+                    "  <artifactId>test</artifactId>\n" +
+                    "  <version>0.0.1</version>\n" +
+                    "</project>";
+
+            final GAV gav = new GAV( "org.guvnor",
+                                     "test",
+                                     "0.0.1" );
+
+            System.setProperty( "kie.maven.settings.custom",
+                                settingsXmlPath.toString() );
+            System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
+                                "true" );
+
+            //Re-instantiate service to pick-up System Property
+            service = new ProjectRepositoryResolverImpl( ioService );
+
+            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( Charset.forName( "UTF-8" ) ) );
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
+            installArtifact( mavenProject,
+                             pomXml );
+
+            //Without being disabled this would return one resolved (LOCAL) Repository
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav );
+            assertNotNull( metadata );
+            assertEquals( 0,
+                          metadata.size() );
+
+        } finally {
+            if ( oldSettingsXmlPath != null ) {
+                System.setProperty( "kie.maven.settings.custom",
+                                    oldSettingsXmlPath );
+            }
+            if ( oldConflictingGavCheckSetting != null ) {
+                System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
+                                    oldConflictingGavCheckSetting );
+            } else {
+                System.clearProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
+            }
+        }
+    }
+
+    @Test
+    public void testGetRepositoriesResolvingArtifact_Disabled2() {
+        final Project project = mock( Project.class );
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
+        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldConflictingGavCheckSetting = System.getProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
+
+        try {
+            final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
+                    "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                    "  <modelVersion>4.0.0</modelVersion>\n" +
+                    "  <groupId>org.guvnor</groupId>\n" +
+                    "  <artifactId>test</artifactId>\n" +
+                    "  <version>0.0.1</version>\n" +
+                    "</project>";
+
+            final GAV gav = new GAV( "org.guvnor",
+                                     "test",
+                                     "0.0.1" );
+
+            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
+            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
+            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+
+            System.setProperty( "kie.maven.settings.custom",
+                                settingsXmlPath.toString() );
+            System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
+                                "true" );
+
+            //Re-instantiate service to pick-up System Property
+            service = new ProjectRepositoryResolverImpl( ioService );
+
+            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( Charset.forName( "UTF-8" ) ) );
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
+            installArtifact( mavenProject,
+                             pomXml );
+
+            //Without being disabled this would return one resolved (LOCAL) Repository
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav,
+                                                                                                    project );
+            assertNotNull( metadata );
+            assertEquals( 0,
+                          metadata.size() );
+
+        } finally {
+            if ( oldSettingsXmlPath != null ) {
+                System.setProperty( "kie.maven.settings.custom",
+                                    oldSettingsXmlPath );
+            }
+            if ( oldConflictingGavCheckSetting != null ) {
+                System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
+                                    oldConflictingGavCheckSetting );
+            } else {
+                System.clearProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
+            }
+        }
+    }
+
+    @Test
+    public void testGetRepositoriesResolvingArtifact_Disabled3() {
+        final Project project = mock( Project.class );
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
+        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldConflictingGavCheckSetting = System.getProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
+
+        try {
+            final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
+                    "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                    "  <modelVersion>4.0.0</modelVersion>\n" +
+                    "  <groupId>org.guvnor</groupId>\n" +
+                    "  <artifactId>test</artifactId>\n" +
+                    "  <version>0.0.1</version>\n" +
+                    "</project>";
+
+            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
+            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
+            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+
+            System.setProperty( "kie.maven.settings.custom",
+                                settingsXmlPath.toString() );
+            System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
+                                "true" );
+
+            //Re-instantiate service to pick-up System Property
+            service = new ProjectRepositoryResolverImpl( ioService );
+
+            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( Charset.forName( "UTF-8" ) ) );
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
+            installArtifact( mavenProject,
+                             pomXml );
+
+            //Without being disabled this would return one resolved (LOCAL) Repository
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( pomXml );
+            assertNotNull( metadata );
+            assertEquals( 0,
+                          metadata.size() );
+
+        } finally {
+            if ( oldSettingsXmlPath != null ) {
+                System.setProperty( "kie.maven.settings.custom",
+                                    oldSettingsXmlPath );
+            }
+            if ( oldConflictingGavCheckSetting != null ) {
+                System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
+                                    oldConflictingGavCheckSetting );
+            } else {
+                System.clearProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
             }
         }
     }
