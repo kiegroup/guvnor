@@ -39,11 +39,11 @@ import org.uberfire.workbench.events.ResourceUpdated;
 
 import static org.mockito.Mockito.*;
 
-public class DeleteProjectObserverBridgeTest {
+public class AbstractDeleteProjectObserverBridgeTest {
 
-    private DeleteProjectObserverBridge bridge;
+    private AbstractDeleteProjectObserverBridge bridge;
     private IOService ioService;
-    private ProjectFactory<? extends Project> projectFactory;
+    private ProjectFactory<Project> projectFactory;
     private Event<DeleteProjectEvent> deleteProjectEvent;
     private SessionInfo sessionInfo = mock( SessionInfo.class );
 
@@ -54,9 +54,13 @@ public class DeleteProjectObserverBridgeTest {
         projectFactory = mock( ProjectFactory.class );
         deleteProjectEvent = mock( Event.class );
 
-        bridge = new DeleteProjectObserverBridge( ioService,
-                                                  projectFactory,
-                                                  deleteProjectEvent );
+        bridge = new AbstractDeleteProjectObserverBridge<Project>( ioService,
+                                                                   deleteProjectEvent ) {
+            @Override
+            protected Project getProject( final org.uberfire.java.nio.file.Path path ) {
+                return projectFactory.simpleProjectInstance( path );
+            }
+        };
     }
 
     @Test

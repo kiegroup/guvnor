@@ -39,6 +39,18 @@ public class ProjectRepositories {
         return repositories;
     }
 
+    public MavenRepositoryMetadata[] filterByIncluded() {
+        final Set<MavenRepositoryMetadata> filter = new HashSet<MavenRepositoryMetadata>();
+        for ( ProjectRepositories.ProjectRepository pr : repositories ) {
+            if ( pr.isIncluded() ) {
+                filter.add( pr.getMetadata() );
+            }
+        }
+        final MavenRepositoryMetadata[] aFilter = new MavenRepositoryMetadata[ filter.size() ];
+        filter.toArray( aFilter );
+        return aFilter;
+    }
+
     @Portable
     public static class ProjectRepository {
 

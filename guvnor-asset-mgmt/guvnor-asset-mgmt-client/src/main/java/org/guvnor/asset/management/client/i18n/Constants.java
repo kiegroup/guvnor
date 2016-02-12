@@ -290,6 +290,8 @@ public interface Constants extends Messages {
 
     String IsRequired();
 
+    String ValidatingProjectGAV();
+
     String CreatingRepository();
 
     String RepoCreationSuccess();

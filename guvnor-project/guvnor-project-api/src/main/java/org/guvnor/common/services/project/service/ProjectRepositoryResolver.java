@@ -27,7 +27,9 @@ import org.jboss.errai.bus.server.annotations.Remote;
  *
  */
 @Remote
-public interface ProjectRepositoryResolver<T extends Project> {
+public interface ProjectRepositoryResolver {
+
+    String CONFLICTING_GAV_CHECK_DISABLED = "org.guvnor.project.gav.check.disabled";
 
     /**
      * Get a collection of Repositories a Project will resolve artifacts against. The list will include
@@ -43,7 +45,7 @@ public interface ProjectRepositoryResolver<T extends Project> {
      * @param project The Project to retrieve Repository information.
      * @return
      */
-    Set<MavenRepositoryMetadata> getRemoteRepositoriesMetaData( final T project );
+    Set<MavenRepositoryMetadata> getRemoteRepositoriesMetaData( final Project project );
 
     /**
      * Get a collection of Repositories that a given GAV resolve against.
@@ -62,7 +64,7 @@ public interface ProjectRepositoryResolver<T extends Project> {
      * @return A collection of RemoteRepositories that resolve the provided GAV; i.e. an Artifact already exists for the GAV
      */
     Set<MavenRepositoryMetadata> getRepositoriesResolvingArtifact( final GAV gav,
-                                                                   final T project,
+                                                                   final Project project,
                                                                    final MavenRepositoryMetadata... filter );
 
     /**

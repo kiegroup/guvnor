@@ -38,6 +38,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -83,9 +84,20 @@ public class RepositoryStructureServiceImplTest {
     };
 
     @Mock
-    private ProjectRepositoryResolver<Project> repositoryResolver;
+    private ProjectRepositoryResolver repositoryResolver;
 
     private RepositoryStructureService service;
+
+    @BeforeClass
+    public static void setupSystemProperties() {
+        //These are not needed for the tests
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                            "true" );
+    }
 
     @Before
     public void setup() {

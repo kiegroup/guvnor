@@ -16,7 +16,6 @@
 
 package org.guvnor.asset.management.client.editors.repository.wizard;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,9 +36,12 @@ import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
@@ -79,6 +81,8 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
     private Caller<RepositoryStructureService> repositoryStructureService;
 
+    private Caller<ProjectRepositoryResolver> repositoryResolverService;
+
     private Caller<AssetManagementService> assetManagementService;
 
     private Event<NotificationEvent> notification;
@@ -103,6 +107,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
                                    final CreateRepositoryWizardModel model,
                                    final Caller<RepositoryService> repositoryService,
                                    final Caller<RepositoryStructureService> repositoryStructureService,
+                                   final Caller<ProjectRepositoryResolver> repositoryResolverService,
                                    final Caller<AssetManagementService> assetManagementService,
                                    final Event<NotificationEvent> notification,
                                    final KieWorkbenchACL kieACL,
@@ -113,6 +118,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
         this.model = model;
         this.repositoryService = repositoryService;
         this.repositoryStructureService = repositoryStructureService;
+        this.repositoryResolverService = repositoryResolverService;
         this.assetManagementService = assetManagementService;
         this.notification = notification;
         this.kieACL = kieACL;
@@ -246,44 +252,34 @@ public class CreateRepositoryWizard extends AbstractWizard {
                         model.setArtifactId( normalizedName );
                     }
                 }
-                parentComplete();
 
-                final String scheme = "git";
-                final String alias = model.getRepositoryName().trim();
-                final Map<String, Object> env = new HashMap<String, Object>( 3 );
-                env.put( EnvironmentParameters.MANAGED,
-                         assetsManagementIsGranted && model.isManged() );
-                showBusyIndicator( Constants.INSTANCE.CreatingRepository() );
+                showBusyIndicator( Constants.INSTANCE.ValidatingProjectGAV() );
 
-                repositoryService.call( new RemoteCallback<Repository>() {
-                                            @Override
-                                            public void callback( final Repository repository ) {
-                                                hideBusyIndicator();
-                                                notification.fire( new NotificationEvent( Constants.INSTANCE.RepoCreationSuccess() ) );
-                                                getRepositoryCreatedSuccessCallback().callback( repository );
-                                            }
-                                        },
-                                        new ErrorCallback<Message>() {
-                                            @Override
-                                            public boolean error( final Message message,
-                                                                  final Throwable throwable ) {
-                                                try {
-                                                    hideBusyIndicator();
-                                                    throw throwable;
-                                                } catch ( RepositoryAlreadyExistsException ex ) {
-                                                    showErrorPopup( CoreConstants.INSTANCE.RepoAlreadyExists() );
-                                                } catch ( Throwable ex ) {
-                                                    showErrorPopup( CoreConstants.INSTANCE.RepoCreationFail() + " \n" + throwable.getMessage() );
-                                                }
-                                                invokeOnCloseCallback();
-                                                return true;
-                                            }
-                                        }
-                                      ).createRepository( model.getOrganizationalUnit(),
-                                                          scheme,
-                                                          alias,
-                                                          env );
+                final GAV gav = new GAV( model.getGroupId(),
+                                         model.getArtifactId(),
+                                         model.getVersion() );
+                repositoryResolverService.call( new RemoteCallback<Set<MavenRepositoryMetadata>>() {
+                    @Override
+                    public void callback( final Set<MavenRepositoryMetadata> metadatas ) {
+                        if ( metadatas.isEmpty() ) {
+                            doRepositoryCreation( DeploymentMode.VALIDATED );
+                        } else {
+                            hideBusyIndicator();
+                            conflictingRepositoriesPopup.setContent( gav,
+                                                                     metadatas,
+                                                                     new Command() {
+                                                                         @Override
+                                                                         public void execute() {
+                                                                             conflictingRepositoriesPopup.hide();
+                                                                             doRepositoryCreation( DeploymentMode.FORCED );
+                                                                         }
+                                                                     } );
+                            conflictingRepositoriesPopup.show();
+                        }
+                    }
+                } ).getRepositoriesResolvingArtifact( gav );
             }
+
         } ).normalizeRepositoryName( model.getRepositoryName() );
     }
 
@@ -291,7 +287,48 @@ public class CreateRepositoryWizard extends AbstractWizard {
         super.complete();
     }
 
-    private RemoteCallback<Repository> getRepositoryCreatedSuccessCallback() {
+    private void doRepositoryCreation( final DeploymentMode mode ) {
+        final String scheme = "git";
+        final String alias = model.getRepositoryName().trim();
+        final Map<String, Object> env = new HashMap<String, Object>( 3 );
+        env.put( EnvironmentParameters.MANAGED,
+                 assetsManagementIsGranted && model.isManged() );
+
+        parentComplete();
+
+        showBusyIndicator( Constants.INSTANCE.CreatingRepository() );
+
+        repositoryService.call( new RemoteCallback<Repository>() {
+                                    @Override
+                                    public void callback( final Repository repository ) {
+                                        hideBusyIndicator();
+                                        notification.fire( new NotificationEvent( Constants.INSTANCE.RepoCreationSuccess() ) );
+                                        getRepositoryCreatedSuccessCallback( mode ).callback( repository );
+                                    }
+                                },
+                                new ErrorCallback<Message>() {
+                                    @Override
+                                    public boolean error( final Message message,
+                                                          final Throwable throwable ) {
+                                        try {
+                                            hideBusyIndicator();
+                                            throw throwable;
+                                        } catch ( RepositoryAlreadyExistsException ex ) {
+                                            showErrorPopup( CoreConstants.INSTANCE.RepoAlreadyExists() );
+                                        } catch ( Throwable ex ) {
+                                            showErrorPopup( CoreConstants.INSTANCE.RepoCreationFail() + " \n" + throwable.getMessage() );
+                                        }
+                                        invokeOnCloseCallback();
+                                        return true;
+                                    }
+                                }
+                              ).createRepository( model.getOrganizationalUnit(),
+                                                  scheme,
+                                                  alias,
+                                                  env );
+    }
+
+    private RemoteCallback<Repository> getRepositoryCreatedSuccessCallback( final DeploymentMode mode ) {
         return new RemoteCallback<Repository>() {
             @Override
             public void callback( final Repository repository ) {
@@ -308,7 +345,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
                     doRepositoryInitialization( pom,
                                                 repository,
                                                 baseUrl,
-                                                DeploymentMode.VALIDATED );
+                                                mode );
 
                 } else {
                     invokeOnCloseCallback();
@@ -335,6 +372,9 @@ public class CreateRepositoryWizard extends AbstractWizard {
                                              @Override
                                              public boolean error( final Message message,
                                                                    final Throwable throwable ) {
+                                                 //We check for clashing GAVs before the Repository is created. Therefore this *should* never really
+                                                 //fail; but there's a window of opportunity if User A already has a Project for GAV1 and Install/Deploys
+                                                 //it in between User B creating a new Repository for GAV1 and the Project structure being initialised.
                                                  hideBusyIndicator();
 
                                                  // The *real* Throwable is wrapped in an InvocationTargetException when ran as a Unit Test and invoked with Reflection.
