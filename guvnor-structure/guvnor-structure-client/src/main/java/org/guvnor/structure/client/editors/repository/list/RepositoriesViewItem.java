@@ -89,27 +89,28 @@ public class RepositoriesViewItem extends Composite {
         }
         repoDesc.setText( description );
         int count = 0;
-        if ( publicURIs.size() > 0 ) {
+        if ( publicURIs != null && publicURIs.size() > 0 ) {
             linksPanel.setText( CoreConstants.INSTANCE.AvailableProtocols() );
-        }
-        for ( final PublicURI publicURI : publicURIs ) {
-            if ( count == 0 ) {
-                gitDaemonURI.setText( publicURI.getURI() );
-            }
-            final String protocol = publicURI.getProtocol() == null ? "default" : publicURI.getProtocol();
-            final Button anchor = new Button( protocol );
-            anchor.getElement().getStyle().setMarginLeft( 5, Style.Unit.PX );
-            anchor.addClickHandler( new ClickHandler() {
-                @Override
-                public void onClick( ClickEvent event ) {
+
+            for ( final PublicURI publicURI : publicURIs ) {
+                if ( count == 0 ) {
                     gitDaemonURI.setText( publicURI.getURI() );
                 }
-            } );
-            if ( count != 0 ) {
-                anchor.getElement().getStyle().setPaddingLeft( 5, Style.Unit.PX );
+                final String protocol = publicURI.getProtocol() == null ? "default" : publicURI.getProtocol();
+                final Button anchor = new Button( protocol );
+                anchor.getElement().getStyle().setMarginLeft( 5, Style.Unit.PX );
+                anchor.addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        gitDaemonURI.setText( publicURI.getURI() );
+                    }
+                } );
+                if ( count != 0 ) {
+                    anchor.getElement().getStyle().setPaddingLeft( 5, Style.Unit.PX );
+                }
+                linksPanel.add( anchor );
+                count++;
             }
-            linksPanel.add( anchor );
-            count++;
         }
 
         final String uriId = "view-uri-for-" + repositoryName;
@@ -118,16 +119,18 @@ public class RepositoriesViewItem extends Composite {
         myGitCopyButton.init(true, uriId, gitDaemonURI.getText());
 
         // populate branches
-        for ( String branch : branches ) {
-            final Option option = new Option();
-            option.setText( branch );
-            option.setValue( branch );
-            branchesDropdown.add( option );
-            if ( currentBranch.equals( branch ) ) {
-                branchesDropdown.setValue( option );
+        if ( branches != null && branches.size() > 0 ) {
+            for ( String branch : branches ) {
+                final Option option = new Option();
+                option.setText( branch );
+                option.setValue( branch );
+                branchesDropdown.add( option );
+                if ( currentBranch.equals( branch ) ) {
+                    branchesDropdown.setValue( option );
+                }
             }
+            branchesDropdown.refresh();
         }
-        branchesDropdown.refresh();
 
         glueCopy( myGitCopyButton.getElement() );
     }

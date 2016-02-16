@@ -17,6 +17,7 @@
 package org.guvnor.structure.client.editors.repository.list;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -49,9 +50,9 @@ public class RepositoriesView extends Composite
     private RepositoriesPresenter presenter;
 
     @UiField
-    public FlowPanel panel;
+    FlowPanel panel;
 
-    private Map<Repository, Widget> repositoryToWidgetMap = new HashMap<Repository, Widget>();
+    Map<Repository, Widget> repositoryToWidgetMap = new HashMap<Repository, Widget>();
 
     @PostConstruct
     public void init() {
@@ -86,11 +87,14 @@ public class RepositoriesView extends Composite
 
     @Override
     public void removeIfExists( final Repository repository ) {
-        Widget w = repositoryToWidgetMap.remove( repository );
-        if ( w == null ) {
-            return;
+        Iterator<Map.Entry<Repository, Widget>> it = repositoryToWidgetMap.entrySet().iterator();
+        while ( it.hasNext() ) {
+            Map.Entry<Repository, Widget> entry = it.next();
+            if ( entry.getKey().getAlias().equals( repository.getAlias() ) ) {
+                panel.remove( entry.getValue() );
+                it.remove();
+            }
         }
-        panel.remove( w );
     }
 
     @Override
