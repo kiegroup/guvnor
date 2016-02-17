@@ -15,7 +15,6 @@
  */
 package org.guvnor.client.perspectives;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -23,61 +22,39 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.guvnor.client.resources.i18n.AppConstants;
 import org.guvnor.m2repo.client.event.M2RepoRefreshEvent;
-import org.guvnor.m2repo.client.upload.UploadFormPresenter;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPanel;
+import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.util.Layouts;
-import org.uberfire.mvp.Command;
+import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.annotations.Roles;
-import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 /**
  * A Perspective to show M2_REPO related screen
  */
-@Roles({ "admin" })
+@Roles({"admin"})
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective")
+@WorkbenchPerspective(identifier = M2RepoPerspective.PERSPECTIVE_ID)
 public class M2RepoPerspective extends FlowPanel {
+
+    public static final String PERSPECTIVE_ID = "org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective";
 
     @Inject
     private Event<M2RepoRefreshEvent> refreshEvents;
 
-    @Inject
-    private SyncBeanManager iocManager;
-
-    @Inject
-    @WorkbenchPanel(parts = "M2RepoEditor")
-    FlowPanel m2RepoEditor;
-
-    @PostConstruct
-    private void init() {
-        Layouts.setToFillParent( m2RepoEditor );
-        add( m2RepoEditor );
+    @Perspective
+    public PerspectiveDefinition getPerspective() {
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        p.setName(PERSPECTIVE_ID);
+        p.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("M2RepoEditor")));
+        return p;
     }
 
-    @WorkbenchMenu
-    public Menus getMenus() {
-        return MenuFactory.newTopLevelMenu( AppConstants.INSTANCE.Upload() )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        UploadFormPresenter uploadFormPresenter = iocManager.lookupBean( UploadFormPresenter.class ).getInstance();
-                        uploadFormPresenter.showView();
-                    }
-                } )
-                .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.Refresh() )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        refreshEvents.fire( new M2RepoRefreshEvent() );
-                    }
-                } )
-                .endMenu()
-                .build();
+    @WorkbenchPartTitle
+    public String getTitleText() {
+        return AppConstants.INSTANCE.ArtifactRepository();
     }
-
 }
