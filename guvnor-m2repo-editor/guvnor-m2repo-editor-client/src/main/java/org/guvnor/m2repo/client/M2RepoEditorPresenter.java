@@ -17,6 +17,7 @@
 package org.guvnor.m2repo.client;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -24,17 +25,31 @@ import org.guvnor.m2repo.client.editor.MavenRepositoryPagedJarTable;
 import org.guvnor.m2repo.client.event.M2RepoRefreshEvent;
 import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
+import org.guvnor.m2repo.client.upload.UploadFormPresenter;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.ext.widgets.common.client.menu.RefreshMenuBuilder;
 
 @Dependent
 @WorkbenchScreen(identifier = "M2RepoEditor")
-public class M2RepoEditorPresenter {
+public class M2RepoEditorPresenter implements RefreshMenuBuilder.SupportsRefresh {
+
+    private M2RepoEditorConstants constants = M2RepoEditorConstants.INSTANCE;
 
     @Inject
     private MavenRepositoryPagedJarTable view;
+
+    @Inject
+    private Event<M2RepoRefreshEvent> refreshEvents;
+
+    @Inject
+    private UploadFormPresenter uploadFormPresenter;
 
     @OnStartup
     public void onStartup() {
@@ -59,4 +74,23 @@ public class M2RepoEditorPresenter {
         view.search( event.getFilter() );
     }
 
+    @WorkbenchMenu
+    public Menus getMenus() {
+        return MenuFactory.newTopLevelMenu( constants.Upload() )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        uploadFormPresenter.showView();
+                    }
+                } )
+                .endMenu()
+                .newTopLevelCustomMenu(new RefreshMenuBuilder(this))
+                .endMenu()
+                .build();
+    }
+
+    @Override
+    public void onRefresh() {
+        refreshEvents.fire( new M2RepoRefreshEvent() );
+    }
 }
