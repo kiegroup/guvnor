@@ -125,4 +125,8 @@ public interface M2RepoEditorConstants
     String InvalidPom();
 
     String Uploading();
+
+    String Upload();
+
+    String Refresh();
 }
