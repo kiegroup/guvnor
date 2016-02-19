@@ -34,6 +34,7 @@ import org.guvnor.asset.management.client.editors.repository.wizard.pages.Reposi
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
 import org.guvnor.common.services.project.model.POM;
@@ -200,6 +201,9 @@ public class CreateRepositoryWizardTest {
                                                   env ) ).thenReturn( expectedRepository );
 
         createRepositoryWizard.complete();
+
+        verify( repositoryResolverService,
+                never() ).getRepositoriesResolvingArtifact( any( GAV.class ) );
 
         verify( repositoryService,
                 times( 1 ) ).createRepository( eq( organizationalUnits.get( 0 ) ),
