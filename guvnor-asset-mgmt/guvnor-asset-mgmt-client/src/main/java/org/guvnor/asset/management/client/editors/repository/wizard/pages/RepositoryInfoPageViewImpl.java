@@ -159,9 +159,9 @@ public class RepositoryInfoPageViewImpl extends Composite
 
     private void initialiseFields() {
 
-        nameTextBox.addKeyUpHandler( new KeyUpHandler() {
+        nameTextBox.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onKeyUp( KeyUpEvent event ) {
+            public void onChange(ChangeEvent event) {
                 presenter.onNameChange();
             }
         } );
