@@ -253,34 +253,40 @@ public class CreateRepositoryWizard extends AbstractWizard {
                     }
                 }
 
-                showBusyIndicator( Constants.INSTANCE.ValidatingProjectGAV() );
+                if ( model.isManged() ) {
 
-                final GAV gav = new GAV( model.getGroupId(),
-                                         model.getArtifactId(),
-                                         model.getVersion() );
-                repositoryResolverService.call( new RemoteCallback<Set<MavenRepositoryMetadata>>() {
-                    @Override
-                    public void callback( final Set<MavenRepositoryMetadata> metadatas ) {
-                        if ( metadatas.isEmpty() ) {
-                            doRepositoryCreation( DeploymentMode.VALIDATED );
-                        } else {
-                            hideBusyIndicator();
-                            conflictingRepositoriesPopup.setContent( gav,
-                                                                     metadatas,
-                                                                     new Command() {
-                                                                         @Override
-                                                                         public void execute() {
-                                                                             conflictingRepositoriesPopup.hide();
-                                                                             doRepositoryCreation( DeploymentMode.FORCED );
-                                                                         }
-                                                                     } );
-                            conflictingRepositoriesPopup.show();
+                    showBusyIndicator( Constants.INSTANCE.ValidatingProjectGAV() );
+
+                    final GAV gav = new GAV( model.getGroupId(),
+                                             model.getArtifactId(),
+                                             model.getVersion() );
+                    repositoryResolverService.call( new RemoteCallback<Set<MavenRepositoryMetadata>>() {
+                        @Override
+                        public void callback( final Set<MavenRepositoryMetadata> metadatas ) {
+                            if ( metadatas.isEmpty() ) {
+                                doRepositoryCreation( DeploymentMode.VALIDATED );
+                            } else {
+                                hideBusyIndicator();
+                                conflictingRepositoriesPopup.setContent( gav,
+                                                                         metadatas,
+                                                                         new Command() {
+                                                                             @Override
+                                                                             public void execute() {
+                                                                                 conflictingRepositoriesPopup.hide();
+                                                                                 doRepositoryCreation( DeploymentMode.FORCED );
+                                                                             }
+                                                                         } );
+                                conflictingRepositoriesPopup.show();
+                            }
                         }
-                    }
-                } ).getRepositoriesResolvingArtifact( gav );
+                    } ).getRepositoriesResolvingArtifact( gav );
+                } else {
+                    doRepositoryCreation( DeploymentMode.VALIDATED );
+                }
             }
 
         } ).normalizeRepositoryName( model.getRepositoryName() );
+
     }
 
     private void parentComplete() {
