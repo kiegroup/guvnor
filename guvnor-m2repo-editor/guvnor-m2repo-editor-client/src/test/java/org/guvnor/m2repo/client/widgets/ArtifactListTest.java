@@ -15,11 +15,12 @@
  */
 package org.guvnor.m2repo.client.widgets;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.Range;
-import javax.enterprise.event.Event;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
@@ -38,8 +39,9 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ArtifactListTest {
 
     private static final int REQUEST_RANGE_LENGTH = 53;
@@ -62,7 +64,7 @@ public class ArtifactListTest {
     @Mock
     private Range range;
     @Mock
-    @SuppressWarnings( "rawtypes" )
+    @SuppressWarnings("rawtypes")
     private Column column;
     @Mock
     private ColumnSortList sortList;
@@ -72,24 +74,24 @@ public class ArtifactListTest {
     private ArgumentCaptor<JarListPageRequest> request;
 
     @Before
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void setUp() {
-        Mockito.when( m2service.listArtifacts( any( JarListPageRequest.class ) ) ).thenReturn( response );
-        Mockito.when( m2service.getPomText( Mockito.anyString() ) ).thenReturn( POM_TEXT );
-        Mockito.when( response.getTotalRowSize() ).thenReturn( RESPONSE_ROWS_COUNT );
-        Mockito.when( response.isTotalRowSizeExact() ).thenReturn( RESPONSE_EXACT_ROWS );
+        when( m2service.listArtifacts( any( JarListPageRequest.class ) ) ).thenReturn( response );
+        when( m2service.getPomText( Mockito.anyString() ) ).thenReturn( POM_TEXT );
+        when( response.getTotalRowSize() ).thenReturn( RESPONSE_ROWS_COUNT );
+        when( response.isTotalRowSizeExact() ).thenReturn( RESPONSE_EXACT_ROWS );
 
-        Mockito.when( view.getDisplay() ).thenReturn( table );
-        Mockito.when( table.getVisibleRange() ).thenReturn( range );
-        Mockito.when( range.getStart() ).thenReturn( REQUEST_RANGE_START );
-        Mockito.when( range.getLength() ).thenReturn( REQUEST_RANGE_LENGTH );
+        when( view.getDisplay() ).thenReturn( table );
+        when( table.getVisibleRange() ).thenReturn( range );
+        when( range.getStart() ).thenReturn( REQUEST_RANGE_START );
+        when( range.getLength() ).thenReturn( REQUEST_RANGE_LENGTH );
 
-        Mockito.when( view.getColumnSortList() ).thenReturn( sortList );
-        Mockito.when( sortList.size() ).thenReturn( 1 );
-        Mockito.when( sortList.get( 0 ) ).thenReturn( sortInfo );
-        Mockito.when( sortInfo.isAscending() ).thenReturn( REQUEST_SORT_ORDER );
-        Mockito.when( sortInfo.getColumn() ).thenReturn( column ); // unchecked
-        Mockito.when( column.getDataStoreName() ).thenReturn( REQUEST_SORT_COLUMN );
+        when( view.getColumnSortList() ).thenReturn( sortList );
+        when( sortList.size() ).thenReturn( 1 );
+        when( sortList.get( 0 ) ).thenReturn( sortInfo );
+        when( sortInfo.isAscending() ).thenReturn( REQUEST_SORT_ORDER );
+        when( sortInfo.getColumn() ).thenReturn( column ); // unchecked
+        when( column.getDataStoreName() ).thenReturn( REQUEST_SORT_COLUMN );
     }
 
     @Test
@@ -98,17 +100,17 @@ public class ArtifactListTest {
                                                                              new CallerMock<M2RepoService>( m2service ),
                                                                              event );
         // Disable sort info for this test
-        Mockito.when( view.getColumnSortList() ).thenReturn( null );
+        when( view.getColumnSortList() ).thenReturn( null );
         presenter.init();
-        ArtifactListPresenterImpl.RefreshableAsyncDataProvider dataProvider = Mockito.spy( presenter.dataProvider );
+        ArtifactListPresenterImpl.RefreshableAsyncDataProvider dataProvider = spy( presenter.dataProvider );
         presenter.dataProvider = dataProvider;
 
         // Search request with filter
         presenter.search( "filters" );
-        Mockito.verify( event ).fire( any( NotificationEvent.class ) );
-        Mockito.verify( dataProvider ).addDataDisplay( Matchers.<HasData<JarListPageRow>>any() );
-        Mockito.verify( dataProvider, Mockito.never() ).goToFirstPage();
-        Mockito.verify( m2service ).listArtifacts( request.capture() );
+        verify( event ).fire( any( NotificationEvent.class ) );
+        verify( dataProvider ).addDataDisplay( Matchers.<HasData<JarListPageRow>>any() );
+        verify( dataProvider, never() ).goToFirstPage();
+        verify( m2service ).listArtifacts( request.capture() );
         JarListPageRequest searchRequest = request.getValue();
         verifyRequest( searchRequest,
                        null,
@@ -118,16 +120,46 @@ public class ArtifactListTest {
                        ArtifactListPresenterImpl.DEFAULT_ORDER_ASCENDING );
 
         // Row data updated
-        Mockito.verify( table ).setRowCount( RESPONSE_ROWS_COUNT,
-                                             RESPONSE_EXACT_ROWS );
+        verify( table ).setRowCount( RESPONSE_ROWS_COUNT,
+                                     RESPONSE_EXACT_ROWS );
 
         // Second search does not add the display again
-        Mockito.reset( event );
-        Mockito.reset( dataProvider );
+        reset( event );
+        reset( dataProvider );
         presenter.search( "other filters" );
-        Mockito.verify( event ).fire( any( NotificationEvent.class ) );
-        Mockito.verify( dataProvider, Mockito.never() ).addDataDisplay( Matchers.<HasData<JarListPageRow>>any() );
-        Mockito.verify( dataProvider ).goToFirstPage();
+        verify( event ).fire( any( NotificationEvent.class ) );
+        verify( dataProvider, never() ).addDataDisplay( Matchers.<HasData<JarListPageRow>>any() );
+        verify( dataProvider ).goToFirstPage();
+    }
+
+    @Test
+    public void testNoEvent() {
+        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl( view,
+                                                                             new CallerMock<M2RepoService>( m2service ),
+                                                                             event );
+        // Disable sort info for this test
+        when( view.getColumnSortList() ).thenReturn( null );
+        presenter.init();
+        ArtifactListPresenterImpl.RefreshableAsyncDataProvider dataProvider = spy( presenter.dataProvider );
+        presenter.dataProvider = dataProvider;
+
+        // Search request with filter
+        presenter.notifyOnRefresh( false );
+        presenter.search( "filters" );
+        presenter.refresh();
+        verify( event, never() ).fire( any( NotificationEvent.class ) );
+    }
+
+    @Test
+    public void testDefaultColumns() {
+        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl( view,
+                                                                             new CallerMock<M2RepoService>( m2service ),
+                                                                             event );
+        presenter.init();
+        presenter.setup( ColumnType.GAV );
+        verify( view ).setup( ColumnType.GAV );
+        presenter.getView();
+        verify( view, never() ).setup();
     }
 
     @Test
@@ -138,12 +170,12 @@ public class ArtifactListTest {
         presenter.init();
 
         // Change sort parameters and refresh
-        Mockito.when( sortInfo.isAscending() ).thenReturn( !REQUEST_SORT_ORDER );
-        Mockito.when( column.getDataStoreName() ).thenReturn( "X" );
+        when( sortInfo.isAscending() ).thenReturn( !REQUEST_SORT_ORDER );
+        when( column.getDataStoreName() ).thenReturn( "X" );
         presenter.search( "" );
 
         // Verify request
-        Mockito.verify( m2service ).listArtifacts( request.capture() );
+        verify( m2service ).listArtifacts( request.capture() );
         verifyRequest( request.getValue(),
                        "X",
                        "",
@@ -152,8 +184,8 @@ public class ArtifactListTest {
                        !REQUEST_SORT_ORDER );
 
         // Row data updated
-        Mockito.verify( table ).setRowCount( RESPONSE_ROWS_COUNT,
-                                             RESPONSE_EXACT_ROWS );
+        verify( table ).setRowCount( RESPONSE_ROWS_COUNT,
+                                     RESPONSE_EXACT_ROWS );
     }
 
     @Test
@@ -163,7 +195,7 @@ public class ArtifactListTest {
                                                                              event );
         presenter.init();
         presenter.onOpenPom( "" );
-        Mockito.verify( view ).showPom( POM_TEXT );
+        verify( view ).showPom( POM_TEXT );
     }
 
     private static void verifyRequest( final JarListPageRequest request,

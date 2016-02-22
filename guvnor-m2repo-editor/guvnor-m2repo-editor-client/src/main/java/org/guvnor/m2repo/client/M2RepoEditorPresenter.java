@@ -30,11 +30,11 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.ext.widgets.common.client.menu.RefreshMenuBuilder;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.ext.widgets.common.client.menu.RefreshMenuBuilder;
 
 @Dependent
 @WorkbenchScreen(identifier = "M2RepoEditor")
@@ -42,18 +42,22 @@ public class M2RepoEditorPresenter implements RefreshMenuBuilder.SupportsRefresh
 
     private M2RepoEditorConstants constants = M2RepoEditorConstants.INSTANCE;
 
-    @Inject
-    private MavenRepositoryPagedJarTable view;
+    private final Event<M2RepoRefreshEvent> refreshEvents;
+    private final UploadFormPresenter uploadFormPresenter;
+    private final MavenRepositoryPagedJarTable view;
 
     @Inject
-    private Event<M2RepoRefreshEvent> refreshEvents;
-
-    @Inject
-    private UploadFormPresenter uploadFormPresenter;
+    public M2RepoEditorPresenter( final Event<M2RepoRefreshEvent> refreshEvents,
+                                  final UploadFormPresenter uploadFormPresenter,
+                                  final MavenRepositoryPagedJarTable view ) {
+        this.refreshEvents = refreshEvents;
+        this.uploadFormPresenter = uploadFormPresenter;
+        this.view = view;
+    }
 
     @OnStartup
-    public void onStartup() {
-        view.search( "" );
+    public void onStartup(){
+        view.init();
     }
 
     @WorkbenchPartView
@@ -84,7 +88,7 @@ public class M2RepoEditorPresenter implements RefreshMenuBuilder.SupportsRefresh
                     }
                 } )
                 .endMenu()
-                .newTopLevelCustomMenu(new RefreshMenuBuilder(this))
+                .newTopLevelCustomMenu( new RefreshMenuBuilder( this ) )
                 .endMenu()
                 .build();
     }
