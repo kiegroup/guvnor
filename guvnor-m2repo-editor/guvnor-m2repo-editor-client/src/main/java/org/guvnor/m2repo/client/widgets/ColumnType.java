@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.guvnor.m2repo.client.widgets;
 
-import java.util.List;
-
-public interface ArtifactListPresenter {
-
-    ArtifactListView getView();
-
-    void notifyOnRefresh( boolean notify );
-
-    void defaultColumns( ColumnType... columns );
-
-    void search( String filter );
-
-    void search( String filter,
-                 List<String> fileFormats );
-
-    void refresh();
-
-    void onOpenPom( String path );
+public enum  ColumnType {
+    NAME, GAV, LAST_MODIFIED
 }
