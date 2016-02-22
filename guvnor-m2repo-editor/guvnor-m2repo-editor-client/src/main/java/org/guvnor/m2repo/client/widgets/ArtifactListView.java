@@ -26,6 +26,8 @@ public interface ArtifactListView extends UberView<ArtifactListPresenter> {
 
     void setContentHeight( String s );
 
+    void setup( final ColumnType... columns );
+
     void addColumn( final Column<JarListPageRow, ?> column,
                     final String caption );
 

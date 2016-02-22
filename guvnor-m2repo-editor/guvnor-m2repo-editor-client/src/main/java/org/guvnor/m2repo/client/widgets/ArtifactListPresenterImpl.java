@@ -46,6 +46,7 @@ public class ArtifactListPresenterImpl
     private final Event<NotificationEvent> notification;
 
     RefreshableAsyncDataProvider dataProvider;
+    private boolean notify = true;
 
     @Inject
     public ArtifactListPresenterImpl( ArtifactListView view,
@@ -68,9 +69,21 @@ public class ArtifactListPresenterImpl
     }
 
     @Override
+    public void setup( final ColumnType... columns ) {
+        view.setup( columns );
+    }
+
+    @Override
+    public void notifyOnRefresh( final boolean notify ) {
+        this.notify = notify;
+    }
+
+    @Override
     public void refresh() {
         dataProvider.refresh();
-        notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
+        if ( notify ) {
+            notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
+        }
     }
 
     @Override
@@ -79,7 +92,8 @@ public class ArtifactListPresenterImpl
     }
 
     @Override
-    public void search( final String filter, final List<String> fileFormats ) {
+    public void search( final String filter,
+                        final List<String> fileFormats ) {
         dataProvider.setFilter( filter );
         dataProvider.setFileFormats( fileFormats );
 
@@ -89,7 +103,9 @@ public class ArtifactListPresenterImpl
             dataProvider.goToFirstPage();
         }
 
-        notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
+        if ( notify ) {
+            notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
+        }
     }
 
     @Override
