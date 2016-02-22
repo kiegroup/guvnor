@@ -39,31 +39,41 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.internal.executor.api.ExecutorService;
 
 
 @Service
 @ApplicationScoped
 public class AssetManagementServiceImpl implements AssetManagementService {
-    @Inject
+    
     private Event<ConfigureRepositoryEvent> configureRepositoryEvent;
-    @Inject
     private Event<BuildProjectStructureEvent> buildProjectStructureEvent;
-    @Inject
     private Event<PromoteChangesEvent> promoteChangesEvent;
-    @Inject
     private Event<ReleaseProjectEvent> releaseProjectEvent;
-
-    @Inject
     private ConfigurationService configurationService;
-
-    @Inject
     private Instance<ProjectService<?>> projectService;
 
     private boolean supportRuntimeDeployment;
 
     public AssetManagementServiceImpl() {
+        //Zero-parameter constructor for CDI proxies
     }
-    
+
+    @Inject
+    public AssetManagementServiceImpl( final Event<ConfigureRepositoryEvent> configureRepositoryEvent,
+                                       final Event<BuildProjectStructureEvent> buildProjectStructureEvent,
+                                       final Event<PromoteChangesEvent> promoteChangesEvent,
+                                       final Event<ReleaseProjectEvent> releaseProjectEvent,
+                                       final ConfigurationService configurationService,
+                                       final Instance<ProjectService<?>> projectService ) {
+        this.configureRepositoryEvent = configureRepositoryEvent;
+        this.buildProjectStructureEvent = buildProjectStructureEvent;
+        this.promoteChangesEvent = promoteChangesEvent;
+        this.releaseProjectEvent = releaseProjectEvent;
+        this.configurationService = configurationService;
+        this.projectService = projectService;
+    }
+
     @PostConstruct
     public void init(){
         String supportRuntime = "true";
@@ -87,8 +97,8 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         params.put("DevBranchName", devBranch);
         params.put("RelBranchName", releaseBranch);
         params.put("Version", version);
+        params.put("Owner", ExecutorService.EXECUTOR_ID);
         configureRepositoryEvent.fire(new ConfigureRepositoryEvent(params));
-        
     }
 
     @Override
@@ -96,10 +106,11 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ProjectURI", repository+"/"+project);
         params.put("BranchName", branch);
-	    params.put("Username", userName);
-	    params.put("Password", encodePassword(password));
-	    params.put("ExecServerURL", serverURL);
-	    params.put("DeployToRuntime", Boolean.TRUE.equals(deployToRuntime));
+	      params.put("Username", userName);
+	      params.put("Password", encodePassword(password));
+	      params.put("ExecServerURL", serverURL);
+	      params.put("DeployToRuntime", Boolean.TRUE.equals(deployToRuntime));
+        params.put("Owner", ExecutorService.EXECUTOR_ID);
         buildProjectStructureEvent.fire(new BuildProjectStructureEvent(params));
     }
 
@@ -109,6 +120,7 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         params.put("RepositoryName", repository);
         params.put("SourceBranchName", sourceBranch);
         params.put("TargetBranchName", destBranch);
+        params.put("Owner", ExecutorService.EXECUTOR_ID);
         promoteChangesEvent.fire(new PromoteChangesEvent(params));
     }
 
@@ -123,6 +135,7 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         params.put("ExecServerURL", serverURL);
         params.put("ValidForRelease", Boolean.TRUE);
         params.put("DeployToRuntime", Boolean.TRUE.equals(deployToRuntime));
+        params.put("Owner", ExecutorService.EXECUTOR_ID);
 
         releaseProjectEvent.fire(new ReleaseProjectEvent(params));
     }
@@ -138,8 +151,8 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         return projectService.get().getProjects(repository, branch);
     }
 
-    private String encodePassword(String password) {
-        if (password == null) {
+    protected String encodePassword( final String password ) {
+        if ( password == null ) {
             return null;
         }
 
