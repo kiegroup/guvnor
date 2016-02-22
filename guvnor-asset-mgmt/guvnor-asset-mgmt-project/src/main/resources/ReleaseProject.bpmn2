@@ -39,6 +39,7 @@
   <bpmn2:itemDefinition id="__B0819863-4285-4C76-A33B-5F9F58C8A62E_RequestorInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__B0819863-4285-4C76-A33B-5F9F58C8A62E_OperationInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__B0819863-4285-4C76-A33B-5F9F58C8A62E_ApprovedOutputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_OwnerItem" structureRef="String"/>
   <bpmn2:process id="guvnor-asset-management.ReleaseProject" drools:packageName="org.jbpm" drools:version="1.0" name="ReleaseProject" isExecutable="true">
       <bpmn2:extensionElements>
       <drools:metaData name="customDescription">
@@ -59,6 +60,7 @@
     <bpmn2:property id="initiator" itemSubjectRef="_initiatorItem"/>
     <bpmn2:property id="UpdatedProjects" itemSubjectRef="_UpdatedProjectsItem"/>
     <bpmn2:property id="ProjectDeployToRuntime" itemSubjectRef="_ProjectDeployToRuntimeItem"/>
+    <bpmn2:property id="Owner" itemSubjectRef="_OwnerItem"/>
     <bpmn2:startEvent id="_D15BC8F5-ECF6-4F8D-9290-26E268C25A30" drools:bgcolor="#9acd32" drools:selectable="true" name="">
       <bpmn2:outgoing>_A31EA93D-581E-4611-AFC3-E3CFC83A25E0</bpmn2:outgoing>
     </bpmn2:startEvent>
@@ -131,6 +133,7 @@
           <bpmn2:dataInput id="_E04BC338-1967-478C-A75D-B19143646946_BranchToUpdateInputX" drools:dtype="Object" name="BranchToUpdate"/>
           <bpmn2:dataInput id="_E04BC338-1967-478C-A75D-B19143646946_VersionInputX" drools:dtype="Object" name="Version"/>
           <bpmn2:dataInput id="_E04BC338-1967-478C-A75D-B19143646946_RetriesInputX" drools:dtype="Object" name="Retries"/>
+          <bpmn2:dataInput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputX" drools:dtype="String" name="Owner"/>
           <bpmn2:dataOutput id="_E04BC338-1967-478C-A75D-B19143646946_UpdatedProjectsOutputX" drools:dtype="Object" name="UpdatedProjects"/>
           <bpmn2:inputSet id="_qWASsE1HEeS8GcLnEYhe4Q">
             <bpmn2:dataInputRefs>_E04BC338-1967-478C-A75D-B19143646946_CommandClassInputX</bpmn2:dataInputRefs>
@@ -139,6 +142,7 @@
             <bpmn2:dataInputRefs>_E04BC338-1967-478C-A75D-B19143646946_VersionInputX</bpmn2:dataInputRefs>
             <bpmn2:dataInputRefs>_E04BC338-1967-478C-A75D-B19143646946_RetriesInputX</bpmn2:dataInputRefs>
             <bpmn2:dataInputRefs>_E04BC338-1967-478C-A75D-B19143646946_TaskNameInputX</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputX</bpmn2:dataInputRefs>
           </bpmn2:inputSet>
           <bpmn2:outputSet id="_qWASsU1HEeS8GcLnEYhe4Q">
             <bpmn2:dataOutputRefs>_E04BC338-1967-478C-A75D-B19143646946_UpdatedProjectsOutputX</bpmn2:dataOutputRefs>
@@ -176,6 +180,10 @@
         <bpmn2:dataInputAssociation id="_qWA5tE1HEeS8GcLnEYhe4Q">
           <bpmn2:sourceRef>ToReleaseBranch</bpmn2:sourceRef>
           <bpmn2:targetRef>_E04BC338-1967-478C-A75D-B19143646946_BranchToUpdateInputX</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="_qrgC6UsVEeSBnoD097BQOC">
+          <bpmn2:sourceRef>Owner</bpmn2:sourceRef>
+          <bpmn2:targetRef>_DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputX</bpmn2:targetRef>
         </bpmn2:dataInputAssociation>
         <bpmn2:dataOutputAssociation id="_qWA5tU1HEeS8GcLnEYhe4Q">
           <bpmn2:sourceRef>_E04BC338-1967-478C-A75D-B19143646946_UpdatedProjectsOutputX</bpmn2:sourceRef>
