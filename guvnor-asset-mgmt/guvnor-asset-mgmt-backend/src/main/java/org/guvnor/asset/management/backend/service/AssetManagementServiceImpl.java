@@ -37,6 +37,7 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.internal.executor.api.ExecutorService;
 
 @Service
 @ApplicationScoped
@@ -101,6 +102,8 @@ public class AssetManagementServiceImpl implements AssetManagementService {
                     releaseBranch );
         params.put( "Version",
                     version );
+        params.put("Owner",
+                ExecutorService.EXECUTOR_ID);
         configureRepositoryEvent.fire( new ConfigureRepositoryEvent( params ) );
     }
 
@@ -125,6 +128,8 @@ public class AssetManagementServiceImpl implements AssetManagementService {
                     serverURL );
         params.put( "DeployToRuntime",
                     Boolean.TRUE.equals( deployToRuntime ) );
+        params.put("Owner",
+                ExecutorService.EXECUTOR_ID);
         buildProjectStructureEvent.fire( new BuildProjectStructureEvent( params ) );
     }
 
@@ -139,6 +144,8 @@ public class AssetManagementServiceImpl implements AssetManagementService {
                     sourceBranch );
         params.put( "TargetBranchName",
                     destBranch );
+        params.put("Owner",
+                ExecutorService.EXECUTOR_ID);
         promoteChangesEvent.fire( new PromoteChangesEvent( params ) );
     }
 
@@ -167,6 +174,8 @@ public class AssetManagementServiceImpl implements AssetManagementService {
                     Boolean.TRUE );
         params.put( "DeployToRuntime",
                     Boolean.TRUE.equals( deployToRuntime ) );
+        params.put("Owner",
+                ExecutorService.EXECUTOR_ID);
         releaseProjectEvent.fire( new ReleaseProjectEvent( params ) );
     }
 
@@ -182,7 +191,7 @@ public class AssetManagementServiceImpl implements AssetManagementService {
                                                  branch );
     }
 
-    private String encodePassword( final String password ) {
+    protected String encodePassword( final String password ) {
         if ( password == null ) {
             return null;
         }
