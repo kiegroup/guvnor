@@ -106,7 +106,7 @@
         <bpmn2:dataInput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_CommandClassInputX" drools:dtype="String" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_CommandClassInputXItem" name="CommandClass"/>
         <bpmn2:dataInput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_JobRequestInputX" drools:dtype="Object" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_JobRequestInputXItem" name="JobRequest"/>
         <bpmn2:dataInput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_retriesInputX" drools:dtype="Integer" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_retriesInputXItem" name="Retries"/>
-        <bpmn2:dataInput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputX" drools:dtype="Integer" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputXItem" name="Owner"/>
+        <bpmn2:dataInput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputX" drools:dtype="String" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_ownerInputXItem" name="Owner"/>
         <bpmn2:dataInput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_businessKeyInputX" drools:dtype="String" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_businessKeyInputXItem" name="BusinessKey"/>
         <bpmn2:dataOutput id="_DF37F979-03D2-4369-9B70-8BC61144CD80_ResultOutputX" drools:dtype="java.lang.Object" itemSubjectRef="__DF37F979-03D2-4369-9B70-8BC61144CD80_ResultOutputXItem" name="Result"/>
         <bpmn2:inputSet id="_qrgC4UsVEeSBnoD097BQOA">
