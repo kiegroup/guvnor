@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,101 @@
 
 package org.guvnor.structure.client.editors.repository.list;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.structure.client.editors.context.GuvnorStructureContext;
 import org.guvnor.structure.repositories.Repository;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
-public interface RepositoriesView
-        extends IsWidget {
+@Dependent
+public class RepositoriesView extends Composite
+        implements
+        RequiresResize,
+        RepositoriesPresenter.View {
 
-    RepositoryItemPresenter addRepository( final Repository repository,
-                                           final String branch );
+    interface RepositoriesEditorViewBinder
+            extends
+            UiBinder<Widget, RepositoriesView> {
 
-    boolean confirmDeleteRepository( final Repository repository );
+    }
 
-    void removeIfExists( final RepositoryItemPresenter repositoryItem );
+    private static RepositoriesEditorViewBinder uiBinder = GWT.create( RepositoriesEditorViewBinder.class );
 
-    void clear();
+    private RepositoriesPresenter presenter;
 
-    void setPresenter( final RepositoriesPresenter presenter );
+    @Inject
+    GuvnorStructureContext guvnorStructureContext;
+
+    @UiField
+    public HTMLPanel panel;
+
+    private Map<Repository, Widget> repositoryToWidgetMap = new HashMap<Repository, Widget>();
+
+    @PostConstruct
+    public void init() {
+        initWidget( uiBinder.createAndBindUi( this ) );
+        panel.setWidth( "800px" );
+}
+
+    @Override
+    public void init( final RepositoriesPresenter presenter ) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void addRepository( final Repository repository,
+                               final String branch) {
+        final RepositoriesViewItem item = new RepositoriesViewItem( repository.getAlias(),
+                                                                    null,
+                                                                    repository.getPublicURIs(),
+                                                                    CoreConstants.INSTANCE.Empty(),
+                                                                    branch,
+                                                                    repository.getBranches(),
+                                                                    new RemoveRepositoryCmd( repository, presenter ),
+                                                                    new UpdateRepositoryCmd( repository, guvnorStructureContext ) );
+        repositoryToWidgetMap.put( repository,
+                                   item );
+        panel.add( item );
+
+    }
+
+    @Override
+    public boolean confirmDeleteRepository( final Repository repository ) {
+        return Window.confirm( CoreConstants.INSTANCE.ConfirmDeleteRepository0( repository.getAlias() ) );
+    }
+
+    @Override
+    public void removeIfExists( final Repository repository ) {
+        Widget w = repositoryToWidgetMap.remove( repository );
+        if ( w == null ) {
+            return;
+        }
+        panel.remove( w );
+    }
+
+    @Override
+    public void clear() {
+        repositoryToWidgetMap.clear();
+        panel.clear();
+    }
+
+    @Override
+    public void onResize() {
+        int height = getParent().getOffsetHeight();
+        int width = getParent().getOffsetWidth();
+        panel.setPixelSize( width, height );
+    }
 
 }
