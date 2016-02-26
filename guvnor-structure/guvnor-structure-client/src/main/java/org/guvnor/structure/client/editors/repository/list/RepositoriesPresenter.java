@@ -17,10 +17,8 @@
 package org.guvnor.structure.client.editors.repository.list;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -28,90 +26,94 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContext;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContextChangeHandler;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
+import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
-import org.uberfire.lifecycle.OnShutdown;
 import org.uberfire.lifecycle.OnStartup;
 
 @Dependent
 @WorkbenchScreen(identifier = "RepositoriesEditor")
 public class RepositoriesPresenter
-        implements GuvnorStructureContextChangeHandler,
-                   HasRemoveRepositoryHandlers {
+        implements GuvnorStructureContextChangeHandler {
 
     @Inject
-    private Caller<VFSService> vfsService;
-
     private Caller<RepositoryService> repositoryService;
-
-    @Inject
-    private Event<RepositoryEnvironmentUpdatedEvent> repositoryUpdatedEvent;
 
     private GuvnorStructureContext guvnorStructureContext;
 
-    private Map<Repository, RepositoryItemPresenter> repositoryToWidgetMap = new HashMap<Repository, RepositoryItemPresenter>();
-    private RepositoriesView    view;
-    private HandlerRegistration changeHandlerRegistration;
+
+    public interface View
+            extends
+            UberView<RepositoriesPresenter> {
+
+        void addRepository( Repository repository,
+                            String branch);
+
+        boolean confirmDeleteRepository( Repository repository );
+
+        void removeIfExists( Repository repository );
+
+        void clear();
+    }
+
+    @Inject
+    public View view;
 
     public RepositoriesPresenter() {
     }
 
     @Inject
-    public RepositoriesPresenter( final RepositoriesView view,
-                                  final GuvnorStructureContext guvnorStructureContext,
-                                  final Caller<RepositoryService> repositoryService ) {
-        this.view = view;
+    public RepositoriesPresenter( final GuvnorStructureContext guvnorStructureContext ) {
         this.guvnorStructureContext = guvnorStructureContext;
-        this.repositoryService = repositoryService;
-
-        changeHandlerRegistration = guvnorStructureContext.addGuvnorStructureContextChangeHandler( this );
-
-        view.setPresenter( this );
+        guvnorStructureContext.addGuvnorStructureContextChangeHandler( this );
     }
 
     @OnStartup
     public void onStartup() {
+        view.init( this );
         loadContent();
     }
 
-    @OnShutdown
-    public void shutdown() {
-        guvnorStructureContext.removeHandler( changeHandlerRegistration );
-    }
-
     private void loadContent() {
-        repositoryToWidgetMap.clear();
         view.clear();
 
         guvnorStructureContext.getRepositories( new Callback<Collection<Repository>>() {
             @Override
-            public void callback( final Collection<Repository> response ) {
-                for ( final Repository repo : response ) {
-                    repositoryToWidgetMap.put( repo,
-                                               addRepositoryItem( repo,
-                                                                  guvnorStructureContext.getCurrentBranch( repo.getAlias() ) ) );
+            public void callback( final Collection<Repository> result ) {
+                view.clear();
+                for ( final Repository repo : result ) {
+                    view.addRepository( repo,
+                                        guvnorStructureContext.getCurrentBranch( repo.getAlias() ) );
                 }
             }
         } );
     }
 
+    @WorkbenchPartView
+    public IsWidget getView() {
+        return view;
+    }
 
     @WorkbenchPartTitle
     public String getTitle() {
         return CoreConstants.INSTANCE.RepositoryEditor();
     }
 
-    @WorkbenchPartView
-    public IsWidget getView() {
-        return view.asWidget();
+    @Override
+    public void onNewRepositoryAdded( final Repository repository ) {
+        view.addRepository( repository,
+                            guvnorStructureContext.getCurrentBranch( repository.getAlias() ));
     }
 
     public void removeRepository( final Repository repository ) {
@@ -121,28 +123,12 @@ public class RepositoriesPresenter
     }
 
     @Override
-    public void onNewRepositoryAdded( final Repository repository ) {
-        addRepositoryItem( repository,
-                           repository.getDefaultBranch() );
-    }
-
-    @Override
     public void onRepositoryDeleted( final Repository repository ) {
-        final RepositoryItemPresenter repositoryItem = repositoryToWidgetMap.remove( repository );
-        view.removeIfExists( repositoryItem );
+        view.removeIfExists( repository );
     }
 
-    private RepositoryItemPresenter addRepositoryItem( final Repository newRepository,
-                                                       final String branch ) {
-        final RepositoryItemPresenter repositoryItemPresenter = view.addRepository( newRepository,
-                                                                                    branch );
-        repositoryItemPresenter.addRemoveRepositoryCommand( this );
-
-
-        return repositoryItemPresenter;
-    }
-
-    public void onSystemRepositoryChanged( @Observes final SystemRepositoryChangedEvent event ) {
+    public void onSystemRepositoryChanged( @Observes SystemRepositoryChangedEvent event ) {
         loadContent();
     }
+
 }
