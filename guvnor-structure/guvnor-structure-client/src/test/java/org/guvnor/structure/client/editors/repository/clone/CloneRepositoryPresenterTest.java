@@ -17,8 +17,14 @@
 package org.guvnor.structure.client.editors.repository.clone;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 import org.guvnor.structure.client.editors.repository.clone.answer.OuServiceAnswer;
 import org.guvnor.structure.client.editors.repository.clone.answer.RsCreateRepositoryAnswer;
@@ -29,6 +35,7 @@ import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
+import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -37,6 +44,9 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.RoleImpl;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -46,6 +56,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -98,6 +109,15 @@ public class CloneRepositoryPresenterTest {
     @Mock
     private Repository repository;
 
+    @Mock
+    private SessionInfo sessionInfo;
+
+    @Mock
+    private KieWorkbenchACL kieACL;
+
+    @Mock
+    private User user;
+
     @Captor
     private ArgumentCaptor<Boolean> boolArgument;
 
@@ -108,6 +128,21 @@ public class CloneRepositoryPresenterTest {
 
     @Before
     public void initPresenter() {
+
+        //mock user roles
+        Set<Role> userRoles = new HashSet<Role>();
+        userRoles.add( new RoleImpl( "mock-role" ) );
+
+        when( sessionInfo.getIdentity() ).thenReturn( user );
+        when( user.getIdentifier() ).thenReturn( "mock-user" );
+        when( user.getRoles() ).thenReturn( userRoles );
+
+        //mock the configure repository feature granted roles.
+        Set<String> grantedRoles = new HashSet<String>();
+        grantedRoles.add( "mock-role" );
+
+        when( kieACL.getGrantedRoles( "wb_configure_repository" ) ).thenReturn( grantedRoles );
+
         List<OrganizationalUnit> units = new ArrayList<OrganizationalUnit>();
         units.add( ouUnit1 );
         units.add( ouUnit2 );
@@ -128,7 +163,7 @@ public class CloneRepositoryPresenterTest {
 
         when( repositoryPreferences.isOUMandatory() ).thenReturn( false );
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager );
+        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, kieACL, sessionInfo );
         presenter.init();
     }
 
@@ -209,7 +244,7 @@ public class CloneRepositoryPresenterTest {
         when( repoFailServiceCaller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenAnswer(
                 new RsCreateRepositoryFailAnswer( message, new RepositoryAlreadyExistsException(), repository, repoService ) );
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoFailServiceCaller, ouServiceCaller, placeManager );
+        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoFailServiceCaller, ouServiceCaller, placeManager, kieACL, sessionInfo );
         presenter.init();
 
         when( view.isGitUrlEmpty() ).thenReturn( false );
@@ -232,7 +267,7 @@ public class CloneRepositoryPresenterTest {
         when( repoFailServiceCaller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenAnswer(
                 new RsCreateRepositoryFailAnswer( message, exc, repository, repoService ) );
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoFailServiceCaller, ouServiceCaller, placeManager );
+        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoFailServiceCaller, ouServiceCaller, placeManager, kieACL, sessionInfo );
         presenter.init();
 
         presenter.handleCloneClick();
@@ -295,7 +330,7 @@ public class CloneRepositoryPresenterTest {
         when( view.getName() ).thenReturn( REPO_NAME );
         when( view.getSelectedOrganizationalUnit() ).thenReturn( "" );
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager );
+        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, kieACL, sessionInfo );
         presenter.handleCloneClick();
 
         verify( view ).setOrganizationalUnitGroupType( ValidationState.ERROR );
@@ -311,7 +346,7 @@ public class CloneRepositoryPresenterTest {
         when( view.getName() ).thenReturn( REPO_NAME );
         when( view.getSelectedOrganizationalUnit() ).thenReturn( ORG_UNIT_ONE );
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager );
+        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, kieACL, sessionInfo );
         presenter.handleCloneClick();
 
         verify( view ).setUrlGroupType( ValidationState.ERROR );
@@ -353,6 +388,50 @@ public class CloneRepositoryPresenterTest {
 
         verify( view,
                 times( 1 ) ).reset();
+    }
+
+    @Test
+    public void testCloneManagedRepository() {
+        when( view.isGitUrlEmpty() ).thenReturn( false );
+        when( repositoryPreferences.isOUMandatory() ).thenReturn( false );
+        when( view.getGitUrl() ).thenReturn( REPO_URL );
+        when( view.getName() ).thenReturn( REPO_NAME );
+        when( view.isManagedRepository() ).thenReturn( true );
+
+        final Map<String, Object> managedEnvironment = new HashMap<String, Object>( 4 );
+        managedEnvironment.put("username", USERNAME);
+        managedEnvironment.put("crypt:password", PASSWORD);
+        managedEnvironment.put("origin", REPO_URL);
+        managedEnvironment.put(EnvironmentParameters.MANAGED, true);
+
+        presenter.handleCloneClick();
+
+        verifyRepoCloned( true );
+
+        verify( repoService, times(1) ).createRepository( any(OrganizationalUnit.class), anyString(), anyString(), eq(managedEnvironment) );
+
+    }
+
+    @Test
+    public void testCloneNotManagedRepository() {
+        when( view.isGitUrlEmpty() ).thenReturn( false );
+        when( repositoryPreferences.isOUMandatory() ).thenReturn( false );
+        when( view.getGitUrl() ).thenReturn( REPO_URL );
+        when( view.getName() ).thenReturn( REPO_NAME );
+        when( view.isManagedRepository() ).thenReturn( false );
+
+        final Map<String, Object> unmanagedEnvironment = new HashMap<String, Object>( 4 );
+        unmanagedEnvironment.put("username", USERNAME);
+        unmanagedEnvironment.put("crypt:password", PASSWORD);
+        unmanagedEnvironment.put("origin", REPO_URL);
+        unmanagedEnvironment.put(EnvironmentParameters.MANAGED, false);
+
+        presenter.handleCloneClick();
+
+        verifyRepoCloned( true );
+
+        verify( repoService, times(1) ).createRepository( any(OrganizationalUnit.class), anyString(), anyString(), eq(unmanagedEnvironment) );
+
     }
 
     private void componentsNotAffected() {

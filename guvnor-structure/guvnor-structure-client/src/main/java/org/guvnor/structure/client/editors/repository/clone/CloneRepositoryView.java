@@ -103,4 +103,8 @@ public interface CloneRepositoryView {
 
     void reset();
 
+    boolean isManagedRepository();
+
+    void enableManagedRepoCreation(boolean assetsManagementIsGranted);
+
 }
