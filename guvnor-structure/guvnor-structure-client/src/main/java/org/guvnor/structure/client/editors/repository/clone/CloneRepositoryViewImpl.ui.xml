@@ -22,6 +22,7 @@
              xmlns:select="urn:import:org.gwtbootstrap3.extras.select.client.ui">
 
     <ui:with field="i18n" type="org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants"/>
+    <ui:with field="commoni18n" type="org.guvnor.structure.client.resources.i18n.CommonConstants"/>
 
     <g:HTMLPanel>
         <kie:BaseModal ui:field="popup" title="{i18n.CloneRepository}" dataBackdrop="STATIC" dataKeyboard="true" fade="true">
@@ -74,6 +75,14 @@
                                 <b:Input b:id="password" ui:field="passwordTextBox" type="PASSWORD" placeholder="{i18n.PasswordHolder}"/>
                             </b:Column>
                         </b:FormGroup>
+                      <b:FormGroup ui:field="managedReposiotryGroup">
+                        <b:FormLabel for="managedRepository" addStyleNames="col-md-4">
+                          <ui:text from="{commoni18n.ManagedRepository}"/>
+                        </b:FormLabel>
+                        <b:Column size="MD_8">
+                          <b:CheckBox ui:field="managedRepository"/>
+                        </b:Column>
+                      </b:FormGroup>
                     </b:FieldSet>
                 </b:Form>
             </b:ModalBody>
