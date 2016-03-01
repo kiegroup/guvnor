@@ -28,4 +28,6 @@ public interface CommonConstants
     String IndexClonedRepositoryWarning();
 
     String copyRepositoryUrl();
+
+    String ManagedRepository();
 }
