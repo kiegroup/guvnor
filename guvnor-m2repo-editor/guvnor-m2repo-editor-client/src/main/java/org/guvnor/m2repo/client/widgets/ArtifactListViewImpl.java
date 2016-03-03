@@ -15,7 +15,10 @@
  */
 package org.guvnor.m2repo.client.widgets;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.cell.client.DateCell;
@@ -53,42 +56,55 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
 
     protected ArtifactListPresenter presenter;
 
-    public ArtifactListViewImpl() {
+    @Override
+    public void setup() {
+        setup( ColumnType.NAME, ColumnType.GAV, ColumnType.LAST_MODIFIED );
+    }
+
+    @Override
+    public void setup( final ColumnType... _columns ) {
+        final Set<ColumnType> columns = new HashSet<ColumnType>( Arrays.asList( _columns ) );
         dataGrid.setEmptyTableCaption( M2RepoEditorConstants.INSTANCE.NoArtifactAvailable() );
 
-        final Column<JarListPageRow, String> nameColumn = new Column<JarListPageRow, String>( new TextCell() ) {
-            @Override
-            public String getValue( JarListPageRow row ) {
-                return row.getName();
-            }
-        };
-        nameColumn.setSortable( true );
-        nameColumn.setDataStoreName( JarListPageRequest.COLUMN_NAME );
-        addColumn( nameColumn,
-                   M2RepoEditorConstants.INSTANCE.Name() );
+        if ( columns.contains( ColumnType.NAME ) ) {
+            final Column<JarListPageRow, String> nameColumn = new Column<JarListPageRow, String>( new TextCell() ) {
+                @Override
+                public String getValue( JarListPageRow row ) {
+                    return row.getName();
+                }
+            };
+            nameColumn.setSortable( true );
+            nameColumn.setDataStoreName( JarListPageRequest.COLUMN_NAME );
+            addColumn( nameColumn,
+                       M2RepoEditorConstants.INSTANCE.Name() );
+        }
 
-        final Column<JarListPageRow, String> gavColumn = new Column<JarListPageRow, String>( new TextCell() ) {
-            @Override
-            public String getValue( JarListPageRow row ) {
-                return row.getGav().toString();
-            }
-        };
-        gavColumn.setSortable( true );
-        gavColumn.setDataStoreName( JarListPageRequest.COLUMN_GAV );
-        addColumn( gavColumn,
-                   M2RepoEditorConstants.INSTANCE.GAV() );
+        if ( columns.contains( ColumnType.GAV ) ) {
+            final Column<JarListPageRow, String> gavColumn = new Column<JarListPageRow, String>( new TextCell() ) {
+                @Override
+                public String getValue( JarListPageRow row ) {
+                    return row.getGav().toString();
+                }
+            };
+            gavColumn.setSortable( true );
+            gavColumn.setDataStoreName( JarListPageRequest.COLUMN_GAV );
+            addColumn( gavColumn,
+                       M2RepoEditorConstants.INSTANCE.GAV() );
+        }
 
-        final Column<JarListPageRow, Date> lastModifiedColumn = new Column<JarListPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
-            @Override
-            public Date getValue( JarListPageRow row ) {
-                return row.getLastModified();
-            }
-        };
-        lastModifiedColumn.setSortable( true );
-        lastModifiedColumn.setDataStoreName( JarListPageRequest.COLUMN_LAST_MODIFIED );
-        addColumn( lastModifiedColumn,
-                   M2RepoEditorConstants.INSTANCE.LastModified(),
-                   false );
+        if ( columns.contains( ColumnType.LAST_MODIFIED ) ) {
+            final Column<JarListPageRow, Date> lastModifiedColumn = new Column<JarListPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
+                @Override
+                public Date getValue( JarListPageRow row ) {
+                    return row.getLastModified();
+                }
+            };
+            lastModifiedColumn.setSortable( true );
+            lastModifiedColumn.setDataStoreName( JarListPageRequest.COLUMN_LAST_MODIFIED );
+            addColumn( lastModifiedColumn,
+                       M2RepoEditorConstants.INSTANCE.LastModified(),
+                       false );
+        }
 
         dataGrid.addColumnSortHandler( new ColumnSortEvent.AsyncHandler( dataGrid ) );
 

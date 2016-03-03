@@ -46,6 +46,8 @@ public class ArtifactListPresenterImpl
     private final Event<NotificationEvent> notification;
 
     RefreshableAsyncDataProvider dataProvider;
+    private boolean hasSetup = false;
+    private boolean notify = true;
 
     @Inject
     public ArtifactListPresenterImpl( ArtifactListView view,
@@ -64,13 +66,29 @@ public class ArtifactListPresenterImpl
 
     @Override
     public ArtifactListView getView() {
+        if ( !hasSetup ) {
+            view.setup();
+        }
         return view;
+    }
+
+    @Override
+    public void notifyOnRefresh( final boolean notify ) {
+        this.notify = notify;
+    }
+
+    @Override
+    public void defaultColumns( final ColumnType... columns ) {
+        hasSetup = true;
+        view.setup( columns );
     }
 
     @Override
     public void refresh() {
         dataProvider.refresh();
-        notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
+        if ( notify ) {
+            notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
+        }
     }
 
     @Override
@@ -89,7 +107,9 @@ public class ArtifactListPresenterImpl
             dataProvider.goToFirstPage();
         }
 
-        notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
+        if ( notify ) {
+            notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
+        }
     }
 
     @Override
