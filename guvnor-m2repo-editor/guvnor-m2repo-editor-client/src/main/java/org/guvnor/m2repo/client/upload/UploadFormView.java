@@ -17,11 +17,9 @@ package org.guvnor.m2repo.client.upload;
 
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import org.guvnor.m2repo.client.upload.UploadFormView.Presenter;
-import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
-import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
-import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
 import org.gwtbootstrap3.client.ui.base.form.AbstractForm;
+import org.gwtbootstrap3.client.ui.gwt.FormPanel;
 import org.uberfire.client.mvp.UberView;
 
 public interface UploadFormView extends UberView<Presenter> {
@@ -30,7 +28,11 @@ public interface UploadFormView extends UberView<Presenter> {
 
         void handleSubmitComplete( AbstractForm.SubmitCompleteEvent event );
 
-        void handleSubmit( AbstractForm.SubmitEvent event );
+        /*
+         * After upgrade of GWT-BOOTSTRAP3 version, will be needed to handle
+         * org.gwtbootstrap3.client.ui.Form.SubmitEvent
+         */
+        void handleSubmit( FormPanel.SubmitEvent event );
     }
 
     String getFileName();
