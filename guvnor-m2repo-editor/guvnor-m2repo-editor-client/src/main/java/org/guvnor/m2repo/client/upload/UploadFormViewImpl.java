@@ -20,7 +20,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FormPanel;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.gwtbootstrap3.client.ui.Button;
@@ -28,6 +27,7 @@ import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.FormType;
+import org.gwtbootstrap3.client.ui.gwt.FormPanel;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.FileUpload;
 import org.uberfire.ext.widgets.common.client.common.FormStyleItem;
@@ -50,7 +50,7 @@ public class UploadFormViewImpl
 
     private Presenter presenter;
 
-    private FileUpload uploader;
+    protected FileUpload uploader;
 
     public UploadFormViewImpl() {
         this.setTitle( M2RepoEditorConstants.INSTANCE.ArtifactUpload() );
@@ -73,10 +73,20 @@ public class UploadFormViewImpl
         form.setMethod( FormPanel.METHOD_POST );
         form.setType( FormType.HORIZONTAL );
 
-        form.addSubmitHandler( new Form.SubmitHandler() {
+        /*
+         * After upgrade of GWT-BOOTSTRAP3 version, will be needed to register
+         * org.gwtbootstrap3.client.ui.Form.SubmitHandler
+         */
+        form.addHandler(new FormPanel.SubmitHandler() {
             @Override
-            public void onSubmit( final Form.SubmitEvent event ) {
-                presenter.handleSubmit( event );
+            public void onSubmit(com.google.gwt.user.client.ui.FormPanel.SubmitEvent submitEvent) {
+                presenter.handleSubmit(submitEvent);
+            }
+        } , FormPanel.SubmitEvent.getType());
+
+        form.addSubmitCompleteHandler( new Form.SubmitCompleteHandler() {
+            public void onSubmitComplete( final Form.SubmitCompleteEvent event ) {
+                presenter.handleSubmitComplete( event );
             }
         } );
 
@@ -88,12 +98,6 @@ public class UploadFormViewImpl
         } );
 
         uploader.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
-
-        form.addSubmitCompleteHandler( new Form.SubmitCompleteHandler() {
-            public void onSubmitComplete( final Form.SubmitCompleteEvent event ) {
-                presenter.handleSubmitComplete( event );
-            }
-        } );
 
         hiddenGroupIdField.setName( HTMLFileManagerFields.GROUP_ID );
         hiddenArtifactIdField.setName( HTMLFileManagerFields.ARTIFACT_ID );
@@ -206,5 +210,4 @@ public class UploadFormViewImpl
     private void showErrorMessage( final String message ) {
         ErrorPopup.showMessage( message );
     }
-
 }
