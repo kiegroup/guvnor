@@ -26,16 +26,18 @@ public class DependenciesTest {
 
 
     private Dependencies dependencies;
+    private Dependency droolsCore;
+    private Dependency junit;
 
     @Before
     public void setUp() throws Exception {
         dependencies = new Dependencies();
 
-        final Dependency droolsCore = new Dependency( new GAV( "org.drools:drools-core:5.0" ) );
+        droolsCore = new Dependency( new GAV( "org.drools:drools-core:5.0" ) );
         droolsCore.setScope( "compile" );
         dependencies.add( droolsCore );
 
-        final Dependency junit = new Dependency( new GAV( "junit:junit:4.11" ) );
+        junit = new Dependency( new GAV( "junit:junit:4.11" ) );
         junit.setScope( "test" );
         dependencies.add( junit );
     }
@@ -46,6 +48,16 @@ public class DependenciesTest {
         assertEquals( 2, gavs.size() );
         assertContains( gavs, "org.drools", "drools-core", "5.0" );
         assertContains( gavs, "junit", "junit", "4.11" );
+    }
+
+    @Test
+    public void testFindByGav() throws Exception {
+        assertEquals( droolsCore, dependencies.get( new GAV( "org.drools:drools-core:5.0" ) ) );
+    }
+
+    @Test
+    public void testNullWhenNoResults() throws Exception {
+        assertNull( dependencies.get( new GAV( "org.drools:drools-core:112.0" ) ) );
     }
 
     public static void assertContains( final Collection<GAV> gavs,
