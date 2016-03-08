@@ -16,8 +16,6 @@
 
 package org.guvnor.common.services.project.context;
 
-import javax.enterprise.event.Event;
-
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -26,55 +24,75 @@ import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith( MockitoJUnitRunner.class )
 public class ProjectContextTest {
 
-    private ProjectContextChangeEventMock changeEvent;
-    private ProjectContext                context;
+    @Spy
+    private EventSourceMock<ProjectContextChangeEvent> changeEvent = new EventSourceMock<ProjectContextChangeEvent>();
+
+    private ProjectContext context;
 
     @Before
     public void setUp() throws Exception {
-        changeEvent = mock(ProjectContextChangeEventMock.class);
-        context = new ProjectContext(changeEvent);
+        context = new ProjectContext( changeEvent );
 
-        doAnswer(new Answer() {
+        doAnswer( new Answer() {
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                context.onProjectContextChanged((ProjectContextChangeEvent) invocationOnMock.getArguments()[0]);
+            public Object answer( InvocationOnMock invocationOnMock ) throws Throwable {
+                context.onProjectContextChanged( ( ProjectContextChangeEvent ) invocationOnMock.getArguments()[0] );
                 return null;
             }
-        }).when(changeEvent).fire(any(ProjectContextChangeEvent.class));
+        } ).when( changeEvent ).fire( any( ProjectContextChangeEvent.class ) );
 
     }
 
     @Test
+    public void testGetActiveRepositoryRoot() throws Exception {
+        final Repository repository = mock( Repository.class );
+
+        context.setActiveRepository( repository );
+        context.setActiveBranch( "dev" );
+
+        final Path devRoot = mock( Path.class );
+        when( repository.getBranchRoot( "dev" ) ).thenReturn( devRoot );
+
+        assertEquals( devRoot, context.getActiveRepositoryRoot() );
+    }
+
+    @Test
     public void testRepositoryDeleted() throws Exception {
-        OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        OrganizationalUnit organizationalUnit = mock( OrganizationalUnit.class );
         GitRepository repository = new GitRepository();
 
-        context.setActiveOrganizationalUnit(organizationalUnit);
-        context.setActiveRepository(repository);
+        context.setActiveOrganizationalUnit( organizationalUnit );
+        context.setActiveRepository( repository );
 
-        RepositoryRemovedEvent repositoryRemovedEvent = new RepositoryRemovedEvent(repository);
+        RepositoryRemovedEvent repositoryRemovedEvent = new RepositoryRemovedEvent( repository );
 
-        context.onRepositoryRemoved(repositoryRemovedEvent);
+        context.onRepositoryRemoved( repositoryRemovedEvent );
 
-        assertEquals(organizationalUnit, context.getActiveOrganizationalUnit());
-        assertNull(context.getActiveRepository());
+        assertEquals( organizationalUnit, context.getActiveOrganizationalUnit() );
+        assertNull( context.getActiveRepository() );
     }
 
     @Test
     public void testIgnoreRepositoryDeletedEventIfTheActiveRepositoryWasNotDeleted() throws Exception {
 
-        GitRepository activeRepository = new GitRepository("active repo");
-        GitRepository deletedRepository = new GitRepository("deleted repo");
+        GitRepository activeRepository = new GitRepository( "active repo" );
+        GitRepository deletedRepository = new GitRepository( "deleted repo" );
 
-        context.setActiveRepository(activeRepository);
+        context.setActiveRepository( activeRepository );
 
         RepositoryRemovedEvent repositoryRemovedEvent = new RepositoryRemovedEvent(deletedRepository);
 
@@ -137,7 +155,4 @@ public class ProjectContextTest {
 
     }
 
-    interface ProjectContextChangeEventMock extends Event<ProjectContextChangeEvent> {
-
-    }
 }

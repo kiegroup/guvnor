@@ -41,8 +41,8 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,10 +128,10 @@ public class RepositoryStructureServiceImpl
     @Override
     public Path initRepositoryStructure( final POM pom,
                                          final String baseUrl,
-                                         final Repository repo,
+                                         final Repository repository,
                                          final boolean multiProject,
                                          final DeploymentMode mode ) {
-        if ( pom == null || baseUrl == null || repo == null ) {
+        if ( pom == null || baseUrl == null || repository == null ) {
             return null;
         }
 
@@ -144,7 +144,7 @@ public class RepositoryStructureServiceImpl
             pom.setPackaging( "pom" );
 
             //Creating the parent pom
-            final Path fsRoot = repo.getRoot();
+            final Path fsRoot = repository.getRoot();
             final Path pathToPom = pomService.create( fsRoot,
                                                       "",
                                                       pom );
@@ -152,13 +152,13 @@ public class RepositoryStructureServiceImpl
             // it needs to be deployed before the first child is created
             m2service.deployParentPom( pom.getGav() );
 
-            updateManagedStatus( repo,
+            updateManagedStatus( repository,
                                  true );
 
             return pathToPom;
 
         } else {
-            Project project = projectService.newProject( repo,
+            Project project = projectService.newProject( repository.getBranchRoot( repository.getDefaultBranch() ),
                                                          pom,
                                                          baseUrl,
                                                          mode );
