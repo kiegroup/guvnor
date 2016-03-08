@@ -16,9 +16,6 @@
 
 package org.guvnor.common.services.project.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
@@ -26,8 +23,6 @@ public class Dependency
         extends GAV {
 
     private String scope;
-
-    private Set<String> packages = new HashSet<String>();
 
     public Dependency() {
     }
@@ -44,11 +39,4 @@ public class Dependency
         this.scope = scope;
     }
 
-    public Set<String> getPackages() {
-        return packages;
-    }
-
-    public void addPackages( final Set<String> packages ) {
-        this.packages.addAll( packages );
-    }
 }
