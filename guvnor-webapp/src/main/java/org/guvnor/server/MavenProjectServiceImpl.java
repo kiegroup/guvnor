@@ -91,13 +91,12 @@ public class MavenProjectServiceImpl
     }
 
     @Override
-    public Project newProject( final org.guvnor.structure.repositories.Repository repository,
+    public Project newProject( final Path fsRoot,
                                final POM pom,
                                final String baseUrl ) {
-        final FileSystem fs = Paths.convert( repository.getRoot() ).getFileSystem();
+        final FileSystem fs = Paths.convert( fsRoot ).getFileSystem();
         try {
             //Projects are always created in the FS root
-            final Path fsRoot = repository.getRoot();
             final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( pom.getName() ) );
 
             ioService.startBatch( new FileSystem[]{ fs },
@@ -142,11 +141,11 @@ public class MavenProjectServiceImpl
     }
 
     @Override
-    public Project newProject( final Repository repository,
+    public Project newProject( final Path repositoryRoot,
                                final POM pom,
                                final String baseURL,
                                final DeploymentMode mode ) {
-        return newProject( repository,
+        return newProject( repositoryRoot,
                            pom,
                            baseURL );
     }

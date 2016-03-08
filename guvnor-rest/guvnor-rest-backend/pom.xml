@@ -127,6 +127,11 @@
       <artifactId>reflections</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>
