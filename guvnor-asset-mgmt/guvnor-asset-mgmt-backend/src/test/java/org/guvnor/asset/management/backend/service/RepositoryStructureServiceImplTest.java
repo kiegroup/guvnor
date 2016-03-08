@@ -244,14 +244,15 @@ public class RepositoryStructureServiceImplTest {
         final Repository repository = mock( Repository.class );
         final Path repositoryRootPath = mock( Path.class );
         when( repository.getAlias() ).thenReturn( "alias" );
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        when(repository.getDefaultBranch()).thenReturn( "master" );
+        when( repository.getBranchRoot( "master" ) ).thenReturn( repositoryRootPath );
 
         final Project project = mock( Project.class );
         final Path pomPath = mock( Path.class );
         when( project.getPomXMLPath() ).thenReturn( pomPath );
 
         when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( Collections.<MavenRepositoryMetadata>emptySet() );
-        when( projectService.newProject( eq( repository ),
+        when( projectService.newProject( eq( repositoryRootPath ),
                                          eq( pom ),
                                          eq( "baseUrl" ),
                                          eq( DeploymentMode.VALIDATED ) ) ).thenReturn( project );
@@ -266,7 +267,7 @@ public class RepositoryStructureServiceImplTest {
                 times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ) );
 
         verify( projectService,
-                times( 1 ) ).newProject( eq( repository ),
+                times( 1 ) ).newProject( eq( repositoryRootPath ),
                                          eq( pom ),
                                          eq( "baseUrl" ),
                                          eq( DeploymentMode.VALIDATED ) );
@@ -301,7 +302,7 @@ public class RepositoryStructureServiceImplTest {
                                                                                                                    "local-url",
                                                                                                                    MavenRepositorySource.LOCAL ) );
                                                                              }} );
-        doThrow( gae ).when( projectService ).newProject( eq( repository ),
+        doThrow( gae ).when( projectService ).newProject( eq( repositoryRootPath ),
                                                           eq( pom ),
                                                           eq( "baseUrl" ),
                                                           eq( DeploymentMode.VALIDATED ) );
@@ -321,7 +322,7 @@ public class RepositoryStructureServiceImplTest {
                 times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ) );
 
         verify( projectService,
-                never() ).newProject( eq( repository ),
+                never() ).newProject( eq( repositoryRootPath ),
                                       eq( pom ),
                                       eq( "baseUrl" ),
                                       any( DeploymentMode.class ) );
@@ -336,7 +337,8 @@ public class RepositoryStructureServiceImplTest {
         final Repository repository = mock( Repository.class );
         final Path repositoryRootPath = mock( Path.class );
         when( repository.getAlias() ).thenReturn( "alias" );
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        when(repository.getDefaultBranch()).thenReturn( "master" );
+        when( repository.getBranchRoot( "master" ) ).thenReturn( repositoryRootPath );
 
         final Project project = mock( Project.class );
         final Path pomPath = mock( Path.class );
@@ -356,11 +358,11 @@ public class RepositoryStructureServiceImplTest {
                                                                                                                    "local-url",
                                                                                                                    MavenRepositorySource.LOCAL ) );
                                                                              }} );
-        doThrow( gae ).when( projectService ).newProject( eq( repository ),
+        doThrow( gae ).when( projectService ).newProject( eq( repositoryRootPath ),
                                                           eq( pom ),
                                                           eq( "baseUrl" ),
                                                           eq( DeploymentMode.VALIDATED ) );
-        when( projectService.newProject( eq( repository ),
+        when( projectService.newProject( eq( repositoryRootPath ),
                                          eq( pom ),
                                          eq( "baseUrl" ),
                                          eq( DeploymentMode.FORCED ) ) ).thenReturn( project );
@@ -380,7 +382,7 @@ public class RepositoryStructureServiceImplTest {
                 never() ).getRepositoriesResolvingArtifact( eq( gav ) );
 
         verify( projectService,
-                times( 1 ) ).newProject( eq( repository ),
+                times( 1 ) ).newProject( eq( repositoryRootPath ),
                                          eq( pom ),
                                          eq( "baseUrl" ),
                                          eq( DeploymentMode.FORCED ) );
