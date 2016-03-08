@@ -47,6 +47,16 @@ public class Dependencies
         return false;
     }
 
+    public Dependency get( final GAV gav ) {
+        for ( Dependency dependency : dependencies ) {
+            if ( dependency.isGAVEqual( gav ) ) {
+                return dependency;
+            }
+        }
+
+        return null;
+    }
+
     public Collection<GAV> getGavs( final String... scopes ) {
         final List<String> scopesAsList = Arrays.asList( scopes );
 
