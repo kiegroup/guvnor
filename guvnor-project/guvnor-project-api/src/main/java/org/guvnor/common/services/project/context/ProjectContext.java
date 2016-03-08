@@ -28,6 +28,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * A specialized implementation that also has Project and Package scope
@@ -73,6 +74,10 @@ public class ProjectContext {
         for (ProjectContextChangeHandler handler : changeHandlers.values()) {
             handler.onChange();
         }
+    }
+
+    public Path getActiveRepositoryRoot(){
+        return getActiveRepository().getBranchRoot( getActiveBranch() );
     }
 
     public void setActiveOrganizationalUnit(final OrganizationalUnit activeOrganizationalUnit) {
