@@ -39,24 +39,24 @@ public interface ProjectServiceCore<T> {
 
     /**
      * Creates a new project to the given path.
-     * @param repository
+     * @param repositoryRoot
      * @param pom
      * @param baseURL the base URL where the Guvnor is hosted in web container
      * @return
      */
-    T newProject( final Repository repository,
+    T newProject( final Path repositoryRoot,
                   final POM pom,
                   final String baseURL );
 
     /**
      * Creates a new project to the given path.
-     * @param repository
+     * @param repositoryRoot
      * @param pom
      * @param baseURL the base URL where the Guvnor is hosted in web container
      * @param mode Should creation check for the existence of other Artifacts with the same GAV
      * @return
      */
-    T newProject( final Repository repository,
+    T newProject( final Path repositoryRoot,
                   final POM pom,
                   final String baseURL,
                   final DeploymentMode mode );
