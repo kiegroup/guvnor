@@ -33,14 +33,14 @@ public class HyperLinkCell extends AbstractCell<HyperLinkCell.HyperLink> {
 
     interface HyperLinkTemplate extends SafeHtmlTemplates {
 
-        @Template("<a href=\"#\">{0}</a>")
-        SafeHtml hyperLink( final SafeHtml label );
+        @Template("<a title=\"{1}\" href=\"#\">{0}</a>")
+        SafeHtml hyperLink( final SafeHtml label, final String title );
     }
 
     interface TextTemplate extends SafeHtmlTemplates {
 
-        @Template("<span>{0}</span>")
-        SafeHtml text( final String label );
+        @Template("<span title=\"{1}\">{0}</span>")
+        SafeHtml text( final String label, final String title );
     }
 
     /**
@@ -134,9 +134,9 @@ public class HyperLinkCell extends AbstractCell<HyperLinkCell.HyperLink> {
                         final SafeHtmlBuilder sb ) {
         if ( value != null ) {
             if ( value.isLink() ) {
-                sb.append( hyperLinkTemplate.hyperLink( SafeHtmlUtils.fromString( value.getLabel() ) ) );
+                sb.append( hyperLinkTemplate.hyperLink( SafeHtmlUtils.fromString( value.getLabel() ), value.getLabel() ) );
             } else {
-                sb.append( textTemplate.text( value.getLabel() ) );
+                sb.append( textTemplate.text( value.getLabel(), value.getLabel() ) );
             }
         }
     }
