@@ -53,13 +53,13 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
     protected final MessageTableWidget<MessageConsoleServiceRow> dataGrid = new MessageTableWidget<MessageConsoleServiceRow>();
 
     public MessageConsoleViewImpl() {
-        dataGrid.addLevelColumn( 60, new MessageTableWidget.ColumnExtractor<Level>() {
+        dataGrid.addLevelColumn( 75, new MessageTableWidget.ColumnExtractor<Level>() {
             @Override
             public Level getValue( final Object row ) {
                 return ( (MessageConsoleServiceRow) row ).getMessageLevel();
             }
         } );
-        dataGrid.addTextColumn( 60, new MessageTableWidget.ColumnExtractor<String>() {
+        dataGrid.addTextColumn( 100, new MessageTableWidget.ColumnExtractor<String>() {
             @Override
             public String getValue( final Object row ) {
                 return ( (MessageConsoleServiceRow) row ).getMessageText();
@@ -88,8 +88,8 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
         dataGrid.addColumn( lineColumn,
                             MessageConsoleResources.CONSTANTS.Line() );
         dataGrid.setColumnWidth( lineColumn,
-                                 60,
-                                 Style.Unit.PCT );
+                                 75,
+                                 Style.Unit.PX );
     }
 
     private void addColumnColumn() {
@@ -102,8 +102,8 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
         dataGrid.addColumn( column,
                             MessageConsoleResources.CONSTANTS.Column() );
         dataGrid.setColumnWidth( column,
-                                 60,
-                                 Style.Unit.PCT );
+                                 75,
+                                 Style.Unit.PX );
     }
 
     private void addFileNameColumn() {
@@ -130,8 +130,8 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
         dataGrid.addColumn( column,
                             MessageConsoleResources.CONSTANTS.FileName() );
         dataGrid.setColumnWidth( column,
-                                 60,
-                                 Style.Unit.PCT );
+                                 180,
+                                 Style.Unit.PX );
     }
 
     @Override
