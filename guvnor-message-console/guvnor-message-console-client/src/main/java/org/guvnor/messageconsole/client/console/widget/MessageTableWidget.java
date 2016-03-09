@@ -65,7 +65,7 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
         initWidget( dataGrid );
     }
 
-    public void addLevelColumn( final int pct,
+    public void addLevelColumn( final int px,
                                 final ColumnExtractor<Level> extractor ) {
         final Column<T, ?> column = new Column<T, Level>( new IconCell() ) {
 
@@ -79,7 +79,7 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
                                 T row,
                                 SafeHtmlBuilder sb ) {
                 String title = getLevelTitle( extractor.getValue( row ) );
-                sb.append( createDivStart( title ) );
+                sb.append( createDivStart( title, "", "text-center" ) );
                 super.render( context, row, sb );
                 sb.append( createDivEnd() );
             }
@@ -87,8 +87,8 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
         dataGrid.addColumn( column,
                             MessageConsoleResources.CONSTANTS.Level() );
         dataGrid.setColumnWidth( column,
-                                 pct,
-                                 Style.Unit.PCT );
+                                 px,
+                                 Style.Unit.PX );
     }
 
     public void addTextColumn( final int pct,
@@ -135,10 +135,18 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
 
     public SafeHtml createDivStart( String title,
                                     String defaultValue ) {
+        return createDivStart(title, defaultValue, null );
+    }
+
+    public SafeHtml createDivStart( String title,
+                                    String defaultValue,
+                                    String cssClasses ) {
         if ( title == null || "".equals( title ) ) {
             title = defaultValue;
         }
-        return SafeHtmlUtils.fromTrustedString( "<div title=\"" + SafeHtmlUtils.htmlEscape( title.trim() ) + "\">" );
+
+        final String css = cssClasses == null ? "" : "class=\"" + cssClasses + "\"";
+        return SafeHtmlUtils.fromTrustedString( "<div title=\"" + SafeHtmlUtils.htmlEscape( title.trim() ) + "\" "+ css + " >" );
     }
 
     public SafeHtml createDivEnd() {
