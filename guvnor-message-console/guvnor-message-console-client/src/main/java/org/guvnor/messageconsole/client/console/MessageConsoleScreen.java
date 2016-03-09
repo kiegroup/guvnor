@@ -40,6 +40,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.menu.RefreshMenuBuilder;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
@@ -49,7 +50,7 @@ import org.uberfire.workbench.model.menu.Menus;
 @ApplicationScoped
 //The identifier has been preserved from kie-wb-common so existing .niogit System repositories are not broken
 @WorkbenchScreen(identifier = "org.kie.workbench.common.screens.messageconsole.MessageConsole")
-public class MessageConsoleScreen {
+public class MessageConsoleScreen implements RefreshMenuBuilder.SupportsRefresh {
 
     @Inject
     private Caller<BuildService> buildService;
@@ -68,32 +69,29 @@ public class MessageConsoleScreen {
         makeMenuBar();
     }
 
+    @Override
+    public void onRefresh() {
+        view.showBusyIndicator( MessageConsoleResources.CONSTANTS.Refreshing() );
+        buildService.call( new RemoteCallback<BuildResults>() {
+            @Override
+            public void callback( final BuildResults results ) {
+                PublishBatchMessagesEvent batchMessages = new PublishBatchMessagesEvent();
+                batchMessages.setCleanExisting( true );
+                batchMessages.setMessageType( MessageUtils.BUILD_SYSTEM_MESSAGE );
+
+                if ( results.getMessages() != null ) {
+                    for ( BuildMessage buildMessage : results.getMessages() ) {
+                        batchMessages.getMessagesToPublish().add( MessageUtils.convert( buildMessage ) );
+                    }
+                }
+                publishBatchMessagesEvent.fire( batchMessages );
+                view.hideBusyIndicator();
+            }
+        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).build( project );
+    }
+
     private void makeMenuBar() {
         menus = MenuFactory
-                .newTopLevelMenu( MessageConsoleResources.CONSTANTS.RefreshMessageConsole() )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        view.showBusyIndicator( MessageConsoleResources.CONSTANTS.Refreshing() );
-                        buildService.call( new RemoteCallback<BuildResults>() {
-                            @Override
-                            public void callback( final BuildResults results ) {
-                                PublishBatchMessagesEvent batchMessages = new PublishBatchMessagesEvent();
-                                batchMessages.setCleanExisting( true );
-                                batchMessages.setMessageType( MessageUtils.BUILD_SYSTEM_MESSAGE );
-
-                                if ( results.getMessages() != null ) {
-                                    for ( BuildMessage buildMessage : results.getMessages() ) {
-                                        batchMessages.getMessagesToPublish().add( MessageUtils.convert( buildMessage ) );
-                                    }
-                                }
-                                publishBatchMessagesEvent.fire( batchMessages );
-                                view.hideBusyIndicator();
-                            }
-                        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).build( project );
-                    }
-                } )
-                .endMenu()
                 .newTopLevelMenu( MessageConsoleResources.CONSTANTS.ClearMessageConsole() )
                 .respondsWith( new Command() {
                     @Override
@@ -105,6 +103,8 @@ public class MessageConsoleScreen {
                         publishBatchMessagesEvent.fire( batchMessages );
                     }
                 } )
+                .endMenu()
+                .newTopLevelCustomMenu(new RefreshMenuBuilder(this))
                 .endMenu()
                 .build();
     }
