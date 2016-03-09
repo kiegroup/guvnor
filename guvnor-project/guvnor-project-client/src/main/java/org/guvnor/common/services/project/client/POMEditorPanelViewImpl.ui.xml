@@ -25,54 +25,48 @@
   <ui:with field="resources" type="org.guvnor.common.services.project.client.resources.ProjectResources"/>
 
   <gwt:HTMLPanel>
-    <bootstrap:Container fluid="true">
-      <bootstrap:Row>
-        <bootstrap:Column size="MD_12">
-          <bootstrap:Form type="HORIZONTAL">
-            <bootstrap:FieldSet>
+        <bootstrap:Form type="HORIZONTAL">
+          <bootstrap:FieldSet>
 
-              <bootstrap:Legend>
-                <ui:text from="{i18n.ProjectGeneralSettings}"/>
-              </bootstrap:Legend>
+            <bootstrap:Legend>
+              <ui:text from="{i18n.ProjectGeneralSettings}"/>
+            </bootstrap:Legend>
 
-              <bootstrap:FormGroup ui:field="pomNameGroup">
-                <bootstrap:FormLabel text="{i18n.ProjectName}" addStyleNames="col-md-4"/>
-                <bootstrap:Column size="MD_8">
-                  <bootstrap:TextBox ui:field="pomNameTextBox" placeholder="{i18n.ProjectNamePlaceHolder}"/>
-                  <bootstrap:HelpBlock ui:field="pomNameHelpBlock"/>
-                </bootstrap:Column>
-              </bootstrap:FormGroup>
+            <bootstrap:FormGroup ui:field="pomNameGroup">
+              <bootstrap:FormLabel text="{i18n.ProjectName}" addStyleNames="col-md-4"/>
+              <bootstrap:Column size="MD_8">
+                <bootstrap:TextBox ui:field="pomNameTextBox" placeholder="{i18n.ProjectNamePlaceHolder}"/>
+                <bootstrap:HelpBlock ui:field="pomNameHelpBlock"/>
+              </bootstrap:Column>
+            </bootstrap:FormGroup>
 
-              <bootstrap:FormGroup>
-                <bootstrap:FormLabel text="{i18n.ProjectDescription}" addStyleNames="col-md-4"/>
-                <bootstrap:Column size="MD_8">
-                  <bootstrap:TextArea ui:field="pomDescriptionTextArea" placeholder="{i18n.ProjectDescriptionPlaceHolder}"/>
-                </bootstrap:Column>
-              </bootstrap:FormGroup>
+            <bootstrap:FormGroup>
+              <bootstrap:FormLabel text="{i18n.ProjectDescription}" addStyleNames="col-md-4"/>
+              <bootstrap:Column size="MD_8">
+                <bootstrap:TextArea ui:field="pomDescriptionTextArea" placeholder="{i18n.ProjectDescriptionPlaceHolder}"/>
+              </bootstrap:Column>
+            </bootstrap:FormGroup>
 
-            </bootstrap:FieldSet>
+          </bootstrap:FieldSet>
 
-            <bootstrap:FieldSet ui:field="parentGavEditorFieldSet" visible="false">
-              <bootstrap:Legend>
-                <ui:text from="{i18n.ParentsGroupArtifactVersion}"/>
-              </bootstrap:Legend>
+          <bootstrap:FieldSet ui:field="parentGavEditorFieldSet" visible="false">
+            <bootstrap:Legend>
+              <ui:text from="{i18n.ParentsGroupArtifactVersion}"/>
+            </bootstrap:Legend>
 
-              <bootstrap:Button ui:field="openProjectContext" addStyleNames="btn-mini" text="Open Project Context"/>
-              <guvnor:GAVEditor ui:field="parentGavEditor"/>
-            </bootstrap:FieldSet>
+            <bootstrap:Button ui:field="openProjectContext" addStyleNames="btn-mini" text="Open Project Context"/>
+            <guvnor:GAVEditor ui:field="parentGavEditor"/>
+          </bootstrap:FieldSet>
 
-            <bootstrap:FieldSet>
-              <bootstrap:Legend>
-                <ui:text from="{i18n.GroupArtifactVersion}"/>
-              </bootstrap:Legend>
+          <bootstrap:FieldSet>
+            <bootstrap:Legend>
+              <ui:text from="{i18n.GroupArtifactVersion}"/>
+            </bootstrap:Legend>
 
-              <guvnor:GAVEditor ui:field="gavEditor"/>
-            </bootstrap:FieldSet>
+            <guvnor:GAVEditor ui:field="gavEditor"/>
+          </bootstrap:FieldSet>
 
-          </bootstrap:Form>
-        </bootstrap:Column>
-      </bootstrap:Row>
-    </bootstrap:Container>
+        </bootstrap:Form>
   </gwt:HTMLPanel>
 
 </ui:UiBinder>
