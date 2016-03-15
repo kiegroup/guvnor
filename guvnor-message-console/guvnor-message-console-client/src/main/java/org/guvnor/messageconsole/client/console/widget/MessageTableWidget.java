@@ -223,8 +223,8 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
         dataGrid.setRowStyles( styles );
     }
 
-    public void setcolumnPickerButtonVisibe( final boolean show ) {
-        dataGrid.setcolumnPickerButtonVisibe( show );
+    public void setColumnPickerButtonVisible( final boolean show ) {
+        dataGrid.setColumnPickerButtonVisible( show );
     }
 
     public void addColumn( final Column<T, ?> lineColumn,
