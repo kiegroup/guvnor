@@ -29,6 +29,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.mocks.CallerMock;
 
@@ -53,6 +55,7 @@ public class RepositoriesPresenterTest {
     private Repository r1 = new GitRepository( "r1" );
     private Repository r2 = new GitRepository( "r2" );
     private Repository r3 = new GitRepository( "r3" );
+    private Repository r4 = new GitRepository( "r4" );
 
     private GuvnorStructureContextChangeHandler.HandlerRegistration changeHandlerRegistration;
 
@@ -82,6 +85,12 @@ public class RepositoriesPresenterTest {
                                                new CallerMock<>( repositoryService ) );
 
         when( view.addRepository( any( Repository.class ), anyString() ) ).thenReturn( new RepositoryItemPresenter( null, null ) );
+        doAnswer( new Answer<Void>() {
+            @Override
+            public Void answer( final InvocationOnMock invocationOnMock ) throws Throwable {
+                throw new RuntimeException( "Should remove a valid repository item." );
+            }
+        } ).when( view ).removeIfExists( eq( (RepositoryItemPresenter) null ) );
     }
 
     @Test
@@ -98,7 +107,6 @@ public class RepositoriesPresenterTest {
 
     @Test
     public void removeIfExistsTest() {
-
         when( view.confirmDeleteRepository( r1 ) ).thenReturn( true );
         when( view.confirmDeleteRepository( r3 ) ).thenReturn( false );
 
@@ -110,5 +118,18 @@ public class RepositoriesPresenterTest {
         verify( repositoryService ).removeRepository( "r1" );
         verify( repositoryService, never() ).removeRepository( "r2" );
         verify( repositoryService, never() ).removeRepository( "r3" );
+    }
+
+    @Test
+    public void addAndRemoveTest() {
+        when( view.confirmDeleteRepository( r4 ) ).thenReturn( true );
+
+        presenter.onStartup();
+
+        presenter.onNewRepositoryAdded( r4 );
+        presenter.removeRepository( r4 );
+        presenter.onRepositoryDeleted( r4 );
+
+        verify( repositoryService ).removeRepository( "r4" );
     }
 }
