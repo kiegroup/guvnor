@@ -131,7 +131,8 @@ public class RepositoriesPresenter
         final RepositoryItemPresenter repositoryItemPresenter = view.addRepository( newRepository,
                                                                                     branch );
         repositoryItemPresenter.addRemoveRepositoryCommand( this );
-
+        repositoryToWidgetMap.put( newRepository,
+                                   repositoryItemPresenter );
 
         return repositoryItemPresenter;
     }
