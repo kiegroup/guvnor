@@ -30,7 +30,6 @@ import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -48,6 +47,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
+// *** NOTE ***
+// The transient Maven Repository used by these tests is only cleared after all the tests have ran.
+// Therefore each test should use a unique GAV to avoid potential conflicts between tests.
 public class ProjectRepositoryResolverImplTest {
 
     @Mock
@@ -91,11 +93,6 @@ public class ProjectRepositoryResolverImplTest {
         tearDownMavenRepository( m2Folder );
     }
 
-    @After
-    public void tearDown() {
-        tearDownMavenRepository( m2Folder );
-    }
-
     @Test
     public void testGetRemoteRepositoriesMetaData_WithoutExplicitProjectRepository() {
         final Project project = mock( Project.class );
@@ -108,70 +105,6 @@ public class ProjectRepositoryResolverImplTest {
                 "  <groupId>org.guvnor</groupId>\n" +
                 "  <artifactId>test</artifactId>\n" +
                 "  <version>0.0.1</version>\n" +
-                "</project>";
-        when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
-        when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-        when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
-
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
-
-        try {
-            System.setProperty( "kie.maven.settings.custom",
-                                settingsXmlPath.toString() );
-
-            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
-            assertNotNull( metadata );
-            assertEquals( 5,
-                          metadata.size() );
-
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-            assertContainsRepository( "jboss-developer-repository-group",
-                                      "https://repository.jboss.org/nexus/content/groups/developer/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-public-repository-group",
-                                      "http://repository.jboss.org/nexus/content/groups/public/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-origin-repository-group",
-                                      "https://origin-repository.jboss.org/nexus/content/groups/ea/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "central",
-                                      "https://repo.maven.apache.org/maven2",
-                                      MavenRepositorySource.PROJECT,
-                                      metadata );
-
-        } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
-        }
-    }
-
-    @Test
-    public void testGetRemoteRepositoriesMetaData_WithExplicitProjectRepository() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path pomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-
-        final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
-                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
-                "  <modelVersion>4.0.0</modelVersion>\n" +
-                "  <groupId>org.guvnor</groupId>\n" +
-                "  <artifactId>test</artifactId>\n" +
-                "  <version>0.0.1</version>\n" +
-                "  <repositories>\n" +
-                "    <repository>\n" +
-                "      <id>explicit-repo</id>\n" +
-                "      <name>Explicit Repository</name>\n" +
-                "      <url>http://localhost/maven2/</url>\n" +
-                "    </repository>\n" +
-                "  </repositories>\n" +
                 "</project>";
         when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
         when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
@@ -202,6 +135,78 @@ public class ProjectRepositoryResolverImplTest {
                                       metadata );
             assertContainsRepository( "jboss-origin-repository-group",
                                       "https://origin-repository.jboss.org/nexus/content/groups/ea/",
+                                      MavenRepositorySource.SETTINGS,
+                                      metadata );
+            assertContainsRepository( "jboss-public-repository-group",
+                                      "https://repository.jboss.org/nexus/content/repositories/snapshots/",
+                                      MavenRepositorySource.SETTINGS,
+                                      metadata );
+            assertContainsRepository( "central",
+                                      "https://repo.maven.apache.org/maven2",
+                                      MavenRepositorySource.PROJECT,
+                                      metadata );
+
+        } finally {
+            if ( oldSettingsXmlPath != null ) {
+                System.setProperty( "kie.maven.settings.custom",
+                                    oldSettingsXmlPath );
+            }
+        }
+    }
+
+    @Test
+    public void testGetRemoteRepositoriesMetaData_WithExplicitProjectRepository() {
+        final Project project = mock( Project.class );
+        final org.uberfire.backend.vfs.Path pomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
+
+        final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
+                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                "  <modelVersion>4.0.0</modelVersion>\n" +
+                "  <groupId>org.guvnor</groupId>\n" +
+                "  <artifactId>test</artifactId>\n" +
+                "  <version>0.0.2</version>\n" +
+                "  <repositories>\n" +
+                "    <repository>\n" +
+                "      <id>explicit-repo</id>\n" +
+                "      <name>Explicit Repository</name>\n" +
+                "      <url>http://localhost/maven2/</url>\n" +
+                "    </repository>\n" +
+                "  </repositories>\n" +
+                "</project>";
+        when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
+        when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
+        when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+
+        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+
+        try {
+            System.setProperty( "kie.maven.settings.custom",
+                                settingsXmlPath.toString() );
+
+            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
+            assertNotNull( metadata );
+            assertEquals( 7,
+                          metadata.size() );
+
+            assertContainsRepository( "local",
+                                      m2Folder.toString(),
+                                      MavenRepositorySource.LOCAL,
+                                      metadata );
+            assertContainsRepository( "jboss-developer-repository-group",
+                                      "https://repository.jboss.org/nexus/content/groups/developer/",
+                                      MavenRepositorySource.SETTINGS,
+                                      metadata );
+            assertContainsRepository( "jboss-public-repository-group",
+                                      "http://repository.jboss.org/nexus/content/groups/public/",
+                                      MavenRepositorySource.SETTINGS,
+                                      metadata );
+            assertContainsRepository( "jboss-origin-repository-group",
+                                      "https://origin-repository.jboss.org/nexus/content/groups/ea/",
+                                      MavenRepositorySource.SETTINGS,
+                                      metadata );
+            assertContainsRepository( "jboss-public-repository-group",
+                                      "https://repository.jboss.org/nexus/content/repositories/snapshots/",
                                       MavenRepositorySource.SETTINGS,
                                       metadata );
             assertContainsRepository( "central",
@@ -232,13 +237,85 @@ public class ProjectRepositoryResolverImplTest {
                 "  <modelVersion>4.0.0</modelVersion>\n" +
                 "  <groupId>org.guvnor</groupId>\n" +
                 "  <artifactId>test</artifactId>\n" +
-                "  <version>0.0.1</version>\n" +
+                "  <version>0.0.3</version>\n" +
                 "  <distributionManagement>\n" +
                 "    <repository>\n" +
                 "      <id>distribution-repo</id>\n" +
                 "      <name>Distribution Repository</name>\n" +
                 "      <url>http://distribution-host/maven2/</url>\n" +
                 "    </repository>\n" +
+                "  </distributionManagement>\n" +
+                "</project>";
+        when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
+        when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
+        when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+
+        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+
+        try {
+            System.setProperty( "kie.maven.settings.custom",
+                                settingsXmlPath.toString() );
+
+            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
+            assertNotNull( metadata );
+            assertEquals( 7,
+                          metadata.size() );
+
+            assertContainsRepository( "local",
+                                      m2Folder.toString(),
+                                      MavenRepositorySource.LOCAL,
+                                      metadata );
+            assertContainsRepository( "jboss-developer-repository-group",
+                                      "https://repository.jboss.org/nexus/content/groups/developer/",
+                                      MavenRepositorySource.SETTINGS,
+                                      metadata );
+            assertContainsRepository( "jboss-public-repository-group",
+                                      "http://repository.jboss.org/nexus/content/groups/public/",
+                                      MavenRepositorySource.SETTINGS,
+                                      metadata );
+            assertContainsRepository( "jboss-origin-repository-group",
+                                      "https://origin-repository.jboss.org/nexus/content/groups/ea/",
+                                      MavenRepositorySource.SETTINGS,
+                                      metadata );
+            assertContainsRepository( "jboss-public-repository-group",
+                                      "https://repository.jboss.org/nexus/content/repositories/snapshots/",
+                                      MavenRepositorySource.SETTINGS,
+                                      metadata );
+            assertContainsRepository( "central",
+                                      "https://repo.maven.apache.org/maven2",
+                                      MavenRepositorySource.PROJECT,
+                                      metadata );
+            assertContainsRepository( "distribution-repo",
+                                      "http://distribution-host/maven2/",
+                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
+                                      metadata );
+
+        } finally {
+            if ( oldSettingsXmlPath != null ) {
+                System.setProperty( "kie.maven.settings.custom",
+                                    oldSettingsXmlPath );
+            }
+        }
+    }
+
+    @Test
+    public void testGetRemoteRepositoriesMetaData_WithDistributionManagementSnapshotRepository_NonSnapshotVersion() {
+        final Project project = mock( Project.class );
+        final org.uberfire.backend.vfs.Path pomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
+
+        final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
+                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                "  <modelVersion>4.0.0</modelVersion>\n" +
+                "  <groupId>org.guvnor</groupId>\n" +
+                "  <artifactId>test</artifactId>\n" +
+                "  <version>0.0.4</version>\n" +
+                "  <distributionManagement>\n" +
+                "    <snapshotRepository>\n" +
+                "      <id>distribution-repo</id>\n" +
+                "      <name>Distribution Repository</name>\n" +
+                "      <url>http://distribution-host/maven2/</url>\n" +
+                "    </snapshotRepository>\n" +
                 "  </distributionManagement>\n" +
                 "</project>";
         when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
@@ -272,72 +349,8 @@ public class ProjectRepositoryResolverImplTest {
                                       "https://origin-repository.jboss.org/nexus/content/groups/ea/",
                                       MavenRepositorySource.SETTINGS,
                                       metadata );
-            assertContainsRepository( "central",
-                                      "https://repo.maven.apache.org/maven2",
-                                      MavenRepositorySource.PROJECT,
-                                      metadata );
-            assertContainsRepository( "distribution-repo",
-                                      "http://distribution-host/maven2/",
-                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                                      metadata );
-
-        } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
-        }
-    }
-
-    @Test
-    public void testGetRemoteRepositoriesMetaData_WithDistributionManagementSnapshotRepository_NonSnapshotVersion() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path pomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-
-        final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
-                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
-                "  <modelVersion>4.0.0</modelVersion>\n" +
-                "  <groupId>org.guvnor</groupId>\n" +
-                "  <artifactId>test</artifactId>\n" +
-                "  <version>0.0.1</version>\n" +
-                "  <distributionManagement>\n" +
-                "    <snapshotRepository>\n" +
-                "      <id>distribution-repo</id>\n" +
-                "      <name>Distribution Repository</name>\n" +
-                "      <url>http://distribution-host/maven2/</url>\n" +
-                "    </snapshotRepository>\n" +
-                "  </distributionManagement>\n" +
-                "</project>";
-        when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
-        when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-        when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
-
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
-
-        try {
-            System.setProperty( "kie.maven.settings.custom",
-                                settingsXmlPath.toString() );
-
-            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
-            assertNotNull( metadata );
-            assertEquals( 5,
-                          metadata.size() );
-
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-            assertContainsRepository( "jboss-developer-repository-group",
-                                      "https://repository.jboss.org/nexus/content/groups/developer/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
             assertContainsRepository( "jboss-public-repository-group",
-                                      "http://repository.jboss.org/nexus/content/groups/public/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-origin-repository-group",
-                                      "https://origin-repository.jboss.org/nexus/content/groups/ea/",
+                                      "https://repository.jboss.org/nexus/content/repositories/snapshots/",
                                       MavenRepositorySource.SETTINGS,
                                       metadata );
             assertContainsRepository( "central",
@@ -385,7 +398,7 @@ public class ProjectRepositoryResolverImplTest {
 
             final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
             assertNotNull( metadata );
-            assertEquals( 6,
+            assertEquals( 7,
                           metadata.size() );
 
             assertContainsRepository( "local",
@@ -402,6 +415,10 @@ public class ProjectRepositoryResolverImplTest {
                                       metadata );
             assertContainsRepository( "jboss-origin-repository-group",
                                       "https://origin-repository.jboss.org/nexus/content/groups/ea/",
+                                      MavenRepositorySource.SETTINGS,
+                                      metadata );
+            assertContainsRepository( "jboss-public-repository-group",
+                                      "https://repository.jboss.org/nexus/content/repositories/snapshots/",
                                       MavenRepositorySource.SETTINGS,
                                       metadata );
             assertContainsRepository( "central",
@@ -428,7 +445,7 @@ public class ProjectRepositoryResolverImplTest {
         try {
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
-                                     "0.0.1" );
+                                     "0.0.5" );
 
             System.setProperty( "kie.maven.settings.custom",
                                 settingsXmlPath.toString() );
@@ -457,12 +474,12 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.6</version>\n" +
                     "</project>";
 
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
-                                     "0.0.1" );
+                                     "0.0.6" );
 
             System.setProperty( "kie.maven.settings.custom",
                                 settingsXmlPath.toString() );
@@ -505,7 +522,7 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.7</version>\n" +
                     "  <distributionManagement>\n" +
                     "    <repository>\n" +
                     "      <id>distribution-repo</id>\n" +
@@ -517,7 +534,7 @@ public class ProjectRepositoryResolverImplTest {
 
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
-                                     "0.0.1" );
+                                     "0.0.7" );
 
             System.setProperty( "kie.maven.settings.custom",
                                 settingsXmlPath.toString() );
@@ -566,7 +583,7 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.8</version>\n" +
                     "  <distributionManagement>\n" +
                     "    <repository>\n" +
                     "      <id>distribution-repo</id>\n" +
@@ -578,7 +595,7 @@ public class ProjectRepositoryResolverImplTest {
 
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
-                                     "0.0.1" );
+                                     "0.0.8" );
 
             System.setProperty( "kie.maven.settings.custom",
                                 settingsXmlPath.toString() );
@@ -620,7 +637,7 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.9</version>\n" +
                     "  <distributionManagement>\n" +
                     "    <repository>\n" +
                     "      <id>distribution-repo</id>\n" +
@@ -632,7 +649,7 @@ public class ProjectRepositoryResolverImplTest {
 
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
-                                     "0.0.1" );
+                                     "0.0.9" );
 
             System.setProperty( "kie.maven.settings.custom",
                                 settingsXmlPath.toString() );
@@ -680,11 +697,11 @@ public class ProjectRepositoryResolverImplTest {
                 "  <modelVersion>4.0.0</modelVersion>\n" +
                 "  <groupId>org.guvnor</groupId>\n" +
                 "  <artifactId>test</artifactId>\n" +
-                "  <version>0.0.1</version>\n" +
+                "  <version>0.0.10</version>\n" +
                 "</project>";
         final GAV gav = new GAV( "org.guvnor",
                                  "test",
-                                 "0.0.1" );
+                                 "0.0.10" );
 
         when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
         when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
@@ -723,12 +740,12 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.11</version>\n" +
                     "</project>";
 
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
-                                     "0.0.1" );
+                                     "0.0.11" );
 
             when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
@@ -778,7 +795,7 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.12</version>\n" +
                     "  <distributionManagement>\n" +
                     "    <repository>\n" +
                     "      <id>distribution-repo</id>\n" +
@@ -790,7 +807,7 @@ public class ProjectRepositoryResolverImplTest {
 
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
-                                     "0.0.1" );
+                                     "0.0.12" );
 
             when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
@@ -850,7 +867,7 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.13</version>\n" +
                     "  <distributionManagement>\n" +
                     "    <repository>\n" +
                     "      <id>distribution-repo</id>\n" +
@@ -862,7 +879,7 @@ public class ProjectRepositoryResolverImplTest {
 
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
-                                     "0.0.1" );
+                                     "0.0.13" );
 
             when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
@@ -927,7 +944,7 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.14</version>\n" +
                     "  <distributionManagement>\n" +
                     "    <repository>\n" +
                     "      <id>distribution-repo</id>\n" +
@@ -939,7 +956,7 @@ public class ProjectRepositoryResolverImplTest {
 
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
-                                     "0.0.1" );
+                                     "0.0.14" );
 
             when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
@@ -992,7 +1009,7 @@ public class ProjectRepositoryResolverImplTest {
                 "  <modelVersion>4.0.0</modelVersion>\n" +
                 "  <groupId>org.guvnor</groupId>\n" +
                 "  <artifactId>test</artifactId>\n" +
-                "  <version>0.0.1</version>\n" +
+                "  <version>0.0.15</version>\n" +
                 "</project>";
 
         when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
@@ -1031,7 +1048,7 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.16</version>\n" +
                     "</project>";
 
             when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
@@ -1081,7 +1098,7 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.17</version>\n" +
                     "  <distributionManagement>\n" +
                     "    <repository>\n" +
                     "      <id>distribution-repo</id>\n" +
@@ -1148,7 +1165,7 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.18</version>\n" +
                     "  <distributionManagement>\n" +
                     "    <repository>\n" +
                     "      <id>distribution-repo</id>\n" +
@@ -1219,7 +1236,7 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.19</version>\n" +
                     "  <distributionManagement>\n" +
                     "    <repository>\n" +
                     "      <id>distribution-repo</id>\n" +
@@ -1280,12 +1297,12 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.20</version>\n" +
                     "</project>";
 
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
-                                     "0.0.1" );
+                                     "0.0.20" );
 
             System.setProperty( "kie.maven.settings.custom",
                                 settingsXmlPath.toString() );
@@ -1334,12 +1351,12 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.21</version>\n" +
                     "</project>";
 
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
-                                     "0.0.1" );
+                                     "0.0.21" );
 
             when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
@@ -1393,7 +1410,7 @@ public class ProjectRepositoryResolverImplTest {
                     "  <modelVersion>4.0.0</modelVersion>\n" +
                     "  <groupId>org.guvnor</groupId>\n" +
                     "  <artifactId>test</artifactId>\n" +
-                    "  <version>0.0.1</version>\n" +
+                    "  <version>0.0.22</version>\n" +
                     "</project>";
 
             when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
