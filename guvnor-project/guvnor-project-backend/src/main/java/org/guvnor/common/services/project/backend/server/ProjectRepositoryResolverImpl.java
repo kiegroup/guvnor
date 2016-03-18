@@ -96,13 +96,17 @@ public class ProjectRepositoryResolverImpl
         final Set<MavenRepositoryMetadata> repositories = new HashSet<MavenRepositoryMetadata>();
 
         final Aether aether = Aether.getAether();
-        final Map<MavenRepositorySource, Collection<ArtifactRepository>> remoteRepositories = getRemoteRepositories( aether.getSession().getLocalRepository() );
+        final Map<MavenRepositorySource, Collection<RemoteRepository>> remoteRepositories = getRemoteRepositories();
+
+        //Local Repository
+        repositories.add( makeRepositoryMetaData( aether.getSession().getLocalRepository(),
+                                                  MavenRepositorySource.LOCAL ) );
 
         if ( remoteRepositories.isEmpty() ) {
-            return Collections.emptySet();
+            return repositories;
         }
 
-        for ( Map.Entry<MavenRepositorySource, Collection<ArtifactRepository>> e : remoteRepositories.entrySet() ) {
+        for ( Map.Entry<MavenRepositorySource, Collection<RemoteRepository>> e : remoteRepositories.entrySet() ) {
             repositories.addAll( makeRepositoriesMetaData( e.getValue(),
                                                            e.getKey() ) );
         }
@@ -127,14 +131,17 @@ public class ProjectRepositoryResolverImpl
             final InputStream pomStream = new ByteArrayInputStream( pomXML.getBytes( StandardCharsets.UTF_8 ) );
             final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
             final Aether aether = new Aether( mavenProject );
-            final Map<MavenRepositorySource, Collection<ArtifactRepository>> remoteRepositories = getRemoteRepositories( aether.getSession().getLocalRepository(),
-                                                                                                                         mavenProject );
+            final Map<MavenRepositorySource, Collection<RemoteRepository>> remoteRepositories = getRemoteRepositories( mavenProject );
+
+            //Local Repository
+            repositories.add( makeRepositoryMetaData( aether.getSession().getLocalRepository(),
+                                                      MavenRepositorySource.LOCAL ) );
 
             if ( remoteRepositories.isEmpty() ) {
-                return Collections.emptySet();
+                return repositories;
             }
 
-            for ( Map.Entry<MavenRepositorySource, Collection<ArtifactRepository>> e : remoteRepositories.entrySet() ) {
+            for ( Map.Entry<MavenRepositorySource, Collection<RemoteRepository>> e : remoteRepositories.entrySet() ) {
                 repositories.addAll( makeRepositoriesMetaData( e.getValue(),
                                                                e.getKey() ) );
             }
@@ -158,7 +165,7 @@ public class ProjectRepositoryResolverImpl
         return repositories;
     }
 
-    private Set<MavenRepositoryMetadata> makeRepositoriesMetaData( final Collection<ArtifactRepository> repositories,
+    private Set<MavenRepositoryMetadata> makeRepositoriesMetaData( final Collection<? extends ArtifactRepository> repositories,
                                                                    final MavenRepositorySource source ) {
         final Set<MavenRepositoryMetadata> metadata = new HashSet<MavenRepositoryMetadata>();
         for ( ArtifactRepository repository : repositories ) {
@@ -284,37 +291,50 @@ public class ProjectRepositoryResolverImpl
 
     private Set<MavenRepositoryMetadata> getRepositoriesResolvingArtifact( final GAV gav,
                                                                            final MavenProject mavenProject ) {
+        ArtifactResult result = null;
+        ArtifactRequest artifactRequest = null;
+
         final String artifactName = gav.toString();
         final Artifact artifact = new DefaultArtifact( artifactName );
         final Aether aether = new Aether( mavenProject );
 
         final Set<MavenRepositoryMetadata> repositoriesResolvingArtifact = new HashSet<MavenRepositoryMetadata>();
-        final Map<MavenRepositorySource, Collection<ArtifactRepository>> repositories = getRemoteRepositories( aether.getSession().getLocalRepository(),
-                                                                                                               mavenProject );
+        final Map<MavenRepositorySource, Collection<RemoteRepository>> repositories = getRemoteRepositories( mavenProject );
 
+        //Local Repository
+        artifactRequest = new ArtifactRequest();
+        artifactRequest.setArtifact( artifact );
         try {
-            for ( Map.Entry<MavenRepositorySource, Collection<ArtifactRepository>> e : repositories.entrySet() ) {
+            result = aether.getSystem().resolveArtifact( aether.getSession(),
+                                                         artifactRequest );
+            if ( result != null && result.isResolved() ) {
+                final MavenRepositoryMetadata artifactRepositoryMetaData = makeRepositoryMetaData( result.getRepository(),
+                                                                                                   MavenRepositorySource.LOCAL );
+                if ( artifactRepositoryMetaData != null ) {
+                    repositoriesResolvingArtifact.add( artifactRepositoryMetaData );
+                }
+            }
+        } catch ( ArtifactResolutionException are ) {
+            //Ignore - this means the Artifact could not be resolved against the given RemoteRepository
+        }
+
+        //Remote Repositories
+        try {
+            for ( Map.Entry<MavenRepositorySource, Collection<RemoteRepository>> e : repositories.entrySet() ) {
                 for ( ArtifactRepository repository : e.getValue() ) {
-                    final ArtifactRequest artifactRequest = new ArtifactRequest();
+                    artifactRequest = new ArtifactRequest();
                     artifactRequest.setArtifact( artifact );
                     java.nio.file.Path tempLocalRepositoryBasePath = null;
                     try {
-                        ArtifactResult result = null;
-                        if ( repository instanceof LocalRepository ) {
-                            result = aether.getSystem().resolveArtifact( aether.getSession(),
-                                                                         artifactRequest );
-
-                        } else if ( repository instanceof RemoteRepository ) {
-                            // Maven always tries to resolve against LocalRepository first, which is not much use when we want to check
-                            // if the Artifact is available on a RemoteRepository. Therefore substitute the default RepositorySystemSession
-                            // with one that provides a LocalRepositoryManager that always uses an empty transient LocalRepository to ensure
-                            // Maven does not resolve Artifacts locally.
-                            artifactRequest.addRepository( (RemoteRepository) repository );
-                            tempLocalRepositoryBasePath = getRepositoryPath( gav );
-                            result = aether.getSystem().resolveArtifact( new MavenRepositorySystemSessionWrapper( tempLocalRepositoryBasePath.toString(),
-                                                                                                                  aether.getSession() ),
-                                                                         artifactRequest );
-                        }
+                        // Maven always tries to resolve against LocalRepository first, which is not much use when we want to check
+                        // if the Artifact is available on a RemoteRepository. Therefore substitute the default RepositorySystemSession
+                        // with one that provides a LocalRepositoryManager that always uses an empty transient LocalRepository to ensure
+                        // Maven does not resolve Artifacts locally.
+                        artifactRequest.addRepository( (RemoteRepository) repository );
+                        tempLocalRepositoryBasePath = getRepositoryPath( gav );
+                        result = aether.getSystem().resolveArtifact( new MavenRepositorySystemSessionWrapper( tempLocalRepositoryBasePath.toString(),
+                                                                                                              aether.getSession() ),
+                                                                     artifactRequest );
 
                         if ( result != null && result.isResolved() ) {
                             final MavenRepositoryMetadata artifactRepositoryMetaData = makeRepositoryMetaData( result.getRepository(),
@@ -340,17 +360,11 @@ public class ProjectRepositoryResolverImpl
         return repositoriesResolvingArtifact;
     }
 
-    private Map<MavenRepositorySource, Collection<ArtifactRepository>> getRemoteRepositories( final LocalRepository localRepository ) {
-        final Map<MavenRepositorySource, Collection<ArtifactRepository>> repositories = new HashMap<MavenRepositorySource, Collection<ArtifactRepository>>();
-
-        //Local Repository
-        repositories.put( MavenRepositorySource.LOCAL,
-                          new HashSet<ArtifactRepository>() {{
-                              add( localRepository );
-                          }} );
+    private Map<MavenRepositorySource, Collection<RemoteRepository>> getRemoteRepositories() {
+        final Map<MavenRepositorySource, Collection<RemoteRepository>> repositories = new HashMap<MavenRepositorySource, Collection<RemoteRepository>>();
 
         //Settings.xml Repositories
-        final Collection<ArtifactRepository> settingsRepositories = new HashSet<ArtifactRepository>( MavenSettings.getMavenRepositoryConfiguration().getRemoteRepositoriesForRequest() );
+        final Collection<RemoteRepository> settingsRepositories = new HashSet<RemoteRepository>( MavenSettings.getMavenRepositoryConfiguration().getRemoteRepositoriesForRequest() );
         if ( settingsRepositories != null ) {
             repositories.put( MavenRepositorySource.SETTINGS,
                               settingsRepositories );
@@ -359,17 +373,16 @@ public class ProjectRepositoryResolverImpl
         return repositories;
     }
 
-    private Map<MavenRepositorySource, Collection<ArtifactRepository>> getRemoteRepositories( final LocalRepository localRepository,
-                                                                                              final MavenProject mavenProject ) {
+    private Map<MavenRepositorySource, Collection<RemoteRepository>> getRemoteRepositories( final MavenProject mavenProject ) {
         //Get Local and Settings.xml Repositories
-        final Map<MavenRepositorySource, Collection<ArtifactRepository>> repositories = new HashMap<MavenRepositorySource, Collection<ArtifactRepository>>();
-        repositories.putAll( getRemoteRepositories( localRepository ) );
+        final Map<MavenRepositorySource, Collection<RemoteRepository>> repositories = new HashMap<MavenRepositorySource, Collection<RemoteRepository>>();
+        repositories.putAll( getRemoteRepositories() );
 
         //Project's Repositories, includes those in setting.xml
-        final Collection<ArtifactRepository> projectRepositories = new HashSet<ArtifactRepository>( mavenProject.getRemoteProjectRepositories() );
+        final Collection<RemoteRepository> projectRepositories = new HashSet<RemoteRepository>( mavenProject.getRemoteProjectRepositories() );
         if ( projectRepositories != null ) {
             //Remove Project Repositories that are in settings.xml
-            final Collection<ArtifactRepository> settingsRepositories = repositories.get( MavenRepositorySource.SETTINGS );
+            final Collection<RemoteRepository> settingsRepositories = repositories.get( MavenRepositorySource.SETTINGS );
             removeProjectRepositoriesThatAreInSettings( projectRepositories,
                                                         settingsRepositories );
             repositories.put( MavenRepositorySource.PROJECT,
@@ -380,7 +393,7 @@ public class ProjectRepositoryResolverImpl
         final org.apache.maven.artifact.repository.ArtifactRepository distributionManagementRepository = mavenProject.getDistributionManagementArtifactRepository();
         if ( distributionManagementRepository != null ) {
             repositories.put( MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                              new HashSet<ArtifactRepository>() {{
+                              new HashSet<RemoteRepository>() {{
                                   add( convertToArtifactRepository( distributionManagementRepository ) );
                               }} );
         }
@@ -388,17 +401,21 @@ public class ProjectRepositoryResolverImpl
         return repositories;
     }
 
-    private void removeProjectRepositoriesThatAreInSettings( final Collection<ArtifactRepository> projectRepositories,
-                                                             final Collection<ArtifactRepository> settingsRepositories ) {
-        final Iterator<ArtifactRepository> projectRepositoryItr = projectRepositories.iterator();
+    private void removeProjectRepositoriesThatAreInSettings( final Collection<RemoteRepository> projectRepositories,
+                                                             final Collection<RemoteRepository> settingsRepositories ) {
+        final Collection<RemoteRepository> projectRepositoriesToRemove = new HashSet<RemoteRepository>();
+        final Iterator<RemoteRepository> projectRepositoryItr = projectRepositories.iterator();
         while ( projectRepositoryItr.hasNext() ) {
-            final ArtifactRepository projectRepository = projectRepositoryItr.next();
-            for ( ArtifactRepository settingsRepository : settingsRepositories ) {
+            final RemoteRepository projectRepository = projectRepositoryItr.next();
+            for ( RemoteRepository settingsRepository : settingsRepositories ) {
                 if ( projectRepository.getId().equals( settingsRepository.getId() ) ) {
-                    projectRepositoryItr.remove();
+                    if ( projectRepository.getUrl().equals( settingsRepository.getUrl() ) ) {
+                        projectRepositoriesToRemove.add( projectRepository );
+                    }
                 }
             }
         }
+        projectRepositories.removeAll( projectRepositoriesToRemove );
     }
 
     private RemoteRepository convertToArtifactRepository( final org.apache.maven.artifact.repository.ArtifactRepository artifactRepository ) {
