@@ -73,37 +73,4 @@ public class MavenLocalRepositoryUtils {
         }
     }
 
-    /**
-     * Destroy the temporary local Maven Repository's content, preserving the containing parent folder.
-     * @param m2Folder
-     */
-    public static void tearDownMavenRepositoryContent( final java.nio.file.Path m2Folder ) {
-        if ( m2Folder != null ) {
-            try {
-                Files.walkFileTree( m2Folder,
-                                    new java.nio.file.SimpleFileVisitor<java.nio.file.Path>() {
-
-                                        @Override
-                                        public FileVisitResult visitFile( final java.nio.file.Path file,
-                                                                          final BasicFileAttributes attrs ) throws IOException {
-                                            Files.delete( file );
-                                            return FileVisitResult.CONTINUE;
-                                        }
-
-                                        @Override
-                                        public FileVisitResult postVisitDirectory( final java.nio.file.Path dir,
-                                                                                   final IOException exc ) throws IOException {
-                                            if ( !dir.equals( m2Folder ) ) {
-                                                Files.delete( dir );
-                                            }
-                                            return FileVisitResult.CONTINUE;
-                                        }
-
-                                    } );
-            } catch ( IOException ioe ) {
-                //Swallow
-            }
-        }
-    }
-
 }

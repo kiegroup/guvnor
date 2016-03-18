@@ -66,6 +66,14 @@ public class RepositoryResolverTestUtils {
             "<url>http://repository.jboss.org/nexus/content/groups/public/</url>\n" +
             "</repository>\n";
 
+    //This intentionally has the same "id" as REPO_3
+    //See https://bugzilla.redhat.com/show_bug.cgi?id=1319046
+    private static final String PLUGIN_REPO_1 = "<pluginRepository>\n" +
+            "<id>jboss-public-repository-group</id>\n" +
+            "<name>JBoss Public Repository Group</name>\n" +
+            "<url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>\n" +
+            "</pluginRepository>\n";
+
     /**
      * Install a Maven Project to the local Maven Repository
      * @param mavenProject
@@ -165,7 +173,7 @@ public class RepositoryResolverTestUtils {
                                                           RepositoryPolicy.UPDATE_POLICY_DAILY,
                                                           RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
                 .setReleasePolicy( new RepositoryPolicy( true,
-                                                         RepositoryPolicy.UPDATE_POLICY_ALWAYS,
+                                                         RepositoryPolicy.UPDATE_POLICY_DAILY,
                                                          RepositoryPolicy.CHECKSUM_POLICY_WARN ) );
 
         final Settings settings = MavenSettings.getSettings();
@@ -211,6 +219,9 @@ public class RepositoryResolverTestUtils {
             settingsXmlLines.add( "      <repositories>\n" );
             settingsXmlLines.addAll( additionalRepositories );
             settingsXmlLines.add( "      </repositories>\n" );
+            settingsXmlLines.add( "      <pluginRepositories>\n" );
+            settingsXmlLines.add( PLUGIN_REPO_1 );
+            settingsXmlLines.add( "        </pluginRepositories>\n" );
             settingsXmlLines.add( "    </profile>\n" );
             settingsXmlLines.add( "  </profiles>\n" );
         }
