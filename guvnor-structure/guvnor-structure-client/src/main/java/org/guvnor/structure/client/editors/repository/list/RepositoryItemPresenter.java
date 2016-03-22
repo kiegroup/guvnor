@@ -71,6 +71,11 @@ public class RepositoryItemPresenter
         view.refresh();
     }
 
+    public void refreshBranches() {
+        populateBranches( view.getSelectedBranch() );
+        view.refresh();
+    }
+
     private void setPublicURIs() {
         int count = 0;
         for ( final PublicURI publicURI : repository.getPublicURIs() ) {
@@ -89,6 +94,7 @@ public class RepositoryItemPresenter
 
         Collections.reverse( branches );
 
+        view.clearBranches();
         for ( String branch : branches ) {
             view.addBranch( branch );
         }
