@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -29,10 +28,10 @@ import org.guvnor.structure.client.editors.context.GuvnorStructureContext;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContextChangeHandler;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -47,13 +46,7 @@ public class RepositoriesPresenter
         implements GuvnorStructureContextChangeHandler,
                    HasRemoveRepositoryHandlers {
 
-    @Inject
-    private Caller<VFSService> vfsService;
-
     private Caller<RepositoryService> repositoryService;
-
-    @Inject
-    private Event<RepositoryEnvironmentUpdatedEvent> repositoryUpdatedEvent;
 
     private GuvnorStructureContext guvnorStructureContext;
 
@@ -96,8 +89,8 @@ public class RepositoriesPresenter
             public void callback( final Collection<Repository> response ) {
                 for ( final Repository repo : response ) {
                     repositoryToWidgetMap.put( repo,
-                                               addRepositoryItem( repo,
-                                                                  guvnorStructureContext.getCurrentBranch( repo.getAlias() ) ) );
+                            addRepositoryItem( repo,
+                                    guvnorStructureContext.getCurrentBranch( repo.getAlias() ) ) );
                 }
             }
         } );
@@ -127,6 +120,20 @@ public class RepositoriesPresenter
     }
 
     @Override
+    public void onNewBranchAdded( String repositoryAlias, String branchName, Path branchPath ) {
+        Repository repository =  getRepositoryByAlias( repositoryAlias );
+        if ( repository != null && ( repository instanceof GitRepository) ) {
+            //only git repositories exists
+            RepositoryItemPresenter itemPresenter = repositoryToWidgetMap.remove( repository );
+            if ( itemPresenter != null ) {
+                ( ( GitRepository ) repository ).addBranch( branchName, branchPath );
+                repositoryToWidgetMap.put( repository, itemPresenter );
+                itemPresenter.refreshBranches();
+            }
+        }
+    }
+
+    @Override
     public void onRepositoryDeleted( final Repository repository ) {
         final RepositoryItemPresenter repositoryItem = repositoryToWidgetMap.remove( repository );
         view.removeIfExists( repositoryItem );
@@ -135,15 +142,24 @@ public class RepositoriesPresenter
     private RepositoryItemPresenter addRepositoryItem( final Repository newRepository,
                                                        final String branch ) {
         final RepositoryItemPresenter repositoryItemPresenter = view.addRepository( newRepository,
-                                                                                    branch );
+                branch );
         repositoryItemPresenter.addRemoveRepositoryCommand( this );
         repositoryToWidgetMap.put( newRepository,
-                                   repositoryItemPresenter );
+                repositoryItemPresenter );
 
         return repositoryItemPresenter;
     }
 
     public void onSystemRepositoryChanged( @Observes final SystemRepositoryChangedEvent event ) {
         loadContent();
+    }
+
+    private Repository getRepositoryByAlias( final String alias ) {
+        for ( Repository repository : repositoryToWidgetMap.keySet() ) {
+            if ( repository.getAlias().equals( alias ) ) {
+                return repository;
+            }
+        }
+        return null;
     }
 }

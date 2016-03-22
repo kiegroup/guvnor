@@ -36,7 +36,11 @@ public interface RepositoryItemView
 
     void addBranch( final String branch );
 
+    void clearBranches();
+
     void refresh();
 
     void setSelectedBranch( final String currentBranch );
+
+    String getSelectedBranch();
 }
