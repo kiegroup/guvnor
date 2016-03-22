@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -94,7 +95,7 @@ public class GuvnorStructureContext {
         if ( branch == null || hasBranchBeenRemoved( repository,
                                                      branch ) ) {
             aliasBranch.put( repository.getAlias(),
-                             repository.getDefaultBranch() );
+                    repository.getDefaultBranch() );
         }
     }
 
@@ -164,6 +165,12 @@ public class GuvnorStructureContext {
 
         for ( final GuvnorStructureContextChangeHandler handler : handlers.values() ) {
             handler.onNewRepositoryAdded( newRepository );
+        }
+    }
+
+    public void onNewBranch( final @Observes NewBranchEvent event ) {
+        for ( final GuvnorStructureContextChangeHandler handler : handlers.values() ) {
+            handler.onNewBranchAdded( event.getRepositoryAlias(), event.getBranchName(), event.getBranchPath() );
         }
     }
 

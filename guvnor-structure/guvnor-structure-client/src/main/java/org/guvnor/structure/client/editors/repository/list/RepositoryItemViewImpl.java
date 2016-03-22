@@ -94,13 +94,13 @@ public class RepositoryItemViewImpl
     @Override
     public void addProtocol( final String protocol ) {
         linksPanel.add( new ProtocolButton( protocol,
-                                            new ClickHandler() {
-                                                @Override
-                                                public void onClick( ClickEvent event ) {
-                                                    presenter.onAnchorSelected( protocol );
-                                                }
-                                            },
-                                            linksPanel.getWidgetCount() != 0 ) );
+                new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        presenter.onAnchorSelected( protocol );
+                    }
+                },
+                linksPanel.getWidgetCount() != 0 ) );
     }
 
     @Override
@@ -118,6 +118,11 @@ public class RepositoryItemViewImpl
     }
 
     @Override
+    public void clearBranches() {
+        branchesDropdown.clear();
+    }
+
+    @Override
     public void addBranch( final String branch ) {
         final Option option = new Option();
         option.setText( branch );
@@ -128,6 +133,12 @@ public class RepositoryItemViewImpl
     @Override
     public void setSelectedBranch( final String currentBranch ) {
         branchesDropdown.setValue( currentBranch );
+        branchesDropdown.refresh();
+    }
+
+    @Override
+    public String getSelectedBranch() {
+        return branchesDropdown.getValue();
     }
 
     @Override
