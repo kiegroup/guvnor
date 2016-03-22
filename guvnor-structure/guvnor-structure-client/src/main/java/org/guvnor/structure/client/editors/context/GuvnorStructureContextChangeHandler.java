@@ -16,14 +16,16 @@
 
 package org.guvnor.structure.client.editors.context;
 
-
 import org.guvnor.structure.repositories.Repository;
+import org.uberfire.backend.vfs.Path;
 
 public interface GuvnorStructureContextChangeHandler {
 
     void onNewRepositoryAdded( final Repository repository );
 
     void onRepositoryDeleted( final Repository repository );
+
+    void onNewBranchAdded( final String repositoryAlias, String branchName, Path branchPath );
 
     class HandlerRegistration {
 

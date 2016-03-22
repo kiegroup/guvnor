@@ -223,6 +223,11 @@ public class FileExplorerPresenter
         }
     }
 
+    @Override
+    public void onNewBranchAdded( String repositoryAlias, String branchName, Path branchPath ) {
+        //currently no actions needed
+    }
+
     // Refresh when a Resource has been added
     public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
         refreshView( event.getPath() );
