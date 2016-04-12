@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -37,15 +36,9 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
-import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -53,24 +46,19 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 
-import static org.guvnor.structure.repositories.EnvironmentParameters.*;
-
 @Service
 @ApplicationScoped
 public class RepositoryStructureServiceImpl
         implements RepositoryStructureService {
 
-    private static final Logger logger = LoggerFactory.getLogger( RepositoryStructureServiceImpl.class );
-
-    private IOService                                ioService;
-    private POMService                               pomService;
-    private ProjectService<? extends Project>        projectService;
-    private RepositoryService                        repositoryService;
-    private MetadataService                          metadataService;
-    private GuvnorM2Repository                       m2service;
-    private CommentedOptionFactory                   optionsFactory;
-    private Event<RepositoryEnvironmentUpdatedEvent> repositoryUpdatedEvent;
-    private ProjectRepositoryResolver                repositoryResolver;
+    private IOService                         ioService;
+    private POMService                        pomService;
+    private ProjectService<? extends Project> projectService;
+    private GuvnorM2Repository                m2service;
+    private CommentedOptionFactory            optionsFactory;
+    private ProjectRepositoryResolver         repositoryResolver;
+    private RepositoryStructureModelLoader    modelLoader;
+    private ManagedStatusUpdater              managedStatusUpdater;
 
     public RepositoryStructureServiceImpl() {
         //Zero-parameter constructor for CDI proxies
@@ -80,31 +68,29 @@ public class RepositoryStructureServiceImpl
     public RepositoryStructureServiceImpl( final @Named( "ioStrategy" ) IOService ioService,
                                            final POMService pomService,
                                            final ProjectService<? extends Project> projectService,
-                                           final RepositoryService repositoryService,
-                                           final MetadataService metadataService,
                                            final GuvnorM2Repository m2service,
                                            final CommentedOptionFactory optionsFactory,
-                                           final Event<RepositoryEnvironmentUpdatedEvent> repositoryUpdatedEvent,
-                                           final ProjectRepositoryResolver repositoryResolver ) {
+                                           final ProjectRepositoryResolver repositoryResolver,
+                                           final RepositoryStructureModelLoader modelLoader,
+                                           final ManagedStatusUpdater managedStatusUpdater ) {
         this.ioService = ioService;
         this.pomService = pomService;
         this.projectService = projectService;
-        this.repositoryService = repositoryService;
-        this.metadataService = metadataService;
         this.m2service = m2service;
         this.optionsFactory = optionsFactory;
-        this.repositoryUpdatedEvent = repositoryUpdatedEvent;
         this.repositoryResolver = repositoryResolver;
+        this.modelLoader = modelLoader;
+        this.managedStatusUpdater = managedStatusUpdater;
     }
 
     @Override
     public Path initRepositoryStructure( final GAV gav,
                                          final Repository repo,
                                          final DeploymentMode mode ) {
-        POM pom = new POM( repo.getAlias(),
-                           repo.getAlias(),
-                           gav,
-                           true );
+        final POM pom = new POM( repo.getAlias(),
+                                 repo.getAlias(),
+                                 gav,
+                                 true );
 
         if ( DeploymentMode.VALIDATED.equals( mode ) ) {
             checkRepositories( pom );
@@ -119,8 +105,8 @@ public class RepositoryStructureServiceImpl
         // it needs to be deployed before the first child is created
         m2service.deployParentPom( gav );
 
-        updateManagedStatus( repo,
-                             true );
+        managedStatusUpdater.updateManagedStatus( repo,
+                                                  true );
 
         return pathToPom;
     }
@@ -152,16 +138,16 @@ public class RepositoryStructureServiceImpl
             // it needs to be deployed before the first child is created
             m2service.deployParentPom( pom.getGav() );
 
-            updateManagedStatus( repository,
-                                 true );
+            managedStatusUpdater.updateManagedStatus( repository,
+                                                      true );
 
             return pathToPom;
 
         } else {
-            Project project = projectService.newProject( repository.getBranchRoot( repository.getDefaultBranch() ),
-                                                         pom,
-                                                         baseUrl,
-                                                         mode );
+            final Project project = projectService.newProject( repository.getBranchRoot( repository.getDefaultBranch() ),
+                                                               pom,
+                                                               baseUrl,
+                                                               mode );
             return project.getPomXMLPath();
         }
     }
@@ -179,20 +165,8 @@ public class RepositoryStructureServiceImpl
     @Override
     public Repository initRepository( final Repository repo,
                                       final boolean managed ) {
-        return updateManagedStatus( repo,
+        return managedStatusUpdater.updateManagedStatus( repo,
                                     managed );
-    }
-
-    private Repository updateManagedStatus( final Repository repo,
-                                            final boolean managed ) {
-        final RepositoryEnvironmentConfigurations config = new RepositoryEnvironmentConfigurations();
-
-        config.setManaged( managed );
-        Repository updatedRepo = repositoryService.updateRepositoryConfiguration( repo,
-                                                                                  config );
-        repositoryUpdatedEvent.fire( new RepositoryEnvironmentUpdatedEvent( updatedRepo ) );
-
-        return updatedRepo;
     }
 
     @Override
@@ -207,24 +181,22 @@ public class RepositoryStructureServiceImpl
         }
 
         try {
-            POM parentPom;
-            Path path = initRepositoryStructure( parentGav,
-                                                 repo,
-                                                 DeploymentMode.FORCED );
+            final Path path = initRepositoryStructure( parentGav,
+                                                       repo,
+                                                       DeploymentMode.FORCED );
 
-            parentPom = pomService.load( path );
+            final POM parentPom = pomService.load( path );
             if ( parentPom == null ) {
                 //uncommon case, the pom was just created.
                 return null;
             }
 
-            ioService.startBatch( new FileSystem[]{ Paths.convert( path ).getFileSystem() },
+            ioService.startBatch( new FileSystem[]{Paths.convert( path ).getFileSystem()},
                                   optionsFactory.makeCommentedOption( comment != null ? comment : "" ) );
 
-            POM pom;
             boolean saveParentPom = false;
             for ( Project project : projects ) {
-                pom = pomService.load( project.getPomXMLPath() );
+                final POM pom = pomService.load( project.getPomXMLPath() );
                 pom.setParent( parentGav );
                 if ( updateChildrenGav ) {
                     pom.getGav().setGroupId( parentGav.getGroupId() );
@@ -257,76 +229,21 @@ public class RepositoryStructureServiceImpl
     }
 
     @Override
-    public RepositoryStructureModel load( final Repository repository ) {
-        return load( repository, true );
+    public RepositoryStructureModel load( final Repository repository,
+                                          final String branch ) {
+        return modelLoader.load( repository,
+                                 branch,
+                                 true );
     }
 
     @Override
     public RepositoryStructureModel load( final Repository repository,
+                                          final String branch,
                                           final boolean includeModules ) {
-        if ( repository == null ) {
-            return null;
-        }
-        Repository _repository = repositoryService.getRepository( repository.getAlias() );
+        return modelLoader.load( repository,
+                                 branch,
+                                 includeModules );
 
-        if ( _repository == null ) {
-            return null;
-        }
-
-        RepositoryStructureModel model = new RepositoryStructureModel();
-        Boolean managedStatus = _repository.getEnvironment() != null ? (Boolean) _repository.getEnvironment().get( MANAGED ) : null;
-        if ( managedStatus != null ) {
-            model.setManaged( managedStatus );
-        }
-
-        Path path = repository.getRoot();
-        final Project project = projectService.resolveToParentProject( path );
-
-        if ( project != null ) {
-            if ( !model.isManaged() ) {
-                //uncommon case, the repository is managed. Update managed status.
-                updateManagedStatus( _repository,
-                                     true );
-                model.setManaged( true );
-            }
-            model.setPOM( pomService.load( project.getPomXMLPath() ) );
-            model.setPOMMetaData( metadataService.getMetadata( project.getPomXMLPath() ) );
-            model.setPathToPOM( project.getPomXMLPath() );
-            model.setModules( new ArrayList<String>( project.getModules() ) );
-            if ( includeModules && project.getModules() != null ) {
-                org.uberfire.java.nio.file.Path parentPath = Paths.convert( project.getRootPath() );
-                Project moduleProject;
-                for ( String module : project.getModules() ) {
-                    moduleProject = projectService.resolveProject( Paths.convert( parentPath.resolve( module ) ) );
-                    model.getModulesProject().put( module,
-                                                   moduleProject );
-                }
-            }
-
-        } else {
-            //if no parent pom.xml present we must check if there are orphan projects for this repository.
-            List<Project> repositoryProjects = getProjects( repository );
-            if ( !repositoryProjects.isEmpty() ) {
-                model.setOrphanProjects( repositoryProjects );
-                POM pom;
-                for ( Project orphanProject : repositoryProjects ) {
-                    pom = pomService.load( orphanProject.getPomXMLPath() );
-                    model.getOrphanProjectsPOM().put( orphanProject.getSignatureId(),
-                                                      pom );
-                }
-                if ( managedStatus == null && repositoryProjects.size() > 1 ) {
-                    //update managed status
-                    updateManagedStatus( _repository,
-                                         false );
-                }
-
-            } else if ( managedStatus == null ) {
-                //there are no projects and the managed attribute is not set, means the repository was never initialized.
-                model = null;
-            }
-        }
-
-        return model;
     }
 
     @Override
@@ -395,23 +312,23 @@ public class RepositoryStructureServiceImpl
                                comment );
     }
 
-    private List<Project> getProjects( final Repository repository ) {
+    private List<Project> getProjects( final Path branchRoot ) {
         final List<Project> repositoryProjects = new ArrayList<Project>();
-        if ( repository == null ) {
+        if ( branchRoot == null ) {
             return repositoryProjects;
-        }
-        final Path repositoryRoot = repository.getRoot();
-        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( Paths.convert( repositoryRoot ) );
-        for ( org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
-            if ( Files.isDirectory( nioRepositoryPath ) ) {
-                final org.uberfire.backend.vfs.Path projectPath = Paths.convert( nioRepositoryPath );
-                final Project project = projectService.resolveProject( projectPath );
-                if ( project != null ) {
-                    repositoryProjects.add( project );
+        } else {
+            final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( Paths.convert( branchRoot ) );
+            for ( org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
+                if ( Files.isDirectory( nioRepositoryPath ) ) {
+                    final org.uberfire.backend.vfs.Path projectPath = Paths.convert( nioRepositoryPath );
+                    final Project project = projectService.resolveProject( projectPath );
+                    if ( project != null ) {
+                        repositoryProjects.add( project );
+                    }
                 }
             }
+            return repositoryProjects;
         }
-        return repositoryProjects;
     }
 
 }

@@ -18,7 +18,6 @@ package org.guvnor.asset.management.backend.service;
 
 import java.util.Collections;
 import java.util.HashSet;
-import javax.enterprise.event.Event;
 
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
@@ -32,11 +31,8 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,7 +42,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -55,33 +50,13 @@ import static org.mockito.Mockito.*;
 public class RepositoryStructureServiceImplTest {
 
     @Mock
-    private IOService ioService;
-
-    @Mock
-
     private POMService pomService;
 
     @Mock
     private ProjectService<Project> projectService;
 
     @Mock
-    private RepositoryService repositoryService;
-
-    @Mock
-    private MetadataService metadataService;
-
-    @Mock
     private GuvnorM2Repository m2service;
-
-    @Mock
-    private CommentedOptionFactory optionsFactory;
-
-    private Event<RepositoryEnvironmentUpdatedEvent> repositoryUpdatedEvent = new EventSourceMock<RepositoryEnvironmentUpdatedEvent>() {
-        @Override
-        public void fire( RepositoryEnvironmentUpdatedEvent event ) {
-            //Override as the default implementation throws an Exception
-        }
-    };
 
     @Mock
     private ProjectRepositoryResolver repositoryResolver;
@@ -101,15 +76,14 @@ public class RepositoryStructureServiceImplTest {
 
     @Before
     public void setup() {
-        service = new RepositoryStructureServiceImpl( ioService,
+        service = new RepositoryStructureServiceImpl( mock( IOService.class ),
                                                       pomService,
                                                       projectService,
-                                                      repositoryService,
-                                                      metadataService,
                                                       m2service,
-                                                      optionsFactory,
-                                                      repositoryUpdatedEvent,
-                                                      repositoryResolver );
+                                                      mock( CommentedOptionFactory.class ),
+                                                      repositoryResolver,
+                                                      mock( RepositoryStructureModelLoader.class ),
+                                                      mock( ManagedStatusUpdater.class ) );
     }
 
     @Test

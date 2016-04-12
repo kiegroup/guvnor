@@ -201,8 +201,8 @@ public abstract class ResourceResolver<T extends Project>
                 final Path projectRootPath = Paths.convert( path );
                 Project project = new Project( projectRootPath,
                                                Paths.convert( parentPomPath ),
-                                               projectRootPath.getFileName() );
-                project.getModules().addAll( parent.getModules() );
+                                               projectRootPath.getFileName(),
+                                               parent.getModules() );
                 return project;
             } else {
                 return null;

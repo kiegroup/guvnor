@@ -44,7 +44,8 @@ import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 @WorkbenchScreen(identifier = "Release Management")
-public class ReleaseConfigurationPresenter extends BaseAssetsMgmtPresenter {
+public class ReleaseConfigurationPresenter
+        extends BaseAssetsMgmtPresenter {
 
     private Constants constants = GWT.create( Constants.class );
 
@@ -140,10 +141,10 @@ public class ReleaseConfigurationPresenter extends BaseAssetsMgmtPresenter {
         }
     }
 
-    public void loadRepositoryStructure( String value ) {
-        if ( !value.equals( constants.Select_Repository() ) ) {
-            Repository r = getRepository( value );
-            if ( r != null ) {
+    public void loadRepositoryStructure( String repositoryAlias ) {
+        if ( !repositoryAlias.equals( constants.Select_Repository() ) ) {
+            Repository repository = getRepository( repositoryAlias );
+            if ( repository != null ) {
                 repositoryStructureServices.call( new RemoteCallback<RepositoryStructureModel>() {
                     @Override
                     public void callback( RepositoryStructureModel model ) {
@@ -163,7 +164,8 @@ public class ReleaseConfigurationPresenter extends BaseAssetsMgmtPresenter {
                             view.getVersionText().setText( "1.0.0" );
                         }
                     }
-                } ).load( r );
+                } ).load( repository,
+                          repository.getDefaultBranch() );
                 return;
             }
         }

@@ -19,25 +19,33 @@ package org.guvnor.test;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 
-public class TestFileSystem
-        extends CDITestSetup {
+public class TestTempFileSystem {
 
-    private final TempFiles                tempFiles;
-    private final HashMap<Path, File> pathToFile = new HashMap<Path, File>();
+    @Inject
+    @Named( "ioStrategy" )
+    IOService ioService;
 
-    public TestFileSystem() throws Exception {
+    @Inject
+    Paths     paths;
+
+    private final TempFiles tempFiles;
+    private final HashMap<Path, File> pathToFile = new HashMap<>();
+
+    public TestTempFileSystem() throws Exception {
 
         tempFiles = new TempFiles();
-
-        setUp();
     }
 
     public Path createTempFile( final String fullFileName ) throws IOException {
         final File file = tempFiles.createTempFile( fullFileName );
-        final Path path = paths.convert( fileSystemProvider.getPath( file.toURI() ) );
+        final Path path = paths.convert( ioService.get( file.toURI() ) );
 
         pathToFile.put( path,
                         file );
@@ -47,7 +55,7 @@ public class TestFileSystem
 
     public Path createTempDirectory( final String fullDirectoryName ) throws IOException {
         final File file = tempFiles.createTempDirectory( fullDirectoryName );
-        final Path path = paths.convert( fileSystemProvider.getPath( file.toURI() ) );
+        final Path path = paths.convert( ioService.get( file.toURI() ) );
 
         pathToFile.put( path,
                         file );
@@ -65,6 +73,5 @@ public class TestFileSystem
 
     public void tearDown() {
         tempFiles.deleteFiles();
-        super.cleanup();
     }
 }

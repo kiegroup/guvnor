@@ -42,7 +42,8 @@ import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 @WorkbenchScreen( identifier = "Repository Configuration" )
-public class RepositoryConfigurationPresenter extends BaseAssetsMgmtPresenter {
+public class RepositoryConfigurationPresenter
+        extends BaseAssetsMgmtPresenter {
 
     public interface RepositoryConfigurationView extends UberView<RepositoryConfigurationPresenter>, BaseAssetsMgmtView {
 
@@ -90,10 +91,10 @@ public class RepositoryConfigurationPresenter extends BaseAssetsMgmtPresenter {
         baseView = view;
     }
 
-    public void loadRepositoryStructure( String value ) {
-        if ( !value.equals( constants.Select_Repository() ) ) {
-            for ( Repository r : getRepositories() ) {
-                if ( ( r.getAlias() ).equals( value ) ) {
+    public void loadRepositoryStructure( String repositoryAlias ) {
+        if ( !repositoryAlias.equals( constants.Select_Repository() ) ) {
+            for ( Repository repository : getRepositories() ) {
+                if ( ( repository.getAlias() ).equals( repositoryAlias ) ) {
                     repositoryStructureServices.call(new RemoteCallback<RepositoryStructureModel>() {
                         @Override
                         public void callback( RepositoryStructureModel model ) {
@@ -112,14 +113,19 @@ public class RepositoryConfigurationPresenter extends BaseAssetsMgmtPresenter {
                                 view.getVersionText().setText( "1.0.0" );
                             }
                         }
-                    } ).load( r );
+                    } ).load( repository,
+                              repository.getDefaultBranch() );
                     return;
                 }
             }
         }
     }
 
-    public void configureRepository( String repository, String sourceBranch, String devBranch, String releaseBranch, String version ) {
+    public void configureRepository( String repository,
+                                     String sourceBranch,
+                                     String devBranch,
+                                     String releaseBranch,
+                                     String version ) {
         assetManagementServices.call( new RemoteCallback<Long>() {
                                           @Override
                                           public void callback( Long taskId ) {

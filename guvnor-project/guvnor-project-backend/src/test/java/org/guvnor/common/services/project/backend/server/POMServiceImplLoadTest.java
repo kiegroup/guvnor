@@ -16,43 +16,70 @@ package org.guvnor.common.services.project.backend.server;
 
 import java.net.URL;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.test.TestFileSystem;
+import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.m2repo.service.M2RepoService;
+import org.guvnor.test.TempFiles;
+import org.guvnor.test.TestTempFileSystem;
+import org.guvnor.test.WeldJUnitRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith( WeldJUnitRunner.class )
 public class POMServiceImplLoadTest {
 
-    private POMService     service;
-    private TestFileSystem testFileSystem;
+    @Inject
+    @Named( "ioStrategy" )
+    IOService ioService;
+
+    @Inject
+    POMContentHandler pomContentHandler;
+
+    @Mock
+    M2RepoService m2RepoService;
+
+    @Mock
+    MetadataService metadataService;
+
+    private POMService service;
+
+    private IOService          ioServiceSpy;
 
     @Before
     public void setUp() throws Exception {
-        testFileSystem = new TestFileSystem();
+        MockitoAnnotations.initMocks( this );
 
-        service = testFileSystem.getReference( POMService.class );
-    }
+        ioServiceSpy = spy( ioService );
 
-    @After
-    public void tearDown() throws Exception {
-        testFileSystem.tearDown();
+        service = new POMServiceImpl( ioServiceSpy,
+                                      pomContentHandler,
+                                      m2RepoService,
+                                      metadataService );
     }
 
     @Test
     public void testLoad() throws Exception {
         final URL url = this.getClass().getResource( "/TestProject/pom.xml" );
 
-        POM pom = service.load( Paths.convert( testFileSystem.fileSystemProvider.getPath( url.toURI() ) ) );
+        final Path path = ioService.get( url.toURI() );
+
+        POM pom = service.load( Paths.convert( path ) );
 
         assertEquals( "org.test", pom.getGav().getGroupId() );
         assertEquals( "my-test", pom.getGav().getArtifactId() );
@@ -71,7 +98,7 @@ public class POMServiceImplLoadTest {
                                            String scope,
                                            List<Dependency> dependencies ) {
         boolean foundOne = false;
-        for (Dependency dependency : dependencies) {
+        for ( Dependency dependency : dependencies ) {
             if ( groupID.equals( dependency.getGroupId() )
                     && artifactID.equals( dependency.getArtifactId() )
                     &&

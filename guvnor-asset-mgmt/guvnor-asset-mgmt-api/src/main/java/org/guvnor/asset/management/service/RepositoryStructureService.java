@@ -48,9 +48,11 @@ public interface RepositoryStructureService {
                                          final boolean updateChildrenGav,
                                          final String comment );
 
-    RepositoryStructureModel load( final Repository repository );
+    RepositoryStructureModel load( final Repository repository,
+                                   final String branch );
 
     RepositoryStructureModel load( final Repository repository,
+                                   final String branch,
                                    final boolean includeModules );
 
     void save( final Path pathToPomXML,
