@@ -15,6 +15,14 @@
  */
 package org.guvnor.inbox.backend.server.security;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.inbox.backend.server.InboxEntry;
@@ -24,13 +32,10 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 import org.uberfire.security.authz.AuthorizationManager;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.*;
 
 @ApplicationScoped
 public class InboxEntrySecurity {
@@ -114,9 +119,15 @@ public class InboxEntrySecurity {
     }
 
     Repository getInboxEntryRepository( InboxEntry inboxEntry ) {
-        final Path path = Paths.get( inboxEntry.getItemPath() );
-        final FileSystem fileSystem = path.getFileSystem();
-        return configuredRepositories.getRepositoryByRepositoryFileSystem( fileSystem );
+        try {
+
+            final Path path = Paths.get( inboxEntry.getItemPath() );
+            final FileSystem fileSystem = path.getFileSystem();
+            return configuredRepositories.getRepositoryByRepositoryFileSystem( fileSystem );
+
+        } catch ( FileSystemNotFoundException exception ) {
+            return null;
+        }
     }
 
     private Set<Repository> getAuthorizedRepositories() {
