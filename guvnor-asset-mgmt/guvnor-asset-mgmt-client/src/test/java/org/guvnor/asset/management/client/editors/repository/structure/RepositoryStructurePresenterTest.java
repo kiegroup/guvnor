@@ -433,6 +433,7 @@ public class RepositoryStructurePresenterTest {
 
     @Test
     public void testOnAddModuleSingleModule() {
+        when( organizationalUnit.getDefaultGroupId() ).thenReturn( "TestUnitByDefGroupId" );
         when( workbenchContext.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
         when( workbenchContext.getActiveRepository() ).thenReturn( repository );
         when( workbenchContext.getActiveProject() ).thenReturn( project );
@@ -455,12 +456,13 @@ public class RepositoryStructurePresenterTest {
                 times( 1 ) ).initialise( pomArgumentCaptor.capture() );
         verify( wizard,
                 times( 1 ) ).start( Matchers.<Callback<Project>>any(),
-                                    eq( false ) );
+                eq( false ) );
 
         final POM pom = pomArgumentCaptor.getValue();
         assertNotNull( pom );
         assertNotNull( pom.getGav() );
-        assertNull( pom.getGav().getGroupId() );
+        //The organizational unit name should have been suggested as groupId by default.
+        assertEquals( "TestUnitByDefGroupId", pom.getGav().getGroupId() );
         assertNull( pom.getGav().getArtifactId() );
         assertNull( pom.getGav().getVersion() );
     }
