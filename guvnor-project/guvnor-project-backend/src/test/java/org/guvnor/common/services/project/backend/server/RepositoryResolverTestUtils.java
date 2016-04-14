@@ -89,9 +89,9 @@ public class RepositoryResolverTestUtils {
             //Nothing to override, just a sub-class to expose Constructor
         };
 
-        mavenRepository.deployArtifact( releaseId,
-                                        "content".getBytes(),
-                                        pomXml.getBytes() );
+        mavenRepository.installArtifact( releaseId,
+                                         "content".getBytes(),
+                                         pomXml.getBytes() );
     }
 
     /**
