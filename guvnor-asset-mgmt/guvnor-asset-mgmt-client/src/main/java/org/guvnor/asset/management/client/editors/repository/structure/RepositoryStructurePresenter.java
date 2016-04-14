@@ -554,6 +554,8 @@ public class RepositoryStructurePresenter
 
             pom.getGav().setGroupId( parentGAV.getGroupId() );
             pom.getGav().setVersion( parentGAV.getVersion() );
+        } else {
+            pom.getGav().setGroupId( workbenchContext.getActiveOrganizationalUnit().getDefaultGroupId() );
         }
 
         wizard.initialise( pom );
