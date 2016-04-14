@@ -33,7 +33,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class POMServiceImplCreateTest {
 
-
     private POMService     service;
     private TestFileSystem testFileSystem;
     private IOService      ioService;

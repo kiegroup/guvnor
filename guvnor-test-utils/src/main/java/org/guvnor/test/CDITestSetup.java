@@ -20,7 +20,8 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
@@ -29,18 +30,25 @@ public class CDITestSetup {
     public final SimpleFileSystemProvider fileSystemProvider = new SimpleFileSystemProvider();
     public BeanManager beanManager;
     public Paths       paths;
+    private Weld       weld;
 
     public void setUp() throws Exception {
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[0] );
-        beanManager = startMain.go().getBeanManager();
+        // Bootstrap WELD container
+        weld = new Weld();
+        WeldContainer weldContainer = weld.initialize();
+        beanManager = weldContainer.getBeanManager();
 
-        //Instantiate Paths used in tests for Path conversion
+        // Instantiate Paths used in tests for Path conversion
         paths = getReference( Paths.class );
 
-        //Ensure URLs use the default:// scheme
+        // Ensure URLs use the default:// scheme
         fileSystemProvider.forceAsDefault();
+    }
 
+    public void cleanup() {
+        if (weld != null) {
+            weld.shutdown();
+        }
     }
 
     public <T> T getReference( Class<T> clazz ) {

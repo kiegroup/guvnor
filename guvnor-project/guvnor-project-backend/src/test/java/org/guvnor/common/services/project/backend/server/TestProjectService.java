@@ -15,9 +15,9 @@
  */
 package org.guvnor.common.services.project.backend.server;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
-import javax.inject.Singleton;
 
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.project.ProjectFactory;
@@ -25,8 +25,7 @@ import org.guvnor.common.services.project.service.ProjectService;
 
 import static org.mockito.Mockito.*;
 
-@Singleton
-@Alternative
+@ApplicationScoped
 public class TestProjectService {
 
     @Produces

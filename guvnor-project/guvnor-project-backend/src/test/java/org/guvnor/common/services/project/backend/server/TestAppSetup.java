@@ -16,23 +16,19 @@
 
 package org.guvnor.common.services.project.backend.server;
 
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
 import org.guvnor.m2repo.service.M2RepoService;
-import org.uberfire.io.IOService;
-import org.uberfire.io.impl.IOServiceDotFileImpl;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
-@Singleton
-@Alternative
+@ApplicationScoped
+@Priority(1) // needed in order to inject the @Alternatives outside of this bean bundle (aka maven module)
 public class TestAppSetup {
 
     @Produces

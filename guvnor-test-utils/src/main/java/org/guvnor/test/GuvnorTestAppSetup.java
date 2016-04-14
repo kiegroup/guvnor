@@ -16,10 +16,11 @@
 
 package org.guvnor.test;
 
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.io.IOService;
@@ -30,8 +31,8 @@ import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
-@Singleton
-@Alternative
+@ApplicationScoped
+@Priority(1) // needed in order to inject the @Alternatives outside of this bean bundle (aka maven module)
 public class GuvnorTestAppSetup {
 
     public static final IOService DEFAULT_IO_SERVICE = new IOServiceDotFileImpl();
