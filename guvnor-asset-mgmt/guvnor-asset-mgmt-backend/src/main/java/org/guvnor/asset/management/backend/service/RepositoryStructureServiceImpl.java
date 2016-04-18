@@ -146,7 +146,7 @@ public class RepositoryStructureServiceImpl
             //Creating the parent pom
             final Path fsRoot = repository.getRoot();
             final Path pathToPom = pomService.create( fsRoot,
-                                                      "",
+                                                      baseUrl,
                                                       pom );
             //Deploying the parent pom artifact,
             // it needs to be deployed before the first child is created

@@ -34,6 +34,8 @@ import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
+import org.guvnor.common.services.project.client.util.POMDefaultOptions;
+import org.guvnor.common.services.project.model.Build;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.POM;
@@ -91,6 +93,8 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
     private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
+    private POMDefaultOptions pomDefaultOptions;
+
     private Callback<Void> onCloseCallback = null;
 
     private boolean assetsManagementIsGranted = false;
@@ -110,7 +114,8 @@ public class CreateRepositoryWizard extends AbstractWizard {
                                    final Event<NotificationEvent> notification,
                                    final KieWorkbenchACL kieACL,
                                    final SessionInfo sessionInfo,
-                                   final ConflictingRepositoriesPopup conflictingRepositoriesPopup ) {
+                                   final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
+                                   final POMDefaultOptions pomDefaultOptions ) {
         this.infoPage = infoPage;
         this.structurePage = structurePage;
         this.model = model;
@@ -122,6 +127,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
         this.kieACL = kieACL;
         this.sessionInfo = sessionInfo;
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
+        this.pomDefaultOptions = pomDefaultOptions;
     }
 
     @PostConstruct
@@ -342,6 +348,11 @@ public class CreateRepositoryWizard extends AbstractWizard {
                     pom.getGav().setGroupId( model.getGroupId() );
                     pom.getGav().setArtifactId( model.getArtifactId() );
                     pom.getGav().setVersion( model.getVersion() );
+                    if ( !model.isMultiModule() ) {
+                        pom.setPackaging( pomDefaultOptions.getPackaging() );
+                        pom.setBuild( new Build() );
+                        pom.getBuild().setPlugins( pomDefaultOptions.getBuildPlugins() );
+                    }
                     final String url = GWT.getModuleBaseURL();
                     final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
 
