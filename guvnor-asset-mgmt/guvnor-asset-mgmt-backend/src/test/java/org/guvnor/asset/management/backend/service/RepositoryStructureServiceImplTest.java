@@ -413,7 +413,7 @@ public class RepositoryStructureServiceImplTest {
         final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
         verify( pomService,
                 times( 1 ) ).create( eq( repositoryRootPath ),
-                                     eq( "" ),
+                                     eq( "baseUrl" ),
                                      pomArgumentCaptor.capture() );
 
         assertNotNull( pomArgumentCaptor.getValue() );
@@ -505,7 +505,7 @@ public class RepositoryStructureServiceImplTest {
         final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
         verify( pomService,
                 times( 1 ) ).create( eq( repositoryRootPath ),
-                                     eq( "" ),
+                                     eq( "baseUrl" ),
                                      pomArgumentCaptor.capture() );
 
         assertNotNull( pomArgumentCaptor.getValue() );
