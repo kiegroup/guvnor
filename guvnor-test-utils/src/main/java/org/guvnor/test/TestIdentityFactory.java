@@ -17,16 +17,17 @@
 package org.guvnor.test;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
-import javax.inject.Singleton;
 
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 
-@Singleton
-@Alternative
+@ApplicationScoped
+@Priority(1) // needed in order to inject the @Alternatives outside of this bean bundle (aka maven module)
 public class TestIdentityFactory {
 
     private User identity;

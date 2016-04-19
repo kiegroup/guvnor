@@ -69,5 +69,6 @@ public class TestFileSystem
 
     public void tearDown() {
         tempFiles.deleteFiles();
+        super.cleanup();
     }
 }
