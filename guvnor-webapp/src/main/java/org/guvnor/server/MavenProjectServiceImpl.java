@@ -38,7 +38,6 @@ import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
-import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -49,7 +48,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.guvnor.common.services.project.backend.server.ProjectResourcePaths.*;
+import static org.guvnor.common.services.project.utils.ProjectResourcePaths.*;
 
 @Service
 @ApplicationScoped

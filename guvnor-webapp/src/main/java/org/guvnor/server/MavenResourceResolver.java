@@ -22,7 +22,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.file.Files;
 
-import static org.guvnor.common.services.project.backend.server.ProjectResourcePaths.*;
+import static org.guvnor.common.services.project.utils.ProjectResourcePaths.*;
 
 public class MavenResourceResolver
         extends ResourceResolver<Project> {

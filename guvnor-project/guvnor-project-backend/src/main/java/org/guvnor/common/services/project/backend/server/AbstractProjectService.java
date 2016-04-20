@@ -53,7 +53,7 @@ import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.guvnor.common.services.project.backend.server.ProjectResourcePaths.*;
+import static org.guvnor.common.services.project.utils.ProjectResourcePaths.*;
 
 public abstract class AbstractProjectService<T extends Project>
         implements ProjectServiceCore<T>,
