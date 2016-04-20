@@ -1,6 +1,5 @@
 <beans>
   <alternatives>
-    <class>org.kie.workbench.common.services.rest.TestAppSetup</class>
-    <class>org.kie.workbench.common.services.rest.TestIdentityFactory</class>
+    <class>org.guvnor.test.GuvnorTestAppSetup</class>
    </alternatives>
 </beans>

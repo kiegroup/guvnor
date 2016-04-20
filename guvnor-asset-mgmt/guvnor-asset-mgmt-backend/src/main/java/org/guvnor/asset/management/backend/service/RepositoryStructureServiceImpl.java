@@ -36,8 +36,8 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,7 +131,7 @@ public class RepositoryStructureServiceImpl
             return pathToPom;
 
         } else {
-            Project project = projectService.newProject( repo, pom.getName(), pom, baseUrl );
+            Project project = projectService.newProject( repo.getBranchRoot(repo.getDefaultBranch()), pom.getName(), pom, baseUrl );
             return project.getPomXMLPath();
         }
     }
