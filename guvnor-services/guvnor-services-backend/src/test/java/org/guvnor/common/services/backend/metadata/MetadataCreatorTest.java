@@ -117,21 +117,21 @@ public class MetadataCreatorTest {
 
         //Mock FileSystem operations
         final AtomicBoolean exists = new AtomicBoolean( false );
-        when( configIOService.exists( any( Path.class ) ) ).<Boolean>thenAnswer( new Answer<Boolean>() {
+        when( configIOService.exists( any( Path.class ) ) ).thenAnswer( new Answer<Boolean>() {
             @Override
             public Boolean answer( InvocationOnMock invocation ) throws Throwable {
                 return exists.get();
             }
         } );
         when( configIOService.write( any( Path.class ),
-                                     any( String.class ) ) ).<Path>thenAnswer( new Answer<Path>() {
+                                     any( String.class ) ) ).thenAnswer( new Answer<Path>() {
             @Override
             public Path answer( final InvocationOnMock invocation ) throws Throwable {
                 exists.set( true );
                 return mainFilePath;
             }
         } );
-        when( configIOService.readAllString( any( Path.class ) ) ).<String>thenAnswer( new Answer<String>() {
+        when( configIOService.readAllString( any( Path.class ) ) ).thenAnswer( new Answer<String>() {
             @Override
             public String answer( InvocationOnMock invocation ) throws Throwable {
                 if ( !exists.get() ) {
