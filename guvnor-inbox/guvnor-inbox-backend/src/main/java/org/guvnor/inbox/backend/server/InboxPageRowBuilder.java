@@ -16,7 +16,6 @@
 package org.guvnor.inbox.backend.server;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -83,12 +82,13 @@ public class InboxPageRowBuilder
         return row;
     }
 
-    private Path makePath( final String fullPath ) {
+    Path makePath( final String fullPath ) {
         try {
             final org.uberfire.java.nio.file.Path path = ioService.get( new URI( fullPath ) );
             return Paths.convert( path );
 
-        } catch ( URISyntaxException e ) {
+        } catch ( Exception e ) {
+            // wrong/null URI, non-existent file/fs, etc.
             return null;
         }
     }
