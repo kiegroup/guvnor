@@ -62,37 +62,7 @@
     <module>guvnor-message-console</module>
     <module>guvnor-organizationalunit-manager</module>
     <module>guvnor-asset-mgmt</module>
-    <module>guvnor-webapp</module>
   </modules>
-
-  <profiles>
-
-    <profile>
-      <id>hostedModeProfile</id>
-      <!-- For hosted mode testing in Idea. To use this, activate it in View->Tool Windows->Maven Projects -->
-      <activation>
-        <property>
-          <name>hostedMode</name>
-        </property>
-      </activation>
-      <modules>
-        <module>guvnor-webapp</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>fullProfile</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>guvnor-webapp-distribution-wars</module>
-      </modules>
-    </profile>
-
-  </profiles>
 
   <build>
     <plugins>
