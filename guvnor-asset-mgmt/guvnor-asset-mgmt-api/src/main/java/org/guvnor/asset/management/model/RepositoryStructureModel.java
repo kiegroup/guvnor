@@ -16,6 +16,7 @@
 package org.guvnor.asset.management.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,6 @@ public class RepositoryStructureModel {
     private Metadata POMMetaData;
 
     private Path pathToPOM;
-
-    private Path pathToImports;
 
     private List<String> modules = new ArrayList<String>( );
 
@@ -70,10 +69,6 @@ public class RepositoryStructureModel {
         return pathToPOM;
     }
 
-    public Path getPathToImports() {
-        return pathToImports;
-    }
-
     public void setPathToPOM( Path pathToPOM ) {
         this.pathToPOM = pathToPOM;
     }
@@ -82,8 +77,11 @@ public class RepositoryStructureModel {
         return modules;
     }
 
-    public void setModules( List<String> modules ) {
-        this.modules = modules;
+    public void setModules( final Collection<String> modules ) {
+        this.modules.clear();
+        for ( final String module : modules ) {
+            this.modules.add( module );
+        }
     }
 
     public boolean isMultiModule() {

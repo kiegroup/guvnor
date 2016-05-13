@@ -14,18 +14,21 @@
 */
 package org.guvnor.inbox.backend.server.security;
 
+import javax.inject.Inject;
+
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.inbox.backend.server.InboxEntry;
 import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.test.TestFileSystem;
+import org.guvnor.test.TestTempFileSystem;
+import org.guvnor.test.WeldJUnitRunner;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -33,7 +36,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith( WeldJUnitRunner.class )
 public class InboxEntrySecurity_InboxEntrySecurityTestTest {
 
     @Mock
@@ -43,11 +46,13 @@ public class InboxEntrySecurity_InboxEntrySecurityTestTest {
     private Repository repository;
 
     private InboxEntrySecurity inbox;
-    private TestFileSystem     testFileSystem;
+
+    @Inject
+    private TestTempFileSystem testFileSystem;
 
     @Before
     public void setup() {
-        testFileSystem = new TestFileSystem();
+        MockitoAnnotations.initMocks( this );
 
         when( configuredRepositories.getRepositoryByRepositoryFileSystem( any( FileSystem.class ) ) ).thenReturn( repository );
 

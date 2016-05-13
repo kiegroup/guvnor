@@ -14,49 +14,74 @@
 */
 package org.guvnor.common.services.project.backend.server;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.test.GuvnorTestAppSetup;
-import org.guvnor.test.TestFileSystem;
+import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.m2repo.service.M2RepoService;
+import org.guvnor.test.TestTempFileSystem;
+import org.guvnor.test.WeldJUnitRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith( WeldJUnitRunner.class )
 public class POMServiceImplCreateTest {
 
-    private POMService     service;
-    private TestFileSystem testFileSystem;
-    private IOService      ioService;
+    @Inject
+    @Named( "ioStrategy" )
+    IOService ioService;
+
+    @Inject
+    POMContentHandler pomContentHandler;
+
+    @Mock
+    M2RepoService m2RepoService;
+
+    @Mock
+    MetadataService metadataService;
+
+    private POMServiceImpl service;
+
+    @Inject
+    private Paths paths;
+
+    private IOService ioServiceSpy;
+
+    @Inject
+    private TestTempFileSystem testFileSystem;
 
     @Before
     public void setUp() throws Exception {
-        ioService = mock( IOService.class );
+        MockitoAnnotations.initMocks( this );
 
-        GuvnorTestAppSetup.ioService = ioService;
+        ioServiceSpy = spy( ioService );
 
-        testFileSystem = new TestFileSystem();
-
-        service = testFileSystem.getReference( POMService.class );
+        service = new POMServiceImpl( ioServiceSpy,
+                                      pomContentHandler,
+                                      m2RepoService,
+                                      metadataService );
     }
 
     @After
     public void tearDown() throws Exception {
         testFileSystem.tearDown();
-        GuvnorTestAppSetup.reset();
     }
 
     @Test
     public void testCreate() throws Exception {
-
         final Path path = testFileSystem.createTempDirectory( "/MyTestProject" );
 
         service.create( path,
@@ -66,7 +91,7 @@ public class POMServiceImplCreateTest {
         ArgumentCaptor<org.uberfire.java.nio.file.Path> pathArgumentCaptor = ArgumentCaptor.forClass( org.uberfire.java.nio.file.Path.class );
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass( String.class );
 
-        verify( ioService ).write( pathArgumentCaptor.capture(), stringArgumentCaptor.capture() );
+        verify( ioServiceSpy ).write( pathArgumentCaptor.capture(), stringArgumentCaptor.capture() );
 
         assertEquals( pathArgumentCaptor.getValue().toUri().toString(),
                       path.toURI() + "/pom.xml" );
@@ -74,7 +99,6 @@ public class POMServiceImplCreateTest {
         String pomXML = stringArgumentCaptor.getValue();
 
         assertTrue( pomXML.contains( "<id>guvnor-m2-repo</id>" ) );
-
     }
 
 }

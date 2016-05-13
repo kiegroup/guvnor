@@ -53,7 +53,8 @@ public class GitRepository
 
     public GitRepository( final String alias,
                           final List<PublicURI> publicURIs ) {
-        this.alias = alias;
+        this( alias );
+
         if ( publicURIs != null && !publicURIs.isEmpty() ) {
             this.publicURIs.addAll( publicURIs );
         }

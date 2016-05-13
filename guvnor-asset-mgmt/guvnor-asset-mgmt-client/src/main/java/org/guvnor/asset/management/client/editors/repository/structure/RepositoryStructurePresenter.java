@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -37,6 +36,7 @@ import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.context.ProjectContextChangeHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
@@ -86,7 +86,8 @@ import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopu
 public class RepositoryStructurePresenter
         implements RepositoryStructureView.Presenter,
                    RepositoryStructureDataView.Presenter,
-                   ProjectModulesView.Presenter {
+                   ProjectModulesView.Presenter,
+                   ProjectContextChangeHandler {
 
     private RepositoryStructureView view;
 
@@ -187,6 +188,8 @@ public class RepositoryStructurePresenter
         this.workbenchContext = workbenchContext;
         this.wizard = wizard;
 
+        workbenchContext.addChangeHandler( this );
+
         view.setPresenter( this );
         view.getDataView().setPresenter( this );
         view.getModulesView().setPresenter( this );
@@ -196,9 +199,7 @@ public class RepositoryStructurePresenter
     public void onStartup( final PlaceRequest placeRequest ) {
         this.placeRequest = placeRequest;
         makeMenuBar();
-        processContextChange( workbenchContext.getActiveRepository(),
-                              workbenchContext.getActiveBranch(),
-                              workbenchContext.getActiveProject() );
+        processContextChange();
     }
 
     @WorkbenchPartTitle
@@ -226,26 +227,25 @@ public class RepositoryStructurePresenter
         dataProvider.refresh();
     }
 
-    private void onContextChange( @Observes final ProjectContextChangeEvent event ) {
-        processContextChange( event.getRepository(),
-                              event.getBranch(),
-                              event.getProject() );
+    @Override
+    public void onChange() {
+        processContextChange();
     }
 
-    private void processContextChange( final Repository repository,
-                                       final String branch,
-                                       final Project project ) {
+    private void processContextChange() {
+
         boolean repoOrBranchChanged = false;
 
-        if ( repository == null ) {
+        if ( workbenchContext.getActiveRepository() == null ) {
             clearView();
             view.setModulesViewVisible( false );
             enableActions( false );
 
-        } else if ( ( repoOrBranchChanged = repositoryOrBranchChanged( repository, branch ) ) || ( project != null && !project.equals( this.project ) ) ) {
-            this.repository = repository;
-            this.branch = branch;
-            this.project = project;
+        } else if ( (repoOrBranchChanged = repositoryOrBranchChanged( workbenchContext.getActiveRepository(),
+                                                                      workbenchContext.getActiveBranch() )) || (workbenchContext.getActiveProject() != null && !workbenchContext.getActiveProject().equals( this.project )) ) {
+            this.repository = workbenchContext.getActiveRepository();
+            this.branch = workbenchContext.getActiveBranch();
+            this.project = workbenchContext.getActiveProject();
 
             if ( repoOrBranchChanged || ( ( lastAddedModule == null || !lastAddedModule.equals( project ) ) && lastDeletedModule == null ) ) {
                 init();
@@ -259,7 +259,8 @@ public class RepositoryStructurePresenter
         view.showBusyIndicator( Constants.INSTANCE.Loading() );
         clearView();
         repositoryStructureService.call( getLoadModelSuccessCallback(),
-                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository );
+                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository,
+                                                                                                  branch );
     }
 
     private RemoteCallback<RepositoryStructureModel> getLoadModelSuccessCallback() {
@@ -589,6 +590,7 @@ public class RepositoryStructurePresenter
                                                              }
                                                          },
                                                          new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository,
+                                                                                                                  branch,
                                                                                                                   false );
 
                     } else {
@@ -694,7 +696,9 @@ public class RepositoryStructurePresenter
                                                                  }
                                                              }
                                                          },
-                                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository, false );
+                                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).load( repository,
+                                                                                                                  branch,
+                                                                                                                  false );
 
                     } else {
                         model.getOrphanProjects().remove( _project );
@@ -819,8 +823,6 @@ public class RepositoryStructurePresenter
     }
 
     private void convertToMultiModule() {
-        Project project = model.getOrphanProjects().get( 0 );
-        POM pom = model.getOrphanProjectsPOM().get( project.getSignatureId() );
         GAV gav = new GAV( view.getDataView().getGroupId(),
                            view.getDataView().getArtifactId(),
                            view.getDataView().getVersion() );

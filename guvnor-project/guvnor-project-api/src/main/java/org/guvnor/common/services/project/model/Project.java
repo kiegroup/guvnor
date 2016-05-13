@@ -61,7 +61,7 @@ public class Project implements RuntimeContentResource,
     public Project( final Path rootPath,
                     final Path pomXMLPath,
                     final String projectName,
-                    Collection<String> modules ) {
+                    final Collection<String> modules ) {
         this( rootPath, pomXMLPath, projectName );
         this.modules = modules;
     }

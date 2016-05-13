@@ -200,7 +200,8 @@ public class RepositoryStructurePresenterTest {
         when( workbenchContext.getActiveProject() ).thenReturn( project );
 
         final RepositoryStructureModel model = null;
-        when( repositoryStructureService.load( repository ) ).thenReturn( model );
+        when( repositoryStructureService.load( eq( repository ),
+                                               anyString()) ).thenReturn( model );
 
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
 
@@ -229,7 +230,8 @@ public class RepositoryStructurePresenterTest {
         model.setOrphanProjects( new ArrayList<Project>() {{
             add( project );
         }} );
-        when( repositoryStructureService.load( repository ) ).thenReturn( model );
+        when( repositoryStructureService.load( eq( repository ),
+                                               anyString() ) ).thenReturn( model );
 
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
 
@@ -266,7 +268,8 @@ public class RepositoryStructurePresenterTest {
                                           "version" ) );
         model.setManaged( true );
         model.setPOM( pom );
-        when( repositoryStructureService.load( repository ) ).thenReturn( model );
+        when( repositoryStructureService.load( eq( repository ),
+                                               anyString() ) ).thenReturn( model );
 
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
 
@@ -303,7 +306,8 @@ public class RepositoryStructurePresenterTest {
                                           "version" ) );
         model.setManaged( true );
         model.setPOM( pom );
-        when( repositoryStructureService.load( repository ) ).thenReturn( model );
+        when( repositoryStructureService.load( eq( repository ),
+                                               anyString() ) ).thenReturn( model );
 
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
 
@@ -332,7 +336,8 @@ public class RepositoryStructurePresenterTest {
                                           "version" ) );
         model.setManaged( true );
         model.setPOM( pom );
-        when( repositoryStructureService.load( repository ) ).thenReturn( model );
+        when( repositoryStructureService.load( eq( repository ),
+                                               anyString() ) ).thenReturn( model );
 
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
 
@@ -351,7 +356,8 @@ public class RepositoryStructurePresenterTest {
         presenter.onInitRepositoryStructure();
 
         verify( repositoryStructureService,
-                times( 1 ) ).load( repository );
+                times( 1 ) ).load( eq( repository ),
+                                   anyString() );
 
         final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
 
@@ -383,7 +389,8 @@ public class RepositoryStructurePresenterTest {
                                           "version" ) );
         model.setManaged( true );
         model.setPOM( pom );
-        when( repositoryStructureService.load( repository ) ).thenReturn( model );
+        when( repositoryStructureService.load( eq( repository ),
+                                               anyString() ) ).thenReturn( model );
 
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
 
@@ -402,7 +409,8 @@ public class RepositoryStructurePresenterTest {
         presenter.onInitRepositoryStructure();
 
         verify( repositoryStructureService,
-                times( 1 ) ).load( repository );
+                times( 1 ) ).load( eq( repository ),
+                                   anyString() );
 
         final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
 
@@ -421,7 +429,8 @@ public class RepositoryStructurePresenterTest {
                 times( 1 ) ).hide();
 
         verify( repositoryStructureService,
-                times( 2 ) ).load( repository );
+                times( 2 ) ).load( eq( repository ),
+                                   anyString() );
 
         verify( view,
                 times( 2 ) ).showBusyIndicator( eq( Constants.INSTANCE.Loading() ) );
@@ -443,7 +452,8 @@ public class RepositoryStructurePresenterTest {
         model.setOrphanProjects( new ArrayList<Project>() {{
             add( project );
         }} );
-        when( repositoryStructureService.load( repository ) ).thenReturn( model );
+        when( repositoryStructureService.load( eq( repository ),
+                                               anyString() ) ).thenReturn( model );
 
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
 
@@ -479,7 +489,8 @@ public class RepositoryStructurePresenterTest {
                                           "version" ) );
         model.setManaged( true );
         model.setPOM( pom );
-        when( repositoryStructureService.load( repository ) ).thenReturn( model );
+        when( repositoryStructureService.load( eq( repository ),
+                                               anyString() ) ).thenReturn( model );
 
         when( dataView.getGroupId() ).thenReturn( "groupId" );
         when( dataView.getArtifactId() ).thenReturn( "artifactId" );
