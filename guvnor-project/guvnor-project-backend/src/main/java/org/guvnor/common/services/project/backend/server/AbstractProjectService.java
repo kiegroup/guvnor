@@ -119,8 +119,16 @@ public abstract class AbstractProjectService<T extends Project>
     }
 
     @Override
-    public Set<Project> getProjects( final Repository repository,
-                                     String branch ) {
+    public Set<Project> getAllProjects(Repository repository, String branch) {
+        return getProjects( repository, branch, false );
+    }
+
+    @Override
+    public Set<Project> getProjects( final Repository repository, String branch ) {
+        return getProjects( repository, branch, true );
+    }
+
+    public Set<Project> getProjects( final Repository repository, String branch, boolean secure ) {
         final Set<Project> authorizedProjects = new HashSet<Project>();
         if ( repository == null ) {
             return authorizedProjects;
@@ -134,7 +142,7 @@ public abstract class AbstractProjectService<T extends Project>
                     final Project project = resourceResolver.resolveProject( projectPath );
 
                     if ( project != null ) {
-                        if ( authorizationManager.authorize( project, sessionInfo.getIdentity() ) ) {
+                        if ( !secure || authorizationManager.authorize( project, sessionInfo.getIdentity() ) ) {
                             POM projectPom = pomService.load( project.getPomXMLPath() );
                             project.setPom( projectPom );
                             authorizedProjects.add( project );

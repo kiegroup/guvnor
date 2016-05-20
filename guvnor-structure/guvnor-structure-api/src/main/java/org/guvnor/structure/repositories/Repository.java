@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.guvnor.structure.security.RepositoryResourceType;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Cacheable;
 import org.uberfire.security.authz.RuntimeContentResource;
@@ -26,6 +27,8 @@ import org.uberfire.security.authz.RuntimeContentResource;
 public interface Repository
         extends RuntimeContentResource,
                 Cacheable {
+
+    RepositoryResourceType RESOURCE_TYPE = new RepositoryResourceType();
 
     /**
      * Most of the time, this can not be used as an unique ID.
@@ -52,6 +55,8 @@ public interface Repository
     Path getBranchRoot( final String branch );
 
     void setRoot( final Path root );
+
+    Collection<String> getGroups();
 
     /**
      * Returns "read-only" view of all branches available in this repository.

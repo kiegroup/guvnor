@@ -79,6 +79,13 @@ public class OrganizationalUnitServiceCallerMock
         }
 
         @Override
+        public Collection<OrganizationalUnit> getAllOrganizationalUnits() {
+            Collection<OrganizationalUnit> result = organizationalUnitService.getAllOrganizationalUnits();
+            remoteCallback.callback( result );
+            return result;
+        }
+
+        @Override
         public Collection<OrganizationalUnit> getOrganizationalUnits() {
             Collection<OrganizationalUnit> result = organizationalUnitService.getOrganizationalUnits();
             remoteCallback.callback( result );

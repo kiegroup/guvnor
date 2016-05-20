@@ -22,6 +22,7 @@ import java.util.Collection;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContext;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContextChangeHandler;
+import org.guvnor.structure.client.security.RepositoryController;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -48,6 +49,9 @@ public class RepositoriesPresenterTest {
 
     @Mock
     private RepositoryService repositoryService;
+
+    @Mock
+    private RepositoryController repositoryController;
 
     private GuvnorStructureContext guvnorStructureContext;
 
@@ -89,6 +93,7 @@ public class RepositoriesPresenterTest {
         repositories.add( r2 );
         repositories.add( r3 );
 
+        when( repositoryController.canReadRepository( any() ) ).thenReturn( true );
 
         this.guvnorStructureContext = new GuvnorStructureContext( new CallerMock<RepositoryService>(
                 repositoryService ) ) {
@@ -117,7 +122,8 @@ public class RepositoriesPresenterTest {
 
         presenter = new RepositoriesPresenter( view,
                                                guvnorStructureContext,
-                                               new CallerMock<>( repositoryService ) );
+                                               new CallerMock<>( repositoryService ),
+                                               repositoryController );
 
         when( repositoryService.getRepositories() ).thenReturn( repositories );
 
@@ -203,7 +209,7 @@ public class RepositoriesPresenterTest {
             Repository repository,
             String branch ) {
         //reproduces the initialization of the RepositoryItems performed by the view.
-        RepositoryItemPresenter itemPresenter = new RepositoryItemPresenter( itemView, guvnorStructureContext );
+        RepositoryItemPresenter itemPresenter = new RepositoryItemPresenter( itemView, guvnorStructureContext, repositoryController );
         itemPresenter.setRepository( repository, branch );
         return itemPresenter;
     }

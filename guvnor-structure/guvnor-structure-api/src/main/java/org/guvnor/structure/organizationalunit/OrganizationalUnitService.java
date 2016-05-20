@@ -25,6 +25,14 @@ public interface OrganizationalUnitService {
 
     OrganizationalUnit getOrganizationalUnit( final String name );
 
+    /**
+     * Get all the OUs. Security checks are omitted.
+     */
+    Collection<OrganizationalUnit> getAllOrganizationalUnits();
+
+    /**
+     * Get only those OUs available within the current security context.
+     */
     Collection<OrganizationalUnit> getOrganizationalUnits();
 
     OrganizationalUnit createOrganizationalUnit( final String name,

@@ -24,6 +24,7 @@
 
   <source path="model"/>
   <source path="service"/>
+  <source path="security"/>
   <source path="social"/>
 
 </module>

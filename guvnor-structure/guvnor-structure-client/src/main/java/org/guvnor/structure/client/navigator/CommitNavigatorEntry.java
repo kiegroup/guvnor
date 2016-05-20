@@ -59,14 +59,15 @@ public class CommitNavigatorEntry extends Composite {
     @UiField
     SimplePanel revertButtonContainer;
 
-    public CommitNavigatorEntry( final VersionRecord versionRecord,
+    public CommitNavigatorEntry( final boolean readOnly,
+                                 final VersionRecord versionRecord,
                                  final ParameterizedCommand<VersionRecord> onRevertCommand ) {
         initWidget( uiBinder.createAndBindUi( this ) );
-        initWidget( versionRecord,
-                    onRevertCommand );
+        initWidget( readOnly, versionRecord, onRevertCommand );
     }
 
-    private void initWidget( final VersionRecord versionRecord,
+    private void initWidget( final boolean readOnly,
+                             final VersionRecord versionRecord,
                              final ParameterizedCommand<VersionRecord> onRevertCommand ) {
         message.setText( versionRecord.comment() );
         author.setText( versionRecord.author() + " - " );
@@ -74,6 +75,7 @@ public class CommitNavigatorEntry extends Composite {
 
         if ( onRevertCommand != null ) {
             revertButtonContainer.setWidget( new Button( CoreConstants.INSTANCE.RevertToThis() ) {{
+                setEnabled( !readOnly );
                 setBlock( true );
                 setType( ButtonType.DANGER );
                 addClickHandler( new ClickHandler() {

@@ -46,6 +46,7 @@ import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 
 @Service
 @ApplicationScoped
@@ -80,9 +81,11 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     private Map<String, OrganizationalUnit> registeredOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
 
-    private
     @Inject
-    SessionInfo sessionInfo;
+    private AuthorizationManager authorizationManager;
+
+    @Inject
+    private SessionInfo sessionInfo;
 
     @PostConstruct
     public void loadOrganizationalUnits() {
@@ -107,6 +110,17 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     @Override
     public OrganizationalUnit getOrganizationalUnit( final String name ) {
         return registeredOrganizationalUnits.get( name );
+    }
+
+    @Override
+    public Collection<OrganizationalUnit> getAllOrganizationalUnits() {
+        ArrayList result = new ArrayList<>();
+        for (OrganizationalUnit ou : registeredOrganizationalUnits.values()) {
+            if (authorizationManager.authorize(ou, sessionInfo.getIdentity())) {
+                result.add(ou);
+            }
+        }
+        return result;
     }
 
     @Override

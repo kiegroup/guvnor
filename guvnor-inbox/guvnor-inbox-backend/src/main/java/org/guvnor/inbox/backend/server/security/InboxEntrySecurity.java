@@ -30,6 +30,7 @@ import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
@@ -46,6 +47,8 @@ public class InboxEntrySecurity {
 
     private OrganizationalUnitService organizationalUnitService;
 
+    private RepositoryService repositoryService;
+
     private ProjectService<? extends Project> projectService;
 
     private ConfiguredRepositories configuredRepositories;
@@ -57,19 +60,21 @@ public class InboxEntrySecurity {
     public InboxEntrySecurity( final User identity,
                                final AuthorizationManager authorizationManager,
                                final OrganizationalUnitService organizationalUnitService,
+                               final RepositoryService repositoryService,
                                final ProjectService<? extends Project> projectService,
                                final ConfiguredRepositories configuredRepositories ) {
         this.identity = identity;
         this.authorizationManager = authorizationManager;
         this.organizationalUnitService = organizationalUnitService;
         this.projectService = projectService;
+        this.repositoryService = repositoryService;
         this.configuredRepositories = configuredRepositories;
     }
 
 
     public List<InboxEntry> secure( List<InboxEntry> inboxEntries ) {
         List<InboxEntry> secureInboxEntries = new ArrayList<InboxEntry>();
-        final Set<Repository> authorizedRepositories = getAuthorizedRepositories();
+        final Collection<Repository> authorizedRepositories = getAuthorizedRepositories();
         for ( InboxEntry inboxEntry : inboxEntries ) {
             if ( canAccess( inboxEntry, authorizedRepositories ) ) {
                 secureInboxEntries.add( inboxEntry );
@@ -78,7 +83,7 @@ public class InboxEntrySecurity {
         return secureInboxEntries;
     }
 
-    private boolean canAccess( InboxEntry inboxEntry, Set<Repository> authorizedRepositories ) {
+    private boolean canAccess( InboxEntry inboxEntry, Collection<Repository> authorizedRepositories ) {
 
         final Repository inboxEntryRepository = getInboxEntryRepository( inboxEntry );
 
@@ -104,7 +109,7 @@ public class InboxEntrySecurity {
     }
 
 
-    private boolean canAccessRepository( Set<Repository> authorizedRepositories, Repository inboxEntryRepository ) {
+    private boolean canAccessRepository( Collection<Repository> authorizedRepositories, Repository inboxEntryRepository ) {
         return authorizedRepositories.contains( inboxEntryRepository );
     }
 
@@ -130,30 +135,12 @@ public class InboxEntrySecurity {
         }
     }
 
-    private Set<Repository> getAuthorizedRepositories() {
-        final Set<Repository> authorizedRepos = new HashSet<Repository>();
-        for ( OrganizationalUnit ou : getAuthorizedOrganizationUnits() ) {
-            final Collection<Repository> repositories = ou.getRepositories();
-            for ( final Repository repository : repositories ) {
-                if ( authorizationManager.authorize( repository,
-                                                     identity ) ) {
-                    authorizedRepos.add( repository );
-                }
-            }
-        }
-        return authorizedRepos;
+    private Collection<Repository> getAuthorizedRepositories() {
+        return repositoryService.getRepositories();
     }
 
     private Collection<OrganizationalUnit> getAuthorizedOrganizationUnits() {
-        final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
-        final Collection<OrganizationalUnit> authorizedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
-        for ( OrganizationalUnit ou : organizationalUnits ) {
-            if ( authorizationManager.authorize( ou,
-                                                 identity ) ) {
-                authorizedOrganizationalUnits.add( ou );
-            }
-        }
-        return authorizedOrganizationalUnits;
+        return organizationalUnitService.getOrganizationalUnits();
     }
 
 }

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.structure.client.security.RepositoryController;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryInfo;
@@ -59,6 +60,9 @@ public class RepositoryEditorPresenterTest {
     private PlaceManager placeManager;
 
     @Mock
+    private RepositoryController repositoryController;
+
+    @Mock
     private Path root;
 
     private RepositoryInfo repositoryInfo;
@@ -75,9 +79,11 @@ public class RepositoryEditorPresenterTest {
         presenter = new RepositoryEditorPresenter( view,
                                                    repositoryServiceCaller,
                                                    repositoryServiceEditorCaller,
-                                                   placeManager );
+                                                   placeManager,
+                                                   repositoryController);
 
         repositoryInfo = new RepositoryInfo( "repository",
+                                             "repository",
                                              "owner",
                                              root,
                                              new ArrayList<PublicURI>(),
@@ -106,6 +112,7 @@ public class RepositoryEditorPresenterTest {
         verify( view,
                 times( 1 ) ).setRepositoryInfo( eq( repositoryInfo.getAlias() ),
                                                 eq( repositoryInfo.getOwner() ),
+                                                eq( true ),
                                                 eq( repositoryInfo.getPublicURIs() ),
                                                 eq( CoreConstants.INSTANCE.Empty() ),
                                                 eq( repositoryInfo.getInitialVersionList() ) );

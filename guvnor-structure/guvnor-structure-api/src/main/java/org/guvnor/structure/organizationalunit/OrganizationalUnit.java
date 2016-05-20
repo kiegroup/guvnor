@@ -18,10 +18,13 @@ package org.guvnor.structure.organizationalunit;
 import java.util.Collection;
 
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.security.OrgUnitResourceType;
 import org.uberfire.commons.data.Cacheable;
 import org.uberfire.security.authz.RuntimeContentResource;
 
 public interface OrganizationalUnit extends RuntimeContentResource, Cacheable {
+
+    OrgUnitResourceType RESOURCE_TYPE = new OrgUnitResourceType();
 
     String getName();
 
@@ -31,4 +34,5 @@ public interface OrganizationalUnit extends RuntimeContentResource, Cacheable {
 
     Collection<Repository> getRepositories();
 
+    Collection<String> getGroups();
 }

@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 import org.guvnor.structure.client.editors.repository.clone.answer.OuServiceAnswer;
 import org.guvnor.structure.client.editors.repository.clone.answer.RsCreateRepositoryAnswer;
@@ -54,6 +53,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -76,6 +76,9 @@ public class CloneRepositoryPresenterTest {
 
     @Mock
     private PlaceManager placeManager;
+
+    @Mock
+    private AuthorizationManager authorizationManager;
 
     @Mock
     private RepositoryPreferences repositoryPreferences;
@@ -111,9 +114,6 @@ public class CloneRepositoryPresenterTest {
     private SessionInfo sessionInfo;
 
     @Mock
-    private KieWorkbenchACL kieACL;
-
-    @Mock
     private User user;
 
     @Captor
@@ -138,12 +138,6 @@ public class CloneRepositoryPresenterTest {
         when( user.getIdentifier() ).thenReturn( "mock-user" );
         when( user.getRoles() ).thenReturn( userRoles );
 
-        //mock the configure repository feature granted roles.
-        Set<String> grantedRoles = new HashSet<String>();
-        grantedRoles.add( "mock-role" );
-
-        when( kieACL.getGrantedRoles( "wb_configure_repository" ) ).thenReturn( grantedRoles );
-
         List<OrganizationalUnit> units = new ArrayList<OrganizationalUnit>();
         units.add( ouUnit1 );
         units.add( ouUnit2 );
@@ -164,7 +158,7 @@ public class CloneRepositoryPresenterTest {
 
         when( repositoryPreferences.isOUMandatory() ).thenReturn( false );
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, kieACL, sessionInfo );
+        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, authorizationManager, sessionInfo );
         presenter.init();
     }
 
@@ -245,7 +239,7 @@ public class CloneRepositoryPresenterTest {
         when( repoFailServiceCaller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenAnswer(
                 new RsCreateRepositoryFailAnswer( message, new RepositoryAlreadyExistsException(), repository, repoService ) );
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoFailServiceCaller, ouServiceCaller, placeManager, kieACL, sessionInfo );
+        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoFailServiceCaller, ouServiceCaller, placeManager, authorizationManager, sessionInfo );
         presenter.init();
 
         when( view.isGitUrlEmpty() ).thenReturn( false );
@@ -268,7 +262,7 @@ public class CloneRepositoryPresenterTest {
         when( repoFailServiceCaller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenAnswer(
                 new RsCreateRepositoryFailAnswer( message, exc, repository, repoService ) );
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoFailServiceCaller, ouServiceCaller, placeManager, kieACL, sessionInfo );
+        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoFailServiceCaller, ouServiceCaller, placeManager, authorizationManager, sessionInfo );
         presenter.init();
 
         presenter.handleCloneClick();
@@ -331,7 +325,7 @@ public class CloneRepositoryPresenterTest {
         when( view.getName() ).thenReturn( REPO_NAME );
         when( view.getSelectedOrganizationalUnit() ).thenReturn( "" );
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, kieACL, sessionInfo );
+        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, authorizationManager, sessionInfo );
         presenter.handleCloneClick();
 
         verify( view ).setOrganizationalUnitGroupType( ValidationState.ERROR );
@@ -347,7 +341,7 @@ public class CloneRepositoryPresenterTest {
         when( view.getName() ).thenReturn( REPO_NAME );
         when( view.getSelectedOrganizationalUnit() ).thenReturn( ORG_UNIT_ONE );
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, kieACL, sessionInfo );
+        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, authorizationManager, sessionInfo );
         presenter.handleCloneClick();
 
         verify( view ).setUrlGroupType( ValidationState.ERROR );

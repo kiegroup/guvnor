@@ -41,6 +41,14 @@ public interface RepositoryService {
 
     Repository getRepository( final Path root );
 
+    /**
+     * Get all the repositories. Security checks are omitted.
+     */
+    Collection<Repository> getAllRepositories();
+
+    /**
+     * Get only those repositories available within the current security context.
+     */
     Collection<Repository> getRepositories();
 
     Repository createRepository( final OrganizationalUnit organizationalUnit,

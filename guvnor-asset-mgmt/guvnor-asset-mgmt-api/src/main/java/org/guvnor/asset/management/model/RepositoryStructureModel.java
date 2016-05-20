@@ -115,7 +115,7 @@ public class RepositoryStructureModel {
     public POM getSingleProjectPOM() {
         Project project = getSingleProject();
         if ( project != null ) {
-            return orphanProjectsPOM.get( project.getSignatureId() );
+            return orphanProjectsPOM.get( project.getIdentifier() );
         }
         return null;
     }

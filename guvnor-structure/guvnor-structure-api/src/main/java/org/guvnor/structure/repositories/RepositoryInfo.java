@@ -25,6 +25,7 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 @Portable
 public class RepositoryInfo {
 
+    private String id;
     private String alias;
     private String owner;
     private Path root;
@@ -34,16 +35,22 @@ public class RepositoryInfo {
     public RepositoryInfo() {
     }
 
-    public RepositoryInfo( final String alias,
+    public RepositoryInfo( final String id,
+                           final String alias,
                            final String owner,
                            final Path root,
                            final List<PublicURI> publicURIs,
                            final List<VersionRecord> versionList ) {
+        this.id = id;
         this.alias = alias;
         this.owner = owner;
         this.root = root;
         this.publicURIs = publicURIs;
         this.versionList = versionList;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public List<PublicURI> getPublicURIs() {

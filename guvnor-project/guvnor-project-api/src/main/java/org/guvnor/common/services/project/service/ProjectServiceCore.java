@@ -29,7 +29,16 @@ public interface ProjectServiceCore<T> {
     WorkingSetSettings loadWorkingSetConfig( final Path project );
 
     /**
-     * Gets a list of the  projects in a particular repository
+     * Gets all the project from a given repository. Security checks are omitted.
+     * @param repository
+     * @param branch the branch where we are looking for the projects
+     * @return
+     */
+    Set<Project> getAllProjects( final Repository repository,
+                              final String branch );
+
+    /**
+     * Gets a list of the projects in a particular repository. Security checks are applied.
      * @param repository
      * @param branch the branch where we are looking for the projects
      * @return

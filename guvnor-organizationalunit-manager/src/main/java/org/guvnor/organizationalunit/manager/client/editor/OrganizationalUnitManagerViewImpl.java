@@ -115,8 +115,6 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
                 }
                 final OrganizationalUnit selectedOrganizationalUnit = sortedOrganizationalUnits.get( selectedOrganizationalUnitIndex );
                 presenter.organizationalUnitSelected( selectedOrganizationalUnit );
-                btnDeleteOrganizationalUnit.setEnabled( true );
-                btnEditOrganizationalUnit.setEnabled( true );
                 btnAddRepository.setEnabled( false );
                 btnRemoveRepository.setEnabled( false );
             }
@@ -178,8 +176,6 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
         if ( sortedOrganizationalUnits.contains( selectedOrganizationalUnit ) ) {
             lstOrganizationalUnits.setSelectedIndex( sortedOrganizationalUnits.indexOf( selectedOrganizationalUnit ) );
             presenter.organizationalUnitSelected( selectedOrganizationalUnit );
-            btnDeleteOrganizationalUnit.setEnabled( true );
-            btnEditOrganizationalUnit.setEnabled( true );
 
         } else {
             lstOrganizationalUnitRepositories.clear();
@@ -239,9 +235,6 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
             lstAvailableRepositories.setEnabled( false );
             lstAvailableRepositories.addItem( OrganizationalUnitManagerConstants.INSTANCE.NoRepositoriesAvailable() );
         }
-
-        btnAddRepository.setEnabled( false );
-        btnRemoveRepository.setEnabled( false );
     }
 
     private List<Repository> sortRepositories( final Collection<Repository> repositories ) {
@@ -280,6 +273,23 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
     @Override
     public void hideBusyIndicator() {
         BusyPopup.close();
+    }
+
+    @Override
+    public void setAddOrganizationalUnitEnabled(boolean enabled) {
+        btnAddOrganizationalUnit.setEnabled(enabled);
+    }
+
+    @Override
+    public void setEditOrganizationalUnitEnabled(boolean enabled) {
+        btnEditOrganizationalUnit.setEnabled(enabled);
+        btnAddRepository.setEnabled(enabled);
+        btnRemoveRepository.setEnabled(enabled);
+    }
+
+    @Override
+    public void setDeleteOrganizationalUnitEnabled(boolean enabled) {
+        btnDeleteOrganizationalUnit.setEnabled(enabled);
     }
 
     @UiHandler("btnAddOrganizationalUnit")

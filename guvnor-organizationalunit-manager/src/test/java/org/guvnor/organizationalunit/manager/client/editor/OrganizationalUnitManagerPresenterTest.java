@@ -17,11 +17,13 @@ package org.guvnor.organizationalunit.manager.client.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.organizationalunit.manager.client.editor.popups.AddOrganizationalUnitPopup;
 import org.guvnor.organizationalunit.manager.client.editor.popups.EditOrganizationalUnitPopup;
+import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -52,15 +54,21 @@ public class OrganizationalUnitManagerPresenterTest {
     @Mock
     private EventSourceMock<AfterDeleteOrganizationalUnitEvent> deleteOUEvent;
 
+    @Mock
+    private OrganizationalUnitController organizationalUnitController;
+
+    @Mock
+    private OrganizationalUnit organizationalUnitA;
+
     private OrganizationalUnitManagerView view = mock( OrganizationalUnitManagerView.class );
-
     private OrganizationalUnitService mockOUService = mock( OrganizationalUnitService.class );
-    private Caller<OrganizationalUnitService> organizationalUnitService = new CallerMock<OrganizationalUnitService>( mockOUService );
 
+    private Caller<OrganizationalUnitService> organizationalUnitService = new CallerMock<OrganizationalUnitService>( mockOUService );
     private RepositoryService mockRepositoryService = mock( RepositoryService.class );
+
     private Caller<RepositoryService> repositoryService = new CallerMock<RepositoryService>( mockRepositoryService );
 
-    private OrganizationalUnitManagerPresenter presenter;
+    private OrganizationalUnitManagerPresenterImpl presenter;
 
     private OrganizationalUnit mockOU = mock( OrganizationalUnit.class );
 
@@ -70,6 +78,7 @@ public class OrganizationalUnitManagerPresenterTest {
         presenter = new OrganizationalUnitManagerPresenterImpl( view,
                                                                 organizationalUnitService,
                                                                 repositoryService,
+                                                                organizationalUnitController,
                                                                 addOrganizationalUnitPopup,
                                                                 editOrganizationalUnitPopup,
                                                                 createOUEvent,
@@ -80,13 +89,38 @@ public class OrganizationalUnitManagerPresenterTest {
         when( mockOU.getDefaultGroupId() ).thenReturn( "mock" );
 
         when( mockOUService.getOrganizationalUnits() ).thenReturn( new ArrayList<OrganizationalUnit>() );
+        when( mockOUService.getOrganizationalUnit( anyString() ) ).thenReturn( organizationalUnitA );
 
         when( mockOUService.createOrganizationalUnit( any( String.class ),
                                                       any( String.class ),
                                                       any( String.class ),
                                                       any( Collection.class ) ) ).thenReturn( mockOU );
 
+
+        when(organizationalUnitController.canCreateOrgUnits()).thenReturn(false);
+        when(organizationalUnitController.canUpdateOrgUnit(organizationalUnitA)).thenReturn(true);
+        when(organizationalUnitController.canDeleteOrgUnit(organizationalUnitA)).thenReturn(true);
+        when(organizationalUnitA.getRepositories()).thenReturn(Collections.EMPTY_LIST);
+
         presenter.loadOrganizationalUnits();
+    }
+
+    @Test
+    public void testOnStartup() {
+        presenter.onStartup();
+
+        verify(view).setAddOrganizationalUnitEnabled(false);
+        verify(view).setDeleteOrganizationalUnitEnabled(false);
+        verify(view).setDeleteOrganizationalUnitEnabled(false);
+    }
+
+    @Test
+    public void testSelectOrgUnit() {
+        presenter.onStartup();
+        presenter.organizationalUnitSelected(organizationalUnitA);
+
+        verify(view).setDeleteOrganizationalUnitEnabled(true);
+        verify(view).setDeleteOrganizationalUnitEnabled(true);
     }
 
     @Test
@@ -106,5 +140,4 @@ public class OrganizationalUnitManagerPresenterTest {
         verify( deleteOUEvent,
                 times( 1 ) ).fire( any( AfterDeleteOrganizationalUnitEvent.class ) );
     }
-
 }

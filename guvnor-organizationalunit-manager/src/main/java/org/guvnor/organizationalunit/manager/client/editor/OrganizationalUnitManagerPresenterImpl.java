@@ -27,6 +27,7 @@ import com.google.gwt.user.client.Command;
 import org.guvnor.organizationalunit.manager.client.editor.popups.AddOrganizationalUnitPopup;
 import org.guvnor.organizationalunit.manager.client.editor.popups.EditOrganizationalUnitPopup;
 import org.guvnor.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
+import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
@@ -46,6 +47,9 @@ import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.security.annotations.ResourceCheck;
+
+import static org.guvnor.structure.client.security.OrganizationalUnitController.*;
 
 @ApplicationScoped
 //The identifier has been preserved from kie-wb-common so existing .niogit System repositories are not broken
@@ -70,6 +74,8 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
 
     private Collection<OrganizationalUnit> allOrganizationalUnits;
 
+    private OrganizationalUnitController controller;
+
     public OrganizationalUnitManagerPresenterImpl() {
         //For CDI proxying
     }
@@ -78,6 +84,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     public OrganizationalUnitManagerPresenterImpl( final OrganizationalUnitManagerView view,
                                                    final Caller<OrganizationalUnitService> organizationalUnitService,
                                                    final Caller<RepositoryService> repositoryService,
+                                                   final OrganizationalUnitController organizationalUnitController,
                                                    final AddOrganizationalUnitPopup addOrganizationalUnitPopup,
                                                    final EditOrganizationalUnitPopup editOrganizationalUnitPopup,
                                                    final Event<AfterCreateOrganizationalUnitEvent> createOUEvent,
@@ -88,6 +95,8 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
                                                                              organizationalUnitService );
         this.repositoryService = PortablePreconditions.checkNotNull( "repositoryService",
                                                                      repositoryService );
+        this.controller= PortablePreconditions.checkNotNull( "organizationalUnitController",
+                                                                     organizationalUnitController );
         this.addOrganizationalUnitPopup = PortablePreconditions.checkNotNull( "addOrganizationalUnitPopup",
                                                                               addOrganizationalUnitPopup );
         this.editOrganizationalUnitPopup = PortablePreconditions.checkNotNull( "editOrganizationalUnitPopup",
@@ -108,6 +117,10 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     public void onStartup() {
         view.reset();
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
+        view.setAddOrganizationalUnitEnabled(controller.canCreateOrgUnits());
+        view.setEditOrganizationalUnitEnabled(false);
+        view.setDeleteOrganizationalUnitEnabled(false);
+
         repositoryService.call( new RemoteCallback<Collection<Repository>>() {
                                     @Override
                                     public void callback( final Collection<Repository> repositories ) {
@@ -116,6 +129,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
                                     }
                                 },
                                 new HasBusyIndicatorDefaultErrorCallback( view ) ).getRepositories();
+
     }
 
     @OnOpen
@@ -133,6 +147,16 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         return view;
     }
 
+    private Collection<Repository> getAllowedRepositories(Collection<Repository> repositories) {
+        Collection<Repository> available = new ArrayList<>();
+        for (Repository repo : repositories) {
+            if (controller.canReadRepository(repo)) {
+                available.add(repo);
+            }
+        }
+        return available;
+    }
+
     @Override
     public void loadOrganizationalUnits() {
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
@@ -148,14 +172,17 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     }
 
     @Override
+    @ResourceCheck(action=ORG_UNIT_READ)
     public void organizationalUnitSelected( final OrganizationalUnit organizationalUnit ) {
         //Reload rather than using cached Object as it could have been changed server-side (adding/deleting Repositories)
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
         organizationalUnitService.call( new RemoteCallback<OrganizationalUnit>() {
                                             @Override
                                             public void callback( final OrganizationalUnit organizationalUnit ) {
-                                                view.setOrganizationalUnitRepositories( organizationalUnit.getRepositories(),
-                                                                                        getAvailableRepositories() );
+                                                Collection<Repository> onlyAllowed = getAllowedRepositories(organizationalUnit.getRepositories());
+                                                view.setOrganizationalUnitRepositories(onlyAllowed, getAvailableRepositories());
+                                                view.setEditOrganizationalUnitEnabled(controller.canUpdateOrgUnit(organizationalUnit));
+                                                view.setDeleteOrganizationalUnitEnabled(controller.canDeleteOrgUnit(organizationalUnit));
                                                 view.hideBusyIndicator();
                                             }
                                         },
@@ -172,6 +199,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     }
 
     @Override
+    @ResourceCheck(type=ORG_UNIT_TYPE, action=ORG_UNIT_CREATE)
     public void addNewOrganizationalUnit() {
         addOrganizationalUnitPopup.show();
     }
@@ -195,6 +223,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     }
 
     @Override
+    @ResourceCheck(type=ORG_UNIT_TYPE, action=ORG_UNIT_CREATE)
     public void createNewOrganizationalUnit( final String organizationalUnitName,
                                              final String organizationalUnitOwner,
                                              final String defaultGroupId ) {
@@ -217,12 +246,14 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     }
 
     @Override
+    @ResourceCheck(action=ORG_UNIT_UPDATE)
     public void editOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
         editOrganizationalUnitPopup.setOrganizationalUnit( organizationalUnit );
         editOrganizationalUnitPopup.show();
     }
 
     @Override
+    @ResourceCheck(type=ORG_UNIT_TYPE, action=ORG_UNIT_UPDATE)
     public void saveOrganizationalUnit( final String organizationalUnitName,
                                         final String organizationalUnitOwner,
                                         final String defaultGroupId ) {
@@ -240,6 +271,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     }
 
     @Override
+    @ResourceCheck(action=ORG_UNIT_DELETE)
     public void deleteOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
         organizationalUnitService.call( new RemoteCallback<Void>() {
@@ -255,6 +287,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     }
 
     @Override
+    @ResourceCheck(action=ORG_UNIT_UPDATE)
     public void addOrganizationalUnitRepository( final OrganizationalUnit organizationalUnit,
                                                  final Repository repository ) {
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );
@@ -272,6 +305,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     }
 
     @Override
+    @ResourceCheck(action= ORG_UNIT_UPDATE)
     public void removeOrganizationalUnitRepository( final OrganizationalUnit organizationalUnit,
                                                     final Repository repository ) {
         view.showBusyIndicator( OrganizationalUnitManagerConstants.INSTANCE.Wait() );

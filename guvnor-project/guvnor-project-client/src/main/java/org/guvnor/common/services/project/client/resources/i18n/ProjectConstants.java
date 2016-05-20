@@ -97,4 +97,17 @@ public interface ProjectConstants
 
     String RepositorySourceUnknown();
 
+    String ProjectsNode();
+
+    String ProjectResource();
+
+    String ProjectActionRead();
+
+    String ProjectActionUpdate();
+
+    String ProjectActionDelete();
+
+    String ProjectActionCreate();
+
+    String ProjectActionBuild();
 }

@@ -27,6 +27,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.editors.repository.common.CopyRepositoryUrlBtn;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.html.Paragraph;
@@ -57,6 +58,12 @@ public class RepositoryItemViewImpl
 
     @UiField
     public Select branchesDropdown;
+
+    @UiField
+    public Button btnChangeBranch;
+
+    @UiField
+    public Button btnRemoveRepository;
 
     private RepositoryItemPresenter presenter;
 
@@ -139,6 +146,16 @@ public class RepositoryItemViewImpl
     @Override
     public String getSelectedBranch() {
         return branchesDropdown.getValue();
+    }
+
+    @Override
+    public void setUpdateEnabled(boolean enabled) {
+        btnChangeBranch.setEnabled(enabled);
+    }
+
+    @Override
+    public void setDeleteEnabled(boolean enabled) {
+        btnRemoveRepository.setEnabled(enabled);
     }
 
     @Override

@@ -23,7 +23,7 @@ public interface CommonConstants
         extends
         Messages {
 
-    public static final CommonConstants INSTANCE = GWT.create(CommonConstants.class);
+    CommonConstants INSTANCE = GWT.create(CommonConstants.class);
 
     String IndexClonedRepositoryWarning();
 
@@ -32,4 +32,28 @@ public interface CommonConstants
     String ManagedRepository();
 
     String RepoCloneFail();
+
+    String RepositoriesNode();
+
+    String RepositoryResource();
+
+    String RepositoryActionRead();
+
+    String RepositoryActionUpdate();
+
+    String RepositoryActionDelete();
+
+    String RepositoryActionCreate();
+
+    String OrganizationalUnitsNode();
+
+    String OrganizationalUnitResource();
+
+    String OrganizationalUnitActionRead();
+
+    String OrganizationalUnitActionUpdate();
+
+    String OrganizationalUnitActionDelete();
+
+    String OrganizationalUnitActionCreate();
 }

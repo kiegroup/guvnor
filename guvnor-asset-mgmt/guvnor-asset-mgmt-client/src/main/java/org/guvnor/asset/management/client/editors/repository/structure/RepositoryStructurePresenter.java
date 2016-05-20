@@ -79,7 +79,6 @@ public class RepositoryStructurePresenter
 
     private Caller<RepositoryStructureService> repositoryStructureService;
 
-
     private Event<ProjectContextChangeEvent> contextChangeEvent;
 
     private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
@@ -280,7 +279,7 @@ public class RepositoryStructurePresenter
 
         } else if ( model.isSingleProject() ) {
             final Project project = model.getOrphanProjects().get( 0 );
-            final POM pom = model.getOrphanProjectsPOM().get( project.getSignatureId() );
+            final POM pom = model.getOrphanProjectsPOM().get( project.getIdentifier() );
             if ( pom != null ) {
                 if ( pom.getGav() != null ) {
                     view.setDataPresenterModel( pom.getGav() );
@@ -460,7 +459,7 @@ public class RepositoryStructurePresenter
                                              public void callback( POM _pom ) {
                                                  view.hideBusyIndicator();
                                                  model.getOrphanProjects().add( _project );
-                                                 model.getOrphanProjectsPOM().put( _project.getSignatureId(),
+                                                 model.getOrphanProjectsPOM().put( _project.getIdentifier(),
                                                                                    _pom );
                                                  addToModulesList( _project );
                                              }
@@ -536,7 +535,7 @@ public class RepositoryStructurePresenter
 
                     } else {
                         model.getOrphanProjects().remove( _project );
-                        model.getOrphanProjectsPOM().remove( _project.getSignatureId() );
+                        model.getOrphanProjectsPOM().remove( _project.getIdentifier() );
                         removeFromModulesList( _project.getProjectName() );
                     }
                 }
