@@ -25,6 +25,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -203,7 +204,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             return repository;
         } catch ( final Exception e ) {
             logger.error( "Error during create repository", e );
-            throw new RuntimeException( e );
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
@@ -280,7 +281,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             return repo;
         } catch ( final Exception e ) {
             logger.error( "Error during create repository", e );
-            throw new RuntimeException( e );
+            throw ExceptionUtilities.handleException( e );
         } finally {
             configurationService.endBatch();
             if ( repo != null ) {

@@ -341,7 +341,7 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
 
     @Override
     public void errorCloneRepositoryFail( final Throwable cause ) {
-        ErrorPopup.showMessage( CoreConstants.INSTANCE.RepoCloneFail() + " \n" + cause.getMessage() );
+        ErrorPopup.showMessage( CommonConstants.INSTANCE.RepoCloneFail() + " \n" + cause.getMessage() );
     }
 
     @Override
