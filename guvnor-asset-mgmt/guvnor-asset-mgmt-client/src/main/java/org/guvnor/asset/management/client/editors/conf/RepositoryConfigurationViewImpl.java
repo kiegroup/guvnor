@@ -115,33 +115,17 @@ public class RepositoryConfigurationViewImpl extends Composite implements Reposi
     }
 
     @Override
-    public Button getConfigureButton() {
-        return configureButton;
-    }
-
-    @Override
-    public TextBox getReleaseBranchText() {
-        return releaseBranchText;
-    }
-
-    @Override
-    public TextBox getDevBranchText() {
-        return devBranchText;
-    }
-
-    @Override
     public ListBox getChooseRepositoryBox() {
         return chooseRepositoryBox;
     }
 
     @Override
-    public TextBox getCurrentVersionText() {
-        return currentVersionText;
+    public void setCurrentVersionText( final String text ) {
+        currentVersionText.setText( text );
     }
 
     @Override
-    public TextBox getVersionText() {
-        return versionText;
+    public void setVersionText( final String text ) {
+        versionText.setText( text );
     }
-
 }

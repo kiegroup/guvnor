@@ -139,4 +139,8 @@ public class RepositoryStructureModel {
     public void setOrphanProjectsPOM( Map<String, POM> orphanProjectsPOM ) {
         this.orphanProjectsPOM = orphanProjectsPOM;
     }
+
+    public POM getActivePom() {
+        return isMultiModule() ? getPOM() : getSingleProjectPOM();
+    }
 }

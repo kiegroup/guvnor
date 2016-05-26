@@ -17,7 +17,8 @@ package org.guvnor.asset.management.client.editors.project.structure.widgets;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface RepositoryStructureDataView extends IsWidget {
+public interface RepositoryStructureDataView
+        extends IsWidget {
 
     enum ViewMode {
         CREATE_STRUCTURE,
@@ -30,16 +31,7 @@ public interface RepositoryStructureDataView extends IsWidget {
 
         void onInitRepositoryStructure();
 
-        void onSaveRepositoryStructure();
-
-        void onConvertToMultiModule();
-
-        void onOpenSingleProject();
     }
-
-    void setMode( final ViewMode mode );
-
-    void setPresenter( final Presenter presenter );
 
     void setGroupId( final String id );
 
@@ -52,6 +44,16 @@ public interface RepositoryStructureDataView extends IsWidget {
     void setVersion( final String version );
 
     String getVersion();
+
+    void setEditUnmanagedRepositoryText();
+
+    void setEditModuleVisibility( final boolean visible );
+
+    void setEditMultiModuleProjectText();
+
+    void setEditSingleModuleProjectText();
+
+    void setCreateStructureText();
 
     void clear();
 

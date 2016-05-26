@@ -180,13 +180,13 @@ public class ReleaseConfigurationViewImpl extends Composite implements ReleaseCo
     }
 
     @Override
-    public TextBox getCurrentVersionText() {
-        return currentVersionText;
+    public void setCurrentVersionText( final String text ) {
+        currentVersionText.setText( text );
     }
 
     @Override
-    public TextBox getVersionText() {
-        return versionText;
+    public void setVersionText( final String text ) {
+        versionText.setText( text );
     }
 
 }

@@ -54,11 +54,12 @@ public class ReleaseConfigurationPresenter
 
         ListBox getChooseBranchBox();
 
-        TextBox getCurrentVersionText();
-
-        TextBox getVersionText();
-
         void showHideDeployToRuntimeSection( boolean show );
+
+        void setCurrentVersionText( final String text );
+
+        void setVersionText( final String text );
+
     }
 
     @Inject
@@ -145,29 +146,38 @@ public class ReleaseConfigurationPresenter
         if ( !repositoryAlias.equals( constants.Select_Repository() ) ) {
             Repository repository = getRepository( repositoryAlias );
             if ( repository != null ) {
-                repositoryStructureServices.call( new RemoteCallback<RepositoryStructureModel>() {
-                    @Override
-                    public void callback( RepositoryStructureModel model ) {
-
-                        POM pom = null;
-                        if ( model != null && ( model.isSingleProject() || model.isMultiModule() ) ) {
-                            pom = model.isMultiModule() ? model.getPOM() : model.getSingleProjectPOM();
-                        }
-
-                        if ( pom != null ) {
-                            // don't include snapshot for branch names
-                            view.getCurrentVersionText().setText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
-                            view.getVersionText().setText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
-
-                        } else {
-                            view.getCurrentVersionText().setText( constants.No_Project_Structure_Available() );
-                            view.getVersionText().setText( "1.0.0" );
-                        }
-                    }
-                } ).load( repository,
-                          repository.getDefaultBranch() );
+                load( repository );
                 return;
             }
+        }
+    }
+
+    private void load( final Repository repository ) {
+        repositoryStructureServices.call( new RemoteCallback<RepositoryStructureModel>() {
+            @Override
+            public void callback( RepositoryStructureModel model ) {
+
+                final POM pom = getPom( model );
+
+                if ( pom != null ) {
+                    // don't include snapshot for branch names
+                    view.setCurrentVersionText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
+                    view.setVersionText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
+
+                } else {
+                    view.setCurrentVersionText( constants.No_Project_Structure_Available() );
+                    view.setVersionText( "1.0.0" );
+                }
+            }
+        } ).load( repository,
+                  repository.getDefaultBranch() );
+    }
+
+    private POM getPom( final RepositoryStructureModel model ) {
+        if ( model != null && (model.isSingleProject() || model.isMultiModule()) ) {
+            return model.getActivePom();
+        } else {
+            return null;
         }
     }
 

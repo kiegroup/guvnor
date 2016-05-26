@@ -17,6 +17,7 @@
 package org.guvnor.asset.management.client.editors.repository.structure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.event.Event;
@@ -26,7 +27,6 @@ import org.guvnor.asset.management.client.editors.project.structure.widgets.Proj
 import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataView;
 import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
-import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.context.ProjectContext;
@@ -40,7 +40,6 @@ import org.guvnor.common.services.project.model.ProjectWizard;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.shared.security.impl.KieWorkbenchACLImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
@@ -55,8 +54,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
@@ -72,9 +69,6 @@ public class RepositoryStructurePresenterTest {
     private RepositoryStructureView view;
 
     @Mock
-    private RepositoryStructureDataView dataView;
-
-    @Mock
     private ProjectModulesView modulesView;
 
     @Mock
@@ -82,16 +76,6 @@ public class RepositoryStructurePresenterTest {
 
     @Mock
     private RepositoryStructureService repositoryStructureService;
-
-    @Mock
-    private AssetManagementService assetManagementService;
-
-    private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent = new EventSourceMock<ChangeTitleWidgetEvent>() {
-        @Override
-        public void fire( ChangeTitleWidgetEvent event ) {
-            //Do nothing. Default implementation throws an Exception
-        }
-    };
 
     private Event<ProjectContextChangeEvent> contextChangeEvent = new EventSourceMock<ProjectContextChangeEvent>() {
         @Override
@@ -101,13 +85,7 @@ public class RepositoryStructurePresenterTest {
     };
 
     @Mock
-    private ErrorPopupPresenter errorPopup;
-
-    @Mock
     private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
-
-    @Mock
-    private KieWorkbenchACLImpl kieACL;
 
     @Mock
     private PlaceManager placeManager;
@@ -131,25 +109,25 @@ public class RepositoryStructurePresenterTest {
 
     @Before
     public void setup() {
+
+        when( project.getSignatureId() ).thenReturn( "id" );
+
         final Caller<POMService> pomServiceCaller = new CallerMock<POMService>( pomService );
         final Caller<RepositoryStructureService> repositoryStructureServiceCaller = new CallerMock<RepositoryStructureService>( repositoryStructureService );
-        final Caller<AssetManagementService> assetManagementServiceCaller = new CallerMock<AssetManagementService>( assetManagementService );
 
-        when( view.getDataView() ).thenReturn( dataView );
         when( view.getModulesView() ).thenReturn( modulesView );
 
         presenter = new RepositoryStructurePresenter( view,
                                                       pomServiceCaller,
                                                       repositoryStructureServiceCaller,
-                                                      assetManagementServiceCaller,
-                                                      changeTitleWidgetEvent,
+                                                      mock( RepositoryStructureTitle.class ),
                                                       contextChangeEvent,
-                                                      errorPopup,
                                                       conflictingRepositoriesPopup,
-                                                      kieACL,
+                                                      mock( RepositoryStructureMenu.class ),
                                                       placeManager,
                                                       workbenchContext,
-                                                      wizard ) {
+                                                      wizard,
+                                                      mock( RepositoryManagedStatusUpdater.class ) ) {
             @Override
             ObservablePath createObservablePath( final Path path ) {
                 return new ObservablePathImpl().wrap( path );
@@ -171,8 +149,8 @@ public class RepositoryStructurePresenterTest {
 
         verify( view,
                 times( 1 ) ).setModulesViewVisible( eq( false ) );
-        verify( dataView,
-                times( 1 ) ).clear();
+        verify( view,
+                times( 1 ) ).clearDataView();
         verify( modulesView,
                 times( 1 ) ).enableActions( eq( true ) );
     }
@@ -187,8 +165,8 @@ public class RepositoryStructurePresenterTest {
 
         verify( view,
                 times( 1 ) ).setModulesViewVisible( eq( false ) );
-        verify( dataView,
-                times( 1 ) ).clear();
+        verify( view,
+                times( 1 ) ).clearDataView();
         verify( modulesView,
                 times( 1 ) ).enableActions( eq( true ) );
     }
@@ -209,8 +187,8 @@ public class RepositoryStructurePresenterTest {
 
         verify( view,
                 times( 1 ) ).setModulesViewVisible( eq( false ) );
-        verify( dataView,
-                times( 1 ) ).clear();
+        verify( view,
+                times( 1 ) ).clearDataView();
         verify( modulesView,
                 times( 1 ) ).enableActions( eq( true ) );
         verify( view,
@@ -230,6 +208,14 @@ public class RepositoryStructurePresenterTest {
         model.setOrphanProjects( new ArrayList<Project>() {{
             add( project );
         }} );
+        model.setOrphanProjectsPOM( new HashMap<String, POM>() {
+            {
+                put( project.getSignatureId(), new POM( new GAV( "groupId",
+                                                                 "artifactId",
+                                                                 "version" ) ) );
+            }
+        } );
+
         when( repositoryStructureService.load( eq( repository ),
                                                anyString() ) ).thenReturn( model );
 
@@ -237,8 +223,8 @@ public class RepositoryStructurePresenterTest {
 
         presenter.onStartup( placeRequest );
 
-        verify( dataView,
-                times( 1 ) ).clear();
+        verify( view,
+                times( 1 ) ).clearDataView();
         verify( modulesView,
                 times( 1 ) ).enableActions( eq( true ) );
         verify( view,
@@ -246,12 +232,12 @@ public class RepositoryStructurePresenterTest {
         verify( view,
                 times( 1 ) ).hideBusyIndicator();
 
-        verify( dataView,
-                times( 1 ) ).setMode( eq( RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT ) );
+        verify( view,
+                times( 1 ) ).setDataPresenterMode( eq( RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT ) );
         verify( modulesView,
                 times( 1 ) ).setMode( eq( ProjectModulesView.ViewMode.PROJECTS_VIEW ) );
         verify( view,
-                times( 1 ) ).setModel( eq( model ) );
+                times( 1 ) ).setDataPresenterModel( any( GAV.class ) );
         verify( view,
                 times( 1 ) ).setModulesViewVisible( eq( false ) );
     }
@@ -266,6 +252,7 @@ public class RepositoryStructurePresenterTest {
         final POM pom = new POM( new GAV( "groupId",
                                           "artifactId",
                                           "version" ) );
+        model.setPathToPOM( mock( Path.class ) );
         model.setManaged( true );
         model.setPOM( pom );
         when( repositoryStructureService.load( eq( repository ),
@@ -275,8 +262,8 @@ public class RepositoryStructurePresenterTest {
 
         presenter.onStartup( placeRequest );
 
-        verify( dataView,
-                times( 1 ) ).clear();
+        verify( view,
+                times( 1 ) ).clearDataView();
         verify( modulesView,
                 times( 1 ) ).enableActions( eq( true ) );
         verify( view,
@@ -284,12 +271,12 @@ public class RepositoryStructurePresenterTest {
         verify( view,
                 times( 1 ) ).hideBusyIndicator();
 
-        verify( dataView,
-                times( 1 ) ).setMode( eq( RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT ) );
+        verify( view,
+                times( 1 ) ).setDataPresenterMode( eq( RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT ) );
         verify( modulesView,
                 times( 1 ) ).setMode( eq( ProjectModulesView.ViewMode.MODULES_VIEW ) );
         verify( view,
-                times( 1 ) ).setModel( eq( model ) );
+                times( 1 ) ).setDataPresenterModel( eq( pom.getGav() ) );
         verify( view,
                 times( 1 ) ).setModulesViewVisible( eq( true ) );
     }
@@ -452,6 +439,13 @@ public class RepositoryStructurePresenterTest {
         model.setOrphanProjects( new ArrayList<Project>() {{
             add( project );
         }} );
+        model.setOrphanProjectsPOM( new HashMap<String, POM>() {
+            {
+                put( project.getSignatureId(), new POM( new GAV( "groupId",
+                                                                 "artifactId",
+                                                                 "version" ) ) );
+            }
+        } );
         when( repositoryStructureService.load( eq( repository ),
                                                anyString() ) ).thenReturn( model );
 
@@ -492,9 +486,7 @@ public class RepositoryStructurePresenterTest {
         when( repositoryStructureService.load( eq( repository ),
                                                anyString() ) ).thenReturn( model );
 
-        when( dataView.getGroupId() ).thenReturn( "groupId" );
-        when( dataView.getArtifactId() ).thenReturn( "artifactId" );
-        when( dataView.getVersion() ).thenReturn( "version" );
+        when( view.getDataPresenterGav() ).thenReturn( new GAV( "groupId", "artifactId", "version" ) );
 
         final PlaceRequest placeRequest = mock( PlaceRequest.class );
 
