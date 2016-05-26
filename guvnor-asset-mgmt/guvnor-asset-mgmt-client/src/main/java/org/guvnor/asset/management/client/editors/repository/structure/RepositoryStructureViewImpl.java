@@ -24,13 +24,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.client.editors.project.structure.widgets.ProjectModulesView;
+import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataPresenter;
 import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataView;
 import org.guvnor.asset.management.client.editors.repository.structure.configure.ConfigureScreenPopupViewImpl;
 import org.guvnor.asset.management.client.editors.repository.structure.promote.PromoteScreenPopupViewImpl;
 import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupViewImpl;
-import org.guvnor.asset.management.model.RepositoryStructureModel;
-import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.GAV;
 import org.gwtbootstrap3.client.ui.Row;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
@@ -52,13 +51,13 @@ public class RepositoryStructureViewImpl
     @UiField
     Row dataViewContainer;
 
-    @UiField(provided = true)
-    RepositoryStructureDataView dataView;
+    @UiField( provided = true )
+    RepositoryStructureDataPresenter dataPresenter;
 
     @UiField
     Row modulesViewContainer;
 
-    @UiField(provided = true)
+    @UiField( provided = true )
     ProjectModulesView modulesView;
 
     @Inject
@@ -71,9 +70,9 @@ public class RepositoryStructureViewImpl
     PromoteScreenPopupViewImpl promoteScreenPopupView;
 
     @Inject
-    public RepositoryStructureViewImpl( final RepositoryStructureDataView dataView,
+    public RepositoryStructureViewImpl( final RepositoryStructureDataPresenter dataPresenter,
                                         final ProjectModulesView modulesView ) {
-        this.dataView = dataView;
+        this.dataPresenter = dataPresenter;
         this.modulesView = modulesView;
         initWidget( uiBinder.createAndBindUi( this ) );
     }
@@ -108,8 +107,8 @@ public class RepositoryStructureViewImpl
     }
 
     @Override
-    public RepositoryStructureDataView getDataView() {
-        return dataView;
+    public void clearDataView() {
+        dataPresenter.clear();
     }
 
     @Override
@@ -123,30 +122,22 @@ public class RepositoryStructureViewImpl
     }
 
     @Override
-    public void setModel( final RepositoryStructureModel model ) {
-        if ( model == null ) {
-            return;
-        }
+    public void setDataPresenterModel( final GAV gav ) {
+        dataPresenter.setGav( gav );
+    }
 
-        if ( model.getPathToPOM() != null ) {
-            getDataView().setGroupId( model.getPOM().getGav().getGroupId() );
-            getDataView().setArtifactId( model.getPOM().getGav().getArtifactId() );
-            getDataView().setVersion( model.getPOM().getGav().getVersion() );
-
-        } else if ( model.isSingleProject() ) {
-            Project project = model.getOrphanProjects().get( 0 );
-            POM pom = model.getOrphanProjectsPOM().get( project.getSignatureId() );
-            if ( pom != null && pom.getGav() != null ) {
-                getDataView().setGroupId( pom.getGav().getGroupId() );
-                getDataView().setArtifactId( pom.getGav().getArtifactId() );
-                getDataView().setVersion( pom.getGav().getVersion() );
-            }
-        }
+    @Override
+    public GAV getDataPresenterGav() {
+        return dataPresenter.getGav();
     }
 
     @Override
     public void clear() {
-        getDataView().clear();
+        dataPresenter.clear();
     }
 
+    @Override
+    public void setDataPresenterMode( final RepositoryStructureDataView.ViewMode mode ) {
+        dataPresenter.setMode( mode );
+    }
 }

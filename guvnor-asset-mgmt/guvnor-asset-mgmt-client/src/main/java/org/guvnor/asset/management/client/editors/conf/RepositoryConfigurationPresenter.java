@@ -25,8 +25,6 @@ import org.guvnor.asset.management.client.editors.common.BaseAssetsMgmtView;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.structure.repositories.Repository;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -45,17 +43,13 @@ import org.uberfire.mvp.PlaceRequest;
 public class RepositoryConfigurationPresenter
         extends BaseAssetsMgmtPresenter {
 
-    public interface RepositoryConfigurationView extends UberView<RepositoryConfigurationPresenter>, BaseAssetsMgmtView {
+    public interface RepositoryConfigurationView
+            extends UberView<RepositoryConfigurationPresenter>,
+                    BaseAssetsMgmtView {
 
-        Button getConfigureButton();
+        void setCurrentVersionText( final String text );
 
-        TextBox getReleaseBranchText();
-
-        TextBox getDevBranchText();
-
-        TextBox getCurrentVersionText();
-
-        TextBox getVersionText();
+        void setVersionText( final String text );
 
     }
 
@@ -95,30 +89,38 @@ public class RepositoryConfigurationPresenter
         if ( !repositoryAlias.equals( constants.Select_Repository() ) ) {
             for ( Repository repository : getRepositories() ) {
                 if ( ( repository.getAlias() ).equals( repositoryAlias ) ) {
-                    repositoryStructureServices.call(new RemoteCallback<RepositoryStructureModel>() {
-                        @Override
-                        public void callback( RepositoryStructureModel model ) {
-                            POM pom = null;
-                            if ( model != null && ( model.isSingleProject() || model.isMultiModule() ) ) {
-                                pom = model.isMultiModule() ? model.getPOM() : model.getSingleProjectPOM();
-                            }
-
-                            if ( pom != null ) {
-                                // don't include snapshot for branch names
-                                view.getCurrentVersionText().setText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
-                                view.getVersionText().setText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
-
-                            } else {
-                                view.getCurrentVersionText().setText( constants.No_Project_Structure_Available() );
-                                view.getVersionText().setText( "1.0.0" );
-                            }
-                        }
-                    } ).load( repository,
-                              repository.getDefaultBranch() );
+                    load( repository );
                     return;
                 }
             }
         }
+    }
+
+    private void load( final Repository repository ) {
+        repositoryStructureServices.call(new RemoteCallback<RepositoryStructureModel>() {
+            @Override
+            public void callback( RepositoryStructureModel model ) {
+                final POM pom = getPom( model );
+
+                if ( pom != null ) {
+                    // don't include snapshot for branch names
+                    view.setCurrentVersionText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
+                    view.setVersionText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
+
+                } else {
+                    view.setCurrentVersionText( constants.No_Project_Structure_Available() );
+                    view.setVersionText( "1.0.0" );
+                }
+            }
+        } ).load( repository,
+                  repository.getDefaultBranch() );
+    }
+
+    private POM getPom( final RepositoryStructureModel model ) {
+        if ( model != null && (model.isSingleProject() || model.isMultiModule()) ) {
+            return model.getActivePom();
+        }
+        return null;
     }
 
     public void configureRepository( String repository,

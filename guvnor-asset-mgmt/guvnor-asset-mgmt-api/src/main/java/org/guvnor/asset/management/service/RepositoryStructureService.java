@@ -39,8 +39,8 @@ public interface RepositoryStructureService {
                                   final boolean multiProject,
                                   final DeploymentMode mode );
 
-    Repository initRepository( final Repository repo,
-                               final boolean managed );
+    Repository updateManagedStatus( final Repository repo,
+                                    final boolean managed );
 
     Path convertToMultiProjectStructure( final List<Project> projects,
                                          final GAV parentGav,

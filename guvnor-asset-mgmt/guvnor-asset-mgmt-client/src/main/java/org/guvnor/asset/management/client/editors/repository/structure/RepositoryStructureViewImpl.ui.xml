@@ -25,7 +25,7 @@
 
         <b:Row ui:field="dataViewContainer">
             <b:Column size="MD_12">
-                <guvnor:RepositoryStructureDataView ui:field="dataView"></guvnor:RepositoryStructureDataView>
+              <guvnor:RepositoryStructureDataPresenter ui:field="dataPresenter"></guvnor:RepositoryStructureDataPresenter>
             </b:Column>
         </b:Row>
 

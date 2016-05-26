@@ -163,10 +163,10 @@ public class RepositoryStructureServiceImpl
     }
 
     @Override
-    public Repository initRepository( final Repository repo,
-                                      final boolean managed ) {
+    public Repository updateManagedStatus( final Repository repo,
+                                           final boolean managed ) {
         return managedStatusUpdater.updateManagedStatus( repo,
-                                    managed );
+                                                         managed );
     }
 
     @Override

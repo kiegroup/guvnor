@@ -23,23 +23,37 @@ import org.guvnor.asset.management.client.editors.repository.structure.configure
 import org.guvnor.asset.management.client.editors.repository.structure.promote.PromoteScreenPopupViewImpl;
 import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupViewImpl;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.structure.repositories.Repository;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public interface RepositoryStructureView
         extends HasBusyIndicator,
                 IsWidget {
 
+
     interface Presenter {
+
+        void clearView();
+
+        void setModel( RepositoryStructureModel model );
+
+        void loadModel( final Repository repository,
+                        final String branch );
 
     }
 
+    GAV getDataPresenterGav();
+
+    void setDataPresenterMode( final RepositoryStructureDataView.ViewMode mode );
+
+    void setDataPresenterModel( final GAV gav );
+
+    void clearDataView();
+
     void setPresenter( final RepositoryStructurePresenter repositoryStructurePresenter );
 
-    RepositoryStructureDataView getDataView();
-
     ProjectModulesView getModulesView();
-
-    void setModel( final RepositoryStructureModel model );
 
     void setModulesViewVisible( final boolean visible );
 
