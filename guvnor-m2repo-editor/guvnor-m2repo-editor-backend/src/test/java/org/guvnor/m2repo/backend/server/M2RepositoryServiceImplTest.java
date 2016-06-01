@@ -135,6 +135,8 @@ public class M2RepositoryServiceImplTest {
         return dir.delete();
     }
 
+
+
     @Test
     public void testDeployArtifact() throws Exception {
         deployArtifact( gavBackend );
@@ -578,6 +580,17 @@ public class M2RepositoryServiceImplTest {
         final PageResponse<JarListPageRow> response = service.listArtifacts( request );
         assertEquals( 0,
                       response.getPageRowList().size() );
+    }
+
+    @Test
+    public void testCheckArtifactExistsReturnsTrueForExistingArtifact() {
+        deployArtifact( gavBackend );
+        assertTrue( repo.containsArtifact( gavBackend ) );
+    }
+
+    @Test
+    public void testCheckArtifactExistsReturnsFalseForNonExistingArtifact() {
+        assertFalse( repo.containsArtifact( new GAV( "org.guvnor:non-existing-jar:1.0.Final" ) ) );
     }
 
     private PageResponse<JarListPageRow> assertFilesCount( final String filters,

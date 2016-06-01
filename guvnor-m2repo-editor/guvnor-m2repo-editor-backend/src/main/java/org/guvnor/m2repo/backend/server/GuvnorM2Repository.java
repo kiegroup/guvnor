@@ -936,14 +936,31 @@ public class GuvnorM2Repository {
         return stringWriter.toString();
     }
 
+    /**
+     * Checks whether this Maven repository contains the specified artifact (GAV).
+     *
+     * As opposed to ${code {@link #getArtifactFileFromRepository(GAV)}}, this method will not log any WARNings in case
+     * the artifact is not present (the Aether exception is only logged as TRACE message).
+     *
+     * @param gav artifact GAV, never null
+     * @return true if the this Maven repo contains the specified artifact, otherwise false
+     */
+    public boolean containsArtifact( final GAV gav ) {
+        ArtifactRequest request = createArtifactRequest( gav );
+        try {
+            Aether aether = Aether.getAether();
+            aether.getSystem().resolveArtifact( aether.getSession(),
+                                                request );
+        } catch ( ArtifactResolutionException e ) {
+            log.trace( "Artifact {} not found.", gav, e );
+            return false;
+        }
+        log.trace( "Artifact {} found.", gav );
+        return true;
+    }
+
     public File getArtifactFileFromRepository( final GAV gav ) {
-        ArtifactRequest request = new ArtifactRequest();
-        request.addRepository( getGuvnorM2Repository() );
-        DefaultArtifact artifact = new DefaultArtifact( gav.getGroupId(),
-                                                        gav.getArtifactId(),
-                                                        "jar",
-                                                        gav.getVersion() );
-        request.setArtifact( artifact );
+        ArtifactRequest request = createArtifactRequest( gav );
         ArtifactResult result = null;
         try {
             result = Aether.getAether().getSystem().resolveArtifact(
@@ -964,4 +981,16 @@ public class GuvnorM2Repository {
 
         return artifactFile;
     }
+
+    private ArtifactRequest createArtifactRequest( final GAV gav ) {
+        ArtifactRequest request = new ArtifactRequest();
+        request.addRepository( getGuvnorM2Repository() );
+        DefaultArtifact artifact = new DefaultArtifact( gav.getGroupId(),
+                gav.getArtifactId(),
+                "jar",
+                gav.getVersion() );
+        request.setArtifact( artifact );
+        return request;
+    }
+
 }
