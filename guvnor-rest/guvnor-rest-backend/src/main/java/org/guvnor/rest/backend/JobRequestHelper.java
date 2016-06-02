@@ -36,7 +36,6 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestService;
-import org.guvnor.rest.client.BuildConfig;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
 import org.guvnor.rest.client.RepositoryRequest;
@@ -374,8 +373,7 @@ public class JobRequestHelper {
 
     public JobResult testProject( final String jobId,
                                   final String repositoryAlias,
-                                  final String projectName,
-                                  final BuildConfig config ) {
+                                  final String projectName ) {
         final JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -394,7 +392,6 @@ public class JobRequestHelper {
                 return result;
             }
 
-            //TODO: Get session from BuildConfig or create a default session for testing if no session is provided.
             testService.runAllTests( project.getPomXMLPath(), new Event<TestResultMessage>() {
                 @Override
                 public void fire( TestResultMessage event ) {

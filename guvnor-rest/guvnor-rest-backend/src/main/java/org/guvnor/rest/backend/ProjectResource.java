@@ -45,7 +45,6 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.rest.client.AddRepositoryToOrganizationalUnitRequest;
-import org.guvnor.rest.client.BuildConfig;
 import org.guvnor.rest.client.CompileProjectRequest;
 import org.guvnor.rest.client.CreateOrCloneRepositoryRequest;
 import org.guvnor.rest.client.CreateOrganizationalUnitRequest;
@@ -70,7 +69,6 @@ import org.guvnor.rest.client.UpdateOrganizationalUnitRequest;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.kie.internal.remote.PermissionConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
@@ -374,8 +372,7 @@ public class ProjectResource {
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
     public Response testProject(
             @PathParam("repositoryName") String repositoryName,
-            @PathParam("projectName") String projectName,
-            BuildConfig mavenConfig ) {
+            @PathParam("projectName") String projectName ) {
         logger.debug( "-----testProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
         checkRepositoryExistence( repositoryName );
 
@@ -385,7 +382,6 @@ public class ProjectResource {
         jobRequest.setJobId( id );
         jobRequest.setRepositoryName( repositoryName );
         jobRequest.setProjectName( projectName );
-        jobRequest.setBuildConfig( mavenConfig );
 
         addAcceptedJobResult( id );
 
