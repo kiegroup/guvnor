@@ -31,7 +31,7 @@ public class TestProjectCmd extends AbstractJobCommand {
 
         JobResult result = null;
         try { 
-            result = helper.testProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig() );
+            result = helper.testProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
         } finally { 
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
             logger.debug( "-----testProject--- , repositoryName: {}, project name: {} [{}]",
