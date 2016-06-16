@@ -16,21 +16,18 @@
 
 package org.guvnor.asset.management.security;
 
-public class AssetsMgmtFeatures {
+import org.guvnor.structure.security.RepositoryFeatures;
+
+public interface AssetsMgmtFeatures extends RepositoryFeatures {
 
     /**
-     * Configure Repository Process.
+     * Promote Assets Process
      */
-    public static final String CONFIGURE_REPOSITORY = "wb_configure_repository";
+    String PROMOTE_ASSETS = "asset.promote";
 
     /**
-     * Promote Assets Process.
+     * Release Project Process
      */
-    public static final String PROMOTE_ASSETS = "wb_promote_assets";
-
-    /**
-     * Release Process.
-     */
-    public static final String RELEASE_PROJECT = "wb_release_project";
+    String RELEASE_PROJECT = "project.release";
 
 }

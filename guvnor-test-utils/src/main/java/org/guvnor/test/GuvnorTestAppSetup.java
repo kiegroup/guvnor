@@ -26,8 +26,6 @@ import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
@@ -49,11 +47,6 @@ public class GuvnorTestAppSetup {
     @Alternative
     public SessionInfo sessionInfo() {
         return mock( SessionInfo.class );
-    }
-
-    @Produces
-    public AuthorizationManager getAuthManager() {
-        return new RuntimeAuthorizationManager();
     }
 
     @Produces

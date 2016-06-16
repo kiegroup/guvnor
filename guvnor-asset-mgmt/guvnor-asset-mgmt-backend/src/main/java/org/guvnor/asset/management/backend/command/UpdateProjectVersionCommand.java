@@ -79,7 +79,7 @@ public class UpdateProjectVersionCommand extends AbstractCommand {
 
                 Repository repo = repositoryService.getRepository(uri);
 
-                Set<Project> projects = projectService.getProjects(repo, branchToUpdate);
+                Set<Project> projects = projectService.getAllProjects(repo, branchToUpdate);
 
 
                 for (Project project : projects) {

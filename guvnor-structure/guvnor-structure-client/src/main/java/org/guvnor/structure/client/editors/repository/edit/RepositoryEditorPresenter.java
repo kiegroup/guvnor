@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.structure.client.security.RepositoryController;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.RepositoryInfo;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -47,6 +48,7 @@ public class RepositoryEditorPresenter {
     private Caller<RepositoryService> repositoryService;
     private Caller<RepositoryServiceEditor> repositoryServiceEditor;
     private PlaceManager placeManager;
+    private RepositoryController repositoryController;
 
     private String alias = null;
     private Path root = null;
@@ -57,6 +59,7 @@ public class RepositoryEditorPresenter {
 
         void setRepositoryInfo( final String repositoryName,
                                 final String owner,
+                                final boolean readOnly,
                                 final List<PublicURI> publicURIs,
                                 final String description,
                                 final List<VersionRecord> initialVersionList );
@@ -73,11 +76,13 @@ public class RepositoryEditorPresenter {
     public RepositoryEditorPresenter( final View view,
                                       final Caller<RepositoryService> repositoryService,
                                       final Caller<RepositoryServiceEditor> repositoryServiceEditor,
-                                      final PlaceManager placeManager ) {
+                                      final PlaceManager placeManager,
+                                      final RepositoryController repositoryController ) {
         this.view = view;
         this.repositoryService = repositoryService;
         this.repositoryServiceEditor = repositoryServiceEditor;
         this.placeManager = placeManager;
+        this.repositoryController = repositoryController;
     }
 
     @OnStartup
@@ -91,6 +96,7 @@ public class RepositoryEditorPresenter {
                 root = repo.getRoot();
                 view.setRepositoryInfo( repo.getAlias(),
                                         repo.getOwner(),
+                                        !repositoryController.canUpdateRepository( repo.getId() ),
                                         repo.getPublicURIs(),
                                         CoreConstants.INSTANCE.Empty(),
                                         repo.getInitialVersionList() );

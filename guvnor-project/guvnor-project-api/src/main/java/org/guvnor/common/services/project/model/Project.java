@@ -17,12 +17,13 @@ package org.guvnor.common.services.project.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
+import org.guvnor.common.services.project.security.ProjectResourceType;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Cacheable;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.security.ResourceType;
 import org.uberfire.security.authz.RuntimeContentResource;
 
 /**
@@ -32,12 +33,15 @@ import org.uberfire.security.authz.RuntimeContentResource;
 public class Project implements RuntimeContentResource,
                                 Cacheable {
 
+    public static final ProjectResourceType RESOURCE_TYPE = new ProjectResourceType();
+
     protected Path rootPath;
     protected Path pomXMLPath;
     protected String projectName;
-    protected Collection<String> modules = new ArrayList<String>();
 
+    protected Collection<String> modules = new ArrayList<String>();
     private Collection<String> groups = new ArrayList<String>();
+
     private boolean requiresRefresh = true;
 
     // only loaded by ProjectService.getProjects()
@@ -79,18 +83,17 @@ public class Project implements RuntimeContentResource,
     }
 
     @Override
-    public String getSignatureId() {
-        return getClass().getName() + "#" + getRootPath().toURI();
+    public String getIdentifier() {
+        return getRootPath().toURI();
     }
 
     @Override
+    public ResourceType getResourceType() {
+        return RESOURCE_TYPE;
+    }
+
     public Collection<String> getGroups() {
         return groups;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return Collections.emptySet();
     }
 
     @Override

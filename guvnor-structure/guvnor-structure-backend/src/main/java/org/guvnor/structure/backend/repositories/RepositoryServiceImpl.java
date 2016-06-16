@@ -52,6 +52,8 @@ import org.uberfire.ext.editor.commons.version.impl.PortableVersionRecord;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.guvnor.structure.repositories.EnvironmentParameters.*;
 import static org.guvnor.structure.server.config.ConfigType.*;
@@ -93,6 +95,12 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Inject
     private ConfiguredRepositories configuredRepositories;
 
+    @Inject
+    private AuthorizationManager authorizationManager;
+
+    @Inject
+    private SessionInfo sessionInfo;
+
     private Repository createRepository( final ConfigGroup repositoryConfig ) {
         final Repository repository = repositoryFactory.newRepository( repositoryConfig );
         configurationService.addConfiguration( repositoryConfig );
@@ -103,7 +111,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     public RepositoryInfo getRepositoryInfo( final String alias ) {
         final Repository repo = getRepository( alias );
         String ouName = null;
-        for ( final OrganizationalUnit ou : organizationalUnitService.getOrganizationalUnits() ) {
+        for ( final OrganizationalUnit ou : organizationalUnitService.getAllOrganizationalUnits() ) {
             for ( Repository repository : ou.getRepositories() ) {
                 if ( repository.getAlias().equals( alias ) ) {
                     ouName = ou.getName();
@@ -111,7 +119,8 @@ public class RepositoryServiceImpl implements RepositoryService {
             }
         }
 
-        return new RepositoryInfo( alias,
+        return new RepositoryInfo( repo.getIdentifier(),
+                                   alias,
                                    ouName,
                                    repo.getRoot(),
                                    repo.getPublicURIs(),
@@ -184,8 +193,19 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public Collection<Repository> getRepositories() {
+    public Collection<Repository> getAllRepositories() {
         return configuredRepositories.getAllConfiguredRepositories();
+    }
+
+    @Override
+    public Collection<Repository> getRepositories() {
+        Collection<Repository> result = new ArrayList<>();
+        for (Repository repository : configuredRepositories.getAllConfiguredRepositories()) {
+            if (authorizationManager.authorize(repository, sessionInfo.getIdentity())) {
+                result.add(repository);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -237,7 +257,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             }
 
             //Remove reference to Repository from Organizational Units
-            final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
+            final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getAllOrganizationalUnits();
             for ( OrganizationalUnit ou : organizationalUnits ) {
                 for ( Repository repository : ou.getRepositories() ) {
                     if ( repository.getAlias().equals( alias ) ) {

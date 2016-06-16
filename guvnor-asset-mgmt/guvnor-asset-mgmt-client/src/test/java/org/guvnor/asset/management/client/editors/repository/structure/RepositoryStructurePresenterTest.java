@@ -110,7 +110,7 @@ public class RepositoryStructurePresenterTest {
     @Before
     public void setup() {
 
-        when( project.getSignatureId() ).thenReturn( "id" );
+        when( project.getIdentifier() ).thenReturn( "id" );
 
         final Caller<POMService> pomServiceCaller = new CallerMock<POMService>( pomService );
         final Caller<RepositoryStructureService> repositoryStructureServiceCaller = new CallerMock<RepositoryStructureService>( repositoryStructureService );
@@ -210,7 +210,7 @@ public class RepositoryStructurePresenterTest {
         }} );
         model.setOrphanProjectsPOM( new HashMap<String, POM>() {
             {
-                put( project.getSignatureId(), new POM( new GAV( "groupId",
+                put( project.getIdentifier(), new POM( new GAV( "groupId",
                                                                  "artifactId",
                                                                  "version" ) ) );
             }
@@ -441,7 +441,7 @@ public class RepositoryStructurePresenterTest {
         }} );
         model.setOrphanProjectsPOM( new HashMap<String, POM>() {
             {
-                put( project.getSignatureId(), new POM( new GAV( "groupId",
+                put( project.getIdentifier(), new POM( new GAV( "groupId",
                                                                  "artifactId",
                                                                  "version" ) ) );
             }

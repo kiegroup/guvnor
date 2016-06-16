@@ -17,11 +17,12 @@ package org.guvnor.structure.organizationalunit.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.security.OrgUnitResourceType;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.security.ResourceType;
 
 @Portable
 public class OrganizationalUnitImpl implements OrganizationalUnit {
@@ -66,13 +67,13 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     }
 
     @Override
-    public String getSignatureId() {
-        return getClass().getName() + "#" + getName();
+    public String getIdentifier() {
+        return getName();
     }
 
     @Override
-    public Collection<String> getTraits() {
-        return Collections.emptySet();
+    public ResourceType getResourceType() {
+        return RESOURCE_TYPE;
     }
 
     @Override
@@ -126,7 +127,6 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
         return requiresRefresh;
     }
 
-    @Override
     public Collection<String> getGroups() {
         return groups;
     }

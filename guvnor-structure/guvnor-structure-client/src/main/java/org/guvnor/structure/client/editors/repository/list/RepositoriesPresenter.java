@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContext;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContextChangeHandler;
+import org.guvnor.structure.client.security.RepositoryController;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -39,6 +40,9 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.OnShutdown;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.security.annotations.ResourceCheck;
+
+import static org.guvnor.structure.client.security.RepositoryController.*;
 
 @Dependent
 @WorkbenchScreen(identifier = "RepositoriesEditor")
@@ -47,7 +51,7 @@ public class RepositoriesPresenter
                    HasRemoveRepositoryHandlers {
 
     private Caller<RepositoryService> repositoryService;
-
+    private RepositoryController repositoryController;
     private GuvnorStructureContext guvnorStructureContext;
 
     private Map<Repository, RepositoryItemPresenter> repositoryToWidgetMap = new HashMap<Repository, RepositoryItemPresenter>();
@@ -60,10 +64,12 @@ public class RepositoriesPresenter
     @Inject
     public RepositoriesPresenter( final RepositoriesView view,
                                   final GuvnorStructureContext guvnorStructureContext,
-                                  final Caller<RepositoryService> repositoryService ) {
+                                  final Caller<RepositoryService> repositoryService,
+                                  final RepositoryController repositoryController ) {
         this.view = view;
         this.guvnorStructureContext = guvnorStructureContext;
         this.repositoryService = repositoryService;
+        this.repositoryController = repositoryController;
 
         changeHandlerRegistration = guvnorStructureContext.addGuvnorStructureContextChangeHandler( this );
 
@@ -107,6 +113,7 @@ public class RepositoriesPresenter
         return view.asWidget();
     }
 
+    @ResourceCheck(action=REPOSITORY_DELETE)
     public void removeRepository( final Repository repository ) {
         if ( view.confirmDeleteRepository( repository ) ) {
             repositoryService.call().removeRepository( repository.getAlias() );

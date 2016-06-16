@@ -21,10 +21,12 @@ import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.security.authz.AuthorizationManager;
 
@@ -39,45 +41,57 @@ import static org.mockito.Mockito.when;
 @RunWith( MockitoJUnitRunner.class )
 public class InboxEntrySecurityTest {
 
+    @Mock
     private Repository                        repo1;
+
+    @Mock
     private Repository                        repo2;
+
+    @Mock
     private User                              user;
+
+    @Mock
     private AuthorizationManager              authorizationManager;
+
+    @Mock
     private OrganizationalUnitService         organizationalUnitService;
+
+    @Mock
+    private RepositoryService                 repositoryService;
+
+    @Mock
     private ProjectService<? extends Project> projectService;
-    private ConfiguredRepositories            configuredRepositories;
+
+    @Mock
     private Project                           project1;
+
+    private ConfiguredRepositories            configuredRepositories;
 
     @Before
     public void setup() {
-        user = mock( User.class );
-        authorizationManager = mock( AuthorizationManager.class );
-        organizationalUnitService = mock( OrganizationalUnitService.class );
         Collection<OrganizationalUnit> ous = new ArrayList<OrganizationalUnit>();
         final OrganizationalUnit ou = mock( OrganizationalUnit.class );
         ous.add( ou );
         when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( ous );
         when( authorizationManager.authorize( ou, user ) ).thenReturn( true );
-        Collection<Repository> repositories = new ArrayList<Repository>();
-        repo1 = mock( Repository.class );
-        repo2 = mock( Repository.class );
-        project1 = mock( Project.class );
 
+        Collection<Repository> repositories = new ArrayList<Repository>();
         repositories.add( repo1 );
+
+        when( repositoryService.getRepositories() ).thenReturn( repositories );
         when( authorizationManager.authorize( repo1, user ) ).thenReturn( true );
         when( authorizationManager.authorize( project1, user ) ).thenReturn( true );
         when( ou.getRepositories() ).thenReturn( repositories );
 
         projectService = null;
         configuredRepositories = null;
-
-
     }
 
 
     @Test
     public void testSecureNullRepoNullProject() throws Exception {
         InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
+                                                           repositoryService,
                                                            projectService,
                                                            configuredRepositories ) {
             @Override
@@ -106,6 +120,7 @@ public class InboxEntrySecurityTest {
     @Test
     public void testSecureRepoWithoutProject() throws Exception {
         InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
+                                                           repositoryService,
                                                            projectService,
                                                            configuredRepositories ) {
             @Override
@@ -137,6 +152,7 @@ public class InboxEntrySecurityTest {
     @Test
     public void testSecureRepoInsecureProject() throws Exception {
         InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
+                                                           repositoryService,
                                                            projectService,
                                                            configuredRepositories ) {
             @Override
@@ -165,6 +181,7 @@ public class InboxEntrySecurityTest {
     @Test
     public void testSecureRepoSecureProject() throws Exception {
         InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
+                                                           repositoryService,
                                                            projectService,
                                                            configuredRepositories ) {
             @Override

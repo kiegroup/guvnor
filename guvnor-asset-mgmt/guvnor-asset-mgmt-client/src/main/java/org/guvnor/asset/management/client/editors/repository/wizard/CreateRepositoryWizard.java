@@ -42,7 +42,6 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
@@ -51,7 +50,6 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.security.shared.api.Role;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.data.Pair;
@@ -62,6 +60,7 @@ import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.mvp.Command;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.guvnor.asset.management.security.AssetsMgmtFeatures.*;
@@ -87,13 +86,13 @@ public class CreateRepositoryWizard extends AbstractWizard {
 
     private Event<NotificationEvent> notification;
 
-    private KieWorkbenchACL kieACL;
-
     private SessionInfo sessionInfo;
 
     private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
     private POMDefaultOptions pomDefaultOptions;
+
+    private AuthorizationManager authorizationManager;
 
     private Callback<Void> onCloseCallback = null;
 
@@ -112,10 +111,10 @@ public class CreateRepositoryWizard extends AbstractWizard {
                                    final Caller<ProjectRepositoryResolver> repositoryResolverService,
                                    final Caller<AssetManagementService> assetManagementService,
                                    final Event<NotificationEvent> notification,
-                                   final KieWorkbenchACL kieACL,
                                    final SessionInfo sessionInfo,
                                    final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
-                                   final POMDefaultOptions pomDefaultOptions ) {
+                                   final POMDefaultOptions pomDefaultOptions,
+                                   final AuthorizationManager authorizationManager ) {
         this.infoPage = infoPage;
         this.structurePage = structurePage;
         this.model = model;
@@ -124,10 +123,10 @@ public class CreateRepositoryWizard extends AbstractWizard {
         this.repositoryResolverService = repositoryResolverService;
         this.assetManagementService = assetManagementService;
         this.notification = notification;
-        this.kieACL = kieACL;
         this.sessionInfo = sessionInfo;
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
         this.pomDefaultOptions = pomDefaultOptions;
+        this.authorizationManager = authorizationManager;
     }
 
     @PostConstruct
@@ -499,18 +498,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
     }
 
     private void setAssetsManagementGrant() {
-        Set<String> grantedRoles = kieACL.getGrantedRoles( CONFIGURE_REPOSITORY );
-        assetsManagementIsGranted = false;
-
-        if ( sessionInfo != null && sessionInfo.getIdentity() != null && sessionInfo.getIdentity().getRoles() != null ) {
-            for ( Role role : sessionInfo.getIdentity().getRoles() ) {
-                if ( grantedRoles.contains( role.getName() ) ) {
-                    assetsManagementIsGranted = true;
-                    break;
-                }
-            }
-        }
+        assetsManagementIsGranted = authorizationManager.authorize( CONFIGURE_REPOSITORY, sessionInfo.getIdentity() );
         infoPage.enableManagedRepoCreation( assetsManagementIsGranted );
     }
-
 }

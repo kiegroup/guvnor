@@ -36,4 +36,9 @@ public interface OrganizationalUnitManagerView extends UberView<OrganizationalUn
 
     void deleteOrganizationalUnit( final OrganizationalUnit organizationalUnit );
 
+    void setAddOrganizationalUnitEnabled(boolean enabled);
+
+    void setEditOrganizationalUnitEnabled(boolean enabled);
+
+    void setDeleteOrganizationalUnitEnabled(boolean enabled);
 }

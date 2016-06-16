@@ -43,12 +43,12 @@ import org.guvnor.common.services.project.model.Plugin;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.security.RepositoryFeatures;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
@@ -58,15 +58,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.ext.widgets.core.client.wizards.WizardView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.guvnor.asset.management.security.AssetsMgmtFeatures.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -100,6 +101,9 @@ public class CreateRepositoryWizardTest {
     @GwtMock
     WizardView view;
 
+    @Mock
+    AuthorizationManager authorizationManager;
+
     @Captor
     ArgumentCaptor<RepositoryEnvironmentConfigurations> repositoryEnvironmentConfigurationsArgumentCaptor;
 
@@ -125,8 +129,6 @@ public class CreateRepositoryWizardTest {
 
     ConflictingRepositoriesPopup conflictingRepositoriesPopup = mock( ConflictingRepositoriesPopup.class );
 
-    KieWorkbenchACL kieACL = mock( KieWorkbenchACL.class );
-
     POMDefaultOptions pomDefaultOptions = mock( POMDefaultOptions.class );
 
     ArrayList<Plugin> byDefaultPlugins;
@@ -148,11 +150,7 @@ public class CreateRepositoryWizardTest {
         when( user.getIdentifier() ).thenReturn( "mock-user" );
         when( user.getRoles() ).thenReturn( userRoles );
 
-        //mock the configure repository feature granted roles.
-        Set<String> grantedRoles = new HashSet<String>();
-        grantedRoles.add( "mock-role" );
-
-        when( kieACL.getGrantedRoles( CONFIGURE_REPOSITORY ) ).thenReturn( grantedRoles );
+        when( authorizationManager.authorize(RepositoryFeatures.CONFIGURE_REPOSITORY, user ) ).thenReturn( true );
 
         WizardTestUtils.WizardPageStatusChangeEventMock event = new WizardTestUtils.WizardPageStatusChangeEventMock();
 
@@ -186,12 +184,12 @@ public class CreateRepositoryWizardTest {
                                                                      new CallerMock<ProjectRepositoryResolver>( repositoryResolverService ),
                                                                      new CallerMock<AssetManagementService>( assetManagementService ),
                                                                      notificationEvent,
-                                                                     kieACL,
                                                                      sessionInfo,
                                                                      conflictingRepositoriesPopup,
                                                                      view,
                                                                      event,
-                                                                     pomDefaultOptions );
+                                                                     pomDefaultOptions,
+                                                                     authorizationManager );
     }
 
     /**
@@ -981,24 +979,24 @@ public class CreateRepositoryWizardTest {
                                                final Caller<ProjectRepositoryResolver> repositoryResolverService,
                                                final Caller<AssetManagementService> assetManagementService,
                                                final Event<NotificationEvent> notification,
-                                               final KieWorkbenchACL kieACL,
                                                final SessionInfo sessionInfo,
                                                final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
                                                final WizardView view,
                                                final WizardTestUtils.WizardPageStatusChangeEventMock event,
-                                               final POMDefaultOptions pomDefaultOptions ) {
-            super( infoPage,
-                   structurePage,
-                   model,
-                   repositoryService,
-                   repositoryStructureService,
-                   repositoryResolverService,
-                   assetManagementService,
-                   notification,
-                   kieACL,
-                   sessionInfo,
-                   conflictingRepositoriesPopup,
-                   pomDefaultOptions );
+                                               final POMDefaultOptions pomDefaultOptions,
+                                               final AuthorizationManager authorizationManager ) {
+                super( infoPage,
+                        structurePage,
+                        model,
+                        repositoryService,
+                        repositoryStructureService,
+                        repositoryResolverService,
+                        assetManagementService,
+                        notification,
+                        sessionInfo,
+                        conflictingRepositoriesPopup,
+                        pomDefaultOptions,
+                        authorizationManager );
             super.view = view;
             //emulates the invocation of the @PostConstruct method.
             setupPages();

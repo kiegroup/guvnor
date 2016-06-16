@@ -24,8 +24,10 @@ import java.util.Map;
 
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.security.RepositoryResourceType;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.security.ResourceType;
 
 @Portable
 public class GitRepository
@@ -128,22 +130,21 @@ public class GitRepository
     }
 
     @Override
-    public String getSignatureId() {
-        return getClass().getName() + "#" + getUri();
+    public String getIdentifier() {
+        return getUri();
     }
 
     @Override
+    public ResourceType getResourceType() {
+        return RESOURCE_TYPE;
+    }
+
     public Collection<String> getGroups() {
         return groups;
     }
 
     public void setGroups( Collection<String> groups ) {
         this.groups = new ArrayList<String>( groups );
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return Collections.emptySet();
     }
 
     @Override

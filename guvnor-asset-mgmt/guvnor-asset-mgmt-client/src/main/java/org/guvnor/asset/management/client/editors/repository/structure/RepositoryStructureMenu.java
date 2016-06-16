@@ -30,7 +30,6 @@ import org.guvnor.asset.management.client.i18n.Constants;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.shared.security.impl.KieWorkbenchACLImpl;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -47,12 +46,6 @@ import static org.guvnor.asset.management.security.AssetsMgmtFeatures.*;
 public class RepositoryStructureMenu
         implements org.uberfire.workbench.model.menu.Menus {
 
-    /**
-     * WM, Impl class was injected here due to an errai IOC issue. I we inject just KieWorkbenchACL then
-     * we have errors at ProjectScreenPresenter when the webapp is being built. So it was decided to just us the Impl
-     * class here.
-     */
-    private final KieWorkbenchACLImpl kieACL;
     private final ProjectContext projectContext;
 
     private final ReleaseScreenPopupViewImpl   releaseScreenPopupView;
@@ -80,13 +73,11 @@ public class RepositoryStructureMenu
 
 
     @Inject
-    public RepositoryStructureMenu( final KieWorkbenchACLImpl kieACL,
-                                    final ProjectContext projectContext,
+    public RepositoryStructureMenu( final ProjectContext projectContext,
                                     final Caller<AssetManagementService> assetManagementServices,
                                     final ReleaseScreenPopupViewImpl releaseScreenPopupView,
                                     final ConfigureScreenPopupViewImpl configureScreenPopupView,
                                     final PromoteScreenPopupViewImpl promoteScreenPopupView ) {
-        this.kieACL = kieACL;
         this.projectContext = projectContext;
         this.assetManagementServices = assetManagementServices;
         this.releaseScreenPopupView = releaseScreenPopupView;
@@ -98,21 +89,21 @@ public class RepositoryStructureMenu
         // TODO: ask for the model
         configure = MenuFactory
                 .newTopLevelMenu( Constants.INSTANCE.Configure() )
-                .withRoles( kieACL.getGrantedRoles( CONFIGURE_REPOSITORY ) )
+                .withPermission( CONFIGURE_REPOSITORY )
                 .respondsWith( getConfigureCommand( hasModel ) )
                 .endMenu()
                 .build().getItems().get( 0 );
 
         promote = MenuFactory
                 .newTopLevelMenu( Constants.INSTANCE.Promote() )
-                .withRoles( kieACL.getGrantedRoles( PROMOTE_ASSETS ) )
+                .withPermission( PROMOTE_ASSETS )
                 .respondsWith( getPromoteCommand() )
                 .endMenu()
                 .build().getItems().get( 0 );
 
         release = MenuFactory
                 .newTopLevelMenu( Constants.INSTANCE.Release() )
-                .withRoles( kieACL.getGrantedRoles( RELEASE_PROJECT ) )
+                .withPermission( RELEASE_PROJECT )
                 .respondsWith( getReleaseCommand( hasModel ) )
                 .endMenu()
                 .build().getItems().get( 0 );

@@ -30,6 +30,7 @@ import org.guvnor.test.TestTempFileSystem;
 import org.guvnor.test.WeldJUnitRunner;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

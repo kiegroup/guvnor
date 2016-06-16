@@ -21,10 +21,12 @@ import org.guvnor.inbox.backend.server.InboxEntry;
 import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.test.TestTempFileSystem;
 import org.guvnor.test.WeldJUnitRunner;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -59,6 +61,7 @@ public class InboxEntrySecurity_InboxEntrySecurityTestTest {
         inbox = new InboxEntrySecurity( mock( User.class ),
                                         mock( AuthorizationManager.class ),
                                         mock( OrganizationalUnitService.class ),
+                                        mock( RepositoryService.class ),
                                         mock( ProjectService.class ),
                                         configuredRepositories );
     }

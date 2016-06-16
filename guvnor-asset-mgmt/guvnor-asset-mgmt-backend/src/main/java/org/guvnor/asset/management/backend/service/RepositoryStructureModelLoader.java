@@ -102,7 +102,7 @@ public class RepositoryStructureModelLoader {
         model.setOrphanProjects( new ArrayList<>( repositoryProjects ) );
         for ( Project orphanProject : repositoryProjects ) {
             final POM pom = pomService.load( orphanProject.getPomXMLPath() );
-            model.getOrphanProjectsPOM().put( orphanProject.getSignatureId(),
+            model.getOrphanProjectsPOM().put( orphanProject.getIdentifier(),
                                               pom );
         }
 

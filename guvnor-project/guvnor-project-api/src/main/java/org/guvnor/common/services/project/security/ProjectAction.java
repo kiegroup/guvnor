@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.guvnor.common.services.shared.security;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+package org.guvnor.common.services.project.security;
 
-@Remote
-public interface KieWorkbenchSecurityService {
+import org.uberfire.security.ResourceAction;
 
-    /**
-     * Load the KIE workbench security policy from the server.
-     */
-    String loadPolicy();
+public interface ProjectAction extends ResourceAction {
 
+    ProjectAction CREATE = () -> "create";
+    ProjectAction BUILD = () -> "build";
+    ProjectAction UPDATE = () -> "update";
+    ProjectAction DELETE = () -> "delete";
 }

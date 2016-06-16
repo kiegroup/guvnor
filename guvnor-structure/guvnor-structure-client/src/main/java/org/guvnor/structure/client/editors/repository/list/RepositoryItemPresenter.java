@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContext;
+import org.guvnor.structure.client.security.RepositoryController;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
@@ -35,15 +36,18 @@ public class RepositoryItemPresenter
     private RepositoryItemView     view;
     private GuvnorStructureContext guvnorStructureContext;
     private HasRemoveRepositoryHandlers removeRepositoryHandler;
+    private RepositoryController repositoryController;
 
     public RepositoryItemPresenter() {
     }
 
     @Inject
     public RepositoryItemPresenter( final RepositoryItemView repositoryItemView,
-                                    final GuvnorStructureContext guvnorStructureContext ) {
+                                    final GuvnorStructureContext guvnorStructureContext,
+                                    final RepositoryController repositoryController ) {
         this.view = repositoryItemView;
         this.guvnorStructureContext = guvnorStructureContext;
+        this.repositoryController = repositoryController;
     }
 
     public void setRepository( final Repository repository,
@@ -65,6 +69,11 @@ public class RepositoryItemPresenter
         view.setUriId( "view-uri-for-" + repository.getAlias() );
 
         populateBranches( branch );
+
+        boolean canUpdate = repositoryController.canUpdateRepository(repository);
+        boolean canDelete = repositoryController.canDeleteRepository(repository);
+        view.setUpdateEnabled(canUpdate);
+        view.setDeleteEnabled(canDelete);
 
         view.refresh();
     }

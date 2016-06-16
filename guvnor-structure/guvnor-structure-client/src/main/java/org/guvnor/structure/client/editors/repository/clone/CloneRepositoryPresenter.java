@@ -19,13 +19,11 @@ package org.guvnor.structure.client.editors.repository.clone;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
@@ -41,11 +39,13 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.security.shared.api.Role;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.util.URIUtil;
+
+import static org.guvnor.structure.security.RepositoryFeatures.*;
 
 @Dependent
 public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
@@ -60,9 +60,9 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
 
     private PlaceManager placeManager;
 
-    private Map<String, OrganizationalUnit> availableOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
+    private AuthorizationManager authorizationManager;
 
-    private KieWorkbenchACL kieACL;
+    private Map<String, OrganizationalUnit> availableOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
 
     private SessionInfo sessionInfo;
     private boolean assetsManagementIsGranted = false;
@@ -73,14 +73,14 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
                                      final Caller<RepositoryService> repositoryService,
                                      final Caller<OrganizationalUnitService> organizationalUnitService,
                                      final PlaceManager placeManager,
-                                     final KieWorkbenchACL kieACL,
+                                     final AuthorizationManager authorizationManager,
                                      final SessionInfo sessionInfo) {
         this.repositoryPreferences = repositoryPreferences;
         this.view = view;
         this.repositoryService = repositoryService;
         this.organizationalUnitService = organizationalUnitService;
         this.placeManager = placeManager;
-        this.kieACL = kieACL;
+        this.authorizationManager = authorizationManager;
         this.sessionInfo = sessionInfo;
     }
 
@@ -295,17 +295,7 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
     }
 
     private void setAssetsManagementGrant() {
-        Set<String> grantedRoles = kieACL.getGrantedRoles( "wb_configure_repository" );
-        assetsManagementIsGranted = false;
-
-        if ( sessionInfo != null && sessionInfo.getIdentity() != null && sessionInfo.getIdentity().getRoles() != null ) {
-            for ( Role role : sessionInfo.getIdentity().getRoles() ) {
-                if ( grantedRoles.contains( role.getName() ) ) {
-                    assetsManagementIsGranted = true;
-                    break;
-                }
-            }
-        }
+        assetsManagementIsGranted = authorizationManager.authorize( CONFIGURE_REPOSITORY, sessionInfo.getIdentity() );
         view.enableManagedRepoCreation( assetsManagementIsGranted );
     }
 }

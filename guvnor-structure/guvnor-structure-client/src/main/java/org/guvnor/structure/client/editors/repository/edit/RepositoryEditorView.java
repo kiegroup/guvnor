@@ -75,6 +75,7 @@ public class RepositoryEditorView extends Composite
     public Button loadMore;
 
     private RepositoryEditorPresenter presenter;
+    private boolean readOnly;
 
     @PostConstruct
     public void init() {
@@ -89,9 +90,11 @@ public class RepositoryEditorView extends Composite
     @Override
     public void setRepositoryInfo( final String repositoryName,
                                    final String owner,
+                                   final boolean readOnly,
                                    final List<PublicURI> publicURIs,
                                    final String description,
                                    final List<VersionRecord> initialVersionList ) {
+        this.readOnly = readOnly;
         if ( owner != null && !owner.isEmpty() ) {
             repoName.setText( owner + " / " + repositoryName );
         } else {
@@ -161,7 +164,7 @@ public class RepositoryEditorView extends Composite
 
     private void loadContent( final List<VersionRecord> versionRecordList ) {
         for ( VersionRecord vr : versionRecordList ) {
-            history.add( new CommitNavigatorEntry( vr,
+            history.add( new CommitNavigatorEntry( readOnly, vr,
                                                    new ParameterizedCommand<VersionRecord>() {
                                                        @Override
                                                        public void execute( final VersionRecord record ) {

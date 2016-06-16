@@ -109,6 +109,13 @@ public class RepositoryServiceCallerMock
         }
 
         @Override
+        public Collection<Repository> getAllRepositories() {
+            Collection<Repository> result = repositoryService.getAllRepositories();
+            remoteCallback.callback( result );
+            return result;
+        }
+
+        @Override
         public Collection<Repository> getRepositories() {
             Collection<Repository> result = repositoryService.getRepositories();
             remoteCallback.callback( result );

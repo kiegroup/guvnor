@@ -30,6 +30,7 @@
   <source path='editor'/>
   <source path='events'/>
   <source path='model'/>
+  <source path="security" />
   <source path='service'/>
   <source path='social' />
 

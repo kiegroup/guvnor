@@ -163,7 +163,7 @@ public class ProjectResource {
     public Collection<RepositoryResponse> getRepositories() {
         logger.debug( "-----getRepositories--- " );
 
-        Collection<org.guvnor.structure.repositories.Repository> repos = repositoryService.getRepositories();
+        Collection<org.guvnor.structure.repositories.Repository> repos = repositoryService.getAllRepositories();
         List<RepositoryResponse> result = new ArrayList<RepositoryResponse>();
         for ( org.guvnor.structure.repositories.Repository r : repos ) {
             RepositoryResponse repo = new RepositoryResponse();
@@ -277,7 +277,7 @@ public class ProjectResource {
             throw new WebApplicationException( Response.status( Response.Status.NOT_FOUND ).entity( repositoryName ).build() );
         }
 
-        Set<Project> projects = projectService.getProjects(repository, "master");
+        Set<Project> projects = projectService.getAllProjects(repository, "master");
 
         List<ProjectResponse> projectRequests = new ArrayList<ProjectResponse>(projects.size());
         for( Project project : projects ) {
@@ -421,7 +421,7 @@ public class ProjectResource {
     public Collection<OrganizationalUnit> getOrganizationalUnits() {
         logger.debug( "-----getOrganizationalUnits--- " );
         Collection<org.guvnor.structure.organizationalunit.OrganizationalUnit> origOrgUnits
-                = organizationalUnitService.getOrganizationalUnits();
+                = organizationalUnitService.getAllOrganizationalUnits();
 
         List<OrganizationalUnit> organizationalUnits = new ArrayList<OrganizationalUnit>();
         for ( org.guvnor.structure.organizationalunit.OrganizationalUnit ou : origOrgUnits ) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package org.guvnor.common.services.shared.security;
+package org.guvnor.structure.security;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import org.uberfire.security.ResourceAction;
 
-import org.uberfire.security.annotations.RolesType;
+public interface RepositoryAction extends ResourceAction {
 
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
-
-@RolesType
-@Retention(RUNTIME)
-@Target({ TYPE, METHOD })
-public @interface KieWorkbenchRoles {
-
-    AppRoles[] value();
-
+    RepositoryAction CREATE = () -> "create";
+    RepositoryAction UPDATE = () -> "update";
+    RepositoryAction DELETE = () -> "delete";
 }

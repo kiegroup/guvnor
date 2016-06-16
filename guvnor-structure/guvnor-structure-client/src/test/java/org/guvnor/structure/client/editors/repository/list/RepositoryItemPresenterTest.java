@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContext;
+import org.guvnor.structure.client.security.RepositoryController;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
 import org.junit.Before;
@@ -36,6 +37,9 @@ public class RepositoryItemPresenterTest {
 
     @Mock
     private GuvnorStructureContext guvnorStructureContext;
+
+    @Mock
+    private RepositoryController repositoryController;
 
     @Mock
     private RepositoryItemView view;
@@ -67,8 +71,11 @@ public class RepositoryItemPresenterTest {
         when( uri2.getProtocol() ).thenReturn( "test-protocol2" );
         when( uri2.getURI() ).thenReturn( "uri2" );
 
-        presenter = new RepositoryItemPresenter( view, guvnorStructureContext );
+        presenter = new RepositoryItemPresenter( view, guvnorStructureContext, repositoryController );
         when( repository.getAlias() ).thenReturn( "TestRepo" );
+
+        when( repositoryController.canUpdateRepository( repository ) ).thenReturn( false );
+        when( repositoryController.canDeleteRepository( repository ) ).thenReturn( false );
     }
 
     @Test
@@ -109,6 +116,8 @@ public class RepositoryItemPresenterTest {
 
         verify( view ).setPresenter( presenter );
         verify( view ).setRepositoryName( "TestRepo" );
+        verify( view ).setUpdateEnabled( false );
+        verify( view ).setDeleteEnabled( false );
 
         //protocols configuration
         if ( uris.size() > 0 ) {

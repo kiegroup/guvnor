@@ -35,7 +35,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.security.authz.AuthorizationManager;
 
 public abstract class BaseAssetsMgmtPresenter {
 
@@ -54,7 +54,7 @@ public abstract class BaseAssetsMgmtPresenter {
     protected User identity;
 
     @Inject
-    protected RuntimeAuthorizationManager authorizationManager;
+    protected AuthorizationManager authorizationManager;
 
     @Inject
     protected PlaceManager placeManager;
