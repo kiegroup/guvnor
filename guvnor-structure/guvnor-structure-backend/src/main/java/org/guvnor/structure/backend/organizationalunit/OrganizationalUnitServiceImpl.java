@@ -79,7 +79,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     @Inject
     private Event<UpdatedOrganizationalUnitEvent> updatedOrganizationalUnitEvent;
 
-    private Map<String, OrganizationalUnit> registeredOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
+    Map<String, OrganizationalUnit> registeredOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
 
     @Inject
     private AuthorizationManager authorizationManager;
@@ -114,6 +114,11 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @Override
     public Collection<OrganizationalUnit> getAllOrganizationalUnits() {
+        return new ArrayList<>( registeredOrganizationalUnits.values() );
+    }
+
+    @Override
+    public Collection<OrganizationalUnit> getOrganizationalUnits() {
         ArrayList result = new ArrayList<>();
         for (OrganizationalUnit ou : registeredOrganizationalUnits.values()) {
             if (authorizationManager.authorize(ou, sessionInfo.getIdentity())) {
@@ -122,12 +127,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         }
         return result;
     }
-
-    @Override
-    public Collection<OrganizationalUnit> getOrganizationalUnits() {
-        return new ArrayList<OrganizationalUnit>( registeredOrganizationalUnits.values() );
-    }
-
+    
     @Override
     public OrganizationalUnit createOrganizationalUnit( final String name,
                                                         final String owner,
