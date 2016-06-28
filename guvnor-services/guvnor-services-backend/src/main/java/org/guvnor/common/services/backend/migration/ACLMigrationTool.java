@@ -61,7 +61,7 @@ public class ACLMigrationTool {
 
     private OrganizationalUnitService organizationalUnitService;
     private RepositoryService repositoryService;
-    private Instance<ProjectService> projectServices;
+    private Instance<ProjectService<?>> projectServices;
     private PermissionManager permissionManager;
     private AuthorizationPolicyStorage authorizationPolicyStorage;
     private Map<String,Group> groupMap = new HashMap<>();
@@ -69,7 +69,7 @@ public class ACLMigrationTool {
     @Inject
     public ACLMigrationTool(OrganizationalUnitService organizationalUnitService,
                             RepositoryService repositoryService,
-                            Instance<ProjectService> projectServices,
+                            Instance<ProjectService<?>> projectServices,
                             PermissionManager permissionManager,
                             AuthorizationPolicyStorage authorizationPolicyStorage) {
         this.organizationalUnitService = organizationalUnitService;
