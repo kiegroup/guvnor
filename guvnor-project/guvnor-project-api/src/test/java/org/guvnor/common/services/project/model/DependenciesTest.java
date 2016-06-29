@@ -99,4 +99,12 @@ public class DependenciesTest {
         assertEquals( 1, gavs.size() );
         assertContains( gavs, "org.drools", "drools-core", "5.0" );
     }
+
+
+    @Test
+    public void testGetCompileScopedGavsMethod() throws Exception {
+        final Collection<GAV> gavs = dependencies.getCompileScopedGavs();
+        assertEquals( 1, gavs.size() );
+        assertContains( gavs, "org.drools", "drools-core", "5.0" );
+    }
 }
