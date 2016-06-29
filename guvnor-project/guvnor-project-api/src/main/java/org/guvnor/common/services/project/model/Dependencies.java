@@ -75,6 +75,10 @@ public class Dependencies
         }
     }
 
+    public Collection<GAV> getCompileScopedGavs() {
+        return getGavs( "compile", null );
+    }
+
     @Override public int size() {
         return dependencies.size();
     }
