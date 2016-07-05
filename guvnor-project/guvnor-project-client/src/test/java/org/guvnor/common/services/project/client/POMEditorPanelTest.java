@@ -16,8 +16,12 @@
 
 package org.guvnor.common.services.project.client;
 
+import java.util.HashMap;
+
+import org.guvnor.common.services.project.client.util.ApplicationPreferences;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
@@ -43,12 +47,12 @@ public class POMEditorPanelTest {
 
     @Before
     public void setUp() throws Exception {
-        panel = new POMEditorPanel( view,
-                                    iocManager );
+        setChildGAVEdit( "false" );
+
+        panel = new POMEditorPanel( view, iocManager );
         presenter = panel;
 
-        verify( view,
-                times( 1 ) ).setPresenter( presenter );
+        verify( view, times( 1 ) ).setPresenter( presenter );
     }
 
     @Test
@@ -95,12 +99,8 @@ public class POMEditorPanelTest {
 
     @Test
     public void testLoadMultiModule() throws Exception {
-        POM gavModel = createTestModel( "group",
-                                        "artifact",
-                                        "1.1.1" );
-        gavModel.setParent( new GAV( "org.parent",
-                                     "parent",
-                                     "1.1.1" ) );
+        POM gavModel = createTestModelWithParent( "group", "artifact", "1.1.1" );
+
         panel.setPOM( gavModel,
                       false );
 
@@ -160,6 +160,57 @@ public class POMEditorPanelTest {
         verify( placeManager ).goTo( "repositoryStructureScreen" );
     }
 
+    @Test
+    public void testSetPomWhenItHasParentAndChildGAVEditIsDisabled() {
+        POM pom = createTestModelWithParent( "group", "artifact", "1.1.1" );
+
+        panel.setPOM( pom, false );
+
+        verify( view ).enableGroupID();
+        verify( view ).enableArtifactID();
+        verify( view ).enableVersion();
+        verify( view ).showParentGAV();
+        verify( view ).disableGroupID( anyString() );
+        verify( view ).disableVersion( anyString() );
+    }
+
+    @Test
+    public void testSetPomWhenItHasParentAndChildGAVEditIsEnabled() {
+        POM pom = createTestModelWithParent( "group", "artifact", "1.1.1" );
+        setChildGAVEdit( "true" );
+
+        panel.setPOM( pom, false );
+
+        verify( view ).enableGroupID();
+        verify( view ).enableArtifactID();
+        verify( view ).enableVersion();
+        verify( view ).showParentGAV();
+        verify( view, never() ).disableGroupID( anyString() );
+        verify( view, never() ).disableVersion( anyString() );
+    }
+
+    @Test
+    public void testSetPomWhenItDoesNotHaveParent() {
+        POM pom = createTestModel( "group", "artifact", "1.1.1" );
+
+        panel.setPOM( pom, false );
+
+        verify( view ).enableGroupID();
+        verify( view ).enableArtifactID();
+        verify( view ).enableVersion();
+        verify( view ).hideParentGAV();
+        verify( view, never() ).disableGroupID( anyString() );
+        verify( view, never() ).disableVersion( anyString() );
+    }
+
+    private POM createTestModelWithParent( final String group,
+                                           final String artifact,
+                                           final String version ) {
+        POM gavModel = createTestModel( group, artifact, version );
+        gavModel.setParent( new GAV() );
+        return gavModel;
+    }
+
     private POM createTestModel( final String group,
                                  final String artifact,
                                  final String version ) {
@@ -180,4 +231,9 @@ public class POMEditorPanelTest {
                                  version ) );
     }
 
+    private void setChildGAVEdit( final String value ) {
+        ApplicationPreferences.setUp( new HashMap<String, String>() {{
+            put( ProjectRepositoryResolver.CHILD_GAV_EDIT_ENABLED, value );
+        }} );
+    }
 }

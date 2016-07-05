@@ -29,16 +29,17 @@ import org.slf4j.LoggerFactory;
  * Make the "org.guvnor.project.gav.check.disabled" System Property available client-side.
  */
 @ApplicationScoped
-public class GAVCheckPreferencesLoader implements ApplicationPreferencesLoader {
+public class GAVPreferencesLoader implements ApplicationPreferencesLoader {
 
-    private static final Logger log = LoggerFactory.getLogger( GAVCheckPreferencesLoader.class );
+    private static final Logger log = LoggerFactory.getLogger( GAVPreferencesLoader.class );
 
     @Override
     public Map<String, String> load() {
         final Map<String, String> preferences = new HashMap<String, String>();
         addSystemProperty( preferences,
                            ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
-
+        addSystemProperty( preferences,
+                           ProjectRepositoryResolver.CHILD_GAV_EDIT_ENABLED );
         return preferences;
     }
 
