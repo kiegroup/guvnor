@@ -25,16 +25,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class GAVCheckPreferencesLoaderTest {
+public class GAVPreferencesLoaderTest {
 
     private String oldPropertyValue;
 
-    private GAVCheckPreferencesLoader loader;
+    private GAVPreferencesLoader loader;
 
     @Before
     public void setup() {
         oldPropertyValue = System.getProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
-        loader = new GAVCheckPreferencesLoader();
+        loader = new GAVPreferencesLoader();
     }
 
     @After
