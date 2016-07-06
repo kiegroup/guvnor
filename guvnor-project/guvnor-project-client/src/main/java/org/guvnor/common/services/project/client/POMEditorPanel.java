@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.client.util.ApplicationPreferences;
 import org.guvnor.common.services.project.model.POM;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -58,18 +59,21 @@ public class POMEditorPanel
 
         view.setName( model.getName() );
         view.setDescription( model.getDescription() );
+        view.enableGroupID();
+        view.enableArtifactID();
+        view.enableVersion();
+
         if ( model.hasParent() ) {
             view.setParentGAV( model.getParent() );
             view.showParentGAV();
-            view.disableGroupID( "" );
-            view.enableArtifactID();
-            view.disableVersion( "" );
+            if ( !ApplicationPreferences.isChildGAVEditEnabled() ) {
+                view.disableGroupID( "" );
+                view.disableVersion( "" );
+            }
         } else {
             view.hideParentGAV();
-            view.enableGroupID();
-            view.enableArtifactID();
-            view.enableVersion();
         }
+
         view.setGAV( model.getGav() );
         view.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
             @Override
