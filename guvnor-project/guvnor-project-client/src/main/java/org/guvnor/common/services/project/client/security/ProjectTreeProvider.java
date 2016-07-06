@@ -73,12 +73,22 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
     public PermissionNode buildRootNode() {
         PermissionResourceNode rootNode = new PermissionResourceNode(i18n.ProjectResource(), this);
         rootNode.setNodeName(i18n.ProjectsNode());
+        rootNode.setNodeFullName(i18n.ProjectsHelp());
         rootNode.setPositionInTree(rootNodePosition);
-        rootNode.addPermission(newPermission(READ), i18n.ProjectActionRead());
-        rootNode.addPermission(newPermission(UPDATE), i18n.ProjectActionUpdate());
-        rootNode.addPermission(newPermission(DELETE), i18n.ProjectActionDelete());
-        rootNode.addPermission(newPermission(BUILD), i18n.ProjectActionBuild());
-        rootNode.addPermission(newPermission(CREATE), i18n.ProjectActionCreate());
+
+        Permission readPermission = newPermission(READ);
+        Permission updatePermission = newPermission(UPDATE);
+        Permission deletePermission = newPermission(DELETE);
+        Permission buildPermission = newPermission(BUILD);
+        Permission createPermission = newPermission(CREATE);
+
+        rootNode.addPermission(readPermission, i18n.ProjectActionRead());
+        rootNode.addPermission(updatePermission, i18n.ProjectActionUpdate());
+        rootNode.addPermission(deletePermission, i18n.ProjectActionDelete());
+        rootNode.addPermission(buildPermission, i18n.ProjectActionBuild());
+        rootNode.addPermission(createPermission, i18n.ProjectActionCreate());
+
+        rootNode.addDependencies(readPermission, updatePermission, deletePermission, buildPermission);
         return rootNode;
     }
 
@@ -125,10 +135,18 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
     private PermissionNode toPermissionNode(Project p) {
         PermissionLeafNode node = new PermissionLeafNode();
         node.setNodeName(p.getProjectName());
-        node.addPermission(newPermission(p, READ), i18n.ProjectActionRead());
-        node.addPermission(newPermission(p, UPDATE), i18n.ProjectActionUpdate());
-        node.addPermission(newPermission(p, DELETE), i18n.ProjectActionDelete());
-        node.addPermission(newPermission(p, BUILD), i18n.ProjectActionBuild());
+
+        Permission readPermission = newPermission(READ);
+        Permission updatePermission = newPermission(UPDATE);
+        Permission deletePermission = newPermission(DELETE);
+        Permission buildPermission = newPermission(BUILD);
+
+        node.addPermission(readPermission, i18n.ProjectActionRead());
+        node.addPermission(updatePermission, i18n.ProjectActionUpdate());
+        node.addPermission(deletePermission, i18n.ProjectActionDelete());
+        node.addPermission(buildPermission, i18n.ProjectActionBuild());
+
+        node.addDependencies(readPermission, updatePermission, deletePermission, buildPermission);
         return node;
     }
 }

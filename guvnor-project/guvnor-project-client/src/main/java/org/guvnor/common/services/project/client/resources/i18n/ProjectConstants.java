@@ -99,6 +99,8 @@ public interface ProjectConstants
 
     String ProjectsNode();
 
+    String ProjectsHelp();
+
     String ProjectResource();
 
     String ProjectActionRead();
