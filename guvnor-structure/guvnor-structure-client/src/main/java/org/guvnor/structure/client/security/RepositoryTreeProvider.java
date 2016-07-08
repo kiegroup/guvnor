@@ -72,11 +72,20 @@ public class RepositoryTreeProvider implements PermissionTreeProvider {
     public PermissionNode buildRootNode() {
         PermissionResourceNode rootNode = new PermissionResourceNode(i18n.RepositoryResource(), this);
         rootNode.setNodeName(i18n.RepositoriesNode());
+        rootNode.setNodeFullName(i18n.RepositoriesHelp());
         rootNode.setPositionInTree(rootNodePosition);
-        rootNode.addPermission(newPermission(READ), i18n.RepositoryActionRead());
-        rootNode.addPermission(newPermission(UPDATE), i18n.RepositoryActionUpdate());
-        rootNode.addPermission(newPermission(DELETE), i18n.RepositoryActionDelete());
-        rootNode.addPermission(newPermission(CREATE), i18n.RepositoryActionCreate());
+
+        Permission readPermission = newPermission(READ);
+        Permission updatePermission = newPermission(UPDATE);
+        Permission deletePermission = newPermission(DELETE);
+        Permission createPermission = newPermission(CREATE);
+
+        rootNode.addPermission(readPermission, i18n.RepositoryActionRead());
+        rootNode.addPermission(updatePermission, i18n.RepositoryActionUpdate());
+        rootNode.addPermission(deletePermission, i18n.RepositoryActionDelete());
+        rootNode.addPermission(createPermission, i18n.RepositoryActionCreate());
+
+        rootNode.addDependencies(readPermission, updatePermission, deletePermission);
         return rootNode;
     }
 
@@ -123,9 +132,16 @@ public class RepositoryTreeProvider implements PermissionTreeProvider {
     private PermissionNode toPermissionNode(Repository r) {
         PermissionLeafNode node = new PermissionLeafNode();
         node.setNodeName(r.getAlias());
-        node.addPermission(newPermission(r, READ), i18n.RepositoryActionRead());
-        node.addPermission(newPermission(r, UPDATE), i18n.RepositoryActionUpdate());
-        node.addPermission(newPermission(r, DELETE), i18n.RepositoryActionDelete());
+
+        Permission readPermission = newPermission(r, READ);
+        Permission updatePermission = newPermission(r, UPDATE);
+        Permission deletePermission = newPermission(r, DELETE);
+
+        node.addPermission(readPermission, i18n.RepositoryActionRead());
+        node.addPermission(updatePermission, i18n.RepositoryActionUpdate());
+        node.addPermission(deletePermission, i18n.RepositoryActionDelete());
+
+        node.addDependencies(readPermission, updatePermission, deletePermission);
         return node;
     }
 }

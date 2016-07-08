@@ -35,6 +35,8 @@ public interface CommonConstants
 
     String RepositoriesNode();
 
+    String RepositoriesHelp();
+
     String RepositoryResource();
 
     String RepositoryActionRead();
@@ -46,6 +48,8 @@ public interface CommonConstants
     String RepositoryActionCreate();
 
     String OrganizationalUnitsNode();
+
+    String OrganizationalUnitsHelp();
 
     String OrganizationalUnitResource();
 
