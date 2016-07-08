@@ -74,7 +74,6 @@ public class RepositoryStructureModelLoader {
 
         final RepositoryStructureModel model = new RepositoryStructureModel();
 
-
         //if no parent pom.xml present we must check if there are orphan projects for this repository.
         final Set<Project> repositoryProjects = projectService.getProjects( repository,
                                                                             branch );
@@ -161,7 +160,8 @@ public class RepositoryStructureModelLoader {
 
     private ManagedStatus getManagedStatus( final Repository repository ) {
         if ( repository.getEnvironment() != null ) {
-            if ( ( Boolean ) repository.getEnvironment().get( MANAGED ) ) {
+            final Boolean managed = (Boolean) repository.getEnvironment().get( MANAGED );
+            if ( Boolean.TRUE.equals( managed ) ) {
                 return ManagedStatus.MANAGED;
             } else {
                 return ManagedStatus.UNMANAGED;

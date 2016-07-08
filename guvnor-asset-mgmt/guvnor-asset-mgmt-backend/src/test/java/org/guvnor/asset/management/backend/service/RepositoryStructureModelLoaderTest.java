@@ -18,7 +18,6 @@ package org.guvnor.asset.management.backend.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import javax.inject.Inject;
 
 import org.guvnor.asset.management.model.RepositoryStructureModel;
@@ -30,44 +29,43 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.test.TestFileSystem;
 import org.guvnor.test.TestTempFileSystem;
 import org.guvnor.test.WeldJUnitRunner;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( WeldJUnitRunner.class )
+@RunWith(WeldJUnitRunner.class)
 public class RepositoryStructureModelLoaderTest {
 
     @InjectMocks
     RepositoryStructureModelLoader loader;
 
     @Mock
-    private POMService                        pomService;
+    private POMService pomService;
+
     @Mock
     private ProjectService<? extends Project> projectService;
+
     @Mock
-    private ManagedStatusUpdater              managedStatusUpdater;
+    private ManagedStatusUpdater managedStatusUpdater;
+
     @Mock
-    private MetadataService                   metadataService;
+    private MetadataService metadataService;
 
     @Inject
     private TestTempFileSystem testFileSystem;
 
-    private Path       myprojectMasterBranchRoot;
-    private Path       myProjectPom;
+    private Path myProjectMasterBranchRoot;
+    private Path myProjectPom;
     private Repository repository;
 
     @Before
@@ -76,10 +74,10 @@ public class RepositoryStructureModelLoaderTest {
 
         repository = mock( Repository.class );
         when( repository.getEnvironment() ).thenReturn( null );
-        myprojectMasterBranchRoot = testFileSystem.createTempDirectory( "/myproject" );
+        myProjectMasterBranchRoot = testFileSystem.createTempDirectory( "/myproject" );
 
         myProjectPom = testFileSystem.createTempFile( "myproject/pom.xml" );
-        when( repository.getBranchRoot( "master" ) ).thenReturn( myprojectMasterBranchRoot );
+        when( repository.getBranchRoot( "master" ) ).thenReturn( myProjectMasterBranchRoot );
     }
 
     @After
@@ -175,6 +173,34 @@ public class RepositoryStructureModelLoaderTest {
                                                             true );
     }
 
+    @Test
+    public void testLoadRepositoryStructureModelWithNoEnvironmentEntries() throws Exception {
+        final RepositoryStructureModel model = loader.load( repository,
+                                                            "master",
+                                                            false );
+
+        assertNull( model );
+    }
+
+    @Test
+    public void testLoadRepositoryStructureModelWithRepositoryManagedStatusNotSet() throws Exception {
+        final HashMap<String, Object> map = new HashMap<>();
+        when( repository.getEnvironment() ).thenReturn( map );
+
+        final RepositoryStructureModel model = loader.load( repository,
+                                                            "master",
+                                                            false );
+
+        assertNull( model.getPOM() );
+        assertNull( model.getPOMMetaData() );
+        assertNull( model.getPathToPOM() );
+        assertTrue( model.getModules().isEmpty() );
+        assertTrue( model.getModulesProject().isEmpty() );
+        assertTrue( model.getOrphanProjects().isEmpty() );
+        assertTrue( model.getOrphanProjectsPOM().isEmpty() );
+        assertFalse( model.isManaged() );
+    }
+
     private void addMyProjectToRepositoryRoot( final POM pom,
                                                final Metadata metadata,
                                                final String... moduleNames ) {
@@ -183,11 +209,11 @@ public class RepositoryStructureModelLoaderTest {
             modules.add( moduleName );
         }
 
-        final Project project = new Project( myprojectMasterBranchRoot,
+        final Project project = new Project( myProjectMasterBranchRoot,
                                              myProjectPom,
                                              "myproject",
                                              modules );
-        when( projectService.resolveToParentProject( myprojectMasterBranchRoot ) ).thenReturn( project );
+        when( projectService.resolveToParentProject( myProjectMasterBranchRoot ) ).thenReturn( project );
 
         when( pomService.load( myProjectPom ) ).thenReturn( pom );
         when( metadataService.getMetadata( myProjectPom ) ).thenReturn( metadata );
