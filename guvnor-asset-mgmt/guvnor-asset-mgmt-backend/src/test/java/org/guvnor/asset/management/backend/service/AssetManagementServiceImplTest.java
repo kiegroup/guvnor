@@ -15,27 +15,36 @@
  */
 package org.guvnor.asset.management.backend.service;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 
-import org.guvnor.asset.management.model.BuildProjectStructureEvent;
 import org.guvnor.asset.management.model.ConfigureRepositoryEvent;
-import org.guvnor.asset.management.model.PromoteChangesEvent;
-import org.guvnor.asset.management.model.ReleaseProjectEvent;
 import org.guvnor.asset.management.service.AssetManagementService;
+import org.guvnor.common.services.project.model.Repository;
+import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.structure.repositories.NewBranchEvent;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssetManagementServiceImplTest {
@@ -44,31 +53,27 @@ public class AssetManagementServiceImplTest {
     private Instance<ProjectService<?>> projectService;
 
     @Mock
-    private ConfigurationService configurationService;
+    private IOService ioService;
+
+    @Mock
+    private POMService pomService;
+
+    @Mock
+    private RepositoryService repositoryService;
 
     private AssetManagementService assetManagementService;
 
     private final List<Object> receivedEvents = new ArrayList<Object>();
+    private final List<Object> receivedBranchEvents = new ArrayList<Object>();
 
-    private Event<ReleaseProjectEvent> releaseProjectEvent = new EventSourceMock<ReleaseProjectEvent>() {
-        @Override
-        public void fire( ReleaseProjectEvent event ) {
-            receivedEvents.add(event);
-        }
-    };
 
-    private Event<PromoteChangesEvent> promoteChangesEvent = new EventSourceMock<PromoteChangesEvent>() {
-        @Override
-        public void fire( PromoteChangesEvent event ) {
-            receivedEvents.add(event);
-        }
-    };
+    private Event<NewBranchEvent> newBranchEvent = new EventSourceMock<NewBranchEvent>() {
 
-    private Event<BuildProjectStructureEvent> buildProjectStructureEvent = new EventSourceMock<BuildProjectStructureEvent>() {
         @Override
-        public void fire( BuildProjectStructureEvent event ) {
-            receivedEvents.add(event);
+        public void fire( NewBranchEvent event ) {
+            receivedBranchEvents.add(event);
         }
+
     };
 
     private Event<ConfigureRepositoryEvent> configureRepositoryEvent = new EventSourceMock<ConfigureRepositoryEvent>() {
@@ -83,11 +88,19 @@ public class AssetManagementServiceImplTest {
     @Before
     public void setup() {
         receivedEvents.clear();
-        assetManagementService = new AssetManagementServiceImpl(configureRepositoryEvent,
-                                                                buildProjectStructureEvent,
-                                                                promoteChangesEvent,
-                                                                releaseProjectEvent,
-                                                                configurationService,
+
+        Path path = Mockito.mock(Path.class);
+        when(path.getFileName()).thenReturn(Mockito.mock(Path.class));
+        when(path.toUri()).thenReturn(URI.create("dummy://test"));
+        when(path.getFileSystem()).thenReturn(Mockito.mock(FileSystem.class));
+
+        when(ioService.get(any(URI.class))).thenReturn(path);
+
+        assetManagementService = new AssetManagementServiceImpl(newBranchEvent,
+                                                                configureRepositoryEvent,
+                                                                pomService,
+                                                                ioService,
+                                                                repositoryService,
                                                                 projectService);
     }
 
@@ -105,119 +118,34 @@ public class AssetManagementServiceImplTest {
 
         Map<String, Object> parameters = eventReceived.getParams();
         assertNotNull(parameters);
-        assertEquals(6, parameters.size());
+        assertEquals(5, parameters.size());
 
         assertTrue(parameters.containsKey("RepositoryName"));
         assertTrue(parameters.containsKey("SourceBranchName"));
         assertTrue(parameters.containsKey("DevBranchName"));
         assertTrue(parameters.containsKey("RelBranchName"));
         assertTrue(parameters.containsKey("Version"));
-        assertTrue(parameters.containsKey("Owner"));
 
         assertEquals("test-repo", parameters.get("RepositoryName"));
         assertEquals("master", parameters.get("SourceBranchName"));
         assertEquals("dev", parameters.get("DevBranchName"));
         assertEquals("release", parameters.get("RelBranchName"));
         assertEquals("1.0.0", parameters.get("Version"));
-        assertEquals("default-executor", parameters.get("Owner"));
+
+        assertEquals(2, receivedBranchEvents.size());
+
+        event = receivedBranchEvents.get(0);
+        assertTrue(event instanceof  NewBranchEvent);
+
+        assertEquals("test-repo", ((NewBranchEvent)event).getRepositoryAlias());
+        assertEquals("dev-1.0.0", ((NewBranchEvent)event).getBranchName());
+
+        event = receivedBranchEvents.get(1);
+        assertTrue(event instanceof  NewBranchEvent);
+
+        assertEquals("test-repo", ((NewBranchEvent)event).getRepositoryAlias());
+        assertEquals("release-1.0.0", ((NewBranchEvent)event).getBranchName());
     }
 
-    @Test
-    public void testBuildProject() {
 
-        assetManagementService.buildProject("test-repo", "master", "my project", "user", "password", "server-url", true);
-
-        assertEquals(1, receivedEvents.size());
-
-        String encodedPassword = "cGFzc3dvcmQ=";
-
-        Object event = receivedEvents.get(0);
-        assertTrue(event instanceof  BuildProjectStructureEvent);
-        BuildProjectStructureEvent eventReceived = (BuildProjectStructureEvent) event;
-
-        Map<String, Object> parameters = eventReceived.getParams();
-        assertNotNull(parameters);
-        assertEquals(7, parameters.size());
-
-        assertTrue(parameters.containsKey("ProjectURI"));
-        assertTrue(parameters.containsKey("BranchName"));
-        assertTrue(parameters.containsKey("Username"));
-        assertTrue(parameters.containsKey("Password"));
-        assertTrue(parameters.containsKey("ExecServerURL"));
-        assertTrue(parameters.containsKey("DeployToRuntime"));
-        assertTrue(parameters.containsKey("Owner"));
-
-        assertEquals("test-repo/my project", parameters.get("ProjectURI"));
-        assertEquals("master", parameters.get("BranchName"));
-        assertEquals("user", parameters.get("Username"));
-        assertEquals(encodedPassword, parameters.get("Password"));
-        assertEquals("server-url", parameters.get("ExecServerURL"));
-        assertEquals(true, parameters.get("DeployToRuntime"));
-        assertEquals("default-executor", parameters.get("Owner"));
-    }
-
-    @Test
-    public void testPromoteChanges() {
-
-        assetManagementService.promoteChanges("test-repo", "master", "release");
-
-        assertEquals(1, receivedEvents.size());
-
-        Object event = receivedEvents.get(0);
-
-        assertTrue(event instanceof  PromoteChangesEvent);
-        PromoteChangesEvent eventReceived = (PromoteChangesEvent) event;
-
-        Map<String, Object> parameters = eventReceived.getParams();
-        assertNotNull(parameters);
-        assertEquals(4, parameters.size());
-
-        assertTrue(parameters.containsKey("RepositoryName"));
-        assertTrue(parameters.containsKey("SourceBranchName"));
-        assertTrue(parameters.containsKey("TargetBranchName"));
-        assertTrue(parameters.containsKey("Owner"));
-
-        assertEquals("test-repo", parameters.get("RepositoryName"));
-        assertEquals("master", parameters.get("SourceBranchName"));
-        assertEquals("release", parameters.get("TargetBranchName"));
-        assertEquals("default-executor", parameters.get("Owner"));
-    }
-
-    @Test
-    public void testReleaseProject() {
-
-        assetManagementService.releaseProject("test-repo", "master", "user", "password", "server-url", true, "1.0.0");
-
-        assertEquals(1, receivedEvents.size());
-
-        String encodedPassword = "cGFzc3dvcmQ=";
-
-        Object event = receivedEvents.get(0);
-        assertTrue(event instanceof  ReleaseProjectEvent);
-        ReleaseProjectEvent eventReceived = (ReleaseProjectEvent) event;
-
-        Map<String, Object> parameters = eventReceived.getParams();
-        assertNotNull(parameters);
-        assertEquals(9, parameters.size());
-
-        assertTrue(parameters.containsKey("ProjectURI"));
-        assertTrue(parameters.containsKey("ValidForRelease"));
-        assertTrue(parameters.containsKey("Username"));
-        assertTrue(parameters.containsKey("Password"));
-        assertTrue(parameters.containsKey("ExecServerURL"));
-        assertTrue(parameters.containsKey("DeployToRuntime"));
-        assertTrue(parameters.containsKey("ToReleaseBranch"));
-        assertTrue(parameters.containsKey("ToReleaseVersion"));
-        assertTrue(parameters.containsKey("Owner"));
-
-        assertEquals("test-repo", parameters.get("ProjectURI"));
-        assertEquals(true, parameters.get("ValidForRelease"));
-        assertEquals("user", parameters.get("Username"));
-        assertEquals(encodedPassword, parameters.get("Password"));
-        assertEquals("server-url", parameters.get("ExecServerURL"));
-        assertEquals(true, parameters.get("DeployToRuntime"));
-        assertEquals("master", parameters.get("ToReleaseBranch"));
-        assertEquals("1.0.0", parameters.get("ToReleaseVersion"));
-        assertEquals("default-executor", parameters.get("Owner"));
-    }
 }

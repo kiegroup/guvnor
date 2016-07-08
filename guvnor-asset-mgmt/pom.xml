@@ -19,7 +19,6 @@
     <module>guvnor-asset-mgmt-api</module>
     <module>guvnor-asset-mgmt-backend</module>
     <module>guvnor-asset-mgmt-client</module>
-    <module>guvnor-asset-mgmt-project</module>
   </modules>
 
 </project>

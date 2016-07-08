@@ -46,6 +46,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.security.RepositoryFeatures;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -63,7 +64,6 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.guvnor.asset.management.security.AssetsMgmtFeatures.*;
 
 @Dependent
 public class CreateRepositoryWizard extends AbstractWizard {
@@ -498,7 +498,7 @@ public class CreateRepositoryWizard extends AbstractWizard {
     }
 
     private void setAssetsManagementGrant() {
-        assetsManagementIsGranted = authorizationManager.authorize( CONFIGURE_REPOSITORY, sessionInfo.getIdentity() );
+        assetsManagementIsGranted = authorizationManager.authorize( RepositoryFeatures.CONFIGURE_REPOSITORY, sessionInfo.getIdentity() );
         infoPage.enableManagedRepoCreation( assetsManagementIsGranted );
     }
 }

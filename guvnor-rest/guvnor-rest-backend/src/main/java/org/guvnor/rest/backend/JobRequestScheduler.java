@@ -15,15 +15,15 @@
 */
 package org.guvnor.rest.backend;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.guvnor.rest.backend.cmd.AbstractJobCommand.JOB_REQUEST_KEY;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.guvnor.asset.management.model.ExecuteOperationEvent;
+import org.guvnor.rest.backend.cmd.AbstractJobCommand;
 import org.guvnor.rest.backend.cmd.AddRepositoryToOrgUnitCmd;
 import org.guvnor.rest.backend.cmd.CompileProjectCmd;
 import org.guvnor.rest.backend.cmd.CreateOrCloneRepositoryCmd;
@@ -46,15 +46,15 @@ import org.guvnor.rest.client.DeleteProjectRequest;
 import org.guvnor.rest.client.DeployProjectRequest;
 import org.guvnor.rest.client.InstallProjectRequest;
 import org.guvnor.rest.client.JobRequest;
+import org.guvnor.rest.client.JobStatus;
 import org.guvnor.rest.client.RemoveOrganizationalUnitRequest;
 import org.guvnor.rest.client.RemoveRepositoryFromOrganizationalUnitRequest;
 import org.guvnor.rest.client.RemoveRepositoryRequest;
 import org.guvnor.rest.client.TestProjectRequest;
 import org.guvnor.rest.client.UpdateOrganizationalUnitRequest;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 
 /**
  * Utility class observing requests for various functions of the REST service
@@ -65,136 +65,131 @@ public class JobRequestScheduler {
     private static final Logger logger = LoggerFactory.getLogger( JobRequestScheduler.class );
 
     @Inject
-    private Event<ExecuteOperationEvent> excuteOperationEvent;
+    private JobResultManager jobResultManager;
 
-    public void createOrCloneRepositoryRequest( CreateOrCloneRepositoryRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", CreateOrCloneRepositoryCmd.class.getName());
+    @Inject
+    private JobRequestHelper jobRequestHelper;
+
+    public void createOrCloneRepositoryRequest( final CreateOrCloneRepositoryRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository", jobRequest.getRepository().getName());
         params.put("Operation", "createOrCloneRepository");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new CreateOrCloneRepositoryCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void removeRepositoryRequest( RemoveRepositoryRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", RemoveRepositoryCmd.class.getName());
+    public void removeRepositoryRequest( final RemoveRepositoryRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository", jobRequest.getRepositoryName());
         params.put("Operation", "removeRepository");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new RemoveRepositoryCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void createProjectRequest( CreateProjectRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", CreateProjectCmd.class.getName());
+    public void createProjectRequest( final CreateProjectRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository", jobRequest.getRepositoryName());
         params.put("Project", jobRequest.getProjectName());
         params.put("Operation", "createProject");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new CreateProjectCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void deleteProjectRequest( DeleteProjectRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", DeleteProjectCmd.class.getName());
+    public void deleteProjectRequest( final DeleteProjectRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository", jobRequest.getRepositoryName());
         params.put("Project", jobRequest.getProjectName());
         params.put("Operation", "deleteProject");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new DeleteProjectCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void compileProjectRequest( CompileProjectRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", CompileProjectCmd.class.getName());
+    public void compileProjectRequest( final CompileProjectRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository", jobRequest.getRepositoryName());
         params.put("Project", jobRequest.getProjectName());
         params.put("Operation", "compileProject");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new CompileProjectCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void installProjectRequest( InstallProjectRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", InstallProjectCmd.class.getName());
+    public void installProjectRequest( final InstallProjectRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository", jobRequest.getRepositoryName());
         params.put("Project", jobRequest.getProjectName());
         params.put("Operation", "installProject");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new InstallProjectCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void testProjectRequest( TestProjectRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", TestProjectCmd.class.getName());
+    public void testProjectRequest( final TestProjectRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository", jobRequest.getRepositoryName());
         params.put("Project", jobRequest.getProjectName());
         params.put("Operation", "testProject");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new TestProjectCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void deployProjectRequest( DeployProjectRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", DeployProjectCmd.class.getName());
+    public void deployProjectRequest( final DeployProjectRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository", jobRequest.getRepositoryName());
         params.put("Project", jobRequest.getProjectName());
         params.put("Operation", "deployProject");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new DeployProjectCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void createOrganizationalUnitRequest( CreateOrganizationalUnitRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", CreateOrgUnitCmd.class.getName());
+    public void createOrganizationalUnitRequest( final CreateOrganizationalUnitRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Operation", "createOrgUnit");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new CreateOrgUnitCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void updateOrganizationalUnitRequest( UpdateOrganizationalUnitRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", UpdateOrgUnitCmd.class.getName());
+    public void updateOrganizationalUnitRequest( final UpdateOrganizationalUnitRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Operation", "updateOrgUnit");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new UpdateOrgUnitCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void addRepositoryToOrganizationalUnitRequest( AddRepositoryToOrganizationalUnitRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", AddRepositoryToOrgUnitCmd.class.getName());
+    public void addRepositoryToOrganizationalUnitRequest( final AddRepositoryToOrganizationalUnitRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository", jobRequest.getRepositoryName());
         params.put("Operation", "addRepositoryToOrgUnit");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new AddRepositoryToOrgUnitCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void removeRepositoryFromOrganizationalUnitRequest( RemoveRepositoryFromOrganizationalUnitRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", RemoveRepositoryFromOrgUnitCmd.class.getName());
+    public void removeRepositoryFromOrganizationalUnitRequest( final RemoveRepositoryFromOrganizationalUnitRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository", jobRequest.getRepositoryName());
         params.put("Operation", "removeRepositoryFromOrgUnit");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new RemoveRepositoryFromOrgUnitCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void removeOrganizationalUnitRequest( RemoveOrganizationalUnitRequest jobRequest ) {
-        Map<String, Object> params = getContext(jobRequest).getData();
-        params.put("CommandClass", RemoveOrgUnitCmd.class.getName());
+    public void removeOrganizationalUnitRequest( final RemoveOrganizationalUnitRequest jobRequest ) {
+        final Map<String, Object> params = getContext(jobRequest);
         params.put("Operation", "removeOrgUnit");
 
-        excuteOperationEvent.fire(new ExecuteOperationEvent(params));
+        scheduleJob(jobRequest, new RemoveOrgUnitCmd(jobRequestHelper, jobResultManager, params));
     }
         
-    protected CommandContext getContext(JobRequest jobRequest) {
-        CommandContext ctx = new CommandContext();
-        ctx.setData(JOB_REQUEST_KEY, jobRequest);
-        ctx.setData("BusinessKey", jobRequest.getJobId());
-        ctx.setData("Retries", 0);
-        ctx.setData("Owner", ExecutorService.EXECUTOR_ID);
+    protected Map<String, Object> getContext(JobRequest jobRequest) {
+        final Map<String, Object> params = new HashMap<String, Object>();
+        params.put(JOB_REQUEST_KEY, jobRequest);
+        params.put("BusinessKey", jobRequest.getJobId());
+        params.put("Retries", 0);
+        return params;
+    }
 
-        return ctx;
+    private void scheduleJob(final JobRequest jobRequest, final AbstractJobCommand command){
+        jobRequest.setStatus(JobStatus.APPROVED);
+        logger.debug("Scheduling job request with id: {} and command class: {}",
+                jobRequest.getJobId(), command.getClass().getName() );
+        SimpleAsyncExecutorService.getDefaultInstance().execute(command);
     }
 
 }

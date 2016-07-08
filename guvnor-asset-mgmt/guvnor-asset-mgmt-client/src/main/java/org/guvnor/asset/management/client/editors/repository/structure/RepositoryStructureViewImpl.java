@@ -27,8 +27,6 @@ import org.guvnor.asset.management.client.editors.project.structure.widgets.Proj
 import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataPresenter;
 import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataView;
 import org.guvnor.asset.management.client.editors.repository.structure.configure.ConfigureScreenPopupViewImpl;
-import org.guvnor.asset.management.client.editors.repository.structure.promote.PromoteScreenPopupViewImpl;
-import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupViewImpl;
 import org.guvnor.common.services.project.model.GAV;
 import org.gwtbootstrap3.client.ui.Row;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
@@ -61,13 +59,7 @@ public class RepositoryStructureViewImpl
     ProjectModulesView modulesView;
 
     @Inject
-    ReleaseScreenPopupViewImpl releaseScreenPopupView;
-
-    @Inject
     ConfigureScreenPopupViewImpl configureScreenPopupView;
-
-    @Inject
-    PromoteScreenPopupViewImpl promoteScreenPopupView;
 
     @Inject
     public RepositoryStructureViewImpl( final RepositoryStructureDataPresenter dataPresenter,
@@ -82,18 +74,8 @@ public class RepositoryStructureViewImpl
     }
 
     @Override
-    public ReleaseScreenPopupViewImpl getReleaseScreenPopupView() {
-        return releaseScreenPopupView;
-    }
-
-    @Override
     public ConfigureScreenPopupViewImpl getConfigureScreenPopupView() {
         return configureScreenPopupView;
-    }
-
-    @Override
-    public PromoteScreenPopupViewImpl getPromoteScreenPopupView() {
-        return promoteScreenPopupView;
     }
 
     @Override

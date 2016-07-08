@@ -31,27 +31,6 @@ public interface AssetManagementService {
                               final String releaseBranch,
                               final String version );
 
-    void buildProject( final String repository,
-                       final String branch,
-                       final String project,
-                       final String userName,
-                       final String password,
-                       final String serverURL,
-                       final Boolean deployToRuntime );
-
-    void promoteChanges( final String repository,
-                         final String sourceBranch,
-                         final String destBranch );
-
-    void releaseProject( final String repository,
-                         final String branch,
-                         final String userName,
-                         final String password,
-                         final String serverURL,
-                         final Boolean deployToRuntime,
-                         final String version );
-
-    boolean supportRuntimeDeployment();
 
     Set<Project> getProjects( final Repository repository,
                               final String branch );

@@ -68,7 +68,7 @@ public class RepositoryChangeEventAdapter implements SocialAdapter<RepositoryCha
         )
                 .withLink( event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
                         event.getRootURI() != null ? event.getRootURI() : "<unknown>" )
-                .withAdicionalInfo( getAdditionalInfo( event ) );
+                .withAdicionalInfo( "" );
     }
 
     @Override
@@ -81,16 +81,4 @@ public class RepositoryChangeEventAdapter implements SocialAdapter<RepositoryCha
         return new ArrayList<String>();
     }
 
-    private String getAdditionalInfo( RepositoryChangeEvent event ) {
-
-        StringBuilder info = new StringBuilder();
-
-        if ( event.getChangeType() == RepositoryChangeEvent.ChangeType.VERSION_CHANGED ) {
-
-            info.append( constants.release_project_version_change_success( event.getRepositoryAlias(),
-                    event.getParams().get( "version" )));
-        }
-
-        return info.toString();
-    }
 }

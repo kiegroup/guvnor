@@ -20,13 +20,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 
 @Portable
-public enum AssetManagementEventTypes
-        implements SocialEventType {
+public enum AssetManagementEventTypes implements SocialEventType {
     BRANCH_CREATED,
-    PROCESS_START,
-    PROCESS_END,
-    ASSETS_PROMOTED,
-    PROJECT_BUILT,
-    PROJECT_DEPLOYED,
     REPOSITORY_CHANGE
 }
