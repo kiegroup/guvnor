@@ -17,6 +17,8 @@ package org.guvnor.structure.repositories;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.sun.corba.se.impl.activation.RepositoryImpl;
@@ -46,21 +48,29 @@ public class RepositoryTreeProviderTest {
     @Mock
     PermissionTree permissionTree;
 
+    @Mock
+    Repository repo1;
+
+    @Mock
+    Repository repo2;
+
     PermissionManager permissionManager;
     RepositoryTreeProvider treeProvider;
-    Repository repo1;
-    Repository repo2;
     PermissionNode rootNode;
 
     @Before
     public void setup() {
         permissionManager = new DefaultPermissionManager();
         treeProvider = new RepositoryTreeProvider(permissionManager, new CallerMock<>(searchService));
-        repo1 =  new GitRepository("repo1");
-        repo2 =  new GitRepository("repo2");
         rootNode = treeProvider.buildRootNode();
         rootNode.setPermissionTree(permissionTree);
 
+        when(repo1.getIdentifier()).thenReturn("r1");
+        when(repo2.getIdentifier()).thenReturn("r2");
+        when(repo1.getAlias()).thenReturn("r1");
+        when(repo2.getAlias()).thenReturn("r2");
+        when(repo1.getResourceType()).thenReturn(Repository.RESOURCE_TYPE);
+        when(repo2.getResourceType()).thenReturn(Repository.RESOURCE_TYPE);
         when(permissionTree.getChildrenResourceIds(any())).thenReturn(null);
         when(searchService.searchByAlias(anyString(), anyInt(), anyBoolean())).thenReturn(Arrays.asList(repo1, repo2));
     }
@@ -76,6 +86,18 @@ public class RepositoryTreeProviderTest {
         rootNode.expand(children -> {
             verify(searchService).searchByAlias(anyString(), anyInt(), anyBoolean());
             for (PermissionNode child : children) {
+                List<Permission> permissionList = child.getPermissionList();
+                assertEquals(permissionList.size(), 3);
+                checkDependencies(child);
+
+                List<String> permissionNames = permissionList.stream()
+                        .map(Permission::getName)
+                        .collect(Collectors.toList());
+
+                assertTrue(permissionNames.contains("repository.read." + child.getNodeName()));
+                assertTrue(permissionNames.contains("repository.update." + child.getNodeName()));
+                assertTrue(permissionNames.contains("repository.delete." + child.getNodeName()));
+
                 assertEquals(child.getPermissionList().size(), 3);
                 checkDependencies(child);
             }

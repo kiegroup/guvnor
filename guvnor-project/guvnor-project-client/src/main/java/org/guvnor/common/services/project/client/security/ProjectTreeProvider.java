@@ -136,10 +136,10 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
         PermissionLeafNode node = new PermissionLeafNode();
         node.setNodeName(p.getProjectName());
 
-        Permission readPermission = newPermission(READ);
-        Permission updatePermission = newPermission(UPDATE);
-        Permission deletePermission = newPermission(DELETE);
-        Permission buildPermission = newPermission(BUILD);
+        Permission readPermission = newPermission(p, READ);
+        Permission updatePermission = newPermission(p, UPDATE);
+        Permission deletePermission = newPermission(p, DELETE);
+        Permission buildPermission = newPermission(p, BUILD);
 
         node.addPermission(readPermission, i18n.ProjectActionRead());
         node.addPermission(updatePermission, i18n.ProjectActionUpdate());
