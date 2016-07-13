@@ -10,7 +10,6 @@
   </parent>
 
   <artifactId>guvnor-asset-mgmt-project</artifactId>
-  <packaging>pom</packaging>
 
   <name>Guvnor - Asset Management Project</name>
   <description>Guvnor - Asset Management Project (includes processes to manage business assets)</description>
@@ -35,6 +34,47 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <!-- Disable the default maven-jar-plugin executions as the main jar will be replaced by the build-migration-maven-plugin (see below) -->
+          <execution>
+            <id>default-jar</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>test-jar</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!-- Disable the default maven-source-plugin executions as the sources jar will be replaced by the build-migration-maven-plugin (see below) -->
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>attach-test-sources</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- This is a hackish way to fix the https://issues.jboss.org/browse/RHBRMS-2447. We want to use the parent POM for this
+           POM as it brings in all the config and more importantly it also ensures the version will get updated automatically
+           when running maven-versions-plugin. On the other hand, at runtime the parent is causing unnecessary trouble.
+           It is not in fact needed and it confuses the KIE Maven integration which then fails to locate the parent
+           (unless proper remote Maven repository in configured).
+
+           The two plugins below (maven-invoker-plugin and build-migration-maven-plugin) are roughly doing the following:
+             1) invoker builds the actual kjar stored as standard Maven project inside src/main/filtered-resources/kjar
+
+             2) build-migration-maven-plugin replaces the original artifacts (main jar, main POM, sources jar) with the ones
+                previously build by the invoker. This is needed to ensure Maven installs/deploys the custom jars/POM which
+                do not have the parent. -->
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration>
@@ -53,20 +93,22 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
+        <groupId>org.commonjava.maven.plugins</groupId>
+        <artifactId>build-migration-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>attach-kjar-to-main-project</id>
-            <phase>package</phase>
+            <id>replace-main-artifact</id>
             <goals>
-              <goal>attach-artifact</goal>
+              <goal>main-artifact</goal>
             </goals>
             <configuration>
+              <mainArtifact>${project.build.outputDirectory}/kjar/target/${project.artifactId}-${project.version}.jar</mainArtifact>
+              <mainPom>${project.build.outputDirectory}/kjar/pom.xml</mainPom>
               <artifacts>
                 <artifact>
-                  <file>${project.build.outputDirectory}/kjar/target/${project.artifactId}-${project.version}.jar</file>
+                  <file>${project.build.outputDirectory}/kjar/target/${project.artifactId}-${project.version}-sources.jar</file>
                   <type>jar</type>
+                  <classifier>sources</classifier>
                 </artifact>
               </artifacts>
             </configuration>
