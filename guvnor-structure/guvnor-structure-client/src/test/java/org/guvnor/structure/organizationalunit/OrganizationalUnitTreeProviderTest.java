@@ -31,6 +31,8 @@ import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
@@ -44,21 +46,29 @@ public class OrganizationalUnitTreeProviderTest {
     @Mock
     PermissionTree permissionTree;
 
+    @Mock
+    OrganizationalUnit orgUnit1;
+
+    @Mock
+    OrganizationalUnit orgUnit2;
+
     PermissionManager permissionManager;
     OrganizationalUnitTreeProvider treeProvider;
-    OrganizationalUnit orgUnit1;
-    OrganizationalUnit orgUnit2;
     PermissionNode rootNode;
 
     @Before
     public void setup() {
         permissionManager = new DefaultPermissionManager();
         treeProvider = new OrganizationalUnitTreeProvider(permissionManager, new CallerMock<>(searchService));
-        orgUnit1 =  new OrganizationalUnitImpl("orgUnit1", "test", "test");
-        orgUnit2 =  new OrganizationalUnitImpl("orgUnit2", "test", "test");
         rootNode = treeProvider.buildRootNode();
         rootNode.setPermissionTree(permissionTree);
 
+        when(orgUnit1.getIdentifier()).thenReturn("ou1");
+        when(orgUnit2.getIdentifier()).thenReturn("ou2");
+        when(orgUnit1.getName()).thenReturn("ou1");
+        when(orgUnit2.getName()).thenReturn("ou2");
+        when(orgUnit1.getResourceType()).thenReturn(OrganizationalUnit.RESOURCE_TYPE);
+        when(orgUnit2.getResourceType()).thenReturn(OrganizationalUnit.RESOURCE_TYPE);
         when(permissionTree.getChildrenResourceIds(any())).thenReturn(null);
         when(searchService.searchByName(anyString(), anyInt(), anyBoolean())).thenReturn(Arrays.asList(orgUnit1, orgUnit2));
     }
@@ -74,8 +84,17 @@ public class OrganizationalUnitTreeProviderTest {
         rootNode.expand(children -> {
             verify(searchService).searchByName(anyString(), anyInt(), anyBoolean());
             for (PermissionNode child : children) {
-                assertEquals(child.getPermissionList().size(), 3);
+                List<Permission> permissionList = child.getPermissionList();
+                assertEquals(permissionList.size(), 3);
                 checkDependencies(child);
+
+                List<String> permissionNames = permissionList.stream()
+                        .map(Permission::getName)
+                        .collect(Collectors.toList());
+
+                assertTrue(permissionNames.contains("orgunit.read." + child.getNodeName()));
+                assertTrue(permissionNames.contains("orgunit.update." + child.getNodeName()));
+                assertTrue(permissionNames.contains("orgunit.delete." + child.getNodeName()));
             }
         });
     }

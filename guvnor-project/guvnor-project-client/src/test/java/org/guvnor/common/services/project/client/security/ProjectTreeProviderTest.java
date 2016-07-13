@@ -17,6 +17,8 @@ package org.guvnor.common.services.project.client.security;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.model.Project;
@@ -25,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionManager;
@@ -44,21 +47,29 @@ public class ProjectTreeProviderTest {
     @Mock
     PermissionTree permissionTree;
 
+    @Mock
+    Project project1;
+
+    @Mock
+    Project project2;
+
     PermissionManager permissionManager;
     ProjectTreeProvider treeProvider;
-    Project project1;
-    Project project2;
     PermissionNode rootNode;
 
     @Before
     public void setup() {
         permissionManager = new DefaultPermissionManager();
         treeProvider = new ProjectTreeProvider(permissionManager, new CallerMock<>(searchService));
-        project1 =  new Project();
-        project2 =  new Project();
         rootNode = treeProvider.buildRootNode();
         rootNode.setPermissionTree(permissionTree);
 
+        when(project1.getIdentifier()).thenReturn("p1");
+        when(project2.getIdentifier()).thenReturn("p2");
+        when(project1.getProjectName()).thenReturn("p1");
+        when(project2.getProjectName()).thenReturn("p2");
+        when(project1.getResourceType()).thenReturn(Project.RESOURCE_TYPE);
+        when(project2.getResourceType()).thenReturn(Project.RESOURCE_TYPE);
         when(permissionTree.getChildrenResourceIds(any())).thenReturn(null);
         when(searchService.searchByName(anyString(), anyInt(), anyBoolean())).thenReturn(Arrays.asList(project1, project2));
     }
@@ -74,8 +85,18 @@ public class ProjectTreeProviderTest {
         rootNode.expand(children -> {
             verify(searchService).searchByName(anyString(), anyInt(), anyBoolean());
             for (PermissionNode child : children) {
-                assertEquals(child.getPermissionList().size(), 4);
+                List<Permission> permissionList = child.getPermissionList();
+                assertEquals(permissionList.size(), 4);
                 checkDependencies(child);
+
+                List<String> permissionNames = permissionList.stream()
+                        .map(Permission::getName)
+                        .collect(Collectors.toList());
+
+                assertTrue(permissionNames.contains("project.read." + child.getNodeName()));
+                assertTrue(permissionNames.contains("project.update." + child.getNodeName()));
+                assertTrue(permissionNames.contains("project.delete." + child.getNodeName()));
+                assertTrue(permissionNames.contains("project.build." + child.getNodeName()));
             }
         });
     }
