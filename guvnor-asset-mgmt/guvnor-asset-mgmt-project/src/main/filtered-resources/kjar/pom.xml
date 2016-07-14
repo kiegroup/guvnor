@@ -13,6 +13,30 @@
   <name>Guvnor - Asset Management Project</name>
   <description>Guvnor - Asset Management Project (includes processes to manage business assets)</description>
 
+  <url>http://www.kiegroup.org</url>
+  <organization>
+    <name>JBoss by Red Hat</name>
+    <url>http://www.jboss.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:https://github.com/droolsjbpm/guvnor.git</connection>
+    <developerConnection>scm:git:git@github.com:droolsjbpm/guvnor.git</developerConnection>
+    <url>https://github.com/droolsjbpm/guvnor</url>
+  </scm>
+  <developers>
+    <developer>
+      <name>All developers are listed on the team website</name>
+      <url>http://www.drools.org/community/team.html</url>
+    </developer>
+  </developers>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
