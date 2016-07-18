@@ -15,74 +15,67 @@
  */
 package org.guvnor.asset.management.backend.service;
 
+import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.guvnor.asset.management.model.BuildProjectStructureEvent;
 import org.guvnor.asset.management.model.ConfigureRepositoryEvent;
-import org.guvnor.asset.management.model.PromoteChangesEvent;
-import org.guvnor.asset.management.model.ReleaseProjectEvent;
 import org.guvnor.asset.management.service.AssetManagementService;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigType;
-import org.guvnor.structure.server.config.ConfigurationService;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.internal.executor.api.ExecutorService;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
 
 @Service
 @ApplicationScoped
 public class AssetManagementServiceImpl implements AssetManagementService {
 
-    private Event<ConfigureRepositoryEvent> configureRepositoryEvent;
-    private Event<BuildProjectStructureEvent> buildProjectStructureEvent;
-    private Event<PromoteChangesEvent> promoteChangesEvent;
-    private Event<ReleaseProjectEvent> releaseProjectEvent;
-    private ConfigurationService configurationService;
+
     private Instance<ProjectService<?>> projectService;
 
-    private boolean supportRuntimeDeployment;
+    private IOService ioService;
+
+    private POMService pomService;
+
+    private RepositoryService repositoryService;
+
+    private Event<NewBranchEvent> newBranchEvent;
+
+    private Event<ConfigureRepositoryEvent> configureRepositoryEvent;
 
     public AssetManagementServiceImpl() {
         //Zero-parameter constructor for CDI proxies
     }
 
     @Inject
-    public AssetManagementServiceImpl( final Event<ConfigureRepositoryEvent> configureRepositoryEvent,
-                                       final Event<BuildProjectStructureEvent> buildProjectStructureEvent,
-                                       final Event<PromoteChangesEvent> promoteChangesEvent,
-                                       final Event<ReleaseProjectEvent> releaseProjectEvent,
-                                       final ConfigurationService configurationService,
+    public AssetManagementServiceImpl( final Event<NewBranchEvent> newBranchEvent,
+                                       final Event<ConfigureRepositoryEvent> configureRepositoryEvent,
+                                       final POMService pomService,
+                                       @Named("ioStrategy") final IOService ioService,
+                                       final RepositoryService repositoryService,
                                        final Instance<ProjectService<?>> projectService ) {
+        this.ioService = ioService;
+        this.newBranchEvent = newBranchEvent;
         this.configureRepositoryEvent = configureRepositoryEvent;
-        this.buildProjectStructureEvent = buildProjectStructureEvent;
-        this.promoteChangesEvent = promoteChangesEvent;
-        this.releaseProjectEvent = releaseProjectEvent;
-        this.configurationService = configurationService;
+        this.pomService = pomService;
+        this.repositoryService = repositoryService;
         this.projectService = projectService;
-    }
-
-    @PostConstruct
-    public void init() {
-        String supportRuntime = "true";
-        List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
-        for ( ConfigGroup globalConfigGroup : globalConfigGroups ) {
-            if ( "settings".equals( globalConfigGroup.getName() ) ) {
-                supportRuntime = globalConfigGroup.getConfigItemValue( "support.runtime.deploy" );
-                break;
-            }
-        }
-        supportRuntimeDeployment = Boolean.parseBoolean( supportRuntime );
-
     }
 
     @Override
@@ -91,98 +84,61 @@ public class AssetManagementServiceImpl implements AssetManagementService {
                                      final String devBranch,
                                      final String releaseBranch,
                                      final String version ) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put( "RepositoryName",
-                    repository );
-        params.put( "SourceBranchName",
-                    sourceBranch );
-        params.put( "DevBranchName",
-                    devBranch );
-        params.put( "RelBranchName",
-                    releaseBranch );
-        params.put( "Version",
-                    version );
-        params.put("Owner",
-                ExecutorService.EXECUTOR_ID);
-        configureRepositoryEvent.fire( new ConfigureRepositoryEvent( params ) );
+
+        String branchName = devBranch;
+        if (version != null && !version.isEmpty()) {
+            branchName = branchName + "-" + version;
+        }
+        // create development branch
+        Path branchPath = ioService.get(URI.create("default://" + branchName + "@" + repository));
+        Path branchOriginPath = ioService.get(URI.create("default://" + sourceBranch + "@" + repository));
+
+        ioService.copy(branchOriginPath, branchPath);
+
+        // update development branch project
+        Repository repo = repositoryService.getRepository(Paths.convert(branchPath));
+
+        // update all pom.xml files of projects on the dev branch
+        String devVersion = null;
+        if (version == null) {
+            devVersion = "1.0.0";
+        } else if (!version.endsWith("-SNAPSHOT")) {
+            devVersion = version.concat("-SNAPSHOT");
+        } else {
+            devVersion = version;
+        }
+        Set<Project> projects = getProjects(repo);
+
+        for (Project project : projects) {
+
+            POM pom = pomService.load(project.getPomXMLPath());
+            pom.getGav().setVersion(devVersion);
+            pomService.save(project.getPomXMLPath(), pom, null, "Update project version on development branch");
+        }
+
+        newBranchEvent.fire(new NewBranchEvent(repository, branchName, Paths.convert(branchPath), System.currentTimeMillis()) );
+
+        // create release branch
+        branchName = releaseBranch;
+        if (version != null && !version.isEmpty()) {
+            branchName = branchName + "-" + version;
+        }
+        branchPath = ioService.get(URI.create("default://" + branchName + "@" + repository));
+        branchOriginPath = ioService.get(URI.create("default://" + sourceBranch + "@" + repository));
+
+        ioService.copy(branchOriginPath, branchPath);
+
+        newBranchEvent.fire(new NewBranchEvent(repository, branchName, Paths.convert(branchPath), System.currentTimeMillis()) );
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("RepositoryName", repository);
+        parameters.put("SourceBranchName", sourceBranch);
+        parameters.put("DevBranchName", devBranch);
+        parameters.put("RelBranchName", releaseBranch);
+        parameters.put("Version", version);
+        configureRepositoryEvent.fire(new ConfigureRepositoryEvent(parameters));
     }
 
-    @Override
-    public void buildProject( final String repository,
-                              final String branch,
-                              final String project,
-                              final String userName,
-                              final String password,
-                              final String serverURL,
-                              final Boolean deployToRuntime ) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put( "ProjectURI",
-                    repository + "/" + project );
-        params.put( "BranchName",
-                    branch );
-        params.put( "Username",
-                    userName );
-        params.put( "Password",
-                    encodePassword( password ) );
-        params.put( "ExecServerURL",
-                    serverURL );
-        params.put( "DeployToRuntime",
-                    Boolean.TRUE.equals( deployToRuntime ) );
-        params.put("Owner",
-                ExecutorService.EXECUTOR_ID);
-        buildProjectStructureEvent.fire( new BuildProjectStructureEvent( params ) );
-    }
-
-    @Override
-    public void promoteChanges( final String repository,
-                                final String sourceBranch,
-                                final String destBranch ) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put( "RepositoryName",
-                    repository );
-        params.put( "SourceBranchName",
-                    sourceBranch );
-        params.put( "TargetBranchName",
-                    destBranch );
-        params.put("Owner",
-                ExecutorService.EXECUTOR_ID);
-        promoteChangesEvent.fire( new PromoteChangesEvent( params ) );
-    }
-
-    @Override
-    public void releaseProject( final String repository,
-                                final String branch,
-                                final String userName,
-                                final String password,
-                                final String serverURL,
-                                final Boolean deployToRuntime,
-                                final String version ) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put( "ProjectURI",
-                    repository );
-        params.put( "ToReleaseBranch",
-                    branch );
-        params.put( "ToReleaseVersion",
-                    version );
-        params.put( "Username",
-                    userName );
-        params.put( "Password",
-                    encodePassword( password ) );
-        params.put( "ExecServerURL",
-                    serverURL );
-        params.put( "ValidForRelease",
-                    Boolean.TRUE );
-        params.put( "DeployToRuntime",
-                    Boolean.TRUE.equals( deployToRuntime ) );
-        params.put("Owner",
-                ExecutorService.EXECUTOR_ID);
-        releaseProjectEvent.fire( new ReleaseProjectEvent( params ) );
-    }
-
-    @Override
-    public boolean supportRuntimeDeployment() {
-        return supportRuntimeDeployment;
-    }
 
     @Override
     public Set<Project> getProjects( final Repository repository,
@@ -191,11 +147,24 @@ public class AssetManagementServiceImpl implements AssetManagementService {
                                                  branch );
     }
 
-    protected String encodePassword( final String password ) {
-        if ( password == null ) {
-            return null;
+    private Set<Project> getProjects( final Repository repository ) {
+        final Set<Project> authorizedProjects = new HashSet<Project>();
+        if ( repository == null ) {
+            return authorizedProjects;
         }
-        return new String( org.apache.commons.codec.binary.Base64.encodeBase64( password.getBytes() ) );
+        final Path repositoryRoot = Paths.convert(repository.getRoot());
+        final DirectoryStream<Path> nioRepositoryPaths = ioService.newDirectoryStream( repositoryRoot );
+        for ( Path nioRepositoryPath : nioRepositoryPaths ) {
+            if ( Files.isDirectory(nioRepositoryPath) ) {
+                final org.uberfire.backend.vfs.Path projectPath = Paths.convert( nioRepositoryPath );
+                final Project project = projectService.get().resolveProject(projectPath);
+                if ( project != null ) {
+                    authorizedProjects.add( project );
+
+                }
+            }
+        }
+        return authorizedProjects;
     }
 
 }

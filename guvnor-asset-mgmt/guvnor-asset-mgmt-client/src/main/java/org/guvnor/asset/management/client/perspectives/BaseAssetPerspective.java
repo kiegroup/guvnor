@@ -44,9 +44,6 @@ public abstract class BaseAssetPerspective {
         perspective.setName( "Asset Management" );
     
         perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Repository Configuration" ) ) );
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Promote Changes" ) ) );
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Build Management" ) ) );
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Release Management" ) ) );
     
         return perspective;
     }
@@ -62,33 +59,6 @@ public abstract class BaseAssetPerspective {
                             @Override
                             public void execute() {
                                 placeManager.goTo( "Repository Configuration" );
-                            }
-                        } )
-                .endMenu()
-                .menu( "Promote Changes" )
-                .respondsWith(
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.goTo( "Promote Changes" );
-                            }
-                        } )
-                .endMenu()
-                .menu( "Build Management" )
-                .respondsWith(
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.goTo( "Build Management" );
-                            }
-                        } )
-                .endMenu()
-                .menu( "Release Management" )
-                .respondsWith(
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.goTo( "Release Management" );
                             }
                         } )
                 .endMenu()

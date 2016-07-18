@@ -27,12 +27,6 @@ public class Constants {
 
     public static final String CONFIGURE_REPOSITORY = "ConfigureRepository";
 
-    public static final String PROMOTE_ASSETS = "PromoteAssets";
-
-    public static final String BUILD_PROJECT = "BuildProject";
-
-    public static final String RELEASE_PROJECT = "ReleaseProject";
-
     public String getMessage( String key ) {
         return key != null ? messages.getString( key ) : null;
     }
@@ -60,73 +54,4 @@ public class Constants {
     public String configure_repository_branch_created( String branch, String repo ) {
         return getMessage( "ConfigureRepository_branch_created", branch, repo );
     }
-
-    public String promote_assets_start( String repo ) {
-        return getMessage( "PromoteAssets_start", repo );
-    }
-
-    public String promote_assets_end( String repo ) {
-        return getMessage( "PromoteAssets_end", repo );
-    }
-
-    public String promote_assets_failed( String repo, String error ) {
-        return getMessage( "PromoteAssets_failed", repo, error );
-    }
-
-    public String promote_assets_assets_promoted( String repo, String sourceBranch, String targetBranch ) {
-        return getMessage( "PromoteAssets_assets_promoted", repo, sourceBranch, targetBranch );
-    }
-
-    public String build_project_start( String project, String branch, String repo ) {
-        return getMessage( "BuildProject_start", project, branch, repo );
-    }
-
-    public String build_project_build_success( String project ) {
-        return getMessage( "BuildProject_build_success", project );
-    }
-
-    public String build_project_build_failed( String project ) {
-        return getMessage( "BuildProject_build_failed", project );
-    }
-
-    public String build_project_deploy_maven_success( String project ) {
-        return getMessage( "BuildProject_deploy_maven_success", project );
-    }
-
-    public String build_project_deploy_maven_failed( String project ) {
-        return getMessage( "BuildProject_deploy_maven_failed", project );
-    }
-
-    public String build_project_deploy_runtime_success( String project ) {
-        return getMessage( "BuildProject_deploy_runtime_success", project );
-    }
-
-    public String build_project_deploy_runtime_skipped( String project ) {
-        return getMessage( "BuildProject_deploy_runtime_skipped", project );
-    }
-
-    public String build_project_deploy_runtime_failed( String project ) {
-        return getMessage( "BuildProject_deploy_runtime_failed", project );
-    }
-
-    public String build_project_end_with_errors( String project ) {
-        return getMessage( "BuildProject_end_with_errors", project );
-    }
-
-    public String build_project_end( String project ) {
-        return getMessage( "BuildProject_end", project );
-    }
-
-    public String release_project_start( String repo ) {
-        return getMessage( "ReleaseProject_start", repo );
-    }
-
-    public String release_project_version_change_success( String repo, String version ) {
-        return getMessage( "ReleaseProject_version_change_success", repo, version );
-    }
-
-    public String release_project_end( String repo ) {
-        return getMessage( "ReleaseProject_end" );
-    }
-
 }

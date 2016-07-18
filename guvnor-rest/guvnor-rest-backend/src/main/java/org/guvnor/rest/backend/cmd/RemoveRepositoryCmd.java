@@ -15,18 +15,26 @@
 
 package org.guvnor.rest.backend.cmd;
 
+import java.util.Map;
+
 import org.guvnor.rest.backend.JobRequestHelper;
+import org.guvnor.rest.backend.JobResultManager;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
 import org.guvnor.rest.client.RemoveRepositoryRequest;
-import org.kie.api.executor.CommandContext;
 
 public class RemoveRepositoryCmd extends AbstractJobCommand {
 
+    public RemoveRepositoryCmd(final JobRequestHelper jobRequestHelper,
+                                     final JobResultManager jobResultManager,
+                                     final Map<String, Object> context) {
+        super(jobRequestHelper, jobResultManager, context);
+    }
+
     @Override
-    public JobResult internalExecute(CommandContext ctx, JobRequest request) throws Exception {
-        JobRequestHelper helper = getHelper(ctx);
+    public JobResult internalExecute(JobRequest request) throws Exception {
+        JobRequestHelper helper = getHelper();
         RemoveRepositoryRequest jobRequest = (RemoveRepositoryRequest) request;
 
         JobResult result = null;

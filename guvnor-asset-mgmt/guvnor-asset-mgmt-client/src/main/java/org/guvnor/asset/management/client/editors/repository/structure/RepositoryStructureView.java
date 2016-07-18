@@ -20,8 +20,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.asset.management.client.editors.project.structure.widgets.ProjectModulesView;
 import org.guvnor.asset.management.client.editors.project.structure.widgets.RepositoryStructureDataView;
 import org.guvnor.asset.management.client.editors.repository.structure.configure.ConfigureScreenPopupViewImpl;
-import org.guvnor.asset.management.client.editors.repository.structure.promote.PromoteScreenPopupViewImpl;
-import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupViewImpl;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.structure.repositories.Repository;
@@ -59,10 +57,6 @@ public interface RepositoryStructureView
 
     void clear();
 
-    ReleaseScreenPopupViewImpl getReleaseScreenPopupView();
-
     ConfigureScreenPopupViewImpl getConfigureScreenPopupView();
-
-    PromoteScreenPopupViewImpl getPromoteScreenPopupView();
 
 }
