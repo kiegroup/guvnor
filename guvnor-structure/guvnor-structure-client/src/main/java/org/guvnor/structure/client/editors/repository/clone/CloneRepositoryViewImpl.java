@@ -19,8 +19,6 @@ package org.guvnor.structure.client.editors.repository.clone;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -143,12 +141,9 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
             }
         } );
 
-        organizationalUnitDropdown.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( final ChangeEvent event ) {
+        organizationalUnitDropdown.addValueChangeHandler( e -> {
                 organizationalUnitGroup.setValidationState( ValidationState.NONE );
                 organizationalUnitHelpInline.setText( "" );
-            }
         } );
 
         gitURLTextBox.addKeyPressHandler( new KeyPressHandler() {
@@ -361,7 +356,7 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
         nameGroup.setValidationState( ValidationState.NONE );
         nameHelpInline.setText( "" );
 
-        organizationalUnitDropdown.deselectAll();
+        organizationalUnitDropdown.setValue( "" );
         organizationalUnitDropdown.refresh();
         organizationalUnitGroup.setValidationState( ValidationState.NONE );
         organizationalUnitHelpInline.setText( "" );
