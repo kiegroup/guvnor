@@ -30,6 +30,41 @@ public class ValidationMessage {
     private int column;
     private String text;
 
+    public ValidationMessage() {
+    }
+
+    public ValidationMessage( final long id,
+                              final Level level,
+                              final Path path,
+                              final int line,
+                              final int column,
+                              final String text ) {
+        this.id = id;
+        this.level = level;
+        this.path = path;
+        this.line = line;
+        this.column = column;
+        this.text = text;
+    }
+
+    public ValidationMessage( final long id,
+                              final Level level,
+                              final int line,
+                              final int column,
+                              final String text ) {
+        this.id = id;
+        this.level = level;
+        this.line = line;
+        this.column = column;
+        this.text = text;
+    }
+
+    public ValidationMessage( final Level level,
+                              final String text ) {
+        this.level = level;
+        this.text = text;
+    }
+
     public void setId( long id ) {
         this.id = id;
     }
