@@ -36,6 +36,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.scanner.embedder.MavenProjectLoader;
+import org.kie.scanner.embedder.MavenSettings;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
@@ -91,6 +92,7 @@ public class ProjectRepositoryResolverImplTest {
     @AfterClass
     public static void teardownMavenRepository() {
         tearDownMavenRepository( m2Folder );
+        MavenSettings.reinitSettings();
     }
 
     @Test
@@ -110,10 +112,10 @@ public class ProjectRepositoryResolverImplTest {
         when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
         when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         try {
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
@@ -147,10 +149,8 @@ public class ProjectRepositoryResolverImplTest {
                                       metadata );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -178,10 +178,10 @@ public class ProjectRepositoryResolverImplTest {
         when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
         when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         try {
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
@@ -219,10 +219,8 @@ public class ProjectRepositoryResolverImplTest {
                                       metadata );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -250,10 +248,10 @@ public class ProjectRepositoryResolverImplTest {
         when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
         when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         try {
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
@@ -291,10 +289,8 @@ public class ProjectRepositoryResolverImplTest {
                                       metadata );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -322,10 +318,10 @@ public class ProjectRepositoryResolverImplTest {
         when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
         when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         try {
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
@@ -359,10 +355,8 @@ public class ProjectRepositoryResolverImplTest {
                                       metadata );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -390,10 +384,10 @@ public class ProjectRepositoryResolverImplTest {
         when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
         when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         try {
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
@@ -431,23 +425,21 @@ public class ProjectRepositoryResolverImplTest {
                                       metadata );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_NewGAV_NotInstalledNotDeployed() {
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         try {
             final GAV gav = new GAV( "org.guvnor",
                                      "test",
                                      "0.0.5" );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav );
@@ -456,16 +448,14 @@ public class ProjectRepositoryResolverImplTest {
                           metadata.size() );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_NewGAV_IsInstalledNotDeployed() {
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -481,7 +471,7 @@ public class ProjectRepositoryResolverImplTest {
                                      "test",
                                      "0.0.6" );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -500,16 +490,14 @@ public class ProjectRepositoryResolverImplTest {
                                       metadata );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_NewGAV_IsInstalledIsDeployed() {
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
@@ -536,7 +524,7 @@ public class ProjectRepositoryResolverImplTest {
                                      "test",
                                      "0.0.7" );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -561,16 +549,14 @@ public class ProjectRepositoryResolverImplTest {
 
         } finally {
             tearDownMavenRepository( remoteRepositoryFolder );
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_NewGAV_NotInstalledIsDeployed() {
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
@@ -597,7 +583,7 @@ public class ProjectRepositoryResolverImplTest {
                                      "test",
                                      "0.0.8" );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -615,16 +601,14 @@ public class ProjectRepositoryResolverImplTest {
 
         } finally {
             tearDownMavenRepository( remoteRepositoryFolder );
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_NewGAV_IsInstalledIsDeployed_Filtered() {
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
@@ -651,7 +635,7 @@ public class ProjectRepositoryResolverImplTest {
                                      "test",
                                      "0.0.9" );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -679,10 +663,8 @@ public class ProjectRepositoryResolverImplTest {
 
         } finally {
             tearDownMavenRepository( remoteRepositoryFolder );
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -707,10 +689,10 @@ public class ProjectRepositoryResolverImplTest {
         when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
         when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         try {
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav,
@@ -720,10 +702,8 @@ public class ProjectRepositoryResolverImplTest {
                           metadata.size() );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -731,7 +711,7 @@ public class ProjectRepositoryResolverImplTest {
     public void testGetRepositoriesResolvingArtifact_ExplicitGAV_IsInstalledNotDeployed() {
         final Project project = mock( Project.class );
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -751,7 +731,7 @@ public class ProjectRepositoryResolverImplTest {
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
             when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -771,10 +751,8 @@ public class ProjectRepositoryResolverImplTest {
                                       metadata );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -782,7 +760,7 @@ public class ProjectRepositoryResolverImplTest {
     public void testGetRepositoriesResolvingArtifact_ExplicitGAV_IsInstalledIsDeployed() {
         final Project project = mock( Project.class );
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
@@ -813,7 +791,7 @@ public class ProjectRepositoryResolverImplTest {
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
             when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -843,10 +821,8 @@ public class ProjectRepositoryResolverImplTest {
 
         } finally {
             tearDownMavenRepository( remoteRepositoryFolder );
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -854,7 +830,7 @@ public class ProjectRepositoryResolverImplTest {
     public void testGetRepositoriesResolvingArtifact_ExplicitGAV_NotInstalledIsDeployed() {
         final Project project = mock( Project.class );
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
@@ -885,7 +861,7 @@ public class ProjectRepositoryResolverImplTest {
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
             when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -920,10 +896,8 @@ public class ProjectRepositoryResolverImplTest {
 
         } finally {
             tearDownMavenRepository( remoteRepositoryFolder );
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -931,7 +905,7 @@ public class ProjectRepositoryResolverImplTest {
     public void testGetRepositoriesResolvingArtifact_ExplicitGAV_IsInstalledIsDeployed_Filtered() {
         final Project project = mock( Project.class );
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
@@ -962,7 +936,7 @@ public class ProjectRepositoryResolverImplTest {
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
             when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -991,10 +965,8 @@ public class ProjectRepositoryResolverImplTest {
 
         } finally {
             tearDownMavenRepository( remoteRepositoryFolder );
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -1016,10 +988,10 @@ public class ProjectRepositoryResolverImplTest {
         when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
         when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         try {
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( pomXml );
@@ -1028,10 +1000,8 @@ public class ProjectRepositoryResolverImplTest {
                           metadata.size() );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -1039,7 +1009,7 @@ public class ProjectRepositoryResolverImplTest {
     public void testGetRepositoriesResolvingArtifact_ImplicitGAV_IsInstalledNotDeployed() {
         final Project project = mock( Project.class );
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1055,7 +1025,7 @@ public class ProjectRepositoryResolverImplTest {
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
             when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -1074,10 +1044,8 @@ public class ProjectRepositoryResolverImplTest {
                                       metadata );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -1085,7 +1053,7 @@ public class ProjectRepositoryResolverImplTest {
     public void testGetRepositoriesResolvingArtifact_ImplicitGAV_IsInstalledIsDeployed() {
         final Project project = mock( Project.class );
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
@@ -1112,7 +1080,7 @@ public class ProjectRepositoryResolverImplTest {
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
             when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -1141,10 +1109,8 @@ public class ProjectRepositoryResolverImplTest {
 
         } finally {
             tearDownMavenRepository( remoteRepositoryFolder );
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -1152,7 +1118,7 @@ public class ProjectRepositoryResolverImplTest {
     public void testGetRepositoriesResolvingArtifact_ImplicitGAV_NotInstalledIsDeployed() {
         final Project project = mock( Project.class );
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
@@ -1179,7 +1145,7 @@ public class ProjectRepositoryResolverImplTest {
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
             when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -1212,10 +1178,8 @@ public class ProjectRepositoryResolverImplTest {
 
         } finally {
             tearDownMavenRepository( remoteRepositoryFolder );
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
@@ -1223,7 +1187,7 @@ public class ProjectRepositoryResolverImplTest {
     public void testGetRepositoriesResolvingArtifact_ImplicitGAV_IsInstalledIsDeployed_Filtered() {
         final Project project = mock( Project.class );
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
@@ -1250,7 +1214,7 @@ public class ProjectRepositoryResolverImplTest {
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
             when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
@@ -1278,16 +1242,14 @@ public class ProjectRepositoryResolverImplTest {
 
         } finally {
             tearDownMavenRepository( remoteRepositoryFolder );
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_Disabled1() {
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
         final String oldConflictingGavCheckSetting = System.getProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
 
         try {
@@ -1304,7 +1266,7 @@ public class ProjectRepositoryResolverImplTest {
                                      "test",
                                      "0.0.20" );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
             System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
                                 "true" );
@@ -1324,16 +1286,10 @@ public class ProjectRepositoryResolverImplTest {
                           metadata.size() );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
-            if ( oldConflictingGavCheckSetting != null ) {
-                System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
-                                    oldConflictingGavCheckSetting );
-            } else {
-                System.clearProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
+            resetSystemProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
+                                 oldConflictingGavCheckSetting );
         }
     }
 
@@ -1341,7 +1297,7 @@ public class ProjectRepositoryResolverImplTest {
     public void testGetRepositoriesResolvingArtifact_Disabled2() {
         final Project project = mock( Project.class );
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
         final String oldConflictingGavCheckSetting = System.getProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
 
         try {
@@ -1362,7 +1318,7 @@ public class ProjectRepositoryResolverImplTest {
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
             when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
             System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
                                 "true" );
@@ -1383,16 +1339,10 @@ public class ProjectRepositoryResolverImplTest {
                           metadata.size() );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
-            if ( oldConflictingGavCheckSetting != null ) {
-                System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
-                                    oldConflictingGavCheckSetting );
-            } else {
-                System.clearProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
+            resetSystemProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
+                                 oldConflictingGavCheckSetting );
         }
     }
 
@@ -1400,7 +1350,7 @@ public class ProjectRepositoryResolverImplTest {
     public void testGetRepositoriesResolvingArtifact_Disabled3() {
         final Project project = mock( Project.class );
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( "kie.maven.settings.custom" );
+        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
         final String oldConflictingGavCheckSetting = System.getProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
 
         try {
@@ -1417,7 +1367,7 @@ public class ProjectRepositoryResolverImplTest {
             when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
             when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
 
-            System.setProperty( "kie.maven.settings.custom",
+            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
             System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
                                 "true" );
@@ -1437,16 +1387,10 @@ public class ProjectRepositoryResolverImplTest {
                           metadata.size() );
 
         } finally {
-            if ( oldSettingsXmlPath != null ) {
-                System.setProperty( "kie.maven.settings.custom",
-                                    oldSettingsXmlPath );
-            }
-            if ( oldConflictingGavCheckSetting != null ) {
-                System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
-                                    oldConflictingGavCheckSetting );
-            } else {
-                System.clearProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
-            }
+            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                 oldSettingsXmlPath );
+            resetSystemProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
+                                 oldConflictingGavCheckSetting );
         }
     }
 
@@ -1460,6 +1404,16 @@ public class ProjectRepositoryResolverImplTest {
             }
         }
         fail( "Repository Id '" + id + "' not found." );
+    }
+
+    private void resetSystemProperty( final String systemPropertyName,
+                                      final String oldSystemPropertyValue ) {
+        if ( oldSystemPropertyValue != null ) {
+            System.setProperty( systemPropertyName,
+                                oldSystemPropertyValue );
+        } else {
+            System.clearProperty( systemPropertyName );
+        }
     }
 
 }
