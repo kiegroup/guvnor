@@ -16,6 +16,7 @@
 
 package org.guvnor.common.services.project.builder.service;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -35,6 +36,16 @@ public interface BuildService {
      * @param project
      */
     BuildResults build( final Project project );
+
+    /**
+     * Full build without deployment. The resource from file system will be updated with the inputStream.
+     * @param project
+     * @param resource
+     * @param inputStream
+     */
+    BuildResults build( final Project project,
+                        final Path resource,
+                        final InputStream inputStream );
 
     /**
      * Full build with deployment
@@ -93,6 +104,13 @@ public interface BuildService {
      * @param resource
      */
     IncrementalBuildResults updatePackageResource( final Path resource );
+
+    /**
+     * Update an existing Package resource in the build with a new content.
+     * @param resource
+     */
+    IncrementalBuildResults updatePackageResource( final Path resource,
+                                                   final InputStream inputStream );
 
     /**
      * Process a batch of changes to a Project's resources.
