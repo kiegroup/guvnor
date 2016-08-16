@@ -61,6 +61,7 @@
     <module>guvnor-message-console</module>
     <module>guvnor-organizationalunit-manager</module>
     <module>guvnor-asset-mgmt</module>
+    <module>guvnor-ala</module>
   </modules>
 
   <build>
