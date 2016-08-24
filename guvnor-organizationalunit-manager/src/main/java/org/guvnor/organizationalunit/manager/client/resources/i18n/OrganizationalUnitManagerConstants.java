@@ -69,4 +69,15 @@ public interface OrganizationalUnitManagerConstants
 
     String Wait();
 
+    String OrganizationalUnitInformation();
+
+    String Name();
+
+    String OrganizationalUnitName();
+
+    String DefaultGroupID();
+
+    String Owner();
+
+    String OrganizationalUnitOwner();
 }
