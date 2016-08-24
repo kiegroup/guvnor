@@ -23,7 +23,7 @@
 
     <b:Form type="HORIZONTAL">
         <b:FieldSet>
-            <b:Legend>Organizational Unit Information</b:Legend>
+            <b:Legend text='{i18n.OrganizationalUnitInformation}'></b:Legend>
             <b:FormGroup ui:field="nameGroup">
                 <b:FormLabel for="name" addStyleNames="col-md-4">
                     Name
@@ -37,7 +37,7 @@
                     Default Group ID
                 </p:FormLabelHelp>
                 <b:Column size="MD_8">
-                    <b:TextBox ui:field="defaultGroupIdTextBox" placeholder="Default Group Id..."/>
+                    <b:TextBox ui:field="defaultGroupIdTextBox" placeholder='{i18n.DefaultGroupId}' />
                     <b:HelpBlock ui:field="defaultGroupIdHelpInline"/>
                 </b:Column>
             </b:FormGroup>
@@ -46,7 +46,7 @@
                     Owner
                 </b:FormLabel>
                 <b:Column size="MD_8">
-                    <b:TextBox b:id="owner" ui:field="ownerTextBox" placeholder="Organizational Unit owner..."/>
+                    <b:TextBox b:id="owner" ui:field="ownerTextBox" placeholder='{i18n.OrganizationalUnitOwner}' />
                 </b:Column>
             </b:FormGroup>
         </b:FieldSet>
