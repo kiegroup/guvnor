@@ -60,4 +60,9 @@ public interface CommonConstants
     String OrganizationalUnitActionDelete();
 
     String OrganizationalUnitActionCreate();
+
+    String Loading();
+
+    String Repositories();
+
 }
