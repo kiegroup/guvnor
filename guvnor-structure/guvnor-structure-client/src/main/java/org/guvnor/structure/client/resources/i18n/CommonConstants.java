@@ -30,4 +30,9 @@ public interface CommonConstants
     String copyRepositoryUrl();
 
     String ManagedRepository();
+
+    String Loading();
+
+    String Repositories();
+
 }
