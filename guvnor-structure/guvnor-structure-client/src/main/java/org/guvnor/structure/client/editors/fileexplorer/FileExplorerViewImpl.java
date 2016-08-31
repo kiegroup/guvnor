@@ -27,6 +27,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.guvnor.structure.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.core.client.tree.Tree;
@@ -35,6 +36,9 @@ import org.uberfire.ext.widgets.core.client.tree.TreeItem;
 public class FileExplorerViewImpl
         extends Composite
         implements FileExplorerView {
+
+
+    private CommonConstants constants = CommonConstants.INSTANCE;
 
     TreeItem rootTreeItem = null;
 
@@ -45,13 +49,12 @@ public class FileExplorerViewImpl
     private final Map<Repository, TreeItem> repositoryToTreeItemMap = new HashMap<Repository, TreeItem>();
 
     private static final String REPOSITORY_ID = "repositories";
-    private static final String LAZY_LOAD = "Loading...";
 
     private FileExplorerPresenter presenter = null;
 
     public void init( final FileExplorerPresenter presenter ) {
         this.presenter = presenter;
-        rootTreeItem = tree.addItem( TreeItem.Type.FOLDER, "Repositories" );
+        rootTreeItem = tree.addItem( TreeItem.Type.FOLDER, constants.Repositories() );
         rootTreeItem.setState( TreeItem.State.OPEN );
 
         panel.getElement().getStyle().setFloat(Style.Float.LEFT);
@@ -90,7 +93,7 @@ public class FileExplorerViewImpl
     @Override
     public void reset() {
         rootTreeItem.setUserObject( REPOSITORY_ID );
-        rootTreeItem.addItem( TreeItem.Type.LOADING, LAZY_LOAD );
+        rootTreeItem.addItem( TreeItem.Type.LOADING, constants.Loading() );
         rootTreeItem.removeItems();
         repositoryToTreeItemMap.clear();
     }
@@ -122,7 +125,7 @@ public class FileExplorerViewImpl
     }
 
     private boolean needsLoading( final TreeItem item ) {
-        return item.getChildCount() == 1 && LAZY_LOAD.equals( item.getChild( 0 ).getText() );
+        return item.getChildCount() == 1 && constants.Loading().equals( item.getChild( 0 ).getText() );
     }
 
 }
