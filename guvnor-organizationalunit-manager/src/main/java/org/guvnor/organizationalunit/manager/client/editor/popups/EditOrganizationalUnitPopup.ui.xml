@@ -25,26 +25,20 @@
         <b:FieldSet>
             <b:Legend text='{i18n.OrganizationalUnitInformation}'></b:Legend>
             <b:FormGroup ui:field="nameGroup">
-                <b:FormLabel for="name" addStyleNames="col-md-4">
-                    Name
-                </b:FormLabel>
+                <b:FormLabel for="name" text='{i18n.Name}' addStyleNames="col-md-4" />
                 <b:Column size="MD_8">
                     <b:TextBox b:id="name" ui:field="nameTextBox" enabled="false"/>
                 </b:Column>
             </b:FormGroup>
             <b:FormGroup ui:field="defaultGroupIdGroup">
-                <p:FormLabelHelp for="groupId" addStyleNames="col-md-4" showRequiredIndicator="true" helpContent="{i18n.GroupIdInfo}" helpTitle="{i18n.DefaultGroupId}">
-                    Default Group ID
-                </p:FormLabelHelp>
+                <p:FormLabelHelp for="groupId" text='{i18n.DefaultGroupID}'  addStyleNames="col-md-4" showRequiredIndicator="true" helpContent="{i18n.GroupIdInfo}" helpTitle="{i18n.DefaultGroupId}" />
                 <b:Column size="MD_8">
                     <b:TextBox ui:field="defaultGroupIdTextBox" placeholder='{i18n.DefaultGroupId}' />
                     <b:HelpBlock ui:field="defaultGroupIdHelpInline"/>
                 </b:Column>
             </b:FormGroup>
             <b:FormGroup ui:field="ownerGroup">
-                <b:FormLabel for="owner" addStyleNames="col-md-4">
-                    Owner
-                </b:FormLabel>
+                <b:FormLabel for="owner" text='{i18n.Owner}'  addStyleNames="col-md-4" />
                 <b:Column size="MD_8">
                     <b:TextBox b:id="owner" ui:field="ownerTextBox" placeholder='{i18n.OrganizationalUnitOwner}' />
                 </b:Column>
