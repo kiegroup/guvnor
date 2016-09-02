@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -32,13 +31,11 @@ public interface GenericValidator {
      * to determine classes within the project's dependencies. The resourcePath is used to determine the
      * containing project. The resourcePath is also used to determine the destination Path in Kie VFS.
      * @param resourcePath The VFS Path of the resource
-     * @param resource An InputStream containing the resource to be validated
-     * @param supportingFileFilters An optional list of filters to add
+     * @param content An String containing the resource to be validated
      * supporting files for the validation (e.g. .dslr needs .dsl)
      * @return
      */
     List<ValidationMessage> validate( final Path resourcePath,
-                                      final InputStream resource,
-                                      final DirectoryStream.Filter<org.uberfire.java.nio.file.Path>... supportingFileFilters );
+                                      final String content );
 
 }
