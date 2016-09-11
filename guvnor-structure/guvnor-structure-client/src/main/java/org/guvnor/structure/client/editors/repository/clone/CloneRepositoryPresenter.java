@@ -88,7 +88,6 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
     public void init() {
         view.init( this,
                    isOuMandatory() );
-        setAssetsManagementGrant();
     }
 
     @AfterInitialization
@@ -238,6 +237,7 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
 
     public void showForm() {
         view.reset();
+        setAssetsManagementGrant();
         view.show();
     }
 

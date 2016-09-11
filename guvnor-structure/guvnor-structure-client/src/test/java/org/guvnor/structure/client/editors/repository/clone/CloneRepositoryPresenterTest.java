@@ -392,6 +392,14 @@ public class CloneRepositoryPresenterTest {
     }
 
     @Test
+    public void testAssetsManagementGrantCalled() {
+        presenter.showForm();
+
+        verify( view,
+                times( 1 ) ).enableManagedRepoCreation(anyBoolean());
+    }
+
+    @Test
     public void testCloneManagedRepository() {
         when( view.isGitUrlEmpty() ).thenReturn( false );
         when( repositoryPreferences.isOUMandatory() ).thenReturn( false );
