@@ -24,9 +24,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -35,11 +37,16 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.guvnor.common.services.shared.file.upload.FileManagerFields;
 import org.guvnor.common.services.shared.file.upload.FileOperation;
+import org.jboss.errai.bus.client.api.QueueSession;
+import org.jboss.errai.bus.server.api.SessionProvider;
+import org.jboss.errai.bus.server.servlet.ServletBootstrapUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.server.BaseFilteredServlet;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
@@ -52,6 +59,16 @@ public abstract class AbstractFileServlet extends BaseFilteredServlet {
     private static final SimpleDateFormat sdf = new SimpleDateFormat( "dd-MMM-yyyy HH:mm:ss" );
 
     private static final long serialVersionUID = 510l;
+
+    public static final String DEFAULT_CLIENT_ID = "0";
+
+    protected SessionProvider sessionProvider;
+
+    @Override
+    public void init( final ServletConfig config ) throws ServletException {
+        super.init( config );
+        sessionProvider = ServletBootstrapUtil.getService( config ).getSessionProvider();
+    }
 
     /**
      * Load resource
@@ -294,4 +311,23 @@ public abstract class AbstractFileServlet extends BaseFilteredServlet {
         }
     }
 
+    protected String getSessionId( final HttpServletRequest request,
+                                   final SessionProvider sessionProvider ) {
+        final HttpSession session = request.getSession( true );
+        final String clientId = getClientId( request );
+        final QueueSession queueSession = sessionProvider.createOrGetSession( session, clientId );
+
+        return queueSession.getSessionId();
+    }
+
+    private String getClientId( final HttpServletRequest request ) {
+        String clientId = request.getParameter( "clientId" );
+
+        if ( clientId == null ) {
+            log.warn( "Parameter named 'clientId' should be not null!" );
+            clientId = DEFAULT_CLIENT_ID;
+        }
+
+        return clientId;
+    }
 }
