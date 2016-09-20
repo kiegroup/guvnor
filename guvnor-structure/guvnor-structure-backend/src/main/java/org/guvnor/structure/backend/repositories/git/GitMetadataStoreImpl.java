@@ -60,12 +60,13 @@ public class GitMetadataStoreImpl implements GitMetadataStore {
     public void write( String name,
                        String origin ) {
 
-        GitMetadataImpl repositoryMetadata = (GitMetadataImpl) this.read( name ).orElse( new GitMetadataImpl( name, origin ) );
-        GitMetadataImpl newRepositoryMetadata = new GitMetadataImpl( name, origin, repositoryMetadata.getForks() );
-
+        GitMetadataImpl repositoryMetadata = (GitMetadataImpl) this.read( name ).orElse( new GitMetadataImpl( name ) );
         this.removeForkFromOrigin( repositoryMetadata );
+        GitMetadataImpl newRepositoryMetadata = new GitMetadataImpl( name, repositoryMetadata.getForks() );
 
         if ( isStorableOrigin( origin ) ) {
+            newRepositoryMetadata = new GitMetadataImpl( name, origin, repositoryMetadata.getForks() );
+
             GitMetadataImpl originMetadata = (GitMetadataImpl) this.read( origin ).orElse( new GitMetadataImpl( origin ) );
             List<String> forks = originMetadata.getForks();
             forks.add( name );
@@ -102,7 +103,7 @@ public class GitMetadataStoreImpl implements GitMetadataStore {
     private void removeOriginFromForks( final GitMetadata metadata ) {
         List<GitMetadata> forks = this.getForks( metadata );
         forks.forEach( fork -> {
-            GitMetadata newForkImpl = new GitMetadataImpl( fork.getName(), "", fork.getForks() );
+            GitMetadata newForkImpl = new GitMetadataImpl( fork.getName(), fork.getForks() );
             this.storage.write( buildPath( fork.getName() ), newForkImpl );
         } );
     }

@@ -117,6 +117,14 @@ public class GitMetadataImplStoreTest {
     }
 
     @Test
+    public void testWriteWithNullOrigin() {
+
+        metadataStore.write( "test/repo", null );
+        assertEquals( "test/repo", metadatas.get( "/test/repo.metadata" ).getName() );
+
+    }
+
+    @Test
     public void testWriteTwoForks() {
 
         metadataStore.write( "test/repo", "origin/repo" );
