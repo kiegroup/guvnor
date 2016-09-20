@@ -19,7 +19,7 @@ package org.guvnor.structure.backend.repositories.git;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.guvnor.structure.repositories.impl.metadata.GitMetadataImpl;
+import org.guvnor.structure.repositories.impl.GitMetadataImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -119,7 +119,8 @@ public class GitMetadataImplStoreTest {
     @Test
     public void testWriteWithNullOrigin() {
 
-        metadataStore.write( "test/repo", null );
+        String origin = null;
+        metadataStore.write( "test/repo", origin );
         assertEquals( "test/repo", metadatas.get( "/test/repo.metadata" ).getName() );
 
     }

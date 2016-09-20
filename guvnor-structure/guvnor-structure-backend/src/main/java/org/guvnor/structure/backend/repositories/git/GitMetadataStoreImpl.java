@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import org.guvnor.structure.repositories.GitMetadata;
 import org.guvnor.structure.repositories.GitMetadataStore;
-import org.guvnor.structure.repositories.impl.metadata.GitMetadataImpl;
+import org.guvnor.structure.repositories.impl.GitMetadataImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.io.object.ObjectStorage;
@@ -70,11 +70,17 @@ public class GitMetadataStoreImpl implements GitMetadataStore {
             GitMetadataImpl originMetadata = (GitMetadataImpl) this.read( origin ).orElse( new GitMetadataImpl( origin ) );
             List<String> forks = originMetadata.getForks();
             forks.add( name );
-            this.storage.write( buildPath( origin ), new GitMetadataImpl( origin, originMetadata.getOrigin(), forks ) );
+            this.write( origin, new GitMetadataImpl( origin, originMetadata.getOrigin(), forks ) );
         }
 
-        this.storage.write( buildPath( name ), newRepositoryMetadata );
+        this.write( name, newRepositoryMetadata );
 
+    }
+
+    @Override
+    public void write( String name,
+                       GitMetadata metadata ) {
+        this.storage.write( buildPath( name ), metadata );
     }
 
     @Override

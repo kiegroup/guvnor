@@ -22,30 +22,37 @@ public interface GitMetadataStore {
 
     /**
      * Writes the meta information about a repository without an origin.
-     * The repository and the origin must be in organizationalUnit/repositoryName format
-     * @param name The name of the repository in organizationalUnit/repositoryName format
+     * @param name The name of the repository.
      */
     void write( String name );
 
     /**
      * Writes the meta information about a repository and its origin.
-     * The repository and the origin must be in organizationalUnit/repositoryName format
-     * @param name The name of the repository in organizationalUnit/repositoryName format
+     * The origin must be in organizationalUnit/repositoryName format
+     * @param name The name of the repository
      * @param origin The name of the origin in organizationalUnit/repositoryName format
      */
     void write( String name,
                 String origin );
 
     /**
+     * Writes the meta information about a repository.
+     * @param name The name of the repository
+     * @param metadata The metadata object that stores information about repository
+     */
+    void write( String name,
+                GitMetadata metadata );
+
+    /**
      * Reads the git metadata from repository.
-     * @param name the repository name in organizationalUnit/repositoryName format
+     * @param name the repository name
      * @return
      */
     Optional<GitMetadata> read( String name );
 
     /**
      * Deletes that repository meta information and removes its reference from the origin and forks.
-     * @param name The repository name in organizationalUnit/repositoryName format
+     * @param name The repository name
      */
     void delete( String name );
 }
