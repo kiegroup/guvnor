@@ -16,7 +16,6 @@
 
 package org.guvnor.common.services.project.builder.service;
 
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -38,16 +37,6 @@ public interface BuildService {
     BuildResults build( final Project project );
 
     /**
-     * Full build without deployment. The resource from file system will be updated with the inputStream.
-     * @param project
-     * @param resource
-     * @param inputStream
-     */
-    BuildResults build( final Project project,
-                        final Path resource,
-                        final InputStream inputStream );
-
-    /**
      * Full build with deployment
      * @param project
      */
@@ -55,8 +44,10 @@ public interface BuildService {
 
     /**
      * Full build with forced deployment to Maven. Pre-existing artifacts with the same GAV will be overwritten.
-     * @param project Project to be built
-     * @param mode The deployment mode
+     * @param project
+     *         Project to be built
+     * @param mode
+     *         The deployment mode
      */
     BuildResults buildAndDeploy( final Project project,
                                  final DeploymentMode mode );
@@ -72,9 +63,12 @@ public interface BuildService {
     /**
      * Full build with forced deployment to Maven. Pre-existing artifacts with the same GAV will be overwritten. This
      * method has the ability to suppress any post operations handlers to ensure * that only build and deploy is invoked
-     * @param project Project to be built
-     * @param suppressHandlers true to ignore post-processing
-     * @param mode The deployment mode
+     * @param project
+     *         Project to be built
+     * @param suppressHandlers
+     *         true to ignore post-processing
+     * @param mode
+     *         The deployment mode
      */
     BuildResults buildAndDeploy( final Project project,
                                  final boolean suppressHandlers,
@@ -104,13 +98,6 @@ public interface BuildService {
      * @param resource
      */
     IncrementalBuildResults updatePackageResource( final Path resource );
-
-    /**
-     * Update an existing Package resource in the build with a new content.
-     * @param resource
-     */
-    IncrementalBuildResults updatePackageResource( final Path resource,
-                                                   final InputStream inputStream );
 
     /**
      * Process a batch of changes to a Project's resources.
