@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Optional;
 import javax.inject.Inject;
 
-import org.uberfire.java.nio.file.FileSystems;
 import org.guvnor.ala.config.Config;
 import org.guvnor.ala.pipeline.FunctionConfigExecutor;
 import org.guvnor.ala.registry.SourceRegistry;
@@ -29,6 +28,7 @@ import org.guvnor.ala.source.Source;
 import org.guvnor.ala.source.git.GitRepository;
 import org.guvnor.ala.source.git.UFLocal;
 import org.guvnor.ala.source.git.config.GitConfig;
+import org.uberfire.java.nio.file.FileSystems;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -37,33 +37,41 @@ public class GitConfigExecutor implements FunctionConfigExecutor<GitConfig, Sour
     private final SourceRegistry sourceRegistry;
 
     @Inject
-    public GitConfigExecutor( final SourceRegistry sourceRegistry ) {
+    public GitConfigExecutor(final SourceRegistry sourceRegistry) {
         this.sourceRegistry = sourceRegistry;
     }
 
     @Override
-    public Optional<Source> apply( final GitConfig gitConfig ) {
-        checkNotEmpty( "repo-name parameter is mandatory", gitConfig.getRepoName() );
-        final URI uri = URI.create( "git://" + gitConfig.getRepoName() );
-        FileSystems.newFileSystem( uri, new HashMap<String, Object>() {
-            {
-                if ( gitConfig.getOrigin() != null && !gitConfig.getOrigin().isEmpty() ) {
-                    put( "origin", gitConfig.getOrigin() );
-                } else {
-                    put( "init", Boolean.TRUE );
+    public Optional<Source> apply(final GitConfig gitConfig) {
+        checkNotEmpty("repo-name parameter is mandatory", gitConfig.getRepoName());
+        if (Boolean.parseBoolean(gitConfig.getCreateRepo())) {
+            final URI uri = URI.create("git://" + gitConfig.getRepoName());
+            FileSystems.newFileSystem(uri, new HashMap<String, Object>() {
+                {
+                    if (gitConfig.getOrigin() != null && !gitConfig.getOrigin().isEmpty()) {
+                        put("origin", gitConfig.getOrigin());
+                    } else {
+                        put("init", Boolean.TRUE);
+                    }
+                    if (gitConfig.getOutPath() != null && !gitConfig.getOutPath().isEmpty()) {
+                        put("out-dir", gitConfig.getOutPath());
+                    }
                 }
-                if ( gitConfig.getOutPath() != null && !gitConfig.getOutPath().isEmpty() ) {
-                    put( "out-dir", gitConfig.getOutPath() );
-                }
+            });
+        } else {
+            final URI uri = URI.create("git://" + gitConfig.getRepoName() + "?sync");
+            try {
+                FileSystems.getFileSystem(uri);
+            } catch (Exception ex) {
+                // The repo might not support sync, because it doesn't have an origin, we should move forward for now.
             }
-        } );
-
-        final GitRepository gitRepository = ( GitRepository ) new UFLocal().getRepository( gitConfig.getRepoName(), Collections.emptyMap() );
-        final Optional<Source> source_ = Optional.ofNullable( gitRepository.getSource( gitConfig.getBranch() != null && !gitConfig.getBranch().isEmpty() ? gitConfig.getBranch() : "master" ) );
-        if ( source_.isPresent() ) {
+        }
+        final GitRepository gitRepository = (GitRepository) new UFLocal().getRepository(gitConfig.getRepoName(), Collections.emptyMap());
+        final Optional<Source> source_ = Optional.ofNullable(gitRepository.getSource((gitConfig.getBranch() != null && !gitConfig.getBranch().isEmpty()) ? gitConfig.getBranch() : "master"));
+        if (source_.isPresent()) {
             Source source = source_.get();
-            sourceRegistry.registerRepositorySources( source.getPath(), gitRepository );
-            sourceRegistry.registerSource( gitRepository, source );
+            sourceRegistry.registerRepositorySources(source.getPath(), gitRepository);
+            sourceRegistry.registerSource(gitRepository, source);
         }
         return source_;
     }

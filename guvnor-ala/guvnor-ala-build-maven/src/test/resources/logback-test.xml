@@ -9,12 +9,7 @@
     </encoder>
   </appender>
 
-  <logger name="org.kie" level="INFO"/>
-  <logger name="org.drools" level="INFO"/>
-  <logger name="org.guvnor" level="INFO"/>
-  <logger name="org.guvnor.ala" level="INFO"/>
-
-  <root level="WARN">
+  <root level="INFO">
     <appender-ref ref="consoleAppender" />
   </root>
 

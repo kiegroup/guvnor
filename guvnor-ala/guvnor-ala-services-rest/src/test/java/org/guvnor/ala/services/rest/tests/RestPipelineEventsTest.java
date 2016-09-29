@@ -186,6 +186,7 @@ public class RestPipelineEventsTest {
         Input input = new Input();
 
         input.put( "repo-name", "drools-workshop-events" );
+        input.put( "create-repo", "true" );
         input.put( "branch", "master" );
         input.put( "out-dir", tempPath.getAbsolutePath() );
         input.put( "origin", "https://github.com/salaboy/drools-workshop" );

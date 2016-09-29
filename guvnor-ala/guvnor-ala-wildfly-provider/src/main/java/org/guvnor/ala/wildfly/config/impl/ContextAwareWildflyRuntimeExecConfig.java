@@ -16,13 +16,10 @@
 
 package org.guvnor.ala.wildfly.config.impl;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.guvnor.ala.build.Project;
 import org.guvnor.ala.build.maven.model.MavenBinary;
-import org.guvnor.ala.build.maven.util.RepositoryVisitor;
 import org.guvnor.ala.config.CloneableConfig;
 import org.guvnor.ala.pipeline.ContextAware;
 import org.guvnor.ala.runtime.providers.ProviderId;
@@ -38,7 +35,6 @@ public class ContextAwareWildflyRuntimeExecConfig implements
     private Map<String, ?> context;
     private ProviderId providerId;
     private String warPath;
-    private final Map<Project, RepositoryVisitor> projectVisitorMap = new HashMap<>();
 
     public ContextAwareWildflyRuntimeExecConfig() {
     }
@@ -55,10 +51,9 @@ public class ContextAwareWildflyRuntimeExecConfig implements
         MavenBinary binary = (MavenBinary) context.get( "binary" );
         String binaryPath = binary.getProject().getExpectedBinary();
 
-        String projectPath = getRepositoryVisitor( binary.getProject() ).getProjectFolder().getAbsolutePath();
         WildflyProvider provider = (WildflyProvider) context.get( "wildfly-provider" );
         this.providerId = provider;
-        this.warPath = projectPath + "/target/" + binaryPath;
+        this.warPath = binary.getProject().getTempDir() + "/target/" + binaryPath;
 
     }
 
@@ -70,17 +65,6 @@ public class ContextAwareWildflyRuntimeExecConfig implements
     @Override
     public String getWarPath() {
         return warPath;
-    }
-
-    private RepositoryVisitor getRepositoryVisitor( final Project project ) {
-        final RepositoryVisitor projectVisitor;
-        if ( projectVisitorMap.containsKey( project ) ) {
-            projectVisitor = projectVisitorMap.get( project );
-        } else {
-            projectVisitor = new RepositoryVisitor( project );
-            projectVisitorMap.put( project, projectVisitor );
-        }
-        return projectVisitor;
     }
 
     @Override

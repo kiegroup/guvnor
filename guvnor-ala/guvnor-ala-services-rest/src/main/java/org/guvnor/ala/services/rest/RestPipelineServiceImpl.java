@@ -85,7 +85,7 @@ public class RestPipelineServiceImpl implements PipelineService {
     @Override
     public PipelineConfigsList getPipelineConfigs( Integer page, Integer pageSize, String sort, boolean sortOrder ) throws BusinessException {
         final List<PipelineConfig> configs = new ArrayList<>();
-        pipelineRegistry.getAllPipelines(page, pageSize, sort, sortOrder).stream().forEach( ( p ) -> {
+        pipelineRegistry.getPipelines(page, pageSize, sort, sortOrder).stream().forEach( ( p ) -> {
             configs.add( p.getConfig() );
         } );
         return new PipelineConfigsList( configs );

@@ -46,7 +46,7 @@ public class WildflyAccessInterfaceImpl
 
         return new WildflyClient( wildflyProvider.getId(),
                 wildflyProvider.getUser(), wildflyProvider.getPassword(),
-                wildflyProvider.getHostId(), Integer.valueOf( wildflyProvider.getManagementPort() ) );
+                wildflyProvider.getHostId(), Integer.valueOf( wildflyProvider.getPort() ), Integer.valueOf( wildflyProvider.getManagementPort() ) );
     }
 
     @Override

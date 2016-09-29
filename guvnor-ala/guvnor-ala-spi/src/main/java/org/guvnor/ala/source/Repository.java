@@ -17,15 +17,15 @@
 package org.guvnor.ala.source;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.guvnor.ala.exceptions.SourcingException;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.*;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
-import org.guvnor.ala.exceptions.SourcingException;
 
 /**
  * Type to represent a Source Code Repository
  */
-@JsonTypeInfo( use = CLASS, include = WRAPPER_OBJECT )
+@JsonTypeInfo(use = CLASS, include = WRAPPER_OBJECT)
 public interface Repository {
 
     /*
@@ -57,5 +57,5 @@ public interface Repository {
     * @see Source
      */
     Source getSource( final String root,
-            final String... path ) throws SourcingException;
+                      final String... path ) throws SourcingException;
 }

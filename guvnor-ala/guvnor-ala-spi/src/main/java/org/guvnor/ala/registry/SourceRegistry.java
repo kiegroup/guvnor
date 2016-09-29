@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.guvnor.ala.registry;
 
 import java.util.List;
 
-import org.uberfire.java.nio.file.Path;
 import org.guvnor.ala.build.Project;
 import org.guvnor.ala.source.Repository;
 import org.guvnor.ala.source.Source;
+import org.uberfire.java.nio.file.Path;
 
 /*
  * Represents the SourceRegistry source, projects & repositories are registered
@@ -90,12 +89,12 @@ public interface SourceRegistry {
     List<Project> getAllProjects( final Repository repo );
 
     /*
-     * Get All the registered project filtered by name
+     * Get  registered project by  name
      * @param String project name
-     * @return List<Project> 
+     * @return Project
      * @see Project
      */
-    List<Project> getProjectByName( final String projectName );
+    Project getProjectByName( final String projectName );
 
     /*
      * Get Repository filtered by Id

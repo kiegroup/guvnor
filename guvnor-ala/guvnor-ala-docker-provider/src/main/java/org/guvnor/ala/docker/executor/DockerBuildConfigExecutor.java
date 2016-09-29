@@ -18,6 +18,7 @@ package org.guvnor.ala.docker.executor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.guvnor.ala.build.maven.model.MavenBuild;
 import org.guvnor.ala.config.BuildConfig;
@@ -32,15 +33,16 @@ public class DockerBuildConfigExecutor implements BiFunctionConfigExecutor<Maven
     public Optional<BuildConfig> apply( final MavenBuild buildConfig,
                                         final DockerBuildConfig dockerBuildConfig ) {
         final List<String> goals = new ArrayList<>( buildConfig.getGoals() );
+        final Properties properties = new Properties( buildConfig.getProperties() );
         if ( dockerBuildConfig.push() ) {
-            goals.add( "-Ddocker.username=" + dockerBuildConfig.getUsername() );
-            goals.add( "-Ddocker.password=" + dockerBuildConfig.getPassword() );
+            properties.put( "docker.username", dockerBuildConfig.getUsername() );
+            properties.put( "docker.password", dockerBuildConfig.getPassword() );
         }
         goals.add( "docker:build" );
         if ( dockerBuildConfig.push() ) {
             goals.add( "docker:push" );
         }
-        return Optional.of( new DockerBuildImpl( buildConfig.getProject(), goals ) );
+        return Optional.of( new DockerBuildImpl( buildConfig.getProject(), goals, properties ) );
     }
 
     @Override

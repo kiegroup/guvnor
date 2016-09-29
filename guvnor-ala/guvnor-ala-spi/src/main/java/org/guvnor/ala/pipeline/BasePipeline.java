@@ -35,6 +35,12 @@ public class BasePipeline implements Pipeline {
         this.stages = stages;
     }
 
+    public BasePipeline( String name, List<Stage> stages, PipelineConfig config ) {
+        this.name = name;
+        this.stages = stages;
+        this.config = config;
+    }
+
     @Override
     public String getName() {
         return name;

@@ -69,8 +69,6 @@ public class RuntimeEndpointsTestIT {
         allRuntimes = proxy.getRuntimes( 0, 10, "", true );
         assertEquals( 1, allRuntimes.getItems().size() );
 
-        proxy.startRuntime( newRuntime );
-
         allRuntimes = proxy.getRuntimes( 0, 10, "", true );
         assertEquals( 1, allRuntimes.getItems().size() );
 

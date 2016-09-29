@@ -69,7 +69,6 @@ public class PipelineEndpointsTestIT {
     }
 
     @Test
-
     public void checkService() {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target( APP_URL );
@@ -110,6 +109,7 @@ public class PipelineEndpointsTestIT {
         Input input = new Input();
 
         input.put( "repo-name", "drools-workshop" );
+        input.put( "create-repo", "true" );
         input.put( "branch", "master" );
         input.put( "out-dir", tempPath.getAbsolutePath() );
         input.put( "origin", "https://github.com/salaboy/drools-workshop" );

@@ -20,28 +20,32 @@ import org.guvnor.ala.config.CloneableConfig;
 import org.guvnor.ala.source.git.config.GitConfig;
 
 public class GitConfigImpl implements GitConfig,
-                                      CloneableConfig<GitConfig> {
+        CloneableConfig<GitConfig> {
 
     private String outPath;
     private String branch;
     private String origin;
     private String repoName;
+    private String createRepo;
 
     public GitConfigImpl() {
         this.outPath = GitConfig.super.getOutPath();
         this.branch = GitConfig.super.getBranch();
         this.origin = GitConfig.super.getOrigin();
         this.repoName = GitConfig.super.getRepoName();
+        this.createRepo = GitConfig.super.getCreateRepo();
     }
 
     public GitConfigImpl( final String outPath,
-                          final String branch,
-                          final String origin,
-                          final String repoName ) {
+            final String branch,
+            final String origin,
+            final String repoName, 
+            final String createRepo ) {
         this.outPath = outPath;
         this.branch = branch;
         this.origin = origin;
         this.repoName = repoName;
+        this.createRepo = createRepo;
     }
 
     @Override
@@ -81,17 +85,28 @@ public class GitConfigImpl implements GitConfig,
         this.repoName = repoName;
     }
 
+    public String getCreateRepo() {
+        return createRepo;
+    }
+
+    public void setCreateRepo( String createRepo ) {
+        this.createRepo = createRepo;
+    }
+
     @Override
     public String toString() {
-        return "GitConfigImpl{" + "outPath=" + outPath + ", branch=" + branch + ", origin=" + origin + ", repoName=" + repoName + '}';
+        return "GitConfigImpl{" + "outPath=" + outPath + ", branch=" + branch + ", origin=" + origin + ", repoName=" + repoName + ", createRepo=" + createRepo + '}';
     }
+
+    
 
     @Override
     public GitConfig asNewClone( final GitConfig source ) {
         return new GitConfigImpl( source.getOutPath(),
-                                  source.getBranch(),
-                                  source.getOrigin(),
-                                  source.getRepoName() );
+                source.getBranch(),
+                source.getOrigin(),
+                source.getRepoName(), 
+                source.getCreateRepo() );
     }
 
 }

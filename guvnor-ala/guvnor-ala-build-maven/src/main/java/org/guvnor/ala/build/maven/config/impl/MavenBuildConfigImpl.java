@@ -18,20 +18,26 @@ package org.guvnor.ala.build.maven.config.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
 import org.guvnor.ala.build.maven.config.MavenBuildConfig;
 import org.guvnor.ala.config.CloneableConfig;
 
 public class MavenBuildConfigImpl implements MavenBuildConfig,
-                                                    CloneableConfig<MavenBuildConfig> {
+                                             CloneableConfig<MavenBuildConfig> {
 
     private List<String> goals;
+    private Properties properties;
 
     public MavenBuildConfigImpl() {
         goals = new ArrayList<>( MavenBuildConfig.super.getGoals() );
+        properties = new Properties( MavenBuildConfig.super.getProperties() );
     }
 
-    public MavenBuildConfigImpl( final List<String> goals ) {
+    public MavenBuildConfigImpl( final List<String> goals,
+                                 final Properties properties ) {
         this.goals = new ArrayList<>( goals );
+        this.properties = new Properties( properties );
     }
 
     @Override
@@ -44,12 +50,24 @@ public class MavenBuildConfigImpl implements MavenBuildConfig,
     }
 
     @Override
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties( final Properties properties ) {
+        this.properties = properties;
+    }
+
+    @Override
     public String toString() {
-        return "MavenBuildConfigImpl{" + "goals=" + goals + '}';
+        return "MavenBuildConfigImpl{" +
+                "goals=" + goals +
+                ", properties=" + properties +
+                '}';
     }
 
     @Override
     public MavenBuildConfig asNewClone( final MavenBuildConfig source ) {
-        return new MavenBuildConfigImpl( source.getGoals() );
+        return new MavenBuildConfigImpl( source.getGoals(), source.getProperties() );
     }
 }

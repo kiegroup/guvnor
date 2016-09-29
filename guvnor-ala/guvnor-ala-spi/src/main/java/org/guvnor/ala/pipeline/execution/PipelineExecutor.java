@@ -104,6 +104,7 @@ public class PipelineExecutor {
                     continuePipeline( context, eventListeners );
                 } );
             } catch ( final Throwable t ) {
+                t.printStackTrace();
                 final RuntimeException exception = new RuntimeException( "An error occurred while executing the " + ( stage == null ? "null" : stage.getName() ) + " stage.", t );
                 propagateEvent( new OnErrorStageExecutionEvent( context.getPipeline(), stage, exception ), eventListeners );
                 propagateEvent( new OnErrorPipelineExecutionEvent( context.getPipeline(), stage, exception ), eventListeners );

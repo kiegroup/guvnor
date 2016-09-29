@@ -50,22 +50,27 @@ public class WildflyProviderImpl extends BaseProvider implements WildflyProvider
 
     }
 
+    @Override
     public String getHostId() {
         return hostId;
     }
 
+    @Override
     public String getPort() {
         return port;
     }
 
+    @Override
     public String getManagementPort() {
         return managementPort;
     }
 
+    @Override
     public String getUser() {
         return user;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }

@@ -24,9 +24,9 @@ import org.guvnor.ala.pipeline.Stage;
 */
 public class OnErrorPipelineExecutionEvent implements PipelineEvent {
 
-    private Pipeline pipeline;
-    private Stage stage;
-    private Throwable error;
+    private final Pipeline pipeline;
+    private final Stage stage;
+    private final Throwable error;
 
     public OnErrorPipelineExecutionEvent( final Pipeline pipeline,
                                           final Stage stage,

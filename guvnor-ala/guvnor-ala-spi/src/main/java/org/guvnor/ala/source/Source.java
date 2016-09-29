@@ -16,8 +16,8 @@
 
 package org.guvnor.ala.source;
 
-import org.uberfire.java.nio.file.Path;
 import org.guvnor.ala.config.SourceConfig;
+import org.uberfire.java.nio.file.Path;
 
 public interface Source extends SourceConfig {
 
