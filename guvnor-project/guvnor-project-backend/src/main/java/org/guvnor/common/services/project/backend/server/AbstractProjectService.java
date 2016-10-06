@@ -337,5 +337,18 @@ public abstract class AbstractProjectService<T extends Project>
             throw ExceptionUtilities.handleException( e );
         }
     }
+    @Override
+    public void reImport( final Path pathToPomXML ) {
 
+        try {
+            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
+            final Path path = Paths.convert( projectDirectory );
+            final Project project = resourceResolver.resolveProject( path );
+
+            invalidateDMOCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, project, path ) );
+
+        } catch ( final Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
 }
