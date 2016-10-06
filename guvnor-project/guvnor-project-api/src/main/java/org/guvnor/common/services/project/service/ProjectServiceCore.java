@@ -97,4 +97,5 @@ public interface ProjectServiceCore<T> {
                final String newName,
                final String comment );
 
+    void reImport( final Path pathToPomXML );
 }
