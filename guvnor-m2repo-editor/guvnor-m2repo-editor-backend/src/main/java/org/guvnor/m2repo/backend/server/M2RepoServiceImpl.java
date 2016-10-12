@@ -74,11 +74,15 @@ public class M2RepoServiceImpl implements M2RepoService,
 
     @Override
     public String getPomText( final String path ) {
-        return repository.getPomText( path );
+        checkPathTraversal(path);
+        
+        return GuvnorM2Repository.getPomText( path );
     }
 
     @Override
     public GAV loadGAVFromJar( final String path ) {
+        checkPathTraversal(path);
+        
         final GAV gav = repository.loadGAVFromJar( path );
         return gav;
     }
@@ -231,6 +235,21 @@ public class M2RepoServiceImpl implements M2RepoService,
             } else {
                 return baseURL + "/maven2/";
             }
+        }
+    }
+    
+    /**
+     * Asserts that the path does not cause traversal.
+     * 
+     * @param path
+     *            the path to check, must not be null.
+     */
+    private void checkPathTraversal( String path ) {
+        // There's no more decoding / unescaping happening on the String beyond 
+        // this point so we don't have to check for %u002e, %252e, etc., as these 
+        // paths would result in a FileNotFoundException anyway.
+        if ( path.contains( ".." ) ) {
+            throw new RuntimeException( "Invalid path provided!" );
         }
     }
 
