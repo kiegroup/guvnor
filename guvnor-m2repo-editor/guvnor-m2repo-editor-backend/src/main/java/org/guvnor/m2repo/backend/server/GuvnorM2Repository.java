@@ -42,6 +42,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -584,11 +585,14 @@ public class GuvnorM2Repository {
     public static String getPomText( final String path ) {
         final File file = new File( M2_REPO_DIR,
                                     path );
-        if ( isJar( path ) || isKJar( path ) ) {
-            return loadPomFromJar( file );
 
-        } else {
+        final String normalizedPath = FilenameUtils.normalize( file.getPath() );
+        if ( isJar( normalizedPath ) || isKJar( normalizedPath ) ) {
+            return loadPomFromJar( file );
+        } else if ( isDeployedPom( normalizedPath ) ) {
             return loadPom( file );
+        } else {
+            throw new RuntimeException( "Not a valid jar, kjar or pom file: " + path );
         }
     }
 

@@ -19,6 +19,8 @@ package org.guvnor.m2repo.utils;
  * Utilities to validate file being uploaded to Guvnor's M2 Repository
  */
 public class FileNameUtilities {
+    
+    private FileNameUtilities() {}
 
     /**
      * Is the file valid; i.e. either a JAR, KJAR or pom.xml file.
@@ -35,10 +37,7 @@ public class FileNameUtilities {
      * @return true if the file is a JAR file
      */
     public static boolean isJar( final String fileName ) {
-        if ( fileName == null || fileName.isEmpty() ) {
-            return false;
-        }
-        return fileName.toLowerCase().endsWith( ".jar" );
+        return endsWith( fileName, ".jar" );
     }
 
     /**
@@ -51,10 +50,7 @@ public class FileNameUtilities {
      * @return true if the file is a KJAR file
      */
     public static boolean isKJar( final String fileName ) {
-        if ( fileName == null || fileName.isEmpty() ) {
-            return false;
-        }
-        return fileName.toLowerCase().endsWith( ".kjar" );
+        return endsWith( fileName, ".kjar" );
     }
 
     /**
@@ -63,10 +59,33 @@ public class FileNameUtilities {
      * @return true if the file is a pom.xml file
      */
     public static boolean isPom( final String fileName ) {
-        if ( fileName == null || fileName.isEmpty() ) {
-            return false;
-        }
-        return fileName.toLowerCase().endsWith( "pom.xml" );
+        return endsWith( fileName, "pom.xml" );
+    }
+    
+    /**
+     * Returns whether or not the provided path points to a .pom file.
+     * 
+     * @param path
+     *            path to the file
+     * @return true if the path points to a .pom file, otherwise false.
+     */
+    public static boolean isDeployedPom( final String path ) {
+        return endsWith( path, ".pom" );
+    }
+    
+    /**
+     * Returns whether or not the provided path ends in the provided suffix.
+     * 
+     * @param path
+     *            path to the file
+     * @param suffix
+     *           the suffix to check
+     * @return true if the path ends in the provided suffix, otherwise false.
+     */
+    private static boolean endsWith( final String path,
+                                     final String suffix ) {
+        
+        return path != null && !path.trim().isEmpty() && path.toLowerCase().endsWith( suffix );
     }
 
 }

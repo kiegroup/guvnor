@@ -24,7 +24,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.aether.RepositorySystem;
@@ -41,7 +40,9 @@ import org.hamcrest.Description;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.kie.scanner.Aether;
 import org.mockito.Matchers;
@@ -56,13 +57,13 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.doReturn;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Aether.class)
@@ -79,6 +80,9 @@ public class GuvnorM2RepositoryTest {
     private GuvnorM2Repository repo;
     private RepositorySystem repositorySystem = mock( RepositorySystem.class );
     private RepositorySystemSession repositorySystemSession = mock( RepositorySystemSession.class );
+    
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     @BeforeClass
     public static void setupClass() throws IOException, URISyntaxException {
@@ -258,4 +262,16 @@ public class GuvnorM2RepositoryTest {
         spiedRepo.listFiles( filter, fileFormats );
         verify( spiedRepo ).getFiles( wildcards );
     }
+    
+    @Test
+    public void testGetPomTextVerifiesPath() {
+        GuvnorM2Repository.getPomText( "dir/name.pom" );
+        GuvnorM2Repository.getPomText( "dir/name.kjar" );
+        GuvnorM2Repository.getPomText( "dir/name.kjar/" );
+        GuvnorM2Repository.getPomText( "dir/name.jar" );
+        
+        exception.expect( RuntimeException.class );
+        GuvnorM2Repository.getPomText( "dir/name.foo" );
+    }
+    
 }
