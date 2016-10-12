@@ -584,11 +584,14 @@ public class GuvnorM2Repository {
     public static String getPomText( final String path ) {
         final File file = new File( M2_REPO_DIR,
                                     path );
-        if ( isJar( path ) || isKJar( path ) ) {
-            return loadPomFromJar( file );
 
-        } else {
+        final String normalizedPath = file.toPath().normalize().toString();
+        if ( isJar( normalizedPath ) || isKJar( normalizedPath ) ) {
+            return loadPomFromJar( file );
+        } else if ( isDeployedPom( normalizedPath ) ) {
             return loadPom( file );
+        } else {
+            throw new RuntimeException( "Not a valid jar, kjar or pom file: " + path );
         }
     }
 
