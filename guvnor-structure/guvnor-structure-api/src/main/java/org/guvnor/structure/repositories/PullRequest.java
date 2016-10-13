@@ -16,12 +16,9 @@
 
 package org.guvnor.structure.repositories;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Represents a Pull Request information to be tracked as metadata.
  */
-@Portable
 public interface PullRequest {
 
     /**

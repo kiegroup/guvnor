@@ -19,9 +19,11 @@ package org.guvnor.structure.repositories.impl;
 import org.guvnor.structure.repositories.PullRequest;
 import org.guvnor.structure.repositories.PullRequestStatus;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
+@Portable
 public class PullRequestImpl implements PullRequest {
 
     private long id;
