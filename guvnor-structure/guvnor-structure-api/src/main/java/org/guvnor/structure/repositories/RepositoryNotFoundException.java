@@ -16,7 +16,14 @@
 
 package org.guvnor.structure.repositories;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
+@Portable
 public class RepositoryNotFoundException extends RuntimeException {
+
+    public RepositoryNotFoundException() {
+        super();
+    }
 
     public RepositoryNotFoundException( String message ) {
         super( message );

@@ -16,12 +16,15 @@
 
 package org.guvnor.structure.repositories;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 /**
  * Represents pull request status.
  * OPEN: when the PR is created.
  * MERGED: when the merge process ends.
  * REJECTED: when
  */
+@Portable
 public enum PullRequestStatus {
     MERGED, CLOSED, REJECTED, OPEN
 }

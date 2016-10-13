@@ -21,6 +21,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class PullRequestAlreadyExistsException extends RuntimeException {
 
+    public PullRequestAlreadyExistsException() {
+        super();
+    }
+
     public PullRequestAlreadyExistsException( PullRequest pullRequest ) {
         super( "The pull request already exists = " + pullRequest );
     }
