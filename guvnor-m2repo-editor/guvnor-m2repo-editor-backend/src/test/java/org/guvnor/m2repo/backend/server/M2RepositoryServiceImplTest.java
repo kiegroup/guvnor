@@ -39,15 +39,21 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.paging.PageResponse;
 
-import static org.guvnor.m2repo.model.HTMLFileManagerFields.*;
-import static org.junit.Assert.*;
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_OK;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class M2RepositoryServiceImplTest {
 
@@ -61,6 +67,9 @@ public class M2RepositoryServiceImplTest {
     private M2RepoServiceImpl service;
     private HttpPostHelper helper;
     private java.lang.reflect.Method helperMethod;
+    
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     @BeforeClass
     public static void setupClass() {
@@ -593,6 +602,22 @@ public class M2RepositoryServiceImplTest {
         assertFalse( repo.containsArtifact( new GAV( "org.guvnor:non-existing-jar:1.0.Final" ) ) );
     }
 
+    @Test
+    public void testGetPomTextRejectsTraversingPaths() {
+        service.getPomText( "dir/name.jar" );
+        service.getPomText( "dir/name.kjar" );
+        service.getPomText( "dir/name.pom" );
+        
+        exception.expect( RuntimeException.class );
+        service.getPomText( "path/../file.pom" );
+    }
+    
+    @Test
+    public void testLoadGAVFromJarRejectsTraversingPaths() {
+        exception.expect( RuntimeException.class );
+        service.loadGAVFromJar( "path/../file.jar" );
+    }
+    
     private PageResponse<JarListPageRow> assertFilesCount( final String filters,
                                                            final List<String> fileFormats,
                                                            final String dataSourceName,
