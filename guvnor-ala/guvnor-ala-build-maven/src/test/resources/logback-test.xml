@@ -9,6 +9,8 @@
     </encoder>
   </appender>
 
+  <logger name="org.guvnor.ala" level="DEBUG"/>
+
   <root level="INFO">
     <appender-ref ref="consoleAppender" />
   </root>

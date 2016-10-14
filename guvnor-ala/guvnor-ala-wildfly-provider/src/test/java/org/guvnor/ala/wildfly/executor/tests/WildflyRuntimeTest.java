@@ -32,7 +32,7 @@ import org.arquillian.cube.CubeController;
 import org.arquillian.cube.HostIp;
 import org.arquillian.cube.requirement.ArquillianConditionalRunner;
 import org.guvnor.ala.build.maven.model.MavenBinary;
-import org.guvnor.ala.build.maven.model.impl.MavenBinaryImpl;
+import org.guvnor.ala.build.maven.model.impl.MavenProjectBinaryImpl;
 import org.guvnor.ala.build.maven.model.impl.MavenProjectImpl;
 import org.guvnor.ala.build.maven.util.MavenBuildExecutor;
 import org.guvnor.ala.build.maven.util.RepositoryVisitor;
@@ -133,7 +133,7 @@ public class WildflyRuntimeTest {
         final File pom = new File( mavenProject.getTempDir(), "pom.xml" );
         MavenBuildExecutor.executeMaven( pom, properties, goals.toArray( new String[0] ) );
 
-        MavenBinary binary = new MavenBinaryImpl( mavenProject );
+        MavenBinary binary = new MavenProjectBinaryImpl( mavenProject );
 
         WildflyClient wildflyClient = new WildflyClient( "", "admin", "Admin#70365", ip, 8080, 9990 );
         String binaryPath = binary.getProject().getExpectedBinary();
