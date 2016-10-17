@@ -5,7 +5,7 @@
   <parent>
     <artifactId>guvnor-asset-mgmt</artifactId>
     <groupId>org.guvnor</groupId>
-    <version>6.5.0-SNAPSHOT</version>
+    <version>6.5.0.Final</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 

@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.guvnor</groupId>
     <artifactId>guvnor-m2repo-editor</artifactId>
-    <version>6.5.0-SNAPSHOT</version>
+    <version>6.5.0.Final</version>
   </parent>
 
   <artifactId>guvnor-m2repo-editor-api</artifactId>
