@@ -15,109 +15,198 @@
  */
 package org.guvnor.asset.management.client.editors.project.structure;
 
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
-import com.google.gwt.user.client.Command;
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.asset.management.client.editors.repository.structure.ReleaseCommand;
+import org.guvnor.asset.management.client.editors.repository.structure.ReleaseInfo;
 import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupPresenter;
 import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupView;
-import org.guvnor.asset.management.client.i18n.Constants;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+@RunWith( GwtMockitoTestRunner.class )
 public class ReleaseRepositoryPresenterTest {
 
-    @GwtMock
+    private static final String USER_IDENTIFIER = "salaboy";
+
+    @Mock
     private ReleaseScreenPopupView releasePopupView;
 
-    private ReleaseScreenPopupPresenter presenter;
-
-    @Mock
-    private Command callbackCommand;
-    
     @Mock
     private User identity;
-    
+
+    @Mock
+    private ReleaseCommand command;
+
+    @Captor
+    private ArgumentCaptor<ReleaseInfo> releaseInfoCaptor;
+
+    // Tested class
+    private ReleaseScreenPopupPresenter presenter;
+
     @Before
-    public void setup(){
-        presenter = new ReleaseScreenPopupPresenter(releasePopupView);
-        presenter.setIdentity(identity);
-        when(identity.getIdentifier()).thenReturn("salaboy");
-        
+    public void setup() {
+        when( identity.getIdentifier() ).thenReturn( USER_IDENTIFIER );
+        presenter = new ReleaseScreenPopupPresenter( releasePopupView, identity );
     }
 
     @Test
     public void testNotReleasingDueVersion() throws Exception {
 
-        presenter.configure("", "dev-1.0", "", "", callbackCommand);
-        when(releasePopupView.getVersion()).thenReturn("");
-        when(releasePopupView.getSourceBranch()).thenReturn("dev-1.0");
-        
-        presenter.getOkCommand().execute();
+        presenter.configure( "", "dev-1.0", "", "", command );
+        when( releasePopupView.getVersion() ).thenReturn( "" );
+        when( releasePopupView.getSourceBranch() ).thenReturn( "dev-1.0" );
 
-        verify(releasePopupView, times(1)).setVersionStatus(ControlGroupType.ERROR);
-        verify(releasePopupView, times(1)).setVersionHelpText(Constants.INSTANCE.FieldMandatory0("Version"));
+        presenter.onSubmit();
 
-        verify(callbackCommand, times(0)).execute();
-        verify(releasePopupView, times(0)).hide();
+        verify( releasePopupView, times( 1 ) ).showErrorVersionEmpty();
+
+        verify( command, times( 0 ) ).execute( any( ReleaseInfo.class ) );
+        verify( releasePopupView, times( 0 ) ).hide();
 
     }
 
     @Test
     public void testNotReleasingDueSnapshotVersion() throws Exception {
 
-        presenter.configure("", "dev-1.0", "XXX-SNAPSHOT", "XXX-SNAPSHOT", callbackCommand);
-        
-        when(releasePopupView.getVersion()).thenReturn("XXX-SNAPSHOT");
-        when(releasePopupView.getSourceBranch()).thenReturn("dev-1.0");
+        presenter.configure( "", "dev-1.0", "XXX-SNAPSHOT", "XXX-SNAPSHOT", command );
 
-        presenter.getOkCommand().execute();
+        when( releasePopupView.getVersion() ).thenReturn( "XXX-SNAPSHOT" );
+        when( releasePopupView.getSourceBranch() ).thenReturn( "dev-1.0" );
 
-        verify(releasePopupView, times(1)).setVersionStatus(ControlGroupType.ERROR);
-        verify(releasePopupView, times(1)).setVersionHelpText(Constants.INSTANCE.SnapshotNotAvailableForRelease("-SNAPSHOT"));
+        presenter.onSubmit();
 
-        verify(callbackCommand, times(0)).execute();
-        verify(releasePopupView, times(0)).hide();
+        verify( releasePopupView, times( 1 ) ).showErrorVersionSnapshot();
+
+        verify( command, times( 0 ) ).execute( any( ReleaseInfo.class ) );
+        verify( releasePopupView, times( 0 ) ).hide();
 
     }
 
     @Test
     public void testNotReleasingDueWrongBranchName() throws Exception {
 
-        presenter.configure("", "dev-1.0", "1.0", "1.0", callbackCommand);
-        
-        when(releasePopupView.getVersion()).thenReturn("1.0");
-        when(releasePopupView.getSourceBranch()).thenReturn("dev-1.0");
+        presenter.configure( "", "dev-1.0", "1.0", "1.0", command );
 
-        presenter.getOkCommand().execute();
+        when( releasePopupView.getVersion() ).thenReturn( "1.0" );
+        when( releasePopupView.getSourceBranch() ).thenReturn( "dev-1.0" );
 
-        verify(releasePopupView, times(1)).setSourceBranchStatus(ControlGroupType.ERROR);
-        verify(releasePopupView, times(1)).setSourceBranchHelpText(Constants.INSTANCE.ReleaseCanOnlyBeDoneFromAReleaseBranch());
-        verify(callbackCommand, times(0)).execute();
-        verify(releasePopupView, times(0)).hide();
+        presenter.onSubmit();
+
+        verify( releasePopupView, times( 1 ) ).showErrorSourceBranchNotRelease();
+        verify( command, times( 0 ) ).execute( any( ReleaseInfo.class ) );
+        verify( releasePopupView, times( 0 ) ).hide();
+
+    }
+
+    @Test
+    public void testNotReleasingDueUserNamePasswordServerUrl() throws Exception {
+
+        presenter.configure( "", "dev-1.0", "1.0", "1.0", command );
+
+        when( releasePopupView.getVersion() ).thenReturn( "1.0" );
+        when( releasePopupView.getSourceBranch() ).thenReturn( "release-1.0" );
+        when( releasePopupView.isDeployToRuntime() ).thenReturn( true );
+
+        presenter.onSubmit();
+
+        verify( releasePopupView, times( 1 ) ).showErrorUserNameEmpty();
+        verify( releasePopupView, times( 1 ) ).showErrorPasswordEmpty();
+        verify( releasePopupView, times( 1 ) ).showErrorServerUrlEmpty();
+        verify( command, times( 0 ) ).execute( any( ReleaseInfo.class ) );
+        verify( releasePopupView, times( 0 ) ).hide();
 
     }
 
     @Test
     public void testSuccess() throws Exception {
 
-        presenter.configure("", "release-1.0", "1.0", "1.0", callbackCommand);
-        when(releasePopupView.getVersion()).thenReturn("1.0");
-        when(releasePopupView.getSourceBranch()).thenReturn("release-1.0");
-        when(releasePopupView.isDeployToRuntime()).thenReturn(false);
+        presenter.configure( "", "release-1.0", "1.0", "1.0", command );
+        when( releasePopupView.getVersion() ).thenReturn( "1.1" );
+        when( releasePopupView.getSourceBranch() ).thenReturn( "release-1.0" );
+        when( releasePopupView.isDeployToRuntime() ).thenReturn( false );
+        when( releasePopupView.getUserName() ).thenReturn( "username" );
+        when( releasePopupView.getPassword() ).thenReturn( "password" );
+        when( releasePopupView.getServerURL() ).thenReturn( "serverUrl" );
 
-        presenter.getOkCommand().execute();
+        presenter.onSubmit();
 
-        verify(callbackCommand, times(1)).execute();
-        verify(releasePopupView, times(1)).hide();
+        verify( command, times( 1 ) ).execute( releaseInfoCaptor.capture() );
+        ReleaseInfo releaseInfo = releaseInfoCaptor.getValue();
+        assertEquals( "1.1", releaseInfo.getVersion() );
+        assertFalse( releaseInfo.isDeployToRuntime() );
+        assertEquals( "username", releaseInfo.getUsername() );
+        assertEquals( "password", releaseInfo.getPassword() );
+        assertEquals( "serverUrl", releaseInfo.getServerUrl() );
+        verify( releasePopupView, times( 1 ) ).hide();
 
     }
 
+    @Test
+    public void testUserNamePasswordServerUrlStateSynchronizedWithDeployToRuntime() {
+        presenter.onDeployToRuntimeStateChanged( true );
+        verify( releasePopupView ).setUserNameEnabled( true );
+        verify( releasePopupView ).setPasswordEnabled( true );
+        verify( releasePopupView ).setServerURLEnabled( true );
+        presenter.onDeployToRuntimeStateChanged( false );
+        verify( releasePopupView ).setUserNameEnabled( false );
+        verify( releasePopupView ).setPasswordEnabled( false );
+        verify( releasePopupView ).setServerURLEnabled( false );
+    }
+
+    @Test
+    public void testCommandNotExecutedWhenDialogCancelled() {
+        presenter.show();
+        presenter.onCancel();
+
+        verify( command, times( 0 ) ).execute( any( ReleaseInfo.class ) );
+        verify( releasePopupView, times( 1 ) ).hide();
+    }
+
+    @Test
+    public void testPreFilledData() {
+        presenter.configure( "alias", "branch", "1", "1-SNAPSHOT", command );
+
+        verify( releasePopupView ).setRepository( "alias" );
+        verify( releasePopupView ).setSourceBranch( "branch" );
+        verify( releasePopupView ).setVersion( "1" );
+        verify( releasePopupView ).showCurrentVersionHelpText( "1-SNAPSHOT" );
+        verify( releasePopupView ).setDeployToRuntime( false );
+        verify( releasePopupView ).setUserName( USER_IDENTIFIER );
+        verify( releasePopupView ).setServerURL( anyString() );
+    }
+
+    @Test
+    public void testErrorStatusCleanedAfterCorrection() {
+        when( releasePopupView.getSourceBranch() ).thenReturn( "master" );
+        when( releasePopupView.getVersion() ).thenReturn( "-SNAPSHOT" );
+
+        presenter.configure( "", "", "", "", command );
+        verify( releasePopupView, times( 1 ) ).clearWidgetsState();
+
+        // first attempt with wrong branch and version
+        presenter.show();
+        presenter.onSubmit();
+        verify( releasePopupView, times( 2 ) ).clearWidgetsState();
+        verify( releasePopupView, times( 1 ) ).showErrorSourceBranchNotRelease();
+        verify( releasePopupView, times( 1 ) ).showErrorVersionSnapshot();
+
+        when( releasePopupView.getSourceBranch() ).thenReturn( "release" );
+
+        // second attempt with correct branch (version still snapshot)
+        presenter.onSubmit();
+        verify( releasePopupView, times( 3 ) ).clearWidgetsState();
+        verify( releasePopupView, times( 1 ) ).showErrorSourceBranchNotRelease();
+        verify( releasePopupView, times( 2 ) ).showErrorVersionSnapshot();
+
+        verify( command, times( 0 ) ).execute( any( ReleaseInfo.class ) );
+        verify( releasePopupView, times( 0 ) ).hide();
+    }
 }

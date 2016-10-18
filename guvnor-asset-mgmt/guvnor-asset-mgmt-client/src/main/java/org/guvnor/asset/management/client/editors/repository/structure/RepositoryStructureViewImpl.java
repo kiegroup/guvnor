@@ -29,7 +29,6 @@ import org.guvnor.asset.management.client.editors.project.structure.widgets.Repo
 import org.guvnor.asset.management.client.editors.repository.structure.configure.ConfigureScreenPopupViewImpl;
 import org.guvnor.asset.management.client.editors.repository.structure.promote.PromoteScreenPopupViewImpl;
 import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupPresenter;
-import org.guvnor.asset.management.client.editors.repository.structure.release.ReleaseScreenPopupViewImpl;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;

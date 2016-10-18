@@ -19,27 +19,24 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Command;
-import org.guvnor.asset.management.client.i18n.Constants;
+import org.guvnor.asset.management.client.editors.repository.structure.ReleaseCommand;
+import org.guvnor.asset.management.client.editors.repository.structure.ReleaseInfo;
 import org.jboss.errai.security.shared.api.identity.User;
 
 @Dependent
 public class ReleaseScreenPopupPresenter implements ReleaseScreenPopupView.Presenter {
 
-    private ReleaseScreenPopupView view;
+    private final ReleaseScreenPopupView view;
+    private final User identity;
 
-    private Command callbackCommand;
+    private ReleaseCommand command;
+    private String repositoryVersion;
 
     @Inject
-    private User identity;
-
-    @Inject
-    public ReleaseScreenPopupPresenter( ReleaseScreenPopupView view ) {
+    public ReleaseScreenPopupPresenter( ReleaseScreenPopupView view, User identity ) {
         this.view = view;
+        this.identity = identity;
     }
 
     @PostConstruct
@@ -55,97 +52,82 @@ public class ReleaseScreenPopupPresenter implements ReleaseScreenPopupView.Prese
         view.hide();
     }
 
-    public ReleaseScreenPopupView getView() {
-        return view;
-    }
+    @Override
+    public void onSubmit() {
+        boolean isValid = true;
+        view.clearWidgetsState();
+        view.showCurrentVersionHelpText( repositoryVersion );
 
-    private final Command okCommand = new Command() {
-        @Override
-        public void execute() {
-            if ( isEmpty( view.getVersion() ) ) {
-                view.setVersionStatus( ControlGroupType.ERROR );
-                view.setVersionHelpText( Constants.INSTANCE.FieldMandatory0( "Version" ) );
-
-                return;
+        if ( isEmpty( view.getVersion() ) ) {
+            view.showErrorVersionEmpty();
+            isValid = false;
+        }
+        if ( isSnapshot( view.getVersion() ) ) {
+            view.showErrorVersionSnapshot();
+            isValid = false;
+        }
+        if ( !view.getSourceBranch().startsWith( "release" ) ) {
+            view.showErrorSourceBranchNotRelease();
+            isValid = false;
+        }
+        if ( view.isDeployToRuntime() ) {
+            if ( isEmpty( view.getUserName() ) ) {
+                view.showErrorUserNameEmpty();
+                isValid = false;
             }
-            if ( isSnapshot( view.getVersion() ) ) {
-                view.setVersionStatus( ControlGroupType.ERROR );
-                view.setVersionHelpText( Constants.INSTANCE.SnapshotNotAvailableForRelease( "-SNAPSHOT" ) );
-
-                return;
+            if ( isEmpty( view.getPassword() ) ) {
+                view.showErrorPasswordEmpty();
+                isValid = false;
             }
-            if ( !view.getSourceBranch().startsWith( "release" ) ) {
-                view.setSourceBranchStatus( ControlGroupType.ERROR );
-                view.setSourceBranchHelpText( Constants.INSTANCE.ReleaseCanOnlyBeDoneFromAReleaseBranch() );
-                return;
+            if ( isEmpty( view.getServerURL() ) ) {
+                view.showErrorServerUrlEmpty();
+                isValid = false;
             }
-            if ( view.isDeployToRuntime() ) {
+        }
 
-                if ( isEmpty( view.getUserName() ) ) {
-                    view.setUserNameStatus( ControlGroupType.ERROR );
-                    view.setUserNameTextHelp( Constants.INSTANCE.FieldMandatory0( "Username" ) );
-
-                    return;
-                }
-
-                if ( isEmpty( view.getPassword() ) ) {
-                    view.setPasswordStatus( ControlGroupType.ERROR );
-                    view.setPasswordHelpText( Constants.INSTANCE.FieldMandatory0( "Password" ) );
-
-                    return;
-                }
-
-                if ( isEmpty( view.getServerURL() ) ) {
-                    view.setServerURLStatus( ControlGroupType.ERROR );
-                    view.setServerURLHelpText( Constants.INSTANCE.FieldMandatory0( "ServerURL" ) );
-
-                    return;
-                }
-
-            }
-
-            if ( callbackCommand != null ) {
-                callbackCommand.execute();
+        if ( isValid ) {
+            if ( command != null ) {
+                command.execute( new ReleaseInfo( view.getVersion(),
+                                                  view.isDeployToRuntime(),
+                                                  view.getUserName(),
+                                                  view.getPassword(),
+                                                  view.getServerURL() )
+                );
             }
             view.hide();
         }
-
-        private boolean isEmpty( String value ) {
-            return value == null || value.isEmpty() || value.trim().isEmpty();
-        }
-
-        private boolean isSnapshot( String value ) {
-            return value != null && value.trim().endsWith( "-SNAPSHOT" );
-        }
-    };
-
-    private final Command cancelCommand = new Command() {
-        @Override
-        public void execute() {
-            view.hide();
-        }
-    };
-
-    public Command getOkCommand() {
-        return okCommand;
     }
 
-    public Command getCancelCommand() {
-        return cancelCommand;
+    private boolean isEmpty( String value ) {
+        return value == null || value.isEmpty() || value.trim().isEmpty();
     }
 
-    public void setIdentity( User identity ) {
-        this.identity = identity;
+    private boolean isSnapshot( String value ) {
+        return value != null && value.trim().endsWith( "-SNAPSHOT" );
+    }
+
+    @Override
+    public void onCancel() {
+        view.hide();
+    }
+
+    @Override
+    public void onDeployToRuntimeStateChanged( boolean checked ) {
+        view.setUserNameEnabled( checked );
+        view.setPasswordEnabled( checked );
+        view.setServerURLEnabled( checked );
     }
 
     public void configure( String repositoryAlias,
                            String branch,
                            String suggestedVersion,
                            String repositoryVersion,
-                           Command command ) {
+                           ReleaseCommand command ) {
 
-        this.callbackCommand = command;
+        this.command = command;
+        this.repositoryVersion = repositoryVersion;
 
+        view.clearWidgetsState();
         view.setSourceBranch( branch );
         view.setRepository( repositoryAlias );
         view.setSourceBranchReadOnly( true );
@@ -153,25 +135,10 @@ public class ReleaseScreenPopupPresenter implements ReleaseScreenPopupView.Prese
         // set default values for the fields
         view.setUserName( identity.getIdentifier() );
         view.setServerURL( GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "" ) );
-        view.setVersionHelpText( "The current repository version is: " + repositoryVersion );
+        view.showCurrentVersionHelpText( repositoryVersion );
         view.setVersion( suggestedVersion );
-        view.setUserNameEnabled( false );
-        view.setPasswordEnabled( false );
-        view.setServerURLEnabled( false );
-        view.setDeployToRuntimeValueChangeHandler( new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange( ValueChangeEvent<Boolean> event ) {
-                if ( event.getValue() ) {
-                    view.setUserNameEnabled( true );
-                    view.setPasswordEnabled( true );
-                    view.setServerURLEnabled( true );
-                } else {
-                    view.setUserNameEnabled( false );
-                    view.setPasswordEnabled( false );
-                    view.setServerURLEnabled( false );
-                }
-            }
-        } );
+        view.setDeployToRuntime( false );
+        onDeployToRuntimeStateChanged( false );
     }
 
 }

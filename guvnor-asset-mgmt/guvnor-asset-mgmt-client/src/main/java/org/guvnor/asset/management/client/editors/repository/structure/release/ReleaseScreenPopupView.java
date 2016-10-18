@@ -15,74 +15,68 @@
  */
 package org.guvnor.asset.management.client.editors.repository.structure.release;
 
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.github.gwtbootstrap.client.ui.base.HasVisibility;
 import org.uberfire.client.mvp.UberView;
 
-public interface ReleaseScreenPopupView extends UberView<ReleaseScreenPopupPresenter> {
-
-    
+public interface ReleaseScreenPopupView extends UberView<ReleaseScreenPopupView.Presenter>, HasVisibility {
 
     interface Presenter {
 
+        void onSubmit();
+
+        void onCancel();
+
+        void onDeployToRuntimeStateChanged( boolean checked );
     }
 
-    void setUserName(String identifier);
-    
-    void setSourceBranch(String branch);
+    void setUserName( String identifier );
 
-    void setRepository(String repositoryAlias);
+    void setSourceBranch( String branch );
 
-    void setSourceBranchReadOnly(boolean b);
+    void setRepository( String repositoryAlias );
 
-    void setRepositoryReadOnly(boolean b);
+    void setSourceBranchReadOnly( boolean b );
 
-    void setServerURL(String replaceFirst);
+    void setRepositoryReadOnly( boolean b );
 
-    void setVersion(String suggestedVersion);
+    void setServerURL( String serverUrl );
 
-    void setUserNameEnabled(boolean b);
+    void setVersion( String suggestedVersion );
 
-    void setPasswordEnabled(boolean b);
+    void setDeployToRuntime( boolean b );
 
-    void setServerURLEnabled(boolean b);
+    void setUserNameEnabled( boolean b );
 
-    void show();
+    void setPasswordEnabled( boolean b );
+
+    void setServerURLEnabled( boolean b );
+
+    void clearWidgetsState();
 
     String getVersion();
 
-    void setVersionStatus(ControlGroupType status);
+    void showErrorVersionEmpty();
 
-    void setVersionHelpText(String helpText);
+    void showErrorVersionSnapshot();
+
+    void showCurrentVersionHelpText( String currentRepositoryVersion );
 
     String getSourceBranch();
 
-    void setSourceBranchStatus(ControlGroupType status);
-
-    void setSourceBranchHelpText(String helpText);
+    void showErrorSourceBranchNotRelease();
 
     boolean isDeployToRuntime();
 
     String getUserName();
 
-    void setUserNameStatus(ControlGroupType status);
-
-    void setUserNameTextHelp(String helpText);
+    void showErrorUserNameEmpty();
 
     String getPassword();
 
-    void setPasswordStatus(ControlGroupType status);
-
-    void setPasswordHelpText(String helpText);
+    void showErrorPasswordEmpty();
 
     String getServerURL();
 
-    void setServerURLStatus(ControlGroupType status);
-
-    void setServerURLHelpText(String helpText);
-
-    void hide();
-    
-    void setDeployToRuntimeValueChangeHandler(ValueChangeHandler<Boolean> valueChangeHandler);
+    void showErrorServerUrlEmpty();
 
 }

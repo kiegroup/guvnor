@@ -11,8 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
-
+ */
 package org.guvnor.asset.management.client.editors.repository.structure.release;
 
 import javax.enterprise.context.Dependent;
@@ -25,6 +24,7 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -108,11 +108,9 @@ public class ReleaseScreenPopupViewImpl extends BaseModal implements ReleaseScre
     @UiField
     TextBox versionText;
 
-    private Command callbackCommand;
-
     private final ModalFooterOKCancelButtons footer;
 
-    private ReleaseScreenPopupPresenter presenter;
+    private ReleaseScreenPopupView.Presenter presenter;
 
     public ReleaseScreenPopupViewImpl() {
         setTitle( Constants.INSTANCE.Release_Configuration() );
@@ -124,6 +122,14 @@ public class ReleaseScreenPopupViewImpl extends BaseModal implements ReleaseScre
                                                  getCancelCommand() );
         add( uiBinder.createAndBindUi( this ) );
         add( footer );
+
+        deployToRuntimeCheck.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+
+            @Override
+            public void onValueChange( ValueChangeEvent<Boolean> event ) {
+                presenter.onDeployToRuntimeStateChanged( event.getValue() );
+            }
+        } );
     }
 
     //Defer delegation to Presenter until after it has been set
@@ -132,7 +138,7 @@ public class ReleaseScreenPopupViewImpl extends BaseModal implements ReleaseScre
             @Override
             public void execute() {
                 if ( presenter != null ) {
-                    presenter.getOkCommand().execute();
+                    presenter.onSubmit();
                 }
             }
         };
@@ -144,20 +150,10 @@ public class ReleaseScreenPopupViewImpl extends BaseModal implements ReleaseScre
             @Override
             public void execute() {
                 if ( presenter != null ) {
-                    presenter.getCancelCommand().execute();
+                    presenter.onCancel();
                 }
             }
         };
-    }
-
-    public ReleaseScreenPopupPresenter getPresenter() {
-        return presenter;
-    }
-
-    @Override
-    public void show() {
-        super.show(); //To change body of generated methods, choose Tools | Templates.
-        clearWidgetsState();
     }
 
     @Override
@@ -189,13 +185,20 @@ public class ReleaseScreenPopupViewImpl extends BaseModal implements ReleaseScre
     }
 
     @Override
-    public void setVersionStatus( ControlGroupType status ) {
-        versionTextGroup.setType( status );
+    public void showErrorVersionEmpty() {
+        versionTextGroup.setType( ControlGroupType.ERROR );
+        versionTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( Constants.INSTANCE.ReleaseVersion() ) );
     }
 
     @Override
-    public void setVersionHelpText( String helpText ) {
-        versionTextHelpInline.setText( helpText );
+    public void showErrorVersionSnapshot() {
+        versionTextGroup.setType( ControlGroupType.ERROR );
+        versionTextHelpInline.setText( Constants.INSTANCE.SnapshotNotAvailableForRelease( "-SNAPSHOT" ) );
+    }
+
+    @Override
+    public void showCurrentVersionHelpText( String currentRepositoryVersion ) {
+        versionTextHelpInline.setText( Constants.INSTANCE.CurrentRepositoryVersion( currentRepositoryVersion ) );
     }
 
     @Override
@@ -204,13 +207,9 @@ public class ReleaseScreenPopupViewImpl extends BaseModal implements ReleaseScre
     }
 
     @Override
-    public void setSourceBranchStatus( ControlGroupType status ) {
-        sourceBranchTextGroup.setType( status );
-    }
-
-    @Override
-    public void setSourceBranchHelpText( String helpText ) {
-        sourceBranchTextHelpInline.setText( helpText );
+    public void showErrorSourceBranchNotRelease() {
+        sourceBranchTextGroup.setType( ControlGroupType.ERROR );
+        sourceBranchTextHelpInline.setText( Constants.INSTANCE.ReleaseCanOnlyBeDoneFromAReleaseBranch() );
     }
 
     @Override
@@ -219,33 +218,21 @@ public class ReleaseScreenPopupViewImpl extends BaseModal implements ReleaseScre
     }
 
     @Override
-    public void setUserNameStatus( ControlGroupType status ) {
-        userNameTextGroup.setType( status );
+    public void showErrorUserNameEmpty() {
+        userNameTextGroup.setType( ControlGroupType.ERROR );
+        userNameTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( Constants.INSTANCE.User_Name() ) );
     }
 
     @Override
-    public void setUserNameTextHelp( String helpText ) {
-        userNameTextHelpInline.setText( helpText );
+    public void showErrorPasswordEmpty() {
+        passwordTextGroup.setType( ControlGroupType.ERROR );
+        passwordTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( Constants.INSTANCE.Password() ) );
     }
 
     @Override
-    public void setPasswordStatus( ControlGroupType status ) {
-        passwordTextGroup.setType( status );
-    }
-
-    @Override
-    public void setPasswordHelpText( String helpText ) {
-        passwordTextHelpInline.setText( helpText );
-    }
-
-    @Override
-    public void setServerURLStatus( ControlGroupType status ) {
-        serverURLTextGroup.setType( status );
-    }
-
-    @Override
-    public void setServerURLHelpText( String helpText ) {
-        serverURLTextHelpInline.setText( helpText );
+    public void showErrorServerUrlEmpty() {
+        serverURLTextGroup.setType( ControlGroupType.ERROR );
+        serverURLTextHelpInline.setText( Constants.INSTANCE.FieldMandatory0( Constants.INSTANCE.Server_URL() ) );
     }
 
     @Override
@@ -279,6 +266,11 @@ public class ReleaseScreenPopupViewImpl extends BaseModal implements ReleaseScre
     }
 
     @Override
+    public void setDeployToRuntime( boolean b ) {
+        deployToRuntimeCheck.setValue( b, true );
+    }
+
+    @Override
     public void setUserNameEnabled( boolean b ) {
         userNameText.setEnabled( b );
     }
@@ -294,7 +286,7 @@ public class ReleaseScreenPopupViewImpl extends BaseModal implements ReleaseScre
     }
 
     @Override
-    public void init( ReleaseScreenPopupPresenter presenter ) {
+    public void init( ReleaseScreenPopupView.Presenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -304,10 +296,6 @@ public class ReleaseScreenPopupViewImpl extends BaseModal implements ReleaseScre
     }
 
     @Override
-    public void setDeployToRuntimeValueChangeHandler( ValueChangeHandler<Boolean> valueChangeHandler ) {
-        deployToRuntimeCheck.addValueChangeHandler( valueChangeHandler );
-    }
-
     public void clearWidgetsState() {
         repositoryTextGroup.setType( ControlGroupType.NONE );
         repositoryTextHelpInline.setText( "" );
