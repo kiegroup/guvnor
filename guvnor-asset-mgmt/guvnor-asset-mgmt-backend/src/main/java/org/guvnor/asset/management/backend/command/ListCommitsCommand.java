@@ -207,7 +207,7 @@ public class ListCommitsCommand extends AbstractCommand {
                 while (tw.next()) {
                     list.add(tw.getPathString());
                 }
-                tw.release();
+                tw.close();
             } else {
                 RevCommit parent = rw.parseCommit(commit.getParent(0).getId());
                 DiffFormatter df = new DiffFormatter(NullOutputStream.INSTANCE);
