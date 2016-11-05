@@ -19,17 +19,17 @@ package org.guvnor.ala.source.git;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import org.guvnor.ala.exceptions.SourcingException;
 
+import org.guvnor.ala.exceptions.SourcingException;
+import org.guvnor.ala.source.Host;
+import org.guvnor.ala.source.Repository;
+import org.guvnor.ala.source.Source;
+import org.guvnor.ala.source.git.model.GitSource;
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.java.nio.file.Path;
-import org.guvnor.ala.source.Host;
-import org.guvnor.ala.source.Repository;
-import org.guvnor.ala.source.Source;
-import org.guvnor.ala.source.git.model.GitSource;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -45,12 +45,12 @@ public class GitRepository implements Repository {
     private FileSystem fileSystem = null;
 
     public GitRepository( final Host host,
-            final String id,
-            final String name,
-            final URI uri,
-            final GitCredentials credentials,
-            final Map<String, String> env,
-            final ConfigProperties config ) {
+                          final String id,
+                          final String name,
+                          final URI uri,
+                          final GitCredentials credentials,
+                          final Map<String, String> env,
+                          final ConfigProperties config ) {
         this.host = checkNotNull( "host", host );
         this.id = checkNotEmpty( "id", id );
         this.name = checkNotEmpty( "name", name );
@@ -81,7 +81,7 @@ public class GitRepository implements Repository {
 
     @Override
     public Source getSource( final String _root,
-            final String... _path ) throws SourcingException {
+                             final String... _path ) throws SourcingException {
         if ( fileSystem == null ) {
             final URI fsURI = URI.create( "git://" + name );
             try {

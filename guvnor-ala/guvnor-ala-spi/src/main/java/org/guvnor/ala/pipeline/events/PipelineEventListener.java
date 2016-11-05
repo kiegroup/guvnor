@@ -23,15 +23,33 @@ package org.guvnor.ala.pipeline.events;
 */
 public interface PipelineEventListener {
 
+    /*
+     * Event emmited before executing the pipeline
+    */
     void beforePipelineExecution( final BeforePipelineExecutionEvent bpee );
 
+    /*
+     * Event emmited after the pipeline execution finish
+    */
     void afterPipelineExecution( final AfterPipelineExecutionEvent apee );
 
+    /*
+     * Event emmited before each pipeline stage execution
+    */
     void beforeStageExecution( final BeforeStageExecutionEvent bsee );
 
+    /*
+     * Event emmited on an error inside a pipeline stage
+    */
     void onStageError( final OnErrorStageExecutionEvent oesee );
 
+    /*
+     * Event emmited after each pipeline stage execution
+    */
     void afterStageExecution( final AfterStageExecutionEvent asee );
 
+    /*
+     * Event emmited on an error inside the pipeline
+    */
     void onPipelineError( final OnErrorPipelineExecutionEvent oepee );
 }

@@ -17,8 +17,8 @@
 package org.guvnor.ala.build;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.uberfire.java.nio.file.Path;
 import org.guvnor.ala.config.ProjectConfig;
+import org.uberfire.java.nio.file.Path;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.*;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
@@ -27,7 +27,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
  * Represent one logical project Project. Implement this interface
  * to provider different project types.
  */
-@JsonTypeInfo( use = CLASS, include = WRAPPER_OBJECT )
+@JsonTypeInfo(use = CLASS, include = WRAPPER_OBJECT)
 public interface Project extends ProjectConfig {
 
     /*
@@ -74,5 +74,7 @@ public interface Project extends ProjectConfig {
      * @see Path
      */
     Path getBinaryPath();
+
+    String getTempDir();
 
 }

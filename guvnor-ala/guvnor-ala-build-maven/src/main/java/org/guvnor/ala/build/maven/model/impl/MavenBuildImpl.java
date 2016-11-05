@@ -17,6 +17,7 @@
 package org.guvnor.ala.build.maven.model.impl;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.guvnor.ala.build.Project;
 import org.guvnor.ala.build.maven.model.MavenBuild;
@@ -30,11 +31,14 @@ public class MavenBuildImpl implements MavenBuild,
 
     public final Project project;
     public final List<String> goals;
+    private final Properties properties;
 
     public MavenBuildImpl( final Project project,
-                           final List<String> goals ) {
+                           final List<String> goals,
+                           final Properties properties ) {
         this.project = project;
         this.goals = goals;
+        this.properties = properties;
     }
 
     @Override
@@ -48,7 +52,12 @@ public class MavenBuildImpl implements MavenBuild,
     }
 
     @Override
+    public Properties getProperties() {
+        return this.properties;
+    }
+
+    @Override
     public MavenBuild asNewClone( final MavenBuild source ) {
-        return new MavenBuildImpl( source.getProject(), source.getGoals() );
+        return new MavenBuildImpl( source.getProject(), source.getGoals(), source.getProperties() );
     }
 }

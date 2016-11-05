@@ -33,5 +33,15 @@ public interface WildflyRuntimeConfiguration extends ProvisioningConfig,
      * @return String with the path where the WAR (Web Archive) is located.
     */
     String getWarPath();
+    
+    /*
+     * Get the Redeploy Strategy for apps in wildfly
+     *  - auto: will automatically redeploy the app if it already exist
+     *  - none: will fail if you try to redeploy an app that already exist
+     * @return String with the strategy
+    */
+    default String getRedeployStrategy(){
+        return "auto";
+    }
 
 }

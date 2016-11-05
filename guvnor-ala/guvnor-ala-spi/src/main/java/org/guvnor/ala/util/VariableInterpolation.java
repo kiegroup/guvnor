@@ -31,9 +31,9 @@ import org.apache.commons.lang.text.StrSubstitutor;
 import org.guvnor.ala.config.CloneableConfig;
 
 /**
- * This class deals with Variable Interpolations inside pipelines. 
- * It uses bytebuddy to create intermediary types for the results 
- *  created by the interpolation process
+ * This class deals with Variable Interpolations inside pipelines.
+ * It uses bytebuddy to create intermediary types for the results
+ * created by the interpolation process
  */
 public final class VariableInterpolation {
 
@@ -50,7 +50,7 @@ public final class VariableInterpolation {
         return proxy( object );
     }
 
-    static class MapOfMapStrLookup extends StrLookup {
+    private static class MapOfMapStrLookup extends StrLookup {
 
         private final Map map;
 
@@ -80,7 +80,7 @@ public final class VariableInterpolation {
                     }
                 }
 
-                return obj == null ? null : obj.toString();
+                return obj == null ? "" : obj.toString();
             }
         }
     }

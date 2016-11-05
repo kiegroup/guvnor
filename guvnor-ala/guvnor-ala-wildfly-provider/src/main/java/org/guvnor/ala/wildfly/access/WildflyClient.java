@@ -63,14 +63,16 @@ public class WildflyClient {
     private final String user;
     private final String password;
     private final String host;
+    private final int port;
     private final int managementPort;
 
-    public WildflyClient( String providerName, String user, String password, String host, int managementPort ) {
+    public WildflyClient( String providerName, String user, String password, String host, int port, int managementPort ) {
         this.providerName = providerName;
         this.user = user;
         this.password = password;
         this.host = host;
         this.managementPort = managementPort;
+        this.port = port;
     }
 
     /*
@@ -306,11 +308,17 @@ public class WildflyClient {
             // contains an array of dataset objects
             if ( element.isJsonObject() ) {
                 JsonObject outcome = element.getAsJsonObject();
-                JsonObject result = outcome.get( "result" ).getAsJsonObject();
-                String enabled = result.get( "enabled" ).getAsString();
-                String state = "Stopped";
+                JsonElement resultElement = outcome.get( "result" );
+                String enabled = "false";
+                if ( resultElement != null ) {
+                    JsonObject result = resultElement.getAsJsonObject();
+                    enabled = result.get( "enabled" ).getAsString();
+                }
+                String state = "";
                 if ( enabled.equals( "true" ) ) {
                     state = "Running";
+                } else {
+                    state = "NA";
                 }
                 return new WildflyAppState( state, new Date() );
             }
@@ -319,7 +327,7 @@ public class WildflyClient {
             LOG.error( "Error Getting App State : " + ex.getMessage(), ex );
             throw new WildflyClientException( "Error Getting App State : " + ex.getMessage(), ex );
         }
-        return null;
+        return new WildflyAppState( "NA", new Date() );
 
     }
 
@@ -337,6 +345,10 @@ public class WildflyClient {
 
     public String getHost() {
         return host;
+    }
+
+    public int getPort() {
+        return port;
     }
 
     public int getManagementPort() {

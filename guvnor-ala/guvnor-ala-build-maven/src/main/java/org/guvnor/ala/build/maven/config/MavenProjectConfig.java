@@ -23,6 +23,7 @@ import org.guvnor.ala.config.ProjectConfig;
  * @see ProjectConfig
  */
 public interface MavenProjectConfig extends ProjectConfig {
+
     /*
      * Get the Project Base Dir
      * in case of the Project Base Dir is not provided, 
@@ -32,4 +33,13 @@ public interface MavenProjectConfig extends ProjectConfig {
     default String getProjectDir() {
         return "${input.project-dir}";
     }
+
+    default String getProjectTempDir() {
+        return "${input.project-temp-dir}";
+    }
+
+    default boolean recreateTempDir() {
+        return Boolean.parseBoolean( "${input.preserve-temp-dir}" );
+    }
+
 }

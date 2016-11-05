@@ -24,8 +24,8 @@ import org.guvnor.ala.pipeline.Stage;
 */
 public class BeforeStageExecutionEvent implements PipelineEvent {
 
-    private Pipeline pipeline;
-    private Stage stage;
+    private final Pipeline pipeline;
+    private final Stage stage;
 
     public BeforeStageExecutionEvent( final Pipeline pipeline,
                                       final Stage stage ) {

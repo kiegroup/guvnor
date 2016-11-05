@@ -17,14 +17,15 @@
 package org.guvnor.ala.docker.model;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.guvnor.ala.build.Project;
 import org.guvnor.ala.build.maven.model.MavenBuild;
 import org.guvnor.ala.build.maven.model.impl.MavenBuildImpl;
 
 /**
- * Docker Build Implementation, extending MavenBuildImpl because it uses the 
- *  maven plugin to create the docker image. 
+ * Docker Build Implementation, extending MavenBuildImpl because it uses the
+ * maven plugin to create the docker image.
  * @see MavenBuildImpl
  * @see DockerBuild
  */
@@ -32,13 +33,14 @@ public class DockerBuildImpl extends MavenBuildImpl
         implements DockerBuild {
 
     public DockerBuildImpl( final Project project,
-                            final List<String> goals ) {
-        super( project, goals );
+                            final List<String> goals,
+                            final Properties properties ) {
+        super( project, goals, properties );
     }
 
     @Override
     public MavenBuild asNewClone( final MavenBuild source ) {
-        return new DockerBuildImpl( getProject(), getGoals() );
+        return new DockerBuildImpl( getProject(), getGoals(), getProperties() );
     }
 
 }

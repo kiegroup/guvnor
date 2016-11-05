@@ -52,7 +52,7 @@ public class InMemoryPipelineRegistry implements PipelineRegistry {
     }
 
     @Override
-    public List<Pipeline> getAllPipelines( int page, int pageSize, String sort, boolean sortOrder ) {
+    public List<Pipeline> getPipelines( int page, int pageSize, String sort, boolean sortOrder ) {
         Collection<Pipeline> values = pipelineByName.values();
         return PageSortUtils.pageSort(values, (Pipeline p1, Pipeline p2) -> {
             switch ( sort ) {

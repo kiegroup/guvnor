@@ -35,6 +35,7 @@ public class MavenProjectImpl implements MavenProject,
     private Path rootPath;
     private Path path;
     private Path binaryPath;
+    private String tempDir;
     private Collection<PlugIn> buildPlugins = Collections.emptyList();
 
     public MavenProjectImpl() {
@@ -47,6 +48,7 @@ public class MavenProjectImpl implements MavenProject,
                              final Path rootPath,
                              final Path path,
                              final Path binaryPath,
+                             final String tempDir,
                              final Collection<PlugIn> buildPlugins ) {
         this.id = id;
         this.type = type;
@@ -55,7 +57,10 @@ public class MavenProjectImpl implements MavenProject,
         this.rootPath = rootPath;
         this.path = path;
         this.binaryPath = binaryPath;
-        this.buildPlugins = new ArrayList<>( buildPlugins );
+        this.tempDir = tempDir;
+        if ( buildPlugins != null ) {
+            this.buildPlugins = new ArrayList<>( buildPlugins );
+        }
     }
 
     @Override
@@ -99,6 +104,11 @@ public class MavenProjectImpl implements MavenProject,
     }
 
     @Override
+    public String getTempDir() {
+        return tempDir;
+    }
+
+    @Override
     public MavenProject asNewClone( final MavenProject origin ) {
         return new MavenProjectImpl( origin.getId(),
                                      origin.getType(),
@@ -107,6 +117,7 @@ public class MavenProjectImpl implements MavenProject,
                                      origin.getRootPath(),
                                      origin.getPath(),
                                      origin.getBinaryPath(),
+                                     origin.getTempDir(),
                                      origin.getBuildPlugins() );
     }
 

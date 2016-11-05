@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.guvnor.ala.registry.local;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -29,10 +29,9 @@ import org.guvnor.ala.source.Repository;
 import org.guvnor.ala.source.Source;
 
 /**
- * @TODO: This is an implementation for local testing. A more
- * robust and distributed implementation should be provided for real use cases.
- * All the lookups mechanisms and structures needs to be improved for
- * performance.
+ * @TODO: This is an implementation for local testing. A more robust and
+ * distributed implementation should be provided for real use cases. All the
+ * lookups mechanisms and structures needs to be improved for performance.
  */
 @ApplicationScoped
 public class InMemorySourceRegistry implements SourceRegistry {
@@ -53,82 +52,78 @@ public class InMemorySourceRegistry implements SourceRegistry {
     }
 
     @Override
-    public void registerRepositorySources( final Path path,
-            final Repository repo ) {
-        repositorySourcesPath.put( path, repo );
-        pathByRepositoryId.put( repo.getId(), path );
+    public void registerRepositorySources(final Path path,
+            final Repository repo) {
+        repositorySourcesPath.put(path, repo);
+        pathByRepositoryId.put(repo.getId(), path);
     }
 
     @Override
-    public Path getRepositoryPath( Repository repo ) {
-        return pathByRepositoryId.get( repo.getId() );
+    public Path getRepositoryPath(Repository repo) {
+        return pathByRepositoryId.get(repo.getId());
     }
 
     @Override
-    public Path getRepositoryPathById( String repoId ) {
-        return pathByRepositoryId.get( repoId );
+    public Path getRepositoryPathById(String repoId) {
+        return pathByRepositoryId.get(repoId);
     }
 
     @Override
-    public Repository getRepositoryByPath( Path path ) {
-        return repositorySourcesPath.get( path );
+    public Repository getRepositoryByPath(Path path) {
+        return repositorySourcesPath.get(path);
     }
 
     @Override
     public List<Repository> getAllRepositories() {
-        return new ArrayList<>( repositorySourcesPath.values() );
+        return new ArrayList<>(repositorySourcesPath.values());
     }
 
     @Override
-    public void registerProject( Repository repo,
-            Project project ) {
-        projectsByRepo.putIfAbsent( repo, new ArrayList<>() );
-        projectsByRepo.get( repo ).add( project );
+    public void registerProject(Repository repo,
+            Project project) {
+        projectsByRepo.putIfAbsent(repo, new ArrayList<>());
+        projectsByRepo.get(repo).add(project);
 
     }
 
     @Override
-    public List<Project> getAllProjects( Repository repository ) {
-        Path repoPath = pathByRepositoryId.get( repository.getId() );
+    public List<Project> getAllProjects(Repository repository) {
+        Path repoPath = pathByRepositoryId.get(repository.getId());
         List<Project> allProjects = new ArrayList<>();
-        for ( Source s : projectBySource.keySet() ) {
-            if ( projectBySource.get( s ).getRootPath().equals( repoPath ) ) {
-                allProjects.add( projectBySource.get( s ) );
+        for (Source s : projectBySource.keySet()) {
+            if (projectBySource.get(s).getRootPath().equals(repoPath)) {
+                allProjects.add(projectBySource.get(s));
             }
         }
         return allProjects;
     }
 
     @Override
-    public List<Project> getProjectByName( String projectName ) {
-        List<Project> projectsByName = new ArrayList<>();
-        // Nasty Lookup, fix and improve this for distributed implementation
-        for ( Repository r : projectsByRepo.keySet() ) {
-            for ( Project p : projectsByRepo.get( r ) ) {
-                if ( p.getName().equals( projectName ) ) {
-                    projectsByName.add( p );
-                }
+    public Project getProjectByName(String projectName) {
+        for (Source s : projectBySource.keySet()) {
+            if (projectBySource.get(s).getName().equals(projectName)) {
+                return projectBySource.get(s);
             }
         }
-        return projectsByName;
+        return null;
     }
 
     @Override
-    public Repository getRepositoryById( String repositoryId ) {
-        return repositorySourcesPath.get( pathByRepositoryId.get( repositoryId ) );
+    public Repository getRepositoryById(String repositoryId) {
+        return repositorySourcesPath.get(pathByRepositoryId.get(repositoryId));
     }
 
     @Override
-    public void registerSource( final Repository repo,
-            final Source source ) {
-        sourceByRepo.putIfAbsent( repo, new ArrayList<>() );
-        sourceByRepo.get( repo ).add( source );
+    public void registerSource(final Repository repo,
+            final Source source) {
+        sourceByRepo.putIfAbsent(repo, new ArrayList<>());
+        sourceByRepo.get(repo).add(source);
     }
 
     @Override
-    public void registerProject( final Source source,
-            final Project project ) {
-        projectBySource.put( source, project );
+    public void registerProject(final Source source,
+            final Project project) {
+        projectBySource.put(source, project);
     }
 
 }

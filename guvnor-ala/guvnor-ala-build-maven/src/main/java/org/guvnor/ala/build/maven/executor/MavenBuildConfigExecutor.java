@@ -29,7 +29,7 @@ public class MavenBuildConfigExecutor implements BiFunctionConfigExecutor<Projec
     @Override
     public Optional<BuildConfig> apply( final Project project,
                                         final MavenBuildConfig mavenBuildConfig ) {
-        return Optional.of( new MavenBuildImpl( project, mavenBuildConfig.getGoals() ) );
+        return Optional.of( new MavenBuildImpl( project, mavenBuildConfig.getGoals(), mavenBuildConfig.getProperties() ) );
     }
 
     @Override

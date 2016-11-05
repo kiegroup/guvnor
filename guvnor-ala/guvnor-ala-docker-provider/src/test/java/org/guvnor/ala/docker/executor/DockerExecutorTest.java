@@ -108,6 +108,7 @@ public class DockerExecutorTest {
         executor.execute( new Input() {
             {
                 put( "repo-name", "drools-workshop" );
+                put( "create-repo", "true" );
                 put( "branch", "master" );
                 put( "out-dir", tempPath.getAbsolutePath() );
                 put( "origin", "https://github.com/salaboy/drools-workshop" );
@@ -126,8 +127,6 @@ public class DockerExecutorTest {
         DockerRuntime dockerRuntime = ( DockerRuntime ) runtime;
 
         DockerRuntimeManager runtimeManager = new DockerRuntimeManager( runtimeRegistry, dockerAccessInterface );
-
-        runtimeManager.start( dockerRuntime );
 
         allRuntimes = runtimeRegistry.getRuntimes(0, 10, "", true);
 
@@ -198,7 +197,6 @@ public class DockerExecutorTest {
 
         DockerRuntimeManager runtimeManager = new DockerRuntimeManager( runtimeRegistry, dockerAccessInterface );
 
-        runtimeManager.start( dockerRuntime );
 
         allRuntimes = runtimeRegistry.getRuntimes(0, 10, "", true);
 

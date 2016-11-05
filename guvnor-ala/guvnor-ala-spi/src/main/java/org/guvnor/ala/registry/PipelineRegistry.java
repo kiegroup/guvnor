@@ -46,6 +46,6 @@ public interface PipelineRegistry {
      * @param boolean sortOrder true: ascending, false descending
      * @return List<Pipeline> with all the available pipelines. 
     */
-    public List<Pipeline> getAllPipelines( int page, int pageSize, String sort, boolean sortOrder );
+    public List<Pipeline> getPipelines( int page, int pageSize, String sort, boolean sortOrder );
 
 }

@@ -17,6 +17,7 @@
 package org.guvnor.ala.build.maven.model;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.guvnor.ala.build.Project;
 import org.guvnor.ala.config.BuildConfig;
@@ -24,7 +25,6 @@ import org.guvnor.ala.config.BuildConfig;
 /**
  * Interface that represent the Maven Build information
  * to be used build a Maven Project
- *
  * @see BuildConfig
  */
 public interface MavenBuild extends BuildConfig {
@@ -41,4 +41,10 @@ public interface MavenBuild extends BuildConfig {
      * @return List<String> with the goals to be executed
      */
     List<String> getGoals();
+
+    /*
+     * Get the properties needed for build the Project
+     * @return Properties with the properties needed
+     */
+    Properties getProperties();
 }

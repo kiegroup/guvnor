@@ -29,6 +29,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.guvnor.ala.build.maven.config.MavenProjectConfig;
 import org.guvnor.ala.build.maven.model.PlugIn;
 import org.guvnor.ala.build.maven.model.impl.MavenProjectImpl;
+import org.guvnor.ala.build.maven.util.RepositoryVisitor;
 import org.guvnor.ala.config.Config;
 import org.guvnor.ala.config.ProjectConfig;
 import org.guvnor.ala.pipeline.BiFunctionConfigExecutor;
@@ -36,12 +37,12 @@ import org.guvnor.ala.registry.SourceRegistry;
 import org.guvnor.ala.source.Source;
 import org.kie.scanner.embedder.MavenProjectLoader;
 import org.uberfire.java.nio.file.Files;
-
+import org.uberfire.java.nio.file.Path;
 
 public class MavenProjectConfigExecutor implements BiFunctionConfigExecutor<Source, MavenProjectConfig, ProjectConfig> {
 
     private final SourceRegistry sourceRegistry;
-    
+
     @Inject
     public MavenProjectConfigExecutor( final SourceRegistry sourceRegistry ) {
         this.sourceRegistry = sourceRegistry;
@@ -50,12 +51,21 @@ public class MavenProjectConfigExecutor implements BiFunctionConfigExecutor<Sour
     @Override
     public Optional<ProjectConfig> apply( final Source source,
                                           final MavenProjectConfig mavenProjectConfig ) {
-        final InputStream pomStream = Files.newInputStream( source.getPath().resolve( mavenProjectConfig.getProjectDir() ).resolve( "pom.xml" ) );
+        final Path projectRoot = source.getPath().resolve( mavenProjectConfig.getProjectDir() );
+        final InputStream pomStream = Files.newInputStream( projectRoot.resolve( "pom.xml" ) );
         final MavenProject project = MavenProjectLoader.parseMavenPom( pomStream );
 
         final Collection<PlugIn> buildPlugins = extractPlugins( project );
 
         final String expectedBinary = project.getArtifact().getArtifactId() + "-" + project.getArtifact().getVersion() + "." + project.getArtifact().getType();
+        final String _tempDir = mavenProjectConfig.getProjectTempDir().trim();
+
+        final RepositoryVisitor repositoryVisitor;
+        if ( _tempDir.isEmpty() ) {
+            repositoryVisitor = new RepositoryVisitor( projectRoot, project.getName() );
+        } else {
+            repositoryVisitor = new RepositoryVisitor( projectRoot, _tempDir, mavenProjectConfig.recreateTempDir() );
+        }
         final org.guvnor.ala.build.maven.model.MavenProject mavenProject = new MavenProjectImpl( project.getId(),
                                                                                                  project.getArtifact().getType(),
                                                                                                  project.getName(),
@@ -63,6 +73,7 @@ public class MavenProjectConfigExecutor implements BiFunctionConfigExecutor<Sour
                                                                                                  source.getPath(),
                                                                                                  source.getPath().resolve( mavenProjectConfig.getProjectDir() ),
                                                                                                  source.getPath().resolve( "target" ).resolve( expectedBinary ).toAbsolutePath(),
+                                                                                                 repositoryVisitor.getRoot().getAbsolutePath(),
                                                                                                  buildPlugins );
 
         sourceRegistry.registerProject( source, mavenProject );
@@ -94,9 +105,9 @@ public class MavenProjectConfigExecutor implements BiFunctionConfigExecutor<Sour
             final Map<String, Object> result = new HashMap<>();
             extractConfig( result, (Xpp3Dom) configuration );
             if ( result.containsKey( "configuration" ) ) {
-                if(result.get( "configuration" ) != null){
+                if ( result.get( "configuration" ) != null ) {
                     return (Map<String, Object>) result.get( "configuration" );
-                }else {
+                } else {
                     return Collections.emptyMap();
                 }
             }

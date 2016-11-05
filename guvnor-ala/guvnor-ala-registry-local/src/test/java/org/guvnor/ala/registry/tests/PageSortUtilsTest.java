@@ -136,6 +136,19 @@ public class PageSortUtilsTest {
         }, 3, 2, sort, false );
         
         assertEquals( 0, pageSort.size() );
+        
+        
+        //Get the get the first 10 elements without sorting 
+        pageSort = PageSortUtils.pageSort( pipes, (Pipeline p1, Pipeline p2) -> {
+            switch ( sort ) {
+                case "name":
+                    return p1.getName().compareTo( p2.getName() );
+                default:
+                    return p1.toString().compareTo( p2.toString() );
+            }
+        }, 0, 10, "", false );
+        
+        assertEquals( 5, pageSort.size() );
 
     }
 }

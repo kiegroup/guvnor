@@ -16,6 +16,7 @@ import org.guvnor.ala.runtime.RuntimeBuilder;
 import org.guvnor.ala.runtime.RuntimeDestroyer;
 import org.guvnor.ala.runtime.RuntimeId;
 import org.guvnor.ala.wildfly.access.WildflyAccessInterface;
+import org.guvnor.ala.wildfly.access.WildflyAppState;
 import org.guvnor.ala.wildfly.config.WildflyRuntimeConfiguration;
 import org.guvnor.ala.wildfly.config.WildflyRuntimeExecConfig;
 import org.guvnor.ala.wildfly.model.WildflyProvider;
@@ -36,9 +37,9 @@ public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration> i
 
     @Inject
     public WildflyRuntimeExecExecutor( final RuntimeRegistry runtimeRegistry,
-            final WildflyAccessInterface docker ) {
+            final WildflyAccessInterface wildfly ) {
         this.runtimeRegistry = runtimeRegistry;
-        this.wildfly = docker;
+        this.wildfly = wildfly;
     }
 
     @Override
@@ -57,16 +58,30 @@ public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration> i
 
         WildflyProvider wildflyProvider = _wildflyProvider.get();
         File file = new File( warPath );
-        int result = wildfly.getWildflyClient( wildflyProvider ).deploy( file );
-
-        if ( result != 200 ) {
-            throw new ProvisioningException( "Deployment to Wildfly Failed with error code: " + result );
-        }
-
         final String id = file.getName();
 
-        return Optional.of( new WildflyRuntime( id, runtimeConfig, wildflyProvider, 
-                new WildflyRuntimeEndpoint(), new WildflyRuntimeInfo(), new WildflyRuntimeState() ) );
+        WildflyAppState appState = wildfly.getWildflyClient( wildflyProvider ).getAppState( id );
+        if ( appState.getState().equals( "NA" ) ) {
+            int result = wildfly.getWildflyClient( wildflyProvider ).deploy( file );
+            if ( result != 200 ) {
+                throw new ProvisioningException( "Deployment to Wildfly Failed with error code: " + result );
+            }
+        }else if(appState.getState().equals( "Running" ) 
+                && runtimeConfig.getRedeployStrategy().equals( "auto")){
+            wildfly.getWildflyClient( wildflyProvider ).undeploy( id );
+            int result = wildfly.getWildflyClient( wildflyProvider ).deploy( file );
+            if ( result != 200 ) {
+                throw new ProvisioningException( "Deployment to Wildfly Failed with error code: " + result );
+            }
+        }
+
+        String appContext = id.substring( 0, id.lastIndexOf( ".war" ) );
+        WildflyRuntimeEndpoint endpoint = new WildflyRuntimeEndpoint();
+        endpoint.setHost( wildfly.getWildflyClient( wildflyProvider ).getHost() );
+        endpoint.setPort( wildfly.getWildflyClient( wildflyProvider ).getPort() );
+        endpoint.setContext( appContext );
+        return Optional.of( new WildflyRuntime( id, runtimeConfig, wildflyProvider,
+                endpoint, new WildflyRuntimeInfo(), new WildflyRuntimeState() ) );
     }
 
     @Override

@@ -22,7 +22,7 @@ import org.guvnor.ala.pipeline.Pipeline;
 */
 public class AfterPipelineExecutionEvent implements PipelineEvent {
 
-    private Pipeline pipeline;
+    private final Pipeline pipeline;
 
     public AfterPipelineExecutionEvent( Pipeline pipeline ) {
         this.pipeline = pipeline;

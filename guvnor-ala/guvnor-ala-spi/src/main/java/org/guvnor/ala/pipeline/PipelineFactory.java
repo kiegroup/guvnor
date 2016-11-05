@@ -55,7 +55,7 @@ public final class PipelineFactory {
                 for ( final Config c : config.getConfigStages() ) {
                     stages.add( StageUtil.config( c.toString(), f -> c ) );
                 }
-                return new BasePipeline( config.getName(), stages );
+                return new BasePipeline( config.getName(), stages, config );
             }
 
         };
