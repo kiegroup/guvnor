@@ -49,7 +49,7 @@ public final class MavenBuildExecutor {
 
         final PrintStream oldout = System.out;
         final PrintStream olderr = System.err;
-        final Properties oldProperties = System.getProperties();
+        final Properties oldProperties = (Properties) System.getProperties().clone();
         if ( properties != null ) {
             properties.keySet().forEach( (o) -> {
                 if ( properties.getProperty( ( String ) o ) != null ) {
