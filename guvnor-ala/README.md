@@ -107,7 +107,7 @@ There are currently 4 projects related with the services:
 - **guvnor-ala-services-api**: it contains all the services APIs definitions.
 - **guvnor-ala-services-rest**: it contains the implementation for the rest services.
 - **guvnor-ala-services-backend**: it contains the logic of the services so they can be reused in a CDI environment, where local interaction against the services are needed.
-- **guvnor-ala-distribution**: it generates a Wildfly Swarm Fat-JAR that can be independently started to get a new Node of the Guvnor ALA Services. These services can be started with: java -jar guvnor-ala-distribution-7.0.0-SNAPSHOT-swarm.jar
+- **guvnor-ala-distribution**: it generates a Wildfly Swarm Fat-JAR that can be independently started to get a new Node of the Guvnor ALA Services. These services can be started with: java -jar guvnor-ala-distribution-7.0.0.Beta3-swarm.jar
 
 Current URLs:
 
@@ -133,5 +133,5 @@ You can clone the repository and build all the projects using: mvn clean install
 In order to start the services you can do:
 ```
 cd guvnor-ala-distribution/target/
-java -jar guvnor-ala-distribution-7.0.0-SNAPSHOT-swarm.jar
+java -jar guvnor-ala-distribution-7.0.0.Beta3-swarm.jar
 ```
