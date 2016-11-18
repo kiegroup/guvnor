@@ -56,20 +56,19 @@ public class MetadataServiceImpl
         implements MetadataServerSideService {
 
     private IOService ioService;
-
-    @Inject
-    @Named("configIO")
     private IOService configIOService;
-
-    @Inject
     private SessionInfo sessionInfo;
 
     public MetadataServiceImpl() {
     }
 
     @Inject
-    public MetadataServiceImpl( @Named("ioStrategy") IOService ioService ) {
+    public MetadataServiceImpl( @Named("ioStrategy") IOService ioService,
+                                @Named("configIO") IOService configIOService,
+                                SessionInfo sessionInfo ) {
         this.ioService = ioService;
+        this.configIOService = configIOService;
+        this.sessionInfo = sessionInfo;
     }
 
     @Override
