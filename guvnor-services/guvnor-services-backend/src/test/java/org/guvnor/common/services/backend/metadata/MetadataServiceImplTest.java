@@ -27,6 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -38,6 +39,12 @@ public class MetadataServiceImplTest {
 
     @Mock
     private IOService ioService;
+
+    @Mock
+    private IOService configIOService;
+
+    @Mock
+    private SessionInfo sessionInfo;
 
     @Mock
     private OtherMetaView otherMetaView;
@@ -54,7 +61,9 @@ public class MetadataServiceImplTest {
 
         path = fileSystemProvider.getPath( this.getClass().getResource( "myfile.file" ).toURI() );
 
-        service = new MetadataServiceImpl( ioService );
+        service = new MetadataServiceImpl( ioService,
+                                           configIOService,
+                                           sessionInfo );
     }
 
     @Test
