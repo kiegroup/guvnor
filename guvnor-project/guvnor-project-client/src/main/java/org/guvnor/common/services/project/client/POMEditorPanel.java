@@ -22,11 +22,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.client.util.ApplicationPreferences;
+import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class POMEditorPanel
@@ -37,15 +39,21 @@ public class POMEditorPanel
     private POMEditorPanelView view;
     private SyncBeanManager iocManager;
     private POM model;
+    private GAVPreferences gavPreferences;
+    private ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
 
     public POMEditorPanel() {
     }
 
     @Inject
     public POMEditorPanel( final POMEditorPanelView view,
-                           final SyncBeanManager iocManager ) {
+                           final SyncBeanManager iocManager,
+                           final GAVPreferences gavPreferences,
+                           final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier ) {
         this.view = view;
         this.iocManager = iocManager;
+        this.gavPreferences = gavPreferences;
+        this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
         view.setPresenter( this );
     }
 
@@ -57,31 +65,30 @@ public class POMEditorPanel
 
         this.model = model;
 
-        view.setName( model.getName() );
-        view.setDescription( model.getDescription() );
-        view.enableGroupID();
-        view.enableArtifactID();
-        view.enableVersion();
+        gavPreferences.load( projectScopedResolutionStrategySupplier.get(), loadedGAVPreferences -> {
+            view.setName( model.getName() );
+            view.setDescription( model.getDescription() );
+            view.enableGroupID();
+            view.enableArtifactID();
+            view.enableVersion();
 
-        if ( model.hasParent() ) {
-            view.setParentGAV( model.getParent() );
-            view.showParentGAV();
-            if ( !ApplicationPreferences.isChildGAVEditEnabled() ) {
-                view.disableGroupID( "" );
-                view.disableVersion( "" );
+            if ( model.hasParent() ) {
+                view.setParentGAV( model.getParent() );
+                view.showParentGAV();
+                if ( !loadedGAVPreferences.isChildGAVEditEnabled() ) {
+                    view.disableGroupID( "" );
+                    view.disableVersion( "" );
+                }
+            } else {
+                view.hideParentGAV();
             }
-        } else {
-            view.hideParentGAV();
-        }
 
-        view.setGAV( model.getGav() );
-        view.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
-            @Override
-            public void onChange( String newArtifactId ) {
-                setTitle( newArtifactId );
-            }
+            view.setGAV( model.getGav() );
+            view.addArtifactIdChangeHandler( POMEditorPanel.this::setTitle );
+            setTitle( model.getGav().getArtifactId() );
+        }, throwable -> {
+            throw new RuntimeException( throwable );
         } );
-        setTitle( model.getGav().getArtifactId() );
     }
 
     public void setArtifactID( final String artifactID ) {

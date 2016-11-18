@@ -29,10 +29,6 @@ import org.jboss.errai.bus.server.annotations.Remote;
 @Remote
 public interface ProjectRepositoryResolver {
 
-    String CONFLICTING_GAV_CHECK_DISABLED = "org.guvnor.project.gav.check.disabled";
-
-    String CHILD_GAV_EDIT_ENABLED = "org.guvnor.project.gav.child.edit.enabled";
-
     /**
      * Get a collection of Repositories a Project will resolve artifacts against. The list will include
      * any Repositories defined in settings.xml
