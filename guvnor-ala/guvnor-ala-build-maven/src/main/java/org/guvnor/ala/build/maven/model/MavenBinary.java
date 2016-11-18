@@ -24,4 +24,8 @@ import org.guvnor.ala.build.Binary;
  */
 public interface MavenBinary extends Binary {
 
+    default String getType() {
+        return "Maven";
+    }
+
 }

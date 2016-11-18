@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,37 +21,34 @@ import org.guvnor.ala.build.maven.model.MavenBinary;
 import org.guvnor.ala.config.CloneableConfig;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
-public class MavenBinaryImpl implements MavenBinary,
+public class MavenProjectBinaryImpl implements MavenBinary,
                                         CloneableConfig<MavenBinary> {
 
-    private Path path;
+    private final Project sourceProject;
 
-    private String name;
-
-    public MavenBinaryImpl(final Path path, final String name) {
-        this.path = checkNotNull( "path", path );
-        this.name = checkNotNull( "name", name );
+    public MavenProjectBinaryImpl(final Project sourceProject ) {
+        this.sourceProject = checkNotNull( "sourceProject", sourceProject );
     }
 
     @Override
     public Project getProject() {
-        return null;
+        return sourceProject;
     }
 
     @Override
     public Path getPath() {
-        return path;
+        return sourceProject.getPath();
     }
 
     @Override
     public String getName() {
-        return name;
+        return sourceProject.getExpectedBinary();
     }
 
     @Override
     public MavenBinary asNewClone( final MavenBinary source ) {
-        return new MavenBinaryImpl( source.getPath(), source.getName() );
+        return new MavenProjectBinaryImpl( source.getProject() );
     }
 }

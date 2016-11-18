@@ -96,6 +96,10 @@
     <!-- dependencies to enable maven downloads -->
     <dependency>
       <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
       <artifactId>aether-connector-basic</artifactId>
     </dependency>
     <dependency>
