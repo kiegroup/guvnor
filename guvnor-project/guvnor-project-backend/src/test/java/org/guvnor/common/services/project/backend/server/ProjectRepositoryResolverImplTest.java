@@ -24,12 +24,16 @@ import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Set;
 
+import javax.enterprise.inject.Instance;
+
 import org.apache.maven.project.MavenProject;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
+import org.guvnor.common.services.shared.preferences.WorkbenchPreferenceScopeResolutionStrategies;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -55,6 +59,15 @@ public class ProjectRepositoryResolverImplTest {
 
     @Mock
     private IOService ioService;
+
+    @Mock
+    private Instance<GAVPreferences> gavPreferencesProvider;
+
+    @Mock
+    private GAVPreferences gavPreferences;
+
+    @Mock
+    private WorkbenchPreferenceScopeResolutionStrategies scopeResolutionStrategies;
 
     private ProjectRepositoryResolverImpl service;
 
@@ -86,7 +99,8 @@ public class ProjectRepositoryResolverImplTest {
 
     @Before
     public void setup() {
-        service = new ProjectRepositoryResolverImpl( ioService );
+        service = new ProjectRepositoryResolverImpl( ioService, gavPreferencesProvider, scopeResolutionStrategies );
+        doReturn( gavPreferences ).when( gavPreferencesProvider ).get();
     }
 
     @AfterClass
@@ -1250,7 +1264,6 @@ public class ProjectRepositoryResolverImplTest {
     @Test
     public void testGetRepositoriesResolvingArtifact_Disabled1() {
         final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
-        final String oldConflictingGavCheckSetting = System.getProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1268,11 +1281,10 @@ public class ProjectRepositoryResolverImplTest {
 
             System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
-            System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
-                                "true" );
+            doReturn( true ).when( gavPreferences ).isConflictingGAVCheckDisabled();
 
             //Re-instantiate service to pick-up System Property
-            service = new ProjectRepositoryResolverImpl( ioService );
+            service = new ProjectRepositoryResolverImpl( ioService, gavPreferencesProvider, scopeResolutionStrategies );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
             final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
@@ -1288,17 +1300,16 @@ public class ProjectRepositoryResolverImplTest {
         } finally {
             resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                  oldSettingsXmlPath );
-            resetSystemProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
-                                 oldConflictingGavCheckSetting );
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_Disabled2() {
         final Project project = mock( Project.class );
+        doReturn( "default://master@a/a%20b" ).when( project ).getIdentifier();
+        doCallRealMethod().when( project ).getEncodedIdentifier();
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
         final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
-        final String oldConflictingGavCheckSetting = System.getProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1320,11 +1331,10 @@ public class ProjectRepositoryResolverImplTest {
 
             System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
-            System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
-                                "true" );
+            doReturn( true ).when( gavPreferences ).isConflictingGAVCheckDisabled();
 
             //Re-instantiate service to pick-up System Property
-            service = new ProjectRepositoryResolverImpl( ioService );
+            service = new ProjectRepositoryResolverImpl( ioService, gavPreferencesProvider, scopeResolutionStrategies );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
             final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
@@ -1341,8 +1351,6 @@ public class ProjectRepositoryResolverImplTest {
         } finally {
             resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                  oldSettingsXmlPath );
-            resetSystemProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
-                                 oldConflictingGavCheckSetting );
         }
     }
 
@@ -1351,7 +1359,6 @@ public class ProjectRepositoryResolverImplTest {
         final Project project = mock( Project.class );
         final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
         final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
-        final String oldConflictingGavCheckSetting = System.getProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED );
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1369,11 +1376,10 @@ public class ProjectRepositoryResolverImplTest {
 
             System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                 settingsXmlPath.toString() );
-            System.setProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
-                                "true" );
+            doReturn( true ).when( gavPreferences ).isConflictingGAVCheckDisabled();
 
             //Re-instantiate service to pick-up System Property
-            service = new ProjectRepositoryResolverImpl( ioService );
+            service = new ProjectRepositoryResolverImpl( ioService, gavPreferencesProvider, scopeResolutionStrategies );
 
             final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
             final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
@@ -1389,8 +1395,6 @@ public class ProjectRepositoryResolverImplTest {
         } finally {
             resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
                                  oldSettingsXmlPath );
-            resetSystemProperty( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED,
-                                 oldConflictingGavCheckSetting );
         }
     }
 

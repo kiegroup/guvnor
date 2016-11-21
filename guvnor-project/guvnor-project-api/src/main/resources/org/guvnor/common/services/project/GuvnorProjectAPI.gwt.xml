@@ -33,5 +33,6 @@
   <source path="security" />
   <source path='service'/>
   <source path='social' />
+  <source path='preferences' />
 
 </module>

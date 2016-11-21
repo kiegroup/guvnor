@@ -16,37 +16,43 @@
 
 package org.guvnor.common.services.project.client;
 
-import java.util.Map;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.client.util.ApplicationPreferences;
-import org.guvnor.common.services.shared.config.AppConfigService;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
+import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 
 @EntryPoint
+@Bundle( "preferences/resources/i18n/ProjectPreferencesConstants.properties" )
 public class ProjectEntryPoint {
 
-    private Caller<AppConfigService> appConfigService;
+    private AdminPage adminPage;
+
+    private ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
 
     @Inject
-    public ProjectEntryPoint( final Caller<AppConfigService> appConfigService ) {
-        this.appConfigService = appConfigService;
+    public ProjectEntryPoint( final AdminPage adminPage,
+                              final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier ) {
+        this.adminPage = adminPage;
+        this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
     }
 
     @AfterInitialization
     public void startApp() {
-        loadPreferences();
+        setupProjectAdminPage();
     }
 
-    private void loadPreferences() {
-        appConfigService.call( new RemoteCallback<Map<String, String>>() {
-            @Override
-            public void callback( final Map<String, String> response ) {
-                ApplicationPreferences.setUp( response );
-            }
-        } ).loadPreferences();
+    private void setupProjectAdminPage() {
+        adminPage.addScreen( "project", "Project Settings" );
+        adminPage.setDefaultScreen( "project" );
+
+        adminPage.addPreference( "project",
+                                 "GeneralPreferences",
+                                 "General",
+                                 "fa-gears",
+                                 "general",
+                                 projectScopedResolutionStrategySupplier );
     }
 }

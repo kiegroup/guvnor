@@ -16,20 +16,22 @@
 
 package org.guvnor.common.services.project.client;
 
-import java.util.HashMap;
-
-import org.guvnor.common.services.project.client.util.ApplicationPreferences;
+import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
+import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.mockito.Mockito.*;
 
@@ -42,17 +44,28 @@ public class POMEditorPanelTest {
     @Mock
     private SyncBeanManager iocManager;
 
+    @Mock
+    private GAVPreferences gavPreferences;
+
+    @Mock
+    private ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
+
     private POMEditorPanel panel;
     private POMEditorPanelView.Presenter presenter;
 
     @Before
     public void setUp() throws Exception {
-        setChildGAVEdit( "false" );
+        setChildGAVEdit( false );
 
-        panel = new POMEditorPanel( view, iocManager );
+        panel = new POMEditorPanel( view, iocManager, gavPreferences, projectScopedResolutionStrategySupplier );
         presenter = panel;
 
         verify( view, times( 1 ) ).setPresenter( presenter );
+
+        doAnswer( invocationOnMock -> {
+            ( ( ParameterizedCommand<GAVPreferences> ) invocationOnMock.getArguments()[1] ).execute( gavPreferences );
+            return null;
+        } ).when( gavPreferences ).load( any( PreferenceScopeResolutionStrategyInfo.class ), any( ParameterizedCommand.class ), any( ParameterizedCommand.class ) );
     }
 
     @Test
@@ -177,7 +190,7 @@ public class POMEditorPanelTest {
     @Test
     public void testSetPomWhenItHasParentAndChildGAVEditIsEnabled() {
         POM pom = createTestModelWithParent( "group", "artifact", "1.1.1" );
-        setChildGAVEdit( "true" );
+        setChildGAVEdit( true );
 
         panel.setPOM( pom, false );
 
@@ -231,9 +244,7 @@ public class POMEditorPanelTest {
                                  version ) );
     }
 
-    private void setChildGAVEdit( final String value ) {
-        ApplicationPreferences.setUp( new HashMap<String, String>() {{
-            put( ProjectRepositoryResolver.CHILD_GAV_EDIT_ENABLED, value );
-        }} );
+    private void setChildGAVEdit( final boolean value ) {
+        doReturn( value ).when( gavPreferences ).isChildGAVEditEnabled();
     }
 }

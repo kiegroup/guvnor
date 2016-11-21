@@ -25,6 +25,7 @@ import org.uberfire.commons.data.Cacheable;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.security.ResourceType;
 import org.uberfire.security.authz.RuntimeContentResource;
+import org.uberfire.util.URIUtil;
 
 /**
  * An item representing a project
@@ -85,6 +86,10 @@ public class Project implements RuntimeContentResource,
     @Override
     public String getIdentifier() {
         return getRootPath().toURI();
+    }
+
+    public String getEncodedIdentifier() {
+        return URIUtil.encodeQueryString( getIdentifier() );
     }
 
     @Override
