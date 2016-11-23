@@ -15,6 +15,7 @@
  */
 package org.guvnor.ala.build.maven.executor;
 
+import java.net.URI;
 import java.util.Optional;
 import javax.inject.Inject;
 
@@ -55,8 +56,8 @@ public class MavenDependencyConfigExecutor implements FunctionConfigExecutor<Mav
         }
         final String absolutePath = artifact.getFile().getAbsolutePath();
         LOGGER.debug("Resolved Artifact path: {}", absolutePath);
-        final Path path = FileSystems.getFileSystem(artifact.getFile().toURI()).getPath(artifact.getFile().getAbsolutePath());
-        final MavenBinary binary = new MavenBinaryImpl(path, artifact.getArtifactId());
+        final Path path = FileSystems.getFileSystem(URI.create("file://default")).getPath(absolutePath);
+        final MavenBinary binary = new MavenBinaryImpl(path, artifact.getArtifactId(), artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
         buildRegistry.registerBinary(binary);
         return Optional.of(binary);
     }

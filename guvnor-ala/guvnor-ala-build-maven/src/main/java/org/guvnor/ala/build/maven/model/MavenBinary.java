@@ -19,7 +19,7 @@ package org.guvnor.ala.build.maven.model;
 import org.guvnor.ala.build.Binary;
 
 /*
- * This interface represent the basic inforamtion about a Binary produced by a Maven Build process
+ * This interface represent the basic information about a Binary produced by a Maven Build process
  * @see Binary
  */
 public interface MavenBinary extends Binary {
@@ -27,5 +27,11 @@ public interface MavenBinary extends Binary {
     default String getType() {
         return "Maven";
     }
+
+    String getArtifactId();
+
+    String getVersion();
+
+    String getGroupId();
 
 }

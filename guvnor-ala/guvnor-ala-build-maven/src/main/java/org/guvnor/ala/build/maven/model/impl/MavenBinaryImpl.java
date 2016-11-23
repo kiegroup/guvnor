@@ -26,13 +26,22 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public class MavenBinaryImpl implements MavenBinary,
                                         CloneableConfig<MavenBinary> {
 
-    private Path path;
+    private final Path path;
 
-    private String name;
+    private final String name;
 
-    public MavenBinaryImpl(final Path path, final String name) {
-        this.path = checkNotNull( "path", path );
-        this.name = checkNotNull( "name", name );
+    private final String artifactId;
+
+    private final String version;
+
+    private final String groupId;
+
+    public MavenBinaryImpl(final Path path, final String name, final String groupId, final String artifactId, final String version) {
+        this.path = checkNotNull("path", path);
+        this.name = checkNotNull("name", name);
+        this.artifactId = checkNotNull("artifactId", artifactId);
+        this.version = checkNotNull("version", version);
+        this.groupId = checkNotNull("groupId", groupId);
     }
 
     @Override
@@ -51,7 +60,33 @@ public class MavenBinaryImpl implements MavenBinary,
     }
 
     @Override
-    public MavenBinary asNewClone( final MavenBinary source ) {
-        return new MavenBinaryImpl( source.getPath(), source.getName() );
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    @Override
+    public String getVersion() {
+        return version;
+    }
+
+    @Override
+    public String getGroupId() {
+        return groupId;
+    }
+
+    @Override
+    public MavenBinary asNewClone(final MavenBinary source) {
+        return new MavenBinaryImpl(source.getPath(), source.getName(), groupId, artifactId, version);
+    }
+
+    @Override
+    public String toString() {
+        return "MavenBinaryImpl{" +
+                "path=" + path +
+                ", name='" + name + '\'' +
+                ", artifactId='" + artifactId + '\'' +
+                ", version='" + version + '\'' +
+                ", groupId='" + groupId + '\'' +
+                '}';
     }
 }
