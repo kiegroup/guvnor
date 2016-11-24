@@ -46,7 +46,6 @@ public class ProjectEntryPoint {
 
     private void setupProjectAdminPage() {
         adminPage.addScreen( "project", "Project Settings" );
-        adminPage.setDefaultScreen( "project" );
 
         adminPage.addPreference( "project",
                                  "GeneralPreferences",
