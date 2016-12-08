@@ -26,6 +26,9 @@ import org.uberfire.ext.preferences.shared.bean.BasePreference;
         parents = "GeneralPreferences")
 public class GAVPreferences implements BasePreference<GAVPreferences> {
 
+    static final String CONFLICTING_GAV_CHECK_DISABLED = "org.guvnor.project.gav.check.disabled";
+    static final String CHILD_GAV_EDIT_ENABLED = "org.guvnor.project.gav.child.edit.enabled";
+
     @Property(bundleKey = "GAVPreferences.ConflictingGAVCheckDisabled.Label",
             formType = PropertyFormType.BOOLEAN)
     private boolean conflictingGAVCheckDisabled;
@@ -36,12 +39,12 @@ public class GAVPreferences implements BasePreference<GAVPreferences> {
 
     @Override
     public GAVPreferences defaultValue( final GAVPreferences defaultValue ) {
-        final String conflictingGAVCheckDisabledSystemProperty = System.getProperty( "org.guvnor.project.gav.check.disabled", "false" );
+        final String conflictingGAVCheckDisabledSystemProperty = System.getProperty( CONFLICTING_GAV_CHECK_DISABLED, "false" );
         final boolean conflictingGAVCheckDisabled = Boolean.parseBoolean( conflictingGAVCheckDisabledSystemProperty );
 
         defaultValue.setConflictingGAVCheckDisabled( conflictingGAVCheckDisabled );
 
-        final String childGAVEditEnabledSystemProperty = System.getProperty( "org.guvnor.project.gav.child.edit.enabled", "false" );
+        final String childGAVEditEnabledSystemProperty = System.getProperty( CHILD_GAV_EDIT_ENABLED, "false" );
         final boolean childGAVEditEnabled = Boolean.parseBoolean( childGAVEditEnabledSystemProperty );
 
         defaultValue.setChildGAVEditEnabled( childGAVEditEnabled );
