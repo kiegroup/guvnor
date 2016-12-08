@@ -1,0 +1,24 @@
+{
+  "revapi": {
+    "java": {
+      "filter": {
+        "classes": {
+          "comment": "Just ProjectResource is checked",
+          "regex": false,
+          "include": [
+            "org.guvnor.rest.backend.ProjectResource"
+          ]
+        }
+      }
+    },
+    "_comment": "Changes between 6.5.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
+    "ignore": [
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method javax.ws.rs.core.Response org.guvnor.rest.backend.ProjectResource::testProject(java.lang.String, java.lang.String, org.guvnor.rest.client.BuildConfig)",
+        "new": "method javax.ws.rs.core.Response org.guvnor.rest.backend.ProjectResource::testProject(java.lang.String, java.lang.String)",
+        "justification": "BuildConfig parameter was unused"
+      }
+    ]
+  }
+}
