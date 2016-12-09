@@ -39,12 +39,14 @@ public class GAVPreferences implements BasePreference<GAVPreferences> {
 
     @Override
     public GAVPreferences defaultValue( final GAVPreferences defaultValue ) {
-        final String conflictingGAVCheckDisabledSystemProperty = System.getProperty( CONFLICTING_GAV_CHECK_DISABLED, "false" );
+        //GWT complains in SuperDevMode if the static constants are used; so we have to use a literal
+        final String conflictingGAVCheckDisabledSystemProperty = System.getProperty( "org.guvnor.project.gav.check.disabled", "false" );
         final boolean conflictingGAVCheckDisabled = Boolean.parseBoolean( conflictingGAVCheckDisabledSystemProperty );
 
         defaultValue.setConflictingGAVCheckDisabled( conflictingGAVCheckDisabled );
 
-        final String childGAVEditEnabledSystemProperty = System.getProperty( CHILD_GAV_EDIT_ENABLED, "false" );
+        //GWT complains in SuperDevMode if the static constants are used; so we have to use a literal
+        final String childGAVEditEnabledSystemProperty = System.getProperty( "org.guvnor.project.gav.child.edit.enabled", "false" );
         final boolean childGAVEditEnabled = Boolean.parseBoolean( childGAVEditEnabledSystemProperty );
 
         defaultValue.setChildGAVEditEnabled( childGAVEditEnabled );
