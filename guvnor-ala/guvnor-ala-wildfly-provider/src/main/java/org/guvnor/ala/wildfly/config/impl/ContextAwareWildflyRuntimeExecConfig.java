@@ -49,11 +49,10 @@ public class ContextAwareWildflyRuntimeExecConfig implements
     public void setContext( final Map<String, ?> context ) {
         this.context = context;
         MavenBinary binary = (MavenBinary) context.get( "binary" );
-        String binaryPath = binary.getProject().getExpectedBinary();
 
         WildflyProvider provider = (WildflyProvider) context.get( "wildfly-provider" );
         this.providerId = provider;
-        this.warPath = binary.getProject().getTempDir() + "/target/" + binaryPath;
+        this.warPath = binary.getPath().toString();
 
     }
 

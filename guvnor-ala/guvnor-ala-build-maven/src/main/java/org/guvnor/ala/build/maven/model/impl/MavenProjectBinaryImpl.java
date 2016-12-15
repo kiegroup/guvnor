@@ -21,15 +21,27 @@ import org.guvnor.ala.build.maven.model.MavenBinary;
 import org.guvnor.ala.config.CloneableConfig;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class MavenProjectBinaryImpl implements MavenBinary,
                                         CloneableConfig<MavenBinary> {
 
+    private final Path path;
+
     private final Project sourceProject;
 
-    public MavenProjectBinaryImpl(final Project sourceProject ) {
-        this.sourceProject = checkNotNull( "sourceProject", sourceProject );
+    private final String artifactId;
+
+    private final String version;
+
+    private final String groupId;
+
+    public MavenProjectBinaryImpl(final Path path, final Project sourceProject, final String groupId, final String artifactId, final String version) {
+        this.path = checkNotNull("path", path);
+        this.sourceProject = checkNotNull("sourceProject", sourceProject);
+        this.artifactId = checkNotNull("artifactId", artifactId);
+        this.version = checkNotNull("version", version);
+        this.groupId = checkNotNull("groupId", groupId);
     }
 
     @Override
@@ -39,7 +51,7 @@ public class MavenProjectBinaryImpl implements MavenBinary,
 
     @Override
     public Path getPath() {
-        return sourceProject.getPath();
+        return path;
     }
 
     @Override
@@ -48,7 +60,33 @@ public class MavenProjectBinaryImpl implements MavenBinary,
     }
 
     @Override
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    @Override
+    public String getVersion() {
+        return version;
+    }
+
+    @Override
+    public String getGroupId() {
+        return groupId;
+    }
+
+    @Override
     public MavenBinary asNewClone( final MavenBinary source ) {
-        return new MavenProjectBinaryImpl( source.getProject() );
+        return new MavenProjectBinaryImpl( path, source.getProject(), groupId, artifactId, version );
+    }
+
+    @Override
+    public String toString() {
+        return "MavenProjectBinaryImpl{" +
+                "path=" + path +
+                ", sourceProject=" + sourceProject +
+                ", artifactId='" + artifactId + '\'' +
+                ", version='" + version + '\'' +
+                ", groupId='" + groupId + '\'' +
+                '}';
     }
 }

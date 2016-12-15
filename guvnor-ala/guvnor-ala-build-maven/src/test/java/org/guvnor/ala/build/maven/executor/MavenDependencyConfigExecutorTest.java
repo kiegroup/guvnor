@@ -91,7 +91,7 @@ public class MavenDependencyConfigExecutorTest {
                 {
                     put("artifact", groupId + ":" + artifactId + ":pom:" + version);
                 }
-            }, pipe, (Binary b) -> System.out.println(b.getName()));
+            }, pipe, System.out::println);
 
             final List<Binary> allBinaries = buildRegistry.getAllBinaries();
             assertNotNull(allBinaries);
@@ -100,6 +100,10 @@ public class MavenDependencyConfigExecutorTest {
             final MavenBinary binary = (MavenBinary) allBinaries.get(0);
             assertEquals("Maven", binary.getType());
             assertEquals(artifactId, binary.getName());
+            assertEquals(groupId, binary.getGroupId());
+            assertEquals(artifactId, binary.getArtifactId());
+            assertEquals(version, binary.getVersion());
+            assertEquals(m2Folder + "/org/guvnor/ala/maven-ala-artifact-test/1/maven-ala-artifact-test-1.pom", binary.getPath().toString());
         } finally {
             if (oldSettingsXmlPath == null) {
                 System.clearProperty(CUSTOM_SETTINGS_PROPERTY);
@@ -130,29 +134,14 @@ public class MavenDependencyConfigExecutorTest {
     }
 
     private Path generateSettingsXml() throws IOException {
-        final String localRepositoryUrl = m2Folder.toURI().toURL().toExternalForm();
+        final String localRepositoryUrl = m2Folder.getAbsolutePath();
         String settingsXml =
                 "<settings xmlns=\"http://maven.apache.org/SETTINGS/1.0.0\"\n" +
                         "      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                         "      xsi:schemaLocation=\"http://maven.apache.org/SETTINGS/1.0.0\n" +
                         "                          http://maven.apache.org/xsd/settings-1.0.0.xsd\">\n" +
-                        "  <profiles>\n" +
-                        "    <profile>\n" +
-                        "      <id>repos</id>\n" +
-                        "      <activation>\n" +
-                        "        <activeByDefault>true</activeByDefault>\n" +
-                        "      </activation>\n" +
-                        "      <repositories>\n" +
-                        "        <repository>\n" +
-                        "          <id>myTestRepo</id>\n" +
-                        "          <name>My Test Repo</name>\n" +
-                        "          <url>" + localRepositoryUrl + "</url>\n" +
-                        "          <releases><enabled>true</enabled></releases>\n" +
-                        "          <snapshots><enabled>true</enabled></snapshots>\n" +
-                        "        </repository>\n" +
-                        "    </repositories>\n" +
-                        "    </profile>\n" +
-                        "  </profiles>\n" +
+                        "  <localRepository>" + localRepositoryUrl + "</localRepository>\n" +
+                        "  <offline>true</offline>\n" +
                         "</settings>\n";
 
         final Path settingsXmlPath = Files.createTempFile(m2Folder.toPath(), "settings", ".xml");

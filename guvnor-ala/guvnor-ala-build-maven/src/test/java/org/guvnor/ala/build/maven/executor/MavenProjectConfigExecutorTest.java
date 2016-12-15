@@ -23,11 +23,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.project.MavenProject;
 import org.guvnor.ala.build.Binary;
 import org.guvnor.ala.build.Project;
 import org.guvnor.ala.build.maven.config.impl.MavenBuildConfigImpl;
 import org.guvnor.ala.build.maven.config.impl.MavenBuildExecConfigImpl;
 import org.guvnor.ala.build.maven.config.impl.MavenProjectConfigImpl;
+import org.guvnor.ala.build.maven.model.MavenBinary;
 import org.guvnor.ala.config.BinaryConfig;
 import org.guvnor.ala.config.BuildConfig;
 import org.guvnor.ala.config.ProjectConfig;
@@ -48,6 +50,7 @@ import org.guvnor.ala.source.git.executor.GitConfigExecutor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.scanner.embedder.MavenProjectLoader;
 
 import static java.util.Arrays.*;
 import static org.guvnor.ala.pipeline.StageUtil.*;
@@ -95,7 +98,7 @@ public class MavenProjectConfigExecutorTest {
                 put( "origin", "https://github.com/salaboy/drools-workshop" );
                 put( "project-dir", "drools-webapp-example" );
             }
-        }, pipe, ( Binary b ) -> System.out.println( b.getName() ) );
+        }, pipe, System.out::println );
 
         List<Repository> allRepositories = sourceRegistry.getAllRepositories();
         assertEquals( 1, allRepositories.size() );
@@ -104,6 +107,7 @@ public class MavenProjectConfigExecutorTest {
         assertEquals( 1, allProjects.size() );
         List<Binary> allBinaries = buildRegistry.getAllBinaries();
         assertEquals( 1, allBinaries.size() );
+        assertMavenBinary( allBinaries.get(0), allProjects.get(0) );
 
         final String tempDir = sourceRegistry.getAllProjects( repo ).get( 0 ).getTempDir();
 
@@ -114,7 +118,7 @@ public class MavenProjectConfigExecutorTest {
                 put( "branch", "master" );
                 put( "project-dir", "drools-webapp-example" );
             }
-        }, pipe, ( Binary b ) -> System.out.println( b.getName() ) );
+        }, pipe, System.out::println );
 
         allRepositories = sourceRegistry.getAllRepositories();
         assertEquals( 1, allRepositories.size() );
@@ -123,6 +127,7 @@ public class MavenProjectConfigExecutorTest {
         assertEquals( 2, allProjects.size() );
         allBinaries = buildRegistry.getAllBinaries();
         assertEquals( 1, allBinaries.size() );
+        assertMavenBinary( allBinaries.get(0), allProjects.get(1) );
     }
     
     @Test
@@ -153,7 +158,7 @@ public class MavenProjectConfigExecutorTest {
                 put( "origin", "https://github.com/salaboy/drools-workshop" );
                 put( "project-dir", "drools-webapp-example" );
             }
-        }, pipe, ( Binary b ) -> System.out.println( b.getName() ) );
+        }, pipe, System.out::println );
 
         List<Repository> allRepositories = sourceRegistry.getAllRepositories();
         assertEquals( 1, allRepositories.size() );
@@ -162,6 +167,7 @@ public class MavenProjectConfigExecutorTest {
         assertEquals( 1, allProjects.size() );
         List<Binary> allBinaries = buildRegistry.getAllBinaries();
         assertEquals( 1, allBinaries.size() );
+        assertMavenBinary( allBinaries.get(0), allProjects.get(0) );
 
         final String tempDir = sourceRegistry.getAllProjects( repo ).get( 0 ).getTempDir();
 
@@ -172,7 +178,7 @@ public class MavenProjectConfigExecutorTest {
                 put( "branch", "master" );
                 put( "project-dir", "drools-webapp-example" );
             }
-        }, pipe, ( Binary b ) -> System.out.println( b.getName() ) );
+        }, pipe, System.out::println );
 
         allRepositories = sourceRegistry.getAllRepositories();
         assertEquals( 1, allRepositories.size() );
@@ -181,9 +187,20 @@ public class MavenProjectConfigExecutorTest {
         assertEquals( 2, allProjects.size() );
         allBinaries = buildRegistry.getAllBinaries();
         assertEquals( 1, allBinaries.size() );
+        assertMavenBinary( allBinaries.get(0), allProjects.get(1) );
     }
-    
-    
+
+    private static void assertMavenBinary(final Binary binary, final Project project){
+        assertTrue(binary instanceof MavenBinary);
+        final MavenBinary mavenBinary = (MavenBinary) binary;
+        assertEquals("Maven", mavenBinary.getType());
+        final File pom = new File( project.getTempDir(), "pom.xml" );
+        final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pom);
+        assertEquals(mavenProject.getGroupId(), mavenBinary.getGroupId());
+        assertEquals(mavenProject.getArtifactId(), mavenBinary.getArtifactId());
+        assertEquals(mavenProject.getVersion(), mavenBinary.getVersion());
+        assertEquals(project.getTempDir() + "/target/" + project.getExpectedBinary(), mavenBinary.getPath().toString());
+    }
 
     static class MyGitConfig implements GitConfig,
                                         ContextAware {
