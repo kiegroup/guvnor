@@ -16,7 +16,7 @@
 
 package org.guvnor.structure.client.editors.fileexplorer;
 
-
+import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.core.client.tree.TreeItem;
 
@@ -24,7 +24,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 class FileExplorerItem {
 
-    private static final String LAZY_LOAD = "Loading...";
+    private CommonConstants constants = CommonConstants.INSTANCE;
 
     private final TreeItem parent;
 
@@ -37,7 +37,7 @@ class FileExplorerItem {
 
         final TreeItem newDirectory = parent.addItem( TreeItem.Type.FOLDER, child.getFileName() );
         newDirectory.addItem( TreeItem.Type.LOADING,
-                              LAZY_LOAD );
+                              constants.Loading() );
         newDirectory.setUserObject( child );
     }
 
