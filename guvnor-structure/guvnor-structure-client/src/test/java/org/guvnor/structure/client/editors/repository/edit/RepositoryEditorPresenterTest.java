@@ -37,8 +37,10 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Mockito.*;
 
@@ -55,6 +57,9 @@ public class RepositoryEditorPresenterTest {
 
     @Mock
     private RepositoryServiceEditor repositoryServiceEditor;
+
+    @Mock
+    private EventSourceMock<NotificationEvent> notification;
 
     @Mock
     private PlaceManager placeManager;
@@ -79,8 +84,9 @@ public class RepositoryEditorPresenterTest {
         presenter = new RepositoryEditorPresenter( view,
                                                    repositoryServiceCaller,
                                                    repositoryServiceEditorCaller,
+                                                   notification,
                                                    placeManager,
-                                                   repositoryController);
+                                                   repositoryController );
 
         repositoryInfo = new RepositoryInfo( "repository",
                                              "repository",
@@ -172,6 +178,14 @@ public class RepositoryEditorPresenterTest {
 
         verify( placeManager,
                 times( 1 ) ).closePlace( eq( place ) );
+    }
+
+    @Test
+    public void testNotificationFiredWhenGitUriCopied() {
+        presenter.onGitUrlCopied( "uri" );
+
+        verify( notification,
+                times( 1 ) ).fire( any( NotificationEvent.class ) );
     }
 
 }

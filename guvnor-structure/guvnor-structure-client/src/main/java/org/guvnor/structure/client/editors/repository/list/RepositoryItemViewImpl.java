@@ -71,6 +71,10 @@ public class RepositoryItemViewImpl
     @Inject
     public RepositoryItemViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        myGitCopyButton.addDomHandler( ( e ) -> presenter.onGitUrlCopied( gitDaemonURI.getText() ),
+                                       ClickEvent.getType() );
+
         glueCopy( myGitCopyButton.getElement() );
     }
 
