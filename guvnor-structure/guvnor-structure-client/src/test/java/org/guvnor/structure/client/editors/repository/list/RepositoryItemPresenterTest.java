@@ -29,6 +29,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Mockito.*;
 
@@ -42,6 +44,9 @@ public class RepositoryItemPresenterTest {
     private RepositoryController repositoryController;
 
     @Mock
+    private EventSourceMock<NotificationEvent> notification;
+
+    @Mock
     private RepositoryItemView view;
 
     private RepositoryItemPresenter presenter;
@@ -49,9 +54,9 @@ public class RepositoryItemPresenterTest {
     @Mock
     private Repository repository;
 
-    List<PublicURI> publicURIs = new ArrayList<PublicURI>(  );
+    List<PublicURI> publicURIs = new ArrayList<PublicURI>();
 
-    List<String> branches = new ArrayList<String>(  );
+    List<String> branches = new ArrayList<String>();
 
     @Mock
     PublicURI uri1;
@@ -71,7 +76,10 @@ public class RepositoryItemPresenterTest {
         when( uri2.getProtocol() ).thenReturn( "test-protocol2" );
         when( uri2.getURI() ).thenReturn( "uri2" );
 
-        presenter = new RepositoryItemPresenter( view, guvnorStructureContext, repositoryController );
+        presenter = new RepositoryItemPresenter( view,
+                                                 guvnorStructureContext,
+                                                 repositoryController,
+                                                 notification );
         when( repository.getAlias() ).thenReturn( "TestRepo" );
 
         when( repositoryController.canUpdateRepository( repository ) ).thenReturn( false );
@@ -79,7 +87,7 @@ public class RepositoryItemPresenterTest {
     }
 
     @Test
-    public void repositoryWithPublicUrisAndBranchesLoadTest( ) {
+    public void repositoryWithPublicUrisAndBranchesLoadTest() {
         publicURIs.add( uri1 );
         publicURIs.add( uri2 );
         branches.add( "development" );
@@ -88,7 +96,7 @@ public class RepositoryItemPresenterTest {
     }
 
     @Test
-    public void repositoryWithPublicUrisAndNoBranchesLoadTest( ) {
+    public void repositoryWithPublicUrisAndNoBranchesLoadTest() {
         publicURIs.add( uri1 );
         publicURIs.add( uri2 );
         repositoryLoadTest( publicURIs, branches );
@@ -106,7 +114,8 @@ public class RepositoryItemPresenterTest {
         repositoryLoadTest( publicURIs, branches );
     }
 
-    private void repositoryLoadTest( List<PublicURI> uris, List<String> branches ) {
+    private void repositoryLoadTest( List<PublicURI> uris,
+                                     List<String> branches ) {
 
         when( repository.getAlias() ).thenReturn( "TestRepo" );
         when( repository.getPublicURIs() ).thenReturn( publicURIs );
@@ -148,7 +157,7 @@ public class RepositoryItemPresenterTest {
         branches.add( "release" );
 
         //emulates development branch was selected at the moment of the refresh
-        when( view.getSelectedBranch( ) ).thenReturn( "development" );
+        when( view.getSelectedBranch() ).thenReturn( "development" );
 
         //check that the repository was loaded properly
         repositoryLoadTest( publicURIs, branches );
@@ -169,4 +178,13 @@ public class RepositoryItemPresenterTest {
         //the previously selected branch should have been set again.
         verify( view, times( 1 ) ).setSelectedBranch( "development" );
     }
+
+    @Test
+    public void testNotificationFiredWhenGitUriCopied() {
+        presenter.onGitUrlCopied( "uri" );
+
+        verify( notification,
+                times( 1 ) ).fire( any( NotificationEvent.class ) );
+    }
+
 }

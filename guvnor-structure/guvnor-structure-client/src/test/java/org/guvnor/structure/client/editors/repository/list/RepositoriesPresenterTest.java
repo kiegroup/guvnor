@@ -35,6 +35,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -52,6 +54,9 @@ public class RepositoriesPresenterTest {
 
     @Mock
     private RepositoryController repositoryController;
+
+    @Mock
+    private EventSourceMock<NotificationEvent> notification;
 
     private GuvnorStructureContext guvnorStructureContext;
 
@@ -191,7 +196,7 @@ public class RepositoriesPresenterTest {
 
         //Emulates the context receiving the new branch event for a branch created in r1.
         guvnorStructureContext.onNewBranch( new NewBranchEvent( "r1",
-                "theNewBranch", branchPath, System.currentTimeMillis() ) );
+                                                                "theNewBranch", branchPath, System.currentTimeMillis() ) );
 
         //Verify that the view was properly populated including the new branch.
         //one time at initialization + one time when the new branch was loaded.
@@ -205,11 +210,14 @@ public class RepositoriesPresenterTest {
     }
 
     private RepositoryItemPresenter createItemPresenter( RepositoryItemView itemView,
-            GuvnorStructureContext guvnorStructureContext,
-            Repository repository,
-            String branch ) {
+                                                         GuvnorStructureContext guvnorStructureContext,
+                                                         Repository repository,
+                                                         String branch ) {
         //reproduces the initialization of the RepositoryItems performed by the view.
-        RepositoryItemPresenter itemPresenter = new RepositoryItemPresenter( itemView, guvnorStructureContext, repositoryController );
+        RepositoryItemPresenter itemPresenter = new RepositoryItemPresenter( itemView,
+                                                                             guvnorStructureContext,
+                                                                             repositoryController,
+                                                                             notification );
         itemPresenter.setRepository( repository, branch );
         return itemPresenter;
     }

@@ -77,9 +77,11 @@ public class RepositoryEditorView extends Composite
     private RepositoryEditorPresenter presenter;
     private boolean readOnly;
 
-    @PostConstruct
-    public void init() {
+    public RepositoryEditorView() {
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        myGitCopyButton.addDomHandler( ( e ) -> presenter.onGitUrlCopied( gitDaemonURI.getText() ),
+                                       ClickEvent.getType() );
     }
 
     @Override
@@ -132,19 +134,19 @@ public class RepositoryEditorView extends Composite
             history.setVisible( false );
         }
 
-        loadMore.addClickHandler(new ClickHandler() {
+        loadMore.addClickHandler( new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                presenter.onLoadMoreHistory(history.getWidgetCount());
+            public void onClick( ClickEvent event ) {
+                presenter.onLoadMoreHistory( history.getWidgetCount() );
             }
-        });
+        } );
 
         final String uriId = "uri-for-" + repositoryName;
         gitDaemonURI.getElement().setId( uriId );
 
-        myGitCopyButton.init(false, uriId, gitDaemonURI.getText());
+        myGitCopyButton.init( false, uriId, gitDaemonURI.getText() );
 
-        glueCopy(myGitCopyButton.getElement());
+        glueCopy( myGitCopyButton.getElement() );
     }
 
     @Override

@@ -18,9 +18,11 @@ package org.guvnor.structure.client.editors.repository.edit;
 
 import java.util.List;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.guvnor.structure.client.security.RepositoryController;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.RepositoryInfo;
@@ -39,6 +41,7 @@ import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
 @WorkbenchScreen(identifier = "RepositoryEditor")
@@ -47,6 +50,7 @@ public class RepositoryEditorPresenter {
     private View view;
     private Caller<RepositoryService> repositoryService;
     private Caller<RepositoryServiceEditor> repositoryServiceEditor;
+    private Event<NotificationEvent> notification;
     private PlaceManager placeManager;
     private RepositoryController repositoryController;
 
@@ -76,11 +80,13 @@ public class RepositoryEditorPresenter {
     public RepositoryEditorPresenter( final View view,
                                       final Caller<RepositoryService> repositoryService,
                                       final Caller<RepositoryServiceEditor> repositoryServiceEditor,
+                                      final Event<NotificationEvent> notification,
                                       final PlaceManager placeManager,
                                       final RepositoryController repositoryController ) {
         this.view = view;
         this.repositoryService = repositoryService;
         this.repositoryServiceEditor = repositoryServiceEditor;
+        this.notification = notification;
         this.placeManager = placeManager;
         this.repositoryController = repositoryController;
     }
@@ -140,6 +146,10 @@ public class RepositoryEditorPresenter {
                            root,
                            comment,
                            record );
+    }
+
+    void onGitUrlCopied( final String uri ) {
+        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.GitUriCopied( uri ) ) );
     }
 
     public void onRepositoryRemovedEvent( @Observes RepositoryRemovedEvent event ) {

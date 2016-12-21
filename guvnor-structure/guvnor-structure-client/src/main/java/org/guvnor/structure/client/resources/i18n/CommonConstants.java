@@ -65,4 +65,6 @@ public interface CommonConstants
 
     String Repositories();
 
+    String GitUriCopied(final String uri);
+
 }
