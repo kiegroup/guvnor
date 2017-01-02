@@ -348,7 +348,7 @@
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>${version.org.wildfly.swarm}</version>
         <configuration>
           <properties>
             <maven.home>${maven.home}</maven.home>
