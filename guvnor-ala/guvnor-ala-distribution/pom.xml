@@ -208,8 +208,8 @@
       <artifactId>guvnor-ala-docker-provider</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
