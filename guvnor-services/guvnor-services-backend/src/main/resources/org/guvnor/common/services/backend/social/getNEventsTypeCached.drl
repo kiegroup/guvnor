@@ -13,16 +13,17 @@
  * limitations under the License.
 */
 
-package org.guvnor.structure.social;
+package org.guvnor.common.services.backend.social
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.ext.uberfire.social.activities.model.SocialEventType;
-
-@Portable
-public enum OrganizationalUnitEventType implements SocialEventType {
-
-    NEW_ORGANIZATIONAL_UNIT,
-    REPO_ADDED_TO_ORGANIZATIONAL_UNIT,
-    REPO_REMOVED_FROM_ORGANIZATIONAL_UNIT,
-    ORGANIZATIONAL_UNIT_UPDATED
-}
+global org.guvnor.common.services.backend.social.SocialTimelineRulesQuery queryAPI;
+global java.util.List socialEvents;
+global java.lang.String filter;
+global java.lang.Integer maxResults;
+rule "Get N Type Cached"
+when
+  $result:SocialActivitiesEvent(getAdicionalInfos() contains filter) from queryAPI.getNEventsFromEachType(maxResults,"RESOURCE_ADDED_EVENT", "RESOURCE_UPDATE_EVENT")
+  eval( true )
+then
+  socialEvents.add($result);
+end
