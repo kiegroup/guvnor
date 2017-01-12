@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
@@ -66,6 +67,53 @@ public class GitRepositoryFactoryHelperTest {
     @Test(expected = IllegalStateException.class)
     public void testNotValid() throws Exception {
         helper.newRepository(getConfigGroup());
+    }
+
+    @Test
+    public void testNewRepositoryDontReplaceIfExists() throws Exception {
+
+        rootDirectories.add(createPath("default://master@uf-playground"));
+
+        ConfigGroup configGroup = getConfigGroup();
+        configGroup.setName("test");
+
+        ConfigItem configItem = new ConfigItem();
+        configItem.setName( "replaceIfExists" );
+        configItem.setValue( false );
+        configGroup.setConfigItem( configItem );
+
+        when( ioService.newFileSystem(any(URI.class), anyMap()))
+                .thenThrow(FileSystemAlreadyExistsException.class );
+        when( ioService.getFileSystem(any(URI.class))).thenReturn(fileSystem);
+
+        helper.newRepository(configGroup);
+
+        verify(ioService, never()).delete(any(Path.class));
+        verify(ioService, times(1)).newFileSystem(any(URI.class), anyMap());
+    }
+
+    @Test
+    public void testNewRepositoryReplaceIfExists() throws Exception {
+
+        rootDirectories.add(createPath("default://master@uf-playground"));
+
+        ConfigGroup configGroup = getConfigGroup();
+        configGroup.setName("test");
+
+        ConfigItem configItem = new ConfigItem();
+        configItem.setName( "replaceIfExists" );
+        configItem.setValue( true );
+        configGroup.setConfigItem( configItem );
+
+        when( ioService.newFileSystem(any(URI.class), anyMap()))
+                .thenThrow(FileSystemAlreadyExistsException.class )
+                .thenReturn(fileSystem);
+        when( ioService.getFileSystem(any(URI.class))).thenReturn(fileSystem);
+
+        helper.newRepository(configGroup);
+
+        verify(ioService, times(1)).delete(any(Path.class));
+        verify(ioService, times(2)).newFileSystem(any(URI.class), anyMap());
     }
 
     @Test

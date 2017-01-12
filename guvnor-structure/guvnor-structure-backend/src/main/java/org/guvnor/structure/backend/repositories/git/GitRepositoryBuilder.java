@@ -127,18 +127,28 @@ public class GitRepositoryBuilder {
         URI uri = null;
         try {
             uri = URI.create( repo.getUri() );
-            fs = ioService.newFileSystem( uri,
-                                          new HashMap<String, Object>( repo.getEnvironment() ) {{
-                                              if ( !repo.getEnvironment().containsKey( "origin" ) ) {
-                                                  put( "init", true );
-                                              }
-                                          }} );
+            fs = newFileSystem( uri );
         } catch ( final FileSystemAlreadyExistsException e ) {
             fs = ioService.getFileSystem( uri );
+            Object replaceIfExists = repo.getEnvironment().get( "replaceIfExists" );
+            if ( replaceIfExists != null && Boolean.valueOf( replaceIfExists.toString() ) ) {
+                org.uberfire.java.nio.file.Path root = fs.getPath( null );
+                ioService.delete( root );
+                fs = newFileSystem( uri );
+            }
         } catch ( final Throwable ex ) {
             throw new RuntimeException( ex.getCause().getMessage(), ex );
         }
         return fs;
+    }
+
+    private FileSystem newFileSystem( URI uri ) {
+        return ioService.newFileSystem( uri,
+                new HashMap<String, Object>( repo.getEnvironment() ) {{
+                    if ( !repo.getEnvironment().containsKey( "origin" ) ) {
+                        put( "init", true );
+                    }
+                }} );
     }
 
     /**
