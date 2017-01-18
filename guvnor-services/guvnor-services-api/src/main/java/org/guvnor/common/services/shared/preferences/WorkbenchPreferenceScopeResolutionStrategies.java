@@ -16,7 +16,7 @@
 
 package org.guvnor.common.services.shared.preferences;
 
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 /**
  * Service used to obtain information regarding the workbench preference scopes resolution strategies.

@@ -24,8 +24,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.preferences.WorkbenchPreferenceScopeResolutionStrategies;
-import org.uberfire.annotations.Customizable;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 @ApplicationScoped
 public class ProjectScopedResolutionStrategySupplier implements Supplier<PreferenceScopeResolutionStrategyInfo> {

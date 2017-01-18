@@ -16,10 +16,10 @@
 
 package org.guvnor.common.services.project.preferences;
 
-import org.uberfire.ext.preferences.shared.PropertyFormType;
-import org.uberfire.ext.preferences.shared.annotations.Property;
-import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
-import org.uberfire.ext.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.PropertyFormType;
+import org.uberfire.preferences.shared.annotations.Property;
+import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
+import org.uberfire.preferences.shared.bean.BasePreference;
 
 @WorkbenchPreference(identifier = "GAVPreferences",
         bundleKey = "GAVPreferences.Label",

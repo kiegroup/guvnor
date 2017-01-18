@@ -17,8 +17,8 @@
 package org.guvnor.common.services.shared.preferences;
 
 import org.uberfire.annotations.FallbackImplementation;
-import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.preferences.shared.PreferenceScopeResolutionStrategy;
+import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 @FallbackImplementation
 public class DefaultWorkbenchPreferenceScopeResolutionStrategies implements WorkbenchPreferenceScopeResolutionStrategies {
