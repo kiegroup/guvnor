@@ -24,11 +24,11 @@ import javax.inject.Inject;
 
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
-import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.kie.uberfire.social.activities.model.SocialEventType;
-import org.kie.uberfire.social.activities.repository.SocialUserRepository;
-import org.kie.uberfire.social.activities.service.SocialAdapter;
-import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.model.SocialEventType;
+import org.ext.uberfire.social.activities.repository.SocialUserRepository;
+import org.ext.uberfire.social.activities.service.SocialAdapter;
+import org.ext.uberfire.social.activities.service.SocialCommandTypeFilter;
 
 @ApplicationScoped
 public class UpdatedOrganizationalUnitEventAdapter

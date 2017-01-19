@@ -19,11 +19,11 @@ package org.guvnor.asset.management.backend.social;
 import org.guvnor.asset.management.backend.social.i18n.Constants;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.structure.repositories.NewBranchEvent;
-import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.kie.uberfire.social.activities.model.SocialEventType;
-import org.kie.uberfire.social.activities.repository.SocialUserRepository;
-import org.kie.uberfire.social.activities.service.SocialAdapter;
-import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.model.SocialEventType;
+import org.ext.uberfire.social.activities.repository.SocialUserRepository;
+import org.ext.uberfire.social.activities.service.SocialAdapter;
+import org.ext.uberfire.social.activities.service.SocialCommandTypeFilter;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

@@ -24,11 +24,11 @@ import javax.inject.Inject;
 import org.guvnor.asset.management.backend.social.i18n.Constants;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.asset.management.social.RepositoryChangeEvent;
-import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.kie.uberfire.social.activities.model.SocialEventType;
-import org.kie.uberfire.social.activities.repository.SocialUserRepository;
-import org.kie.uberfire.social.activities.service.SocialAdapter;
-import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.model.SocialEventType;
+import org.ext.uberfire.social.activities.repository.SocialUserRepository;
+import org.ext.uberfire.social.activities.service.SocialAdapter;
+import org.ext.uberfire.social.activities.service.SocialCommandTypeFilter;
 
 public class RepositoryChangeEventAdapter implements SocialAdapter<RepositoryChangeEvent> {
 
