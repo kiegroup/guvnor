@@ -15,6 +15,8 @@
 
 package org.guvnor.m2repo.client.editor;
 
+import java.util.Set;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -25,15 +27,16 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
+import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.client.widgets.ArtifactListPresenter;
 import org.guvnor.m2repo.client.widgets.ColumnType;
 import org.guvnor.m2repo.model.JarListPageRow;
+import org.guvnor.m2repo.security.MavenRepositoryPagedJarTableFeatures;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.gwtbootstrap3.client.ui.html.Div;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.security.shared.api.RoleImpl;
+import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 
 @Dependent
@@ -42,94 +45,121 @@ public class MavenRepositoryPagedJarTable
         implements RequiresResize {
 
     private ArtifactListPresenter presenter;
+    private KieWorkbenchACL kieACL;
 
-    @Inject
     protected User identity;
 
     private final Div content = new Div();
 
     public MavenRepositoryPagedJarTable() {
-        initWidget( content );
+    }
+
+    @Inject
+    public MavenRepositoryPagedJarTable(final ArtifactListPresenter presenter,
+                                        final KieWorkbenchACL kieACL,
+                                        final User identity) {
+        this.presenter = presenter;
+        this.kieACL = kieACL;
+        this.identity = identity;
+        initWidget(content);
+    }
+
+    @PostConstruct
+    public void init() {
+        presenter.setup(ColumnType.NAME,
+                        ColumnType.GAV,
+                        ColumnType.LAST_MODIFIED);
+
+        // Add "View KJAR's pom" button
+        addViewPOMButton();
+
+        //Add "Download JAR" button if the User has permission
+        if (isUserPermittedToDownloadJARs()) {
+            addDownloadJARButton();
+        }
+
+        presenter.search("");
+        content.add(presenter.getView());
+    }
+
+    private boolean isUserPermittedToDownloadJARs() {
+        final Set<String> grantedRoles = kieACL.getGrantedRoles(MavenRepositoryPagedJarTableFeatures.JAR_DOWNLOAD);
+        if (identity.getRoles() != null) {
+            for (Role role : identity.getRoles()) {
+                if (grantedRoles.contains(role.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
     public void onResize() {
-        if ( ( getParent().getOffsetHeight() - 148 ) > 0 && presenter != null ) {
-            presenter().getView().setContentHeight( getParent().getOffsetHeight() - 148 + "px" );
+        if ((getParent().getOffsetHeight() - 148) > 0 && presenter != null) {
+            presenter.getView().setContentHeight(getParent().getOffsetHeight() - 148 + "px");
         }
     }
 
-    private String getFileDownloadURL( final String path ) {
+    private String getFileDownloadURL(final String path) {
         return getGuvnorM2RepoBaseURL() + path;
     }
 
     private String getGuvnorM2RepoBaseURL() {
-        final String baseUrl = GWT.getModuleBaseURL().replace( GWT.getModuleName() + "/", "" );
+        final String baseUrl = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/",
+                                                              "");
         return baseUrl + "maven2wb/";
     }
 
-    public void search( String filter ) {
-        presenter().search( filter );
+    public void search(String filter) {
+        presenter.search(filter);
     }
 
     public void refresh() {
-        presenter().refresh();
+        presenter.refresh();
     }
 
-    private ArtifactListPresenter presenter() {
-        if ( presenter == null ) {
-            presenter = IOC.getBeanManager().lookupBean( ArtifactListPresenter.class ).getInstance();
-            presenter.setup( ColumnType.NAME, ColumnType.GAV, ColumnType.LAST_MODIFIED );
-            // Add "View KJAR's pom" button column
-            final Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell( ButtonSize.EXTRA_SMALL ) ) {
-                @Override
-                public String getValue( JarListPageRow row ) {
-                    return M2RepoEditorConstants.INSTANCE.Open();
-                }
-            };
-            openColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
-                @Override
-                public void update( int index,
-                                    JarListPageRow row,
-                                    String value ) {
-                    presenter.onOpenPom( row.getPath() );
-                }
-            } );
-            presenter.getView().addColumn( openColumn,
-                                           M2RepoEditorConstants.INSTANCE.Open(),
-                                           100.0,
-                                           Style.Unit.PX );
-
-            //If the current user is an Administrator include the download button
-            if ( identity.getRoles().contains( new RoleImpl( "admin" ) ) ) {
-                final Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>( new ButtonCell( ButtonSize.EXTRA_SMALL ) ) {
-                    public String getValue( JarListPageRow row ) {
-                        return M2RepoEditorConstants.INSTANCE.Download();
-                    }
-                };
-
-                downloadColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
-                    public void update( int index,
-                                        JarListPageRow row,
-                                        String value ) {
-                        Window.open( getFileDownloadURL( row.getPath() ),
-                                     M2RepoEditorConstants.INSTANCE.Downloading(),
-                                     "resizable=no,scrollbars=yes,status=no" );
-                    }
-                } );
-
-                presenter.getView().addColumn( downloadColumn,
-                                               M2RepoEditorConstants.INSTANCE.Download(),
-                                               100.0,
-                                               Style.Unit.PX );
+    void addViewPOMButton() {
+        final Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>(new ButtonCell(ButtonSize.EXTRA_SMALL)) {
+            @Override
+            public String getValue(JarListPageRow row) {
+                return M2RepoEditorConstants.INSTANCE.Open();
             }
-            presenter.search( "" );
-            content.add( presenter.getView() );
-        }
-        return presenter;
+        };
+        openColumn.setFieldUpdater(new FieldUpdater<JarListPageRow, String>() {
+            @Override
+            public void update(int index,
+                               JarListPageRow row,
+                               String value) {
+                presenter.onOpenPom(row.getPath());
+            }
+        });
+        presenter.getView().addColumn(openColumn,
+                                      M2RepoEditorConstants.INSTANCE.Open(),
+                                      100.0,
+                                      Style.Unit.PX);
     }
 
-    public void init() {
-        presenter();
+    void addDownloadJARButton() {
+        final Column<JarListPageRow, String> downloadColumn = new Column<JarListPageRow, String>(new ButtonCell(ButtonSize.EXTRA_SMALL)) {
+            public String getValue(JarListPageRow row) {
+                return M2RepoEditorConstants.INSTANCE.Download();
+            }
+        };
+
+        downloadColumn.setFieldUpdater(new FieldUpdater<JarListPageRow, String>() {
+            public void update(int index,
+                               JarListPageRow row,
+                               String value) {
+                Window.open(getFileDownloadURL(row.getPath()),
+                            M2RepoEditorConstants.INSTANCE.Downloading(),
+                            "resizable=no,scrollbars=yes,status=no");
+            }
+        });
+
+        presenter.getView().addColumn(downloadColumn,
+                                      M2RepoEditorConstants.INSTANCE.Download(),
+                                      100.0,
+                                      Style.Unit.PX);
     }
 }
