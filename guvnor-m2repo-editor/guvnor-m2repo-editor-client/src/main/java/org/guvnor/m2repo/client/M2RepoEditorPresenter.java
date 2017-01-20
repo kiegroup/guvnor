@@ -31,7 +31,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.ext.widgets.common.client.menu.RefreshMenuBuilder;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -47,17 +46,12 @@ public class M2RepoEditorPresenter implements RefreshMenuBuilder.SupportsRefresh
     private final MavenRepositoryPagedJarTable view;
 
     @Inject
-    public M2RepoEditorPresenter( final Event<M2RepoRefreshEvent> refreshEvents,
-                                  final UploadFormPresenter uploadFormPresenter,
-                                  final MavenRepositoryPagedJarTable view ) {
+    public M2RepoEditorPresenter(final Event<M2RepoRefreshEvent> refreshEvents,
+                                 final UploadFormPresenter uploadFormPresenter,
+                                 final MavenRepositoryPagedJarTable view) {
         this.refreshEvents = refreshEvents;
         this.uploadFormPresenter = uploadFormPresenter;
         this.view = view;
-    }
-
-    @OnStartup
-    public void onStartup(){
-        view.init();
     }
 
     @WorkbenchPartView
@@ -70,31 +64,31 @@ public class M2RepoEditorPresenter implements RefreshMenuBuilder.SupportsRefresh
         return M2RepoEditorConstants.INSTANCE.M2RepositoryContent();
     }
 
-    public void refreshEvent( @Observes final M2RepoRefreshEvent event ) {
+    public void refreshEvent(@Observes final M2RepoRefreshEvent event) {
         view.refresh();
     }
 
-    public void searchEvent( @Observes final M2RepoSearchEvent event ) {
-        view.search( event.getFilter() );
+    public void searchEvent(@Observes final M2RepoSearchEvent event) {
+        view.search(event.getFilter());
     }
 
     @WorkbenchMenu
     public Menus getMenus() {
-        return MenuFactory.newTopLevelMenu( constants.Upload() )
-                .respondsWith( new Command() {
+        return MenuFactory.newTopLevelMenu(constants.Upload())
+                .respondsWith(new Command() {
                     @Override
                     public void execute() {
                         uploadFormPresenter.showView();
                     }
-                } )
+                })
                 .endMenu()
-                .newTopLevelCustomMenu( new RefreshMenuBuilder( this ) )
+                .newTopLevelCustomMenu(new RefreshMenuBuilder(this))
                 .endMenu()
                 .build();
     }
 
     @Override
     public void onRefresh() {
-        refreshEvents.fire( new M2RepoRefreshEvent() );
+        refreshEvents.fire(new M2RepoRefreshEvent());
     }
 }
