@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.shared.preferences.DefaultWorkbenchPreferenceScopeResolutionStrategies;
 import org.guvnor.common.services.shared.preferences.WorkbenchPreferenceScopeResolutionStrategies;
 import org.uberfire.annotations.Customizable;
-import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
+import org.uberfire.preferences.shared.PreferenceScopeResolutionStrategy;
 
 public class WorkbenchPreferenceScopeResolutionStrategiesProducer {
 

@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.Customizable;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.NoSuchFileException;
 
