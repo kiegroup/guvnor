@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.guvnor</groupId>
     <artifactId>guvnor-ala</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.0.0.Beta6</version>
   </parent>
   <artifactId>guvnor-ala-services-backend</artifactId>
   <name>Guvnor ALA :: Services Backend Impl</name>
