@@ -116,6 +116,27 @@ public class ConfigurationServiceImpl implements ConfigurationService,
     @Named("systemFS")
     private FileSystem fs;
 
+    @Inject
+    public ConfigurationServiceImpl(
+    		@Named("system") org.guvnor.structure.repositories.Repository systemRepository,
+    		ConfigGroupMarshaller marshaller,
+    		User identity,
+    		@Named("configIO") IOService ioService,
+    		Event<SystemRepositoryChangedEvent> repoChangedEvent,
+    		Event<SystemRepositoryChangedEvent> orgUnitChangedEvent,
+    		Event<SystemRepositoryChangedEvent> changedEvent,
+    		@Named("systemFS") FileSystem fs
+    		) {
+    	this.systemRepository = systemRepository;
+    	this.marshaller = marshaller;
+    	this.identity = identity;
+    	this.ioService = ioService;
+    	this.repoChangedEvent = repoChangedEvent;
+    	this.orgUnitChangedEvent = orgUnitChangedEvent;
+    	this.changedEvent = changedEvent;
+    	this.fs = fs;
+    }
+    
     @PostConstruct
     public void setup() {
         Path defaultRoot = null;

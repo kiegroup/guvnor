@@ -30,6 +30,14 @@ public class ConfigurationFactoryImpl implements ConfigurationFactory {
     @Inject
     private PasswordService secureService;
 
+    public ConfigurationFactoryImpl() {
+    }
+    
+    @Inject
+    public ConfigurationFactoryImpl(PasswordService secureService) {
+    	this.secureService = secureService;
+    }
+    
     @Override
     public ConfigGroup newConfigGroup( final ConfigType type,
                                        final String name,
