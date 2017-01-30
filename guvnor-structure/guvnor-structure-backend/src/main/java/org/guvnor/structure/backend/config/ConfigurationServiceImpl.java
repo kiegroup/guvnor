@@ -74,32 +74,23 @@ public class ConfigurationServiceImpl implements ConfigurationService,
     // mainly for windows as *NIX is based on POSIX but escape always to keep it consistent
     private static final String INVALID_FILENAME_CHARS = "[\\,/,:,*,?,\",<,>,|]";
 
-    @Inject
-    @Named("system")
     private org.guvnor.structure.repositories.Repository systemRepository;
 
-    @Inject
     private ConfigGroupMarshaller marshaller;
 
-    @Inject
     private User identity;
 
     //Cache of ConfigGroups to avoid reloading them from file
     private final Map<ConfigType, List<ConfigGroup>> configuration = new ConcurrentHashMap<ConfigType, List<ConfigGroup>>();
     private AtomicLong localLastModifiedValue = new AtomicLong( -1 );
 
-    @Inject
-    @Named("configIO")
     private IOService ioService;
 
     // monitor capabilities
-    @Inject
     @Repository
     private Event<SystemRepositoryChangedEvent> repoChangedEvent;
-    @Inject
     @OrgUnit
     private Event<SystemRepositoryChangedEvent> orgUnitChangedEvent;
-    @Inject
     private Event<SystemRepositoryChangedEvent> changedEvent;
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -112,10 +103,27 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
     private WatchService watchService = null;
 
-    @Inject
-    @Named("systemFS")
     private FileSystem fs;
 
+    @Inject
+    public ConfigurationServiceImpl( final @Named("system") org.guvnor.structure.repositories.Repository systemRepository,
+                                     final ConfigGroupMarshaller marshaller,
+                                     final User identity,
+                                     final @Named("configIO") IOService ioService,
+                                     final Event<SystemRepositoryChangedEvent> repoChangedEvent,
+                                     final Event<SystemRepositoryChangedEvent> orgUnitChangedEvent,
+                                     final Event<SystemRepositoryChangedEvent> changedEvent,
+                                     final @Named("systemFS") FileSystem fs ) {
+        this.systemRepository = systemRepository;
+        this.marshaller = marshaller;
+        this.identity = identity;
+        this.ioService = ioService;
+        this.repoChangedEvent = repoChangedEvent;
+        this.orgUnitChangedEvent = orgUnitChangedEvent;
+        this.changedEvent = changedEvent;
+        this.fs = fs;
+    }
+    
     @PostConstruct
     public void setup() {
         Path defaultRoot = null;
