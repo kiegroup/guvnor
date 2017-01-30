@@ -33,8 +33,8 @@ public class ConfigurationFactoryImpl implements ConfigurationFactory {
     }
     
     @Inject
-    public ConfigurationFactoryImpl( PasswordService secureService ) {
-        this.secureService = secureService;
+    public ConfigurationFactoryImpl(PasswordService secureService) {
+    	this.secureService = secureService;
     }
     
     @Override
