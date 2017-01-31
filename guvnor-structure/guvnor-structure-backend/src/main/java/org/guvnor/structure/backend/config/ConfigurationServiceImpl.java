@@ -103,6 +103,9 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
     private FileSystem fs;
 
+    public ConfigurationServiceImpl() {
+    }
+
     @Inject
     public ConfigurationServiceImpl( final @Named("system") org.guvnor.structure.repositories.Repository systemRepository,
                                      final ConfigGroupMarshaller marshaller,
