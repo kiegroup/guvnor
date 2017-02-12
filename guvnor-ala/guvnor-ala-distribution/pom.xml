@@ -92,7 +92,6 @@
           <groupId>javax</groupId>
           <artifactId>javaee-web-api</artifactId>
         </exclusion>
-
         <exclusion>
           <groupId>org.jboss.spec.javax.ws.rs</groupId>
           <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
@@ -279,41 +278,9 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
     <plugins>
-      <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/*IT.java</include>
-          </includes>
-        </configuration>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <phase>integration-test</phase>
-          </execution>
-          <execution>
-            <id>verify</id>
-            <phase>verify</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArguments>
-            <endorseddirs>${endorsed.dir}</endorseddirs>
-          </compilerArguments>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -322,37 +289,8 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${endorsed.dir}</outputDirectory>
-              <silent>true</silent>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>javax</groupId>
-                  <artifactId>javaee-endorsed-api</artifactId>
-                  <version>7.0</version>
-                  <type>jar</type>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
-        <configuration>
-          <properties>
-            <maven.home>${maven.home}</maven.home>
-          </properties>
-        </configuration>
         <executions>
           <execution>
             <goals>
@@ -362,7 +300,6 @@
           <execution>
             <id>start</id>
             <phase>pre-integration-test</phase>
-
             <goals>
               <goal>start</goal>
             </goals>
@@ -383,10 +320,10 @@
         <configuration>
           <images>
             <image>
-              <name>salaboy/guvnor-ala-services</name>
+              <name>guvnor/guvnor-ala-services</name>
               <build>
                 <from>jboss/base-jdk:8</from>
-                <maintainer>salaboy@gmail.com</maintainer>
+                <maintainer>admin@kiegroup.com</maintainer>
                 <ports>
                   <port>8082</port>
                 </ports>
@@ -433,9 +370,44 @@
               </run>
             </image>
           </images>
-
         </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>skipTests</id>
+      <activation>
+        <property>
+          <name>skipTests</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>wildfly-swarm-plugin</artifactId>
+            <executions>
+              <!-- No need to start the Swarm jar in case the tests are skipped. -->
+              <execution>
+                <id>start</id>
+                <phase>none</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop</id>
+                <phase>none</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
