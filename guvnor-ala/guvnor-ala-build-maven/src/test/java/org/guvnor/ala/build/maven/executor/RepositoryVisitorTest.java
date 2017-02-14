@@ -64,7 +64,7 @@ public class RepositoryVisitorTest {
     @Test
     public void repositoryVisitorDiffDeletedTest() throws IOException {
         final GitHub gitHub = new GitHub();
-        final GitRepository repository = ( GitRepository ) gitHub.getRepository( "salaboy/livespark-playground", new HashMap<String, String>() {
+        final GitRepository repository = ( GitRepository ) gitHub.getRepository( "mbarkley/appformer-playground", new HashMap<String, String>() {
             {
                 put( "out-dir", tempPath.getAbsolutePath() );
             }
