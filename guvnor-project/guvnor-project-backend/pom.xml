@@ -157,11 +157,6 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
     </dependency>
@@ -187,11 +182,6 @@
     </dependency>
 
     <!-- Weld Modules. For tests only -->
-    <dependency>
-      <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-core</artifactId>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.jboss.weld.se</groupId>

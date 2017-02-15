@@ -33,15 +33,14 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-ala-services-api</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.ws.rs</groupId>
-          <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <!-- Registry Local Mock Implementation -->
 
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.guvnor</groupId>
@@ -54,6 +53,12 @@
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-ala-build-maven</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>aopalliance</groupId>
+          <artifactId>aopalliance</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
 
