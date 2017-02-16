@@ -103,6 +103,12 @@
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>annotations</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
