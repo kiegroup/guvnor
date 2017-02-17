@@ -17,31 +17,47 @@ package org.guvnor.ala.build.maven.executor;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import javax.inject.Inject;
 
+import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.project.MavenProject;
 import org.guvnor.ala.build.Project;
 import org.guvnor.ala.build.maven.config.MavenBuildExecConfig;
 import org.guvnor.ala.build.maven.model.MavenBinary;
 import org.guvnor.ala.build.maven.model.MavenBuild;
-import org.guvnor.ala.build.maven.model.impl.MavenProjectBinaryImpl;
+import org.guvnor.ala.build.maven.model.MavenBuildMessage;
+import org.guvnor.ala.build.maven.model.MavenBuildResult;
+import org.guvnor.ala.build.maven.model.impl.MavenProjectBinaryBuildImpl;
 import org.guvnor.ala.config.BinaryConfig;
 import org.guvnor.ala.config.Config;
 import org.guvnor.ala.exceptions.BuildException;
 import org.guvnor.ala.pipeline.BiFunctionConfigExecutor;
 import org.guvnor.ala.registry.BuildRegistry;
-import org.kie.scanner.embedder.MavenProjectLoader;
+import org.kie.scanner.embedder.logger.LocalLoggerConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.java.nio.file.Path;
 
-import static org.guvnor.ala.build.maven.util.MavenBuildExecutor.executeMaven;
+import static org.guvnor.ala.build.maven.util.MavenBuildExecutor.*;
 
 public class MavenBuildExecConfigExecutor implements BiFunctionConfigExecutor<MavenBuild, MavenBuildExecConfig, BinaryConfig> {
 
-    private final BuildRegistry buildRegistry;
+    private static final Logger logger = LoggerFactory.getLogger( MavenBuildExecConfigExecutor.class );
+
+    private static final String BUILD_FAILURE = "BUILD FAILURE";
+
+    private static final String BUILD_SUCCESS = "BUILD SUCCESS";
+
+    private BuildRegistry buildRegistry;
+
+    public MavenBuildExecConfigExecutor( ) {
+        //Empty constructor for Weld proxying
+    }
 
     @Inject
     public MavenBuildExecConfigExecutor( final BuildRegistry buildRegistry ) {
@@ -49,47 +65,104 @@ public class MavenBuildExecConfigExecutor implements BiFunctionConfigExecutor<Ma
     }
 
     @Override
-    public Optional<BinaryConfig> apply( final MavenBuild mavenBuild,
-            final MavenBuildExecConfig mavenBuildExecConfig ) {
+    public Optional< BinaryConfig > apply( final MavenBuild mavenBuild,
+                                           final MavenBuildExecConfig mavenBuildExecConfig ) {
 
-        final Project project = mavenBuild.getProject();
+        Optional< BinaryConfig > result;
 
-        final MavenProject mavenProject = build(project, mavenBuild.getGoals(), mavenBuild.getProperties() );
+        final Project project = mavenBuild.getProject( );
 
-        final Path path = FileSystems.getFileSystem(URI.create("file://default")).getPath(project.getTempDir() + "/target/" + project.getExpectedBinary());
+        final MavenBuildResult buildResult = new MavenBuildResult( );
 
-        final MavenBinary binary = new MavenProjectBinaryImpl(
-                path,
-                project,
-                mavenProject.getGroupId(),
-                mavenProject.getArtifactId(),
-                mavenProject.getVersion() );
+        final MavenExecutionResult executionResult = build( project, mavenBuild.getGoals( ),
+                mavenBuild.getProperties( ), new LocalLoggerConsumer( ) {
+                    @Override
+                    public void debug( String message, Throwable throwable ) {
+                        buildResult.addBuildMessage( new MavenBuildMessage( MavenBuildMessage.Level.DEBUG, message ) );
+                    }
 
-        buildRegistry.registerBinary( binary );
-        return Optional.of( binary );
+                    @Override
+                    public void info( String message, Throwable throwable ) {
+                        buildResult.addBuildMessage( new MavenBuildMessage( MavenBuildMessage.Level.INFO, message ) );
+                    }
+
+                    @Override
+                    public void warn( String message, Throwable throwable ) {
+                        buildResult.addBuildMessage( new MavenBuildMessage( MavenBuildMessage.Level.WARNING, message ) );
+                    }
+
+                    @Override
+                    public void error( String message, Throwable throwable ) {
+                        buildResult.addBuildMessage( new MavenBuildMessage( MavenBuildMessage.Level.ERROR, message ) );
+                    }
+
+                    @Override
+                    public void fatalError( String message, Throwable throwable ) {
+                        buildResult.addBuildMessage( new MavenBuildMessage( MavenBuildMessage.Level.FATAL_ERROR, message ) );
+                    }
+                } );
+
+        if ( executionResult.hasExceptions( ) && !captureErrors( mavenBuildExecConfig ) ) {
+            for ( Throwable t : executionResult.getExceptions( ) ) {
+                logger.error( "Error Running Maven", t );
+            }
+            throw new BuildException( "Maven found issues trying to build the pom file: "
+                    + Paths.get( project.getTempDir( ), "pom.xml" ).toString( ) +
+                    ". Look at the Error Logs for more information", executionResult.getExceptions( ).get( 0 ) );
+        } else if ( executionResult.hasExceptions( ) && captureErrors( mavenBuildExecConfig ) ) {
+            for ( Throwable t : executionResult.getExceptions( ) ) {
+                logger.error( "Error Running Maven", t );
+                buildResult.addBuildException( t.getMessage( ) );
+            }
+            buildResult.addBuildMessage( new MavenBuildMessage( MavenBuildMessage.Level.INFO, BUILD_FAILURE ) );
+            result = Optional.of( new MavenProjectBinaryBuildImpl( buildResult ) );
+        } else {
+            final MavenProject mavenProject = executionResult.getProject( );
+            String groupId = mavenProject.getGroupId( );
+            String artifactId = mavenProject.getArtifactId( );
+            String version = mavenProject.getVersion( );
+
+            final Path path = FileSystems.getFileSystem( URI.create( "file://default" ) ).getPath( project.getTempDir( ) + "/target/" + project.getExpectedBinary( ) );
+
+            final MavenBinary binary = new MavenProjectBinaryBuildImpl(
+                    path,
+                    project,
+                    groupId,
+                    artifactId,
+                    version,
+                    buildResult );
+
+            buildRegistry.registerBinary( binary );
+            buildResult.addBuildMessage( new MavenBuildMessage( MavenBuildMessage.Level.INFO, BUILD_SUCCESS ) );
+            result = Optional.of( binary );
+        }
+        return result;
     }
 
     @Override
-    public Class<? extends Config> executeFor() {
+    public Class< ? extends Config > executeFor( ) {
         return MavenBuildExecConfig.class;
     }
 
     @Override
-    public String outputId() {
+    public String outputId( ) {
         return "binary";
     }
 
     @Override
-    public String inputId() {
+    public String inputId( ) {
         return "maven-exec-config";
     }
 
-    public MavenProject build(final Project project,
-                              final List<String> goals,
-                              final Properties properties ) throws BuildException {
-        final File pom = new File( project.getTempDir(), "pom.xml" );
-        executeMaven( pom, properties, goals.toArray( new String[]{} ) );
-        return MavenProjectLoader.parseMavenPom(pom);
+    public MavenExecutionResult build( final Project project,
+                                       final List< String > goals,
+                                       final Properties properties,
+                                       final LocalLoggerConsumer consumer ) throws BuildException {
+        final File pom = new File( project.getTempDir( ), "pom.xml" );
+        return executeMaven( pom, properties, consumer, goals.toArray( new String[]{ } ) );
     }
 
+    private boolean captureErrors( MavenBuildExecConfig mavenBuildExecConfig ) {
+        return Boolean.parseBoolean( mavenBuildExecConfig.captureErrors( ) );
+    }
 }

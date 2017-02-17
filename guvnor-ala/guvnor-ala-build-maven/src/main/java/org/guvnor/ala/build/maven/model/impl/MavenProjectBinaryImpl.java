@@ -26,17 +26,20 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public class MavenProjectBinaryImpl implements MavenBinary,
                                         CloneableConfig<MavenBinary> {
 
-    private final Path path;
+    private Path path;
 
-    private final Project sourceProject;
+    private Project sourceProject;
 
-    private final String artifactId;
+    private String artifactId;
 
-    private final String version;
+    private String version;
 
-    private final String groupId;
+    private String groupId;
 
-    public MavenProjectBinaryImpl(final Path path, final Project sourceProject, final String groupId, final String artifactId, final String version) {
+    public MavenProjectBinaryImpl( ) {
+    }
+
+    public MavenProjectBinaryImpl( final Path path, final Project sourceProject, final String groupId, final String artifactId, final String version) {
         this.path = checkNotNull("path", path);
         this.sourceProject = checkNotNull("sourceProject", sourceProject);
         this.artifactId = checkNotNull("artifactId", artifactId);
