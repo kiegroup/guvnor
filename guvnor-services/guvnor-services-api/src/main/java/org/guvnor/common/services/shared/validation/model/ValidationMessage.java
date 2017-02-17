@@ -65,6 +65,15 @@ public class ValidationMessage {
         this.text = text;
     }
 
+    public ValidationMessage( ValidationMessage other ) {
+        this.id = other.getId();
+        this.level = other.getLevel();
+        this.path = other.getPath();
+        this.line = other.getLine();
+        this.column = other.getColumn();
+        this.text = other.getText();
+    }
+
     public void setId( long id ) {
         this.id = id;
     }
