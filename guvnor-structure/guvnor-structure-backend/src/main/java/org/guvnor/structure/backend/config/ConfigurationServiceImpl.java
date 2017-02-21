@@ -194,34 +194,43 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
     @Override
     public List<ConfigGroup> getConfiguration( final ConfigType type ) {
+
         if ( configuration.containsKey( type ) ) {
             return configuration.get( type );
-        }
-        final List<ConfigGroup> configGroups = new ArrayList<ConfigGroup>();
-        final DirectoryStream<Path> foundConfigs = ioService.newDirectoryStream( ioService.get( systemRepository.getUri() ),
-                                                                                 new DirectoryStream.Filter<Path>() {
-                                                                                     @Override
-                                                                                     public boolean accept( final Path entry ) throws IOException {
-                                                                                         if ( !Files.isDirectory( entry ) &&
-                                                                                                 !entry.getFileName().toString().startsWith( "." ) &&
-                                                                                                 entry.getFileName().toString().endsWith( type.getExt() ) ) {
-                                                                                             return true;
+        } else {
+
+            final List<ConfigGroup> configGroups = new ArrayList<ConfigGroup>();
+            final DirectoryStream<Path> foundConfigs = ioService.newDirectoryStream( ioService.get( systemRepository.getUri() ),
+                                                                                     new DirectoryStream.Filter<Path>() {
+                                                                                         @Override
+                                                                                         public boolean accept( final Path entry ) throws
+                                                                                                                                   IOException {
+                                                                                             if ( !Files.isDirectory( entry ) &&
+                                                                                                     !entry.getFileName()
+                                                                                                             .toString()
+                                                                                                             .startsWith( "." ) &&
+                                                                                                     entry.getFileName()
+                                                                                                             .toString()
+                                                                                                             .endsWith( type.getExt() ) ) {
+                                                                                                 return true;
+                                                                                             }
+                                                                                             return false;
                                                                                          }
-                                                                                         return false;
                                                                                      }
-                                                                                 }
-                                                                               );
-        //Only load and cache if a file was found!
-        final Iterator<Path> it = foundConfigs.iterator();
-        if ( it.hasNext() ) {
-            while ( it.hasNext() ) {
-                final String content = ioService.readAllString( it.next() );
-                final ConfigGroup configGroup = marshaller.unmarshall( content );
-                configGroups.add( configGroup );
+                                                                                   );
+            final Iterator<Path> it = foundConfigs.iterator();
+            if ( it.hasNext() ) {
+                while ( it.hasNext() ) {
+                    final String content = ioService.readAllString( it.next() );
+                    final ConfigGroup configGroup = marshaller.unmarshall( content );
+                    configGroups.add( configGroup );
+                }
             }
+
             configuration.put( type, configGroups );
+
+            return configGroups;
         }
-        return configGroups;
     }
 
     @Override
