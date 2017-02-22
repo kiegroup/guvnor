@@ -3,12 +3,10 @@ package org.guvnor.ala.wildfly.executor;
 
 import java.io.File;
 import java.util.Optional;
-
 import javax.inject.Inject;
 
 import org.guvnor.ala.config.Config;
 import org.guvnor.ala.config.RuntimeConfig;
-
 import org.guvnor.ala.exceptions.ProvisioningException;
 import org.guvnor.ala.pipeline.FunctionConfigExecutor;
 import org.guvnor.ala.registry.RuntimeRegistry;
@@ -26,6 +24,8 @@ import org.guvnor.ala.wildfly.model.WildflyRuntimeInfo;
 import org.guvnor.ala.wildfly.model.WildflyRuntimeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration> implements RuntimeBuilder<T, WildflyRuntime>,
         RuntimeDestroyer,
@@ -61,13 +61,13 @@ public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration> i
         final String id = file.getName();
 
         WildflyAppState appState = wildfly.getWildflyClient( wildflyProvider ).getAppState( id );
-        if ( appState.getState().equals( "NA" ) ) {
+        if ("NA".equals(appState.getState())) {
             int result = wildfly.getWildflyClient( wildflyProvider ).deploy( file );
             if ( result != 200 ) {
                 throw new ProvisioningException( "Deployment to Wildfly Failed with error code: " + result );
             }
-        }else if(appState.getState().equals( "Running" ) 
-                && runtimeConfig.getRedeployStrategy().equals( "auto")){
+        } else if ("Running".equals(appState.getState()) &&
+                  (isNullOrEmpty(runtimeConfig.getRedeployStrategy()) || "auto".equals(runtimeConfig.getRedeployStrategy()))) {
             wildfly.getWildflyClient( wildflyProvider ).undeploy( id );
             int result = wildfly.getWildflyClient( wildflyProvider ).deploy( file );
             if ( result != 200 ) {

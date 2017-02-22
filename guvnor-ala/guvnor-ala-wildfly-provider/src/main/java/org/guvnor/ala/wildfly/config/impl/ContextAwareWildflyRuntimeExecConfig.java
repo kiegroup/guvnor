@@ -35,25 +35,31 @@ public class ContextAwareWildflyRuntimeExecConfig implements
     private Map<String, ?> context;
     private ProviderId providerId;
     private String warPath;
+    private String redeployStrategy;
 
     public ContextAwareWildflyRuntimeExecConfig() {
+        this.warPath = WildflyRuntimeExecConfig.super.getWarPath();
+        this.redeployStrategy = WildflyRuntimeExecConfig.super.getRedeployStrategy();
     }
 
     public ContextAwareWildflyRuntimeExecConfig( final ProviderId providerId,
-                                                 final String warPath ) {
+                                                 final String warPath,
+                                                 final String redeployStrategy) {
         this.providerId = providerId;
         this.warPath = warPath;
+        this.redeployStrategy = redeployStrategy;
     }
 
     @Override
     public void setContext( final Map<String, ?> context ) {
         this.context = context;
         MavenBinary binary = (MavenBinary) context.get( "binary" );
+        if (binary != null) {
+            this.warPath = binary.getPath().toString();
+        }
 
         WildflyProvider provider = (WildflyProvider) context.get( "wildfly-provider" );
         this.providerId = provider;
-        this.warPath = binary.getPath().toString();
-
     }
 
     @Override
@@ -67,8 +73,16 @@ public class ContextAwareWildflyRuntimeExecConfig implements
     }
 
     @Override
+    public String getRedeployStrategy() {
+        return redeployStrategy;
+    }
+
+    @Override
     public WildflyRuntimeExecConfig asNewClone( final WildflyRuntimeExecConfig origin ) {
-        return new ContextAwareWildflyRuntimeExecConfig( origin.getProviderId(),
-                                                         origin.getWarPath() );
+        return new ContextAwareWildflyRuntimeExecConfig(
+                origin.getProviderId(),
+                origin.getWarPath(),
+                origin.getRedeployStrategy()
+        );
     }
 }
