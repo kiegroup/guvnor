@@ -33,6 +33,8 @@
   <description>Guvnor - Generic Management framework</description>
 
   <properties>
+    <!-- Surefire 2.18.1 sometimes fails as described in SUREFIRE-859. -->
+    <version.surefire.plugin>2.19.1</version.surefire.plugin>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
   </properties>
 
