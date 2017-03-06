@@ -26,6 +26,8 @@ import org.guvnor.ala.wildfly.model.WildflyProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 public class WildflyAccessInterfaceImpl
         implements WildflyAccessInterface {
 
@@ -44,9 +46,14 @@ public class WildflyAccessInterfaceImpl
         assert ( providerId instanceof WildflyProvider );
         WildflyProvider wildflyProvider = ( ( WildflyProvider ) providerId );
 
-        return new WildflyClient( wildflyProvider.getId(),
-                wildflyProvider.getUser(), wildflyProvider.getPassword(),
-                wildflyProvider.getHostId(), Integer.valueOf( wildflyProvider.getPort() ), Integer.valueOf( wildflyProvider.getManagementPort() ) );
+        return new WildflyClient(
+                wildflyProvider.getId(),
+                wildflyProvider.getUser(),
+                wildflyProvider.getPassword(),
+                wildflyProvider.getHostId(),
+                Integer.valueOf(defaultIfBlank(wildflyProvider.getPort(), "8080")),
+                Integer.valueOf(defaultIfBlank(wildflyProvider.getManagementPort(), "9990"))
+        );
     }
 
     @Override
