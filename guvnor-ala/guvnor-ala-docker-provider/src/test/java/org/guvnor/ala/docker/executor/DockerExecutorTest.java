@@ -111,7 +111,7 @@ public class DockerExecutorTest {
                 put( "create-repo", "true" );
                 put( "branch", "master" );
                 put( "out-dir", tempPath.getAbsolutePath() );
-                put( "origin", "https://github.com/salaboy/drools-workshop" );
+                put( "origin", "https://github.com/droolsjbpm/drools-workshop" );
                 put( "project-dir", "drools-webapp-example" );
             }
         }, pipe, (Runtime b) -> System.out.println( b ) );
