@@ -112,7 +112,7 @@ public class PipelineEndpointsTestIT {
         input.put( "create-repo", "true" );
         input.put( "branch", "master" );
         input.put( "out-dir", tempPath.getAbsolutePath() );
-        input.put( "origin", "https://github.com/salaboy/drools-workshop" );
+        input.put( "origin", "https://github.com/droolsjbpm/drools-workshop" );
         input.put( "project-dir", "drools-webapp-example" );
 
         proxyPipeline.runPipeline( "mypipe", input );
