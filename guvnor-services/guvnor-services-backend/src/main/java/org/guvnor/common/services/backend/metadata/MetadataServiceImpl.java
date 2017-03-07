@@ -29,6 +29,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.metadata.attribute.DiscussionAttributes;
 import org.guvnor.common.services.backend.metadata.attribute.DiscussionAttributesUtil;
 import org.guvnor.common.services.backend.metadata.attribute.DiscussionView;
+import org.guvnor.common.services.backend.metadata.attribute.GeneratedAttributesView;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaAttributes;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaAttributesUtil;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
@@ -86,7 +87,8 @@ public class MetadataServiceImpl
                                         ioService.getFileAttributeView( path, DublinCoreView.class ),
                                         ioService.getFileAttributeView( path, DiscussionView.class ),
                                         ioService.getFileAttributeView( path, OtherMetaView.class ),
-                                        ioService.getFileAttributeView( path, VersionAttributeView.class ) ).create();
+                                        ioService.getFileAttributeView( path, VersionAttributeView.class ),
+                                        ioService.getFileAttributeView( path, GeneratedAttributesView.class ) ).create();
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -359,6 +361,8 @@ public class MetadataServiceImpl
                             return null;
                         }
                     }, "*" ) );
+
+            attrs.put( GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME, metadata.isGenerated() );
 
             return attrs;
 

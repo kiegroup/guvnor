@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.guvnor.common.services.backend.metadata.attribute.DiscussionView;
+import org.guvnor.common.services.backend.metadata.attribute.GeneratedAttributesView;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -47,6 +48,7 @@ public class MetadataCreator {
     private final DiscussionView discussView;
     private final OtherMetaView otherMetaView;
     private final VersionAttributeView versionAttributeView;
+    private final GeneratedAttributesView generatedAttributesView;
     private final IOService configIOService;
     private final SessionInfo sessionInfo;
 
@@ -56,7 +58,8 @@ public class MetadataCreator {
                             DublinCoreView dublinCoreView,
                             DiscussionView discussionView,
                             OtherMetaView otherMetaView,
-                            VersionAttributeView versionAttributeView ) {
+                            VersionAttributeView versionAttributeView,
+                            GeneratedAttributesView generatedAttributesView ) {
         this.path = checkNotNull( "path", path );
         this.configIOService = checkNotNull( "configIOService", configIOService );
         this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
@@ -64,6 +67,7 @@ public class MetadataCreator {
         this.discussView = checkNotNull( "discussionView", discussionView );
         this.otherMetaView = checkNotNull( "otherMetaView", otherMetaView );
         this.versionAttributeView = checkNotNull( "versionAttributeView", versionAttributeView );
+        this.generatedAttributesView = checkNotNull( "generatedAttributesView", generatedAttributesView );
     }
 
     public Metadata create() {
@@ -84,6 +88,7 @@ public class MetadataCreator {
                 .withDiscussion( getDiscussion() )
                 .withLockInfo( retrieveLockInfo( Paths.convert( path ) ) )
                 .withVersion( getVersion() )
+                .withGenerated( getGenerated() )
                 .build();
     }
 
@@ -93,6 +98,10 @@ public class MetadataCreator {
                 add( new PortableVersionRecord( record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri() ) );
             }
         }};
+    }
+
+    private boolean getGenerated() {
+        return generatedAttributesView.readAttributes().isGenerated();
     }
 
     private List<DiscussionRecord> getDiscussion() {

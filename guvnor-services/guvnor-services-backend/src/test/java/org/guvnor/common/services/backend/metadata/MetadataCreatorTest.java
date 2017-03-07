@@ -24,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.guvnor.common.services.backend.metadata.attribute.DiscussionView;
+import org.guvnor.common.services.backend.metadata.attribute.GeneratedFileAttributes;
+import org.guvnor.common.services.backend.metadata.attribute.GeneratedAttributesView;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
@@ -65,6 +67,10 @@ public class MetadataCreatorTest {
     private OtherMetaView otherMetaView;
     @Mock
     private VersionAttributeView versionAttributeView;
+    @Mock
+    private GeneratedFileAttributes generatedFileAttributes;
+    @Mock
+    private GeneratedAttributesView generatedAttributesView;
 
     private MetadataCreator service;
     private Path mainFilePath;
@@ -82,6 +88,7 @@ public class MetadataCreatorTest {
         when( dcoreView.readAttributes() ).thenReturn( new DublinCoreAttributesMock() );
         when( otherMetaView.readAttributes() ).thenReturn( new OtherMetaAttributesMock() );
         when( discussView.readAttributes() ).thenReturn( new DiscussionAttributesMock() );
+        when( generatedAttributesView.readAttributes() ).thenReturn( generatedFileAttributes );
 
         fileSystemProvider = new SimpleFileSystemProvider();
 
@@ -96,7 +103,8 @@ public class MetadataCreatorTest {
                                        dcoreView,
                                        discussView,
                                        otherMetaView,
-                                       versionAttributeView );
+                                       versionAttributeView,
+                                       generatedAttributesView );
     }
 
     @Test
@@ -107,6 +115,16 @@ public class MetadataCreatorTest {
         assertNotNull( metadata.getTags() );
         assertNotNull( metadata.getDiscussion() );
         assertNotNull( metadata.getVersion() );
+    }
+
+    @Test
+    public void testGeneratedAttributes() {
+        when( generatedFileAttributes.isGenerated() ).thenReturn( true );
+        when( generatedAttributesView.readAttributes() ).thenReturn( generatedFileAttributes );
+
+        Metadata metadata = service.create();
+
+        assertTrue( metadata.isGenerated() );
     }
 
     @Test
