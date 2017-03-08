@@ -80,7 +80,7 @@ public class MavenCliOutputTest {
 
         final Optional<Source> _source = new GitConfigExecutor( new InMemorySourceRegistry() ).apply( new GitConfigImpl( tempPath.getAbsolutePath(),
                 "master",
-                "https://github.com/droolsjbpm/drools-workshop",
+                "https://github.com/kiegroup/drools-workshop",
                 "drools-workshop",
                 "true" ) );
 

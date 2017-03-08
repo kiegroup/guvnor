@@ -95,7 +95,7 @@ public class MavenProjectConfigExecutorTest {
                 put( "create-repo", "true" );
                 put( "branch", "master" );
                 put( "out-dir", tempPath.getAbsolutePath() );
-                put( "origin", "https://github.com/droolsjbpm/drools-workshop" );
+                put( "origin", "https://github.com/kiegroup/drools-workshop" );
                 put( "project-dir", "drools-webapp-example" );
             }
         }, pipe, System.out::println );
@@ -155,7 +155,7 @@ public class MavenProjectConfigExecutorTest {
                 put( "create-repo", "true" );
                 put( "branch", "master" );
                 put( "out-dir", tempPath.getAbsolutePath() );
-                put( "origin", "https://github.com/droolsjbpm/drools-workshop" );
+                put( "origin", "https://github.com/kiegroup/drools-workshop" );
                 put( "project-dir", "drools-webapp-example" );
             }
         }, pipe, System.out::println );
