@@ -55,6 +55,8 @@ public class Metadata {
     private List<DiscussionRecord> discussion = new ArrayList<DiscussionRecord>();
     private List<VersionRecord>    version    = new ArrayList<VersionRecord>();
 
+    private boolean generated;
+
     public Metadata() {
 
     }
@@ -74,7 +76,8 @@ public class Metadata {
                      final List<String> tags,
                      final List<DiscussionRecord> discussion,
                      final List<VersionRecord> version,
-                     final LockInfo lockInfo) {
+                     final LockInfo lockInfo,
+                     final boolean generated ) {
         this.path = path;
         this.realPath = realPath;
         this.checkinComment = checkinComment;
@@ -91,6 +94,7 @@ public class Metadata {
         this.discussion = discussion;
         this.version = version;
         this.lockInfo = lockInfo;
+        this.generated = generated;
     }
 
     public Path getPath() {
@@ -156,7 +160,11 @@ public class Metadata {
     public LockInfo getLockInfo() {
         return lockInfo;
     }
-    
+
+    public boolean isGenerated() {
+        return generated;
+    }
+
     public void setLockInfo( LockInfo lockInfo ) {
         this.lockInfo = lockInfo;
     }
@@ -256,6 +264,9 @@ public class Metadata {
         if ( lockInfo != null ? !lockInfo.equals( metadata.lockInfo ) : metadata.lockInfo != null ) {
             return false;
         }
+        if ( generated != metadata.generated ) {
+            return false;
+        }
 
         return true;
     }
@@ -291,6 +302,10 @@ public class Metadata {
         result = 31 * result + ( discussion != null ? discussion.hashCode() : 0 );
         result = ~~result;
         result = 31 * result + ( version != null ? version.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( lockInfo != null ? lockInfo.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( generated ? 1 : 0 );
         result = ~~result;
         return result;
     }

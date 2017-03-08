@@ -58,6 +58,8 @@ public final class MetadataBuilder {
     private List<DiscussionRecord> discussion = new ArrayList<DiscussionRecord>();
     private List<VersionRecord> version = new ArrayList<VersionRecord>();
 
+    private boolean generated;
+
     private MetadataBuilder() {
 
     }
@@ -145,6 +147,11 @@ public final class MetadataBuilder {
         this.lockInfo = lockInfo;
         return this;
     }
+
+    public MetadataBuilder withGenerated( final boolean generated ) {
+        this.generated = generated;
+        return this;
+    }
     
     public Metadata build() {
         return new Metadata( path,
@@ -162,7 +169,8 @@ public final class MetadataBuilder {
                              tags,
                              discussion,
                              version,
-                             lockInfo );
+                             lockInfo,
+                             generated );
     }
 
 }
