@@ -15,6 +15,7 @@
 
 package org.guvnor.common.services.builder;
 
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -47,6 +48,9 @@ public class IncrementalBuilderExecutorManagerFactoryImpl implements Incremental
     @Inject
     private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
 
+    @Inject
+    private ManagedExecutorService managedExecutorService;
+
     private IncrementalBuilderExecutorManager executorManager = null;
 
     @Override
@@ -75,6 +79,7 @@ public class IncrementalBuilderExecutorManagerFactoryImpl implements Incremental
                                              buildService,
                                              buildResultsEvent,
                                              incrementalBuildResultsEvent );
+                executorManager.setExecutorService(this.managedExecutorService);
             } else {
                 executorManager = _executorManager;
             }

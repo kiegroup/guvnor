@@ -34,6 +34,7 @@ import org.appformer.maven.support.MinimalPomParser;
 import org.appformer.maven.support.PomModel;
 import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryFactory;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
@@ -47,8 +48,15 @@ import org.uberfire.paging.PageResponse;
 public class M2RepoServiceImpl implements M2RepoService,
                                           ExtendedM2RepoService {
 
-    @Inject
     private GuvnorM2Repository repository;
+
+    public M2RepoServiceImpl() {
+    }
+
+    @Inject
+    public M2RepoServiceImpl(GuvnorM2Repository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public void deployJar(final InputStream is,
@@ -77,7 +85,7 @@ public class M2RepoServiceImpl implements M2RepoService,
     public String getPomText(final String path) {
         checkPathTraversal(path);
 
-        return GuvnorM2Repository.getPomText(path);
+        return repository.getPomText(path);
     }
 
     @Override
@@ -187,7 +195,8 @@ public class M2RepoServiceImpl implements M2RepoService,
     String getJarPath(final String path,
                       final String separator) {
         //Strip "Repository" prefix
-        String jarPath = path.substring(GuvnorM2Repository.M2_REPO_DIR.length() + 1);
+        String pathToDir = repository.getM2RepositoryDir(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME);
+        String jarPath = path.substring(pathToDir.length() + 1);
         //Replace OS-dependent file separators with HTTP path separators
         jarPath = jarPath.replaceAll("\\" + separator,
                                      "/");
@@ -230,7 +239,7 @@ public class M2RepoServiceImpl implements M2RepoService,
     @Override
     public String getRepositoryURL(final String baseURL) {
         if (baseURL == null || baseURL.isEmpty()) {
-            return repository.getRepositoryURL();
+            return repository.getRepositoryURL(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME);
         } else {
             if (baseURL.endsWith("/")) {
                 return baseURL + "maven2/";

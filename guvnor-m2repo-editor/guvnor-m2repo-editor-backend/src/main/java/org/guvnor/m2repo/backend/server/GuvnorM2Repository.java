@@ -40,7 +40,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
@@ -51,78 +50,78 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.repositories.ArtifactRepository;
-import org.guvnor.m2repo.backend.server.repositories.DistributionManagementArtifactRepository;
-import org.guvnor.m2repo.backend.server.repositories.FileSystemArtifactRepository;
-import org.guvnor.m2repo.backend.server.repositories.LocalArtifactRepository;
-import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.apache.commons.io.FilenameUtils;
 
-import static org.guvnor.m2repo.utils.FileNameUtilities.*;
+import static org.guvnor.m2repo.utils.FileNameUtilities.isDeployedPom;
+import static org.guvnor.m2repo.utils.FileNameUtilities.isJar;
+import static org.guvnor.m2repo.utils.FileNameUtilities.isKJar;
 
 @ApplicationScoped
 public class GuvnorM2Repository {
 
     private static final Logger log = LoggerFactory.getLogger(GuvnorM2Repository.class);
 
-    public static String M2_REPO_DIR;
-
     private static final int BUFFER_SIZE = 1024;
 
     private final List<ArtifactRepository> repositories = new ArrayList<>();
     private final List<ArtifactRepository> pomRepositories = new ArrayList<>();
-
-    private ArtifactRepositoryPreference preferences;
+    private ArtifactRepositoryFactory artifactRepositoryFactory;
 
     public GuvnorM2Repository() {
     }
 
     @Inject
-    public GuvnorM2Repository(ArtifactRepositoryPreference preferences) {
-        this.preferences = preferences;
+    public GuvnorM2Repository(ArtifactRepositoryFactory factory) {
+        this.artifactRepositoryFactory = factory;
     }
 
     @PostConstruct
     public void init() {
-        preferences.load();
         setM2Repos();
     }
 
     private void setM2Repos() {
-        final String M2_REPO_ROOT = FilenameUtils.separatorsToSystem(preferences.getDefaultM2RepoDir());
 
-        final String meReposDir = System.getProperty("org.guvnor.m2repo.dir");
-
-        if (meReposDir == null || meReposDir.trim().isEmpty()) {
-            M2_REPO_DIR = M2_REPO_ROOT;
-        } else {
-            M2_REPO_DIR = meReposDir.trim();
-        }
-
-        final LocalArtifactRepository localRepository = new LocalArtifactRepository("local-m2-repo");
-        final FileSystemArtifactRepository fileSystemRepository = new FileSystemArtifactRepository("guvnor-m2-repo",
-                                                                                                   this.M2_REPO_DIR);
-        final DistributionManagementArtifactRepository distributionManagementArtifactRepository = new DistributionManagementArtifactRepository("distribution-management-repo");
-
-        repositories.add(localRepository);
-        repositories.add(fileSystemRepository);
-        repositories.add(distributionManagementArtifactRepository);
-
-        pomRepositories.add(localRepository);
-        pomRepositories.add(fileSystemRepository);
+        this.repositories.addAll(this.artifactRepositoryFactory.getRepositories());
+        this.pomRepositories.addAll(this.artifactRepositoryFactory.getPomRepositories());
     }
 
-    public String getM2RepositoryRootDir() {
-        if (!M2_REPO_DIR.endsWith(File.separator)) {
-            return M2_REPO_DIR + File.separator;
+    public String getM2RepositoryDir(String repositoryName) {
+        return this.getM2RepositoryRootDir(repositoryName).replaceAll("/$",
+                                                                      "");
+    }
+
+    public String getM2RepositoryRootDir(String repositoryName) {
+
+        String defaultName = ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME;
+        if (repositoryName != null && !repositoryName.isEmpty()) {
+            defaultName = repositoryName;
+        }
+
+        final String name = defaultName;
+
+        ArtifactRepository repository = getArtifactRepository(name);
+
+        String rootDir = repository.getRootDir();
+        if (!repository.getRootDir().endsWith(File.separator)) {
+            return rootDir + File.separator;
         } else {
-            return M2_REPO_DIR;
+            return rootDir;
         }
     }
 
-    public String getRepositoryURL() {
-        File file = new File(getM2RepositoryRootDir());
+    private ArtifactRepository getArtifactRepository(String name) {
+        return this.repositories
+                .stream()
+                .filter(artifactRepository -> artifactRepository.getName().equals(name))
+                .findFirst().orElseThrow(() -> new RuntimeException(String.format("Repository %s not found",
+                                                                                  name)));
+    }
+
+    public String getRepositoryURL(String repositoryName) {
+        File file = new File(getM2RepositoryRootDir(repositoryName));
         return "file://" + file.getAbsolutePath();
     }
 
@@ -435,8 +434,9 @@ public class GuvnorM2Repository {
                 .collect(Collectors.toList());
     }
 
-    public static String getPomText(final String path) {
-        final File file = new File(M2_REPO_DIR,
+    public String getPomText(final String path) {
+        ArtifactRepository repository = this.getArtifactRepository(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME);
+        final File file = new File(repository.getRootDir(),
                                    path);
 
         final String normalizedPath = file.toPath().normalize().toString();
@@ -487,7 +487,8 @@ public class GuvnorM2Repository {
     }
 
     public GAV loadGAVFromJar(final String jarPath) {
-        File zip = new File(M2_REPO_DIR,
+        ArtifactRepository repository = this.getArtifactRepository(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME);
+        File zip = new File(repository.getRootDir(),
                             jarPath);
 
         try {

@@ -24,17 +24,49 @@ import java.util.List;
 import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.project.model.GAV;
 
+/**
+ * Represents an artifact repository. Every repository should implement this interface.
+ */
 public interface ArtifactRepository {
 
+    /**
+     * Returns the name of the repository, an identifier
+     * @return the name
+     */
     String getName();
 
+    /**
+     * Return the root dir of a repository, if it doesn't have one, return null
+     * @return the root dir of a repository.
+     */
+    String getRootDir();
+
+    /**
+     * List repository files filtered by wildcards
+     * @param wildcards the filtering wildcards
+     * @return the files
+     */
     Collection<File> listFiles(final List<String> wildcards);
 
+    /**
+     * List repository artifacts filtered by wildcards
+     * @param wildcards the filtering wildcards
+     * @return the artifacts
+     */
     Collection<Artifact> listArtifacts(final List<String> wildcards);
 
+    /**
+     * Deploy a list of artifact into a repository
+     * @param pom the artifact pom
+     * @param artifacts the list of artifacts
+     */
     void deploy(String pom,
                 Artifact... artifacts);
 
+    /**
+     * Delete an artifact from the repository
+     * @param gav the GAV identifier of the artifact to be deleted
+     */
     void delete(final GAV gav);
 
     /**
@@ -47,5 +79,22 @@ public interface ArtifactRepository {
      */
     boolean containsArtifact(final GAV gav);
 
+    /**
+     * Return an artifact from the repository
+     * @param gav the GAV identifier
+     * @return the artifact found
+     */
     File getArtifactFileFromRepository(final GAV gav);
+
+    /**
+     * Identifies if is a repository that admit artifacts
+     * @return
+     */
+    boolean isRepository();
+
+    /**
+     * Identifies if is a repository that admit pom artifacts
+     * @return
+     */
+    boolean isPomRepository();
 }

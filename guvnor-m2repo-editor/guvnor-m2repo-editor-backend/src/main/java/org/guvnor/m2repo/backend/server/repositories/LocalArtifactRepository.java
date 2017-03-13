@@ -30,7 +30,10 @@ import org.guvnor.common.services.project.model.GAV;
 
 public class LocalArtifactRepository implements ArtifactRepository {
 
-    private final String name;
+    private String name;
+
+    public LocalArtifactRepository() {
+    }
 
     public LocalArtifactRepository(final String name) {
         this.name = name;
@@ -39,6 +42,11 @@ public class LocalArtifactRepository implements ArtifactRepository {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getRootDir() {
+        return this.getRootDir();
     }
 
     @Override
@@ -59,6 +67,16 @@ public class LocalArtifactRepository implements ArtifactRepository {
     @Override
     public File getArtifactFileFromRepository(final GAV gav) {
         return null;
+    }
+
+    @Override
+    public boolean isRepository() {
+        return true;
+    }
+
+    @Override
+    public boolean isPomRepository() {
+        return true;
     }
 
     @Override

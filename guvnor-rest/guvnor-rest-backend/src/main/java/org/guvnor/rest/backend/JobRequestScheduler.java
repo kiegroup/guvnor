@@ -17,9 +17,7 @@ package org.guvnor.rest.backend;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.guvnor.rest.backend.cmd.AbstractJobCommand.JOB_REQUEST_KEY;
-
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -54,7 +52,8 @@ import org.guvnor.rest.client.TestProjectRequest;
 import org.guvnor.rest.client.UpdateOrganizationalUnitRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
+
+import static org.guvnor.rest.backend.cmd.AbstractJobCommand.JOB_REQUEST_KEY;
 
 /**
  * Utility class observing requests for various functions of the REST service
@@ -63,6 +62,9 @@ import org.uberfire.commons.async.SimpleAsyncExecutorService;
 public class JobRequestScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger( JobRequestScheduler.class );
+
+    @Inject
+    private ManagedExecutorService managedExecutorService;
 
     @Inject
     private JobResultManager jobResultManager;
@@ -176,7 +178,7 @@ public class JobRequestScheduler {
 
         scheduleJob(jobRequest, new RemoveOrgUnitCmd(jobRequestHelper, jobResultManager, params));
     }
-        
+
     protected Map<String, Object> getContext(JobRequest jobRequest) {
         final Map<String, Object> params = new HashMap<String, Object>();
         params.put(JOB_REQUEST_KEY, jobRequest);
@@ -189,7 +191,7 @@ public class JobRequestScheduler {
         jobRequest.setStatus(JobStatus.APPROVED);
         logger.debug("Scheduling job request with id: {} and command class: {}",
                 jobRequest.getJobId(), command.getClass().getName() );
-        SimpleAsyncExecutorService.getDefaultInstance().execute(command);
+        this.managedExecutorService.execute(command);
     }
 
 }

@@ -24,6 +24,18 @@ public class M2Constants {
     @TranslationKey(defaultValue = "Artifact Repository")
     public static final String ArtifactRepositoryPreference_Label = "ArtifactRepositoryPreference.Label";
 
-    @TranslationKey(defaultValue = "M2 repository directory")
-    public static final String ArtifactRepositoryPreference_DefaultM2RepoDir = "ArtifactRepositoryPreference.DefaultM2RepoDir";
+    @TranslationKey(defaultValue = "Global M2 repository directory")
+    public static final String ArtifactRepositoryPreference_GlobalM2RepoDir = "ArtifactRepositoryPreference.GlobalM2RepoDir";
+
+    @TranslationKey(defaultValue = "Is Global M2 repository directory enabled?")
+    public static final String ArtifactRepositoryPreference_GlobalM2RepoDirEnabled = "ArtifactRepositoryPreference.GlobalM2RepoDirEnabled";
+
+    @TranslationKey(defaultValue = "Workspace M2 repository directory")
+    public static final String ArtifactRepositoryPreference_WorkspaceM2RepoDir = "ArtifactRepositoryPreference.WorkspaceM2RepoDir";
+
+    @TranslationKey(defaultValue = "Is Workspace M2 repository directory enabled?")
+    public static final String ArtifactRepositoryPreference_WorkspaceM2RepoDirEnabled = "ArtifactRepositoryPreference.WorkspaceM2RepoDirEnabled";
+
+    @TranslationKey(defaultValue = "Is Distribution Management repository enabled?")
+    public static final String ArtifactRepositoryPreference_DistributionManagementM2RepoDirEnabled = "ArtifactRepositoryPreference.DistributionManagementM2RepoDirEnabled";
 }
