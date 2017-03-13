@@ -18,36 +18,28 @@
 package org.guvnor.m2repo.backend.server.repositories;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.uberfire.apache.commons.io.FilenameUtils;
 import org.uberfire.backend.server.cdi.workspace.WorkspaceNameResolver;
+import org.uberfire.backend.server.cdi.workspace.WorkspaceScoped;
 
 @ApplicationScoped
-public class ArtifactRepositoryFactory {
-
-    public static final String LOCAL_M2_REPO_NAME = "local-m2-repo";
-    public static final String GLOBAL_M2_REPO_NAME = "global-m2-repo";
-    public static final String WORKSPACE_M2_REPO_NAME = "workspace-m2-repo";
-    public static final String DISTRIBUTION_MANAGEMENT_REPO_NAME = "distribution-management-repo";
-    public static final String ORG_GUVNOR_M2REPO_DIR_PROPERTY = "org.guvnor.m2repo.dir";
+public class ArtifactRepositoryProducer {
 
     private ArtifactRepositoryPreference preferences;
     private WorkspaceNameResolver workspaceNameResolver;
-    private List<ArtifactRepository> repositories;
 
-    public ArtifactRepositoryFactory() {
+    public ArtifactRepositoryProducer() {
     }
 
     @Inject
-    public ArtifactRepositoryFactory(ArtifactRepositoryPreference preferences,
-                                     WorkspaceNameResolver resolver) {
+    public ArtifactRepositoryProducer(ArtifactRepositoryPreference preferences,
+                                      WorkspaceNameResolver resolver) {
         this.preferences = preferences;
         this.workspaceNameResolver = resolver;
     }
@@ -55,43 +47,52 @@ public class ArtifactRepositoryFactory {
     @PostConstruct
     public void initialize() {
         this.preferences.load();
-        this.repositories = new ArrayList<>();
-
-        this.repositories.add(this.produceLocalRepository());
-        if (this.preferences.isGlobalM2RepoDirEnabled()) {
-            this.repositories.add(this.produceGlobalRepository());
-        }
-        if (this.preferences.isWorkspaceM2RepoDirEnabled()) {
-            this.repositories.add(this.produceWorkspaceRepository());
-        }
-        if (this.preferences.isDistributionManagementM2RepoDirEnabled()) {
-            this.repositories.add(this.produceDistributionManagementRepository());
-        }
     }
 
-    public LocalArtifactRepository produceLocalRepository() {
-        return new LocalArtifactRepository(LOCAL_M2_REPO_NAME);
+    @Produces
+    @Repository
+    @ApplicationScoped
+    public ArtifactRepository produceLocalRepository() {
+        return new LocalArtifactRepository(ArtifactRepositoryService.LOCAL_M2_REPO_NAME);
     }
 
-    public FileSystemArtifactRepository produceGlobalRepository() {
-        return new FileSystemArtifactRepository(GLOBAL_M2_REPO_NAME,
+    @Produces
+    @Repository
+    @ApplicationScoped
+    public ArtifactRepository produceGlobalRepository() {
+        if (!this.preferences.isGlobalM2RepoDirEnabled()) {
+            return new NullArtifactRepository();
+        }
+        return new FileSystemArtifactRepository(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME,
                                                 this.getGlobalM2RepoDir());
     }
 
-    public FileSystemArtifactRepository produceWorkspaceRepository() {
+    @Produces
+    @Repository
+    @WorkspaceScoped
+    public ArtifactRepository produceWorkspaceRepository() {
+        if (!this.preferences.isWorkspaceM2RepoDirEnabled()) {
+            return new NullArtifactRepository();
+        }
         String repoDir = getWorkspaceRepoDir();
-        return new FileSystemArtifactRepository(WORKSPACE_M2_REPO_NAME,
+        return new FileSystemArtifactRepository(ArtifactRepositoryService.WORKSPACE_M2_REPO_NAME,
                                                 repoDir);
     }
 
-    public DistributionManagementArtifactRepository produceDistributionManagementRepository() {
-        return new DistributionManagementArtifactRepository(DISTRIBUTION_MANAGEMENT_REPO_NAME);
+    @Produces
+    @Repository
+    @ApplicationScoped
+    public ArtifactRepository produceDistributionManagementRepository() {
+        if (!this.preferences.isDistributionManagementM2RepoDirEnabled()) {
+            return new NullArtifactRepository();
+        }
+        return new DistributionManagementArtifactRepository(ArtifactRepositoryService.DISTRIBUTION_MANAGEMENT_REPO_NAME);
     }
 
     private String getGlobalM2RepoDir() {
         final String repoRoot = FilenameUtils.separatorsToSystem(preferences.getGlobalM2RepoDir());
 
-        final String meReposDir = System.getProperty(ORG_GUVNOR_M2REPO_DIR_PROPERTY);
+        final String meReposDir = System.getProperty(ArtifactRepositoryService.ORG_GUVNOR_M2REPO_DIR_PROPERTY);
 
         String repoDir;
         if (meReposDir == null || meReposDir.trim().isEmpty()) {
@@ -116,13 +117,5 @@ public class ArtifactRepositoryFactory {
 
     private String getWorkspaceName() {
         return workspaceNameResolver.getWorkspaceName();
-    }
-
-    public List<? extends ArtifactRepository> getRepositories() {
-        return this.repositories.stream().filter(ArtifactRepository::isRepository).collect(Collectors.toList());
-    }
-
-    public List<? extends ArtifactRepository> getPomRepositories() {
-        return this.repositories.stream().filter(ArtifactRepository::isPomRepository).collect(Collectors.toList());
     }
 }

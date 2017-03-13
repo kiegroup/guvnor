@@ -16,11 +16,16 @@
 
 package org.guvnor.m2repo.backend.server;
 
-import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryFactory;
+import javax.enterprise.inject.Instance;
+
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepository;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryProducer;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryService;
 import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.server.cdi.workspace.WorkspaceNameResolver;
+import org.uberfire.mocks.MockInstanceImpl;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -38,9 +43,13 @@ public class JarPathTest {
         when(pref.isWorkspaceM2RepoDirEnabled()).thenReturn(false);
         WorkspaceNameResolver resolver = mock(WorkspaceNameResolver.class);
         when(resolver.getWorkspaceName()).thenReturn("global");
-        ArtifactRepositoryFactory factory = new ArtifactRepositoryFactory(pref,
-                                                                          resolver);
-        factory.initialize();
+        ArtifactRepositoryProducer producer = new ArtifactRepositoryProducer(pref,
+                                                                             resolver);
+        producer.initialize();
+        Instance<ArtifactRepository> repositories = new MockInstanceImpl<>(producer.produceLocalRepository(),
+                                                                           producer.produceGlobalRepository(),
+                                                                           producer.produceDistributionManagementRepository());
+        ArtifactRepositoryService factory = new ArtifactRepositoryService(repositories);
         repository = new GuvnorM2Repository(factory);
         repository.init();
     }
@@ -48,7 +57,7 @@ public class JarPathTest {
     @Test
     public void testLinuxPathSeparators() {
         final M2RepoServiceImpl service = new M2RepoServiceImpl(this.repository);
-        final String jarPath = service.getJarPath(repository.getM2RepositoryDir(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME) + "/a/b/c",
+        final String jarPath = service.getJarPath(repository.getM2RepositoryDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME) + "/a/b/c",
                                                   "/");
         assertEquals("a/b/c",
                      jarPath);
@@ -57,7 +66,7 @@ public class JarPathTest {
     @Test
     public void testWindowsPathSeparators() {
         final M2RepoServiceImpl service = new M2RepoServiceImpl(this.repository);
-        final String jarPath = service.getJarPath(repository.getM2RepositoryDir(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME) + "\\a\\b\\c",
+        final String jarPath = service.getJarPath(repository.getM2RepositoryDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME) + "\\a\\b\\c",
                                                   "\\");
         assertEquals("a/b/c",
                      jarPath);

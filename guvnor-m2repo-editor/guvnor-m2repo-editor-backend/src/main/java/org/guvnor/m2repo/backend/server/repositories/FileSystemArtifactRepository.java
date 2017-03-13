@@ -19,7 +19,6 @@ package org.guvnor.m2repo.backend.server.repositories;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +69,7 @@ public class FileSystemArtifactRepository implements ArtifactRepository {
         }
         this.repositoryDirectory = dir;
         this.repository = this.createRepository(dir);
-        Aether.getAether().getRepositories().add( this.getRepository());
+        Aether.getAether().getRepositories().add(this.getRepository());
     }
 
     @Override

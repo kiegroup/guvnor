@@ -25,7 +25,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.inject.Instance;
 
 import org.appformer.maven.integration.Aether;
@@ -38,7 +37,9 @@ import org.eclipse.aether.installation.InstallationException;
 import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryFactory;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepository;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryProducer;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryService;
 import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -58,6 +59,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.cdi.workspace.WorkspaceNameResolver;
+import org.uberfire.mocks.MockInstanceImpl;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -125,9 +127,14 @@ public class GuvnorM2RepositoryTest {
         when(pref.isWorkspaceM2RepoDirEnabled()).thenReturn(false);
         WorkspaceNameResolver resolver = mock(WorkspaceNameResolver.class);
         when(resolver.getWorkspaceName()).thenReturn("global");
-        ArtifactRepositoryFactory factory = new ArtifactRepositoryFactory(pref,
-                                                                          resolver);
-        factory.initialize();
+        ArtifactRepositoryProducer producer = new ArtifactRepositoryProducer(pref,
+                                                                             resolver);
+        producer.initialize();
+        Instance<ArtifactRepository> repositories = new MockInstanceImpl<>(producer.produceLocalRepository(),
+                                                                           producer.produceGlobalRepository(),
+                                                                           producer.produceDistributionManagementRepository());
+        ArtifactRepositoryService factory = new ArtifactRepositoryService(repositories);
+
         repo = new GuvnorM2Repository(factory);
         repo.init();
 
