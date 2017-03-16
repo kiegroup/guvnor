@@ -27,7 +27,10 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface TestService {
 
-    void runAllTests(Path path);
-    
-    void runAllTests(Path path, Event<TestResultMessage> customTestResultEvent);
+    void runAllTests(final String identifier,
+                     final Path path);
+
+    void runAllTests(final String identifier,
+                     final Path path,
+                     final Event<TestResultMessage> customTestResultEvent);
 }
