@@ -49,6 +49,10 @@
       <artifactId>container</artifactId>
       <exclusions>
         <exclusion>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>bootstrap</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.ow2.asm</groupId>
           <artifactId>asm-all</artifactId>
         </exclusion>
