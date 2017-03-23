@@ -33,6 +33,7 @@ import org.guvnor.structure.server.config.ConfigurationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -95,49 +96,67 @@ public class AbstractProjectServiceTest {
 
     @Before
     public void setup() {
-        abstractProjectService = new AbstractProjectService( ioService,
-                                                             pomService,
-                                                             configurationService,
-                                                             configurationFactory,
-                                                             newProjectEvent,
-                                                             newPackageEvent,
-                                                             renameProjectEvent,
-                                                             invalidateDMOCache,
-                                                             sessionInfo,
-                                                             authorizationManager,
-                                                             backward,
-                                                             commentedOptionFactory,
-                                                             resourceResolver ) {
+        abstractProjectService = spy(new AbstractProjectService(ioService,
+                                                                pomService,
+                                                                configurationService,
+                                                                configurationFactory,
+                                                                newProjectEvent,
+                                                                newPackageEvent,
+                                                                renameProjectEvent,
+                                                                invalidateDMOCache,
+                                                                sessionInfo,
+                                                                authorizationManager,
+                                                                backward,
+                                                                commentedOptionFactory,
+                                                                resourceResolver) {
             @Override
-            public Object newProject( final org.uberfire.backend.vfs.Path repositoryRoot,
-                                      final POM pom,
-                                      final String baseURL ) {
+            public Object newProject(final org.uberfire.backend.vfs.Path repositoryRoot,
+                                     final POM pom,
+                                     final String baseURL) {
                 return null;
             }
 
             @Override
-            public Object newProject( final org.uberfire.backend.vfs.Path repositoryRoot,
-                                      final POM pom,
-                                      final String baseURL,
-                                      final DeploymentMode mode ) {
+            public Object newProject(final org.uberfire.backend.vfs.Path repositoryRoot,
+                                     final POM pom,
+                                     final String baseURL,
+                                     final DeploymentMode mode) {
                 return null;
             }
 
             @Override
-            public Project simpleProjectInstance( final org.uberfire.java.nio.file.Path parent ) {
+            public Project simpleProjectInstance(final org.uberfire.java.nio.file.Path parent) {
                 return null;
             }
-        };
+        });
     }
 
     @Test
     public void testReImport() throws Exception {
-        when( path.getFileName() ).thenReturn( "pom.xml" );
-        when( path.toURI() ).thenReturn( "file://project1/pom.xml" );
-        when( resourceResolver.resolveProject( any( Path.class ) ) ).thenReturn( project );
+        when(path.getFileName()).thenReturn("pom.xml");
+        when(path.toURI()).thenReturn("file://project1/pom.xml");
+        when(resourceResolver.resolveProject(any(Path.class))).thenReturn(project);
 
-        abstractProjectService.reImport( path );
+        abstractProjectService.reImport(path);
 
-        verify( invalidateDMOCache ).fire( any( InvalidateDMOProjectCacheEvent.class ) );
+        verify(invalidateDMOCache).fire(any(InvalidateDMOProjectCacheEvent.class));
+    }
+
+    @Test
+    public void testRenameEventFiredBeforeDeleteEvent() {
+        when(path.getFileName()).thenReturn("pom.xml");
+        when(path.toURI()).thenReturn("file://project1/pom.xml");
+        when(resourceResolver.resolveProject(any(Path.class))).thenReturn(project);
+        when(pomService.load(any())).thenReturn(mock(POM.class));
+
+        final InOrder inOrder = inOrder(renameProjectEvent,
+                                        ioService);
+
+        abstractProjectService.rename(path,
+                                      "newName",
+                                      "comment");
+
+        inOrder.verify(renameProjectEvent).fire(any());
+        inOrder.verify(ioService).endBatch();
     }
 }

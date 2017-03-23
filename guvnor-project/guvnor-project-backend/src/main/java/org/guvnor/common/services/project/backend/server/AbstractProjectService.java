@@ -53,7 +53,7 @@ import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.guvnor.common.services.project.utils.ProjectResourcePaths.*;
+import static org.guvnor.common.services.project.utils.ProjectResourcePaths.POM_PATH;
 
 public abstract class AbstractProjectService<T extends Project>
         implements ProjectServiceCore<T>,
@@ -84,19 +84,19 @@ public abstract class AbstractProjectService<T extends Project>
     protected AbstractProjectService() {
     }
 
-    public AbstractProjectService( final IOService ioService,
-                                   final POMService pomService,
-                                   final ConfigurationService configurationService,
-                                   final ConfigurationFactory configurationFactory,
-                                   final Event<NewProjectEvent> newProjectEvent,
-                                   final Event<NewPackageEvent> newPackageEvent,
-                                   final Event<RenameProjectEvent> renameProjectEvent,
-                                   final Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
-                                   final SessionInfo sessionInfo,
-                                   final AuthorizationManager authorizationManager,
-                                   final BackwardCompatibleUtil backward,
-                                   final CommentedOptionFactory commentedOptionFactory,
-                                   final ResourceResolver resourceResolver ) {
+    public AbstractProjectService(final IOService ioService,
+                                  final POMService pomService,
+                                  final ConfigurationService configurationService,
+                                  final ConfigurationFactory configurationFactory,
+                                  final Event<NewProjectEvent> newProjectEvent,
+                                  final Event<NewPackageEvent> newPackageEvent,
+                                  final Event<RenameProjectEvent> renameProjectEvent,
+                                  final Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
+                                  final SessionInfo sessionInfo,
+                                  final AuthorizationManager authorizationManager,
+                                  final BackwardCompatibleUtil backward,
+                                  final CommentedOptionFactory commentedOptionFactory,
+                                  final ResourceResolver resourceResolver) {
         this.ioService = ioService;
         this.pomService = pomService;
         this.configurationService = configurationService;
@@ -109,43 +109,52 @@ public abstract class AbstractProjectService<T extends Project>
         this.backward = backward;
         this.commentedOptionFactory = commentedOptionFactory;
         this.resourceResolver = resourceResolver;
-        this.sessionInfo = new SafeSessionInfo( sessionInfo );
+        this.sessionInfo = new SafeSessionInfo(sessionInfo);
     }
 
     @Override
-    public WorkingSetSettings loadWorkingSetConfig( final Path project ) {
+    public WorkingSetSettings loadWorkingSetConfig(final Path project) {
         //TODO {porcelli}
         return new WorkingSetSettings();
     }
 
     @Override
-    public Set<Project> getAllProjects(Repository repository, String branch) {
-        return getProjects( repository, branch, false );
+    public Set<Project> getAllProjects(Repository repository,
+                                       String branch) {
+        return getProjects(repository,
+                           branch,
+                           false);
     }
 
     @Override
-    public Set<Project> getProjects( final Repository repository, String branch ) {
-        return getProjects( repository, branch, true );
+    public Set<Project> getProjects(final Repository repository,
+                                    String branch) {
+        return getProjects(repository,
+                           branch,
+                           true);
     }
 
-    public Set<Project> getProjects( final Repository repository, String branch, boolean secure ) {
+    public Set<Project> getProjects(final Repository repository,
+                                    String branch,
+                                    boolean secure) {
         final Set<Project> authorizedProjects = new HashSet<Project>();
-        if ( repository == null ) {
+        if (repository == null) {
             return authorizedProjects;
         }
-        final Path repositoryRoot = repository.getBranchRoot( branch );
-        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( Paths.convert( repositoryRoot ) );
+        final Path repositoryRoot = repository.getBranchRoot(branch);
+        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream(Paths.convert(repositoryRoot));
         try {
-            for ( org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
-                if ( Files.isDirectory( nioRepositoryPath ) ) {
-                    final org.uberfire.backend.vfs.Path projectPath = Paths.convert( nioRepositoryPath );
-                    final Project project = resourceResolver.resolveProject( projectPath );
+            for (org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths) {
+                if (Files.isDirectory(nioRepositoryPath)) {
+                    final org.uberfire.backend.vfs.Path projectPath = Paths.convert(nioRepositoryPath);
+                    final Project project = resourceResolver.resolveProject(projectPath);
 
-                    if ( project != null ) {
-                        if ( !secure || authorizationManager.authorize( project, sessionInfo.getIdentity() ) ) {
-                            POM projectPom = pomService.load( project.getPomXMLPath() );
-                            project.setPom( projectPom );
-                            authorizedProjects.add( project );
+                    if (project != null) {
+                        if (!secure || authorizationManager.authorize(project,
+                                                                      sessionInfo.getIdentity())) {
+                            POM projectPom = pomService.load(project.getPomXMLPath());
+                            project.setPom(projectPom);
+                            authorizedProjects.add(project);
                         }
                     }
                 }
@@ -157,198 +166,204 @@ public abstract class AbstractProjectService<T extends Project>
     }
 
     @Override
-    public Package newPackage( final Package parentPackage,
-                               final String packageName ) {
+    public Package newPackage(final Package parentPackage,
+                              final String packageName) {
         try {
             //Make new Package
-            final Package newPackage = resourceResolver.newPackage( parentPackage,
-                                                                    packageName,
-                                                                    true );
+            final Package newPackage = resourceResolver.newPackage(parentPackage,
+                                                                   packageName,
+                                                                   true);
 
             //Raise an event for the new package
-            newPackageEvent.fire( new NewPackageEvent( newPackage ) );
+            newPackageEvent.fire(new NewPackageEvent(newPackage));
 
             //Return the new package
             return newPackage;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings({"rawtypes"})
     @Override
-    public void addGroup( final Project project,
-                          final String group ) {
-        ConfigGroup thisProjectConfig = resourceResolver.findProjectConfig( project.getRootPath() );
+    public void addGroup(final Project project,
+                         final String group) {
+        ConfigGroup thisProjectConfig = resourceResolver.findProjectConfig(project.getRootPath());
 
-        if ( thisProjectConfig == null ) {
-            thisProjectConfig = configurationFactory.newConfigGroup( ConfigType.PROJECT,
-                                                                     project.getRootPath().toURI(),
-                                                                     "Project '" + project.getProjectName() + "' configuration" );
-            thisProjectConfig.addConfigItem( configurationFactory.newConfigItem( "security:groups",
-                                                                                 new ArrayList<String>() ) );
-            configurationService.addConfiguration( thisProjectConfig );
+        if (thisProjectConfig == null) {
+            thisProjectConfig = configurationFactory.newConfigGroup(ConfigType.PROJECT,
+                                                                    project.getRootPath().toURI(),
+                                                                    "Project '" + project.getProjectName() + "' configuration");
+            thisProjectConfig.addConfigItem(configurationFactory.newConfigItem("security:groups",
+                                                                               new ArrayList<String>()));
+            configurationService.addConfiguration(thisProjectConfig);
         }
 
-        if ( thisProjectConfig != null ) {
-            final ConfigItem<List> groups = backward.compat( thisProjectConfig ).getConfigItem( "security:groups" );
-            groups.getValue().add( group );
+        if (thisProjectConfig != null) {
+            final ConfigItem<List> groups = backward.compat(thisProjectConfig).getConfigItem("security:groups");
+            groups.getValue().add(group);
 
-            configurationService.updateConfiguration( thisProjectConfig );
-
+            configurationService.updateConfiguration(thisProjectConfig);
         } else {
-            throw new IllegalArgumentException( "Project " + project.getProjectName() + " not found" );
+            throw new IllegalArgumentException("Project " + project.getProjectName() + " not found");
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public void removeGroup( final Project project,
-                             final String group ) {
-        final ConfigGroup thisProjectConfig = resourceResolver.findProjectConfig( project.getRootPath() );
+    public void removeGroup(final Project project,
+                            final String group) {
+        final ConfigGroup thisProjectConfig = resourceResolver.findProjectConfig(project.getRootPath());
 
-        if ( thisProjectConfig != null ) {
-            final ConfigItem<List> groups = backward.compat( thisProjectConfig ).getConfigItem( "security:groups" );
-            groups.getValue().remove( group );
+        if (thisProjectConfig != null) {
+            final ConfigItem<List> groups = backward.compat(thisProjectConfig).getConfigItem("security:groups");
+            groups.getValue().remove(group);
 
-            configurationService.updateConfiguration( thisProjectConfig );
-
+            configurationService.updateConfiguration(thisProjectConfig);
         } else {
-            throw new IllegalArgumentException( "Project " + project.getProjectName() + " not found" );
+            throw new IllegalArgumentException("Project " + project.getProjectName() + " not found");
         }
     }
 
     @Override
-    public Path rename( final Path pathToPomXML,
-                        final String newName,
-                        final String comment ) {
+    public Path rename(final Path pathToPomXML,
+                       final String newName,
+                       final String comment) {
 
         try {
-            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
-            final org.uberfire.java.nio.file.Path newProjectPath = projectDirectory.resolveSibling( newName );
+            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert(pathToPomXML).getParent();
+            final org.uberfire.java.nio.file.Path newProjectPath = projectDirectory.resolveSibling(newName);
 
-            final POM content = pomService.load( pathToPomXML );
+            final POM content = pomService.load(pathToPomXML);
 
-            if ( newProjectPath.equals( projectDirectory ) ) {
+            if (newProjectPath.equals(projectDirectory)) {
                 return pathToPomXML;
             }
 
-            if ( ioService.exists( newProjectPath ) ) {
-                throw new FileAlreadyExistsException( newProjectPath.toString() );
+            if (ioService.exists(newProjectPath)) {
+                throw new FileAlreadyExistsException(newProjectPath.toString());
             }
 
-            final Path oldProjectDir = Paths.convert( projectDirectory );
-            final Project oldProject = resourceResolver.resolveProject( oldProjectDir );
+            final Path oldProjectDir = Paths.convert(projectDirectory);
+            final Project oldProject = resourceResolver.resolveProject(oldProjectDir);
 
-            content.setName( newName );
-            final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( POM_PATH ) );
+            content.setName(newName);
+            final Path newPathToPomXML = Paths.convert(newProjectPath.resolve(POM_PATH));
             try {
-                ioService.startBatch( newProjectPath.getFileSystem() );
-                ioService.move( projectDirectory,
-                                newProjectPath,
-                                commentedOptionFactory.makeCommentedOption( comment ) );
-                pomService.save( newPathToPomXML,
-                                 content,
-                                 null,
-                                 comment );
-            } catch ( final Exception e ) {
+                ioService.startBatch(newProjectPath.getFileSystem());
+                ioService.move(projectDirectory,
+                               newProjectPath,
+                               commentedOptionFactory.makeCommentedOption(comment));
+                pomService.save(newPathToPomXML,
+                                content,
+                                null,
+                                comment);
+            } catch (final Exception e) {
                 throw e;
             } finally {
+                final Project newProject = resourceResolver.resolveProject(Paths.convert(newProjectPath));
+                renameProjectEvent.fire(new RenameProjectEvent(oldProject,
+                                                               newProject));
                 ioService.endBatch();
             }
-            final Project newProject = resourceResolver.resolveProject( Paths.convert( newProjectPath ) );
-            invalidateDMOCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, oldProject, oldProjectDir ) );
-            renameProjectEvent.fire( new RenameProjectEvent( oldProject, newProject ) );
+
+            invalidateDMOCache.fire(new InvalidateDMOProjectCacheEvent(sessionInfo,
+                                                                       oldProject,
+                                                                       oldProjectDir));
 
             return newPathToPomXML;
-        } catch ( final Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (final Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public void delete( final Path pathToPomXML,
-                        final String comment ) {
+    public void delete(final Path pathToPomXML,
+                       final String comment) {
         try {
-            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
-            final Project project2Delete = resourceResolver.resolveProject( Paths.convert( projectDirectory ) );
+            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert(pathToPomXML).getParent();
+            final Project project2Delete = resourceResolver.resolveProject(Paths.convert(projectDirectory));
 
-            final org.uberfire.java.nio.file.Path parentPom = projectDirectory.getParent().resolve( POM_PATH );
+            final org.uberfire.java.nio.file.Path parentPom = projectDirectory.getParent().resolve(POM_PATH);
             POM parent = null;
-            if ( ioService.exists( parentPom ) ) {
-                parent = pomService.load( Paths.convert( parentPom ) );
+            if (ioService.exists(parentPom)) {
+                parent = pomService.load(Paths.convert(parentPom));
             }
 
-            ioService.delete( projectDirectory,
-                              StandardDeleteOption.NON_EMPTY_DIRECTORIES,
-                              commentedOptionFactory.makeCommentedOption( comment ) );
+            ioService.delete(projectDirectory,
+                             StandardDeleteOption.NON_EMPTY_DIRECTORIES,
+                             commentedOptionFactory.makeCommentedOption(comment));
             //Note we do *not* raise a DeleteProjectEvent here, as that is handled by DeleteProjectObserverBridge
 
-            if ( parent != null ) {
-                parent.setPackaging( "pom" );
-                parent.getModules().remove( project2Delete.getProjectName() );
-                pomService.save( Paths.convert( parentPom ),
-                                 parent,
-                                 null,
-                                 "Removing child module " + project2Delete.getProjectName() );
+            if (parent != null) {
+                parent.setPackaging("pom");
+                parent.getModules().remove(project2Delete.getProjectName());
+                pomService.save(Paths.convert(parentPom),
+                                parent,
+                                null,
+                                "Removing child module " + project2Delete.getProjectName());
             }
-
-        } catch ( final Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (final Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public void copy( final Path pathToPomXML,
-                      final String newName,
-                      final String comment ) {
+    public void copy(final Path pathToPomXML,
+                     final String newName,
+                     final String comment) {
         try {
-            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
-            final org.uberfire.java.nio.file.Path newProjectPath = projectDirectory.resolveSibling( newName );
+            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert(pathToPomXML).getParent();
+            final org.uberfire.java.nio.file.Path newProjectPath = projectDirectory.resolveSibling(newName);
 
-            final POM content = pomService.load( pathToPomXML );
+            final POM content = pomService.load(pathToPomXML);
 
-            if ( newProjectPath.equals( projectDirectory ) ) {
+            if (newProjectPath.equals(projectDirectory)) {
                 return;
             }
 
-            if ( ioService.exists( newProjectPath ) ) {
-                throw new FileAlreadyExistsException( newProjectPath.toString() );
+            if (ioService.exists(newProjectPath)) {
+                throw new FileAlreadyExistsException(newProjectPath.toString());
             }
 
-            content.setName( newName );
-            final Path newPathToPomXML = Paths.convert( newProjectPath.resolve( POM_PATH ) );
+            content.setName(newName);
+            final Path newPathToPomXML = Paths.convert(newProjectPath.resolve(POM_PATH));
             try {
-                ioService.startBatch( newProjectPath.getFileSystem() );
-                ioService.copy( projectDirectory, newProjectPath, commentedOptionFactory.makeCommentedOption( comment ) );
-                pomService.save( newPathToPomXML, content, null, comment );
-            } catch ( final Exception e ) {
+                ioService.startBatch(newProjectPath.getFileSystem());
+                ioService.copy(projectDirectory,
+                               newProjectPath,
+                               commentedOptionFactory.makeCommentedOption(comment));
+                pomService.save(newPathToPomXML,
+                                content,
+                                null,
+                                comment);
+            } catch (final Exception e) {
                 throw e;
             } finally {
                 ioService.endBatch();
             }
-            final Project newProject = resourceResolver.resolveProject( Paths.convert( newProjectPath ) );
-            newProjectEvent.fire( new NewProjectEvent( newProject,
-                                                       commentedOptionFactory.getSafeSessionId(),
-                                                       commentedOptionFactory.getSafeIdentityName() ) );
-
-        } catch ( final Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            final Project newProject = resourceResolver.resolveProject(Paths.convert(newProjectPath));
+            newProjectEvent.fire(new NewProjectEvent(newProject,
+                                                     commentedOptionFactory.getSafeSessionId(),
+                                                     commentedOptionFactory.getSafeIdentityName()));
+        } catch (final Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
+
     @Override
-    public void reImport( final Path pathToPomXML ) {
+    public void reImport(final Path pathToPomXML) {
 
         try {
-            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert( pathToPomXML ).getParent();
-            final Path path = Paths.convert( projectDirectory );
-            final Project project = resourceResolver.resolveProject( path );
+            final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert(pathToPomXML).getParent();
+            final Path path = Paths.convert(projectDirectory);
+            final Project project = resourceResolver.resolveProject(path);
 
-            invalidateDMOCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, project, path ) );
-
-        } catch ( final Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            invalidateDMOCache.fire(new InvalidateDMOProjectCacheEvent(sessionInfo,
+                                                                       project,
+                                                                       path));
+        } catch (final Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 }
