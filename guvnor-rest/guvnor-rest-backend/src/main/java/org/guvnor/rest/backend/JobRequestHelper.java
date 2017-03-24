@@ -19,7 +19,9 @@ import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -343,15 +345,19 @@ public class JobRequestHelper {
 
                 result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
                 result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
-            } catch (GAVAlreadyExistsException gae) {
-                result.setStatus(JobStatus.DUPLICATE_RESOURCE);
-                result.setResult("Project's GAV [" + gae.getGAV().toString() + "] already exists at [" + toString(gae.getRepositories()) + "]");
-                return result;
             } catch (Throwable t) {
-                List<String> errorResult = new ArrayList<String>();
-                errorResult.add(t.getMessage());
-                result.setDetailedResult(errorResult);
-                result.setStatus(JobStatus.FAIL);
+                Optional<GAVAlreadyExistsException> gaeOpt = findCause(t, GAVAlreadyExistsException.class);
+                if (gaeOpt.isPresent()) {
+                    GAVAlreadyExistsException gae = gaeOpt.get();
+                    result.setStatus(JobStatus.DUPLICATE_RESOURCE);
+                    result.setResult("Project's GAV [" + gae.getGAV() + "] already exists at [" + toString(gae.getRepositories()) + "]");
+                } else {
+                    List<String> errorResult = new ArrayList<String>();
+                    errorResult.add(t.getMessage());
+                    result.setDetailedResult(errorResult);
+                    result.setStatus(JobStatus.FAIL);
+                }
+
             }
             return result;
         }
@@ -447,12 +453,12 @@ public class JobRequestHelper {
 
                 result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
                 result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
-            } catch (GAVAlreadyExistsException gae) {
+            } catch (RuntimeException ex) {
+                GAVAlreadyExistsException gae = findCause(ex, GAVAlreadyExistsException.class).orElseThrow(() -> ex);
                 result.setStatus(JobStatus.DUPLICATE_RESOURCE);
-                result.setResult("Project's GAV [" + gae.getGAV().toString() + "] already exists at [" + toString(gae.getRepositories()) + "]");
+                result.setResult("Project's GAV [" + gae.getGAV() + "] already exists at [" + toString(gae.getRepositories()) + "]");
                 return result;
             }
-
             return result;
         }
     }
@@ -671,5 +677,15 @@ public class JobRequestHelper {
             return null;
         }
         return Paths.convert(repository.getBranchRoot(repository.getDefaultBranch()));
+    }
+
+    private <T> Optional<T> findCause(Throwable t, Class<T> causeClass) {
+        if (t == null) {
+            return Optional.empty();
+        } else if (t.getClass().equals(causeClass)) {
+            return Optional.of((T)t);
+        } else {
+            return findCause(t.getCause(), causeClass);
+        }
     }
 }
