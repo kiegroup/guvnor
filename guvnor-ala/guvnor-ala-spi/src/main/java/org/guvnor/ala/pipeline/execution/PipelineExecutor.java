@@ -100,8 +100,6 @@ public class PipelineExecutor {
                     }
 
                     propagateEvent( new AfterStageExecutionEvent( context.getPipeline(), stage ), eventListeners );
-
-                    continuePipeline( context, eventListeners );
                 } );
             } catch ( final Throwable t ) {
                 t.printStackTrace();
@@ -110,13 +108,10 @@ public class PipelineExecutor {
                 propagateEvent( new OnErrorPipelineExecutionEvent( context.getPipeline(), stage, exception ), eventListeners );
                 throw exception;
             }
-            return;
         }
-        if ( context.isFinished() ) {
-            final Object output = pollOutput( context );
-            while ( context.hasCallbacks() ) {
-                context.applyCallbackAndPop( output );
-            }
+        final Object output = pollOutput( context );
+        while ( context.hasCallbacks( ) ) {
+            context.applyCallbackAndPop( output );
         }
     }
 
