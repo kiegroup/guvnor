@@ -158,7 +158,7 @@ public class InboxBackendImpl implements InboxBackend {
                                       final String userName ) {
         addToRecentEdited( itemPath, itemName, userName );
 
-        //deliver messages to users inboxes (ie., the edited item is the itme that the current logged in user has edited in the past, or commented on)
+        //deliver messages to users inboxes (ie., the edited item is the item that the current logged in user has edited in the past, or commented on)
         addToIncoming( itemPath, itemName, userName, MailboxService.MAIL_MAN );
         mailboxService.processOutgoing();
     }
