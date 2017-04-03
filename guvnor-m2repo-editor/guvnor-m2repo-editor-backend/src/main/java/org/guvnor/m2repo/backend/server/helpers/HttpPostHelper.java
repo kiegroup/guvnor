@@ -46,7 +46,7 @@ import static org.guvnor.m2repo.utils.FileNameUtilities.*;
 
 public class HttpPostHelper {
 
-    private static final Logger log = LoggerFactory.getLogger( HttpPostHelper.class );
+    private static final Logger log = LoggerFactory.getLogger(HttpPostHelper.class);
 
     @Inject
     private ExtendedM2RepoService m2RepoService;
@@ -55,186 +55,173 @@ public class HttpPostHelper {
      * Posting accepts content of various types -
      * may be an attachment for an asset, or perhaps a repository import to process.
      */
-    public void handle( final HttpServletRequest request,
-                        final HttpServletResponse response ) throws ServletException, IOException {
-        response.setContentType( "text/html" );
-        final FormData formData = extractFormData( request );
-        final String result = upload( formData );
-        response.getWriter().write( result );
+    public void handle(final HttpServletRequest request,
+                       final HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html");
+        final FormData formData = extractFormData(request);
+        final String result = upload(formData);
+        response.getWriter().write(result);
     }
 
     @SuppressWarnings("rawtypes")
-    private FormData extractFormData( final HttpServletRequest request ) throws IOException {
+    private FormData extractFormData(final HttpServletRequest request) throws IOException {
         FileItemFactory factory = new DiskFileItemFactory();
-        ServletFileUpload upload = new ServletFileUpload( factory );
-        upload.setHeaderEncoding( "UTF-8" );
+        ServletFileUpload upload = new ServletFileUpload(factory);
+        upload.setHeaderEncoding("UTF-8");
 
         FormData data = new FormData();
         GAV emptyGAV = new GAV();
         try {
-            List items = upload.parseRequest( request );
+            List items = upload.parseRequest(request);
             Iterator it = items.iterator();
-            while ( it.hasNext() ) {
+            while (it.hasNext()) {
                 FileItem item = (FileItem) it.next();
-                if ( !item.isFormField() ) {
-                    data.setFile( item );
+                if (!item.isFormField()) {
+                    data.setFile(item);
                 }
 
-                if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.GROUP_ID ) ) {
-                    emptyGAV.setGroupId( item.getString() );
-                } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.ARTIFACT_ID ) ) {
-                    emptyGAV.setArtifactId( item.getString() );
-                } else if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.VERSION_ID ) ) {
-                    emptyGAV.setVersion( item.getString() );
+                if (item.isFormField() && item.getFieldName().equals(HTMLFileManagerFields.GROUP_ID)) {
+                    emptyGAV.setGroupId(item.getString());
+                } else if (item.isFormField() && item.getFieldName().equals(HTMLFileManagerFields.ARTIFACT_ID)) {
+                    emptyGAV.setArtifactId(item.getString());
+                } else if (item.isFormField() && item.getFieldName().equals(HTMLFileManagerFields.VERSION_ID)) {
+                    emptyGAV.setVersion(item.getString());
                 }
             }
 
-            if ( isNullOrEmpty( emptyGAV.getGroupId() )
-                    || isNullOrEmpty( emptyGAV.getArtifactId() )
-                    || isNullOrEmpty( emptyGAV.getVersion() ) ) {
-                data.setGav( null );
+            if (isNullOrEmpty(emptyGAV.getGroupId())
+                    || isNullOrEmpty(emptyGAV.getArtifactId())
+                    || isNullOrEmpty(emptyGAV.getVersion())) {
+                data.setGav(null);
             } else {
-                data.setGav( emptyGAV );
+                data.setGav(emptyGAV);
             }
 
             return data;
-
-        } catch ( FileUploadException e ) {
-            log.error( e.getMessage(),
-                       e );
+        } catch (FileUploadException e) {
+            log.error(e.getMessage(),
+                      e);
         }
 
         return null;
     }
 
-    private String upload( final FormData formData ) throws IOException {
+    private String upload(final FormData formData) throws IOException {
         //Validate upload
         final FileItem fileItem = formData.getFile();
-        if ( fileItem == null ) {
-            throw new IOException( "No file selected." );
+        if (fileItem == null) {
+            throw new IOException("No file selected.");
         }
         final String fileName = fileItem.getName();
-        if ( isNullOrEmpty( fileName ) ) {
-            throw new IOException( "No file selected." );
+        if (isNullOrEmpty(fileName)) {
+            throw new IOException("No file selected.");
         }
 
-        if ( isJar( fileName ) || isKJar( fileName ) ) {
-            return uploadJar( formData );
-
-        } else if ( isPom( fileName ) ) {
-            return uploadPom( formData );
-
+        if (isJar(fileName) || isKJar(fileName)) {
+            return uploadJar(formData);
+        } else if (isPom(fileName)) {
+            return uploadPom(formData);
         } else {
-            throw new IOException( "Unsupported file type selected." );
+            throw new IOException("Unsupported file type selected.");
         }
     }
 
-    private String uploadJar( final FormData formData ) throws IOException {
+    private String uploadJar(final FormData formData) throws IOException {
         GAV gav = formData.getGav();
         InputStream jarStream = null;
 
         try {
             jarStream = formData.getFile().getInputStream();
-            if ( gav == null ) {
-                if ( !jarStream.markSupported() ) {
-                    jarStream = new BufferedInputStream( jarStream );
+            if (gav == null) {
+                if (!jarStream.markSupported()) {
+                    jarStream = new BufferedInputStream(jarStream);
                 }
 
                 // is available() safe?
-                jarStream.mark( jarStream.available() );
+                jarStream.mark(jarStream.available());
 
-                PomModel pomModel = PomModelResolver.resolveFromJar( jarStream );
+                PomModel pomModel = PomModelResolver.resolveFromJar(jarStream);
 
                 //If we were able to get a POM model we can get the GAV
-                if ( pomModel != null ) {
+                if (pomModel != null) {
                     String groupId = pomModel.getReleaseId().getGroupId();
                     String artifactId = pomModel.getReleaseId().getArtifactId();
                     String version = pomModel.getReleaseId().getVersion();
 
-                    if ( isNullOrEmpty( groupId ) || isNullOrEmpty( artifactId ) || isNullOrEmpty( version ) ) {
+                    if (isNullOrEmpty(groupId) || isNullOrEmpty(artifactId) || isNullOrEmpty(version)) {
                         return UPLOAD_MISSING_POM;
                     } else {
-                        gav = new GAV( groupId,
-                                       artifactId,
-                                       version );
+                        gav = new GAV(groupId,
+                                      artifactId,
+                                      version);
                     }
-
                 } else {
                     return UPLOAD_MISSING_POM;
                 }
                 jarStream.reset();
             }
 
-            m2RepoService.deployJar( jarStream,
-                                     gav );
+            m2RepoService.deployJar(jarStream,
+                                    gav);
 
             return UPLOAD_OK;
-
-        } catch ( IOException ioe ) {
-            log.error( ioe.getMessage(),
-                       ioe );
-            throw ExceptionUtilities.handleException( ioe );
-
+        } catch (IOException ioe) {
+            log.error(ioe.getMessage(),
+                      ioe);
+            throw ExceptionUtilities.handleException(ioe);
         } finally {
-            if ( jarStream != null ) {
+            if (jarStream != null) {
                 jarStream.close();
             }
-
         }
     }
 
-    private String uploadPom( final FormData formData ) throws IOException {
-        GAV gav = null;
+    private String uploadPom(final FormData formData) throws IOException {
         ReusableInputStream pomStream = null;
 
         try {
-            pomStream = new ReusableInputStream( formData.getFile().getInputStream() );
+            GAV gav;
+            pomStream = new ReusableInputStream(formData.getFile().getInputStream());
 
             // is available() safe?
-            pomStream.mark( pomStream.available() );
+            pomStream.mark(pomStream.available());
 
-            PomModel pomModel = null;
             try {
-                pomModel = PomModelResolver.resolveFromPom(pomStream);
-                String groupId = pomModel.getReleaseId().getGroupId();
-                String artifactId = pomModel.getReleaseId().getArtifactId();
-                String version = pomModel.getReleaseId().getVersion();
+                final PomModel pomModel = PomModelResolver.resolveFromPom(pomStream);
+                final String groupId = pomModel.getReleaseId().getGroupId();
+                final String artifactId = pomModel.getReleaseId().getArtifactId();
+                final String version = pomModel.getReleaseId().getVersion();
 
-                if ( isNullOrEmpty( groupId ) || isNullOrEmpty( artifactId ) || isNullOrEmpty( version ) ) {
+                if (isNullOrEmpty(groupId) || isNullOrEmpty(artifactId) || isNullOrEmpty(version)) {
                     return UPLOAD_UNABLE_TO_PARSE_POM;
                 } else {
-                    gav = new GAV( groupId,
-                                   artifactId,
-                                   version );
+                    gav = new GAV(groupId,
+                                  artifactId,
+                                  version);
                 }
-            } catch (ProjectBuildingException pbe) {
-                return pbe.getMessage();
-            } catch (MavenEmbedderException mee) {
-                return mee.getMessage();
-            }catch (Exception e) {
+            } catch (Exception e) {
+                log.error("Could not parse the uploaded POM.XML file.",
+                          e);
                 return UPLOAD_UNABLE_TO_PARSE_POM;
             }
             pomStream.reset();
 
-            m2RepoService.deployPom( pomStream,
-                                     gav );
+            m2RepoService.deployPom(pomStream,
+                                    gav);
 
             return UPLOAD_OK;
-
-        } catch ( IOException ioe ) {
-            log.error( ioe.getMessage(),
-                       ioe );
-            throw ExceptionUtilities.handleException( ioe );
-
+        } catch (IOException ioe) {
+            log.error(ioe.getMessage(),
+                      ioe);
+            throw ExceptionUtilities.handleException(ioe);
         } finally {
-            if ( pomStream != null ) {
+            if (pomStream != null) {
                 pomStream.doClose();
             }
-
         }
     }
 
-    private boolean isNullOrEmpty( String value ) {
+    private boolean isNullOrEmpty(String value) {
         return value == null || value.isEmpty();
     }
 
@@ -246,8 +233,8 @@ public class HttpPostHelper {
      */
     private static class ReusableInputStream extends BufferedInputStream {
 
-        public ReusableInputStream( InputStream in ) {
-            super( in );
+        public ReusableInputStream(InputStream in) {
+            super(in);
         }
 
         @Override
@@ -259,7 +246,5 @@ public class HttpPostHelper {
             //Do the closure
             super.close();
         }
-
     }
-
 }
