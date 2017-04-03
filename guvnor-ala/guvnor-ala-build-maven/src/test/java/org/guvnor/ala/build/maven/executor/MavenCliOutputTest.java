@@ -43,6 +43,7 @@ import org.guvnor.ala.source.git.GitHub;
 import org.guvnor.ala.source.git.config.impl.GitConfigImpl;
 import org.guvnor.ala.source.git.executor.GitConfigExecutor;
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,6 +68,36 @@ public class MavenCliOutputTest {
     @After
     public void tearDown() {
         FileUtils.deleteQuietly( tempPath );
+
+    }
+
+    @Test
+    public void buildAppAndCheckSystemPropertiesTest() {
+        final GitHub gitHub = new GitHub();
+        gitHub.getRepository( "salaboy/drools-workshop", new HashMap<String, String>() {
+            {
+                put( "out-dir", tempPath.getAbsolutePath() );
+            }
+        } );
+
+        final Optional<Source> _source = new GitConfigExecutor( new InMemorySourceRegistry() ).apply( new GitConfigImpl( tempPath.getAbsolutePath(),
+                "master",
+                "https://github.com/salaboy/drools-workshop",
+                "drools-workshop-properties",
+                "true" ) );
+
+        assertTrue( _source.isPresent() );
+        final Source source = _source.get();
+
+        Properties properties = System.getProperties();
+        int propertiesSize = properties.size();
+        
+        buildMavenProject( source, null, null );
+        
+        properties = System.getProperties();
+        
+        assertEquals(propertiesSize, properties.size());
+        
     }
 
     @Test
