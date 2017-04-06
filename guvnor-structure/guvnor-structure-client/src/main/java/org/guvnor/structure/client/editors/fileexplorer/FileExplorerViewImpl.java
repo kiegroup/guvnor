@@ -37,7 +37,6 @@ public class FileExplorerViewImpl
         extends Composite
         implements FileExplorerView {
 
-
     private CommonConstants constants = CommonConstants.INSTANCE;
 
     TreeItem rootTreeItem = null;
@@ -65,7 +64,7 @@ public class FileExplorerViewImpl
         tree.addOpenHandler( new OpenHandler<TreeItem>() {
             @Override
             public void onOpen( final OpenEvent<TreeItem> event ) {
-                if ( needsLoading( event.getTarget() ) && event.getTarget().getUserObject() instanceof Path ) {
+                if ( needsLoading( event.getTarget() ) ) {
                     presenter.loadDirectoryContent( new FileExplorerItem( event.getTarget() ), (Path) event.getTarget().getUserObject() );
                 }
             }
@@ -109,7 +108,7 @@ public class FileExplorerViewImpl
 
     @Override
     public void addNewRepository( final Repository repository,
-                                  final String branch) {
+                                  final String branch ) {
         final TreeItem repositoryRootItem = rootTreeItem.addItem( TreeItem.Type.FOLDER,
                                                                   repository.getAlias() );
         repositoryRootItem.setUserObject( repository );
@@ -124,8 +123,11 @@ public class FileExplorerViewImpl
                                         repository.getBranchRoot( branch ) );
     }
 
-    private boolean needsLoading( final TreeItem item ) {
-        return item.getChildCount() == 1 && constants.Loading().equals( item.getChild( 0 ).getText() );
+    boolean needsLoading( final TreeItem item ) {
+        return item.getUserObject() instanceof Path
+                && item.getType() == TreeItem.Type.FOLDER
+                && item.getChildCount() == 1
+                && constants.Loading().equals( item.getChild( 0 ).getText() );
     }
 
 }
