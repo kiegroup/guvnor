@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
@@ -41,6 +42,12 @@ import static org.uberfire.backend.server.util.Paths.convert;
 
 /**
  * Cache for configured repositories.
+ *
+ * If you plan to use this outside of ProjectService make sure you know what you are doing.
+ *
+ * It is safe to get data from this class, but any editing should be done through ProjectService.
+ * Still if possible use ProjectService for accessing the repositories. It is part of a public API
+ * and this is hidden in the -backend on purpose.
  */
 @ApplicationScoped
 public class ConfiguredRepositories {
@@ -66,7 +73,7 @@ public class ConfiguredRepositories {
 
     @SuppressWarnings("unchecked")
     @PostConstruct
-    public void loadRepositories() {
+    void reloadRepositories() {
         repositoriesByAlias.clear();
         repositoriesByBranchRoot.clear();
 
@@ -122,7 +129,7 @@ public class ConfiguredRepositories {
     /**
      * @return Does not include system repository.
      */
-    public List<Repository> getAllConfiguredRepositories() {
+    List<Repository> getAllConfiguredRepositories() {
         return new ArrayList<>(repositoriesByAlias.values());
     }
 
@@ -130,14 +137,14 @@ public class ConfiguredRepositories {
         return repositoriesByAlias.containsKey(alias) || SystemRepository.SYSTEM_REPO.getAlias().equals(alias);
     }
 
-    public void add(final Repository repository) {
+    void add(final Repository repository) {
         repositoriesByAlias.put(repository.getAlias(),
                                 repository);
 
         if (repository instanceof GitRepository &&
                 repository.getBranches() != null) {
-            for (String branch : repository.getBranches()) {
-                repositoriesByBranchRoot.put(repository.getBranchRoot(branch),
+            for (final Branch branch : repository.getBranches()) {
+                repositoriesByBranchRoot.put(branch.getPath(),
                                              repository);
             }
         } else {
@@ -146,11 +153,12 @@ public class ConfiguredRepositories {
         }
     }
 
-    public void update(final Repository updatedRepo) {
+    void update(final Repository updatedRepo) {
+        remove(updatedRepo.getAlias());
         add(updatedRepo);
     }
 
-    public Repository remove(final String alias) {
+    Repository remove(final String alias) {
 
         final Repository removed = repositoriesByAlias.remove(alias);
 
@@ -159,7 +167,7 @@ public class ConfiguredRepositories {
         return removed;
     }
 
-    private void removeFromRootByAlias(final String alias) {
+    void removeFromRootByAlias(final String alias) {
         for (Path path : findFromRootMapByAlias(alias)) {
             repositoriesByBranchRoot.remove(path);
         }
@@ -175,21 +183,7 @@ public class ConfiguredRepositories {
         return result;
     }
 
-    public void onNewBranch(final @Observes NewBranchEvent changedEvent) {
-
-        if (repositoriesByAlias.containsKey(changedEvent.getRepositoryAlias())) {
-
-            final Repository repository = getRepositoryByRepositoryAlias(changedEvent.getRepositoryAlias());
-            if (repository instanceof GitRepository) {
-                ((GitRepository) repository).addBranch(changedEvent.getBranchName(),
-                                                       changedEvent.getBranchPath());
-                repositoriesByBranchRoot.put(changedEvent.getBranchPath(),
-                                             repository);
-            }
-        }
-    }
-
     public void flush(final @Observes @org.guvnor.structure.backend.config.Repository SystemRepositoryChangedEvent changedEvent) {
-        loadRepositories();
+        reloadRepositories();
     }
 }

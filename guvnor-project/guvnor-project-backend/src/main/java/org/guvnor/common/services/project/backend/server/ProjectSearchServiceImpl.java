@@ -19,16 +19,12 @@ package org.guvnor.common.services.project.backend.server;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectSearchService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 
 /**
@@ -38,59 +34,31 @@ import org.jboss.errai.bus.server.annotations.Service;
 @ApplicationScoped
 public class ProjectSearchServiceImpl implements ProjectSearchService {
 
-    private RepositoryService repositoryService;
-    private Instance<ProjectService<? extends Project>> projectServices;
+    private ProjectService projectService;
 
     @Inject
-    public ProjectSearchServiceImpl(RepositoryService repositoryService,
-                                    Instance<ProjectService<? extends Project>> projectServices) {
-        this.repositoryService = repositoryService;
-        this.projectServices = projectServices;
-    }
-
-    public ProjectService getProjectService() {
-        return projectServices.get();
+    public ProjectSearchServiceImpl(final ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     @Override
-    public Collection<Project> searchByName(String pattern,
-                                            int maxItems,
-                                            boolean caseSensitive) {
-        List<Project> results = new ArrayList<>();
-        for (Repository repository : repositoryService.getAllRepositories()) {
-            ProjectService projectService = getProjectService();
-            if (projectService != null) {
-                Set<Project> repositoryProjects = projectService.getAllProjects(repository,
-                                                                                "master");
-                for (Project project : repositoryProjects) {
-                    String name = project.getProjectName();
-                    if (caseSensitive ? name.contains(pattern) : name.toLowerCase().contains(pattern.toLowerCase())) {
-                        results.add(project);
-                        if (maxItems > 0 && results.size() >= maxItems) {
-                            return results;
-                        }
-                    }
-                }
-            }
-        }
-        return results;
-    }
+    public Collection<Project> searchByName(final String pattern,
+                                            final int maxItems,
+                                            final boolean caseSensitive) {
+        final List<Project> result = new ArrayList<>();
 
-    @Override
-    public Collection<Project> searchById(Collection<String> ids) {
-        List<Project> results = new ArrayList<>();
-        for (Repository repository : repositoryService.getAllRepositories()) {
-            ProjectService projectService = getProjectService();
-            if (projectService != null) {
-                Set<Project> repositoryProjects = projectService.getAllProjects(repository,
-                                                                                "master");
-                for (Project project : repositoryProjects) {
-                    if (ids.contains(project.getIdentifier())) {
-                        results.add(project);
-                    }
-                }
+        for (final Project project : projectService.getAllProjects()) {
+
+            final String name = project.getName();
+            if (caseSensitive ? name.contains(pattern) : name.toLowerCase().contains(pattern.toLowerCase())) {
+                result.add(project);
+            }
+
+            if (maxItems == result.size()) {
+                break;
             }
         }
-        return results;
+
+        return result;
     }
 }

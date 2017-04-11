@@ -18,6 +18,7 @@ package org.guvnor.structure.repositories;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.guvnor.structure.security.RepositoryResourceType;
 import org.uberfire.backend.vfs.Path;
@@ -52,7 +53,9 @@ public interface Repository
 
     Path getRoot();
 
-    Path getBranchRoot(final String branch);
+    Optional<Branch> getBranch(final String branch);
+
+    Optional<Branch> getBranch(final Path branchRoot);
 
     void setRoot(final Path root);
 
@@ -62,11 +65,11 @@ public interface Repository
      * Returns "read-only" view of all branches available in this repository.
      * @return
      */
-    Collection<String> getBranches();
+    Collection<Branch> getBranches();
 
     /**
      * In the case of Git repository this would be master.
-     * @return null if there are no branches.
+     * @return empty if there are no branches.
      */
-    String getDefaultBranch();
+    Optional<Branch> getDefaultBranch();
 }

@@ -83,19 +83,19 @@ public class GuvnorStructureContext {
     private void updateRepository(final Repository repository) {
         if (isNewRepository(repository)) {
             aliasBranch.put(repository.getAlias(),
-                            repository.getDefaultBranch());
+                            repository.getDefaultBranch().get().getName());
         } else {
             updateBranch(repository);
         }
     }
 
     private void updateBranch(final Repository repository) {
-        final String branch = aliasBranch.get(repository.getAlias());
+        final String branchName = aliasBranch.get(repository.getAlias());
 
-        if (branch == null || hasBranchBeenRemoved(repository,
-                                                   branch)) {
+        if (branchName == null || hasBranchBeenRemoved(repository,
+                                                       branchName)) {
             aliasBranch.put(repository.getAlias(),
-                            repository.getDefaultBranch());
+                            repository.getDefaultBranch().get().getName());
         }
     }
 
@@ -104,8 +104,11 @@ public class GuvnorStructureContext {
     }
 
     private boolean hasBranchBeenRemoved(final Repository repository,
-                                         final String branch) {
-        return !repository.getBranches().contains(branch);
+                                         final String branchName) {
+        return !repository
+                .getBranches()
+                .stream()
+                .anyMatch(branch -> branch.getName().equals(branchName));
     }
 
     private void removeMissingAliases(final Collection<String> foundAliases) {
@@ -161,7 +164,7 @@ public class GuvnorStructureContext {
         final Repository newRepository = event.getNewRepository();
 
         aliasBranch.put(newRepository.getAlias(),
-                        newRepository.getDefaultBranch());
+                        newRepository.getDefaultBranch().get().getName());
 
         for (final GuvnorStructureContextChangeHandler handler : handlers.values()) {
             handler.onNewRepositoryAdded(newRepository);
@@ -170,9 +173,9 @@ public class GuvnorStructureContext {
 
     public void onNewBranch(final @Observes NewBranchEvent event) {
         for (final GuvnorStructureContextChangeHandler handler : handlers.values()) {
-            handler.onNewBranchAdded(event.getRepositoryAlias(),
-                                     event.getBranchName(),
-                                     event.getBranchPath());
+            handler.onNewBranchAdded(event.getRepository().getAlias(),
+                                     event.getNewBranchName(),
+                                     event.getRepository().getBranch(event.getNewBranchName()).get().getPath());
         }
     }
 

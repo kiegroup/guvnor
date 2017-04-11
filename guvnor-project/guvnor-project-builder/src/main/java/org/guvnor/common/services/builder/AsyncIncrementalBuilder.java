@@ -20,14 +20,14 @@ import javax.enterprise.event.Event;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.service.ModuleService;
 
 public interface AsyncIncrementalBuilder {
 
-    public void execute(final ProjectService projectService,
-                        final BuildService buildService,
-                        final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
-                        final Event<BuildResults> buildResultsEvent);
+    public void execute( final ModuleService projectService,
+                         final BuildService buildService,
+                         final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
+                         final Event<BuildResults> buildResultsEvent );
 
     String getDescription();
 }

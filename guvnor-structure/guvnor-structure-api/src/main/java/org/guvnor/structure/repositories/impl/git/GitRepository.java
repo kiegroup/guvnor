@@ -21,7 +21,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -36,14 +38,11 @@ public class GitRepository
 
     private final Map<String, Object> environment = new HashMap<String, Object>();
     private final List<PublicURI> publicURIs = new ArrayList<PublicURI>();
-
+    private final Map<String, Branch> branches = new HashMap<>();
     private String alias = null;
     private Path root;
-
     private Collection<String> groups = new ArrayList<String>();
-
     private boolean requiresRefresh = true;
-    private final Map<String, Path> branches = new HashMap<String, Path>();
 
     public GitRepository() {
     }
@@ -87,14 +86,14 @@ public class GitRepository
         this.root = root;
     }
 
-    public void setBranches(final Map<String, Path> branches) {
+    public void setBranches(final Map<String, Branch> branches) {
         this.branches.clear();
         this.branches.putAll(branches);
     }
 
     @Override
-    public Collection<String> getBranches() {
-        return Collections.unmodifiableSet(branches.keySet());
+    public Collection<Branch> getBranches() {
+        return Collections.unmodifiableCollection(branches.values());
     }
 
     @Override
@@ -103,8 +102,24 @@ public class GitRepository
     }
 
     @Override
-    public Path getBranchRoot(String branch) {
-        return branches.get(branch);
+    public Optional<Branch> getBranch(final String branchName) {
+        if (branches.containsKey(branchName)) {
+            return Optional.of(branches.get(branchName));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Branch> getBranch(Path branchRoot) {
+
+        for (final Branch branch : getBranches()) {
+            if (branch.getPath().equals(branchRoot)) {
+                return Optional.of(branch);
+            }
+        }
+
+        return Optional.empty();
     }
 
     @Override
@@ -148,13 +163,13 @@ public class GitRepository
     }
 
     @Override
-    public String getDefaultBranch() {
+    public Optional<Branch> getDefaultBranch() {
         if (branches.containsKey("master")) {
-            return "master";
+            return getBranch("master");
         } else if (!branches.isEmpty()) {
-            return branches.keySet().iterator().next();
+            return Optional.of(branches.values().iterator().next());
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -224,9 +239,8 @@ public class GitRepository
         return requiresRefresh;
     }
 
-    public void addBranch(final String branchName,
-                          final Path path) {
-        branches.put(branchName,
-                     path);
+    public void addBranch(final Branch branch) {
+        branches.put(branch.getName(),
+                     branch);
     }
 }

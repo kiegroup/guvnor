@@ -20,18 +20,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class DeleteProjectRequest extends JobRequest {
 
-    private String repositoryName;
-    private String projectName;
+	private String projectName;
 
-    public String getRepositoryName() {
-        return repositoryName;
-    }
-
-    public void setRepositoryName(String repositoryName) {
-        this.repositoryName = repositoryName;
-    }
-
-    public String getProjectName() {
+	public String getProjectName() {
         return projectName;
     }
 

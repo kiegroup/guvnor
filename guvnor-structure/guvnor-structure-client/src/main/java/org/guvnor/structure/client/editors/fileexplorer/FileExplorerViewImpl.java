@@ -18,6 +18,7 @@ package org.guvnor.structure.client.editors.fileexplorer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -28,6 +29,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.core.client.tree.FSTreeItem;
@@ -125,8 +127,11 @@ public class FileExplorerViewImpl
         repositoryToTreeItemMap.put(repository,
                                     repositoryRootItem);
 
-        presenter.loadDirectoryContent(new FileExplorerItem(repositoryRootItem),
-                                       repository.getBranchRoot(branch));
+        final Optional<Branch> branchOptional = repository.getBranch(branch);
+        if (branchOptional.isPresent()) {
+            presenter.loadDirectoryContent(new FileExplorerItem(repositoryRootItem),
+                                           branchOptional.get().getPath());
+        }
     }
 
     boolean needsLoading(final FSTreeItem item) {

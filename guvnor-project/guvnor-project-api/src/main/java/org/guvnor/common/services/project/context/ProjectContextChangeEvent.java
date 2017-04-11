@@ -15,10 +15,10 @@
  */
 package org.guvnor.common.services.project.context;
 
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -28,54 +28,42 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class ProjectContextChangeEvent {
 
     private final OrganizationalUnit ou;
-    private final Repository repository;
-    private final String branch;
     private final Project project;
+    private final Module module;
     private final Package pkg;
 
     public ProjectContextChangeEvent() {
         ou = null;
-        repository = null;
         project = null;
+        module = null;
         pkg = null;
-        branch = null;
     }
 
     public ProjectContextChangeEvent(final OrganizationalUnit ou) {
-        this(ou,
-             null,
-             null);
-    }
-
-    public ProjectContextChangeEvent(final OrganizationalUnit ou,
-                                     final Repository repository,
-                                     final String branch) {
-        this(ou,
-             repository,
-             branch,
-             null);
-    }
-
-    public ProjectContextChangeEvent(final OrganizationalUnit ou,
-                                     final Repository repository,
-                                     final String branch,
-                                     final Project project) {
-        this(ou,
-             repository,
-             branch,
-             project,
-             null);
-    }
-
-    public ProjectContextChangeEvent(final OrganizationalUnit ou,
-                                     final Repository repository,
-                                     final String branch,
-                                     final Project project,
-                                     final Package pkg) {
         this.ou = ou;
-        this.repository = repository;
-        this.branch = branch;
+        this.project = null;
+        this.module = null;
+        this.pkg = null;
+    }
+
+    public ProjectContextChangeEvent(final Project project) {
+        this(project,
+             null);
+    }
+
+    public ProjectContextChangeEvent(final Project project,
+                                     final Module module) {
+        this(project,
+             module,
+             null);
+    }
+
+    public ProjectContextChangeEvent(final Project project,
+                                     final Module module,
+                                     final Package pkg) {
+        this.ou = project.getOrganizationalUnit();
         this.project = project;
+        this.module = module;
         this.pkg = pkg;
     }
 
@@ -83,19 +71,15 @@ public class ProjectContextChangeEvent {
         return ou;
     }
 
-    public Repository getRepository() {
-        return repository;
-    }
-
     public Project getProject() {
         return project;
     }
 
-    public Package getPackage() {
-        return pkg;
+    public Module getModule() {
+        return module;
     }
 
-    public String getBranch() {
-        return this.branch;
+    public Package getPackage() {
+        return pkg;
     }
 }

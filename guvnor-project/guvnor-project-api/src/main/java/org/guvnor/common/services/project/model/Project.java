@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,97 +15,84 @@
  */
 package org.guvnor.common.services.project.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.guvnor.common.services.project.security.ProjectResourceType;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Branch;
+import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Cacheable;
-import org.uberfire.security.ResourceType;
-import org.uberfire.security.authz.RuntimeContentResource;
 import org.uberfire.util.URIUtil;
 
-/**
- * An item representing a project
- */
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 @Portable
-public class Project implements RuntimeContentResource,
-                                Cacheable {
+/**
+ * Each Project is in a single repository.
+ * The workbench requires that there is a single parent pom.xml file in the repository root.
+ * There can be child Modules, but they are optional.
+ * A Project can have several brances, but the Project model focuses on only one of them.
+ * <BR>
+ * The Project model contains the Repository field and OrganizationalUnit, but these are here only here for convenience.
+ * <b>The real Project root is the Branch root.</b>
+ * Please do not use the Repository root path, this can point to any branch even to those that are not used.
+ */
+public class Project
+        implements Cacheable {
 
-    public static final ProjectResourceType RESOURCE_TYPE = new ProjectResourceType();
-
-    protected Path rootPath;
-    protected Path pomXMLPath;
-    protected String projectName;
-
-    protected Collection<String> modules = new ArrayList<String>();
-    private Collection<String> groups = new ArrayList<String>();
-
+    private Repository repository;
+    private Branch branch;
+    private Module mainModule;
+    private OrganizationalUnit organizationalUnit;
     private boolean requiresRefresh = true;
 
-    // only loaded by ProjectService.getProjects()
-    private POM pom;
-
     public Project() {
-        //For Errai-marshalling
     }
 
-    public Project(final Path rootPath,
-                   final Path pomXMLPath,
-                   final String projectName) {
-        this.rootPath = PortablePreconditions.checkNotNull("rootPath",
-                                                           rootPath);
-        this.pomXMLPath = PortablePreconditions.checkNotNull("pomXMLPath",
-                                                             pomXMLPath);
-        this.projectName = PortablePreconditions.checkNotNull("projectName",
-                                                              projectName);
+    public Project(final OrganizationalUnit organizationalUnit,
+                   final Repository repository,
+                   final Branch branch,
+                   final Module mainModule) {
+        this.organizationalUnit = checkNotNull("organizationalUnit",
+                                               organizationalUnit);
+        this.repository = checkNotNull("repository",
+                                       repository);
+        this.branch = checkNotNull("branch",
+                                   branch);
+        this.mainModule = mainModule;
     }
 
-    public Project(final Path rootPath,
-                   final Path pomXMLPath,
-                   final String projectName,
-                   final Collection<String> modules) {
-        this(rootPath,
-             pomXMLPath,
-             projectName);
-        this.modules = modules;
+    public OrganizationalUnit getOrganizationalUnit() {
+        return organizationalUnit;
     }
 
-    public Path getRootPath() {
-        return this.rootPath;
+    /**
+     * This is here for convenience. In case you quickly need the repository information.
+     * Please do not use the repository root path unless you are sure you need it. The Branch root is the Project root.
+     * @return Repository where the project is.
+     */
+    public Repository getRepository() {
+        return repository;
     }
 
-    public Path getPomXMLPath() {
-        return this.pomXMLPath;
+    /**
+     * Branch is where the Project is located.
+     * To change the branch, please recreate and reload the Project. You get way less bugs in UI code this way.
+     * @return Currently active branch.
+     */
+    public Branch getBranch() {
+        return branch;
     }
 
-    public String getProjectName() {
-        return this.projectName;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return getRootPath().toURI();
+    /**
+     * @return The Module that exists in the Project root.
+     */
+    public Module getMainModule() {
+        return mainModule;
     }
 
     public String getEncodedIdentifier() {
-        return URIUtil.encodeQueryString(getIdentifier());
-    }
-
-    @Override
-    public ResourceType getResourceType() {
-        return RESOURCE_TYPE;
-    }
-
-    public Collection<String> getGroups() {
-        return groups;
-    }
-
-    @Override
-    public void markAsCached() {
-        this.requiresRefresh = false;
+        return URIUtil.encodeQueryString(repository.getIdentifier());
     }
 
     @Override
@@ -113,58 +100,69 @@ public class Project implements RuntimeContentResource,
         return requiresRefresh;
     }
 
-    public Collection<String> getModules() {
-        return modules;
+    /**
+     * Name resolution sources in priority order: root pom.xml module name, root pom.xml artifactId and if everything else fails we use the repository alias.
+     * @return Resolved name of the Project.
+     */
+    public String getName() {
+        if (mainModule != null) {
+            final String moduleName = mainModule.getModuleName();
+            if (moduleName != null && !mainModule.getModuleName().trim().isEmpty()) {
+                return mainModule.getModuleName();
+            } else {
+                return repository.getAlias();
+            }
+        } else {
+            return repository.getAlias();
+        }
     }
 
-    public POM getPom() {
-        return pom;
+    @Override
+    public void markAsCached() {
+        this.requiresRefresh = false;
     }
 
-    public void setPom(POM pom) {
-        this.pom = pom;
+    /**
+     * Short cut for the Project root.
+     * @return The root path of the active branch.
+     */
+    public Path getRootPath() {
+        return branch.getPath();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Project project = (Project) o;
+
+        if (requiresRefresh != project.requiresRefresh) {
+            return false;
+        }
+        if (!repository.equals(project.repository)) {
+            return false;
+        }
+        if (!branch.equals(project.branch)) {
+            return false;
+        }
+        if (mainModule != null ? !mainModule.equals(project.mainModule) : project.mainModule != null) {
+            return false;
+        }
+        return organizationalUnit.equals(project.organizationalUnit);
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 17 * hash + (this.rootPath != null ? this.rootPath.hashCode() : 0);
-        hash = ~~hash;
-        hash = 17 * hash + (this.pomXMLPath != null ? this.pomXMLPath.hashCode() : 0);
-        hash = ~~hash;
-        hash = 17 * hash + (this.projectName != null ? this.projectName.hashCode() : 0);
-        hash = ~~hash;
-        hash = 17 * hash + (this.modules != null ? this.modules.hashCode() : 0);
-        hash = ~~hash;
-        hash = 17 * hash + (this.groups != null ? this.groups.hashCode() : 0);
-        hash = ~~hash;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Project other = (Project) obj;
-        if (this.rootPath != other.rootPath && (this.rootPath == null || !this.rootPath.equals(other.rootPath))) {
-            return false;
-        }
-        if (this.pomXMLPath != other.pomXMLPath && (this.pomXMLPath == null || !this.pomXMLPath.equals(other.pomXMLPath))) {
-            return false;
-        }
-        if ((this.projectName == null) ? (other.projectName != null) : !this.projectName.equals(other.projectName)) {
-            return false;
-        }
-        if (this.modules != other.modules && (this.modules == null || !this.modules.equals(other.modules))) {
-            return false;
-        }
-        if (this.groups != other.groups && (this.groups == null || !this.groups.equals(other.groups))) {
-            return false;
-        }
-        return true;
+        int result = ~~repository.hashCode();
+        result = 31 * result + ~~branch.hashCode();
+        result = 31 * result + (mainModule != null ? ~~mainModule.hashCode() : 0);
+        result = 31 * result + ~~organizationalUnit.hashCode();
+        result = 31 * result + (requiresRefresh ? 1 : 0);
+        return result;
     }
 }

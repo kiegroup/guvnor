@@ -107,12 +107,6 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
     @UiField
     BaseModal popup;
 
-    @UiField
-    FormGroup managedReposiotryGroup;
-
-    @UiField
-    CheckBox managedRepository;
-
     @UiHandler("clone")
     public void onCloneClick(final ClickEvent e) {
         presenter.handleCloneClick();
@@ -367,18 +361,6 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
 
         usernameTextBox.setText("");
         passwordTextBox.setText("");
-
-        managedRepository.setValue(Boolean.FALSE);
-    }
-
-    @Override
-    public boolean isManagedRepository() {
-        return managedRepository.getValue();
-    }
-
-    @Override
-    public void enableManagedRepoCreation(boolean enabled) {
-        managedReposiotryGroup.setVisible(enabled);
     }
 
     @Override

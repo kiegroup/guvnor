@@ -79,7 +79,7 @@ public class RepositoryTreeProviderTest {
     @Test
     public void testRootNode() {
         assertEquals(rootNode.getPermissionList().size(),
-                     4);
+                     5);
         checkDependencies(rootNode);
     }
 
@@ -92,7 +92,7 @@ public class RepositoryTreeProviderTest {
             for (PermissionNode child : children) {
                 List<Permission> permissionList = child.getPermissionList();
                 assertEquals(permissionList.size(),
-                             3);
+                             4);
                 checkDependencies(child);
 
                 List<String> permissionNames = permissionList.stream()
@@ -102,9 +102,10 @@ public class RepositoryTreeProviderTest {
                 assertTrue(permissionNames.contains("repository.read." + child.getNodeName()));
                 assertTrue(permissionNames.contains("repository.update." + child.getNodeName()));
                 assertTrue(permissionNames.contains("repository.delete." + child.getNodeName()));
+                assertTrue(permissionNames.contains("repository.build." + child.getNodeName()));
 
                 assertEquals(child.getPermissionList().size(),
-                             3);
+                             4);
                 checkDependencies(child);
             }
         });
@@ -116,7 +117,7 @@ public class RepositoryTreeProviderTest {
 
             if (permission.getName().startsWith("repository.read")) {
                 assertEquals(dependencies.size(),
-                             2);
+                             3);
             } else {
                 assertNull(dependencies);
             }
