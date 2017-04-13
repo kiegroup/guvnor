@@ -48,6 +48,17 @@ public interface ProjectResourceResolver<T extends Project> {
     Package resolveParentPackage( final Package pkg );
 
     /**
+     * Given a package and a resource extension resolves the target path where the resource should be placed by default.
+     * e.g. for a package org.kie and a drl extension, the by default target path will be src/main/resources/org/kie,
+     * and for a java extension with the same package the by default target path will be src/main/java/org/kie
+     *
+     * @param pkg A package within a project.
+     * @param resourceType a file extension.
+     * @return the expected by default path for the given extension.
+     */
+    Path resolveDefaultPath( final Package pkg, final String resourceType );
+
+    /**
      * Return true if the file is the Project's pom.xml file
      * @param resource
      * @return
