@@ -15,10 +15,13 @@
  */
 package org.guvnor.common.services.project.backend.server;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import javax.enterprise.inject.Instance;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.LinkedDirectoryFilter;
@@ -53,6 +56,7 @@ public abstract class ResourceResolver<T extends Project>
     protected ConfigurationService configurationService;
     protected CommentedOptionFactory commentedOptionFactory;
     protected BackwardCompatibleUtil backward;
+    protected List<ProjectResourcePathResolver> resourcePathResolvers = new ArrayList<>( );
 
     public ResourceResolver() {
     }
@@ -61,12 +65,19 @@ public abstract class ResourceResolver<T extends Project>
                              final POMService pomService,
                              final ConfigurationService configurationService,
                              final CommentedOptionFactory commentedOptionFactory,
-                             final BackwardCompatibleUtil backward ) {
+                             final BackwardCompatibleUtil backward ,
+                             final Instance<ProjectResourcePathResolver> resourcePathResolversInstance ) {
         this.ioService = ioService;
         this.pomService = pomService;
         this.configurationService = configurationService;
         this.commentedOptionFactory = commentedOptionFactory;
         this.backward = backward;
+        initResourcePathResolvers( resourcePathResolversInstance );
+    }
+
+    private void initResourcePathResolvers( final Instance< ProjectResourcePathResolver > resourcePathResolversInstance ) {
+        Optional.ofNullable( resourcePathResolversInstance.iterator() )
+                .ifPresent( iterator -> iterator.forEachRemaining( resolver -> resourcePathResolvers.add( resolver ) ) );
     }
 
     public Package newPackage( final Package parentPackage,
@@ -360,6 +371,24 @@ public abstract class ResourceResolver<T extends Project>
         }
 
         return null;
+    }
+
+    @Override
+    public Path resolveDefaultPath( final Package pkg, final String resourceType ) {
+        final ProjectResourcePathResolver[] currentResolver = new ProjectResourcePathResolver[ 1 ];
+        resourcePathResolvers.forEach( resolver -> {
+            if ( resolver.accept( resourceType ) ) {
+                if ( currentResolver[ 0 ] == null || currentResolver[ 0 ].getPriority( ) < resolver.getPriority( ) ) {
+                    currentResolver[ 0 ] = resolver;
+                }
+            }
+        } );
+        if ( currentResolver[ 0 ] == null ) {
+            //uncommon case, by construction the DefaultProjectResourcePathResolver is exists.
+            throw new RuntimeException( "No ProjectResourcePathResolver has been defined for resourceType: " + resourceType );
+        } else {
+            return currentResolver[ 0 ].resolveDefaultPath( pkg );
+        }
     }
 
     @Override
