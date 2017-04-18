@@ -26,6 +26,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.inject.Instance;
+
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.deployment.DeployRequest;
@@ -35,6 +37,7 @@ import org.eclipse.aether.installation.InstallationException;
 import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.AfterClass;
@@ -80,7 +83,7 @@ public class GuvnorM2RepositoryTest {
     private GuvnorM2Repository repo;
     private RepositorySystem repositorySystem = mock( RepositorySystem.class );
     private RepositorySystemSession repositorySystemSession = mock( RepositorySystemSession.class );
-    
+
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
@@ -118,8 +121,9 @@ public class GuvnorM2RepositoryTest {
     @Before
     public void setup() throws Exception {
         log.info( "Deleting existing Repositories instance.." );
-
-        repo = new GuvnorM2Repository();
+        ArtifactRepositoryPreference pref = mock(ArtifactRepositoryPreference.class);
+        when(pref.getDefaultM2RepoDir()).thenReturn( "repositories/kie" );
+        repo = new GuvnorM2Repository(pref);
         repo.init();
 
         Aether aether = mock( Aether.class );
@@ -262,15 +266,15 @@ public class GuvnorM2RepositoryTest {
         spiedRepo.listFiles( filter, fileFormats );
         verify( spiedRepo ).getFiles( wildcards );
     }
-    
+
     @Test
     public void testGetPomTextVerifiesPath() {
         GuvnorM2Repository.getPomText( "dir/name.pom" );
         GuvnorM2Repository.getPomText( "dir/name.kjar" );
         GuvnorM2Repository.getPomText( "dir/name.jar" );
-        
+
         exception.expect( RuntimeException.class );
         GuvnorM2Repository.getPomText( "dir/name.foo" );
     }
-    
+
 }

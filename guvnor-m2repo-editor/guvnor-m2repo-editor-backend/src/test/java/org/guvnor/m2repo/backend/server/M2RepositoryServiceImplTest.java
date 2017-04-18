@@ -24,17 +24,22 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javax.enterprise.inject.Instance;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemHeaders;
+import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.helpers.FormData;
 import org.guvnor.m2repo.backend.server.helpers.HttpPostHelper;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
+import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,6 +59,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 public class M2RepositoryServiceImplTest {
 
@@ -67,7 +73,7 @@ public class M2RepositoryServiceImplTest {
     private M2RepoServiceImpl service;
     private HttpPostHelper helper;
     private java.lang.reflect.Method helperMethod;
-    
+
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
@@ -99,7 +105,9 @@ public class M2RepositoryServiceImplTest {
         deleteDir( dir );
         log.info( "TEST repo was deleted." );
 
-        repo = new GuvnorM2Repository();
+        ArtifactRepositoryPreference pref = mock( ArtifactRepositoryPreference.class );
+        when(pref.getDefaultM2RepoDir()).thenReturn( "repositories/kie" );
+        repo = new GuvnorM2Repository( pref );
         repo.init();
 
         //Create a shell M2RepoService and set the M2Repository
@@ -143,8 +151,6 @@ public class M2RepositoryServiceImplTest {
         // The directory is now empty so delete it
         return dir.delete();
     }
-
-
 
     @Test
     public void testDeployArtifact() throws Exception {
@@ -327,22 +333,26 @@ public class M2RepositoryServiceImplTest {
 
     /**
      * Verify that
-     * {@link M2RepoServiceImpl#listArtifacts(org.guvnor.m2repo.model.JarListPageRequest) M2RepoServiceImpl.listArtifacts()}
+     * {@link M2RepoServiceImpl#listArtifacts(org.guvnor.m2repo.model.JarListPageRequest) M2RepoServiceImpl.listFiles()}
      * returns correct PageResponse.
      * @throws java.lang.Exception
      */
     @Test
     public void testListArtifacts() throws Exception {
-        List<File> artifacts = new ArrayList<File>();
+        List<Artifact> artifacts = new ArrayList<Artifact>();
         final int TOTAL = 5;
         final int PAGE_START = 1;
         final int PAGE_SIZE = 2;
         for ( int i = 0; i < TOTAL; i++ ) {
-            artifacts.add( new File( GuvnorM2Repository.M2_REPO_DIR, "path/x" + i ) );
+            final ArtifactImpl artifact = new ArtifactImpl( new File( repo.M2_REPO_DIR, "path/x" + i ) );
+            final HashMap<String, String> map = new HashMap<String, String>();
+            map.put( "repository","guvnor-m2-repo" );
+            artifact.setProperties( map );
+            artifacts.add( artifact );
         }
         // Create a mock repository to make the test independent on any project deployment
-        GuvnorM2Repository mockRepo = Mockito.mock( GuvnorM2Repository.class );
-        Mockito.when( mockRepo.listFiles( Mockito.anyString(), Matchers.<List<String>>any() ) )
+        GuvnorM2Repository mockRepo = mock( GuvnorM2Repository.class );
+        Mockito.when( mockRepo.listArtifacts( Mockito.anyString(), Matchers.<List<String>>any() ) )
                 .thenReturn( artifacts );
 
         // Create a shell M2RepoService with injected mock M2Repository
@@ -607,17 +617,17 @@ public class M2RepositoryServiceImplTest {
         service.getPomText( "dir/name.jar" );
         service.getPomText( "dir/name.kjar" );
         service.getPomText( "dir/name.pom" );
-        
+
         exception.expect( RuntimeException.class );
         service.getPomText( "path/../file.pom" );
     }
-    
+
     @Test
     public void testLoadGAVFromJarRejectsTraversingPaths() {
         exception.expect( RuntimeException.class );
         service.loadGAVFromJar( "path/../file.jar" );
     }
-    
+
     private PageResponse<JarListPageRow> assertFilesCount( final String filters,
                                                            final List<String> fileFormats,
                                                            final String dataSourceName,

@@ -18,6 +18,7 @@ package org.guvnor.m2repo.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
+import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 /**
  * EnumEditor I18N constants
@@ -85,7 +86,7 @@ public interface M2RepoEditorConstants
     String Date();
 
     String DecimalNumber();
-    
+
     String AreYouSureYouWantToDeleteTheseItems();
 
     String JarDetails();
