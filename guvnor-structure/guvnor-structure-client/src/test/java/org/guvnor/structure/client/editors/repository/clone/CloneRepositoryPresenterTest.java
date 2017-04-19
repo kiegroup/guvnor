@@ -35,6 +35,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.security.RepositoryFeatures;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -132,33 +133,45 @@ public class CloneRepositoryPresenterTest {
 
         //mock user roles
         Set<Role> userRoles = new HashSet<Role>();
-        userRoles.add( new RoleImpl( "mock-role" ) );
+        userRoles.add(new RoleImpl("mock-role"));
 
-        when( sessionInfo.getIdentity() ).thenReturn( user );
-        when( user.getIdentifier() ).thenReturn( "mock-user" );
-        when( user.getRoles() ).thenReturn( userRoles );
+        when(sessionInfo.getIdentity()).thenReturn(user);
+        when(user.getIdentifier()).thenReturn("mock-user");
+        when(user.getRoles()).thenReturn(userRoles);
 
         List<OrganizationalUnit> units = new ArrayList<OrganizationalUnit>();
-        units.add( ouUnit1 );
-        units.add( ouUnit2 );
+        units.add(ouUnit1);
+        units.add(ouUnit2);
 
-        when( ouUnit1.getName() ).thenReturn( ORG_UNIT_ONE );
-        when( ouUnit2.getName() ).thenReturn( ORG_UNIT_TWO );
+        when(ouUnit1.getName()).thenReturn(ORG_UNIT_ONE);
+        when(ouUnit2.getName()).thenReturn(ORG_UNIT_TWO);
 
-        when( view.isNameEmpty() ).thenReturn( false );
-        when( view.getName() ).thenReturn( REPO_NAME );
-        when( view.getSelectedOrganizationalUnit() ).thenReturn( ORG_UNIT_ONE );
-        when( view.getUsername() ).thenReturn( USERNAME );
-        when( view.getPassword() ).thenReturn( PASSWORD );
+        when(view.isNameEmpty()).thenReturn(false);
+        when(view.getName()).thenReturn(REPO_NAME);
+        when(view.getSelectedOrganizationalUnit()).thenReturn(ORG_UNIT_ONE);
+        when(view.getUsername()).thenReturn(USERNAME);
+        when(view.getPassword()).thenReturn(PASSWORD);
 
-        when( ouServiceCaller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenAnswer( new OuServiceAnswer( units, ouService ) );
-        when( repoServiceCaller.call( any( RemoteCallback.class ) ) ).thenAnswer( new RsNormalizedNameAnswer( REPO_NAME, repoService ) );
-        when( repoServiceCaller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenAnswer( new RsCreateRepositoryAnswer( repository, repoService ) );
-        when( repoFailServiceCaller.call( any( RemoteCallback.class ) ) ).thenAnswer( new RsNormalizedNameAnswer( REPO_NAME, repoService ) );
+        when(ouServiceCaller.call(any(RemoteCallback.class),
+                                  any(ErrorCallback.class))).thenAnswer(new OuServiceAnswer(units,
+                                                                                            ouService));
+        when(repoServiceCaller.call(any(RemoteCallback.class))).thenAnswer(new RsNormalizedNameAnswer(REPO_NAME,
+                                                                                                      repoService));
+        when(repoServiceCaller.call(any(RemoteCallback.class),
+                                    any(ErrorCallback.class))).thenAnswer(new RsCreateRepositoryAnswer(repository,
+                                                                                                       repoService));
+        when(repoFailServiceCaller.call(any(RemoteCallback.class))).thenAnswer(new RsNormalizedNameAnswer(REPO_NAME,
+                                                                                                          repoService));
 
-        when( repositoryPreferences.isOUMandatory() ).thenReturn( false );
+        when(repositoryPreferences.isOUMandatory()).thenReturn(false);
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, authorizationManager, sessionInfo );
+        presenter = new CloneRepositoryPresenter(repositoryPreferences,
+                                                 view,
+                                                 repoServiceCaller,
+                                                 ouServiceCaller,
+                                                 placeManager,
+                                                 authorizationManager,
+                                                 sessionInfo);
         presenter.init();
     }
 
@@ -168,13 +181,13 @@ public class CloneRepositoryPresenterTest {
      */
     @Test
     public void testComponentsStaysOperational() {
-        when( view.isGitUrlEmpty() ).thenReturn( false );
-        when( view.getGitUrl() ).thenReturn( REPO_URL );
+        when(view.isGitUrlEmpty()).thenReturn(false);
+        when(view.getGitUrl()).thenReturn(REPO_URL);
 
         presenter.handleCloneClick();
 
         componentsLocked();
-        verifyRepoCloned( true );
+        verifyRepoCloned(true);
     }
 
     /**
@@ -182,96 +195,117 @@ public class CloneRepositoryPresenterTest {
      */
     @Test
     public void testComponentsNonLockEmptyUrl() {
-        when( view.isGitUrlEmpty() ).thenReturn( true );
+        when(view.isGitUrlEmpty()).thenReturn(true);
 
         presenter.handleCloneClick();
 
-        verify( view ).showUrlHelpMandatoryMessage();
+        verify(view).showUrlHelpMandatoryMessage();
 
         componentsNotAffected();
-        verifyRepoCloned( false );
+        verifyRepoCloned(false);
     }
 
     @Test
     public void testComponentsNonLockInvalidUrl() {
-        when( view.isGitUrlEmpty() ).thenReturn( false );
-        when( view.getGitUrl() ).thenReturn( "git repo" );
+        when(view.isGitUrlEmpty()).thenReturn(false);
+        when(view.getGitUrl()).thenReturn("git repo");
 
         presenter.handleCloneClick();
 
-        verify( view ).showUrlHelpInvalidFormatMessage();
+        verify(view).showUrlHelpInvalidFormatMessage();
 
         componentsNotAffected();
-        verifyRepoCloned( false );
+        verifyRepoCloned(false);
     }
 
     @Test
     public void testComponentsNonLockOuMandatory() {
-        when( view.isGitUrlEmpty() ).thenReturn( false );
-        when( view.getGitUrl() ).thenReturn( REPO_URL );
-        when( view.getSelectedOrganizationalUnit() ).thenReturn( "non_existing" );
-        when( repositoryPreferences.isOUMandatory() ).thenReturn( true );
+        when(view.isGitUrlEmpty()).thenReturn(false);
+        when(view.getGitUrl()).thenReturn(REPO_URL);
+        when(view.getSelectedOrganizationalUnit()).thenReturn("non_existing");
+        when(repositoryPreferences.isOUMandatory()).thenReturn(true);
 
         presenter.handleCloneClick();
 
-        verify( view ).showOrganizationalUnitHelpMandatoryMessage();
+        verify(view).showOrganizationalUnitHelpMandatoryMessage();
 
         componentsNotAffected();
-        verifyRepoCloned( false );
+        verifyRepoCloned(false);
     }
 
     @Test
     public void testComponentsNonLockEmptyName() {
-        when( view.isGitUrlEmpty() ).thenReturn( false );
-        when( view.getGitUrl() ).thenReturn( REPO_URL );
-        when( view.isNameEmpty() ).thenReturn( true );
+        when(view.isGitUrlEmpty()).thenReturn(false);
+        when(view.getGitUrl()).thenReturn(REPO_URL);
+        when(view.isNameEmpty()).thenReturn(true);
 
         presenter.handleCloneClick();
 
-        verify( view ).showNameHelpMandatoryMessage();
+        verify(view).showNameHelpMandatoryMessage();
 
         componentsNotAffected();
-        verifyRepoCloned( false );
+        verifyRepoCloned(false);
     }
 
     @Test
     public void testAlreadyExistClone() {
-        when( repoFailServiceCaller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenAnswer(
-                new RsCreateRepositoryFailAnswer( message, new RepositoryAlreadyExistsException(), repository, repoService ) );
+        when(repoFailServiceCaller.call(any(RemoteCallback.class),
+                                        any(ErrorCallback.class))).thenAnswer(
+                new RsCreateRepositoryFailAnswer(message,
+                                                 new RepositoryAlreadyExistsException(),
+                                                 repository,
+                                                 repoService));
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoFailServiceCaller, ouServiceCaller, placeManager, authorizationManager, sessionInfo );
+        presenter = new CloneRepositoryPresenter(repositoryPreferences,
+                                                 view,
+                                                 repoFailServiceCaller,
+                                                 ouServiceCaller,
+                                                 placeManager,
+                                                 authorizationManager,
+                                                 sessionInfo);
         presenter.init();
 
-        when( view.isGitUrlEmpty() ).thenReturn( false );
-        when( view.getGitUrl() ).thenReturn( REPO_URL );
+        when(view.isGitUrlEmpty()).thenReturn(false);
+        when(view.getGitUrl()).thenReturn(REPO_URL);
 
         presenter.handleCloneClick();
-        verify( view ).errorRepositoryAlreadyExist();
+        verify(view).errorRepositoryAlreadyExist();
 
         componentsLocked();
         componentsUnlocked();
-        verifyRepoCloned( false );
+        verifyRepoCloned(false);
     }
 
     @Test
     public void testFailClone() {
-        when( view.isGitUrlEmpty() ).thenReturn( false );
-        when( view.getGitUrl() ).thenReturn( REPO_URL );
+        when(view.isGitUrlEmpty()).thenReturn(false);
+        when(view.getGitUrl()).thenReturn(REPO_URL);
 
         RuntimeException exc = new RuntimeException();
-        when( repoFailServiceCaller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenAnswer(
-                new RsCreateRepositoryFailAnswer( message, exc, repository, repoService ) );
+        when(repoFailServiceCaller.call(any(RemoteCallback.class),
+                                        any(ErrorCallback.class))).thenAnswer(
+                new RsCreateRepositoryFailAnswer(message,
+                                                 exc,
+                                                 repository,
+                                                 repoService));
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoFailServiceCaller, ouServiceCaller, placeManager, authorizationManager, sessionInfo );
+        presenter = new CloneRepositoryPresenter(repositoryPreferences,
+                                                 view,
+                                                 repoFailServiceCaller,
+                                                 ouServiceCaller,
+                                                 placeManager,
+                                                 authorizationManager,
+                                                 sessionInfo);
         presenter.init();
 
         presenter.handleCloneClick();
-        verify( view ).errorCloneRepositoryFail( throwableArgument.capture() );
-        assertEquals( exc, throwableArgument.getValue() );
+        verify(view).errorCloneRepositoryFail(throwableArgument.capture());
+        assertEquals(exc,
+                     throwableArgument.getValue());
 
         componentsLocked();
         componentsUnlocked();
-        verifyRepoCloned( false );
+        verifyRepoCloned(false);
     }
 
     /**
@@ -279,21 +313,22 @@ public class CloneRepositoryPresenterTest {
      */
     @Test
     public void testGitUrlValidation() {
-        when( view.isGitUrlEmpty() ).thenReturn( false );
+        when(view.isGitUrlEmpty()).thenReturn(false);
 
-        when( view.getGitUrl() ).thenReturn( "a b c" );
+        when(view.getGitUrl()).thenReturn("a b c");
         presenter.handleCloneClick();
 
-        when( view.getGitUrl() ).thenReturn( ":" );
+        when(view.getGitUrl()).thenReturn(":");
         presenter.handleCloneClick();
 
-        when( view.getGitUrl() ).thenReturn( "|" );
+        when(view.getGitUrl()).thenReturn("|");
         presenter.handleCloneClick();
 
-        verify( view, times( 3 ) ).showUrlHelpInvalidFormatMessage();
+        verify(view,
+               times(3)).showUrlHelpInvalidFormatMessage();
 
         componentsNotAffected();
-        verifyRepoCloned( false );
+        verifyRepoCloned(false);
     }
 
     /**
@@ -306,192 +341,249 @@ public class CloneRepositoryPresenterTest {
     @Test
     @Ignore("See comments above")
     public void testGitUrlValidationSpecial() {
-        when( view.isGitUrlEmpty() ).thenReturn( false );
+        when(view.isGitUrlEmpty()).thenReturn(false);
 
-        when( view.getGitUrl() ).thenReturn( "abc" );
+        when(view.getGitUrl()).thenReturn("abc");
         presenter.handleCloneClick();
 
-        verify( view ).showUrlHelpInvalidFormatMessage();
+        verify(view).showUrlHelpInvalidFormatMessage();
 
         componentsNotAffected();
-        verifyRepoCloned( false );
+        verifyRepoCloned(false);
     }
 
     @Test
     public void testCloneNoGroup() {
-        when( repositoryPreferences.isOUMandatory() ).thenReturn( true );
-        when( view.isGitUrlEmpty() ).thenReturn( false );
-        when( view.getGitUrl() ).thenReturn( REPO_URL );
-        when( view.getName() ).thenReturn( REPO_NAME );
-        when( view.getSelectedOrganizationalUnit() ).thenReturn( "" );
+        when(repositoryPreferences.isOUMandatory()).thenReturn(true);
+        when(view.isGitUrlEmpty()).thenReturn(false);
+        when(view.getGitUrl()).thenReturn(REPO_URL);
+        when(view.getName()).thenReturn(REPO_NAME);
+        when(view.getSelectedOrganizationalUnit()).thenReturn("");
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, authorizationManager, sessionInfo );
+        presenter = new CloneRepositoryPresenter(repositoryPreferences,
+                                                 view,
+                                                 repoServiceCaller,
+                                                 ouServiceCaller,
+                                                 placeManager,
+                                                 authorizationManager,
+                                                 sessionInfo);
         presenter.handleCloneClick();
 
-        verify( view ).setOrganizationalUnitGroupType( ValidationState.ERROR );
-        verify( view ).showOrganizationalUnitHelpMandatoryMessage();
-        verifyRepoCloned( false );
+        verify(view).setOrganizationalUnitGroupType(ValidationState.ERROR);
+        verify(view).showOrganizationalUnitHelpMandatoryMessage();
+        verifyRepoCloned(false);
     }
 
     @Test
     public void testCloneNoUrl() {
-        when( repositoryPreferences.isOUMandatory() ).thenReturn( true );
-        when( view.isGitUrlEmpty() ).thenReturn( true );
-        when( view.getGitUrl() ).thenReturn( "" );
-        when( view.getName() ).thenReturn( REPO_NAME );
-        when( view.getSelectedOrganizationalUnit() ).thenReturn( ORG_UNIT_ONE );
+        when(repositoryPreferences.isOUMandatory()).thenReturn(true);
+        when(view.isGitUrlEmpty()).thenReturn(true);
+        when(view.getGitUrl()).thenReturn("");
+        when(view.getName()).thenReturn(REPO_NAME);
+        when(view.getSelectedOrganizationalUnit()).thenReturn(ORG_UNIT_ONE);
 
-        presenter = new CloneRepositoryPresenter( repositoryPreferences, view, repoServiceCaller, ouServiceCaller, placeManager, authorizationManager, sessionInfo );
+        presenter = new CloneRepositoryPresenter(repositoryPreferences,
+                                                 view,
+                                                 repoServiceCaller,
+                                                 ouServiceCaller,
+                                                 placeManager,
+                                                 authorizationManager,
+                                                 sessionInfo);
         presenter.handleCloneClick();
 
-        verify( view ).setUrlGroupType( ValidationState.ERROR );
-        verify( view ).showUrlHelpMandatoryMessage();
-        verifyRepoCloned( false );
+        verify(view).setUrlGroupType(ValidationState.ERROR);
+        verify(view).showUrlHelpMandatoryMessage();
+        verifyRepoCloned(false);
     }
 
     @Test
     public void testCancelButton() {
         presenter.handleCancelClick();
-        verify( view ).hide();
+        verify(view).hide();
     }
 
     @Test
     public void testCreateOUEvent() {
-        final OrganizationalUnit ou = new OrganizationalUnitImpl( "ou1",
-                                                                  "owner1",
-                                                                  "ou" );
-        presenter.onCreateOrganizationalUnit( new AfterCreateOrganizationalUnitEvent( ou ) );
+        final OrganizationalUnit ou = new OrganizationalUnitImpl("ou1",
+                                                                 "owner1",
+                                                                 "ou");
+        presenter.onCreateOrganizationalUnit(new AfterCreateOrganizationalUnitEvent(ou));
 
-        verify( view,
-                times( 1 ) ).addOrganizationalUnit( ou );
+        verify(view,
+               times(1)).addOrganizationalUnit(ou);
     }
 
     @Test
     public void testDeleteOUEvent() {
-        final OrganizationalUnit ou = new OrganizationalUnitImpl( "ou1",
-                                                                  "owner1",
-                                                                  "ou" );
-        presenter.onDeleteOrganizationalUnit( new AfterDeleteOrganizationalUnitEvent( ou ) );
+        final OrganizationalUnit ou = new OrganizationalUnitImpl("ou1",
+                                                                 "owner1",
+                                                                 "ou");
+        presenter.onDeleteOrganizationalUnit(new AfterDeleteOrganizationalUnitEvent(ou));
 
-        verify( view,
-                times( 1 ) ).deleteOrganizationalUnit( ou );
+        verify(view,
+               times(1)).deleteOrganizationalUnit(ou);
     }
 
     @Test
     public void testResetWhenShown() {
         presenter.showForm();
 
-        verify( view,
-                times( 1 ) ).reset();
+        verify(view,
+               times(1)).reset();
     }
 
     @Test
     public void testCloneManagedRepository() {
-        when( view.isGitUrlEmpty() ).thenReturn( false );
-        when( repositoryPreferences.isOUMandatory() ).thenReturn( false );
-        when( view.getGitUrl() ).thenReturn( REPO_URL );
-        when( view.getName() ).thenReturn( REPO_NAME );
-        when( view.isManagedRepository() ).thenReturn( true );
-
+        when(view.isGitUrlEmpty()).thenReturn(false);
+        when(repositoryPreferences.isOUMandatory()).thenReturn(false);
+        when(view.getGitUrl()).thenReturn(REPO_URL);
+        when(view.getName()).thenReturn(REPO_NAME);
+        when(view.isManagedRepository()).thenReturn(true);
 
         presenter.handleCloneClick();
 
-        verifyRepoCloned( true );
+        verifyRepoCloned(true);
 
-        verify( repoService, times( 1 ) ).createRepository( any( OrganizationalUnit.class ),
-                                                            anyString(),
-                                                            anyString(),
-                                                            repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
+        verify(repoService,
+               times(1)).createRepository(any(OrganizationalUnit.class),
+                                          anyString(),
+                                          anyString(),
+                                          repositoryEnvironmentConfigurationsArgumentCaptor.capture());
 
         final RepositoryEnvironmentConfigurations configurations = repositoryEnvironmentConfigurationsArgumentCaptor.getValue();
 
-        assertEquals( USERNAME, configurations.getUserName() );
-        assertEquals( PASSWORD, configurations.getPassword() );
-        assertEquals( REPO_URL, configurations.getOrigin() );
-        assertTrue( configurations.isManaged() );
+        assertEquals(USERNAME,
+                     configurations.getUserName());
+        assertEquals(PASSWORD,
+                     configurations.getPassword());
+        assertEquals(REPO_URL,
+                     configurations.getOrigin());
+        assertTrue(configurations.isManaged());
     }
 
     @Test
     public void testCloneNotManagedRepository() {
-        when( view.isGitUrlEmpty() ).thenReturn( false );
-        when( repositoryPreferences.isOUMandatory() ).thenReturn( false );
-        when( view.getGitUrl() ).thenReturn( REPO_URL );
-        when( view.getName() ).thenReturn( REPO_NAME );
-        when( view.isManagedRepository() ).thenReturn( false );
+        when(view.isGitUrlEmpty()).thenReturn(false);
+        when(repositoryPreferences.isOUMandatory()).thenReturn(false);
+        when(view.getGitUrl()).thenReturn(REPO_URL);
+        when(view.getName()).thenReturn(REPO_NAME);
+        when(view.isManagedRepository()).thenReturn(false);
 
         presenter.handleCloneClick();
 
-        verifyRepoCloned( true );
+        verifyRepoCloned(true);
 
-        verify( repoService, times( 1 ) ).createRepository( any( OrganizationalUnit.class ),
-                                                            anyString(),
-                                                            anyString(),
-                                                            repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
+        verify(repoService,
+               times(1)).createRepository(any(OrganizationalUnit.class),
+                                          anyString(),
+                                          anyString(),
+                                          repositoryEnvironmentConfigurationsArgumentCaptor.capture());
         final RepositoryEnvironmentConfigurations configurations = repositoryEnvironmentConfigurationsArgumentCaptor.getValue();
 
-        assertEquals( USERNAME, configurations.getUserName() );
-        assertEquals( PASSWORD, configurations.getPassword() );
-        assertEquals( REPO_URL, configurations.getOrigin() );
-        assertFalse( configurations.isManaged() );
+        assertEquals(USERNAME,
+                     configurations.getUserName());
+        assertEquals(PASSWORD,
+                     configurations.getPassword());
+        assertEquals(REPO_URL,
+                     configurations.getOrigin());
+        assertFalse(configurations.isManaged());
+    }
+
+    @Test
+    public void testManagedRepositoryIsEnabledInCloneRepoDialog() {
+        reset(view);
+
+        when(authorizationManager.authorize(RepositoryFeatures.CONFIGURE_REPOSITORY,
+                                            sessionInfo.getIdentity())).thenReturn(true);
+
+        presenter.init();
+
+        verify(view).enableManagedRepoCreation(true);
+        verify(view,
+               never()).enableManagedRepoCreation(false);
+    }
+
+    @Test
+    public void testManagedRepositoryIsDisabledInCloneRepoDialog() {
+        reset(view);
+
+        when(authorizationManager.authorize(RepositoryFeatures.CONFIGURE_REPOSITORY,
+                                            sessionInfo.getIdentity())).thenReturn(false);
+
+        presenter.init();
+
+        verify(view,
+               never()).enableManagedRepoCreation(true);
+        verify(view).enableManagedRepoCreation(false);
     }
 
     private void componentsNotAffected() {
-        verify( view, never() ).setCloneEnabled( anyBoolean() );
+        verify(view,
+               never()).setCloneEnabled(anyBoolean());
 
-        verify( view, never() ).setGitUrlEnabled( anyBoolean() );
+        verify(view,
+               never()).setGitUrlEnabled(anyBoolean());
 
-        verify( view, never() ).setNameEnabled( anyBoolean() );
+        verify(view,
+               never()).setNameEnabled(anyBoolean());
 
-        verify( view, never() ).setOrganizationalUnitEnabled( anyBoolean() );
+        verify(view,
+               never()).setOrganizationalUnitEnabled(anyBoolean());
 
-        verify( view, never() ).setUsernameEnabled( anyBoolean() );
+        verify(view,
+               never()).setUsernameEnabled(anyBoolean());
 
-        verify( view, never() ).setPasswordEnabled( anyBoolean() );
+        verify(view,
+               never()).setPasswordEnabled(anyBoolean());
 
-        verify( view, never() ).showBusyPopupMessage();
+        verify(view,
+               never()).showBusyPopupMessage();
 
-        verify( view, never() ).closeBusyPopup();
+        verify(view,
+               never()).closeBusyPopup();
     }
 
     private void componentsLocked() {
-        verify( view ).showBusyPopupMessage();
+        verify(view).showBusyPopupMessage();
 
-        verify( view ).setCloneEnabled( false );
+        verify(view).setCloneEnabled(false);
 
-        verify( view ).setGitUrlEnabled( false );
+        verify(view).setGitUrlEnabled(false);
 
-        verify( view ).setNameEnabled( false );
+        verify(view).setNameEnabled(false);
 
-        verify( view ).setOrganizationalUnitEnabled( false );
+        verify(view).setOrganizationalUnitEnabled(false);
 
-        verify( view ).setUsernameEnabled( false );
+        verify(view).setUsernameEnabled(false);
 
-        verify( view ).setPasswordEnabled( false );
+        verify(view).setPasswordEnabled(false);
     }
 
     private void componentsUnlocked() {
-        verify( view ).closeBusyPopup();
+        verify(view).closeBusyPopup();
 
-        verify( view ).setCloneEnabled( true );
+        verify(view).setCloneEnabled(true);
 
-        verify( view ).setGitUrlEnabled( true );
+        verify(view).setGitUrlEnabled(true);
 
-        verify( view ).setNameEnabled( true );
+        verify(view).setNameEnabled(true);
 
-        verify( view ).setOrganizationalUnitEnabled( true );
+        verify(view).setOrganizationalUnitEnabled(true);
 
-        verify( view ).setUsernameEnabled( true );
+        verify(view).setUsernameEnabled(true);
 
-        verify( view ).setPasswordEnabled( true );
+        verify(view).setPasswordEnabled(true);
     }
 
-    private void verifyRepoCloned( boolean cloned ) {
-        if ( cloned ) {
-            verify( view ).alertRepositoryCloned();
-            verify( view ).hide();
+    private void verifyRepoCloned(boolean cloned) {
+        if (cloned) {
+            verify(view).alertRepositoryCloned();
+            verify(view).hide();
         } else {
-            verify( view, never() ).alertRepositoryCloned();
-            verify( view, never() ).hide();
+            verify(view,
+                   never()).alertRepositoryCloned();
+            verify(view,
+                   never()).hide();
         }
     }
 }
