@@ -111,31 +111,31 @@ public class CreateRepositoryWizardTest {
 
     CreateRepositoryWizardModel model;
 
-    Repository expectedRepository = mock( Repository.class );
+    Repository expectedRepository = mock(Repository.class);
 
-    OrganizationalUnitService organizationalUnitService = mock( OrganizationalUnitService.class );
+    OrganizationalUnitService organizationalUnitService = mock(OrganizationalUnitService.class);
 
-    RepositoryService repositoryService = mock( RepositoryService.class );
+    RepositoryService repositoryService = mock(RepositoryService.class);
 
-    RepositoryStructureService repositoryStructureService = mock( RepositoryStructureService.class );
+    RepositoryStructureService repositoryStructureService = mock(RepositoryStructureService.class);
 
-    ProjectRepositoryResolver repositoryResolverService = mock( ProjectRepositoryResolver.class );
+    ProjectRepositoryResolver repositoryResolverService = mock(ProjectRepositoryResolver.class);
 
-    AssetManagementService assetManagementService = mock( AssetManagementService.class );
+    AssetManagementService assetManagementService = mock(AssetManagementService.class);
 
     List<OrganizationalUnit> organizationalUnits = RepositoryInfoPageTest.buildOrganiztionalUnits();
 
-    SessionInfo sessionInfo = mock( SessionInfo.class );
+    SessionInfo sessionInfo = mock(SessionInfo.class);
 
-    ConflictingRepositoriesPopup conflictingRepositoriesPopup = mock( ConflictingRepositoriesPopup.class );
+    ConflictingRepositoriesPopup conflictingRepositoriesPopup = mock(ConflictingRepositoriesPopup.class);
 
-    POMDefaultOptions pomDefaultOptions = mock( POMDefaultOptions.class );
+    POMDefaultOptions pomDefaultOptions = mock(POMDefaultOptions.class);
 
     ArrayList<Plugin> byDefaultPlugins;
 
     Build byDefaultBuild;
 
-    User user = mock( User.class );
+    User user = mock(User.class);
 
     WizardTestUtils.NotificationEventMock notificationEvent;
 
@@ -144,52 +144,53 @@ public class CreateRepositoryWizardTest {
 
         //mock user roles
         Set<Role> userRoles = new HashSet<Role>();
-        userRoles.add( new RoleImpl( "mock-role" ) );
+        userRoles.add(new RoleImpl("mock-role"));
 
-        when( sessionInfo.getIdentity() ).thenReturn( user );
-        when( user.getIdentifier() ).thenReturn( "mock-user" );
-        when( user.getRoles() ).thenReturn( userRoles );
+        when(sessionInfo.getIdentity()).thenReturn(user);
+        when(user.getIdentifier()).thenReturn("mock-user");
+        when(user.getRoles()).thenReturn(userRoles);
 
-        when( authorizationManager.authorize(RepositoryFeatures.CONFIGURE_REPOSITORY, user ) ).thenReturn( true );
+        when(authorizationManager.authorize(RepositoryFeatures.CONFIGURE_REPOSITORY,
+                                            user)).thenReturn(true);
 
         WizardTestUtils.WizardPageStatusChangeEventMock event = new WizardTestUtils.WizardPageStatusChangeEventMock();
 
-        when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( organizationalUnits );
+        when(organizationalUnitService.getOrganizationalUnits()).thenReturn(organizationalUnits);
 
         //mock the by default POM options.
         initByDefaultPomOptions();
-        when( pomDefaultOptions.getPackaging() ).thenReturn( "jar" );
-        when( pomDefaultOptions.getBuildPlugins() ).thenReturn( byDefaultPlugins );
+        when(pomDefaultOptions.getPackaging()).thenReturn("jar");
+        when(pomDefaultOptions.getBuildPlugins()).thenReturn(byDefaultPlugins);
 
         //All tests starts by the initialization of the wizard pages and the wizard itself
-        infoPage = new RepositoryInfoPageTest.RepositoryInfoPageExtended( infoPageView,
-                                                                          new CallerMock<OrganizationalUnitService>( organizationalUnitService ),
-                                                                          new CallerMock<RepositoryService>( repositoryService ),
-                                                                          true,
-                                                                          event );
+        infoPage = new RepositoryInfoPageTest.RepositoryInfoPageExtended(infoPageView,
+                                                                         new CallerMock<OrganizationalUnitService>(organizationalUnitService),
+                                                                         new CallerMock<RepositoryService>(repositoryService),
+                                                                         true,
+                                                                         event);
 
-        structurePage = new RepositoryStructurePageTest.RepositoryStructurePageExtended( structurePageView,
-                                                                                         new CallerMock<RepositoryStructureService>( repositoryStructureService ),
-                                                                                         event );
+        structurePage = new RepositoryStructurePageTest.RepositoryStructurePageExtended(structurePageView,
+                                                                                        new CallerMock<RepositoryStructureService>(repositoryStructureService),
+                                                                                        event);
 
         model = new CreateRepositoryWizardModel();
 
         notificationEvent = new WizardTestUtils.NotificationEventMock();
 
-        createRepositoryWizard = new CreateRepositoryWizardExtended( infoPage,
-                                                                     structurePage,
-                                                                     model,
-                                                                     new CallerMock<RepositoryService>( repositoryService ),
-                                                                     new CallerMock<RepositoryStructureService>( repositoryStructureService ),
-                                                                     new CallerMock<ProjectRepositoryResolver>( repositoryResolverService ),
-                                                                     new CallerMock<AssetManagementService>( assetManagementService ),
-                                                                     notificationEvent,
-                                                                     sessionInfo,
-                                                                     conflictingRepositoriesPopup,
-                                                                     view,
-                                                                     event,
-                                                                     pomDefaultOptions,
-                                                                     authorizationManager );
+        createRepositoryWizard = new CreateRepositoryWizardExtended(infoPage,
+                                                                    structurePage,
+                                                                    model,
+                                                                    new CallerMock<RepositoryService>(repositoryService),
+                                                                    new CallerMock<RepositoryStructureService>(repositoryStructureService),
+                                                                    new CallerMock<ProjectRepositoryResolver>(repositoryResolverService),
+                                                                    new CallerMock<AssetManagementService>(assetManagementService),
+                                                                    notificationEvent,
+                                                                    sessionInfo,
+                                                                    conflictingRepositoriesPopup,
+                                                                    view,
+                                                                    event,
+                                                                    pomDefaultOptions,
+                                                                    authorizationManager);
     }
 
     /**
@@ -197,9 +198,9 @@ public class CreateRepositoryWizardTest {
      */
     @Test
     public void testUnmanagedRepositoryCompletedTest() {
-        setupNameAndOrgUnitMocks( true,
-                ORGANIZATIONAL_UNIT );
-        when( infoPageView.isManagedRepository() ).thenReturn( false );
+        setupNameAndOrgUnitMocks(true,
+                                 ORGANIZATIONAL_UNIT);
+        when(infoPageView.isManagedRepository()).thenReturn(false);
 
         createRepositoryWizard.start();
 
@@ -207,54 +208,51 @@ public class CreateRepositoryWizardTest {
         infoPage.onOUChange();
         infoPage.onManagedRepositoryChange();
 
-
-        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
-                eq( "git" ),
-                eq( REPOSITORY_NAME ),
-                any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
+        when(repositoryService.createRepository(eq(organizationalUnits.get(0)),
+                                                eq("git"),
+                                                eq(REPOSITORY_NAME),
+                                                any(RepositoryEnvironmentConfigurations.class))).thenReturn(expectedRepository);
 
         createRepositoryWizard.complete();
 
+        verify(repositoryResolverService,
+               never()).getRepositoriesResolvingArtifact(any(GAV.class));
 
-        verify( repositoryResolverService,
-                never() ).getRepositoriesResolvingArtifact( any( GAV.class ) );
+        verify(repositoryService,
+               times(1)).createRepository(eq(organizationalUnits.get(0)),
+                                          eq("git"),
+                                          eq(REPOSITORY_NAME),
+                                          repositoryEnvironmentConfigurationsArgumentCaptor.capture());
 
-        verify( repositoryService,
-                times( 1 ) ).createRepository( eq( organizationalUnits.get( 0 ) ),
-                eq( "git" ),
-                eq( REPOSITORY_NAME ),
-                repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
-
-        assertFalse( repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged() );
-
+        assertFalse(repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged());
 
         //the model should have the UI loaded values.
-        assertEquals( REPOSITORY_NAME,
-                model.getRepositoryName() );
-        assertEquals( organizationalUnits.get( 0 ),
-                model.getOrganizationalUnit() );
-        assertEquals( false,
-                model.isManged() );
+        assertEquals(REPOSITORY_NAME,
+                     model.getRepositoryName());
+        assertEquals(organizationalUnits.get(0),
+                     model.getOrganizationalUnit());
+        assertEquals(false,
+                     model.isManged());
 
-        WizardTestUtils.assertWizardComplete( true,
-                createRepositoryWizard );
+        WizardTestUtils.assertWizardComplete(true,
+                                             createRepositoryWizard);
     }
 
     @Test
     public void testManagedRepositoryMultiCompletedNonClashingGAVTest() {
-        doTestManagedRepositoryCompletedNonClashingGAVTest( true );
+        doTestManagedRepositoryCompletedNonClashingGAVTest(true);
     }
 
     @Test
     public void testManagedRepositorySingleCompletedNonClashingGAVTest() {
-        doTestManagedRepositoryCompletedNonClashingGAVTest( false );
+        doTestManagedRepositoryCompletedNonClashingGAVTest(false);
     }
 
-    private void doTestManagedRepositoryCompletedNonClashingGAVTest( boolean multi ) {
+    private void doTestManagedRepositoryCompletedNonClashingGAVTest(boolean multi) {
         //user completes the first page
-        setupNameAndOrgUnitMocks( true,
-                                  ORGANIZATIONAL_UNIT );
-        when( infoPageView.isManagedRepository() ).thenReturn( true );
+        setupNameAndOrgUnitMocks(true,
+                                 ORGANIZATIONAL_UNIT);
+        when(infoPageView.isManagedRepository()).thenReturn(true);
 
         createRepositoryWizard.start();
 
@@ -263,21 +261,21 @@ public class CreateRepositoryWizardTest {
         infoPage.onManagedRepositoryChange();
 
         //and goes to the second the second page
-        when( structurePageView.getProjectName() ).thenReturn( PROJECT_NAME );
-        when( structurePageView.getProjectDescription() ).thenReturn( PROJECT_DESCRIPTION );
-        when( structurePageView.getGroupId() ).thenReturn( GROUP_ID );
-        when( structurePageView.getArtifactId() ).thenReturn( ARTIFACT_ID );
-        when( structurePageView.getVersion() ).thenReturn( VERSION );
-        when( structurePageView.isConfigureRepository() ).thenReturn( true );
-        when( structurePageView.isMultiModule() ).thenReturn( multi );
+        when(structurePageView.getProjectName()).thenReturn(PROJECT_NAME);
+        when(structurePageView.getProjectDescription()).thenReturn(PROJECT_DESCRIPTION);
+        when(structurePageView.getGroupId()).thenReturn(GROUP_ID);
+        when(structurePageView.getArtifactId()).thenReturn(ARTIFACT_ID);
+        when(structurePageView.getVersion()).thenReturn(VERSION);
+        when(structurePageView.isConfigureRepository()).thenReturn(true);
+        when(structurePageView.isMultiModule()).thenReturn(multi);
 
         //validations are true
-        when( repositoryStructureService.isValidProjectName( PROJECT_NAME ) ).thenReturn( true );
-        when( repositoryStructureService.isValidGroupId( GROUP_ID ) ).thenReturn( true );
-        when( repositoryStructureService.isValidArtifactId( ARTIFACT_ID ) ).thenReturn( true );
-        when( repositoryStructureService.isValidVersion( VERSION ) ).thenReturn( true );
+        when(repositoryStructureService.isValidProjectName(PROJECT_NAME)).thenReturn(true);
+        when(repositoryStructureService.isValidGroupId(GROUP_ID)).thenReturn(true);
+        when(repositoryStructureService.isValidArtifactId(ARTIFACT_ID)).thenReturn(true);
+        when(repositoryStructureService.isValidVersion(VERSION)).thenReturn(true);
 
-        createRepositoryWizard.pageSelected( 1 );
+        createRepositoryWizard.pageSelected(1);
 
         structurePage.onProjectNameChange();
         structurePage.onProjectDescriptionChange();
@@ -287,104 +285,103 @@ public class CreateRepositoryWizardTest {
         structurePage.onConfigureRepositoryChange();
         structurePage.onMultiModuleChange();
 
-        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
-                                                  eq( "git" ),
-                                                  eq( REPOSITORY_NAME ),
-                                                  any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
-        when( expectedRepository.getAlias() ).thenReturn( REPOSITORY_NAME );
+        when(repositoryService.createRepository(eq(organizationalUnits.get(0)),
+                                                eq("git"),
+                                                eq(REPOSITORY_NAME),
+                                                any(RepositoryEnvironmentConfigurations.class))).thenReturn(expectedRepository);
+        when(expectedRepository.getAlias()).thenReturn(REPOSITORY_NAME);
 
         createRepositoryWizard.complete();
 
-
         //the repository should be created.
-        verify( repositoryService,
-                times( 1 ) ).createRepository( eq( organizationalUnits.get( 0 ) ),
-                                               eq( "git" ),
-                                               eq( REPOSITORY_NAME ),
-                                               repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
-        assertTrue( repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged() );
+        verify(repositoryService,
+               times(1)).createRepository(eq(organizationalUnits.get(0)),
+                                          eq("git"),
+                                          eq(REPOSITORY_NAME),
+                                          repositoryEnvironmentConfigurationsArgumentCaptor.capture());
+        assertTrue(repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged());
 
         //when repository was created the next wizard actions is to initialize the structure
 
         //mock the pom created internally by the wizard to emulate the cascaded initializations.
-        Path pathToPom = mock( Path.class );
+        Path pathToPom = mock(Path.class);
         POM pom = new POM();
-        pom.setName( PROJECT_NAME );
-        pom.setDescription( PROJECT_DESCRIPTION );
-        pom.getGav().setGroupId( GROUP_ID );
-        pom.getGav().setArtifactId( ARTIFACT_ID );
-        pom.getGav().setVersion( VERSION );
-        if ( !multi ) {
-            pom.setPackaging( pomDefaultOptions.getPackaging() );
-            pom.setBuild( byDefaultBuild );
+        pom.setName(PROJECT_NAME);
+        pom.setDescription(PROJECT_DESCRIPTION);
+        pom.getGav().setGroupId(GROUP_ID);
+        pom.getGav().setArtifactId(ARTIFACT_ID);
+        pom.getGav().setVersion(VERSION);
+        if (!multi) {
+            pom.setPackaging(pomDefaultOptions.getPackaging());
+            pom.setBuild(byDefaultBuild);
         }
         final String baseUrl = "";
 
-        when( repositoryStructureService.initRepositoryStructure( eq( pom ),
-                eq( baseUrl ),
-                eq( expectedRepository ),
-                eq( multi ),
-                eq( DeploymentMode.VALIDATED ) ) ).thenReturn( pathToPom );
+        when(repositoryStructureService.initRepositoryStructure(eq(pom),
+                                                                eq(baseUrl),
+                                                                eq(expectedRepository),
+                                                                eq(multi),
+                                                                eq(DeploymentMode.VALIDATED))).thenReturn(pathToPom);
 
         //the repository should be initialized.
-        verify( repositoryStructureService,
-                times( 1 ) ).initRepositoryStructure( eq( pom ),
-                                                      eq( baseUrl ),
-                                                      eq( expectedRepository ),
-                                                      eq( multi ),
-                                                      eq( DeploymentMode.VALIDATED ) );
+        verify(repositoryStructureService,
+               times(1)).initRepositoryStructure(eq(pom),
+                                                 eq(baseUrl),
+                                                 eq(expectedRepository),
+                                                 eq(multi),
+                                                 eq(DeploymentMode.VALIDATED));
 
         //finally the assets management configuration process should be launched
-        verify( assetManagementService,
-                times( 1 ) ).configureRepository( eq( REPOSITORY_NAME ),
-                                                  eq( "master" ),
-                                                  eq( "dev" ),
-                                                  eq( "release" ),
-                                                  eq( VERSION ) );
+        verify(assetManagementService,
+               times(1)).configureRepository(eq(REPOSITORY_NAME),
+                                             eq("master"),
+                                             eq("dev"),
+                                             eq("release"),
+                                             eq(VERSION));
 
         //the model should have the UI loaded values.
-        assertEquals( REPOSITORY_NAME,
-                      model.getRepositoryName() );
-        assertEquals( organizationalUnits.get( 0 ),
-                      model.getOrganizationalUnit() );
-        assertEquals( true,
-                model.isManged() );
-        assertEquals( multi,
-                model.isMultiModule() );
-        assertEquals( true,
-                model.isConfigureRepository() );
-        assertEquals( PROJECT_NAME,
-                model.getProjectName() );
-        assertEquals( PROJECT_DESCRIPTION,
-                model.getProjectDescription() );
-        assertEquals( GROUP_ID,
-                model.getGroupId() );
-        assertEquals( ARTIFACT_ID,
-                model.getArtifactId() );
-        assertEquals( VERSION,
-                model.getVersion() );
+        assertEquals(REPOSITORY_NAME,
+                     model.getRepositoryName());
+        assertEquals(organizationalUnits.get(0),
+                     model.getOrganizationalUnit());
+        assertEquals(true,
+                     model.isManged());
+        assertEquals(multi,
+                     model.isMultiModule());
+        assertEquals(true,
+                     model.isConfigureRepository());
+        assertEquals(PROJECT_NAME,
+                     model.getProjectName());
+        assertEquals(PROJECT_DESCRIPTION,
+                     model.getProjectDescription());
+        assertEquals(GROUP_ID,
+                     model.getGroupId());
+        assertEquals(ARTIFACT_ID,
+                     model.getArtifactId());
+        assertEquals(VERSION,
+                     model.getVersion());
 
-        WizardTestUtils.assertWizardComplete( true,
-                                              createRepositoryWizard );
+        WizardTestUtils.assertWizardComplete(true,
+                                             createRepositoryWizard);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testManagedRepositoryMultiCompletedClashingGAVTest() {
-        doTestManagedRepositoryCompletedClashingGAVTest( true );
+        doTestManagedRepositoryCompletedClashingGAVTest(true);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testManagedRepositorySingleCompletedClashingGAVTest() {
-        doTestManagedRepositoryCompletedClashingGAVTest( false );
+        doTestManagedRepositoryCompletedClashingGAVTest(false);
     }
 
-    private void doTestManagedRepositoryCompletedClashingGAVTest( boolean multi ) {
+    private void doTestManagedRepositoryCompletedClashingGAVTest(boolean multi) {
         //user completes the first page
-        setupNameAndOrgUnitMocks( true,
-                                  ORGANIZATIONAL_UNIT );
-        when( infoPageView.isManagedRepository() ).thenReturn( true );
+        setupNameAndOrgUnitMocks(true,
+                                 ORGANIZATIONAL_UNIT);
+        when(infoPageView.isManagedRepository()).thenReturn(true);
 
         createRepositoryWizard.start();
 
@@ -393,21 +390,21 @@ public class CreateRepositoryWizardTest {
         infoPage.onManagedRepositoryChange();
 
         //and goes to the second the second page
-        when( structurePageView.getProjectName() ).thenReturn( PROJECT_NAME );
-        when( structurePageView.getProjectDescription() ).thenReturn( PROJECT_DESCRIPTION );
-        when( structurePageView.getGroupId() ).thenReturn( GROUP_ID );
-        when( structurePageView.getArtifactId() ).thenReturn( ARTIFACT_ID );
-        when( structurePageView.getVersion() ).thenReturn( VERSION );
-        when( structurePageView.isConfigureRepository() ).thenReturn( true );
-        when( structurePageView.isMultiModule() ).thenReturn( multi );
+        when(structurePageView.getProjectName()).thenReturn(PROJECT_NAME);
+        when(structurePageView.getProjectDescription()).thenReturn(PROJECT_DESCRIPTION);
+        when(structurePageView.getGroupId()).thenReturn(GROUP_ID);
+        when(structurePageView.getArtifactId()).thenReturn(ARTIFACT_ID);
+        when(structurePageView.getVersion()).thenReturn(VERSION);
+        when(structurePageView.isConfigureRepository()).thenReturn(true);
+        when(structurePageView.isMultiModule()).thenReturn(multi);
 
         //validations are true
-        when( repositoryStructureService.isValidProjectName( PROJECT_NAME ) ).thenReturn( true );
-        when( repositoryStructureService.isValidGroupId( GROUP_ID ) ).thenReturn( true );
-        when( repositoryStructureService.isValidArtifactId( ARTIFACT_ID ) ).thenReturn( true );
-        when( repositoryStructureService.isValidVersion( VERSION ) ).thenReturn( true );
+        when(repositoryStructureService.isValidProjectName(PROJECT_NAME)).thenReturn(true);
+        when(repositoryStructureService.isValidGroupId(GROUP_ID)).thenReturn(true);
+        when(repositoryStructureService.isValidArtifactId(ARTIFACT_ID)).thenReturn(true);
+        when(repositoryStructureService.isValidVersion(VERSION)).thenReturn(true);
 
-        createRepositoryWizard.pageSelected( 1 );
+        createRepositoryWizard.pageSelected(1);
 
         structurePage.onProjectNameChange();
         structurePage.onProjectDescriptionChange();
@@ -417,93 +414,93 @@ public class CreateRepositoryWizardTest {
         structurePage.onConfigureRepositoryChange();
         structurePage.onMultiModuleChange();
 
-        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
-                                                  eq( "git" ),
-                                                  eq( REPOSITORY_NAME ),
-                                                  any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
-        when( expectedRepository.getAlias() ).thenReturn( REPOSITORY_NAME );
+        when(repositoryService.createRepository(eq(organizationalUnits.get(0)),
+                                                eq("git"),
+                                                eq(REPOSITORY_NAME),
+                                                any(RepositoryEnvironmentConfigurations.class))).thenReturn(expectedRepository);
+        when(expectedRepository.getAlias()).thenReturn(REPOSITORY_NAME);
 
         //mock the pom created internally by the wizard to emulate the cascaded initializations.
         POM pom = new POM();
-        pom.setName( PROJECT_NAME );
-        pom.setDescription( PROJECT_DESCRIPTION );
-        pom.getGav().setGroupId( GROUP_ID );
-        pom.getGav().setArtifactId( ARTIFACT_ID );
-        pom.getGav().setVersion( VERSION );
-        if ( !multi ) {
-            pom.setPackaging( pomDefaultOptions.getPackaging() );
-            pom.setBuild( byDefaultBuild );
+        pom.setName(PROJECT_NAME);
+        pom.setDescription(PROJECT_DESCRIPTION);
+        pom.getGav().setGroupId(GROUP_ID);
+        pom.getGav().setArtifactId(ARTIFACT_ID);
+        pom.getGav().setVersion(VERSION);
+        if (!multi) {
+            pom.setPackaging(pomDefaultOptions.getPackaging());
+            pom.setBuild(byDefaultBuild);
         }
         final String baseUrl = "";
 
-        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException( pom.getGav(),
-                                                                             new HashSet<MavenRepositoryMetadata>() {{
-                                                                                 add( new MavenRepositoryMetadata( "local-id",
-                                                                                                                   "local-url",
-                                                                                                                   MavenRepositorySource.LOCAL ) );
-                                                                             }} );
-        doThrow( gae ).when( repositoryStructureService ).initRepositoryStructure( eq( pom ),
-                eq( baseUrl ),
-                eq( expectedRepository ),
-                eq( multi ),
-                eq( DeploymentMode.VALIDATED ) );
+        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException(pom.getGav(),
+                                                                            new HashSet<MavenRepositoryMetadata>() {{
+                                                                                add(new MavenRepositoryMetadata("local-id",
+                                                                                                                "local-url",
+                                                                                                                MavenRepositorySource.LOCAL));
+                                                                            }});
+        doThrow(gae).when(repositoryStructureService).initRepositoryStructure(eq(pom),
+                                                                              eq(baseUrl),
+                                                                              eq(expectedRepository),
+                                                                              eq(multi),
+                                                                              eq(DeploymentMode.VALIDATED));
 
         createRepositoryWizard.complete();
 
         //the repository should be created.
-        verify( repositoryService,
-                times( 1 ) ).createRepository( eq( organizationalUnits.get( 0 ) ),
-                                               eq( "git" ),
-                                               eq( REPOSITORY_NAME ),
-                                               repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
-        assertTrue( repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged() );
+        verify(repositoryService,
+               times(1)).createRepository(eq(organizationalUnits.get(0)),
+                                          eq("git"),
+                                          eq(REPOSITORY_NAME),
+                                          repositoryEnvironmentConfigurationsArgumentCaptor.capture());
+        assertTrue(repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged());
 
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).setContent( eq( pom.getGav() ),
-                any( Set.class ),
-                any( Command.class ) );
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).show();
+        verify(conflictingRepositoriesPopup,
+               times(1)).setContent(eq(pom.getGav()),
+                                    any(Set.class),
+                                    any(Command.class));
+        verify(conflictingRepositoriesPopup,
+               times(1)).show();
 
         //when repository was created the next wizard actions is to initialize the structure
 
         //the repository should be initialized.
-        verify( repositoryStructureService,
-                times( 1 ) ).initRepositoryStructure( eq( pom ),
-                                                      eq( baseUrl ),
-                                                      eq( expectedRepository ),
-                                                      eq( multi ),
-                                                      eq( DeploymentMode.VALIDATED ) );
+        verify(repositoryStructureService,
+               times(1)).initRepositoryStructure(eq(pom),
+                                                 eq(baseUrl),
+                                                 eq(expectedRepository),
+                                                 eq(multi),
+                                                 eq(DeploymentMode.VALIDATED));
 
         //the assets management configuration process should NOT be launched
-        verify( assetManagementService,
-                never() ).configureRepository( eq( REPOSITORY_NAME ),
-                                               eq( "master" ),
-                                               eq( "dev" ),
-                                               eq( "release" ),
-                                               eq( VERSION ) );
+        verify(assetManagementService,
+               never()).configureRepository(eq(REPOSITORY_NAME),
+                                            eq("master"),
+                                            eq("dev"),
+                                            eq("release"),
+                                            eq(VERSION));
 
-        WizardTestUtils.assertWizardComplete( true,
-                                              createRepositoryWizard );
+        WizardTestUtils.assertWizardComplete(true,
+                                             createRepositoryWizard);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testManagedRepositoryMultiCompletedClashingGAVForcedTest() {
-        doTestManagedRepositoryCompletedClashingGAVForcedTest( true );
+        doTestManagedRepositoryCompletedClashingGAVForcedTest(true);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testManagedRepositorySingleCompletedClashingGAVForcedTest() {
-        doTestManagedRepositoryCompletedClashingGAVForcedTest( false );
+        doTestManagedRepositoryCompletedClashingGAVForcedTest(false);
     }
 
-    private void doTestManagedRepositoryCompletedClashingGAVForcedTest( boolean multi ) {
+    private void doTestManagedRepositoryCompletedClashingGAVForcedTest(boolean multi) {
         //user completes the first page
-        setupNameAndOrgUnitMocks( true,
-                                  ORGANIZATIONAL_UNIT );
-        when( infoPageView.isManagedRepository() ).thenReturn( true );
+        setupNameAndOrgUnitMocks(true,
+                                 ORGANIZATIONAL_UNIT);
+        when(infoPageView.isManagedRepository()).thenReturn(true);
 
         createRepositoryWizard.start();
 
@@ -512,21 +509,21 @@ public class CreateRepositoryWizardTest {
         infoPage.onManagedRepositoryChange();
 
         //and goes to the second the second page
-        when( structurePageView.getProjectName() ).thenReturn( PROJECT_NAME );
-        when( structurePageView.getProjectDescription() ).thenReturn( PROJECT_DESCRIPTION );
-        when( structurePageView.getGroupId() ).thenReturn( GROUP_ID );
-        when( structurePageView.getArtifactId() ).thenReturn( ARTIFACT_ID );
-        when( structurePageView.getVersion() ).thenReturn( VERSION );
-        when( structurePageView.isConfigureRepository() ).thenReturn( true );
-        when( structurePageView.isMultiModule() ).thenReturn( multi );
+        when(structurePageView.getProjectName()).thenReturn(PROJECT_NAME);
+        when(structurePageView.getProjectDescription()).thenReturn(PROJECT_DESCRIPTION);
+        when(structurePageView.getGroupId()).thenReturn(GROUP_ID);
+        when(structurePageView.getArtifactId()).thenReturn(ARTIFACT_ID);
+        when(structurePageView.getVersion()).thenReturn(VERSION);
+        when(structurePageView.isConfigureRepository()).thenReturn(true);
+        when(structurePageView.isMultiModule()).thenReturn(multi);
 
         //validations are true
-        when( repositoryStructureService.isValidProjectName( PROJECT_NAME ) ).thenReturn( true );
-        when( repositoryStructureService.isValidGroupId( GROUP_ID ) ).thenReturn( true );
-        when( repositoryStructureService.isValidArtifactId( ARTIFACT_ID ) ).thenReturn( true );
-        when( repositoryStructureService.isValidVersion( VERSION ) ).thenReturn( true );
+        when(repositoryStructureService.isValidProjectName(PROJECT_NAME)).thenReturn(true);
+        when(repositoryStructureService.isValidGroupId(GROUP_ID)).thenReturn(true);
+        when(repositoryStructureService.isValidArtifactId(ARTIFACT_ID)).thenReturn(true);
+        when(repositoryStructureService.isValidVersion(VERSION)).thenReturn(true);
 
-        createRepositoryWizard.pageSelected( 1 );
+        createRepositoryWizard.pageSelected(1);
 
         structurePage.onProjectNameChange();
         structurePage.onProjectDescriptionChange();
@@ -536,113 +533,113 @@ public class CreateRepositoryWizardTest {
         structurePage.onConfigureRepositoryChange();
         structurePage.onMultiModuleChange();
 
-        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
-                                                  eq( "git" ),
-                                                  eq( REPOSITORY_NAME ),
-                                                  any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
-        when( expectedRepository.getAlias() ).thenReturn( REPOSITORY_NAME );
+        when(repositoryService.createRepository(eq(organizationalUnits.get(0)),
+                                                eq("git"),
+                                                eq(REPOSITORY_NAME),
+                                                any(RepositoryEnvironmentConfigurations.class))).thenReturn(expectedRepository);
+        when(expectedRepository.getAlias()).thenReturn(REPOSITORY_NAME);
 
         //mock the pom created internally by the wizard to emulate the cascaded initializations.
         POM pom = new POM();
-        pom.setName( PROJECT_NAME );
-        pom.setDescription( PROJECT_DESCRIPTION );
-        pom.getGav().setGroupId( GROUP_ID );
-        pom.getGav().setArtifactId( ARTIFACT_ID );
-        pom.getGav().setVersion( VERSION );
-        if ( !multi ) {
-            pom.setPackaging( pomDefaultOptions.getPackaging() );
-            pom.setBuild( byDefaultBuild );
+        pom.setName(PROJECT_NAME);
+        pom.setDescription(PROJECT_DESCRIPTION);
+        pom.getGav().setGroupId(GROUP_ID);
+        pom.getGav().setArtifactId(ARTIFACT_ID);
+        pom.getGav().setVersion(VERSION);
+        if (!multi) {
+            pom.setPackaging(pomDefaultOptions.getPackaging());
+            pom.setBuild(byDefaultBuild);
         }
         final String baseUrl = "";
 
-        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException( pom.getGav(),
-                                                                             new HashSet<MavenRepositoryMetadata>() {{
-                                                                                 add( new MavenRepositoryMetadata( "local-id",
-                                                                                                                   "local-url",
-                                                                                                                   MavenRepositorySource.LOCAL ) );
-                                                                             }} );
-        doThrow( gae ).when( repositoryStructureService ).initRepositoryStructure( eq( pom ),
-                eq( baseUrl ),
-                eq( expectedRepository ),
-                eq( multi ),
-                eq( DeploymentMode.VALIDATED ) );
+        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException(pom.getGav(),
+                                                                            new HashSet<MavenRepositoryMetadata>() {{
+                                                                                add(new MavenRepositoryMetadata("local-id",
+                                                                                                                "local-url",
+                                                                                                                MavenRepositorySource.LOCAL));
+                                                                            }});
+        doThrow(gae).when(repositoryStructureService).initRepositoryStructure(eq(pom),
+                                                                              eq(baseUrl),
+                                                                              eq(expectedRepository),
+                                                                              eq(multi),
+                                                                              eq(DeploymentMode.VALIDATED));
 
         createRepositoryWizard.complete();
 
         //the repository should be created.
-        verify( repositoryService,
-                times( 1 ) ).createRepository( eq( organizationalUnits.get( 0 ) ),
-                                               eq( "git" ),
-                                               eq( REPOSITORY_NAME ),
-                                               repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
-        assertTrue( repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged() );
+        verify(repositoryService,
+               times(1)).createRepository(eq(organizationalUnits.get(0)),
+                                          eq("git"),
+                                          eq(REPOSITORY_NAME),
+                                          repositoryEnvironmentConfigurationsArgumentCaptor.capture());
+        assertTrue(repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged());
 
         //when repository was created the next wizard actions is to initialize the structure
 
         //the repository should be initialized.
-        verify( repositoryStructureService,
-                times( 1 ) ).initRepositoryStructure( eq( pom ),
-                eq( baseUrl ),
-                eq( expectedRepository ),
-                eq( multi ),
-                eq( DeploymentMode.VALIDATED ) );
+        verify(repositoryStructureService,
+               times(1)).initRepositoryStructure(eq(pom),
+                                                 eq(baseUrl),
+                                                 eq(expectedRepository),
+                                                 eq(multi),
+                                                 eq(DeploymentMode.VALIDATED));
 
-        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
+        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
 
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).setContent( eq( pom.getGav() ),
-                any( Set.class ),
-                commandArgumentCaptor.capture() );
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).show();
+        verify(conflictingRepositoriesPopup,
+               times(1)).setContent(eq(pom.getGav()),
+                                    any(Set.class),
+                                    commandArgumentCaptor.capture());
+        verify(conflictingRepositoriesPopup,
+               times(1)).show();
 
         //the assets management configuration process should NOT be launched
-        verify( assetManagementService,
-                never() ).configureRepository( eq( REPOSITORY_NAME ),
-                eq( "master" ),
-                eq( "dev" ),
-                eq( "release" ),
-                eq( VERSION ) );
+        verify(assetManagementService,
+               never()).configureRepository(eq(REPOSITORY_NAME),
+                                            eq("master"),
+                                            eq("dev"),
+                                            eq("release"),
+                                            eq(VERSION));
 
         //Emulate User electing to force save
-        assertNotNull( commandArgumentCaptor.getValue() );
+        assertNotNull(commandArgumentCaptor.getValue());
         commandArgumentCaptor.getValue().execute();
 
-        verify( repositoryStructureService,
-                times( 1 ) ).initRepositoryStructure( eq( pom ),
-                                                      eq( baseUrl ),
-                                                      eq( expectedRepository ),
-                                                      eq( multi ),
-                                                      eq( DeploymentMode.FORCED ) );
+        verify(repositoryStructureService,
+               times(1)).initRepositoryStructure(eq(pom),
+                                                 eq(baseUrl),
+                                                 eq(expectedRepository),
+                                                 eq(multi),
+                                                 eq(DeploymentMode.FORCED));
 
-        verify( assetManagementService,
-                times( 1 ) ).configureRepository( eq( REPOSITORY_NAME ),
-                                                  eq( "master" ),
-                                                  eq( "dev" ),
-                                                  eq( "release" ),
-                                                  eq( VERSION ) );
+        verify(assetManagementService,
+               times(1)).configureRepository(eq(REPOSITORY_NAME),
+                                             eq("master"),
+                                             eq("dev"),
+                                             eq("release"),
+                                             eq(VERSION));
 
-        WizardTestUtils.assertWizardComplete( true,
-                                              createRepositoryWizard );
+        WizardTestUtils.assertWizardComplete(true,
+                                             createRepositoryWizard);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testManagedRepositoryMultiCompletedClashingGAVBeforeRepositoryInitializationTest() {
-        doTestManagedRepositoryCompletedClashingGAVBeforeRepositoryInitializationTest( true );
+        doTestManagedRepositoryCompletedClashingGAVBeforeRepositoryInitializationTest(true);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testManagedRepositorySingleCompletedClashingGAVBeforeRepositoryInitializationTest() {
-        doTestManagedRepositoryCompletedClashingGAVBeforeRepositoryInitializationTest( false );
+        doTestManagedRepositoryCompletedClashingGAVBeforeRepositoryInitializationTest(false);
     }
 
-    private void doTestManagedRepositoryCompletedClashingGAVBeforeRepositoryInitializationTest( boolean multi ) {
+    private void doTestManagedRepositoryCompletedClashingGAVBeforeRepositoryInitializationTest(boolean multi) {
         //user completes the first page
-        setupNameAndOrgUnitMocks( true,
-                                  ORGANIZATIONAL_UNIT );
-        when( infoPageView.isManagedRepository() ).thenReturn( true );
+        setupNameAndOrgUnitMocks(true,
+                                 ORGANIZATIONAL_UNIT);
+        when(infoPageView.isManagedRepository()).thenReturn(true);
 
         createRepositoryWizard.start();
 
@@ -651,21 +648,21 @@ public class CreateRepositoryWizardTest {
         infoPage.onManagedRepositoryChange();
 
         //and goes to the second the second page
-        when( structurePageView.getProjectName() ).thenReturn( PROJECT_NAME );
-        when( structurePageView.getProjectDescription() ).thenReturn( PROJECT_DESCRIPTION );
-        when( structurePageView.getGroupId() ).thenReturn( GROUP_ID );
-        when( structurePageView.getArtifactId() ).thenReturn( ARTIFACT_ID );
-        when( structurePageView.getVersion() ).thenReturn( VERSION );
-        when( structurePageView.isConfigureRepository() ).thenReturn( true );
-        when( structurePageView.isMultiModule() ).thenReturn( multi );
+        when(structurePageView.getProjectName()).thenReturn(PROJECT_NAME);
+        when(structurePageView.getProjectDescription()).thenReturn(PROJECT_DESCRIPTION);
+        when(structurePageView.getGroupId()).thenReturn(GROUP_ID);
+        when(structurePageView.getArtifactId()).thenReturn(ARTIFACT_ID);
+        when(structurePageView.getVersion()).thenReturn(VERSION);
+        when(structurePageView.isConfigureRepository()).thenReturn(true);
+        when(structurePageView.isMultiModule()).thenReturn(multi);
 
         //validations are true
-        when( repositoryStructureService.isValidProjectName( PROJECT_NAME ) ).thenReturn( true );
-        when( repositoryStructureService.isValidGroupId( GROUP_ID ) ).thenReturn( true );
-        when( repositoryStructureService.isValidArtifactId( ARTIFACT_ID ) ).thenReturn( true );
-        when( repositoryStructureService.isValidVersion( VERSION ) ).thenReturn( true );
+        when(repositoryStructureService.isValidProjectName(PROJECT_NAME)).thenReturn(true);
+        when(repositoryStructureService.isValidGroupId(GROUP_ID)).thenReturn(true);
+        when(repositoryStructureService.isValidArtifactId(ARTIFACT_ID)).thenReturn(true);
+        when(repositoryStructureService.isValidVersion(VERSION)).thenReturn(true);
 
-        createRepositoryWizard.pageSelected( 1 );
+        createRepositoryWizard.pageSelected(1);
 
         structurePage.onProjectNameChange();
         structurePage.onProjectDescriptionChange();
@@ -675,84 +672,84 @@ public class CreateRepositoryWizardTest {
         structurePage.onConfigureRepositoryChange();
         structurePage.onMultiModuleChange();
 
-        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
-                                                  eq( "git" ),
-                                                  eq( REPOSITORY_NAME ),
-                                                  any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
-        when( expectedRepository.getAlias() ).thenReturn( REPOSITORY_NAME );
+        when(repositoryService.createRepository(eq(organizationalUnits.get(0)),
+                                                eq("git"),
+                                                eq(REPOSITORY_NAME),
+                                                any(RepositoryEnvironmentConfigurations.class))).thenReturn(expectedRepository);
+        when(expectedRepository.getAlias()).thenReturn(REPOSITORY_NAME);
 
         //mock the pom created internally by the wizard to emulate the cascaded initializations.
         POM pom = new POM();
-        pom.setName( PROJECT_NAME );
-        pom.setDescription( PROJECT_DESCRIPTION );
-        pom.getGav().setGroupId( GROUP_ID );
-        pom.getGav().setArtifactId( ARTIFACT_ID );
-        pom.getGav().setVersion( VERSION );
-        if ( !multi ) {
-            pom.setPackaging( pomDefaultOptions.getPackaging() );
-            pom.setBuild( byDefaultBuild );
+        pom.setName(PROJECT_NAME);
+        pom.setDescription(PROJECT_DESCRIPTION);
+        pom.getGav().setGroupId(GROUP_ID);
+        pom.getGav().setArtifactId(ARTIFACT_ID);
+        pom.getGav().setVersion(VERSION);
+        if (!multi) {
+            pom.setPackaging(pomDefaultOptions.getPackaging());
+            pom.setBuild(byDefaultBuild);
         }
         final String baseUrl = "";
 
-        when( repositoryResolverService.getRepositoriesResolvingArtifact( eq( pom.getGav() ) ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() {{
-            add( new MavenRepositoryMetadata( "local-id",
-                                              "local-url",
-                                              MavenRepositorySource.LOCAL ) );
-        }} );
+        when(repositoryResolverService.getRepositoriesResolvingArtifact(eq(pom.getGav()))).thenReturn(new HashSet<MavenRepositoryMetadata>() {{
+            add(new MavenRepositoryMetadata("local-id",
+                                            "local-url",
+                                            MavenRepositorySource.LOCAL));
+        }});
 
         createRepositoryWizard.complete();
 
         //the repository should NOT be created.
-        verify( repositoryService,
-                never() ).createRepository( eq( organizationalUnits.get( 0 ) ),
-                                            eq( "git" ),
-                                            eq( REPOSITORY_NAME ),
-                                            any( RepositoryEnvironmentConfigurations.class ) );
+        verify(repositoryService,
+               never()).createRepository(eq(organizationalUnits.get(0)),
+                                         eq("git"),
+                                         eq(REPOSITORY_NAME),
+                                         any(RepositoryEnvironmentConfigurations.class));
 
-        verify( repositoryStructureService,
-                never() ).initRepositoryStructure( eq( pom ),
-                                                   eq( baseUrl ),
-                                                   eq( expectedRepository ),
-                                                   eq( multi ),
-                                                   eq( DeploymentMode.VALIDATED ) );
+        verify(repositoryStructureService,
+               never()).initRepositoryStructure(eq(pom),
+                                                eq(baseUrl),
+                                                eq(expectedRepository),
+                                                eq(multi),
+                                                eq(DeploymentMode.VALIDATED));
 
         //the assets management configuration process should NOT be launched
-        verify( assetManagementService,
-                never() ).configureRepository( eq( REPOSITORY_NAME ),
-                                               eq( "master" ),
-                                               eq( "dev" ),
-                                               eq( "release" ),
-                                               eq( VERSION ) );
+        verify(assetManagementService,
+               never()).configureRepository(eq(REPOSITORY_NAME),
+                                            eq("master"),
+                                            eq("dev"),
+                                            eq("release"),
+                                            eq(VERSION));
 
         //the Conflicting GAV popup should be shown
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).setContent( eq( pom.getGav() ),
-                                         any( Set.class ),
-                                         any( Command.class ) );
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).show();
+        verify(conflictingRepositoriesPopup,
+               times(1)).setContent(eq(pom.getGav()),
+                                    any(Set.class),
+                                    any(Command.class));
+        verify(conflictingRepositoriesPopup,
+               times(1)).show();
 
-        WizardTestUtils.assertWizardComplete( true,
-                                              createRepositoryWizard );
+        WizardTestUtils.assertWizardComplete(true,
+                                             createRepositoryWizard);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testManagedRepositoryMultiCompletedClashingGAVForcedBeforeRepositoryInitializationTest() {
-        doTestManagedRepositoryCompletedClashingGAVForcedBeforeRepositoryInitializationTest( true );
+        doTestManagedRepositoryCompletedClashingGAVForcedBeforeRepositoryInitializationTest(true);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testManagedRepositorySingleCompletedClashingGAVForcedBeforeRepositoryInitializationTest() {
-        doTestManagedRepositoryCompletedClashingGAVForcedBeforeRepositoryInitializationTest( false );
+        doTestManagedRepositoryCompletedClashingGAVForcedBeforeRepositoryInitializationTest(false);
     }
 
-    private void doTestManagedRepositoryCompletedClashingGAVForcedBeforeRepositoryInitializationTest( boolean multi ) {
+    private void doTestManagedRepositoryCompletedClashingGAVForcedBeforeRepositoryInitializationTest(boolean multi) {
         //user completes the first page
-        setupNameAndOrgUnitMocks( true,
-                                  ORGANIZATIONAL_UNIT );
-        when( infoPageView.isManagedRepository() ).thenReturn( true );
+        setupNameAndOrgUnitMocks(true,
+                                 ORGANIZATIONAL_UNIT);
+        when(infoPageView.isManagedRepository()).thenReturn(true);
 
         createRepositoryWizard.start();
 
@@ -761,21 +758,21 @@ public class CreateRepositoryWizardTest {
         infoPage.onManagedRepositoryChange();
 
         //and goes to the second the second page
-        when( structurePageView.getProjectName() ).thenReturn( PROJECT_NAME );
-        when( structurePageView.getProjectDescription() ).thenReturn( PROJECT_DESCRIPTION );
-        when( structurePageView.getGroupId() ).thenReturn( GROUP_ID );
-        when( structurePageView.getArtifactId() ).thenReturn( ARTIFACT_ID );
-        when( structurePageView.getVersion() ).thenReturn( VERSION );
-        when( structurePageView.isConfigureRepository() ).thenReturn( true );
-        when( structurePageView.isMultiModule() ).thenReturn( multi );
+        when(structurePageView.getProjectName()).thenReturn(PROJECT_NAME);
+        when(structurePageView.getProjectDescription()).thenReturn(PROJECT_DESCRIPTION);
+        when(structurePageView.getGroupId()).thenReturn(GROUP_ID);
+        when(structurePageView.getArtifactId()).thenReturn(ARTIFACT_ID);
+        when(structurePageView.getVersion()).thenReturn(VERSION);
+        when(structurePageView.isConfigureRepository()).thenReturn(true);
+        when(structurePageView.isMultiModule()).thenReturn(multi);
 
         //validations are true
-        when( repositoryStructureService.isValidProjectName( PROJECT_NAME ) ).thenReturn( true );
-        when( repositoryStructureService.isValidGroupId( GROUP_ID ) ).thenReturn( true );
-        when( repositoryStructureService.isValidArtifactId( ARTIFACT_ID ) ).thenReturn( true );
-        when( repositoryStructureService.isValidVersion( VERSION ) ).thenReturn( true );
+        when(repositoryStructureService.isValidProjectName(PROJECT_NAME)).thenReturn(true);
+        when(repositoryStructureService.isValidGroupId(GROUP_ID)).thenReturn(true);
+        when(repositoryStructureService.isValidArtifactId(ARTIFACT_ID)).thenReturn(true);
+        when(repositoryStructureService.isValidVersion(VERSION)).thenReturn(true);
 
-        createRepositoryWizard.pageSelected( 1 );
+        createRepositoryWizard.pageSelected(1);
 
         structurePage.onProjectNameChange();
         structurePage.onProjectDescriptionChange();
@@ -785,229 +782,256 @@ public class CreateRepositoryWizardTest {
         structurePage.onConfigureRepositoryChange();
         structurePage.onMultiModuleChange();
 
-        when( repositoryService.createRepository( eq( organizationalUnits.get( 0 ) ),
-                                                  eq( "git" ),
-                                                  eq( REPOSITORY_NAME ),
-                                                  any( RepositoryEnvironmentConfigurations.class ) ) ).thenReturn( expectedRepository );
-        when( expectedRepository.getAlias() ).thenReturn( REPOSITORY_NAME );
+        when(repositoryService.createRepository(eq(organizationalUnits.get(0)),
+                                                eq("git"),
+                                                eq(REPOSITORY_NAME),
+                                                any(RepositoryEnvironmentConfigurations.class))).thenReturn(expectedRepository);
+        when(expectedRepository.getAlias()).thenReturn(REPOSITORY_NAME);
 
         //mock the pom created internally by the wizard to emulate the cascaded initializations.
         POM pom = new POM();
-        pom.setName( PROJECT_NAME );
-        pom.setDescription( PROJECT_DESCRIPTION );
-        pom.getGav().setGroupId( GROUP_ID );
-        pom.getGav().setArtifactId( ARTIFACT_ID );
-        pom.getGav().setVersion( VERSION );
-        if ( !multi ) {
-            pom.setPackaging( pomDefaultOptions.getPackaging() );
-            pom.setBuild( byDefaultBuild );
+        pom.setName(PROJECT_NAME);
+        pom.setDescription(PROJECT_DESCRIPTION);
+        pom.getGav().setGroupId(GROUP_ID);
+        pom.getGav().setArtifactId(ARTIFACT_ID);
+        pom.getGav().setVersion(VERSION);
+        if (!multi) {
+            pom.setPackaging(pomDefaultOptions.getPackaging());
+            pom.setBuild(byDefaultBuild);
         }
         final String baseUrl = "";
 
-        when( repositoryResolverService.getRepositoriesResolvingArtifact( eq( pom.getGav() ) ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() {{
-            add( new MavenRepositoryMetadata( "local-id",
-                                              "local-url",
-                                              MavenRepositorySource.LOCAL ) );
-        }} );
+        when(repositoryResolverService.getRepositoriesResolvingArtifact(eq(pom.getGav()))).thenReturn(new HashSet<MavenRepositoryMetadata>() {{
+            add(new MavenRepositoryMetadata("local-id",
+                                            "local-url",
+                                            MavenRepositorySource.LOCAL));
+        }});
 
         createRepositoryWizard.complete();
 
         //the repository should NOT be created.
-        verify( repositoryService,
-                never() ).createRepository( eq( organizationalUnits.get( 0 ) ),
-                                            eq( "git" ),
-                                            eq( REPOSITORY_NAME ),
-                                            any( RepositoryEnvironmentConfigurations.class ) );
+        verify(repositoryService,
+               never()).createRepository(eq(organizationalUnits.get(0)),
+                                         eq("git"),
+                                         eq(REPOSITORY_NAME),
+                                         any(RepositoryEnvironmentConfigurations.class));
 
-        verify( repositoryStructureService,
-                never() ).initRepositoryStructure( eq( pom ),
-                eq( baseUrl ),
-                eq( expectedRepository ),
-                eq( multi ),
-                eq( DeploymentMode.VALIDATED ) );
+        verify(repositoryStructureService,
+               never()).initRepositoryStructure(eq(pom),
+                                                eq(baseUrl),
+                                                eq(expectedRepository),
+                                                eq(multi),
+                                                eq(DeploymentMode.VALIDATED));
 
         //the assets management configuration process should NOT be launched
-        verify( assetManagementService,
-                never() ).configureRepository( eq( REPOSITORY_NAME ),
-                eq( "master" ),
-                eq( "dev" ),
-                eq( "release" ),
-                eq( VERSION ) );
+        verify(assetManagementService,
+               never()).configureRepository(eq(REPOSITORY_NAME),
+                                            eq("master"),
+                                            eq("dev"),
+                                            eq("release"),
+                                            eq(VERSION));
 
         //the Conflicting GAV popup should be shown
-        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).setContent( eq( pom.getGav() ),
-                any( Set.class ),
-                commandArgumentCaptor.capture() );
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).show();
+        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
+        verify(conflictingRepositoriesPopup,
+               times(1)).setContent(eq(pom.getGav()),
+                                    any(Set.class),
+                                    commandArgumentCaptor.capture());
+        verify(conflictingRepositoriesPopup,
+               times(1)).show();
 
         //Emulate User electing to force save
-        assertNotNull( commandArgumentCaptor.getValue() );
+        assertNotNull(commandArgumentCaptor.getValue());
         commandArgumentCaptor.getValue().execute();
 
         //the repository should be created.
-        verify( repositoryService,
-                times( 1 ) ).createRepository( eq( organizationalUnits.get( 0 ) ),
-                eq( "git" ),
-                eq( REPOSITORY_NAME ),
-                repositoryEnvironmentConfigurationsArgumentCaptor.capture() );
-        assertTrue( repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged() );
+        verify(repositoryService,
+               times(1)).createRepository(eq(organizationalUnits.get(0)),
+                                          eq("git"),
+                                          eq(REPOSITORY_NAME),
+                                          repositoryEnvironmentConfigurationsArgumentCaptor.capture());
+        assertTrue(repositoryEnvironmentConfigurationsArgumentCaptor.getValue().isManaged());
 
-        verify( repositoryStructureService,
-                times( 1 ) ).initRepositoryStructure( eq( pom ),
-                eq( baseUrl ),
-                eq( expectedRepository ),
-                eq( multi ),
-                eq( DeploymentMode.FORCED ) );
+        verify(repositoryStructureService,
+               times(1)).initRepositoryStructure(eq(pom),
+                                                 eq(baseUrl),
+                                                 eq(expectedRepository),
+                                                 eq(multi),
+                                                 eq(DeploymentMode.FORCED));
 
         //the assets management configuration process should be launched
-        verify( assetManagementService,
-                times( 1 ) ).configureRepository( eq( REPOSITORY_NAME ),
-                eq( "master" ),
-                eq( "dev" ),
-                eq( "release" ),
-                eq( VERSION ) );
+        verify(assetManagementService,
+               times(1)).configureRepository(eq(REPOSITORY_NAME),
+                                             eq("master"),
+                                             eq("dev"),
+                                             eq("release"),
+                                             eq(VERSION));
 
-        WizardTestUtils.assertWizardComplete( true,
-                                              createRepositoryWizard );
+        WizardTestUtils.assertWizardComplete(true,
+                                             createRepositoryWizard);
     }
 
     @Test
     public void testCompletionStatusSuccess() {
-        setupNameAndOrgUnitMocks( true,
-                ORGANIZATIONAL_UNIT );
+        setupNameAndOrgUnitMocks(true,
+                                 ORGANIZATIONAL_UNIT);
 
         createRepositoryWizard.start();
 
         infoPage.onNameChange();
         infoPage.onOUChange();
 
-        verify( view,
-                times( 2 ) ).setCompletionStatus( false );
-        verify( view,
-                times( 2 ) ).setPageCompletionState( 0,
-                false );
+        verify(view,
+               times(2)).setCompletionStatus(false);
+        verify(view,
+               times(2)).setPageCompletionState(0,
+                                                false);
 
-        verify( view,
-                times( 1 ) ).setCompletionStatus( true );
-        verify( view,
-                times( 1 ) ).setPageCompletionState( 0,
-                true );
+        verify(view,
+               times(1)).setCompletionStatus(true);
+        verify(view,
+               times(1)).setPageCompletionState(0,
+                                                true);
     }
 
     @Test
     public void testCompletionInvalidName() {
-        setupNameAndOrgUnitMocks( false,
-                                  ORGANIZATIONAL_UNIT );
+        setupNameAndOrgUnitMocks(false,
+                                 ORGANIZATIONAL_UNIT);
 
         createRepositoryWizard.start();
 
         infoPage.onNameChange();
         infoPage.onOUChange();
 
-        verify( view,
-                times( 2 ) ).setCompletionStatus( false );
-        verify( view,
-                times( 2 ) ).setPageCompletionState( 0,
-                false );
+        verify(view,
+               times(2)).setCompletionStatus(false);
+        verify(view,
+               times(2)).setPageCompletionState(0,
+                                                false);
     }
 
     @Test
     public void testCompletionNoOrganizationalUnit() {
-        setupNameAndOrgUnitMocks( true,
-                null );
+        setupNameAndOrgUnitMocks(true,
+                                 null);
 
         createRepositoryWizard.start();
 
         infoPage.onNameChange();
         infoPage.onOUChange();
 
-        verify( view,
-                times( 2 ) ).setCompletionStatus( false );
-        verify( view,
-                times( 2 ) ).setPageCompletionState( 0,
-                false );
+        verify(view,
+               times(2)).setCompletionStatus(false);
+        verify(view,
+               times(2)).setPageCompletionState(0,
+                                                false);
     }
 
     @Test
     public void testCompletionInvalidNameAndNoOrganizationalUnit() {
-        setupNameAndOrgUnitMocks( false,
-                                  null );
+        setupNameAndOrgUnitMocks(false,
+                                 null);
 
         createRepositoryWizard.start();
 
         infoPage.onNameChange();
         infoPage.onOUChange();
 
-        verify( view,
-                times( 1 ) ).setCompletionStatus( false );
-        verify( view,
-                times( 1 ) ).setPageCompletionState( 0,
-                                                     false );
+        verify(view,
+               times(1)).setCompletionStatus(false);
+        verify(view,
+               times(1)).setPageCompletionState(0,
+                                                false);
+    }
+
+    @Test
+    public void testManagedRepositoryIsEnabledInNewRepoWizard() {
+        reset(infoPageView);
+
+        when(authorizationManager.authorize(RepositoryFeatures.CONFIGURE_REPOSITORY,
+                                            sessionInfo.getIdentity())).thenReturn(true);
+
+        createRepositoryWizard.setupPages();
+
+        verify(infoPageView).enabledManagedRepositoryCreation(true);
+        verify(infoPageView,
+               never()).enabledManagedRepositoryCreation(false);
+    }
+
+    @Test
+    public void testManagedRepositoryIsDisabledInNewRepoWizard() {
+        reset(infoPageView);
+
+        when(authorizationManager.authorize(RepositoryFeatures.CONFIGURE_REPOSITORY,
+                                            sessionInfo.getIdentity())).thenReturn(false);
+
+        createRepositoryWizard.setupPages();
+
+        verify(infoPageView,
+               never()).enabledManagedRepositoryCreation(true);
+        verify(infoPageView).enabledManagedRepositoryCreation(false);
     }
 
     private void initByDefaultPomOptions() {
         byDefaultPlugins = new ArrayList<Plugin>();
         Plugin plugin = new Plugin();
-        plugin.setGroupId( "org.kie" );
-        plugin.setArtifactId( "kie-maven-plugin" );
-        plugin.setVersion( "1.0.0" );
-        byDefaultPlugins.add( plugin );
+        plugin.setGroupId("org.kie");
+        plugin.setArtifactId("kie-maven-plugin");
+        plugin.setVersion("1.0.0");
+        byDefaultPlugins.add(plugin);
         byDefaultBuild = new Build();
-        byDefaultBuild.setPlugins( byDefaultPlugins );
+        byDefaultBuild.setPlugins(byDefaultPlugins);
     }
 
-    private void setupNameAndOrgUnitMocks( boolean isRepoNameValid,
-                                           String orgUnit ) {
-        when( infoPageView.getName() ).thenReturn( REPOSITORY_NAME );
-        when( infoPageView.getOrganizationalUnitName() ).thenReturn( orgUnit );
+    private void setupNameAndOrgUnitMocks(boolean isRepoNameValid,
+                                          String orgUnit) {
+        when(infoPageView.getName()).thenReturn(REPOSITORY_NAME);
+        when(infoPageView.getOrganizationalUnitName()).thenReturn(orgUnit);
 
-        when( repositoryService.validateRepositoryName( REPOSITORY_NAME ) ).thenReturn( isRepoNameValid );
-        when( repositoryService.normalizeRepositoryName( REPOSITORY_NAME ) ).thenReturn( REPOSITORY_NAME );
+        when(repositoryService.validateRepositoryName(REPOSITORY_NAME)).thenReturn(isRepoNameValid);
+        when(repositoryService.normalizeRepositoryName(REPOSITORY_NAME)).thenReturn(REPOSITORY_NAME);
     }
 
     public static class CreateRepositoryWizardExtended
             extends CreateRepositoryWizard {
 
-        public CreateRepositoryWizardExtended( final RepositoryInfoPage infoPage,
-                                               final RepositoryStructurePage structurePage,
-                                               final CreateRepositoryWizardModel model,
-                                               final Caller<RepositoryService> repositoryService,
-                                               final Caller<RepositoryStructureService> repositoryStructureService,
-                                               final Caller<ProjectRepositoryResolver> repositoryResolverService,
-                                               final Caller<AssetManagementService> assetManagementService,
-                                               final Event<NotificationEvent> notification,
-                                               final SessionInfo sessionInfo,
-                                               final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
-                                               final WizardView view,
-                                               final WizardTestUtils.WizardPageStatusChangeEventMock event,
-                                               final POMDefaultOptions pomDefaultOptions,
-                                               final AuthorizationManager authorizationManager ) {
-                super( infoPage,
-                        structurePage,
-                        model,
-                        repositoryService,
-                        repositoryStructureService,
-                        repositoryResolverService,
-                        assetManagementService,
-                        notification,
-                        sessionInfo,
-                        conflictingRepositoriesPopup,
-                        pomDefaultOptions,
-                        authorizationManager );
+        public CreateRepositoryWizardExtended(final RepositoryInfoPage infoPage,
+                                              final RepositoryStructurePage structurePage,
+                                              final CreateRepositoryWizardModel model,
+                                              final Caller<RepositoryService> repositoryService,
+                                              final Caller<RepositoryStructureService> repositoryStructureService,
+                                              final Caller<ProjectRepositoryResolver> repositoryResolverService,
+                                              final Caller<AssetManagementService> assetManagementService,
+                                              final Event<NotificationEvent> notification,
+                                              final SessionInfo sessionInfo,
+                                              final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
+                                              final WizardView view,
+                                              final WizardTestUtils.WizardPageStatusChangeEventMock event,
+                                              final POMDefaultOptions pomDefaultOptions,
+                                              final AuthorizationManager authorizationManager) {
+            super(infoPage,
+                  structurePage,
+                  model,
+                  repositoryService,
+                  repositoryStructureService,
+                  repositoryResolverService,
+                  assetManagementService,
+                  notification,
+                  sessionInfo,
+                  conflictingRepositoriesPopup,
+                  pomDefaultOptions,
+                  authorizationManager);
             super.view = view;
             //emulates the invocation of the @PostConstruct method.
             setupPages();
 
-            event.addEventHandler( new WizardTestUtils.WizardPageStatusChangeHandler() {
+            event.addEventHandler(new WizardTestUtils.WizardPageStatusChangeHandler() {
                 @Override
-                public void handleEvent( WizardPageStatusChangeEvent event ) {
-                    onStatusChange( event );
+                public void handleEvent(WizardPageStatusChangeEvent event) {
+                    onStatusChange(event);
                 }
-            } );
+            });
         }
-
     }
 }

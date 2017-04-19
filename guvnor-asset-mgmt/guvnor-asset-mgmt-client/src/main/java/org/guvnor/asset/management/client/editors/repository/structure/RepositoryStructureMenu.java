@@ -39,8 +39,6 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 
-
-
 @Dependent
 public class RepositoryStructureMenu
         implements org.uberfire.workbench.model.menu.Menus {
@@ -61,89 +59,76 @@ public class RepositoryStructureMenu
 
     private Caller<AssetManagementService> assetManagementServices;
 
-
     @Inject
-    public RepositoryStructureMenu( final ProjectContext projectContext,
-                                    final Caller<AssetManagementService> assetManagementServices,
-                                    final ConfigureScreenPopupViewImpl configureScreenPopupView) {
+    public RepositoryStructureMenu(final ProjectContext projectContext,
+                                   final Caller<AssetManagementService> assetManagementServices,
+                                   final ConfigureScreenPopupViewImpl configureScreenPopupView) {
         this.projectContext = projectContext;
         this.assetManagementServices = assetManagementServices;
         this.configureScreenPopupView = configureScreenPopupView;
     }
 
-    public void init( final HasModel<RepositoryStructureModel> hasModel ) {
-        // TODO: ask for the model
+    public void init(final HasModel<RepositoryStructureModel> hasModel) {
         configure = MenuFactory
-                .newTopLevelMenu( Constants.INSTANCE.Configure() )
-                .withPermission( RepositoryFeatures.CONFIGURE_REPOSITORY )
-                .respondsWith( getConfigureCommand( hasModel ) )
+                .newTopLevelMenu(Constants.INSTANCE.Configure())
+                .withPermission(RepositoryFeatures.CONFIGURE_REPOSITORY)
+                .respondsWith(getConfigureCommand(hasModel))
                 .endMenu()
-                .build().getItems().get( 0 );
+                .build().getItems().get(0);
 
-        items.add( configure );
-
+        items.add(configure);
 
         MenuItem item;
-        item = getItem( MenuItems.CONFIGURE_MENU_ITEM );
+        item = getItem(MenuItems.CONFIGURE_MENU_ITEM);
         configureIsGranted = item != null && item.isEnabled();
-
     }
 
-    private Command getConfigureCommand( final HasModel<RepositoryStructureModel> hasModel ) {
+    private Command getConfigureCommand(final HasModel<RepositoryStructureModel> hasModel) {
         return new Command() {
             @Override
             public void execute() {
                 final RepositoryStructureModel model = hasModel.getModel();
 
-                if ( model != null && (model.isSingleProject() || model.isMultiModule()) ) {
-                    configureScreenPopupView.configure( projectContext.getActiveRepository().getAlias(),
-                                                        projectContext.getActiveBranch(),
-                                                        model.getActivePom().getGav().getVersion(),
-                                                        new com.google.gwt.user.client.Command() {
-                                                            @Override
-                                                            public void execute() {
-                                                                configureRepository();
-                                                                configureScreenPopupView.hide();
-                                                            }
-                                                        } );
+                if (model != null && (model.isSingleProject() || model.isMultiModule())) {
+                    configureScreenPopupView.configure(projectContext.getActiveRepository().getAlias(),
+                                                       projectContext.getActiveBranch(),
+                                                       model.getActivePom().getGav().getVersion(),
+                                                       new com.google.gwt.user.client.Command() {
+                                                           @Override
+                                                           public void execute() {
+                                                               configureRepository();
+                                                               configureScreenPopupView.hide();
+                                                           }
+                                                       });
                     configureScreenPopupView.show();
                 }
             }
         };
     }
 
-    private String trimSnapshotFromVersion( final String version ) {
-        if ( version != null && version.endsWith( "-SNAPSHOT" ) ) {
-            return version.replace( "-SNAPSHOT", "" );
-        } else {
-            return version;
-        }
-    }
-
-
     private void configureRepository() {
-        assetManagementServices.call( new RemoteCallback<Long>() {
-                                          @Override
-                                          public void callback( Long taskId ) {
-                                              //view.displayNotification( "Repository Configuration Started!" );
-                                          }
-                                      },
-                                      new ErrorCallback<Message>() {
-                                          @Override
-                                          public boolean error( Message message,
-                                                                Throwable throwable ) {
-                                              ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
-                                              return true;
-                                          }
-                                      } ).configureRepository( projectContext.getActiveRepository().getAlias(),
-                                                               projectContext.getActiveBranch(),
-                                                               configureScreenPopupView.getDevBranch(),
-                                                               configureScreenPopupView.getReleaseBranch(),
-                                                               configureScreenPopupView.getVersion() );
+        assetManagementServices.call(new RemoteCallback<Long>() {
+                                         @Override
+                                         public void callback(Long taskId) {
+                                             //view.displayNotification( "Repository Configuration Started!" );
+                                         }
+                                     },
+                                     new ErrorCallback<Message>() {
+                                         @Override
+                                         public boolean error(Message message,
+                                                              Throwable throwable) {
+                                             ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
+                                             return true;
+                                         }
+                                     }).configureRepository(projectContext.getActiveRepository().getAlias(),
+                                                            projectContext.getActiveBranch(),
+                                                            configureScreenPopupView.getDevBranch(),
+                                                            configureScreenPopupView.getReleaseBranch(),
+                                                            configureScreenPopupView.getVersion());
     }
 
-    private MenuItem getItem( final MenuItems itemKey ) {
-        return this.getItemsMap().get( itemKey );
+    private MenuItem getItem(final MenuItems itemKey) {
+        return this.getItemsMap().get(itemKey);
     }
 
     @Override
@@ -156,19 +141,19 @@ public class RepositoryStructureMenu
 
         return new HashMap<Object, MenuItem>() {
             {
-                put( MenuItems.CONFIGURE_MENU_ITEM,
-                     configure );
+                put(MenuItems.CONFIGURE_MENU_ITEM,
+                    configure);
             }
         };
     }
 
     @Override
-    public void accept( MenuVisitor visitor ) {
-        if ( visitor.visitEnter( this ) ) {
-            for ( final MenuItem item : items ) {
-                item.accept( visitor );
+    public void accept(MenuVisitor visitor) {
+        if (visitor.visitEnter(this)) {
+            for (final MenuItem item : items) {
+                item.accept(visitor);
             }
-            visitor.visitLeave( this );
+            visitor.visitLeave(this);
         }
     }
 
@@ -177,12 +162,11 @@ public class RepositoryStructureMenu
         return 0;
     }
 
-    public void enableAssetsManagementMenu( final boolean enable ) {
-        enableConfigure( configureIsGranted && enable );
+    public void enableAssetsManagementMenu(final boolean enable) {
+        enableConfigure(configureIsGranted && enable);
     }
 
-    private void enableConfigure( final boolean enable ) {
-        configure.setEnabled( enable );
+    private void enableConfigure(final boolean enable) {
+        configure.setEnabled(enable);
     }
-
 }
