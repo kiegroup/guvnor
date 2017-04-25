@@ -14,6 +14,10 @@
 */
 package org.guvnor.inbox.backend.server.security;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.inbox.backend.server.InboxEntry;
@@ -28,165 +32,188 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import static junit.framework.TestCase.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class InboxEntrySecurityTest {
 
-    private Repository                        repo1;
-    private Repository                        repo2;
-    private User                              user;
-    private AuthorizationManager              authorizationManager;
-    private OrganizationalUnitService         organizationalUnitService;
+    private Repository repo1;
+    private Repository repo2;
+    private User user;
+    private AuthorizationManager authorizationManager;
+    private OrganizationalUnitService organizationalUnitService;
     private ProjectService<? extends Project> projectService;
-    private ConfiguredRepositories            configuredRepositories;
-    private Project                           project1;
+    private ConfiguredRepositories configuredRepositories;
+    private Project project1;
 
     @Before
     public void setup() {
-        user = mock( User.class );
-        authorizationManager = mock( AuthorizationManager.class );
-        organizationalUnitService = mock( OrganizationalUnitService.class );
+        user = mock(User.class);
+        authorizationManager = mock(AuthorizationManager.class);
+        organizationalUnitService = mock(OrganizationalUnitService.class);
         Collection<OrganizationalUnit> ous = new ArrayList<OrganizationalUnit>();
-        final OrganizationalUnit ou = mock( OrganizationalUnit.class );
-        ous.add( ou );
-        when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( ous );
-        when( authorizationManager.authorize( ou, user ) ).thenReturn( true );
+        final OrganizationalUnit ou = mock(OrganizationalUnit.class);
+        ous.add(ou);
+        when(organizationalUnitService.getOrganizationalUnits()).thenReturn(ous);
+        when(authorizationManager.authorize(ou,
+                                            user)).thenReturn(true);
         Collection<Repository> repositories = new ArrayList<Repository>();
-        repo1 = mock( Repository.class );
-        repo2 = mock( Repository.class );
-        project1 = mock( Project.class );
+        repo1 = mock(Repository.class);
+        repo2 = mock(Repository.class);
+        project1 = mock(Project.class);
 
-        repositories.add( repo1 );
-        when( authorizationManager.authorize( repo1, user ) ).thenReturn( true );
-        when( authorizationManager.authorize( project1, user ) ).thenReturn( true );
-        when( ou.getRepositories() ).thenReturn( repositories );
+        repositories.add(repo1);
+        when(authorizationManager.authorize(repo1,
+                                            user)).thenReturn(true);
+        when(authorizationManager.authorize(project1,
+                                            user)).thenReturn(true);
+        when(ou.getRepositories()).thenReturn(repositories);
 
         projectService = null;
         configuredRepositories = null;
-
-
     }
-
 
     @Test
     public void testSecureNullRepoNullProject() throws Exception {
-        InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
-                                                           projectService,
-                                                           configuredRepositories ) {
+        InboxEntrySecurity inbox = new InboxEntrySecurity(authorizationManager,
+                                                          organizationalUnitService,
+                                                          projectService,
+                                                          configuredRepositories) {
             @Override
-            Repository getInboxEntryRepository( InboxEntry inboxEntry ) {
+            Repository getInboxEntryRepository(InboxEntry inboxEntry) {
                 return null;
             }
 
             @Override
-            Project getInboxEntryProject( InboxEntry inboxEntry ) {
+            Project getInboxEntryProject(InboxEntry inboxEntry) {
                 return null;
             }
         };
         List<InboxEntry> entries = new ArrayList<InboxEntry>();
-        final InboxEntry inboxEntry1 = new InboxEntry( "path1", "note1", "user1" );
-        final InboxEntry inboxEntry2 = new InboxEntry( "path2", "note2", "user2" );
-        final InboxEntry inboxEntry3 = new InboxEntry( "path3", "note3", "user3" );
-        entries.add( inboxEntry1 );
-        entries.add( inboxEntry2 );
-        entries.add( inboxEntry3 );
+        final InboxEntry inboxEntry1 = new InboxEntry("path1",
+                                                      "note1",
+                                                      "user1");
+        final InboxEntry inboxEntry2 = new InboxEntry("path2",
+                                                      "note2",
+                                                      "user2");
+        final InboxEntry inboxEntry3 = new InboxEntry("path3",
+                                                      "note3",
+                                                      "user3");
+        entries.add(inboxEntry1);
+        entries.add(inboxEntry2);
+        entries.add(inboxEntry3);
 
-
-        assertEquals( entries.size(), inbox.secure( entries ).size() );
-
+        assertEquals(entries.size(),
+                     inbox.secure(entries,
+                                  user).size());
     }
 
     @Test
     public void testSecureRepoWithoutProject() throws Exception {
-        InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
-                                                           projectService,
-                                                           configuredRepositories ) {
+        InboxEntrySecurity inbox = new InboxEntrySecurity(authorizationManager,
+                                                          organizationalUnitService,
+                                                          projectService,
+                                                          configuredRepositories) {
             @Override
-            Repository getInboxEntryRepository( InboxEntry inboxEntry ) {
-                if ( inboxEntry.getItemPath().equals( "path1" ) ) {
+            Repository getInboxEntryRepository(InboxEntry inboxEntry) {
+                if (inboxEntry.getItemPath().equals("path1")) {
                     return repo2;
                 }
                 return repo1;
             }
 
             @Override
-            Project getInboxEntryProject( InboxEntry inboxEntry ) {
+            Project getInboxEntryProject(InboxEntry inboxEntry) {
                 return null;
             }
         };
         List<InboxEntry> entries = new ArrayList<InboxEntry>();
-        final InboxEntry inboxEntry1 = new InboxEntry( "path1", "note1", "user1" );
-        final InboxEntry inboxEntry2 = new InboxEntry( "path2", "note2", "user2" );
-        final InboxEntry inboxEntry3 = new InboxEntry( "path3", "note3", "user3" );
-        entries.add( inboxEntry1 );
-        entries.add( inboxEntry2 );
-        entries.add( inboxEntry3 );
+        final InboxEntry inboxEntry1 = new InboxEntry("path1",
+                                                      "note1",
+                                                      "user1");
+        final InboxEntry inboxEntry2 = new InboxEntry("path2",
+                                                      "note2",
+                                                      "user2");
+        final InboxEntry inboxEntry3 = new InboxEntry("path3",
+                                                      "note3",
+                                                      "user3");
+        entries.add(inboxEntry1);
+        entries.add(inboxEntry2);
+        entries.add(inboxEntry3);
 
-
-        assertEquals( 2, inbox.secure( entries ).size() );
-
+        assertEquals(2,
+                     inbox.secure(entries,
+                                  user).size());
     }
 
     @Test
     public void testSecureRepoInsecureProject() throws Exception {
-        InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
-                                                           projectService,
-                                                           configuredRepositories ) {
+        InboxEntrySecurity inbox = new InboxEntrySecurity(authorizationManager,
+                                                          organizationalUnitService,
+                                                          projectService,
+                                                          configuredRepositories) {
             @Override
-            Repository getInboxEntryRepository( InboxEntry inboxEntry ) {
+            Repository getInboxEntryRepository(InboxEntry inboxEntry) {
                 return repo1;
             }
 
             @Override
-            Project getInboxEntryProject( InboxEntry inboxEntry ) {
-                return mock( Project.class );
+            Project getInboxEntryProject(InboxEntry inboxEntry) {
+                return mock(Project.class);
             }
         };
         List<InboxEntry> entries = new ArrayList<InboxEntry>();
-        final InboxEntry inboxEntry1 = new InboxEntry( "path1", "note1", "user1" );
-        final InboxEntry inboxEntry2 = new InboxEntry( "path2", "note2", "user2" );
-        final InboxEntry inboxEntry3 = new InboxEntry( "path3", "note3", "user3" );
-        entries.add( inboxEntry1 );
-        entries.add( inboxEntry2 );
-        entries.add( inboxEntry3 );
+        final InboxEntry inboxEntry1 = new InboxEntry("path1",
+                                                      "note1",
+                                                      "user1");
+        final InboxEntry inboxEntry2 = new InboxEntry("path2",
+                                                      "note2",
+                                                      "user2");
+        final InboxEntry inboxEntry3 = new InboxEntry("path3",
+                                                      "note3",
+                                                      "user3");
+        entries.add(inboxEntry1);
+        entries.add(inboxEntry2);
+        entries.add(inboxEntry3);
 
-
-        assertEquals( 0, inbox.secure( entries ).size() );
-
+        assertEquals(0,
+                     inbox.secure(entries,
+                                  user).size());
     }
 
     @Test
     public void testSecureRepoSecureProject() throws Exception {
-        InboxEntrySecurity inbox = new InboxEntrySecurity( user, authorizationManager, organizationalUnitService,
-                                                           projectService,
-                                                           configuredRepositories ) {
+        InboxEntrySecurity inbox = new InboxEntrySecurity(authorizationManager,
+                                                          organizationalUnitService,
+                                                          projectService,
+                                                          configuredRepositories) {
             @Override
-            Repository getInboxEntryRepository( InboxEntry inboxEntry ) {
+            Repository getInboxEntryRepository(InboxEntry inboxEntry) {
                 return repo1;
             }
 
             @Override
-            Project getInboxEntryProject( InboxEntry inboxEntry ) {
+            Project getInboxEntryProject(InboxEntry inboxEntry) {
                 return project1;
             }
         };
         List<InboxEntry> entries = new ArrayList<InboxEntry>();
-        final InboxEntry inboxEntry1 = new InboxEntry( "path1", "note1", "user1" );
-        final InboxEntry inboxEntry2 = new InboxEntry( "path2", "note2", "user2" );
-        final InboxEntry inboxEntry3 = new InboxEntry( "path3", "note3", "user3" );
-        entries.add( inboxEntry1 );
-        entries.add( inboxEntry2 );
-        entries.add( inboxEntry3 );
+        final InboxEntry inboxEntry1 = new InboxEntry("path1",
+                                                      "note1",
+                                                      "user1");
+        final InboxEntry inboxEntry2 = new InboxEntry("path2",
+                                                      "note2",
+                                                      "user2");
+        final InboxEntry inboxEntry3 = new InboxEntry("path3",
+                                                      "note3",
+                                                      "user3");
+        entries.add(inboxEntry1);
+        entries.add(inboxEntry2);
+        entries.add(inboxEntry3);
 
-
-        assertEquals( 3, inbox.secure( entries ).size() );
-
+        assertEquals(3,
+                     inbox.secure(entries,
+                                  user).size());
     }
 }

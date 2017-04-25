@@ -17,23 +17,19 @@ package org.guvnor.inbox.backend.server;
 
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * Date: 9/30/13
- * Time: 4:06 PM
- * To change this template use File | Settings | File Templates.
- */
+import org.jboss.errai.security.shared.api.identity.User;
+
 public interface InboxBackend {
 
-    List<InboxEntry> loadRecentEdited( String userName );
+    List<InboxEntry> loadRecentEdited(User user);
 
-    List<InboxEntry> loadIncoming( String userName );
+    List<InboxEntry> loadIncoming(User user);
 
-    List<InboxEntry> readEntries( String userName,
-                                  String boxName );
+    List<InboxEntry> readEntries(User user,
+                                 String boxName);
 
-    void addToIncoming( String itemPath,
-                        String note,
-                        String userFrom,
-                        String userName );
+    void addToIncoming(String itemPath,
+                       String note,
+                       User userFrom,
+                       User userTo);
 }
