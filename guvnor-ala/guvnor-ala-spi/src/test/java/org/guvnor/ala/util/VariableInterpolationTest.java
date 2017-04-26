@@ -18,6 +18,7 @@ package org.guvnor.ala.util;
 
 import java.util.HashMap;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -56,6 +57,21 @@ public class VariableInterpolationTest {
         assertEquals( "", newObject.getValue3() );
     }
 
+    @Test
+    public void testPreserveImplementedInterfaces() {
+        Object object = new Test1Class();
+        Object newObject = VariableInterpolation.interpolate( new HashMap<>(), object );
+        assertTrue( newObject instanceof Test1 );
+
+        object = new Test2Class();
+        newObject = VariableInterpolation.interpolate( new HashMap<>(), object );
+        assertTrue( newObject instanceof Test1 );
+
+        object = new Test3Class();
+        newObject = VariableInterpolation.interpolate( new HashMap<>(), object );
+        assertTrue( newObject instanceof Test1 );
+    }
+
     public interface Test1 {
 
         default String getValue1() {
@@ -69,6 +85,18 @@ public class VariableInterpolationTest {
         default String getValue3() {
             return "${input.value1}";
         }
+    }
+
+    public class Test1Class implements Test1 {
+
+    }
+
+    public class Test2Class extends Test1Class {
+
+    }
+
+    public class Test3Class extends Test2Class {
+
     }
 
 }
