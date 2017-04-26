@@ -87,12 +87,12 @@ public final class VariableInterpolation {
 
     public static <T> T proxy( final T instance ) {
         try {
-            final Class<?>[] _interfaces;
-            if ( instance.getClass().getInterfaces().length == 0 ) {
-                _interfaces = instance.getClass().getSuperclass().getInterfaces();
-            } else {
-                _interfaces = instance.getClass().getInterfaces();
-            }
+            Class<?>[] _interfaces;
+            Class<?> currentClass = instance.getClass();
+            do {
+                _interfaces = currentClass.getInterfaces();
+                currentClass = currentClass.getSuperclass();
+            } while ( _interfaces.length == 0 && currentClass != null );
 
             T result = (T) new ByteBuddy()
                     .subclass( Object.class )
