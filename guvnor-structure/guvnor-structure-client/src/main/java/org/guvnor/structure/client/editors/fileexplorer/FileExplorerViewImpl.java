@@ -30,104 +30,109 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.guvnor.structure.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.core.client.tree.FSTreeItem;
 import org.uberfire.ext.widgets.core.client.tree.Tree;
-import org.uberfire.ext.widgets.core.client.tree.TreeItem;
 
 public class FileExplorerViewImpl
         extends Composite
         implements FileExplorerView {
 
-    private CommonConstants constants = CommonConstants.INSTANCE;
-
-    TreeItem rootTreeItem = null;
-
-    private final Tree tree = GWT.create( Tree.class );
-
-    private final FlowPanel panel = GWT.create( FlowPanel.class );
-
-    private final Map<Repository, TreeItem> repositoryToTreeItemMap = new HashMap<Repository, TreeItem>();
-
     private static final String REPOSITORY_ID = "repositories";
-
+    private final Map<Repository, FSTreeItem> repositoryToTreeItemMap = new HashMap<Repository, FSTreeItem>();
+    private final FlowPanel panel = GWT.create(FlowPanel.class);
+    private final Tree<FSTreeItem> tree;
+    FSTreeItem rootTreeItem = null;
+    private CommonConstants constants = CommonConstants.INSTANCE;
     private FileExplorerPresenter presenter = null;
 
-    public void init( final FileExplorerPresenter presenter ) {
+    public FileExplorerViewImpl() {
+        this.tree = GWT.create(Tree.class);
+    }
+
+    FileExplorerViewImpl(final Tree<FSTreeItem> tree) {
+        this.tree = tree;
+    }
+
+    public void init(final FileExplorerPresenter presenter) {
         this.presenter = presenter;
-        rootTreeItem = tree.addItem( TreeItem.Type.FOLDER, constants.Repositories() );
-        rootTreeItem.setState( TreeItem.State.OPEN );
+        FSTreeItem item = new FSTreeItem(FSTreeItem.FSType.FOLDER,
+                                         constants.Repositories());
+        rootTreeItem = tree.addItem(item);
+        rootTreeItem.setState(FSTreeItem.State.OPEN);
 
-        panel.getElement().getStyle().setFloat( Style.Float.LEFT );
-        panel.getElement().getStyle().setWidth( 100, Style.Unit.PCT );
-        panel.add( tree );
-        initWidget( panel );
+        panel.getElement().getStyle().setFloat(Style.Float.LEFT);
+        panel.getElement().getStyle().setWidth(100,
+                                               Style.Unit.PCT);
+        panel.add(tree);
+        initWidget(panel);
 
-        tree.addOpenHandler( new OpenHandler<TreeItem>() {
+        tree.addOpenHandler(new OpenHandler<FSTreeItem>() {
             @Override
-            public void onOpen( final OpenEvent<TreeItem> event ) {
-                if ( needsLoading( event.getTarget() ) ) {
-                    presenter.loadDirectoryContent( new FileExplorerItem( event.getTarget() ), (Path) event.getTarget().getUserObject() );
+            public void onOpen(final OpenEvent<FSTreeItem> event) {
+                if (needsLoading(event.getTarget())) {
+                    presenter.loadDirectoryContent(new FileExplorerItem(event.getTarget()),
+                                                   (Path) event.getTarget().getUserObject());
                 }
             }
-        } );
+        });
 
-        tree.addSelectionHandler( new SelectionHandler<TreeItem>() {
+        tree.addSelectionHandler(new SelectionHandler<FSTreeItem>() {
             @Override
-            public void onSelection( SelectionEvent<TreeItem> event ) {
+            public void onSelection(SelectionEvent<FSTreeItem> event) {
                 final Object userObject = event.getSelectedItem().getUserObject();
-                if ( userObject != null && userObject instanceof Path ) {
+                if (userObject != null && userObject instanceof Path) {
                     final Path path = (Path) userObject;
-                    presenter.redirect( path );
-                } else if ( userObject != null && userObject instanceof Repository ) {
+                    presenter.redirect(path);
+                } else if (userObject != null && userObject instanceof Repository) {
                     final Repository root = (Repository) userObject;
-                    presenter.redirect( root );
-                } else if ( event.getSelectedItem().getUserObject() instanceof String &&
-                        ( event.getSelectedItem().getUserObject() ).equals( REPOSITORY_ID ) ) {
+                    presenter.redirect(root);
+                } else if (event.getSelectedItem().getUserObject() instanceof String &&
+                        (event.getSelectedItem().getUserObject()).equals(REPOSITORY_ID)) {
                     presenter.redirectRepositoryList();
                 }
             }
-        } );
-
+        });
     }
 
     @Override
     public void reset() {
-        rootTreeItem.setUserObject( REPOSITORY_ID );
-        rootTreeItem.addItem( TreeItem.Type.LOADING, constants.Loading() );
+        rootTreeItem.setUserObject(REPOSITORY_ID);
+        rootTreeItem.addItem(FSTreeItem.FSType.LOADING,
+                             constants.Loading());
         rootTreeItem.removeItems();
         repositoryToTreeItemMap.clear();
     }
 
     @Override
-    public void removeRepository( final Repository repo ) {
-        if ( !repositoryToTreeItemMap.containsKey( repo ) ) {
+    public void removeRepository(final Repository repo) {
+        if (!repositoryToTreeItemMap.containsKey(repo)) {
             return;
         }
-        final TreeItem repositoryRootItem = repositoryToTreeItemMap.remove( repo );
+        final FSTreeItem repositoryRootItem = repositoryToTreeItemMap.remove(repo);
         repositoryRootItem.remove();
     }
 
     @Override
-    public void addNewRepository( final Repository repository,
-                                  final String branch ) {
-        final TreeItem repositoryRootItem = rootTreeItem.addItem( TreeItem.Type.FOLDER,
-                                                                  repository.getAlias() );
-        repositoryRootItem.setUserObject( repository );
-        repositoryRootItem.setState( TreeItem.State.OPEN,
-                                     false,
-                                     false );
+    public void addNewRepository(final Repository repository,
+                                 final String branch) {
+        final FSTreeItem repositoryRootItem = rootTreeItem.addItem(FSTreeItem.FSType.FOLDER,
+                                                                   repository.getAlias());
+        repositoryRootItem.setUserObject(repository);
+        repositoryRootItem.setState(FSTreeItem.State.OPEN,
+                                    false,
+                                    false);
 
-        repositoryToTreeItemMap.put( repository,
-                                     repositoryRootItem );
+        repositoryToTreeItemMap.put(repository,
+                                    repositoryRootItem);
 
-        presenter.loadDirectoryContent( new FileExplorerItem( repositoryRootItem ),
-                                        repository.getBranchRoot( branch ) );
+        presenter.loadDirectoryContent(new FileExplorerItem(repositoryRootItem),
+                                       repository.getBranchRoot(branch));
     }
 
-    boolean needsLoading( final TreeItem item ) {
+    boolean needsLoading(final FSTreeItem item) {
         return item.getUserObject() instanceof Path
-                && item.getType() == TreeItem.Type.FOLDER
+                && item.getFSType() == FSTreeItem.FSType.FOLDER
                 && item.getChildCount() == 1
-                && constants.Loading().equals( item.getChild( 0 ).getText() );
+                && constants.Loading().equals(item.getChild(0).getText());
     }
-
 }

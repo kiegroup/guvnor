@@ -32,7 +32,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.guvnor.structure.client.resources.NavigatorResources;
 import org.uberfire.ext.widgets.core.client.tree.Tree;
-import org.uberfire.ext.widgets.core.client.tree.TreeItem;
+import org.uberfire.ext.widgets.core.client.tree.FSTreeItem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.type.DotResourceTypeDefinition;
@@ -61,18 +61,18 @@ public class TreeNavigator extends Composite implements Navigator {
         tree.addStyleName( NavigatorResources.INSTANCE.css().treeNav() );
         initWidget( tree );
 
-        tree.addOpenHandler( new OpenHandler<TreeItem>() {
+        tree.addOpenHandler( new OpenHandler<FSTreeItem>() {
             @Override
-            public void onOpen( final OpenEvent<TreeItem> event ) {
+            public void onOpen( final OpenEvent<FSTreeItem> event ) {
                 if ( needsLoading( event.getTarget() ) && event.getTarget().getUserObject() instanceof Path ) {
                     loadContent( new TreeNavigatorItemImpl( event.getTarget() ), (Path) event.getTarget().getUserObject() );
                 }
             }
         } );
 
-        tree.addSelectionHandler( new SelectionHandler<TreeItem>() {
+        tree.addSelectionHandler( new SelectionHandler<FSTreeItem>() {
             @Override
-            public void onSelection( SelectionEvent<TreeItem> event ) {
+            public void onSelection( SelectionEvent<FSTreeItem> event ) {
                 if ( fileActionCommand != null ) {
                     final Object userObject = event.getSelectedItem().getUserObject();
                     if ( userObject != null && userObject instanceof Path ) {
@@ -111,21 +111,21 @@ public class TreeNavigator extends Composite implements Navigator {
 
     @Override
     public void loadContent( final Path path ) {
-        final NavigatorItem parent = new TreeNavigatorItemImpl( new TreeItem( TreeItem.Type.FOLDER, path.getFileName() ) );
+        final NavigatorItem parent = new TreeNavigatorItemImpl( new FSTreeItem( FSTreeItem.FSType.FOLDER, path.getFileName() ) );
         tree.addItem( ( (TreeNavigatorItemImpl) parent ).parent );
 
         loadContent( parent, path );
     }
 
-    private boolean needsLoading( final TreeItem item ) {
+    private boolean needsLoading( final FSTreeItem item ) {
         return item.getChildCount() == 1 && LAZY_LOAD.equals( item.getChild( 0 ).getText() );
     }
 
     private class TreeNavigatorItemImpl implements NavigatorItem {
 
-        private final TreeItem parent;
+        private final FSTreeItem parent;
 
-        TreeNavigatorItemImpl( final TreeItem treeItem ) {
+        TreeNavigatorItemImpl( final FSTreeItem treeItem ) {
             this.parent = checkNotNull( "parent", treeItem );
         }
 
@@ -133,8 +133,8 @@ public class TreeNavigator extends Composite implements Navigator {
             checkCleanupLoading();
 
             //Util.getHeaderSafeHtml( images.openedFolder(), child.getFileName() )
-            final TreeItem newDirectory = parent.addItem( TreeItem.Type.FOLDER, child.getFileName() );
-            newDirectory.addItem( TreeItem.Type.LOADING, LAZY_LOAD );
+            final FSTreeItem newDirectory = parent.addItem( FSTreeItem.FSType.FOLDER, child.getFileName() );
+            newDirectory.addItem( FSTreeItem.FSType.LOADING, LAZY_LOAD );
             newDirectory.setUserObject( child );
         }
 
@@ -142,7 +142,7 @@ public class TreeNavigator extends Composite implements Navigator {
             checkCleanupLoading();
 
             //Util.getHeaderSafeHtml( images.file(), child.getFileName() )
-            final TreeItem newFile = parent.addItem( TreeItem.Type.ITEM, child.getFileName() );
+            final FSTreeItem newFile = parent.addItem( FSTreeItem.FSType.ITEM, child.getFileName() );
             newFile.setUserObject( child );
         }
 
