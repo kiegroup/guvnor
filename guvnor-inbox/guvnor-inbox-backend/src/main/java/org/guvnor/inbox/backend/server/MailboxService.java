@@ -24,6 +24,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
@@ -37,21 +39,21 @@ import org.uberfire.java.nio.file.Path;
 @ApplicationScoped
 public class MailboxService {
 
-    private static final Logger log = LoggerFactory.getLogger( MailboxService.class );
-    public static final String MAIL_MAN = "mailman";
+    private static final Logger log = LoggerFactory.getLogger(MailboxService.class);
+    public static final User MAIL_MAN = new UserImpl("mailman");
 
     private InboxBackend inboxBackend;
     private IOService ioService;
     private FileSystem bootstrapFS;
 
     //Proxyable
-    public MailboxService(){
+    public MailboxService() {
     }
 
     @Inject
-    public MailboxService( final InboxBackend inboxBackend,
-                           @Named("configIO") final IOService ioService,
-                           @Named("systemFS") final FileSystem bootstrapFS ) {
+    public MailboxService(final InboxBackend inboxBackend,
+                          @Named("configIO") final IOService ioService,
+                          @Named("systemFS") final FileSystem bootstrapFS) {
         this.inboxBackend = inboxBackend;
         this.ioService = ioService;
         this.bootstrapFS = bootstrapFS;
@@ -59,9 +61,9 @@ public class MailboxService {
 
     @PostConstruct
     public void setup() {
-        log.info( "mailbox service is up" );
+        log.info("mailbox service is up");
         try {
-            ioService.startBatch( bootstrapFS.getRootDirectories().iterator().next().getFileSystem() );
+            ioService.startBatch(bootstrapFS.getRootDirectories().iterator().next().getFileSystem());
             processOutgoing();
         } finally {
             ioService.endBatch();
@@ -76,49 +78,52 @@ public class MailboxService {
      * Process any waiting messages
      */
     void processOutgoing() {
-        final List<InboxEntry> es = inboxBackend.loadIncoming( MAIL_MAN );
-        log.debug( "Outgoing messages size " + es.size() );
+        final List<InboxEntry> es = inboxBackend.loadIncoming(MAIL_MAN);
+        log.debug("Outgoing messages size " + es.size());
         //wipe out inbox for mailman here...
 
-        String[] userList = listUsers();
-        log.debug( "userServices:" + userList.length );
-        for ( String toUser : userList ) {
-            log.debug( "userServices:" + toUser );
-            log.debug( "Processing any inbound messages for " + toUser );
-            if ( toUser.equals( MAIL_MAN ) ) {
+        User[] userList = listUsers();
+        log.debug("userServices:" + userList.length);
+        for (User toUser : userList) {
+            log.debug("userServices:" + toUser);
+            log.debug("Processing any inbound messages for " + toUser);
+            if (toUser.equals(MAIL_MAN)) {
                 return;
             }
 
-            final Set<String> recentEdited = makeSetOf( inboxBackend.loadRecentEdited( toUser ) );
-            for ( InboxEntry e : es ) {
+            final Set<String> recentEdited = makeSetOf(inboxBackend.loadRecentEdited(toUser));
+            for (InboxEntry e : es) {
                 //the user who edited the item wont receive a message in inbox.
-                if ( !e.getFrom().equals( toUser ) && recentEdited.contains( e.getItemPath() ) ) {
-                    inboxBackend.addToIncoming( e.getItemPath(), e.getNote(), e.getFrom(), toUser );
+                if (!e.getFrom().equals(toUser.getIdentifier()) && recentEdited.contains(e.getItemPath())) {
+                    inboxBackend.addToIncoming(e.getItemPath(),
+                                               e.getNote(),
+                                               new UserImpl(e.getFrom()),
+                                               toUser);
                 }
             }
         }
     }
 
-    private Set<String> makeSetOf( List<InboxEntry> inboxEntries ) {
+    private Set<String> makeSetOf(List<InboxEntry> inboxEntries) {
         final Set<String> entries = new HashSet<String>();
-        for ( InboxEntry e : inboxEntries ) {
-            entries.add( e.getItemPath() );
+        for (InboxEntry e : inboxEntries) {
+            entries.add(e.getItemPath());
         }
         return entries;
     }
 
-    public String[] listUsers() {
+    public User[] listUsers() {
         //TODO: a temporary hack to retrieve user list. Root dirs are branches and every user has it's own branch
-        final List<String> userList = new ArrayList<String>();
+        final List<User> userList = new ArrayList<>();
 
-        for ( final Path path : bootstrapFS.getRootDirectories() ) {
+        for (final Path path : bootstrapFS.getRootDirectories()) {
             final String value = path.toUri().getUserInfo();
-            if ( value != null && value.endsWith( "-uf-user" ) ) {
-                userList.add( value.substring( 0, value.indexOf( "-uf-user" ) ) );
+            if (value != null && value.endsWith("-uf-user")) {
+                userList.add(new UserImpl(value.substring(0,
+                                                          value.indexOf("-uf-user"))));
             }
         }
 
-        return userList.toArray( new String[ userList.size() ] );
+        return userList.toArray(new User[userList.size()]);
     }
-
 }

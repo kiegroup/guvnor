@@ -40,8 +40,6 @@ import org.uberfire.security.authz.AuthorizationManager;
 @ApplicationScoped
 public class InboxEntrySecurity {
 
-    private User identity;
-
     private AuthorizationManager authorizationManager;
 
     private OrganizationalUnitService organizationalUnitService;
@@ -54,106 +52,110 @@ public class InboxEntrySecurity {
     }
 
     @Inject
-    public InboxEntrySecurity( final User identity,
-                               final AuthorizationManager authorizationManager,
-                               final OrganizationalUnitService organizationalUnitService,
-                               final ProjectService<? extends Project> projectService,
-                               final ConfiguredRepositories configuredRepositories ) {
-        this.identity = identity;
+    public InboxEntrySecurity(final AuthorizationManager authorizationManager,
+                              final OrganizationalUnitService organizationalUnitService,
+                              final ProjectService<? extends Project> projectService,
+                              final ConfiguredRepositories configuredRepositories) {
         this.authorizationManager = authorizationManager;
         this.organizationalUnitService = organizationalUnitService;
         this.projectService = projectService;
         this.configuredRepositories = configuredRepositories;
     }
 
-
-    public List<InboxEntry> secure( List<InboxEntry> inboxEntries ) {
+    public List<InboxEntry> secure(List<InboxEntry> inboxEntries,
+                                   User user) {
         List<InboxEntry> secureInboxEntries = new ArrayList<InboxEntry>();
-        final Set<Repository> authorizedRepositories = getAuthorizedRepositories();
-        for ( InboxEntry inboxEntry : inboxEntries ) {
-            if ( canAccess( inboxEntry, authorizedRepositories ) ) {
-                secureInboxEntries.add( inboxEntry );
+        final Set<Repository> authorizedRepositories = getAuthorizedRepositories(user);
+        for (InboxEntry inboxEntry : inboxEntries) {
+            if (canAccess(inboxEntry,
+                          authorizedRepositories,
+                          user)) {
+                secureInboxEntries.add(inboxEntry);
             }
         }
         return secureInboxEntries;
     }
 
-    private boolean canAccess( InboxEntry inboxEntry, Set<Repository> authorizedRepositories ) {
+    private boolean canAccess(InboxEntry inboxEntry,
+                              Set<Repository> authorizedRepositories,
+                              User user) {
 
-        final Repository inboxEntryRepository = getInboxEntryRepository( inboxEntry );
+        final Repository inboxEntryRepository = getInboxEntryRepository(inboxEntry);
 
-        if ( thereIsNoRepositoryAssociated( inboxEntryRepository ) ) {
+        if (thereIsNoRepositoryAssociated(inboxEntryRepository)) {
             return true;
-        } else if ( canAccessRepository( authorizedRepositories, inboxEntryRepository ) ) {
-            return canAccessProject( inboxEntry );
+        } else if (canAccessRepository(authorizedRepositories,
+                                       inboxEntryRepository)) {
+            return canAccessProject(inboxEntry,
+                                    user);
         }
         return false;
     }
 
-    private boolean canAccessProject( InboxEntry inboxEntry ) {
-        Project project = getInboxEntryProject( inboxEntry );
-        if ( thereIsNoProject( project ) ) {
+    private boolean canAccessProject(InboxEntry inboxEntry,
+                                     User user) {
+        Project project = getInboxEntryProject(inboxEntry);
+        if (thereIsNoProject(project)) {
             return true;
         } else {
-            return authorizationManager.authorize( project, identity );
+            return authorizationManager.authorize(project,
+                                                  user);
         }
     }
 
-    private boolean thereIsNoProject( Project project ) {
+    private boolean thereIsNoProject(Project project) {
         return project == null;
     }
 
-
-    private boolean canAccessRepository( Set<Repository> authorizedRepositories, Repository inboxEntryRepository ) {
-        return authorizedRepositories.contains( inboxEntryRepository );
+    private boolean canAccessRepository(Set<Repository> authorizedRepositories,
+                                        Repository inboxEntryRepository) {
+        return authorizedRepositories.contains(inboxEntryRepository);
     }
 
-    Project getInboxEntryProject( final InboxEntry inboxEntry ) {
-        final Path path = Paths.get( inboxEntry.getItemPath() );
-        final org.uberfire.backend.vfs.Path vfsPath = org.uberfire.backend.server.util.Paths.convert( path );
-        return projectService.resolveProject( vfsPath );
+    Project getInboxEntryProject(final InboxEntry inboxEntry) {
+        final Path path = Paths.get(inboxEntry.getItemPath());
+        final org.uberfire.backend.vfs.Path vfsPath = org.uberfire.backend.server.util.Paths.convert(path);
+        return projectService.resolveProject(vfsPath);
     }
 
-    private boolean thereIsNoRepositoryAssociated( Repository inboxEntryRepository ) {
+    private boolean thereIsNoRepositoryAssociated(Repository inboxEntryRepository) {
         return inboxEntryRepository == null;
     }
 
-    Repository getInboxEntryRepository( InboxEntry inboxEntry ) {
+    Repository getInboxEntryRepository(InboxEntry inboxEntry) {
         try {
 
-            final Path path = Paths.get( inboxEntry.getItemPath() );
+            final Path path = Paths.get(inboxEntry.getItemPath());
             final FileSystem fileSystem = path.getFileSystem();
-            return configuredRepositories.getRepositoryByRepositoryFileSystem( fileSystem );
-
-        } catch ( FileSystemNotFoundException exception ) {
+            return configuredRepositories.getRepositoryByRepositoryFileSystem(fileSystem);
+        } catch (FileSystemNotFoundException exception) {
             return null;
         }
     }
 
-    private Set<Repository> getAuthorizedRepositories() {
+    private Set<Repository> getAuthorizedRepositories(User user) {
         final Set<Repository> authorizedRepos = new HashSet<Repository>();
-        for ( OrganizationalUnit ou : getAuthorizedOrganizationUnits() ) {
+        for (OrganizationalUnit ou : getAuthorizedOrganizationUnits(user)) {
             final Collection<Repository> repositories = ou.getRepositories();
-            for ( final Repository repository : repositories ) {
-                if ( authorizationManager.authorize( repository,
-                                                     identity ) ) {
-                    authorizedRepos.add( repository );
+            for (final Repository repository : repositories) {
+                if (authorizationManager.authorize(repository,
+                                                   user)) {
+                    authorizedRepos.add(repository);
                 }
             }
         }
         return authorizedRepos;
     }
 
-    private Collection<OrganizationalUnit> getAuthorizedOrganizationUnits() {
+    private Collection<OrganizationalUnit> getAuthorizedOrganizationUnits(User user) {
         final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
         final Collection<OrganizationalUnit> authorizedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
-        for ( OrganizationalUnit ou : organizationalUnits ) {
-            if ( authorizationManager.authorize( ou,
-                                                 identity ) ) {
-                authorizedOrganizationalUnits.add( ou );
+        for (OrganizationalUnit ou : organizationalUnits) {
+            if (authorizationManager.authorize(ou,
+                                               user)) {
+                authorizedOrganizationalUnits.add(ou);
             }
         }
         return authorizedOrganizationalUnits;
     }
-
 }

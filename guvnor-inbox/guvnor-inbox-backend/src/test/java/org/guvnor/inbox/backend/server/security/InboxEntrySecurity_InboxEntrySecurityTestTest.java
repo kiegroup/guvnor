@@ -20,7 +20,6 @@ import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.test.TestFileSystem;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +32,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class InboxEntrySecurity_InboxEntrySecurityTestTest {
 
     @Mock
@@ -43,54 +42,55 @@ public class InboxEntrySecurity_InboxEntrySecurityTestTest {
     private Repository repository;
 
     private InboxEntrySecurity inbox;
-    private TestFileSystem     testFileSystem;
+    private TestFileSystem testFileSystem;
 
     @Before
     public void setup() {
         testFileSystem = new TestFileSystem();
 
-        when( configuredRepositories.getRepositoryByRepositoryFileSystem( any( FileSystem.class ) ) ).thenReturn( repository );
+        when(configuredRepositories.getRepositoryByRepositoryFileSystem(any(FileSystem.class))).thenReturn(repository);
 
-        inbox = new InboxEntrySecurity( mock( User.class ),
-                                        mock( AuthorizationManager.class ),
-                                        mock( OrganizationalUnitService.class ),
-                                        mock( ProjectService.class ),
-                                        configuredRepositories );
+        inbox = new InboxEntrySecurity(mock(AuthorizationManager.class),
+                                       mock(OrganizationalUnitService.class),
+                                       mock(ProjectService.class),
+                                       configuredRepositories);
     }
 
     @Test
     public void testWorkingURI() throws Exception {
 
-        final Path tempFile = testFileSystem.createTempFile( "text.txt" );
+        final Path tempFile = testFileSystem.createTempFile("text.txt");
 
-        final InboxEntry entry = new InboxEntry( tempFile.toURI(),
-                                                 "note",
-                                                 "userFrom" );
+        final InboxEntry entry = new InboxEntry(tempFile.toURI(),
+                                                "note",
+                                                "userFrom");
 
-        assertEquals( repository, inbox.getInboxEntryRepository( entry ) );
+        assertEquals(repository,
+                     inbox.getInboxEntryRepository(entry));
     }
 
     @Test
     public void testFileRemoved() throws Exception {
 
-        final Path tempFile = testFileSystem.createTempFile( "text.txt" );
+        final Path tempFile = testFileSystem.createTempFile("text.txt");
 
-        testFileSystem.deleteFile( tempFile );
+        testFileSystem.deleteFile(tempFile);
 
-        final InboxEntry entry = new InboxEntry( tempFile.toURI(),
-                                                 "note",
-                                                 "userFrom" );
+        final InboxEntry entry = new InboxEntry(tempFile.toURI(),
+                                                "note",
+                                                "userFrom");
 
-        assertEquals( repository, inbox.getInboxEntryRepository( entry ) );
+        assertEquals(repository,
+                     inbox.getInboxEntryRepository(entry));
     }
 
     @Test
     public void testBrokenURI() throws Exception {
 
-        final InboxEntry entry = new InboxEntry( "git://master@broken",
-                                                 "note",
-                                                 "userFrom" );
+        final InboxEntry entry = new InboxEntry("git://master@broken",
+                                                "note",
+                                                "userFrom");
 
-        assertNull( inbox.getInboxEntryRepository( entry ) );
+        assertNull(inbox.getInboxEntryRepository(entry));
     }
 }
