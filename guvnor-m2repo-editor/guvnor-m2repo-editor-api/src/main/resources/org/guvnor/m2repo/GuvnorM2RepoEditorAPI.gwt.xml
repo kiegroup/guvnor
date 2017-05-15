@@ -21,10 +21,13 @@
 <module>
 
   <inherits name='org.guvnor.common.services.project.GuvnorProjectAPI'/>
+  <inherits name="org.uberfire.java.nio.UberfireNIO2Model"/>
+  <inherits name="org.jboss.errai.bus.ErraiBus"/>
 
   <source path="model"/>
+  <source path="preferences"/>
   <source path="service"/>
-  <source path="security" />
+  <source path="security"/>
   <source path="utils"/>
 
 </module>

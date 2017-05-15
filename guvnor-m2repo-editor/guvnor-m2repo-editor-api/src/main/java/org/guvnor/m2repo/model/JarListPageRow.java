@@ -32,12 +32,13 @@ public class JarListPageRow extends AbstractPageRow {
     private String path;
     private GAV gav;
     private Date lastModified;
+    private String repository;
 
     public String getName() {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -45,7 +46,7 @@ public class JarListPageRow extends AbstractPageRow {
         return path;
     }
 
-    public void setPath( String path ) {
+    public void setPath(String path) {
         this.path = path;
     }
 
@@ -53,7 +54,7 @@ public class JarListPageRow extends AbstractPageRow {
         return gav;
     }
 
-    public void setGav( GAV gav ) {
+    public void setGav(GAV gav) {
         this.gav = gav;
     }
 
@@ -61,8 +62,15 @@ public class JarListPageRow extends AbstractPageRow {
         return lastModified;
     }
 
-    public void setLastModified( Date lastModified ) {
+    public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
     }
 
+    public String getRepositoryName() {
+        return repository;
+    }
+
+    public void setRepositoryName(final String repository) {
+        this.repository = repository;
+    }
 }

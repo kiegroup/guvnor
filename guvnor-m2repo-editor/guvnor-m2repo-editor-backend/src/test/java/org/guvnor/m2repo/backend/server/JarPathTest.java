@@ -16,32 +16,23 @@
 
 package org.guvnor.m2repo.backend.server;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Collection;
+import javax.enterprise.inject.Instance;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemHeaders;
 import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.m2repo.backend.server.helpers.FormData;
-import org.guvnor.m2repo.backend.server.helpers.HttpPostHelper;
-import org.junit.After;
+import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class JarPathTest {
 
     @Before
     public void setupGuvnorM2Repository() {
-        new GuvnorM2Repository().init();
+        ArtifactRepositoryPreference pref = mock(ArtifactRepositoryPreference.class);
+        when(pref.getDefaultM2RepoDir()).thenReturn( "repositories/kie" );
+        new GuvnorM2Repository(pref).init();
     }
 
     @Test
