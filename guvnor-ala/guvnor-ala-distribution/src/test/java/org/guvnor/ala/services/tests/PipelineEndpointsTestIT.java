@@ -24,14 +24,15 @@ import java.util.List;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+
 import org.apache.commons.io.FileUtils;
 import org.guvnor.ala.build.maven.config.impl.MavenBuildConfigImpl;
 import org.guvnor.ala.build.maven.config.impl.MavenBuildExecConfigImpl;
 import org.guvnor.ala.build.maven.config.impl.MavenProjectConfigImpl;
 import org.guvnor.ala.config.Config;
+import org.guvnor.ala.docker.config.DockerProviderConfig;
 import org.guvnor.ala.docker.config.impl.ContextAwareDockerProvisioningConfig;
 import org.guvnor.ala.docker.config.impl.ContextAwareDockerRuntimeExecConfig;
-import org.guvnor.ala.docker.config.DockerProviderConfig;
 import org.guvnor.ala.docker.config.impl.DockerBuildConfigImpl;
 import org.guvnor.ala.docker.config.impl.DockerProviderConfigImpl;
 import org.guvnor.ala.docker.model.DockerProvider;
@@ -47,10 +48,9 @@ import org.guvnor.ala.source.git.config.impl.GitConfigImpl;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
+
+import static org.junit.Assert.*;
 
 public class PipelineEndpointsTestIT {
 
@@ -68,7 +68,7 @@ public class PipelineEndpointsTestIT {
         FileUtils.deleteQuietly( tempPath );
     }
 
-    @Test
+    @Ignore
     public void checkService() {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target( APP_URL );
