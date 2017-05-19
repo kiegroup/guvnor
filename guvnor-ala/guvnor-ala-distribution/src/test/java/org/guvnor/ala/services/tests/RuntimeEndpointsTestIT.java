@@ -19,6 +19,7 @@ package org.guvnor.ala.services.tests;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+
 import org.guvnor.ala.docker.config.DockerProviderConfig;
 import org.guvnor.ala.docker.config.DockerRuntimeConfig;
 import org.guvnor.ala.docker.config.impl.DockerProviderConfigImpl;
@@ -30,9 +31,8 @@ import org.guvnor.ala.services.api.RuntimeProvisioningService;
 import org.guvnor.ala.services.api.itemlist.ProviderList;
 import org.guvnor.ala.services.api.itemlist.ProviderTypeList;
 import org.guvnor.ala.services.api.itemlist.RuntimeList;
-
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.junit.Test;
+import org.junit.Ignore;
 
 import static org.junit.Assert.*;
 
@@ -40,7 +40,7 @@ public class RuntimeEndpointsTestIT {
 
     private final String APP_URL = "http://localhost:8080/api/";
 
-    @Test
+    @Ignore
     public void checkService() {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target( APP_URL );
