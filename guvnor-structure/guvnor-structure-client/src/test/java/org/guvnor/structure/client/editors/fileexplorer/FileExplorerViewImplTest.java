@@ -27,7 +27,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.widgets.core.client.tree.TreeItem;
+import org.uberfire.ext.widgets.core.client.tree.FSTreeItem;
+import org.uberfire.ext.widgets.core.client.tree.Tree;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -38,78 +39,72 @@ public class FileExplorerViewImplTest {
     @Mock
     private FileExplorerPresenter presenter;
 
-    private TreeItem item;
+    @Mock
+    private Tree<FSTreeItem> tree;
 
+    private FSTreeItem item;
     private FileExplorerViewImpl view;
 
     @Before
     public void setUp() {
-        view = new FileExplorerViewImpl();
-        view.init( presenter );
+        view = new FileExplorerViewImpl(tree);
+        doAnswer(invocationOnMock -> {
+            FSTreeItem item1 = (FSTreeItem) invocationOnMock.getArguments()[0];
+            return item1;
+        }).when(tree).addItem(any(FSTreeItem.class));
+        view.init(presenter);
     }
 
     @Test
     public void checkItemsAreNotLazyLoaded() {
-        item = newTreeItem( new TreeItemData( TreeItem.Type.ITEM,
-                                              "file",
-                                              mock( Path.class ) ) );
-        assertFalse( view.needsLoading( item ) );
+        item = newTreeItem(new TreeItemData(FSTreeItem.FSType.ITEM,
+                                            "file",
+                                            mock(Path.class)));
+        assertFalse(view.needsLoading(item));
     }
 
     @Test
     public void checkFoldersWithNoChildrenAreNotLazyLoaded() {
-        item = newTreeItem( new TreeItemData( TreeItem.Type.FOLDER,
-                                              "folder",
-                                              mock( Path.class ) ) );
-        assertFalse( view.needsLoading( item ) );
+        item = newTreeItem(new TreeItemData(FSTreeItem.FSType.FOLDER,
+                                            "folder",
+                                            mock(Path.class)));
+        assertFalse(view.needsLoading(item));
     }
 
     @Test
     public void checkFoldersWithExistingChildrenAreNotLazyLoaded() {
-        item = newTreeItem( new TreeItemData( TreeItem.Type.FOLDER,
-                                              "folder",
-                                              mock( Path.class ) ),
-                            new TreeItemData( TreeItem.Type.ITEM,
-                                              "file1",
-                                              mock( Path.class ) ),
-                            new TreeItemData( TreeItem.Type.ITEM,
-                                              "file2",
-                                              mock( Path.class ) ) );
-        assertFalse( view.needsLoading( item ) );
+        item = newTreeItem(new TreeItemData(FSTreeItem.FSType.FOLDER,
+                                            "folder",
+                                            mock(Path.class)),
+                           new TreeItemData(FSTreeItem.FSType.ITEM,
+                                            "file1",
+                                            mock(Path.class)),
+                           new TreeItemData(FSTreeItem.FSType.ITEM,
+                                            "file2",
+                                            mock(Path.class)));
+        assertFalse(view.needsLoading(item));
     }
 
     @Test
     public void checkFoldersWithLazyFlagAreLazyLoaded() {
-        item = newTreeItem( new TreeItemData( TreeItem.Type.FOLDER,
-                                              "folder",
-                                              mock( Path.class ) ),
-                            new TreeItemData( TreeItem.Type.ITEM,
-                                              CommonConstants.INSTANCE.Loading(),
-                                              mock( Path.class ) ) );
-        assertTrue( view.needsLoading( item ) );
+        item = spy(newTreeItem(new TreeItemData(FSTreeItem.FSType.FOLDER,
+                                                "folder",
+                                                mock(Path.class)),
+                               new TreeItemData(FSTreeItem.FSType.ITEM,
+                                                CommonConstants.INSTANCE.Loading(),
+                                                mock(Path.class))));
+        final FSTreeItem child = mock(FSTreeItem.class);
+        when(item.getChild(eq(0))).thenReturn(child);
+        when(child.getText()).thenReturn(CommonConstants.INSTANCE.Loading());
+        assertTrue(view.needsLoading(item));
     }
 
-    private class TreeItemData {
+    private FSTreeItem newTreeItem(TreeItemData parent,
+                                   TreeItemData... children) {
+        final List<FSTreeItem> cti = new ArrayList<>();
 
-        TreeItem.Type type;
-        String value;
-        Path path;
-
-        TreeItemData( final TreeItem.Type type,
-                      final String value,
-                      final Path path ) {
-            this.type = type;
-            this.value = value;
-            this.path = path;
-        }
-    }
-
-    private TreeItem newTreeItem( TreeItemData parent,
-                                  TreeItemData... children ) {
-        final List<TreeItem> cti = new ArrayList<>();
-
-        final TreeItem item = new TreeItem( parent.type,
-                                            parent.value ) {
+        final FSTreeItem item = new FSTreeItem(parent.type,
+                                               parent.value) {
 
             @Override
             public int getChildCount() {
@@ -117,20 +112,21 @@ public class FileExplorerViewImplTest {
             }
 
             @Override
-            public TreeItem getChild( int i ) {
-                return cti.get( i );
+            public FSTreeItem getChild(int i) {
+                return cti.get(i);
             }
 
-            @Override
-            public Iterable<TreeItem> getChildren() {
-                return cti;
-            }
-
-            @Override
-            protected TreeItem makeChild( final Type type,
-                                          final String value ) {
-                return new TreeItem( type,
-                                     value ) {
+            /*
+                        @Override
+                        public Iterable<TreeItem> getChildren() {
+                            return cti;
+                        }
+            */
+            //@Override
+            protected FSTreeItem makeChild(final FSType type,
+                                           final String value) {
+                return new FSTreeItem(type,
+                                      value) {
                     @Override
                     public String getText() {
                         return value;
@@ -138,16 +134,30 @@ public class FileExplorerViewImplTest {
                 };
             }
         };
-        item.setUserObject( parent.path );
+        item.setUserObject(parent.path);
 
-        Arrays.asList( children ).stream().forEach( ( c ) -> {
-            final TreeItem ti = item.addItem( c.type,
-                                              c.value );
-            ti.setUserObject( c.path );
-            cti.add( ti );
-        } );
+        Arrays.asList(children).stream().forEach((c) -> {
+            final FSTreeItem ti = item.addItem(c.type,
+                                               c.value);
+            ti.setUserObject(c.path);
+            cti.add(ti);
+        });
 
         return item;
     }
 
+    private class TreeItemData {
+
+        FSTreeItem.FSType type;
+        String value;
+        Path path;
+
+        TreeItemData(final FSTreeItem.FSType type,
+                     final String value,
+                     final Path path) {
+            this.type = type;
+            this.value = value;
+            this.path = path;
+        }
+    }
 }

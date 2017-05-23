@@ -18,7 +18,7 @@ package org.guvnor.structure.client.editors.fileexplorer;
 
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.widgets.core.client.tree.TreeItem;
+import org.uberfire.ext.widgets.core.client.tree.FSTreeItem;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -26,17 +26,17 @@ class FileExplorerItem {
 
     private CommonConstants constants = CommonConstants.INSTANCE;
 
-    private final TreeItem parent;
+    private final FSTreeItem parent;
 
-    FileExplorerItem( final TreeItem treeItem ) {
+    FileExplorerItem( final FSTreeItem treeItem ) {
         this.parent = checkNotNull( "parent", treeItem );
     }
 
     public void addDirectory( final Path child ) {
         checkCleanupLoading();
 
-        final TreeItem newDirectory = parent.addItem( TreeItem.Type.FOLDER, child.getFileName() );
-        newDirectory.addItem( TreeItem.Type.LOADING,
+        final FSTreeItem newDirectory = parent.addItem( FSTreeItem.FSType.FOLDER, child.getFileName() );
+        newDirectory.addItem( FSTreeItem.FSType.LOADING,
                               constants.Loading() );
         newDirectory.setUserObject( child );
     }
@@ -44,7 +44,7 @@ class FileExplorerItem {
     public void addFile( final Path child ) {
         checkCleanupLoading();
 
-        final TreeItem newFile = parent.addItem( TreeItem.Type.ITEM, child.getFileName() );
+        final FSTreeItem newFile = parent.addItem( FSTreeItem.FSType.ITEM, child.getFileName() );
         newFile.setUserObject( child );
     }
 
