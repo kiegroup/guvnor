@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
+import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.inbox.backend.server.security.InboxEntrySecurity;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.server.UserServicesBackendImpl;
@@ -47,6 +48,7 @@ public class InboxBackendImpl implements InboxBackend {
 
     private IOService ioService;
     private FileSystem bootstrapFS;
+    private AppConfigService configService;
     private UserServicesBackendImpl userServicesBackend;
     private MailboxService mailboxService;
     private InboxEntrySecurity inboxEntrySecurity;
@@ -58,11 +60,13 @@ public class InboxBackendImpl implements InboxBackend {
     @Inject
     public InboxBackendImpl(@Named("configIO") final IOService ioService,
                             @Named("systemFS") final FileSystem bootstrapFS,
+                            final AppConfigService configService,
                             final UserServicesBackendImpl userServicesBackend,
                             final MailboxService mailboxService,
                             final InboxEntrySecurity inboxEntrySecurity) {
         this.ioService = ioService;
         this.bootstrapFS = bootstrapFS;
+        this.configService = configService;
         this.userServicesBackend = userServicesBackend;
         this.mailboxService = mailboxService;
         this.inboxEntrySecurity = inboxEntrySecurity;
@@ -118,29 +122,38 @@ public class InboxBackendImpl implements InboxBackend {
                    userTo);
     }
 
-    public void recordOpeningEvent(@Observes final ResourceOpenedEvent event) {
+    public void onRecordOpeningEvent(@Observes final ResourceOpenedEvent event) {
         checkNotNull("event",
                      event);
+
+        if (isInboxDisabled()) {
+            return;
+        }
+
         final org.uberfire.backend.vfs.Path resourcePath = event.getPath();
         try {
             ioService.startBatch(bootstrapFS.getRootDirectories().iterator().next().getFileSystem());
-            recordOpeningEvent(resourcePath.toURI(),
-                               resourcePath.getFileName().toString(),
-                               event.getSessionInfo().getIdentity());
+            onRecordOpeningEvent(resourcePath.toURI(),
+                                 resourcePath.getFileName(),
+                                 event.getSessionInfo().getIdentity());
         } finally {
             ioService.endBatch();
         }
     }
 
-    public void recordUserEditEvent(@Observes final ResourceUpdatedEvent event) {
+    public void onRecordUserEditEvent(@Observes final ResourceUpdatedEvent event) {
         checkNotNull("event",
                      event);
 
+        if (isInboxDisabled()) {
+            return;
+        }
+
         try {
             ioService.startBatch(bootstrapFS.getRootDirectories().iterator().next().getFileSystem());
-            recordUserEditEvent(event.getPath().toURI(),
-                                event.getPath().getFileName(),
-                                event.getSessionInfo().getIdentity());
+            onRecordUserEditEvent(event.getPath().toURI(),
+                                  event.getPath().getFileName(),
+                                  event.getSessionInfo().getIdentity());
         } finally {
             ioService.endBatch();
         }
@@ -150,9 +163,9 @@ public class InboxBackendImpl implements InboxBackend {
      * Helper method to log the opening. Will remove any inbox items that have
      * the same id.
      */
-    private void recordOpeningEvent(final String itemPath,
-                                    final String itemName,
-                                    final User user) {
+    private void onRecordOpeningEvent(final String itemPath,
+                                      final String itemName,
+                                      final User user) {
         addToRecentOpened(itemPath,
                           itemName,
                           user);
@@ -167,9 +180,9 @@ public class InboxBackendImpl implements InboxBackend {
      * Helper method to note the event
      */
     //@Override
-    private void recordUserEditEvent(final String itemPath,
-                                     final String itemName,
-                                     final User user) {
+    private void onRecordUserEditEvent(final String itemPath,
+                                       final String itemName,
+                                       final User user) {
         addToRecentEdited(itemPath,
                           itemName,
                           user);
@@ -257,6 +270,11 @@ public class InboxBackendImpl implements InboxBackend {
 
         ioService.write(path,
                         entry);
+    }
+
+    private boolean isInboxDisabled() {
+        return configService.loadPreferences().containsKey(INBOX_DISABLED)
+                && configService.loadPreferences().get(INBOX_DISABLED).toLowerCase().trim().equals("true");
     }
 
     private XStream getXStream() {
