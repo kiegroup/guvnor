@@ -116,13 +116,6 @@ public class FileExplorerViewImplTest {
                 return cti.get(i);
             }
 
-            /*
-                        @Override
-                        public Iterable<TreeItem> getChildren() {
-                            return cti;
-                        }
-            */
-            //@Override
             protected FSTreeItem makeChild(final FSType type,
                                            final String value) {
                 return new FSTreeItem(type,
