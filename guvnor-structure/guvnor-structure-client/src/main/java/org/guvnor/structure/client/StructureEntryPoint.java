@@ -18,6 +18,7 @@ package org.guvnor.structure.client;
 import org.guvnor.structure.client.resources.NavigatorResources;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 
 /**
  * Bootstrap widgets-core
@@ -29,6 +30,6 @@ public class StructureEntryPoint {
     public void startApp() {
         //Ensure CSS has been loaded
         NavigatorResources.INSTANCE.css().ensureInjected();
+        PatternFlyBootstrapper.ensureBootstrapSelectIsAvailable();
     }
-
 }
