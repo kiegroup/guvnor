@@ -21,6 +21,8 @@ import org.jboss.errai.security.shared.api.identity.User;
 
 public interface InboxBackend {
 
+    final static String INBOX_DISABLED = "org.guvnor.inbox.disabled";
+
     List<InboxEntry> loadRecentEdited(User user);
 
     List<InboxEntry> loadIncoming(User user);

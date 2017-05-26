@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.inbox.backend.server.security.InboxEntrySecurity;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
@@ -89,12 +90,13 @@ public class InboxBackendImplTest {
     public void testCheckBatch() {
         inboxBackend = new InboxBackendImpl(ioService,
                                             systemFS,
+                                            mock(AppConfigService.class),
                                             userServicesBackend,
                                             mailboxService,
                                             securitySpy);
 
-        inboxBackend.recordOpeningEvent(new ResourceOpenedEvent(resourcePath,
-                                                                sessionInfo));
+        inboxBackend.onRecordOpeningEvent(new ResourceOpenedEvent(resourcePath,
+                                                                  sessionInfo));
 
         verify(ioService,
                times(1)).startBatch(mockedFSId);
@@ -102,9 +104,9 @@ public class InboxBackendImplTest {
         verify(ioService,
                times(1)).endBatch();
 
-        inboxBackend.recordUserEditEvent(new ResourceUpdatedEvent(resourcePath,
-                                                                  "message",
-                                                                  sessionInfo));
+        inboxBackend.onRecordUserEditEvent(new ResourceUpdatedEvent(resourcePath,
+                                                                    "message",
+                                                                    sessionInfo));
 
         verify(ioService,
                times(2)).startBatch(mockedFSId);
@@ -129,6 +131,7 @@ public class InboxBackendImplTest {
 
         inboxBackend = new InboxBackendImpl(ioService,
                                             systemFS,
+                                            mock(AppConfigService.class),
                                             userServicesBackend,
                                             mailboxService,
                                             securitySpy) {
