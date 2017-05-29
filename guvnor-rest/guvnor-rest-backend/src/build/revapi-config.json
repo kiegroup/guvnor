@@ -17,15 +17,8 @@
 
   "ignores": {
     "revapi": {
-      "_comment": "Changes between 6.5.0.Final and the current branch. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
-      "ignore": [
-        {
-          "code": "java.method.numberOfParametersChanged",
-          "old": "method javax.ws.rs.core.Response org.guvnor.rest.backend.ProjectResource::testProject(java.lang.String, java.lang.String, org.guvnor.rest.client.BuildConfig)",
-          "new": "method javax.ws.rs.core.Response org.guvnor.rest.backend.ProjectResource::testProject(java.lang.String, java.lang.String)",
-          "justification": "BuildConfig parameter was unused"
-        }
-      ]
+      "_comment": "Changes between 7.0.0.Final and the current branch. These changes are desired and thus ignored. They should be removed when 7.1.0.Final is available.",
+      "ignore": []
     }
   }
 }
