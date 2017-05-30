@@ -17,8 +17,8 @@ package org.guvnor.common.services.project.service;
 
 import java.util.Set;
 
-import org.guvnor.common.services.project.model.*;
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
 import org.uberfire.backend.vfs.Path;
 
 public interface ProjectResourceResolver<T extends Project> {
@@ -28,42 +28,44 @@ public interface ProjectResourceResolver<T extends Project> {
      * @param resource
      * @return Path to the folder containing the Project's pom.xml file or null if the resource was not in a Project
      */
-    T resolveProject( final Path resource );
+    T resolveProject(final Path resource);
 
-    Project resolveParentProject( final Path resource );
+    Project resolveParentProject(final Path resource);
 
-    Project resolveToParentProject( final Path resource );
+    Project resolveToParentProject(final Path resource);
 
     /**
      * Given a Project resolves the calculation of all the packages for this project.
      * @param project
      * @return Collection containing all the packages for the project.
      */
-    Set<Package> resolvePackages( final Project project );
+    Set<Package> resolvePackages(final Project project);
 
-    Set<Package> resolvePackages( final Package pkg );
+    Set<Package> resolvePackages(final Package pkg);
 
-    Package resolveDefaultPackage( final Project project );
+    Package resolveDefaultPackage(final Project project);
 
-    Package resolveParentPackage( final Package pkg );
+    Package resolveDefaultWorkspacePackage(final Project project);
+
+    Package resolveParentPackage(final Package pkg);
 
     /**
      * Given a package and a resource extension resolves the target path where the resource should be placed by default.
      * e.g. for a package org.kie and a drl extension, the by default target path will be src/main/resources/org/kie,
      * and for a java extension with the same package the by default target path will be src/main/java/org/kie
-     *
      * @param pkg A package within a project.
      * @param resourceType a file extension.
      * @return the expected by default path for the given extension.
      */
-    Path resolveDefaultPath( final Package pkg, final String resourceType );
+    Path resolveDefaultPath(final Package pkg,
+                            final String resourceType);
 
     /**
      * Return true if the file is the Project's pom.xml file
      * @param resource
      * @return
      */
-    boolean isPom( Path resource );
+    boolean isPom(Path resource);
 
     /**
      * Given a Resource path resolve it to the containing Package Path. A Package path is the folder containing the resource.
@@ -72,6 +74,5 @@ public interface ProjectResourceResolver<T extends Project> {
      * @param resource
      * @return Path to the folder containing the resource file or null if the resource is not in a Package.
      */
-    org.guvnor.common.services.project.model.Package resolvePackage( final Path resource );
-
+    org.guvnor.common.services.project.model.Package resolvePackage(final Path resource);
 }
