@@ -16,10 +16,11 @@
 
 package org.guvnor.ala.runtime;
 
+import org.guvnor.ala.config.RuntimeConfig;
 import org.guvnor.ala.runtime.providers.ProviderId;
 
 /**
- * Reprensents an unique Id for the Runtime,
+ * Represents an unique Id for the Runtime,
  * containing also a reference to the ProviderId where this Runtime belongs
  *
  * @see Runtime
@@ -31,6 +32,12 @@ public interface RuntimeId {
      * @return String which contains the unique Runtime Id
      */
     String getId();
+
+    /**
+     * Gets the human readable name for the runtime. The runtime name is unique within the provider.
+     * When no name was provided at runtime creation @see {@link RuntimeConfig}, the runtime name is getId().
+     */
+    String getName();
 
     /*
      * Gets the ProviderId which was used to create this runtime

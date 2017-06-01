@@ -115,7 +115,7 @@ public class PipelineEndpointsTestIT {
         input.put( "origin", "https://github.com/kiegroup/drools-workshop" );
         input.put( "project-dir", "drools-webapp-example" );
 
-        proxyPipeline.runPipeline( "mypipe", input );
+        proxyPipeline.runPipeline( "mypipe", input, false );
 
         RuntimeList allRuntimes = proxyRuntime.getRuntimes( 0, 10, "", true );
 

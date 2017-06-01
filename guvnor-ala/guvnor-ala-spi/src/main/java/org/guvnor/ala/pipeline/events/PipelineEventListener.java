@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,30 +26,30 @@ public interface PipelineEventListener {
     /*
      * Event emmited before executing the pipeline
     */
-    void beforePipelineExecution( final BeforePipelineExecutionEvent bpee );
+    void beforePipelineExecution(final BeforePipelineExecutionEvent bpee);
 
     /*
      * Event emmited after the pipeline execution finish
     */
-    void afterPipelineExecution( final AfterPipelineExecutionEvent apee );
+    void afterPipelineExecution(final AfterPipelineExecutionEvent apee);
 
     /*
      * Event emmited before each pipeline stage execution
     */
-    void beforeStageExecution( final BeforeStageExecutionEvent bsee );
+    void beforeStageExecution(final BeforeStageExecutionEvent bsee);
 
     /*
      * Event emmited on an error inside a pipeline stage
     */
-    void onStageError( final OnErrorStageExecutionEvent oesee );
+    void onStageError(final OnErrorStageExecutionEvent oesee);
 
     /*
      * Event emmited after each pipeline stage execution
     */
-    void afterStageExecution( final AfterStageExecutionEvent asee );
+    void afterStageExecution(final AfterStageExecutionEvent asee);
 
     /*
      * Event emmited on an error inside the pipeline
     */
-    void onPipelineError( final OnErrorPipelineExecutionEvent oepee );
+    void onPipelineError(final OnErrorPipelineExecutionEvent oepee);
 }

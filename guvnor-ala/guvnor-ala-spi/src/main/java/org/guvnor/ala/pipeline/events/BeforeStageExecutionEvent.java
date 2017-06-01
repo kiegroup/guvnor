@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,22 +22,14 @@ import org.guvnor.ala.pipeline.Stage;
 /*
  * Event emitted by the PipelineExecutor before each stage of the pipeline is executed
 */
-public class BeforeStageExecutionEvent implements PipelineEvent {
+public class BeforeStageExecutionEvent
+        extends StageExecutionPipelineEvent {
 
-    private final Pipeline pipeline;
-    private final Stage stage;
-
-    public BeforeStageExecutionEvent( final Pipeline pipeline,
-                                      final Stage stage ) {
-        this.pipeline = pipeline;
-        this.stage = stage;
-    }
-
-    public Stage getStage() {
-        return stage;
-    }
-
-    public Pipeline getPipeline() {
-        return pipeline;
+    public BeforeStageExecutionEvent(final String executionId,
+                                     final Pipeline pipeline,
+                                     final Stage stage) {
+        super(executionId,
+              pipeline,
+              stage);
     }
 }

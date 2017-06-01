@@ -16,36 +16,71 @@
 
 package org.guvnor.ala.registry;
 
-
 import java.util.List;
-import org.guvnor.ala.pipeline.Pipeline;
 
-/*
+import org.guvnor.ala.pipeline.Pipeline;
+import org.guvnor.ala.runtime.providers.ProviderType;
+
+/**
  * Represents the PipelineRegistry where all the Pipelines are registered
-*/
+ */
 public interface PipelineRegistry {
 
-    /*
-     * Register a Pipeline
-     * @param Pipeline the pipeline to be registered
-    */
-    void registerPipeline( Pipeline pipeline );
+    /**
+     * Registers a Pipeline
+     * @param pipeline The Pipeline to be registered.
+     */
+    void registerPipeline(Pipeline pipeline);
 
-    /*
-     * Get Pipeline by Name
-     * @param String pipelineId 
-     * @return the selected Pipeline
-    */
-    Pipeline getPipelineByName( String pipelineId );
+    /**
+     * Registers a Pipeline by associating it to a provider type.
+     * @param pipeline The Pipeline to be registered.
+     * @param providerType The provider type for associating the Pipeline.
+     */
+    void registerPipeline(Pipeline pipeline,
+                          ProviderType providerType);
 
-     /*
-     * Get All the registered Pipelines
-     * @param int page number
-     * @param int page size
-     * @param String sort column
-     * @param boolean sortOrder true: ascending, false descending
-     * @return List<Pipeline> with all the available pipelines. 
-    */
-    public List<Pipeline> getPipelines( int page, int pageSize, String sort, boolean sortOrder );
+    /**
+     * Gets a Pipeline by Name.
+     * @param pipelineId the pipeline id.
+     * @return the pipeline corresponding to the pipeline id.
+     */
+    Pipeline getPipelineByName(String pipelineId);
 
+    /**
+     * Gets all the registered Pipelines
+     * @param page the page number
+     * @param pageSize the page size
+     * @param sort the sort column
+     * @param sortOrder the sort order to use: true ascending, false descending
+     * @return a list with all the available pipelines.
+     */
+    List<Pipeline> getPipelines(int page,
+                                int pageSize,
+                                String sort,
+                                boolean sortOrder);
+
+    /**
+     * Gets all the registered Pipelines for a given provider type.
+     * @param providerType A provider type name.
+     * @param version the provider type version.
+     * @param page the page number
+     * @param pageSize the page size
+     * @param sort the sort column
+     * @param sortOrder the sort order to use: true ascending, false descending
+     * @return the list of pipelines associated to the given provider.
+     */
+    List<Pipeline> getPipelines(String providerType,
+                                String version,
+                                int page,
+                                int pageSize,
+                                String sort,
+                                boolean sortOrder);
+
+    /**
+     * Gets the associated provider type for a given pipeline.
+     * @param pipelineId a pipeline id.
+     * @return a provider type in cases where the pipeline was associated to one, null in any other case.
+     */
+    ProviderType getProviderType(String pipelineId);
 }

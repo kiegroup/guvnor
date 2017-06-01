@@ -49,6 +49,8 @@ import org.guvnor.ala.docker.model.DockerRuntimeEndpoint;
 import org.guvnor.ala.docker.model.DockerRuntimeInfo;
 import org.guvnor.ala.docker.model.DockerRuntimeState;
 
+import static org.guvnor.ala.util.RuntimeConfigHelper.buildRuntimeName;
+
 public class DockerRuntimeExecExecutor<T extends DockerRuntimeConfig> implements RuntimeBuilder<T, DockerRuntime>,
         RuntimeDestroyer,
         FunctionConfigExecutor<T, DockerRuntime> {
@@ -130,7 +132,7 @@ public class DockerRuntimeExecExecutor<T extends DockerRuntimeConfig> implements
         dockerRuntimeEndpoint.setHost( host );
         dockerRuntimeEndpoint.setPort( Integer.valueOf( runtimeConfig.getPort() ) );
         dockerRuntimeEndpoint.setContext( "" );
-        return Optional.of( new DockerRuntime( shortId, runtimeConfig, dockerProvider,
+        return Optional.of( new DockerRuntime( shortId, buildRuntimeName(runtimeConfig, shortId), runtimeConfig, dockerProvider,
                 dockerRuntimeEndpoint, new DockerRuntimeInfo(), new DockerRuntimeState("Running", new Date().toString()) ) );
     }
 

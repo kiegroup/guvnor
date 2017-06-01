@@ -22,4 +22,9 @@ package org.guvnor.ala.pipeline.events;
 */
 public interface PipelineEvent {
 
+    /**
+     * @return The UUID identifier for this pipeline execution.
+     */
+    String getExecutionId();
+
 }

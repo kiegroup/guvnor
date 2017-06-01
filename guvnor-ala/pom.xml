@@ -28,13 +28,16 @@
     <module>guvnor-ala-spi</module>
     <module>guvnor-ala-source-git</module>
     <module>guvnor-ala-build-maven</module>
-    <module>guvnor-ala-docker-provider</module>
-    <module>guvnor-ala-wildfly-provider</module>
     <module>guvnor-ala-registry-local</module>
     <module>guvnor-ala-services-api</module>
     <module>guvnor-ala-services-backend</module>
     <module>guvnor-ala-services-rest</module>
+    <module>guvnor-ala-ui</module>
+    <module>guvnor-ala-docker-provider</module>
+    <module>guvnor-ala-wildfly</module>
+    <module>guvnor-ala-openshift</module>
     <module>guvnor-ala-distribution</module>
+
   </modules>
 
 </project>

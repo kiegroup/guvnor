@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import javax.inject.Inject;
 import org.apache.commons.io.FileUtils;
 
@@ -37,7 +38,9 @@ import org.guvnor.ala.docker.model.DockerRuntime;
 import org.guvnor.ala.docker.service.DockerRuntimeManager;
 import org.guvnor.ala.pipeline.ConfigExecutor;
 import org.guvnor.ala.pipeline.FunctionConfigExecutor;
+import org.guvnor.ala.pipeline.execution.impl.PipelineExecutorTaskManagerImpl;
 import org.guvnor.ala.registry.RuntimeRegistry;
+import org.guvnor.ala.registry.local.InMemoryPipelineExecutorRegistry;
 import org.guvnor.ala.registry.local.InMemoryRuntimeRegistry;
 import org.guvnor.ala.runtime.RuntimeBuilder;
 import org.guvnor.ala.runtime.RuntimeDestroyer;
@@ -170,6 +173,9 @@ public class RestPipelineImplTest {
 
         deployment.addClass( MockPipelineEventListener.class );
 
+        deployment.addClass(PipelineExecutorTaskManagerImpl.class);
+        deployment.addClass(InMemoryPipelineExecutorRegistry.class);
+
         deployment.addAsManifestResource( EmptyAsset.INSTANCE, "beans.xml" );
         return deployment;
     }
@@ -231,7 +237,7 @@ public class RestPipelineImplTest {
         input.put( "origin", "https://github.com/kiegroup/drools-workshop" );
         input.put( "project-dir", "drools-webapp-example" );
 
-        pipelineService.runPipeline( "mypipe", input );
+        pipelineService.runPipeline( "mypipe", input, false );
 
         RuntimeList allRuntimes = runtimeService.getRuntimes(0, 10, "", true);
 

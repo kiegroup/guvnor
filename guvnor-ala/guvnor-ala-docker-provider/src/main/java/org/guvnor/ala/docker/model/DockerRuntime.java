@@ -31,9 +31,9 @@ public class DockerRuntime extends BaseRuntime {
     public DockerRuntime() {
     }
 
-    public DockerRuntime( String id, RuntimeConfig config, ProviderId providerId, 
+    public DockerRuntime( String id, String name, RuntimeConfig config, ProviderId providerId,
             RuntimeEndpoint endpoint, RuntimeInfo info, RuntimeState state ) {
-        super( id, config, providerId, endpoint, info, state );
+        super( id, name, config, providerId, endpoint, info, state );
     }
 
 }

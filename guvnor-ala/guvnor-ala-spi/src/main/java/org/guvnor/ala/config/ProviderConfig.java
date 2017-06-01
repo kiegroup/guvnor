@@ -25,4 +25,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public interface ProviderConfig extends Config {
 
+    /**
+     * Standard attribute name for referencing or defining a provider. Pipeline inputs that wants to refer to an already
+     * registered provider, or wants to create a provider during pipeline execution should use this parameter for
+     * holding the provider name.
+     */
+    String PROVIDER_NAME = "provider-name";
+
 }
