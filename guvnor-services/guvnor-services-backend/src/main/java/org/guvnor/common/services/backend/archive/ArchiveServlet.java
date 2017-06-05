@@ -50,7 +50,7 @@ public class ArchiveServlet
                 String downLoadFileName = uri.substring( index );
                 if ( downLoadFileName.startsWith( "/" ) ) downLoadFileName = downLoadFileName.substring( 1 );
                 if ( downLoadFileName.endsWith( "/" ) ) downLoadFileName = downLoadFileName.substring( 0, downLoadFileName.length() - 1 );
-                downLoadFileName.replaceAll( "/", "_" );
+                downLoadFileName = downLoadFileName.replaceAll( "/", "_" );
 
                 final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 

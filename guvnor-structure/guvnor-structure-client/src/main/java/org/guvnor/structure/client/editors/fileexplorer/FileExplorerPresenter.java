@@ -202,7 +202,7 @@ public class FileExplorerPresenter
         }
         if ( repositories.containsKey( repository.getAlias() ) ) {
             view.removeRepository( repository );
-            repositories.remove( repository );
+            repositories.remove( repository.getAlias() );
         }
     }
 
