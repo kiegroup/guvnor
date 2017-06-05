@@ -24,4 +24,13 @@ import org.guvnor.ala.config.BinaryConfig;
  */
 public interface MavenBuildExecConfig extends BinaryConfig {
 
+    String CAPTURE_ERRORS = "captureErrors";
+
+    /**
+     * Indicates if the maven build errors should be captured. When the errors are captured the pipeline will always
+     * finish and the consumer will have the chance to look at the results to see if the build execution was successful.
+     *
+     * @return true if the error capture mode is enabled, false in any other case.
+     */
+    default String captureErrors() { return "${input." + CAPTURE_ERRORS + "}"; }
 }
