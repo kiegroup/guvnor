@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.enterprise.inject.Instance;
 
+import org.appformer.maven.integration.Aether;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.deployment.DeployRequest;
@@ -47,7 +48,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.kie.scanner.Aether;
 import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

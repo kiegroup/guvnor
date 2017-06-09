@@ -25,6 +25,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import org.apache.maven.project.MavenProject;
+import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.guvnor.ala.build.maven.config.MavenProjectConfig;
 import org.guvnor.ala.build.maven.model.PlugIn;
@@ -35,7 +36,6 @@ import org.guvnor.ala.config.ProjectConfig;
 import org.guvnor.ala.pipeline.BiFunctionConfigExecutor;
 import org.guvnor.ala.registry.SourceRegistry;
 import org.guvnor.ala.source.Source;
-import org.kie.scanner.embedder.MavenProjectLoader;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 

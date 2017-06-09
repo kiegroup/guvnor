@@ -23,6 +23,7 @@ import java.util.Properties;
 import javax.inject.Inject;
 
 import org.apache.maven.project.MavenProject;
+import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.guvnor.ala.build.Project;
 import org.guvnor.ala.build.maven.config.MavenBuildExecConfig;
 import org.guvnor.ala.build.maven.model.MavenBinary;
@@ -33,11 +34,10 @@ import org.guvnor.ala.config.Config;
 import org.guvnor.ala.exceptions.BuildException;
 import org.guvnor.ala.pipeline.BiFunctionConfigExecutor;
 import org.guvnor.ala.registry.BuildRegistry;
-import org.kie.scanner.embedder.MavenProjectLoader;
 import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.java.nio.file.Path;
 
-import static org.guvnor.ala.build.maven.util.MavenBuildExecutor.executeMaven;
+import static org.guvnor.ala.build.maven.util.MavenBuildExecutor.*;
 
 public class MavenBuildExecConfigExecutor implements BiFunctionConfigExecutor<MavenBuild, MavenBuildExecConfig, BinaryConfig> {
 
@@ -50,13 +50,13 @@ public class MavenBuildExecConfigExecutor implements BiFunctionConfigExecutor<Ma
 
     @Override
     public Optional<BinaryConfig> apply( final MavenBuild mavenBuild,
-            final MavenBuildExecConfig mavenBuildExecConfig ) {
+                                         final MavenBuildExecConfig mavenBuildExecConfig ) {
 
         final Project project = mavenBuild.getProject();
 
-        final MavenProject mavenProject = build(project, mavenBuild.getGoals(), mavenBuild.getProperties() );
+        final MavenProject mavenProject = build( project, mavenBuild.getGoals(), mavenBuild.getProperties() );
 
-        final Path path = FileSystems.getFileSystem(URI.create("file://default")).getPath(project.getTempDir() + "/target/" + project.getExpectedBinary());
+        final Path path = FileSystems.getFileSystem( URI.create( "file://default" ) ).getPath( project.getTempDir() + "/target/" + project.getExpectedBinary() );
 
         final MavenBinary binary = new MavenProjectBinaryImpl(
                 path,
@@ -84,12 +84,12 @@ public class MavenBuildExecConfigExecutor implements BiFunctionConfigExecutor<Ma
         return "maven-exec-config";
     }
 
-    public MavenProject build(final Project project,
-                              final List<String> goals,
-                              final Properties properties ) throws BuildException {
+    public MavenProject build( final Project project,
+                               final List<String> goals,
+                               final Properties properties ) throws BuildException {
         final File pom = new File( project.getTempDir(), "pom.xml" );
         executeMaven( pom, properties, goals.toArray( new String[]{} ) );
-        return MavenProjectLoader.parseMavenPom(pom);
+        return MavenProjectLoader.parseMavenPom( pom );
     }
 
 }

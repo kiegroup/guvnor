@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.project.MavenProject;
+import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.guvnor.ala.build.Project;
 
 import org.guvnor.ala.build.maven.model.impl.MavenProjectImpl;
@@ -46,7 +47,6 @@ import org.junit.After;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.scanner.embedder.MavenProjectLoader;
 import org.uberfire.java.nio.file.InvalidPathException;
 
 /**

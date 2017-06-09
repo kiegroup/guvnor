@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.Optional;
 import javax.inject.Inject;
 
+import org.appformer.maven.integration.MavenRepository;
 import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.ala.build.maven.config.MavenDependencyConfig;
 import org.guvnor.ala.build.maven.model.MavenBinary;
@@ -26,7 +27,6 @@ import org.guvnor.ala.build.maven.model.impl.MavenBinaryImpl;
 import org.guvnor.ala.config.Config;
 import org.guvnor.ala.pipeline.FunctionConfigExecutor;
 import org.guvnor.ala.registry.BuildRegistry;
-import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.FileSystems;
@@ -78,7 +78,7 @@ public class MavenDependencyConfigExecutor implements FunctionConfigExecutor<Mav
     }
 
     protected Artifact resolveArtifact(final String artifactId) {
-        return MavenRepository.getMavenRepository().resolveArtifact(artifactId);
+        return MavenRepository.getMavenRepository().resolveArtifact( artifactId);
     }
 
 }

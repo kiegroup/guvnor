@@ -21,11 +21,11 @@ import java.util.Arrays;
 import java.util.Properties;
 
 import org.apache.maven.execution.MavenExecutionResult;
+import org.appformer.maven.integration.embedder.MavenEmbedder;
+import org.appformer.maven.integration.embedder.MavenEmbedderException;
+import org.appformer.maven.integration.embedder.MavenProjectLoader;
+import org.appformer.maven.integration.embedder.MavenRequest;
 import org.guvnor.ala.exceptions.BuildException;
-import org.kie.scanner.embedder.MavenEmbedder;
-import org.kie.scanner.embedder.MavenEmbedderException;
-import org.kie.scanner.embedder.MavenProjectLoader;
-import org.kie.scanner.embedder.MavenRequest;
 import org.slf4j.LoggerFactory;
 
 public final class MavenBuildExecutor {

@@ -27,6 +27,7 @@ import java.net.URI;
 import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
+import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +42,6 @@ import org.guvnor.ala.source.git.GitHub;
 import org.guvnor.ala.source.git.GitRepository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.kie.scanner.embedder.MavenProjectLoader;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
