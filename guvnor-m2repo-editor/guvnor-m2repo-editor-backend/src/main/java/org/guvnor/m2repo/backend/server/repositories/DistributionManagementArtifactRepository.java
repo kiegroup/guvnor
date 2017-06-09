@@ -33,6 +33,11 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
+import org.appformer.maven.integration.Aether;
+import org.appformer.maven.integration.embedder.MavenEmbedder;
+import org.appformer.maven.integration.embedder.MavenEmbedderException;
+import org.appformer.maven.integration.embedder.MavenProjectLoader;
+import org.appformer.maven.integration.embedder.MavenSettings;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.deployment.DeploymentException;
@@ -40,11 +45,6 @@ import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
 import org.guvnor.common.services.project.model.GAV;
-import org.kie.scanner.Aether;
-import org.kie.scanner.embedder.MavenEmbedder;
-import org.kie.scanner.embedder.MavenEmbedderException;
-import org.kie.scanner.embedder.MavenProjectLoader;
-import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +87,7 @@ public class DistributionManagementArtifactRepository implements ArtifactReposit
                        final Artifact... artifacts) {
         try {
 
-            MavenEmbedder embedder = MavenProjectLoader.newMavenEmbedder(false);
+            MavenEmbedder embedder = MavenProjectLoader.newMavenEmbedder( false);
             DistributionManagement distributionManagement = getDistributionManagement(pom,
                                                                                       embedder);
 
@@ -119,8 +119,8 @@ public class DistributionManagementArtifactRepository implements ArtifactReposit
                     remoteRequest.setRepository(getRemoteRepoFromDeployment(remoteRepository,
                                                                             embedder));
 
-                    Aether.getAether().getSystem().deploy(Aether.getAether().getSession(),
-                                                          remoteRequest);
+                    Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
+                                                           remoteRequest);
                 }
             }
         } catch (DeploymentException e) {

@@ -31,13 +31,11 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.maven.project.ProjectBuildingException;
-import org.drools.compiler.kproject.xml.PomModel;
+import org.appformer.maven.support.PomModel;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.guvnor.m2repo.model.HTMLFileManagerFields;
-import org.kie.scanner.embedder.MavenEmbedderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,7 +138,7 @@ public class HttpPostHelper {
                 // is available() safe?
                 jarStream.mark(jarStream.available());
 
-                PomModel pomModel = PomModelResolver.resolveFromJar(jarStream);
+                PomModel pomModel = PomModelResolver.resolveFromJar( jarStream);
 
                 //If we were able to get a POM model we can get the GAV
                 if (pomModel != null) {

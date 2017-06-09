@@ -29,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.appformer.maven.integration.Aether;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.deployment.DeployRequest;
@@ -40,7 +41,6 @@ import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.ArtifactImpl;
-import org.kie.scanner.Aether;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.apache.commons.io.FilenameUtils;
@@ -67,7 +67,7 @@ public class FileSystemArtifactRepository implements ArtifactRepository {
         }
         this.repositoryDirectory = dir;
         this.repository = this.createRepository(dir);
-        Aether.getAether().getRepositories().add(this.getRepository());
+        Aether.getAether().getRepositories().add( this.getRepository());
     }
 
     @Override

@@ -22,11 +22,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.appformer.maven.integration.Aether;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.installation.InstallationException;
 import org.guvnor.common.services.project.model.GAV;
-import org.kie.scanner.Aether;
 
 public class LocalArtifactRepository implements ArtifactRepository {
 
@@ -71,8 +71,8 @@ public class LocalArtifactRepository implements ArtifactRepository {
                 installRequest
                         .addArtifact(artifact);
             }
-            Aether.getAether().getSystem().install(Aether.getAether().getSession(),
-                                                   installRequest);
+            Aether.getAether().getSystem().install( Aether.getAether().getSession(),
+                                                    installRequest);
         } catch (InstallationException e) {
             throw new RuntimeException(e);
         }

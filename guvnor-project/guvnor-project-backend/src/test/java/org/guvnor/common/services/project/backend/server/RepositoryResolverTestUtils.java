@@ -29,7 +29,11 @@ import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.appformer.maven.integration.Aether;
+import org.appformer.maven.integration.MavenRepository;
+import org.appformer.maven.integration.embedder.MavenSettings;
+import org.appformer.maven.support.ReleaseId;
+import org.appformer.maven.support.ReleaseIdImpl;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -39,12 +43,8 @@ import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.util.artifact.SubArtifact;
-import org.kie.api.builder.ReleaseId;
-import org.kie.scanner.Aether;
-import org.kie.scanner.MavenRepository;
-import org.kie.scanner.embedder.MavenSettings;
 
-import static org.kie.scanner.MavenRepository.*;
+import static org.appformer.maven.integration.MavenRepository.toFileName;
 
 public class RepositoryResolverTestUtils {
 

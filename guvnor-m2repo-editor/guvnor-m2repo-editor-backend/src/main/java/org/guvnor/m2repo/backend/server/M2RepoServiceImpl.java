@@ -30,8 +30,8 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.compiler.kproject.xml.MinimalPomParser;
-import org.drools.compiler.kproject.xml.PomModel;
+import org.appformer.maven.support.MinimalPomParser;
+import org.appformer.maven.support.PomModel;
 import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.model.JarListPageRequest;
@@ -200,8 +200,8 @@ public class M2RepoServiceImpl implements M2RepoService,
         try {
             final String pom = getPomText(path);
             is = new ByteArrayInputStream(pom.getBytes(Charset.forName("UTF-8")));
-            final PomModel model = MinimalPomParser.parse(path,
-                                                          is);
+            final PomModel model = MinimalPomParser.parse( path,
+                                                           is);
             gav = new GAV(model.getReleaseId().getGroupId(),
                           model.getReleaseId().getArtifactId(),
                           model.getReleaseId().getVersion());

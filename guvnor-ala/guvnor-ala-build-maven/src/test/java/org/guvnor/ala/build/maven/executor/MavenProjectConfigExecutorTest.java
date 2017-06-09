@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.project.MavenProject;
+import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.guvnor.ala.build.Binary;
 import org.guvnor.ala.build.Project;
 import org.guvnor.ala.build.maven.config.impl.MavenBuildConfigImpl;
@@ -50,7 +51,6 @@ import org.guvnor.ala.source.git.executor.GitConfigExecutor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.scanner.embedder.MavenProjectLoader;
 
 import static java.util.Arrays.*;
 import static org.guvnor.ala.pipeline.StageUtil.*;
@@ -195,7 +195,7 @@ public class MavenProjectConfigExecutorTest {
         final MavenBinary mavenBinary = (MavenBinary) binary;
         assertEquals("Maven", mavenBinary.getType());
         final File pom = new File( project.getTempDir(), "pom.xml" );
-        final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pom);
+        final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pom);
         assertEquals(mavenProject.getGroupId(), mavenBinary.getGroupId());
         assertEquals(mavenProject.getArtifactId(), mavenBinary.getArtifactId());
         assertEquals(mavenProject.getVersion(), mavenBinary.getVersion());

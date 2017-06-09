@@ -28,6 +28,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.project.MavenProject;
+import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.arquillian.cube.CubeController;
 import org.arquillian.cube.HostIp;
 import org.arquillian.cube.requirement.ArquillianConditionalRunner;
@@ -48,7 +49,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.scanner.embedder.MavenProjectLoader;
 
 import static org.junit.Assert.*;
 import org.uberfire.java.nio.file.Path;

@@ -18,11 +18,11 @@ package org.guvnor.m2repo.backend.server.helpers;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.apache.maven.project.ProjectBuildingException;
+import org.appformer.maven.integration.embedder.MavenEmbedderException;
+import org.appformer.maven.support.PomModel;
 import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.compiler.kproject.xml.PomModel;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
 import org.kie.api.builder.ReleaseId;
-import org.kie.scanner.embedder.MavenEmbedderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

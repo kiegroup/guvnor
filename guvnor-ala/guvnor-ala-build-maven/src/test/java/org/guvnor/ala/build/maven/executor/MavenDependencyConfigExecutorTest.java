@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.appformer.maven.integration.embedder.MavenSettings;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.Artifact;
@@ -44,12 +45,11 @@ import org.guvnor.ala.registry.local.InMemoryBuildRegistry;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.scanner.embedder.MavenSettings;
 
-import static java.util.Collections.singletonList;
-import static org.guvnor.ala.pipeline.StageUtil.config;
+import static java.util.Collections.*;
+import static org.appformer.maven.integration.embedder.MavenSettings.*;
+import static org.guvnor.ala.pipeline.StageUtil.*;
 import static org.junit.Assert.*;
-import static org.kie.scanner.embedder.MavenSettings.CUSTOM_SETTINGS_PROPERTY;
 
 public class MavenDependencyConfigExecutorTest {
 
