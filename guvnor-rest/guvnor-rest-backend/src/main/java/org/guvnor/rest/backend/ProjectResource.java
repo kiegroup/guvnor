@@ -15,6 +15,8 @@
 */
 package org.guvnor.rest.backend;
 
+import static org.guvnor.rest.backend.PermissionConstants.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -70,9 +72,6 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
-
-import static org.kie.internal.remote.PermissionConstants.REST_PROJECT_ROLE;
-import static org.kie.internal.remote.PermissionConstants.REST_ROLE;
 
 /**
  * REST services

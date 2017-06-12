@@ -9,7 +9,6 @@
     </encoder>
   </appender>
 
-  <logger name="org.drools" level="info"/>
   <logger name="org.guvnor" level="info"/>
 
   <root level="WARN">

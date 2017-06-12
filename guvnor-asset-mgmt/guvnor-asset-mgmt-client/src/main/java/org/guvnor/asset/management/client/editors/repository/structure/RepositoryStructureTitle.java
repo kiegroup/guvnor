@@ -26,7 +26,7 @@ import org.guvnor.common.services.project.context.ProjectContext;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.drools.workbench.models.datamodel.util.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class RepositoryStructureTitle {

@@ -15,7 +15,7 @@
 
 package org.guvnor.common.services.project.model;
 
-import org.drools.workbench.models.datamodel.imports.Imports;
+import org.appformer.project.datamodel.imports.Imports;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
