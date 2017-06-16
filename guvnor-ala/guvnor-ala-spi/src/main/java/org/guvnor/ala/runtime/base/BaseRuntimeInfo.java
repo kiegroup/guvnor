@@ -21,21 +21,21 @@ import java.util.Objects;
 import org.guvnor.ala.config.RuntimeConfig;
 import org.guvnor.ala.runtime.RuntimeInfo;
 
-/*
+/**
  * BaseRuntimeInfo implementation to be extended by each Runtime Provider
-*/
-public class BaseRuntimeInfo implements RuntimeInfo {
+ */
+public class BaseRuntimeInfo
+        implements RuntimeInfo {
 
     private RuntimeConfig config;
 
-    /*
-     * No-args constructor for enabling marshalling to work, please do not remove. 
-    */
+    /**
+     * No-args constructor for enabling marshalling to work, please do not remove.
+     */
     public BaseRuntimeInfo() {
     }
 
-    public BaseRuntimeInfo(RuntimeConfig config) {
-
+    public BaseRuntimeInfo(final RuntimeConfig config) {
         this.config = config;
     }
 
@@ -46,7 +46,9 @@ public class BaseRuntimeInfo implements RuntimeInfo {
 
     @Override
     public String toString() {
-        return "RuntimeInfo{ config=" + config + '}';
+        return "BaseRuntimeInfo{" +
+                "config=" + config +
+                '}';
     }
 
     @Override

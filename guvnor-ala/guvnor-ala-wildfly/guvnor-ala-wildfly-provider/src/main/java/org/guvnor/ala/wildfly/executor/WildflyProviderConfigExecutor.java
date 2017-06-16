@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 JBoss, by Red Hat, Inc
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,12 +29,14 @@ import org.guvnor.ala.runtime.providers.ProviderBuilder;
 import org.guvnor.ala.runtime.providers.ProviderDestroyer;
 import org.guvnor.ala.runtime.providers.ProviderId;
 import org.guvnor.ala.wildfly.config.WildflyProviderConfig;
+import org.guvnor.ala.wildfly.config.impl.WildflyProviderConfigImpl;
 import org.guvnor.ala.wildfly.model.WildflyProvider;
 import org.guvnor.ala.wildfly.model.WildflyProviderImpl;
 
-public class WildflyProviderConfigExecutor implements ProviderBuilder<WildflyProviderConfig, WildflyProvider>,
-                                                      ProviderDestroyer,
-                                                      FunctionConfigExecutor<WildflyProviderConfig, WildflyProvider> {
+public class WildflyProviderConfigExecutor
+        implements ProviderBuilder<WildflyProviderConfig, WildflyProvider>,
+                   ProviderDestroyer,
+                   FunctionConfigExecutor<WildflyProviderConfig, WildflyProvider> {
 
     private RuntimeRegistry runtimeRegistry;
 
@@ -61,12 +63,12 @@ public class WildflyProviderConfigExecutor implements ProviderBuilder<WildflyPro
                 wildflyProvider = (WildflyProvider) provider;
             }
         } else {
-            wildflyProvider = new WildflyProviderImpl(wildflyProviderConfig.getName(),
-                                                      wildflyProviderConfig.getHostIp(),
-                                                      wildflyProviderConfig.getPort(),
-                                                      wildflyProviderConfig.getManagementPort(),
-                                                      wildflyProviderConfig.getUser(),
-                                                      wildflyProviderConfig.getPassword());
+            wildflyProvider = new WildflyProviderImpl(new WildflyProviderConfigImpl(wildflyProviderConfig.getName(),
+                                                                                    wildflyProviderConfig.getHost(),
+                                                                                    wildflyProviderConfig.getPort(),
+                                                                                    wildflyProviderConfig.getManagementPort(),
+                                                                                    wildflyProviderConfig.getUser(),
+                                                                                    wildflyProviderConfig.getPassword()));
             runtimeRegistry.registerProvider(wildflyProvider);
         }
         return Optional.of(wildflyProvider);

@@ -18,6 +18,7 @@ package org.guvnor.ala.ui.backend.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +27,16 @@ import org.guvnor.ala.services.api.backend.RuntimeProvisioningServiceBackend;
 import org.guvnor.ala.ui.model.ProviderType;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProviderTypeStatus;
+import org.guvnor.ala.ui.preferences.ProvisioningPreferences;
+import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.preferences.shared.PreferenceScope;
 
-import static org.guvnor.ala.ui.ProvisioningManagementBackendTestCommons.mockProviderTypeListSPI;
+import static org.guvnor.ala.AlaSPITestCommons.mockProviderTypeListSPI;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
@@ -48,27 +52,53 @@ public class ProviderTypeServiceImplTest {
     private RuntimeProvisioningServiceBackend runtimeProvisioningService;
 
     @Mock
+    private GlobalPreferenceScope globalPreferenceScope;
+
+    @Mock
+    private PreferenceScope preferenceScope;
+
+    @Mock
+    private ProvisioningPreferences provisioningPreferences;
+
+    @Mock
     private ProviderTypeServiceImpl service;
 
     private List<org.guvnor.ala.runtime.providers.ProviderType> providerTypesSpi;
 
-    private List<ProviderType> providerTypesToEnable;
+    private List<ProviderType> pickedProviderTypes;
 
     @Before
     public void setUp() {
         providerTypesSpi = mockProviderTypeListSPI(PROVIDER_TYPES_COUNT);
 
+        when(globalPreferenceScope.resolve()).thenReturn(preferenceScope);
+        provisioningPreferences = spy(new ProvisioningPreferences() {
+            {
+                setProviderTypeEnablements(new HashMap<>());
+            }
+
+            @Override
+            public void load() {
+
+            }
+
+            @Override
+            public void save(PreferenceScope customScope) {
+
+            }
+        });
+
         when(runtimeProvisioningService.getProviderTypes(anyInt(),
                                                          anyInt(),
                                                          anyString(),
                                                          anyBoolean())).thenReturn(providerTypesSpi);
-
-        service = new ProviderTypeServiceImpl(runtimeProvisioningService);
+        service = new ProviderTypeServiceImpl(runtimeProvisioningService,
+                                              provisioningPreferences,
+                                              globalPreferenceScope);
     }
 
     @Test
     public void testGetAvailableProviders() {
-
         Collection<ProviderType> result = service.getAvailableProviderTypes();
         assertEquals(PROVIDER_TYPES_COUNT,
                      result.size());
@@ -111,47 +141,46 @@ public class ProviderTypeServiceImplTest {
 
     @Test
     public void testGetEnabledProviderTypes() {
-        Collection<ProviderType> enabledProviderTypes = service.getEnabledProviderTypes();
-        //no enabled types in the first invocation
-        assertTrue(enabledProviderTypes.isEmpty());
-
-        //enable some providers
-        prepareProvidersToEnable();
-
-        service.enableProviderTypes(providerTypesToEnable);
-
+        //pick some providers as the currently enabled ones by emulating their status in the preferences.
+        pickSomeProviders();
+        pickedProviderTypes.forEach(providerType -> provisioningPreferences.getProviderTypeEnablements().put(providerType,
+                                                                                                             Boolean.TRUE));
         Collection<ProviderType> result = service.getEnabledProviderTypes();
-        assertEquals(providerTypesToEnable,
-                     result);
+        assertEquals(pickedProviderTypes.size(),
+                     result.size());
+        pickedProviderTypes.forEach(providerType -> assertTrue(result.contains(providerType)));
+        verify(provisioningPreferences,
+               times(1)).load();
     }
 
     @Test
     public void testEnableProviderTypes() {
-        //enable some providers
-        prepareProvidersToEnable();
-        service.enableProviderTypes(providerTypesToEnable);
-
-        Collection<ProviderType> result = service.getEnabledProviderTypes();
-        assertEquals(providerTypesToEnable,
-                     result);
+        //pick some providers an emulate that they are currently disabled in the preferences.
+        pickSomeProviders();
+        pickedProviderTypes.forEach(providerType -> provisioningPreferences.getProviderTypeEnablements().put(providerType,
+                                                                                                             Boolean.FALSE));
+        service.enableProviderTypes(pickedProviderTypes);
+        //they must now be enabled.
+        pickedProviderTypes.forEach(providerType -> assertTrue(provisioningPreferences.getProviderTypeEnablements().get(providerType)));
+        verify(provisioningPreferences,
+               times(pickedProviderTypes.size())).save(preferenceScope);
     }
 
     @Test
-    public void testDisableProviderTypes() {
-        //enable some providers
-        prepareProvidersToEnable();
-        service.enableProviderTypes(providerTypesToEnable);
-
+    public void testDisableProviderType() {
+        pickSomeProviders();
+        //pick some providers an emulate that they are currently enabled in the preferences.
+        pickSomeProviders();
+        pickedProviderTypes.forEach(providerType -> provisioningPreferences.getProviderTypeEnablements().put(providerType,
+                                                                                                             Boolean.TRUE));
         //pick a provider type to disable and disable it
-        ProviderType providerTypeToDisable = providerTypesToEnable.get(0);
-        ProviderType providerTypeNotDisabled = providerTypesToEnable.get(1);
-        service.disableProviderType(providerTypeToDisable);
+        ProviderType providerTypeToDisable = pickedProviderTypes.get(0);
 
-        Collection<ProviderType> result = service.getEnabledProviderTypes();
-        //the disabled provider type can't be present in the results.
-        assertFalse(result.contains(providerTypeToDisable));
-        //but the non disabled must be there.
-        assertTrue(result.contains(providerTypeNotDisabled));
+        service.disableProviderType(providerTypeToDisable);
+        //it must be now enabled.
+        assertFalse(provisioningPreferences.getProviderTypeEnablements().get(providerTypeToDisable));
+        verify(provisioningPreferences,
+               times(1)).save(preferenceScope);
     }
 
     @Test
@@ -164,8 +193,8 @@ public class ProviderTypeServiceImplTest {
                                                                  ProviderTypeStatus.DISABLED));
 
         //enable some providers
-        prepareProvidersToEnable();
-        service.enableProviderTypes(providerTypesToEnable);
+        pickSomeProviders();
+        service.enableProviderTypes(pickedProviderTypes);
 
         Map<ProviderType, ProviderTypeStatus> currentStatusMap = service.getProviderTypesStatus();
 
@@ -173,23 +202,23 @@ public class ProviderTypeServiceImplTest {
         assertEquals(PROVIDER_TYPES_COUNT,
                      currentStatusMap.size());
 
-        providerTypesToEnable.forEach(enabledProvider -> assertEquals(ProviderTypeStatus.ENABLED,
-                                                                      currentStatusMap.get(providerTypesToEnable.get(0))));
+        pickedProviderTypes.forEach(enabledProvider -> assertEquals(ProviderTypeStatus.ENABLED,
+                                                                    currentStatusMap.get(pickedProviderTypes.get(0))));
 
         //all the remaining must be disabled.
-        long expectedDisabled = PROVIDER_TYPES_COUNT - providerTypesToEnable.size();
+        long expectedDisabled = PROVIDER_TYPES_COUNT - pickedProviderTypes.size();
         long currentDisabled = currentStatusMap.values().stream()
                 .filter(status -> status == ProviderTypeStatus.DISABLED).count();
         assertEquals(expectedDisabled,
                      currentDisabled);
     }
 
-    private void prepareProvidersToEnable() {
-        //enable some providers
+    private void pickSomeProviders() {
+        //pick an arbitrary set of providers for the available ones.
         Collection<ProviderType> providerTypes = service.getAvailableProviderTypes();
         Iterator<ProviderType> it = providerTypes.iterator();
-        providerTypesToEnable = new ArrayList<>();
-        providerTypesToEnable.add(it.next());
-        providerTypesToEnable.add(it.next());
+        pickedProviderTypes = new ArrayList<>();
+        pickedProviderTypes.add(it.next());
+        pickedProviderTypes.add(it.next());
     }
 }

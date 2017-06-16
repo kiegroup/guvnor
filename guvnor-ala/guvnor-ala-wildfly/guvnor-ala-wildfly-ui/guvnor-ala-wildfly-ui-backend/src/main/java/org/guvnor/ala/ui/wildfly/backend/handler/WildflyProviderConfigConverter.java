@@ -80,7 +80,7 @@ public class WildflyProviderConfigConverter
         values.put(PROVIDER_NAME,
                    domainValue.getName());
         values.put(HOST,
-                   domainValue.getHostIp());
+                   domainValue.getHost());
         values.put(PORT,
                    domainValue.getPort());
         values.put(MANAGEMENT_PORT,

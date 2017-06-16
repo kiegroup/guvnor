@@ -56,7 +56,8 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 @ApplicationScoped
-public class RestRuntimeProvisioningServiceImpl implements RuntimeProvisioningService {
+public class RestRuntimeProvisioningServiceImpl
+        implements RuntimeProvisioningService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestRuntimeProvisioningServiceImpl.class);
 
@@ -153,7 +154,7 @@ public class RestRuntimeProvisioningServiceImpl implements RuntimeProvisioningSe
 
     @Override
     public void unregisterProvider(String name) throws BusinessException {
-        runtimeRegistry.unregisterProvider(name);
+        runtimeRegistry.deregisterProvider(name);
     }
 
     @Override
@@ -271,7 +272,7 @@ public class RestRuntimeProvisioningServiceImpl implements RuntimeProvisioningSe
                     item.setPipelineError(pipelineExecutorTrace.getTask().getPipelineError().toString());
                 }
 
-                List<PipelineStageItem> stageItems = pipelineExecutorTrace.getTask().getTaskDef().getPipeline().getStages().stream()
+                List<PipelineStageItem> stageItems = pipelineExecutorTrace.getTask().getTaskDef().getStages().stream()
                         .map(stage -> {
                             String stageError = null;
                             if (pipelineExecutorTrace.getTask().getStageError(stage) != null) {
@@ -281,15 +282,14 @@ public class RestRuntimeProvisioningServiceImpl implements RuntimeProvisioningSe
                             if (pipelineExecutorTrace.getTask().getStageStatus(stage) != null) {
                                 stageStatus = pipelineExecutorTrace.getTask().getStageStatus(stage).name();
                             }
-                            return new PipelineStageItem(stage.getName(),
+                            return new PipelineStageItem(stage,
                                                          stageStatus,
                                                          stageError);
                         }).collect(Collectors.toList());
                 item.setPipelineStageItems(new PipelineStageItemList(stageItems));
 
-                if (pipelineExecutorTrace.getTask().getOutput() != null &&
-                        pipelineExecutorTrace.getTask().getOutput().orElse(null) instanceof Runtime) {
-                    Runtime runtime = (Runtime) pipelineExecutorTrace.getTask().getOutput().get();
+                if (pipelineExecutorTrace.getTask().getOutput() instanceof Runtime) {
+                    Runtime runtime = (Runtime) pipelineExecutorTrace.getTask().getOutput();
                     item.setRuntimeId(runtime.getId());
                     item.setRuntimeName(runtime.getName());
                     item.setRuntimeStatus(runtime.getState().getState());

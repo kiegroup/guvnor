@@ -20,24 +20,25 @@ import java.util.Objects;
 
 import org.guvnor.ala.runtime.RuntimeEndpoint;
 
-/*
+/**
  * BaseRuntimeEndpoint implementation to be extended by each Runtime Provider
-*/
-public class BaseRuntimeEndpoint implements RuntimeEndpoint {
+ */
+public class BaseRuntimeEndpoint
+        implements RuntimeEndpoint {
 
     private String host;
     private int port;
     private String context;
 
-    /*
-     * No-args constructor for enabling marshalling to work, please do not remove. 
-    */
+    /**
+     * No-args constructor for enabling marshalling to work, please do not remove.
+     */
     public BaseRuntimeEndpoint() {
     }
 
-    public BaseRuntimeEndpoint(String host,
-                               int port,
-                               String context) {
+    public BaseRuntimeEndpoint(final String host,
+                               final int port,
+                               final String context) {
         this.host = host;
         this.port = port;
         this.context = context;
@@ -48,7 +49,7 @@ public class BaseRuntimeEndpoint implements RuntimeEndpoint {
         return host;
     }
 
-    public void setHost(String host) {
+    public void setHost(final String host) {
         this.host = host;
     }
 
@@ -57,7 +58,7 @@ public class BaseRuntimeEndpoint implements RuntimeEndpoint {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(final int port) {
         this.port = port;
     }
 
@@ -66,13 +67,17 @@ public class BaseRuntimeEndpoint implements RuntimeEndpoint {
         return context;
     }
 
-    public void setContext(String context) {
+    public void setContext(final String context) {
         this.context = context;
     }
 
     @Override
     public String toString() {
-        return "RuntimeEndpoint{" + "host=" + host + ", port=" + port + ", context=" + context + '}';
+        return "BaseRuntimeEndpoint{" +
+                "host='" + host + '\'' +
+                ", port=" + port +
+                ", context='" + context + '\'' +
+                '}';
     }
 
     @Override

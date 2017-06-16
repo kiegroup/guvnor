@@ -69,7 +69,7 @@ public interface WildflyProviderConfig extends ProviderConfig {
      * @return String host IP for the provider. If not provided it will
      * resolve the expression: ${input.host} from the Pipeline's Input map
      */
-    default String getHostIp() {
+    default String getHost() {
         return "${input." + HOST + "}";
     }
 

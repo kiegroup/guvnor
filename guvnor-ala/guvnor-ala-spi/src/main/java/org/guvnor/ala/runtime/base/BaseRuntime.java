@@ -17,16 +17,19 @@
 package org.guvnor.ala.runtime.base;
 
 import org.guvnor.ala.config.RuntimeConfig;
+import org.guvnor.ala.pipeline.execution.RegistrableOutput;
 import org.guvnor.ala.runtime.Runtime;
 import org.guvnor.ala.runtime.RuntimeEndpoint;
 import org.guvnor.ala.runtime.RuntimeInfo;
 import org.guvnor.ala.runtime.RuntimeState;
 import org.guvnor.ala.runtime.providers.ProviderId;
 
-/*
+/**
  * BaseRuntime implementation to be extended by each Runtime Provider
  */
-public abstract class BaseRuntime implements Runtime {
+public abstract class BaseRuntime
+        implements Runtime,
+                   RegistrableOutput {
 
     private String id;
     private String name;
@@ -36,19 +39,19 @@ public abstract class BaseRuntime implements Runtime {
     private RuntimeInfo info;
     private RuntimeState state;
 
-    /*
-     * No-args constructor for enabling marshalling to work, please do not remove. 
+    /**
+     * No-args constructor for enabling marshalling to work, please do not remove.
      */
     public BaseRuntime() {
     }
 
-    public BaseRuntime(String id,
-                       String name,
-                       RuntimeConfig config,
-                       ProviderId providerId,
-                       RuntimeEndpoint endpoint,
-                       RuntimeInfo info,
-                       RuntimeState state) {
+    public BaseRuntime(final String id,
+                       final String name,
+                       final RuntimeConfig config,
+                       final ProviderId providerId,
+                       final RuntimeEndpoint endpoint,
+                       final RuntimeInfo info,
+                       final RuntimeState state) {
         this.id = id;
         this.name = name;
         this.config = config;
@@ -104,5 +107,49 @@ public abstract class BaseRuntime implements Runtime {
                 ", info=" + info +
                 ", state=" + state +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BaseRuntime that = (BaseRuntime) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (config != null ? !config.equals(that.config) : that.config != null) {
+            return false;
+        }
+        if (providerId != null ? !providerId.equals(that.providerId) : that.providerId != null) {
+            return false;
+        }
+        if (endpoint != null ? !endpoint.equals(that.endpoint) : that.endpoint != null) {
+            return false;
+        }
+        if (info != null ? !info.equals(that.info) : that.info != null) {
+            return false;
+        }
+        return state != null ? state.equals(that.state) : that.state == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (config != null ? config.hashCode() : 0);
+        result = 31 * result + (providerId != null ? providerId.hashCode() : 0);
+        result = 31 * result + (endpoint != null ? endpoint.hashCode() : 0);
+        result = 31 * result + (info != null ? info.hashCode() : 0);
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        return result;
     }
 }

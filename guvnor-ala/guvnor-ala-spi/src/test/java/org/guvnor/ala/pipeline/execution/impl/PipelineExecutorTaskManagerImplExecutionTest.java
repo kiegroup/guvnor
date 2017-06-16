@@ -282,7 +282,7 @@ public class PipelineExecutorTaskManagerImplExecutionTest
             when(task.getTaskDef()).thenReturn(taskDef);
             Pipeline pipeline = mock(Pipeline.class);
             when(pipeline.getStages()).thenReturn(mock(List.class));
-            when(taskDef.getPipeline()).thenReturn(pipeline);
+            when(taskDef.getPipeline()).thenReturn(PIPELINE_ID);
 
             PipelineExecutorTaskManagerImpl.TaskEntry taskEntry = mock(PipelineExecutorTaskManagerImpl.TaskEntry.class);
             when(taskEntry.isAsync()).thenReturn(true);
@@ -310,11 +310,12 @@ public class PipelineExecutorTaskManagerImplExecutionTest
         stages = mockStages(PIPELINE_STAGES_SIZE);
         when(pipeline.getStages()).thenReturn(stages);
         when(pipeline.getName()).thenReturn(PIPELINE_ID);
+        when(pipelineRegistry.getPipelineByName(PIPELINE_ID)).thenReturn(pipeline);
 
         taskDef = mock(PipelineExecutorTaskDef.class);
         input = mock(Input.class);
         when(taskDef.getInput()).thenReturn(input);
-        when(taskDef.getPipeline()).thenReturn(pipeline);
+        when(taskDef.getPipeline()).thenReturn(PIPELINE_ID);
     }
 
     private void verifyInternalTask(PipelineExecutorTaskManagerImpl.TaskEntry taskEntry,

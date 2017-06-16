@@ -25,8 +25,9 @@ import org.guvnor.ala.config.RuntimeConfig;
  * @see ProvisioningConfig
  * @see RuntimeConfig
  */
-public interface WildflyRuntimeConfiguration extends ProvisioningConfig,
-                                                     RuntimeConfig {
+public interface WildflyRuntimeConfiguration
+        extends ProvisioningConfig,
+                RuntimeConfig {
 
     /**
      * Attribute name for setting the war file path parameter. Pipeline inputs that wants to set this value should

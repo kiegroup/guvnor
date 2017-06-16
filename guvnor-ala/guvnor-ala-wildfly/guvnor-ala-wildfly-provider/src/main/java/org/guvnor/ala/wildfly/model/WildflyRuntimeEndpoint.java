@@ -18,6 +18,18 @@ package org.guvnor.ala.wildfly.model;
 
 import org.guvnor.ala.runtime.base.BaseRuntimeEndpoint;
 
-public class WildflyRuntimeEndpoint extends BaseRuntimeEndpoint {
+public class WildflyRuntimeEndpoint
+        extends BaseRuntimeEndpoint {
 
+    public WildflyRuntimeEndpoint() {
+        //no args constructor for marshalling purposes.
+    }
+
+    public WildflyRuntimeEndpoint(final String host,
+                                  final int port,
+                                  final String context) {
+        super(host,
+              port,
+              context);
+    }
 }

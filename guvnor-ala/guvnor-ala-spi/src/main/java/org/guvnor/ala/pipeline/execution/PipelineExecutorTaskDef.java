@@ -16,8 +16,10 @@
 
 package org.guvnor.ala.pipeline.execution;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.guvnor.ala.pipeline.Input;
-import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.runtime.providers.ProviderId;
 import org.guvnor.ala.runtime.providers.ProviderType;
 
@@ -25,12 +27,18 @@ import org.guvnor.ala.runtime.providers.ProviderType;
  * This class defines the information for performing the execution of a Pipeline by using the PipelineExecutorTaskManager.
  * @see PipelineExecutorTaskManager
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public interface PipelineExecutorTaskDef {
 
     /**
-     * @return The pipeline that will be executed.
+     * @return The pipeline name that will be executed.
      */
-    Pipeline getPipeline();
+    String getPipeline();
+
+    /**
+     * @return The the pipeline stage names.
+     */
+    List<String> getStages();
 
     /**
      * @return The pipeline input that will be used for the pipeline execution.

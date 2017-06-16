@@ -26,26 +26,28 @@ import org.guvnor.ala.runtime.providers.ProviderType;
  */
 public interface PipelineRegistry {
 
+    String PIPELINE_NAME_SORT = "name";
+
     /**
      * Registers a Pipeline
      * @param pipeline The Pipeline to be registered.
      */
-    void registerPipeline(Pipeline pipeline);
+    void registerPipeline(final Pipeline pipeline);
 
     /**
      * Registers a Pipeline by associating it to a provider type.
      * @param pipeline The Pipeline to be registered.
      * @param providerType The provider type for associating the Pipeline.
      */
-    void registerPipeline(Pipeline pipeline,
-                          ProviderType providerType);
+    void registerPipeline(final Pipeline pipeline,
+                          final ProviderType providerType);
 
     /**
      * Gets a Pipeline by Name.
      * @param pipelineId the pipeline id.
      * @return the pipeline corresponding to the pipeline id.
      */
-    Pipeline getPipelineByName(String pipelineId);
+    Pipeline getPipelineByName(final String pipelineId);
 
     /**
      * Gets all the registered Pipelines
@@ -55,10 +57,10 @@ public interface PipelineRegistry {
      * @param sortOrder the sort order to use: true ascending, false descending
      * @return a list with all the available pipelines.
      */
-    List<Pipeline> getPipelines(int page,
-                                int pageSize,
-                                String sort,
-                                boolean sortOrder);
+    List<Pipeline> getPipelines(final int page,
+                                final int pageSize,
+                                final String sort,
+                                final boolean sortOrder);
 
     /**
      * Gets all the registered Pipelines for a given provider type.
@@ -70,17 +72,17 @@ public interface PipelineRegistry {
      * @param sortOrder the sort order to use: true ascending, false descending
      * @return the list of pipelines associated to the given provider.
      */
-    List<Pipeline> getPipelines(String providerType,
-                                String version,
-                                int page,
-                                int pageSize,
-                                String sort,
-                                boolean sortOrder);
+    List<Pipeline> getPipelines(final String providerType,
+                                final String version,
+                                final int page,
+                                final int pageSize,
+                                final String sort,
+                                final boolean sortOrder);
 
     /**
      * Gets the associated provider type for a given pipeline.
      * @param pipelineId a pipeline id.
      * @return a provider type in cases where the pipeline was associated to one, null in any other case.
      */
-    ProviderType getProviderType(String pipelineId);
+    ProviderType getProviderType(final String pipelineId);
 }

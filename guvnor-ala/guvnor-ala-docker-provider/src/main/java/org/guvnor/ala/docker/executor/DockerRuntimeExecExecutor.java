@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
-import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.HostConfig;
 import com.spotify.docker.client.messages.PortBinding;
 import org.guvnor.ala.config.Config;
@@ -50,9 +49,10 @@ import org.slf4j.LoggerFactory;
 
 import static org.guvnor.ala.util.RuntimeConfigHelper.buildRuntimeName;
 
-public class DockerRuntimeExecExecutor<T extends DockerRuntimeConfig> implements RuntimeBuilder<T, DockerRuntime>,
-                                                                                 RuntimeDestroyer,
-                                                                                 FunctionConfigExecutor<T, DockerRuntime> {
+public class DockerRuntimeExecExecutor<T extends DockerRuntimeConfig>
+        implements RuntimeBuilder<T, DockerRuntime>,
+                   RuntimeDestroyer,
+                   FunctionConfigExecutor<T, DockerRuntime> {
 
     private final RuntimeRegistry runtimeRegistry;
     private final DockerAccessInterface docker;
@@ -68,9 +68,7 @@ public class DockerRuntimeExecExecutor<T extends DockerRuntimeConfig> implements
     @Override
     public Optional<DockerRuntime> apply(final DockerRuntimeConfig config) {
         final Optional<DockerRuntime> runtime = create(config);
-        if (runtime.isPresent()) {
-            runtimeRegistry.registerRuntime(runtime.get());
-        }
+        runtime.ifPresent(runtimeRegistry::registerRuntime);
         return runtime;
     }
 
@@ -97,7 +95,7 @@ public class DockerRuntimeExecExecutor<T extends DockerRuntimeConfig> implements
         }
         final DockerProvider dockerProvider = _dockerProvider.get();
         final List<PortBinding> randomPort = new ArrayList<>();
-        final PortBinding randomPortBinding = PortBinding.randomPort(dockerProvider.getHostId());
+        final PortBinding randomPortBinding = PortBinding.randomPort(dockerProvider.getConfig().getHostIp());
 
         randomPort.add(randomPortBinding);
         portBindings.put(runtimeConfig.getPort(),
@@ -126,9 +124,8 @@ public class DockerRuntimeExecExecutor<T extends DockerRuntimeConfig> implements
         String shortId = id.substring(0,
                                       12);
         String host = "";
-        ContainerInfo containerInfo;
         try {
-            containerInfo = docker.getDockerClient(runtimeConfig.getProviderId()).inspectContainer(id);
+            docker.getDockerClient(runtimeConfig.getProviderId()).inspectContainer(id);
             host = docker.getDockerClient(runtimeConfig.getProviderId()).getHost();
         } catch (DockerException | InterruptedException ex) {
             throw new ProvisioningException("Error Getting Docker Container info: " + id + "with error: " + ex.getMessage(),
@@ -177,7 +174,7 @@ public class DockerRuntimeExecExecutor<T extends DockerRuntimeConfig> implements
             docker.getDockerClient(runtimeId.getProviderId()).killContainer(runtimeId.getId());
             LOG.info("Removing Container: " + runtimeId.getId());
             docker.getDockerClient(runtimeId.getProviderId()).removeContainer(runtimeId.getId());
-            runtimeRegistry.unregisterRuntime(runtimeId);
+            runtimeRegistry.deregisterRuntime(runtimeId);
         } catch (DockerException | InterruptedException ex) {
             LOG.debug(ex.getMessage(),
                       ex);
@@ -185,7 +182,7 @@ public class DockerRuntimeExecExecutor<T extends DockerRuntimeConfig> implements
                 // Trying to remove the container if it cannot be killed
                 LOG.info("Attempting to Remove Container without Killing: " + runtimeId.getId());
                 docker.getDockerClient(runtimeId.getProviderId()).removeContainer(runtimeId.getId());
-                runtimeRegistry.unregisterRuntime(runtimeId);
+                runtimeRegistry.deregisterRuntime(runtimeId);
             } catch (DockerException | InterruptedException ex2) {
                 LOG.error(ex.getMessage(),
                           ex2);

@@ -16,9 +16,12 @@
 
 package org.guvnor.ala.pipeline.execution;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 /**
  * Represents a pipeline execution recording.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public interface PipelineExecutorTrace {
 
     /**

@@ -16,13 +16,12 @@
 
 package org.guvnor.ala.pipeline.execution;
 
-import java.util.Optional;
-
-import org.guvnor.ala.pipeline.Stage;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * This class represents a pipeline execution task.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public interface PipelineExecutorTask {
 
     /**
@@ -55,21 +54,21 @@ public interface PipelineExecutorTask {
      * @param stage a pipeline Stage for querying the execution status.
      * @return The execution status for the given stage.
      */
-    Status getStageStatus(Stage stage);
+    Status getStageStatus(String stage);
 
     /**
      * @param stage a pipeline Stage for querying the execution error.
      * @return The execution error for the Stage in cases where the Stage execution failed, null in any other case.
      */
-    Throwable getStageError(Stage stage);
+    PipelineExecutorException getStageError(String stage);
 
     /**
      * @return The pipeline execution error in cases where execution failed, false in any other case.
      */
-    Throwable getPipelineError();
+    PipelineExecutorException getPipelineError();
 
     /**
-     * @return An optional object with the pipeline output.
+     * @return A config element with the pipeline output.
      */
-    Optional<?> getOutput();
+    RegistrableOutput getOutput();
 }

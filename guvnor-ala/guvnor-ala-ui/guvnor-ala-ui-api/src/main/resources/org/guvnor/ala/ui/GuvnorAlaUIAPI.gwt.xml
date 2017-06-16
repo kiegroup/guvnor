@@ -11,5 +11,6 @@
   <source path="handler"/>
   <source path="model"/>
   <source path="service"/>
+  <source path="preferences"/>
 
 </module>

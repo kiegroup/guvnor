@@ -19,6 +19,9 @@ package org.guvnor.ala.openshift.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.guvnor.ala.runtime.providers.base.BaseProviderType;
 
+/**
+ * OpenShift provider type definition.
+ */
 public final class OpenShiftProviderType
         extends BaseProviderType {
 

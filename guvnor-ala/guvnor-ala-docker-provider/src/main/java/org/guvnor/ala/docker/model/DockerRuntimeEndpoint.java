@@ -18,6 +18,18 @@ package org.guvnor.ala.docker.model;
 
 import org.guvnor.ala.runtime.base.BaseRuntimeEndpoint;
 
-public class DockerRuntimeEndpoint extends BaseRuntimeEndpoint {
+public class DockerRuntimeEndpoint
+        extends BaseRuntimeEndpoint {
 
+    public DockerRuntimeEndpoint() {
+        //No-args constructor for enabling marshalling to work, please do not remove.
+    }
+
+    public DockerRuntimeEndpoint(final String host,
+                                 final int port,
+                                 final String context) {
+        super(host,
+              port,
+              context);
+    }
 }

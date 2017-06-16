@@ -79,7 +79,7 @@ public class WildflyProviderConfigConverterTest {
         assertEquals(PROVIDER_NAME_VALUE,
                      result.getName());
         assertEquals(HOST_VALUE,
-                     result.getHostIp());
+                     result.getHost());
         assertEquals(PORT_VALUE,
                      result.getPort());
         assertEquals(MANAGEMENT_PORT_VALUE,
@@ -99,7 +99,7 @@ public class WildflyProviderConfigConverterTest {
     public void testToModel() {
         WildflyProviderConfig config = mock(WildflyProviderConfig.class);
         when(config.getName()).thenReturn(PROVIDER_NAME_VALUE);
-        when(config.getHostIp()).thenReturn(HOST_VALUE);
+        when(config.getHost()).thenReturn(HOST_VALUE);
         when(config.getPort()).thenReturn(PORT_VALUE);
         when(config.getManagementPort()).thenReturn(MANAGEMENT_PORT_VALUE);
         when(config.getUser()).thenReturn(WILDFLY_USER_VALUE);

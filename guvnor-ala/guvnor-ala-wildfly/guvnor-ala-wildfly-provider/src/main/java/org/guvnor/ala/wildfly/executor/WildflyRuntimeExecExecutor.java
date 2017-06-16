@@ -27,9 +27,10 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.guvnor.ala.util.RuntimeConfigHelper.buildRuntimeName;
 
-public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration> implements RuntimeBuilder<T, WildflyRuntime>,
-                                                                                          RuntimeDestroyer,
-                                                                                          FunctionConfigExecutor<T, WildflyRuntime> {
+public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration>
+        implements RuntimeBuilder<T, WildflyRuntime>,
+                   RuntimeDestroyer,
+                   FunctionConfigExecutor<T, WildflyRuntime> {
 
     private final RuntimeRegistry runtimeRegistry;
     private final WildflyAccessInterface wildfly;
@@ -56,6 +57,9 @@ public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration> i
         String warPath = runtimeConfig.getWarPath();
         final Optional<WildflyProvider> _wildflyProvider = runtimeRegistry.getProvider(runtimeConfig.getProviderId(),
                                                                                        WildflyProvider.class);
+        if (!_wildflyProvider.isPresent()) {
+            throw new ProvisioningException("No Wildfly provider was found for providerId: " + runtimeConfig.getProviderId());
+        }
 
         WildflyProvider wildflyProvider = _wildflyProvider.get();
         File file = new File(warPath);
@@ -122,6 +126,6 @@ public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration> i
         if (result != 200) {
             throw new ProvisioningException("UnDeployment to Wildfly Failed with error code: " + result);
         }
-        runtimeRegistry.unregisterRuntime(runtimeId);
+        runtimeRegistry.deregisterRuntime(runtimeId);
     }
 }

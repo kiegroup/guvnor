@@ -26,11 +26,11 @@ import java.util.concurrent.Future;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.guvnor.ala.pipeline.ConfigExecutor;
+import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.events.AfterPipelineExecutionEvent;
 import org.guvnor.ala.pipeline.events.AfterStageExecutionEvent;
 import org.guvnor.ala.pipeline.events.BeforePipelineExecutionEvent;
@@ -44,7 +44,9 @@ import org.guvnor.ala.pipeline.execution.PipelineExecutorException;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskDef;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskManager;
+import org.guvnor.ala.pipeline.execution.RegistrableOutput;
 import org.guvnor.ala.registry.PipelineExecutorRegistry;
+import org.guvnor.ala.registry.PipelineRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +72,8 @@ public class PipelineExecutorTaskManagerImpl
 
     protected PipelineExecutorRegistry pipelineExecutorRegistry;
 
+    protected PipelineRegistry pipelineRegistry;
+
     protected PipelineEventListener localListener;
 
     protected PipelineExecutorTaskManagerImplHelper taskManagerHelper;
@@ -89,10 +93,12 @@ public class PipelineExecutorTaskManagerImpl
     }
 
     @Inject
-    public PipelineExecutorTaskManagerImpl(@Any final Instance<ConfigExecutor> configExecutorInstance,
-                                           @Any final Instance<PipelineEventListener> pipelineEventListenerInstance,
+    public PipelineExecutorTaskManagerImpl(final PipelineRegistry pipelineRegistry,
+                                           final Instance<ConfigExecutor> configExecutorInstance,
+                                           final Instance<PipelineEventListener> pipelineEventListenerInstance,
                                            final PipelineExecutorRegistry pipelineExecutorRegistry) {
 
+        this.pipelineRegistry = pipelineRegistry;
         this.taskManagerHelper = new PipelineExecutorTaskManagerImplHelper(configExecutorInstance,
                                                                            pipelineEventListenerInstance);
         this.pipelineExecutorRegistry = pipelineExecutorRegistry;
@@ -245,8 +251,9 @@ public class PipelineExecutorTaskManagerImpl
      */
     private synchronized void startAsyncTask(final PipelineExecutorTask task) {
         final Future<?> future = executor.submit(() -> {
+            final Pipeline pipeline = pipelineRegistry.getPipelineByName(task.getTaskDef().getPipeline());
             pipelineExecutor.execute(task.getTaskDef().getInput(),
-                                     task.getTaskDef().getPipeline(),
+                                     pipeline,
                                      output -> processPipelineOutput(task,
                                                                      output),
                                      localListener);
@@ -264,9 +271,10 @@ public class PipelineExecutorTaskManagerImpl
      */
     private String executeSync(final PipelineExecutorTaskDef taskDef) {
         final PipelineExecutorTaskImpl task = taskManagerHelper.createTask(taskDef);
-        storeTaskEntry(TaskEntry.newSychEntry(task));
+        storeTaskEntry(TaskEntry.newSyncEntry(task));
+        final Pipeline pipeline = pipelineRegistry.getPipelineByName(taskDef.getPipeline());
         pipelineExecutor.execute(taskDef.getInput(),
-                                 taskDef.getPipeline(),
+                                 pipeline,
                                  output -> processPipelineOutput(task,
                                                                  output),
                                  localListener);
@@ -277,7 +285,13 @@ public class PipelineExecutorTaskManagerImpl
 
     private void processPipelineOutput(final PipelineExecutorTask task,
                                        final Object output) {
-        ((PipelineExecutorTaskImpl) task).setOutput(output);
+        if (output instanceof RegistrableOutput) {
+            ((PipelineExecutorTaskImpl) task).setOutput((RegistrableOutput) output);
+        } else {
+            //uncommon case
+            logger.debug("Only pipeline outputs of type RegistrableOutput will be registered" +
+                                 ", current output value won't be registered: " + output);
+        }
     }
 
     @Override
@@ -334,7 +348,7 @@ public class PipelineExecutorTaskManagerImpl
 
     private void beforeStageExecution(final BeforeStageExecutionEvent bsee,
                                       final TaskEntry taskEntry) {
-        taskEntry.getTask().setStageStatus(bsee.getStage(),
+        taskEntry.getTask().setStageStatus(bsee.getStage().getName(),
                                            PipelineExecutorTask.Status.RUNNING);
         if (taskEntry.isAsync()) {
             updateExecutorRegistry(taskEntry.getTask());
@@ -344,10 +358,11 @@ public class PipelineExecutorTaskManagerImpl
     private void onStageError(final OnErrorStageExecutionEvent oesee,
                               final TaskEntry taskEntry) {
         taskEntry.getTask().setPipelineStatus(PipelineExecutorTask.Status.ERROR);
-        taskEntry.getTask().setStageStatus(oesee.getStage(),
+        taskEntry.getTask().setStageStatus(oesee.getStage().getName(),
                                            PipelineExecutorTask.Status.ERROR);
-        taskEntry.getTask().setStageError(oesee.getStage(),
-                                          oesee.getError());
+        taskEntry.getTask().setStageError(oesee.getStage().getName(),
+                                          new PipelineExecutorException(oesee.getError().getMessage(),
+                                                                        oesee.getError()));
         if (taskEntry.isAsync()) {
             updateExecutorRegistry(taskEntry.getTask());
         }
@@ -355,7 +370,7 @@ public class PipelineExecutorTaskManagerImpl
 
     private void afterStageExecution(final AfterStageExecutionEvent asee,
                                      final TaskEntry taskEntry) {
-        taskEntry.getTask().setStageStatus(asee.getStage(),
+        taskEntry.getTask().setStageStatus(asee.getStage().getName(),
                                            PipelineExecutorTask.Status.FINISHED);
         if (taskEntry.isAsync()) {
             updateExecutorRegistry(taskEntry.getTask());
@@ -366,7 +381,8 @@ public class PipelineExecutorTaskManagerImpl
                                  final TaskEntry taskEntry) {
 
         taskEntry.getTask().setPipelineStatus(PipelineExecutorTask.Status.ERROR);
-        taskEntry.getTask().setPipelineError(oepee.getError());
+        taskEntry.getTask().setPipelineError(new PipelineExecutorException(oepee.getError().getMessage(),
+                                                                           oepee.getError()));
         if (taskEntry.isAsync()) {
             updateExecutorRegistry(taskEntry.getTask());
         }
@@ -443,7 +459,7 @@ public class PipelineExecutorTaskManagerImpl
                                  ExecutionMode.ASYNCHRONOUS);
         }
 
-        public static TaskEntry newSychEntry(PipelineExecutorTaskImpl task) {
+        public static TaskEntry newSyncEntry(PipelineExecutorTaskImpl task) {
             return new TaskEntry(task,
                                  ExecutionMode.SYNCHRONOUS);
         }

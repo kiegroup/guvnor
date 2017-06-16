@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -28,9 +29,12 @@ import org.guvnor.ala.services.api.backend.RuntimeProvisioningServiceBackend;
 import org.guvnor.ala.ui.model.ProviderType;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProviderTypeStatus;
+import org.guvnor.ala.ui.preferences.ProvisioningPreferences;
 import org.guvnor.ala.ui.service.ProviderTypeService;
+import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
 import org.jboss.errai.bus.server.annotations.Service;
 
+import static org.guvnor.ala.registry.RuntimeRegistry.PROVIDER_TYPE_NAME_SORT;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -39,18 +43,23 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public class ProviderTypeServiceImpl
         implements ProviderTypeService {
 
-    //TODO, SPRINT6 will manage the storing of this information.
-    private final Map<ProviderTypeKey, ProviderType> enabledProviders = new HashMap<>();
-
     private RuntimeProvisioningServiceBackend runtimeProvisioningService;
+
+    private ProvisioningPreferences provisioningPreferences;
+
+    private GlobalPreferenceScope globalPreferenceScope;
 
     public ProviderTypeServiceImpl() {
         //Empty constructor for Weld proxying
     }
 
     @Inject
-    public ProviderTypeServiceImpl(final RuntimeProvisioningServiceBackend runtimeProvisioningService) {
+    public ProviderTypeServiceImpl(final RuntimeProvisioningServiceBackend runtimeProvisioningService,
+                                   final ProvisioningPreferences provisioningPreferences,
+                                   final GlobalPreferenceScope globalPreferenceScope) {
         this.runtimeProvisioningService = runtimeProvisioningService;
+        this.provisioningPreferences = provisioningPreferences;
+        this.globalPreferenceScope = globalPreferenceScope;
     }
 
     @Override
@@ -59,7 +68,7 @@ public class ProviderTypeServiceImpl
         List<org.guvnor.ala.runtime.providers.ProviderType> providers =
                 runtimeProvisioningService.getProviderTypes(0,
                                                             100,
-                                                            "providerTypeName",
+                                                            PROVIDER_TYPE_NAME_SORT,
                                                             true);
 
         if (providers != null) {
@@ -83,34 +92,36 @@ public class ProviderTypeServiceImpl
 
     @Override
     public Collection<ProviderType> getEnabledProviderTypes() {
-        return new ArrayList<>(enabledProviders.values());
+        return getProviderTypesStatus().entrySet().stream()
+                .filter(entry -> ProviderTypeStatus.ENABLED.equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void enableProviderTypes(final Collection<ProviderType> providerTypes) {
         checkNotEmpty("providerTypes",
                       providerTypes);
-        providerTypes.forEach(this::enableProviderType);
-    }
-
-    private void enableProviderType(final ProviderType providerType) {
-        enabledProviders.put(providerType.getKey(),
-                             providerType);
+        providerTypes.forEach(providerType -> enableProviderType(providerType,
+                                                                 true));
     }
 
     @Override
     public void disableProviderType(final ProviderType providerType) {
         checkNotNull("providerType",
                      providerType);
-        enabledProviders.remove(providerType.getKey());
+        enableProviderType(providerType,
+                           false);
     }
 
     @Override
     public Map<ProviderType, ProviderTypeStatus> getProviderTypesStatus() {
         final Map<ProviderType, ProviderTypeStatus> result = new HashMap<>();
 
-        enabledProviders.values().forEach(providerType -> result.put(providerType,
-                                                                     ProviderTypeStatus.ENABLED));
+        readProviderTypeEnablements().forEach((providerType, isEnabled) ->
+                                                      result.put(providerType,
+                                                                 Boolean.TRUE.equals(isEnabled) ? ProviderTypeStatus.ENABLED : ProviderTypeStatus.DISABLED)
+        );
         getAvailableProviderTypes().forEach(providerType -> {
             if (!result.containsKey(providerType)) {
                 result.put(providerType,
@@ -118,5 +129,27 @@ public class ProviderTypeServiceImpl
             }
         });
         return result;
+    }
+
+    private void enableProviderType(final ProviderType providerType,
+                                    final boolean enable) {
+        checkNotNull("providerType",
+                     providerType);
+        final Map<ProviderType, Boolean> result = readProviderTypeEnablements();
+        result.put(providerType,
+                   enable);
+        saveProviderTypeEnablements(result);
+    }
+
+    private Map<ProviderType, Boolean> readProviderTypeEnablements() {
+        provisioningPreferences.load();
+        final Map<ProviderType, Boolean> result = provisioningPreferences.getProviderTypeEnablements();
+        return result != null ? result : new HashMap<>();
+    }
+
+    private void saveProviderTypeEnablements(final Map<ProviderType, Boolean> providerTypeEnablements) {
+        provisioningPreferences.load();
+        provisioningPreferences.setProviderTypeEnablements(providerTypeEnablements);
+        provisioningPreferences.save(globalPreferenceScope.resolve());
     }
 }

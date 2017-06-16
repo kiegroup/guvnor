@@ -48,13 +48,13 @@ public class WildflyAccessInterfaceImpl
         WildflyProvider wildflyProvider = ((WildflyProvider) providerId);
 
         return new WildflyClient(
-                wildflyProvider.getId(),
-                wildflyProvider.getUser(),
-                wildflyProvider.getPassword(),
-                wildflyProvider.getHostId(),
-                Integer.valueOf(defaultIfBlank(wildflyProvider.getPort(),
+                wildflyProvider.getConfig().getName(),
+                wildflyProvider.getConfig().getUser(),
+                wildflyProvider.getConfig().getPassword(),
+                wildflyProvider.getConfig().getHost(),
+                Integer.valueOf(defaultIfBlank(wildflyProvider.getConfig().getPort(),
                                                "8080")),
-                Integer.valueOf(defaultIfBlank(wildflyProvider.getManagementPort(),
+                Integer.valueOf(defaultIfBlank(wildflyProvider.getConfig().getManagementPort(),
                                                "9990"))
         );
     }

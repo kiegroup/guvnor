@@ -16,37 +16,15 @@
 
 package org.guvnor.ala.registry.local;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.guvnor.ala.build.Binary;
-import org.guvnor.ala.registry.BuildRegistry;
+import org.guvnor.ala.registry.impl.BaseBuildRegistry;
 
-/**
- * @TODO: This is a not thread-safe implementation for local testing. A
- * more robust and distributed implementation should be provided for real
- * use cases. All the lookups mechanisms and structures needs to be improved for performance.
- */
 @ApplicationScoped
-public class InMemoryBuildRegistry implements BuildRegistry {
-
-    private final Map<String, Binary> binariesByName;
+public class InMemoryBuildRegistry
+        extends BaseBuildRegistry {
 
     public InMemoryBuildRegistry() {
-        binariesByName = new ConcurrentHashMap<>();
-    }
-
-    @Override
-    public void registerBinary(Binary binary) {
-        binariesByName.put(binary.getName(),
-                           binary);
-    }
-
-    @Override
-    public List<Binary> getAllBinaries() {
-        return new ArrayList<>(binariesByName.values());
+        //Empty constructor for Weld proxying
     }
 }

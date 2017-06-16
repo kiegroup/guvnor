@@ -27,15 +27,15 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 @JsonTypeInfo(use = CLASS, include = WRAPPER_OBJECT)
 public interface ProviderType {
 
-    /*
+    /**
      * Get the provider type name
-     * @return the provider type name 
+     * @return the provider type name
      */
     String getProviderTypeName();
 
-    /*
+    /**
      * Get the provider type version
-     * @return the provider type version 
+     * @return the provider type version
      */
     String getVersion();
 }

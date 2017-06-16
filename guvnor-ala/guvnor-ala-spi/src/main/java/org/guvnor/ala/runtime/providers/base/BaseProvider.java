@@ -15,30 +15,28 @@
  */
 package org.guvnor.ala.runtime.providers.base;
 
-import java.util.Objects;
-
 import org.guvnor.ala.config.ProviderConfig;
 import org.guvnor.ala.runtime.providers.Provider;
 import org.guvnor.ala.runtime.providers.ProviderType;
 
-/*
- * BaseProvide implementation to be extended by concrete Providers
-*/
-public abstract class BaseProvider implements Provider {
+/**
+ * BaseProvider implementation to be extended by concrete Providers
+ */
+public abstract class BaseProvider<C extends ProviderConfig>
+        implements Provider<C>,
+                   ProviderConfig {
 
     private String id;
-    private ProviderConfig config;
+    private C config;
     private ProviderType providerType;
 
-    /*
-     * No-args constructor for enabling marshalling to work, please do not remove. 
-    */
     public BaseProvider() {
+        //No-args constructor for enabling marshalling to work, please do not remove.
     }
 
     public BaseProvider(final String id,
                         final ProviderType providerType,
-                        ProviderConfig config) {
+                        final C config) {
         this.id = id;
         this.providerType = providerType;
         this.config = config;
@@ -50,7 +48,7 @@ public abstract class BaseProvider implements Provider {
     }
 
     @Override
-    public ProviderConfig getConfig() {
+    public C getConfig() {
         return config;
     }
 
@@ -61,42 +59,38 @@ public abstract class BaseProvider implements Provider {
 
     @Override
     public String toString() {
-        return "Provider{" + "id=" + id + ", config=" + config + ", providerType=" + providerType + '}';
+        return "BaseProvider{" +
+                "id='" + id + '\'' +
+                ", config=" + config +
+                ", providerType=" + providerType +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BaseProvider<?> that = (BaseProvider<?>) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (config != null ? !config.equals(that.config) : that.config != null) {
+            return false;
+        }
+        return providerType != null ? providerType.equals(that.providerType) : that.providerType == null;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.id);
-        hash = 97 * hash + Objects.hashCode(this.config);
-        hash = 97 * hash + Objects.hashCode(this.providerType);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final BaseProvider other = (BaseProvider) obj;
-        if (!Objects.equals(this.id,
-                            other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.config,
-                            other.config)) {
-            return false;
-        }
-        if (!Objects.equals(this.providerType,
-                            other.providerType)) {
-            return false;
-        }
-        return true;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (config != null ? config.hashCode() : 0);
+        result = 31 * result + (providerType != null ? providerType.hashCode() : 0);
+        return result;
     }
 }
