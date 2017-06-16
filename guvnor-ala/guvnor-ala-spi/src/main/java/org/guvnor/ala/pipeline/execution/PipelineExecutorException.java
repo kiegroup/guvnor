@@ -22,17 +22,17 @@ package org.guvnor.ala.pipeline.execution;
 public class PipelineExecutorException
         extends Exception {
 
-    public PipelineExecutorException(String message) {
+    public PipelineExecutorException(final String message) {
         super(message);
     }
 
-    public PipelineExecutorException(String message,
-                                     Throwable cause) {
+    public PipelineExecutorException(final String message,
+                                     final Throwable cause) {
         super(message,
               cause);
     }
 
-    public PipelineExecutorException(Throwable cause) {
+    public PipelineExecutorException(final Throwable cause) {
         super(cause);
     }
 }

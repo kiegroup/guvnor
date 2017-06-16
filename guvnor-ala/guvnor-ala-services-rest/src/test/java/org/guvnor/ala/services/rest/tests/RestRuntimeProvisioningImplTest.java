@@ -34,8 +34,9 @@ import org.guvnor.ala.pipeline.ConfigExecutor;
 import org.guvnor.ala.pipeline.FunctionConfigExecutor;
 import org.guvnor.ala.pipeline.execution.impl.PipelineExecutorTaskManagerImpl;
 import org.guvnor.ala.registry.RuntimeRegistry;
-import org.guvnor.ala.registry.local.InMemoryPipelineExecutorRegistry;
-import org.guvnor.ala.registry.local.InMemoryRuntimeRegistry;
+import org.guvnor.ala.registry.inmemory.InMemoryPipelineExecutorRegistry;
+import org.guvnor.ala.registry.inmemory.InMemoryPipelineRegistry;
+import org.guvnor.ala.registry.inmemory.InMemoryRuntimeRegistry;
 import org.guvnor.ala.runtime.RuntimeBuilder;
 import org.guvnor.ala.runtime.RuntimeDestroyer;
 import org.guvnor.ala.runtime.RuntimeManager;
@@ -123,6 +124,7 @@ public class RestRuntimeProvisioningImplTest {
 
         deployment.addClass(PipelineExecutorTaskManagerImpl.class);
         deployment.addClass(InMemoryPipelineExecutorRegistry.class);
+        deployment.addClass(InMemoryPipelineRegistry.class);
 
         deployment.addAsManifestResource(EmptyAsset.INSTANCE,
                                          "beans.xml");

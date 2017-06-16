@@ -41,8 +41,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.guvnor.ala.ui.ProvisioningManagementBackendTestCommons.mockProviderListSPI;
-import static org.guvnor.ala.ui.ProvisioningManagementBackendTestCommons.mockProviderTypeSPI;
+import static org.guvnor.ala.AlaSPITestCommons.mockProviderListSPI;
+import static org.guvnor.ala.AlaSPITestCommons.mockProviderTypeSPI;
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.PROVIDER_ID;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;

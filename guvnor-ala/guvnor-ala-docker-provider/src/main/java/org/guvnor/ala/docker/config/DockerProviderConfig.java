@@ -15,14 +15,12 @@
  */
 package org.guvnor.ala.docker.config;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.guvnor.ala.config.ProviderConfig;
 
 /*
- * Represents the Docker Provider specific settings to connect to a Docker Deamon
+ * Represents the Docker Provider specific settings to connect to a Docker Daemon
  * @see ProviderConfig
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public interface DockerProviderConfig extends ProviderConfig {
 
     /* 

@@ -20,15 +20,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.guvnor.ala.runtime.providers.base.BaseProviderType;
 
 /**
+ * Docker provider type definition.
  */
-public final class DockerProviderType extends BaseProviderType {
+public final class DockerProviderType
+        extends BaseProviderType {
 
     @JsonIgnore
     private static DockerProviderType instance;
 
-    /*
-     * No-args constructor for enabling marshalling to work, please do not remove. 
-    */
+    /**
+     * No-args constructor for enabling marshalling to work, please do not remove.
+     */
     public DockerProviderType() {
         super("docker",
               "1.9.1");
