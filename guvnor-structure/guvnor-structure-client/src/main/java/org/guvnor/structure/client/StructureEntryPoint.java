@@ -15,8 +15,9 @@
  */
 package org.guvnor.structure.client;
 
+import javax.annotation.PostConstruct;
+
 import org.guvnor.structure.client.resources.NavigatorResources;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 
@@ -26,7 +27,7 @@ import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 @EntryPoint
 public class StructureEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         //Ensure CSS has been loaded
         NavigatorResources.INSTANCE.css().ensureInjected();

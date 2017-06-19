@@ -16,9 +16,12 @@
 
 package org.guvnor.structure.client.editors.repository.clone;
 
+import static org.guvnor.structure.security.RepositoryFeatures.CONFIGURE_REPOSITORY;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -38,14 +41,11 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.util.URIUtil;
-
-import static org.guvnor.structure.security.RepositoryFeatures.*;
 
 @Dependent
 public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
@@ -89,10 +89,6 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
         view.init( this,
                    isOuMandatory() );
         setAssetsManagementGrant();
-    }
-
-    @AfterInitialization
-    public void load() {
         populateOrganizationalUnits();
     }
 

@@ -16,10 +16,10 @@
 
 package org.guvnor.common.services.project.client;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
@@ -39,7 +39,7 @@ public class ProjectEntryPoint {
         this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
     }
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         setupProjectAdminPage();
     }

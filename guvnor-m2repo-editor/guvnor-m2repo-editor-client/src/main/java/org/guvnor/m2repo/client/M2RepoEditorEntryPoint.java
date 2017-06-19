@@ -15,8 +15,9 @@
  */
 package org.guvnor.m2repo.client;
 
+import javax.annotation.PostConstruct;
+
 import org.guvnor.m2repo.client.resources.M2RepoEditorResources;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
@@ -24,7 +25,7 @@ import org.jboss.errai.ui.shared.api.annotations.Bundle;
 @Bundle( "resources/i18n/M2Constants.properties" )
 public class M2RepoEditorEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         M2RepoEditorResources.INSTANCE.CSS().ensureInjected();
     }
