@@ -16,9 +16,10 @@
 
 package org.guvnor.organizationalunit.manager.client;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.api.EntryPoint;
+import javax.annotation.PostConstruct;
+
 import org.guvnor.organizationalunit.manager.client.resources.OrganizationalUnitManagerResources;
+import org.jboss.errai.ioc.client.api.EntryPoint;
 
 /**
  * Entry Point for Organizational Manager editor
@@ -26,7 +27,7 @@ import org.guvnor.organizationalunit.manager.client.resources.OrganizationalUnit
 @EntryPoint
 public class OrganizationalUnitManagerEntryPoint {
 
-    @AfterInitialization
+    @PostConstruct
     public void startApp() {
         OrganizationalUnitManagerResources.INSTANCE.CSS().ensureInjected();
     }
