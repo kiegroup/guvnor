@@ -29,6 +29,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.metadata.attribute.DiscussionAttributes;
 import org.guvnor.common.services.backend.metadata.attribute.DiscussionAttributesUtil;
 import org.guvnor.common.services.backend.metadata.attribute.DiscussionView;
+import org.guvnor.common.services.backend.metadata.attribute.GeneratedAttributesUtil;
 import org.guvnor.common.services.backend.metadata.attribute.GeneratedAttributesView;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaAttributes;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaAttributesUtil;
@@ -132,6 +133,7 @@ public class MetadataServiceImpl
             attrs = DublinCoreAttributesUtil.cleanup(attrs);
             attrs = DiscussionAttributesUtil.cleanup(attrs);
             attrs = OtherMetaAttributesUtil.cleanup(attrs);
+            attrs = GeneratedAttributesUtil.cleanup(attrs);
 
             attrs.putAll(DiscussionAttributesUtil.toMap(
                     new DiscussionAttributes() {
@@ -371,8 +373,10 @@ public class MetadataServiceImpl
                     },
                     "*"));
 
-            attrs.put(GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME,
-                      metadata.isGenerated());
+            if (metadata.isGenerated()) {
+                attrs.put(GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME,
+                          true);
+            }
 
             return attrs;
         } catch (Exception e) {
