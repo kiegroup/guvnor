@@ -30,10 +30,12 @@ public class GAVPreferences implements BasePreference<GAVPreferences> {
     static final String CHILD_GAV_EDIT_ENABLED = "org.guvnor.project.gav.child.edit.enabled";
 
     @Property(bundleKey = "GAVPreferences.ConflictingGAVCheckDisabled.Label",
+            helpBundleKey = "GAVPreferences.ConflictingGAVCheckDisabled.Help",
             formType = PropertyFormType.BOOLEAN)
     private boolean conflictingGAVCheckDisabled;
 
     @Property(bundleKey = "GAVPreferences.ChildGAVEditEnabled.Label",
+            helpBundleKey = "GAVPreferences.ChildGAVEditEnabled.Help",
             formType = PropertyFormType.BOOLEAN)
     private boolean childGAVEditEnabled;
 
