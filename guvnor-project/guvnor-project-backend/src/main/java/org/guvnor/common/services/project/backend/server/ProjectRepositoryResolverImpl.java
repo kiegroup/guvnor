@@ -64,6 +64,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.Customizable;
+import org.uberfire.backend.server.cdi.workspace.WorkspaceScoped;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
@@ -73,7 +74,7 @@ import org.uberfire.java.nio.file.NoSuchFileException;
 import static org.guvnor.common.services.project.backend.server.MavenLocalRepositoryUtils.*;
 
 @Service
-@ApplicationScoped
+@WorkspaceScoped
 public class ProjectRepositoryResolverImpl
         implements ProjectRepositoryResolver {
 

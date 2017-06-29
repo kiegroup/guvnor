@@ -50,8 +50,11 @@ import org.slf4j.LoggerFactory;
 
 public class DistributionManagementArtifactRepository implements ArtifactRepository {
 
-    private final String name;
+    private String name;
     private Logger logger = LoggerFactory.getLogger(DistributionManagementArtifactRepository.class);
+
+    public DistributionManagementArtifactRepository() {
+    }
 
     public DistributionManagementArtifactRepository(final String name) {
         this.name = name;
@@ -60,6 +63,11 @@ public class DistributionManagementArtifactRepository implements ArtifactReposit
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getRootDir() {
+        return null;
     }
 
     @Override
@@ -80,6 +88,16 @@ public class DistributionManagementArtifactRepository implements ArtifactReposit
     @Override
     public File getArtifactFileFromRepository(final GAV gav) {
         return null;
+    }
+
+    @Override
+    public boolean isRepository() {
+        return true;
+    }
+
+    @Override
+    public boolean isPomRepository() {
+        return false;
     }
 
     @Override

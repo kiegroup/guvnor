@@ -36,13 +36,13 @@ import org.slf4j.LoggerFactory;
 
 public class HttpPutHelper {
 
-    private static final Logger log = LoggerFactory.getLogger( HttpPutHelper.class );
+    private static final Logger log = LoggerFactory.getLogger(HttpPutHelper.class);
 
     @Inject
     private GuvnorM2Repository m2RepoService;
 
-    public void handle( final HttpServletRequest request,
-                        final HttpServletResponse response ) throws ServletException, IOException {
+    public void handle(final HttpServletRequest request,
+                       final HttpServletResponse response) throws ServletException, IOException {
 
         final InputStream inputStream = request.getInputStream();
         OutputStream outputStream = null;
@@ -53,70 +53,67 @@ public class HttpPutHelper {
             //Get destination path
             String pathInfo = request.getPathInfo();
 
-            if ( pathInfo == null ) {
-                response.sendError( HttpServletResponse.SC_NOT_FOUND );
+            if (pathInfo == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
 
-            pathInfo = URLDecoder.decode( pathInfo,
-                                          "UTF-8" );
+            pathInfo = URLDecoder.decode(pathInfo,
+                                         "UTF-8");
+
+            String repositoryName = request.getParameter("repository");
 
             //File traversal check:
-            final File mavenRootDir = new File( m2RepoService.getM2RepositoryRootDir() );
+            final File mavenRootDir = new File(m2RepoService.getM2RepositoryRootDir(repositoryName));
             final String canonicalDirPath = mavenRootDir.getCanonicalPath() + File.separator;
-            final String canonicalEntryPath = new File( mavenRootDir,
-                                                        pathInfo ).getCanonicalPath();
-            if ( !canonicalEntryPath.startsWith( canonicalDirPath ) ) {
-                response.sendError( HttpServletResponse.SC_NOT_FOUND );
+            final String canonicalEntryPath = new File(mavenRootDir,
+                                                       pathInfo).getCanonicalPath();
+            if (!canonicalEntryPath.startsWith(canonicalDirPath)) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
 
-            pathInfo = canonicalEntryPath.substring( canonicalDirPath.length() );
-            final File file = new File( mavenRootDir,
-                                        pathInfo );
+            pathInfo = canonicalEntryPath.substring(canonicalDirPath.length());
+            final File file = new File(mavenRootDir,
+                                       pathInfo);
 
             //Create new file if it does not already exist and set status code to 201
             //See http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html Section 9.6 PUT
-            if ( !file.exists() ) {
+            if (!file.exists()) {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
                 status = HttpServletResponse.SC_CREATED;
             }
 
-            outputStream = new BufferedOutputStream( new FileOutputStream( file ) );
+            outputStream = new BufferedOutputStream(new FileOutputStream(file));
 
             //Copy input
-            IOUtil.copy( inputStream,
-                         outputStream );
+            IOUtil.copy(inputStream,
+                        outputStream);
 
-            response.setStatus( status );
-
-        } catch ( FileNotFoundException e ) {
-            log.error( e.toString(),
-                       e );
-
-        } catch ( IOException e ) {
-            log.error( e.toString(),
-                       e );
-
+            response.setStatus(status);
+        } catch (FileNotFoundException e) {
+            log.error(e.toString(),
+                      e);
+        } catch (IOException e) {
+            log.error(e.toString(),
+                      e);
         } finally {
-            if ( outputStream != null ) {
+            if (outputStream != null) {
                 try {
                     outputStream.flush();
                     outputStream.close();
-                } catch ( IOException e ) {
+                } catch (IOException e) {
                     //Swallow
                 }
             }
-            if ( inputStream != null ) {
+            if (inputStream != null) {
                 try {
                     inputStream.close();
-                } catch ( IOException e ) {
+                } catch (IOException e) {
                     //Swallow
                 }
             }
         }
-
     }
-
 }

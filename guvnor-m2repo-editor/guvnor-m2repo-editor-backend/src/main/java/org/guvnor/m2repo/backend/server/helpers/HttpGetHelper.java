@@ -46,35 +46,37 @@ public class HttpGetHelper {
     @Inject
     private GuvnorM2Repository repository;
 
-    public void handle( final HttpServletRequest request,
-                        final HttpServletResponse response,
-                        final ServletContext context ) throws IOException {
+    public void handle(final HttpServletRequest request,
+                       final HttpServletResponse response,
+                       final ServletContext context) throws IOException {
         String requestedFile = request.getPathInfo();
 
-        if ( requestedFile == null ) {
-            response.sendError( HttpServletResponse.SC_NOT_FOUND );
+        if (requestedFile == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
-        requestedFile = URLDecoder.decode( requestedFile,
-                                           "UTF-8" );
+        requestedFile = URLDecoder.decode(requestedFile,
+                                          "UTF-8");
+
+        String repositoryName = request.getParameter("repository");
 
         //File traversal check:
-        final File mavenRootDir = new File( repository.getM2RepositoryRootDir() );
+        final File mavenRootDir = new File(repository.getM2RepositoryRootDir(repositoryName));
         final String canonicalDirPath = mavenRootDir.getCanonicalPath() + File.separator;
-        final String canonicalEntryPath = new File( mavenRootDir,
-                                                    requestedFile ).getCanonicalPath();
-        if ( !canonicalEntryPath.startsWith( canonicalDirPath ) ) {
-            response.sendError( HttpServletResponse.SC_NOT_FOUND );
+        final String canonicalEntryPath = new File(mavenRootDir,
+                                                   requestedFile).getCanonicalPath();
+        if (!canonicalEntryPath.startsWith(canonicalDirPath)) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
-        requestedFile = canonicalEntryPath.substring( canonicalDirPath.length() );
-        final File file = new File( mavenRootDir,
-                                    requestedFile );
+        requestedFile = canonicalEntryPath.substring(canonicalDirPath.length());
+        final File file = new File(mavenRootDir,
+                                   requestedFile);
 
-        if ( !file.exists() ) {
-            response.sendError( HttpServletResponse.SC_NOT_FOUND );
+        if (!file.exists()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
@@ -84,187 +86,200 @@ public class HttpGetHelper {
         long lastModified = file.lastModified();
         String eTag = fileName + "_" + length + "_" + lastModified;
 
-        String ifNoneMatch = request.getHeader( "If-None-Match" );
-        if ( ifNoneMatch != null && matches( ifNoneMatch, eTag ) ) {
-            response.setHeader( "ETag", eTag ); // Required in 304.
-            response.sendError( HttpServletResponse.SC_NOT_MODIFIED );
+        String ifNoneMatch = request.getHeader("If-None-Match");
+        if (ifNoneMatch != null && matches(ifNoneMatch,
+                                           eTag)) {
+            response.setHeader("ETag",
+                               eTag); // Required in 304.
+            response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
             return;
         }
 
-        long ifModifiedSince = request.getDateHeader( "If-Modified-Since" );
-        if ( ifNoneMatch == null && ifModifiedSince != -1 && ifModifiedSince + 1000 > lastModified ) {
-            response.setHeader( "ETag", eTag ); // Required in 304.
-            response.sendError( HttpServletResponse.SC_NOT_MODIFIED );
+        long ifModifiedSince = request.getDateHeader("If-Modified-Since");
+        if (ifNoneMatch == null && ifModifiedSince != -1 && ifModifiedSince + 1000 > lastModified) {
+            response.setHeader("ETag",
+                               eTag); // Required in 304.
+            response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
             return;
         }
 
-        String ifMatch = request.getHeader( "If-Match" );
-        if ( ifMatch != null && !matches( ifMatch, eTag ) ) {
-            response.sendError( HttpServletResponse.SC_PRECONDITION_FAILED );
+        String ifMatch = request.getHeader("If-Match");
+        if (ifMatch != null && !matches(ifMatch,
+                                        eTag)) {
+            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
             return;
         }
 
-        long ifUnmodifiedSince = request.getDateHeader( "If-Unmodified-Since" );
-        if ( ifUnmodifiedSince != -1 && ifUnmodifiedSince + 1000 <= lastModified ) {
-            response.sendError( HttpServletResponse.SC_PRECONDITION_FAILED );
+        long ifUnmodifiedSince = request.getDateHeader("If-Unmodified-Since");
+        if (ifUnmodifiedSince != -1 && ifUnmodifiedSince + 1000 <= lastModified) {
+            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
             return;
         }
 
-        Range full = new Range( 0, length - 1, length );
+        Range full = new Range(0,
+                               length - 1,
+                               length);
         List<Range> ranges = new ArrayList<Range>();
 
-        String contentType = context.getMimeType( fileName );
+        String contentType = context.getMimeType(fileName);
         boolean acceptsGzip = false;
         String disposition = "inline";
 
-        if ( contentType == null ) {
+        if (contentType == null) {
             contentType = "application/octet-stream";
         }
 
-        if ( contentType.startsWith( "text" ) ) {
-            String acceptEncoding = request.getHeader( "Accept-Encoding" );
+        if (contentType.startsWith("text")) {
+            String acceptEncoding = request.getHeader("Accept-Encoding");
             acceptsGzip = acceptEncoding != null
-                    && accepts( acceptEncoding,
-                                "gzip" );
+                    && accepts(acceptEncoding,
+                               "gzip");
             contentType += ";charset=UTF-8";
-        } else if ( !contentType.startsWith( "image" ) ) {
-            String accept = request.getHeader( "Accept" );
-            disposition = accept != null && accepts( accept,
-                                                     contentType ) ? "inline" : "attachment";
+        } else if (!contentType.startsWith("image")) {
+            String accept = request.getHeader("Accept");
+            disposition = accept != null && accepts(accept,
+                                                    contentType) ? "inline" : "attachment";
         }
 
         //Response.
         response.reset();
-        response.setBufferSize( DEFAULT_BUFFER_SIZE );
-        response.setHeader( "Content-Disposition",
-                            disposition +
-                                    ";filename=\"" +
-                                    fileName +
-                                    "\"" );
-        response.setHeader( "Accept-Ranges",
-                            "bytes" );
-        response.setHeader( "ETag",
-                            eTag );
-        response.setDateHeader( "Last-Modified",
-                                lastModified );
-        response.setDateHeader( "Expires",
-                                System.currentTimeMillis() + DEFAULT_EXPIRE_TIME );
+        response.setBufferSize(DEFAULT_BUFFER_SIZE);
+        response.setHeader("Content-Disposition",
+                           disposition +
+                                   ";filename=\"" +
+                                   fileName +
+                                   "\"");
+        response.setHeader("Accept-Ranges",
+                           "bytes");
+        response.setHeader("ETag",
+                           eTag);
+        response.setDateHeader("Last-Modified",
+                               lastModified);
+        response.setDateHeader("Expires",
+                               System.currentTimeMillis() + DEFAULT_EXPIRE_TIME);
 
         RandomAccessFile input = null;
         OutputStream output = null;
 
         try {
-            input = new RandomAccessFile( file,
-                                          "r" );
+            input = new RandomAccessFile(file,
+                                         "r");
             output = response.getOutputStream();
 
-            if ( ranges.isEmpty() || ranges.get( 0 ) == full ) {
+            if (ranges.isEmpty() || ranges.get(0) == full) {
                 Range r = full;
-                response.setContentType( contentType );
-                response.setHeader( "Content-Range",
-                                    "bytes " + r.start + "-" + r.end + "/" + r.total );
+                response.setContentType(contentType);
+                response.setHeader("Content-Range",
+                                   "bytes " + r.start + "-" + r.end + "/" + r.total);
 
-                if ( acceptsGzip ) {
-                    response.setHeader( "Content-Encoding",
-                                        "gzip" );
-                    output = new GZIPOutputStream( output,
-                                                   DEFAULT_BUFFER_SIZE );
+                if (acceptsGzip) {
+                    response.setHeader("Content-Encoding",
+                                       "gzip");
+                    output = new GZIPOutputStream(output,
+                                                  DEFAULT_BUFFER_SIZE);
                 } else {
-                    response.setHeader( "Content-Length",
-                                        String.valueOf( r.length ) );
+                    response.setHeader("Content-Length",
+                                       String.valueOf(r.length));
                 }
 
-                copyRange( input,
-                           output,
-                           r.start,
-                           r.length );
+                copyRange(input,
+                          output,
+                          r.start,
+                          r.length);
+            } else if (ranges.size() == 1) {
+                Range r = ranges.get(0);
+                response.setContentType(contentType);
+                response.setHeader("Content-Range",
+                                   "bytes " + r.start + "-" + r.end + "/" + r.total);
+                response.setHeader("Content-Length",
+                                   String.valueOf(r.length));
+                response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT); // 206.
 
-            } else if ( ranges.size() == 1 ) {
-                Range r = ranges.get( 0 );
-                response.setContentType( contentType );
-                response.setHeader( "Content-Range",
-                                    "bytes " + r.start + "-" + r.end + "/" + r.total );
-                response.setHeader( "Content-Length",
-                                    String.valueOf( r.length ) );
-                response.setStatus( HttpServletResponse.SC_PARTIAL_CONTENT ); // 206.
-
-                copyRange( input,
-                           output,
-                           r.start,
-                           r.length );
-
+                copyRange(input,
+                          output,
+                          r.start,
+                          r.length);
             } else {
-                response.setContentType( "multipart/byteranges; boundary=" + MULTIPART_BOUNDARY );
-                response.setStatus( HttpServletResponse.SC_PARTIAL_CONTENT ); // 206.
+                response.setContentType("multipart/byteranges; boundary=" + MULTIPART_BOUNDARY);
+                response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT); // 206.
 
                 ServletOutputStream sos = (ServletOutputStream) output;
-                for ( Range r : ranges ) {
+                for (Range r : ranges) {
                     sos.println();
-                    sos.println( "--" + MULTIPART_BOUNDARY );
-                    sos.println( "Content-Type: " + contentType );
-                    sos.println( "Content-Range: bytes " + r.start + "-" + r.end + "/" + r.total );
+                    sos.println("--" + MULTIPART_BOUNDARY);
+                    sos.println("Content-Type: " + contentType);
+                    sos.println("Content-Range: bytes " + r.start + "-" + r.end + "/" + r.total);
 
-                    copyRange( input,
-                               output,
-                               r.start,
-                               r.length );
+                    copyRange(input,
+                              output,
+                              r.start,
+                              r.length);
                 }
 
                 sos.println();
-                sos.println( "--" + MULTIPART_BOUNDARY + "--" );
+                sos.println("--" + MULTIPART_BOUNDARY + "--");
             }
         } finally {
-            if ( output != null ) {
+            if (output != null) {
                 output.close();
             }
-            if ( input != null ) {
+            if (input != null) {
                 input.close();
             }
         }
     }
 
-    private static boolean accepts( final String acceptHeader,
-                                    final String toAccept ) {
-        String[] acceptValues = acceptHeader.split( "\\s*(,|;)\\s*" );
-        Arrays.sort( acceptValues );
-        return Arrays.binarySearch( acceptValues,
-                                    toAccept ) > -1
-                || Arrays.binarySearch( acceptValues,
-                                        toAccept.replaceAll( "/.*$", "/*" ) ) > -1
-                || Arrays.binarySearch( acceptValues, "*/*" ) > -1;
+    private static boolean accepts(final String acceptHeader,
+                                   final String toAccept) {
+        String[] acceptValues = acceptHeader.split("\\s*(,|;)\\s*");
+        Arrays.sort(acceptValues);
+        return Arrays.binarySearch(acceptValues,
+                                   toAccept) > -1
+                || Arrays.binarySearch(acceptValues,
+                                       toAccept.replaceAll("/.*$",
+                                                           "/*")) > -1
+                || Arrays.binarySearch(acceptValues,
+                                       "*/*") > -1;
     }
 
-    private static boolean matches( final String matchHeader,
-                                    final String toMatch ) {
-        String[] matchValues = matchHeader.split( "\\s*,\\s*" );
-        Arrays.sort( matchValues );
-        return Arrays.binarySearch( matchValues,
-                                    toMatch ) > -1
-                || Arrays.binarySearch( matchValues, "*" ) > -1;
+    private static boolean matches(final String matchHeader,
+                                   final String toMatch) {
+        String[] matchValues = matchHeader.split("\\s*,\\s*");
+        Arrays.sort(matchValues);
+        return Arrays.binarySearch(matchValues,
+                                   toMatch) > -1
+                || Arrays.binarySearch(matchValues,
+                                       "*") > -1;
     }
 
-    private static void copyRange( final RandomAccessFile input,
-                                   final OutputStream output,
-                                   final long start,
-                                   final long length ) throws IOException {
-        byte[] buffer = new byte[ DEFAULT_BUFFER_SIZE ];
+    private static void copyRange(final RandomAccessFile input,
+                                  final OutputStream output,
+                                  final long start,
+                                  final long length) throws IOException {
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         int read;
 
-        if ( input.length() == length ) {
+        if (input.length() == length) {
             // Write full range.
-            while ( ( read = input.read( buffer ) ) > 0 ) {
-                output.write( buffer, 0, read );
+            while ((read = input.read(buffer)) > 0) {
+                output.write(buffer,
+                             0,
+                             read);
             }
         } else {
             // Write partial range.
-            input.seek( start );
+            input.seek(start);
             long toRead = length;
 
-            while ( ( read = input.read( buffer ) ) > 0 ) {
-                if ( ( toRead -= read ) > 0 ) {
-                    output.write( buffer, 0, read );
+            while ((read = input.read(buffer)) > 0) {
+                if ((toRead -= read) > 0) {
+                    output.write(buffer,
+                                 0,
+                                 read);
                 } else {
-                    output.write( buffer, 0, (int) toRead + read );
+                    output.write(buffer,
+                                 0,
+                                 (int) toRead + read);
                     break;
                 }
             }
@@ -278,15 +293,13 @@ public class HttpGetHelper {
         long length;
         long total;
 
-        public Range( long start,
-                      long end,
-                      long total ) {
+        public Range(long start,
+                     long end,
+                     long total) {
             this.start = start;
             this.end = end;
             this.length = end - start + 1;
             this.total = total;
         }
-
     }
-
 }

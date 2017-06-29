@@ -47,11 +47,14 @@ import org.uberfire.apache.commons.io.FilenameUtils;
 
 public class FileSystemArtifactRepository implements ArtifactRepository {
 
-    private final String name;
+    private String name;
     private Logger logger = LoggerFactory.getLogger(FileSystemArtifactRepository.class);
 
     private RemoteRepository repository;
     private String repositoryDirectory;
+
+    public FileSystemArtifactRepository() {
+    }
 
     public FileSystemArtifactRepository(final String name,
                                         final String dir) {
@@ -73,6 +76,11 @@ public class FileSystemArtifactRepository implements ArtifactRepository {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public String getRootDir() {
+        return this.getRepositoryDirectory();
     }
 
     @Override
@@ -141,6 +149,16 @@ public class FileSystemArtifactRepository implements ArtifactRepository {
     }
 
     @Override
+    public boolean isRepository() {
+        return true;
+    }
+
+    @Override
+    public boolean isPomRepository() {
+        return true;
+    }
+
+    @Override
     public void deploy(final String pom,
                        final Artifact... artifacts) {
         try {
@@ -188,7 +206,7 @@ public class FileSystemArtifactRepository implements ArtifactRepository {
 
         try {
             String localRepositoryUrl = m2RepoDir.toURI().toURL().toExternalForm();
-            return new RemoteRepository.Builder("guvnor-m2-repo",
+            return new RemoteRepository.Builder(this.getName(),
                                                 "default",
                                                 localRepositoryUrl)
                     .setSnapshotPolicy(new RepositoryPolicy(true,

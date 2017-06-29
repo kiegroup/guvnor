@@ -24,20 +24,68 @@ import org.uberfire.preferences.shared.bean.BasePreference;
 @WorkbenchPreference(identifier = "ArtifactRepositoryPreference", bundleKey = "ArtifactRepositoryPreference.Label")
 public class ArtifactRepositoryPreference implements BasePreference<ArtifactRepositoryPreference> {
 
-    @Property(bundleKey = "ArtifactRepositoryPreference.DefaultM2RepoDir")
-    private String defaultM2RepoDir;
+    @Property(bundleKey = "ArtifactRepositoryPreference.GlobalM2RepoDir")
+    private String globalM2RepoDir;
+
+    @Property(bundleKey = "ArtifactRepositoryPreference.GlobalM2RepoDirEnabled")
+    private boolean globalM2RepoDirEnabled;
+
+    @Property(bundleKey = "ArtifactRepositoryPreference.WorkspaceM2RepoDir")
+    private String workspaceM2RepoDir;
+
+    @Property(bundleKey = "ArtifactRepositoryPreference.WorkspaceM2RepoDirEnabled")
+    private boolean workspaceM2RepoDirEnabled;
+
+    @Property(bundleKey = "ArtifactRepositoryPreference.DistributionManagementM2RepoDirEnabled")
+    private boolean distributionManagementM2RepoDirEnabled;
 
     @Override
     public ArtifactRepositoryPreference defaultValue(final ArtifactRepositoryPreference defaultValue) {
-        defaultValue.defaultM2RepoDir = "repositories/kie";
+        defaultValue.globalM2RepoDir = "repositories/kie/global";
+        defaultValue.workspaceM2RepoDir = "repositories/kie/workspaces";
+        defaultValue.globalM2RepoDirEnabled = true;
+        defaultValue.workspaceM2RepoDirEnabled = false;
+        defaultValue.distributionManagementM2RepoDirEnabled = true;
         return defaultValue;
     }
 
-    public String getDefaultM2RepoDir() {
-        return defaultM2RepoDir;
+    public String getGlobalM2RepoDir() {
+        return globalM2RepoDir;
     }
 
-    public void setDefaultM2RepoDir(final String defaultM2RepoDir) {
-        this.defaultM2RepoDir = defaultM2RepoDir.trim();
+    public void setGlobalM2RepoDir(final String globalM2RepoDir) {
+        this.globalM2RepoDir = globalM2RepoDir.trim();
+    }
+
+    public String getWorkspaceM2RepoDir() {
+        return workspaceM2RepoDir;
+    }
+
+    public void setWorkspaceM2RepoDir(String workspaceM2RepoDir) {
+        this.workspaceM2RepoDir = workspaceM2RepoDir;
+    }
+
+    public boolean isGlobalM2RepoDirEnabled() {
+        return globalM2RepoDirEnabled;
+    }
+
+    public void setGlobalM2RepoDirEnabled(boolean globalM2RepoDirEnabled) {
+        this.globalM2RepoDirEnabled = globalM2RepoDirEnabled;
+    }
+
+    public boolean isWorkspaceM2RepoDirEnabled() {
+        return workspaceM2RepoDirEnabled;
+    }
+
+    public void setWorkspaceM2RepoDirEnabled(boolean workspaceM2RepoDirEnabled) {
+        this.workspaceM2RepoDirEnabled = workspaceM2RepoDirEnabled;
+    }
+
+    public boolean isDistributionManagementM2RepoDirEnabled() {
+        return distributionManagementM2RepoDirEnabled;
+    }
+
+    public void setDistributionManagementM2RepoDirEnabled(boolean distributionManagementM2RepoDirEnabled) {
+        this.distributionManagementM2RepoDirEnabled = distributionManagementM2RepoDirEnabled;
     }
 }
