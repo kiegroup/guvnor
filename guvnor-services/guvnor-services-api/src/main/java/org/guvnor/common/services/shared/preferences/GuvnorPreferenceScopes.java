@@ -18,5 +18,6 @@ package org.guvnor.common.services.shared.preferences;
 
 public class GuvnorPreferenceScopes {
 
+    public static final String USER = "user";
     public static final String PROJECT = "project";
 }
