@@ -32,8 +32,8 @@ import org.apache.maven.settings.Settings;
 import org.appformer.maven.integration.Aether;
 import org.appformer.maven.integration.MavenRepository;
 import org.appformer.maven.integration.embedder.MavenSettings;
-import org.appformer.maven.support.ReleaseId;
-import org.appformer.maven.support.ReleaseIdImpl;
+import org.appformer.maven.support.AFReleaseId;
+import org.appformer.maven.support.AFReleaseIdImpl;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -81,7 +81,7 @@ public class RepositoryResolverTestUtils {
      */
     public static void installArtifact( final MavenProject mavenProject,
                                         final String pomXml ) {
-        final ReleaseId releaseId = new ReleaseIdImpl( mavenProject.getGroupId(),
+        final AFReleaseId releaseId = new AFReleaseIdImpl( mavenProject.getGroupId(),
                                                        mavenProject.getArtifactId(),
                                                        mavenProject.getVersion() );
 
@@ -102,7 +102,7 @@ public class RepositoryResolverTestUtils {
      */
     public static void deployArtifact( final MavenProject mavenProject,
                                        final String pomXml ) {
-        final ReleaseId releaseId = new ReleaseIdImpl( mavenProject.getGroupId(),
+        final AFReleaseId releaseId = new AFReleaseIdImpl( mavenProject.getGroupId(),
                                                        mavenProject.getArtifactId(),
                                                        mavenProject.getVersion() );
 
