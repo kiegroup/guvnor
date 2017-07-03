@@ -105,7 +105,7 @@ public class DistributionManagementArtifactRepository implements ArtifactReposit
                        final Artifact... artifacts) {
         try {
 
-            MavenEmbedder embedder = MavenProjectLoader.newMavenEmbedder( false);
+            MavenEmbedder embedder = MavenProjectLoader.newMavenEmbedder(false);
             DistributionManagement distributionManagement = getDistributionManagement(pom,
                                                                                       embedder);
 
@@ -137,8 +137,8 @@ public class DistributionManagementArtifactRepository implements ArtifactReposit
                     remoteRequest.setRepository(getRemoteRepoFromDeployment(remoteRepository,
                                                                             embedder));
 
-                    Aether.getAether().getSystem().deploy( Aether.getAether().getSession(),
-                                                           remoteRequest);
+                    Aether.getAether().getSystem().deploy(Aether.getAether().getSession(),
+                                                          remoteRequest);
                 }
             }
         } catch (DeploymentException e) {

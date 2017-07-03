@@ -89,8 +89,8 @@ public class LocalArtifactRepository implements ArtifactRepository {
                 installRequest
                         .addArtifact(artifact);
             }
-            Aether.getAether().getSystem().install( Aether.getAether().getSession(),
-                                                    installRequest);
+            Aether.getAether().getSystem().install(Aether.getAether().getSession(),
+                                                   installRequest);
         } catch (InstallationException e) {
             throw new RuntimeException(e);
         }

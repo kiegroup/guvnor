@@ -50,7 +50,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.repositories.ArtifactRepository;
-import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryFactory;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,13 +67,13 @@ public class GuvnorM2Repository {
 
     private final List<ArtifactRepository> repositories = new ArrayList<>();
     private final List<ArtifactRepository> pomRepositories = new ArrayList<>();
-    private ArtifactRepositoryFactory artifactRepositoryFactory;
+    private ArtifactRepositoryService artifactRepositoryFactory;
 
     public GuvnorM2Repository() {
     }
 
     @Inject
-    public GuvnorM2Repository(ArtifactRepositoryFactory factory) {
+    public GuvnorM2Repository(ArtifactRepositoryService factory) {
         this.artifactRepositoryFactory = factory;
     }
 
@@ -95,7 +95,7 @@ public class GuvnorM2Repository {
 
     public String getM2RepositoryRootDir(String repositoryName) {
 
-        String defaultName = ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME;
+        String defaultName = ArtifactRepositoryService.GLOBAL_M2_REPO_NAME;
         if (repositoryName != null && !repositoryName.isEmpty()) {
             defaultName = repositoryName;
         }
@@ -435,7 +435,7 @@ public class GuvnorM2Repository {
     }
 
     public String getPomText(final String path) {
-        ArtifactRepository repository = this.getArtifactRepository(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME);
+        ArtifactRepository repository = this.getArtifactRepository(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME);
         final File file = new File(repository.getRootDir(),
                                    path);
 
@@ -487,7 +487,7 @@ public class GuvnorM2Repository {
     }
 
     public GAV loadGAVFromJar(final String jarPath) {
-        ArtifactRepository repository = this.getArtifactRepository(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME);
+        ArtifactRepository repository = this.getArtifactRepository(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME);
         File zip = new File(repository.getRootDir(),
                             jarPath);
 

@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import javax.enterprise.inject.Instance;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemHeaders;
@@ -35,7 +36,9 @@ import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.helpers.FormData;
 import org.guvnor.m2repo.backend.server.helpers.HttpPostHelper;
-import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryFactory;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepository;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryProducer;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryService;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
@@ -51,14 +54,11 @@ import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.cdi.workspace.WorkspaceNameResolver;
+import org.uberfire.mocks.MockInstanceImpl;
 import org.uberfire.paging.PageResponse;
 
 import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_OK;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class M2RepositoryServiceImplTest {
@@ -112,9 +112,13 @@ public class M2RepositoryServiceImplTest {
         when(pref.isWorkspaceM2RepoDirEnabled()).thenReturn(false);
         WorkspaceNameResolver resolver = mock(WorkspaceNameResolver.class);
         when(resolver.getWorkspaceName()).thenReturn("global");
-        ArtifactRepositoryFactory factory = new ArtifactRepositoryFactory(pref,
-                                                                          resolver);
-        factory.initialize();
+        ArtifactRepositoryProducer producer = new ArtifactRepositoryProducer(pref,
+                                                                             resolver);
+        producer.initialize();
+        Instance<ArtifactRepository> repositories = new MockInstanceImpl<>(producer.produceLocalRepository(),
+                                                                           producer.produceGlobalRepository(),
+                                                                           producer.produceDistributionManagementRepository());
+        ArtifactRepositoryService factory = new ArtifactRepositoryService(repositories);
         repo = new GuvnorM2Repository(factory);
         repo.init();
 
@@ -175,7 +179,7 @@ public class M2RepositoryServiceImplTest {
             if (fileName.startsWith("guvnor-m2repo-editor-backend-0.0.1") && fileName.endsWith(".jar")) {
                 found = true;
                 String path = file.getPath();
-                String jarPath = path.substring(repo.getM2RepositoryRootDir(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME).length());
+                String jarPath = path.substring(repo.getM2RepositoryRootDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME).length());
                 String pom = repo.getPomText(jarPath);
                 assertNotNull(pom);
                 break;
@@ -218,7 +222,7 @@ public class M2RepositoryServiceImplTest {
             if (fileName.startsWith("guvnor-m2repo-editor-backend-0.0.1") && fileName.endsWith(".pom")) {
                 found = true;
                 String path = file.getPath();
-                String jarPath = path.substring(repo.getM2RepositoryRootDir(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME).length());
+                String jarPath = path.substring(repo.getM2RepositoryRootDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME).length());
                 String pom = repo.getPomText(jarPath);
                 assertNotNull(pom);
                 break;
@@ -359,7 +363,7 @@ public class M2RepositoryServiceImplTest {
         final int PAGE_START = 1;
         final int PAGE_SIZE = 2;
         for (int i = 0; i < TOTAL; i++) {
-            final ArtifactImpl artifact = new ArtifactImpl(new File(repo.getM2RepositoryRootDir(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME),
+            final ArtifactImpl artifact = new ArtifactImpl(new File(repo.getM2RepositoryRootDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME),
                                                                     "path/x" + i));
             final HashMap<String, String> map = new HashMap<String, String>();
             map.put("repository",
@@ -372,7 +376,7 @@ public class M2RepositoryServiceImplTest {
         Mockito.when(mockRepo.listArtifacts(Mockito.anyString(),
                                             Matchers.<List<String>>any()))
                 .thenReturn(artifacts);
-        when(mockRepo.getM2RepositoryDir(any())).thenReturn(repo.getM2RepositoryDir(ArtifactRepositoryFactory.GLOBAL_M2_REPO_NAME));
+        when(mockRepo.getM2RepositoryDir(any())).thenReturn(repo.getM2RepositoryDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME));
 
         // Create a shell M2RepoService with injected mock M2Repository
         M2RepoServiceImpl m2service = new M2RepoServiceImpl(mockRepo);

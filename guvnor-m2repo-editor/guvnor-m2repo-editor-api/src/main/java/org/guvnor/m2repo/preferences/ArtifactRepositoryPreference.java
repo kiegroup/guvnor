@@ -17,6 +17,7 @@
 
 package org.guvnor.m2repo.preferences;
 
+import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
@@ -27,16 +28,16 @@ public class ArtifactRepositoryPreference implements BasePreference<ArtifactRepo
     @Property(bundleKey = "ArtifactRepositoryPreference.GlobalM2RepoDir")
     private String globalM2RepoDir;
 
-    @Property(bundleKey = "ArtifactRepositoryPreference.GlobalM2RepoDirEnabled")
+    @Property(bundleKey = "ArtifactRepositoryPreference.GlobalM2RepoDirEnabled", formType = PropertyFormType.BOOLEAN)
     private boolean globalM2RepoDirEnabled;
 
     @Property(bundleKey = "ArtifactRepositoryPreference.WorkspaceM2RepoDir")
     private String workspaceM2RepoDir;
 
-    @Property(bundleKey = "ArtifactRepositoryPreference.WorkspaceM2RepoDirEnabled")
+    @Property(bundleKey = "ArtifactRepositoryPreference.WorkspaceM2RepoDirEnabled", formType = PropertyFormType.BOOLEAN)
     private boolean workspaceM2RepoDirEnabled;
 
-    @Property(bundleKey = "ArtifactRepositoryPreference.DistributionManagementM2RepoDirEnabled")
+    @Property(bundleKey = "ArtifactRepositoryPreference.DistributionManagementM2RepoDirEnabled", formType = PropertyFormType.BOOLEAN)
     private boolean distributionManagementM2RepoDirEnabled;
 
     @Override
