@@ -15,28 +15,19 @@
  */
 package org.guvnor.ala.openshift.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.guvnor.ala.runtime.providers.base.BaseProviderType;
+import org.guvnor.ala.runtime.base.BaseRuntimeState;
 
-/**
- */
-public final class OpenShiftProviderType extends BaseProviderType {
+public class OpenShiftRuntimeState extends BaseRuntimeState {
 
-    @JsonIgnore
-    private static OpenShiftProviderType instance;
+    public static final String NA = "NA";
+    public static final String READY = "Ready";
+    public static final String STARTED = "Started";
 
-    /*
-     * No-args constructor for enabling marshalling to work, please do not remove. 
-    */
-    public OpenShiftProviderType() {
-        super("openshift", "3.5");
+    public OpenShiftRuntimeState() {
     }
 
-    @JsonIgnore
-    public static OpenShiftProviderType instance() {
-        if (instance == null) {
-            instance = new OpenShiftProviderType();
-        }
-        return instance;
+    public OpenShiftRuntimeState(String state, String startedAt) {
+        super(state, startedAt);
     }
+
 }

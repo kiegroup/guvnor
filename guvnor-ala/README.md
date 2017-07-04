@@ -5,7 +5,7 @@
 Guvnor ALA provides a simple API to automate all the stages of our applications lifecycle. From a high level point of view Guvnor ALA provides only a thin layer to integrate several mechanisms to manage source code, projects and building  and provisioning mechanisms. Inside Guvnor ALA you will find 5 building blocks.
 - **Source** Allow us to get code locally from different sources, list all our sources, add new sources, etc. A Git implementation is provided.
 - **Build** API & Maven build provider implementation provided
-- **Runtime** create new runtime in different providers: AppServers, Docker, Kubernetes, Openshift & control these runtimes
+- **Runtime** create new runtime in different providers: AppServers, Docker, Kubernetes, OpenShift & control these runtimes
 - **Pipeline** a way to control and chain the previous elements to we can move from source to runtime in just one service call
 - **Registry** a way to keep track where our projects, providers, runtimes and pipelines are
 
@@ -21,7 +21,7 @@ This block will be in charge of taking a project path and building the appropria
 
 #Runtime
 In order to provision runtimes there are 3 main concepts to understand:
- - **Provider Type** : it represents a registered provider type into the system. This could be Docker, Kubernetes, Any Servlet container or Application Server
+ - **Provider Type** : it represents a registered provider type into the system. This could be Docker, OpenShift, Any Servlet container or Application Server
  - **Provider** : it represent an actual instance of a provider. The provider object represent and contains the information to interact with a provider, so we can start provisioning things inside it. For Docker, this relates to a specific Docker Deamon that we can contact, or an instance of an application server hosted remotely.
  - **Runtime** : a running container/application that we have provisioned and we can check the status or execute operations.
 
@@ -29,6 +29,7 @@ The project is divided into an SPI module whcih contains these concepts plus a s
 
 The current providers implementations are:
 - **Docker** (guvnor-ala-docker-provider)
+- **Openshift** (guvnor-ala-openshift-provider)
 - **Wildfly** (guvnor-ala-wildfly-provider)
 
 Once we have our new provisioned runtimes we can manage their state and control them remotely.
