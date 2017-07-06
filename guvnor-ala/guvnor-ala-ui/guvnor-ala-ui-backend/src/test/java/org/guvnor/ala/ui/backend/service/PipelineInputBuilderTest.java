@@ -23,6 +23,7 @@ import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.source.git.config.GitConfig;
 import org.guvnor.ala.ui.model.InternalGitSource;
 import org.guvnor.ala.ui.model.ProviderKey;
+import org.guvnor.common.services.project.model.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,21 +46,25 @@ public class PipelineInputBuilderTest {
 
     private static final String BRANCH = "BRANCH";
 
-    private static final String PROJECT = "PROJECT";
+    private static final String PROJECT_NAME = "PROJECT_NAME";
+
+    @Mock
+    private Project project;
 
     @Mock
     private ProviderKey providerKey;
 
-    InternalGitSource gitSource;
+    private InternalGitSource gitSource;
 
     @Before
     public void setUp() {
         when(providerKey.getId()).thenReturn(PROVIDER);
+        when(project.getProjectName()).thenReturn(PROJECT_NAME);
 
         gitSource = new InternalGitSource(OU,
                                           REPO,
                                           BRANCH,
-                                          PROJECT);
+                                          project);
     }
 
     @Test
@@ -78,7 +83,7 @@ public class PipelineInputBuilderTest {
                      result.get(GitConfig.REPO_NAME));
         assertEquals(BRANCH,
                      result.get(GitConfig.BRANCH));
-        assertEquals(PROJECT,
+        assertEquals(PROJECT_NAME,
                      result.get(MavenProjectConfig.PROJECT_DIR));
     }
 }

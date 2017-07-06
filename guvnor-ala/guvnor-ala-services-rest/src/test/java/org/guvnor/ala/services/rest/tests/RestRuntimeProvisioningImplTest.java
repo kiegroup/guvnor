@@ -40,6 +40,7 @@ import org.guvnor.ala.registry.inmemory.InMemoryRuntimeRegistry;
 import org.guvnor.ala.runtime.RuntimeBuilder;
 import org.guvnor.ala.runtime.RuntimeDestroyer;
 import org.guvnor.ala.runtime.RuntimeManager;
+import org.guvnor.ala.runtime.RuntimeState;
 import org.guvnor.ala.runtime.providers.Provider;
 import org.guvnor.ala.runtime.providers.ProviderBuilder;
 import org.guvnor.ala.runtime.providers.ProviderId;
@@ -196,8 +197,11 @@ public class RestRuntimeProvisioningImplTest {
         RuntimeQueryResultItemList queryResult = runtimeService.executeQuery(query);
         assertEquals(1,
                      queryResult.getItems().size());
+        assertEquals(RuntimeState.RUNNING,
+                     queryResult.getItems().get(0).getRuntimeStatus());
 
-        runtimeService.destroyRuntime(newRuntime);
+        runtimeService.destroyRuntime(newRuntime,
+                                      true);
 
         allRuntimes = runtimeService.getRuntimes(0,
                                                  10,

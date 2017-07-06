@@ -40,10 +40,7 @@ public class GuvnorAlaUIConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String NewProviderWizard_ProviderCreateSuccessMessage = "NewProviderWizard.ProviderCreateSuccessMessage";
-
-    @TranslationKey(defaultValue = "")
-    public static final String NewProviderWizard_ProviderCreateErrorMessage = "NewProviderWizard.ProviderCreateErrorMessage";
-
+    
     @TranslationKey(defaultValue = "")
     public static final String NewProviderWizard_ProviderNotProperlyConfiguredInSystemErrorMessage = "NewProviderWizard.ProviderNotProperlyConfiguredInSystemErrorMessage";
 
@@ -52,9 +49,6 @@ public class GuvnorAlaUIConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String NewDeployWizard_PipelineStartSuccessMessage = "NewDeployWizard.PipelineStartSuccessMessage";
-
-    @TranslationKey(defaultValue = "")
-    public static final String NewDeployWizard_PipelineStartErrorMessage = "NewDeployWizard.PipelineStartErrorMessage";
 
     @TranslationKey(defaultValue = "")
     public static final String SelectPipelinePageView_Title = "SelectPipelinePageView.Title";
@@ -78,10 +72,13 @@ public class GuvnorAlaUIConstants {
     public static final String ProviderView_ConfirmRemovePopupTitle = "ProviderView.ConfirmRemovePopupTitle";
 
     @TranslationKey(defaultValue = "")
-    public static final String ProviderTypeView_ProviderTypeRemovePopupTitle = "ProviderTypeView.ProviderTypeRemovePopupTitle";
+    public static final String ProviderView_ProviderCantBeDeletedMessage = "ProviderView.ProviderCantBeDeletedMessage";
 
     @TranslationKey(defaultValue = "")
-    public static final String ProviderTypeView_ProviderTypeRemovePopupText = "ProviderTypeView.ProviderTypeRemovePopupText";
+    public static final String ProviderTypeView_ProviderTypeDisablePopupTitle = "ProviderTypeView.ProviderTypeDisablePopupTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ProviderTypeView_ProviderTypeDisablePopupText = "ProviderTypeView.ProviderTypeDisablePopupText";
 
     @TranslationKey(defaultValue = "")
     public static final String ProviderTypeNavigationView_TitleText = "ProviderTypeNavigationView.TitleText";
@@ -91,4 +88,74 @@ public class GuvnorAlaUIConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String ProviderConfigEmptyView_ProviderTypeNotProperlyConfiguredMessage = "ProviderConfigEmptyView.ProviderTypeNotProperlyConfiguredMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeStartAction = "RuntimePresenter.RuntimeStartAction";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeStopAction = "RuntimePresenter.RuntimeStopAction";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeDeleteAction = "RuntimePresenter.RuntimeDeleteAction";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeStartSuccessMessage = "RuntimePresenter.RuntimeStartSuccessMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeStopSuccessMessage = "RuntimePresenter.RuntimeStopSuccessMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeConfirmStopTitle = "RuntimePresenter.RuntimeConfirmStopTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeConfirmStopMessage = "RuntimePresenter.RuntimeConfirmStopMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeDeleteSuccessMessage = "RuntimePresenter.RuntimeDeleteSuccessMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeDeleteFailedTitle = "RuntimePresenter.RuntimeDeleteFailedTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeDeleteFailedMessage = "RuntimePresenter.RuntimeDeleteFailedMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeConfirmForcedDeleteTitle = "RuntimePresenter.RuntimeConfirmForcedDeleteTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeConfirmForcedDeleteMessage = "RuntimePresenter.RuntimeConfirmForcedDeleteMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeConfirmDeleteTitle = "RuntimePresenter.RuntimeConfirmDeleteTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeConfirmDeleteMessage = "RuntimePresenter.RuntimeConfirmDeleteMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_PipelineExecutionStopAction = "RuntimePresenter.PipelineExecutionStopAction";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_PipelineExecutionDeleteAction = "RuntimePresenter.PipelineExecutionDeleteAction";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_PipelineExecutionStopSuccessMessage = "RuntimePresenter.PipelineExecutionStopSuccessMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_PipelineExecutionDeleteSuccessMessage = "RuntimePresenter.PipelineExecutionDeleteSuccessMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_PipelineExecutionConfirmDeleteTitle = "RuntimePresenter.PipelineExecutionConfirmDeleteTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_PipelineExecutionConfirmDeleteMessage = "RuntimePresenter.PipelineExecutionConfirmDeleteMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_PipelineExecutionConfirmStopTitle = "RuntimePresenter.PipelineExecutionConfirmStopTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_PipelineExecutionConfirmStopMessage = "RuntimePresenter.PipelineExecutionConfirmStopMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_PipelineExecutionAlreadyStoppedMessage = "RuntimePresenter.PipelineExecutionAlreadyStoppedMessage";
+
 }

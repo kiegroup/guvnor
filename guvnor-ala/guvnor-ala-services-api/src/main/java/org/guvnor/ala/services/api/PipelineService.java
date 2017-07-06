@@ -19,9 +19,11 @@ package org.guvnor.ala.services.api;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -120,15 +122,36 @@ public interface PipelineService {
 
     /**
      * Run/Execute a registered Pipeline.
-     * @param id of the pipeline to be executed.
+     * @param pipelineId of the pipeline to be executed.
      * @param input Input values to be used for the pipeline execution.
      * @param async establishes the execution mode. true for asynchronous execution, false for synchronous execution.
+     * @return the pipeline execution id.
      */
     @POST
     @Consumes(value = APPLICATION_JSON)
     @Produces(value = APPLICATION_JSON)
-    @Path("{id}")
-    String runPipeline(@PathParam("id") String id,
+    @Path("execution/{pipelineId}/run")
+    String runPipeline(@PathParam("pipelineId") String pipelineId,
                        @NotNull Input input,
                        @NotNull boolean async) throws BusinessException;
+
+    /**
+     * Stops a running pipeline execution.
+     * @param executionId A pipeline execution id to stop. The pipeline execution id is typically returned by
+     * the runPipeline method.
+     * @throws BusinessException
+     */
+    @PUT
+    @Path("execution/{executionId}/stop")
+    void stopPipelineExecution(@PathParam("executionId") String executionId) throws BusinessException;
+
+    /**
+     * Deletes a pipeline execution
+     * @param executionId A pipeline execution id to delete. The pipeline execution id is typically returned by
+     * the runPipeline method.
+     * @throws BusinessException
+     */
+    @DELETE
+    @Path("execution/{executionId}")
+    void deletePipelineExecution(@PathParam("executionId") String executionId) throws BusinessException;
 }

@@ -88,7 +88,7 @@ public class RuntimeProvisioningServiceBackendImpl
 
     @Override
     public void unregisterProvider(String name) throws BusinessException {
-        runtimeProvisioningService.unregisterProvider(name);
+        runtimeProvisioningService.deregisterProvider(name);
     }
 
     @Override
@@ -97,8 +97,10 @@ public class RuntimeProvisioningServiceBackendImpl
     }
 
     @Override
-    public void destroyRuntime(String runtimeId) throws BusinessException {
-        runtimeProvisioningService.destroyRuntime(runtimeId);
+    public void destroyRuntime(String runtimeId,
+                               boolean forced) throws BusinessException {
+        runtimeProvisioningService.destroyRuntime(runtimeId,
+                                                  forced);
     }
 
     @Override

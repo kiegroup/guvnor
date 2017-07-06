@@ -54,27 +54,34 @@ public class StagePresenterTest {
         verify(view,
                times(1)).setName(STAGE_NAME);
         verify(view,
-               times(1)).setExecutingState();
+               times(1)).setExecutingState(State.EXECUTING.name());
     }
 
     @Test
     public void testSetStateExecuting() {
         presenter.setState(State.EXECUTING);
         verify(view,
-               times(1)).setExecutingState();
+               times(1)).setExecutingState(State.EXECUTING.name());
     }
 
     @Test
     public void testSetStateDone() {
         presenter.setState(State.DONE);
         verify(view,
-               times(1)).setDoneState();
+               times(1)).setDoneState(State.DONE.name());
     }
 
     @Test
     public void testSetStateError() {
         presenter.setState(State.ERROR);
         verify(view,
-               times(1)).setErrorState();
+               times(1)).setErrorState(State.ERROR.name());
+    }
+
+    @Test
+    public void testSetStateStopped() {
+        presenter.setState(State.STOPPED);
+        verify(view,
+               times(1)).setStoppedState(State.STOPPED.name());
     }
 }

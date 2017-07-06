@@ -99,7 +99,7 @@ public class WildflyRuntimeManager implements RuntimeManager {
                                                            runtime.getEndpoint(),
                                                            runtime.getInfo(),
                                                            new WildflyRuntimeState(appState.getState(),
-                                                                                   appState.getStartedAt().toString()));
+                                                                                   runtime.getState().getStartedAt()));
             runtimeRegistry.registerRuntime(newRuntime);
         } catch (WildflyClientException ex) {
             throw new RuntimeOperationException("Error Refreshing container: " + runtimeId.getId()

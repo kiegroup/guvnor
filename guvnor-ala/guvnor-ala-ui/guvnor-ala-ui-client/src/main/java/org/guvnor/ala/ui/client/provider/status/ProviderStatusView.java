@@ -50,6 +50,11 @@ public class ProviderStatusView
                                            listItem).getElement());
     }
 
+    public void removeListItem(final IsElement listItem) {
+        container.removeChild(checkNotNull("listItem",
+                                           listItem).getElement());
+    }
+
     @Override
     public void clear() {
         removeAllChildren(container);

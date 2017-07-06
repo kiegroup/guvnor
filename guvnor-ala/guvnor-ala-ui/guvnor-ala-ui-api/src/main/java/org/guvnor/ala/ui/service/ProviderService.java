@@ -22,8 +22,6 @@ import org.guvnor.ala.ui.model.Provider;
 import org.guvnor.ala.ui.model.ProviderConfiguration;
 import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderType;
-import org.guvnor.ala.ui.model.ProviderTypeKey;
-import org.guvnor.ala.ui.model.ProvidersInfo;
 import org.jboss.errai.bus.server.annotations.Remote;
 
 /**
@@ -66,11 +64,4 @@ public interface ProviderService {
      * @return the provider identified by the key if exists, null in any other case.
      */
     Provider getProvider(final ProviderKey providerKey);
-
-    /**
-     * Gets the information about all the defined providers for a given provider type.
-     * @param providerTypeKey
-     * @return a ProviderInfo with all the providers related to the provider type, or null if the provider type not exists.
-     */
-    ProvidersInfo getProvidersInfo(final ProviderTypeKey providerTypeKey);
 }
