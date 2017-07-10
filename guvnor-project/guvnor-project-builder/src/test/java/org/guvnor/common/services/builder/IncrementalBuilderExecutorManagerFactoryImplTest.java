@@ -23,6 +23,7 @@ import javax.naming.spi.InitialContextFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.commons.concurrent.ExecutorServiceProducer;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -34,74 +35,82 @@ public class IncrementalBuilderExecutorManagerFactoryImplTest {
 
     @Before
     public void before() {
-        spUberfireAsyncExecutorSafeMode = System.getProperty( "org.uberfire.async.executor.safemode" );
-        spJavaNamingFactoryInitial = System.getProperty( Context.INITIAL_CONTEXT_FACTORY );
-        System.clearProperty( "org.uberfire.async.executor.safemode" );
-        System.clearProperty( Context.INITIAL_CONTEXT_FACTORY );
+        spUberfireAsyncExecutorSafeMode = System.getProperty("org.uberfire.async.executor.safemode");
+        spJavaNamingFactoryInitial = System.getProperty(Context.INITIAL_CONTEXT_FACTORY);
+        System.clearProperty("org.uberfire.async.executor.safemode");
+        System.clearProperty(Context.INITIAL_CONTEXT_FACTORY);
     }
 
     @After
     public void after() {
-        if ( spUberfireAsyncExecutorSafeMode != null ) {
-            System.setProperty( "org.uberfire.async.executor.safemode",
-                                spUberfireAsyncExecutorSafeMode );
+        if (spUberfireAsyncExecutorSafeMode != null) {
+            System.setProperty("org.uberfire.async.executor.safemode",
+                               spUberfireAsyncExecutorSafeMode);
         }
-        if ( spJavaNamingFactoryInitial != null ) {
-            System.setProperty( Context.INITIAL_CONTEXT_FACTORY,
-                                spJavaNamingFactoryInitial );
+        if (spJavaNamingFactoryInitial != null) {
+            System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+                               spJavaNamingFactoryInitial);
         }
     }
 
     @Test
     public void testUseJDNILookup() throws NamingException {
         //Test ExecutorService is looked up from JNDI
-        System.setProperty( Context.INITIAL_CONTEXT_FACTORY,
-                            MockInitialContextFactory.class.getName() );
+        System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+                           MockInitialContextFactory.class.getName());
 
-        final Context context = mock( Context.class );
-        final IncrementalBuilderExecutorManager service = mock( IncrementalBuilderExecutorManager.class );
-        when( context.lookup( "java:module/IncrementalBuilderExecutorManager" ) ).thenReturn( service );
-        MockInitialContextFactory.setCurrentContext( context );
+        final Context context = mock(Context.class);
+        final IncrementalBuilderExecutorManager service = mock(IncrementalBuilderExecutorManager.class);
+        when(context.lookup("java:module/IncrementalBuilderExecutorManager")).thenReturn(service);
+        MockInitialContextFactory.setCurrentContext(context);
 
-        final IncrementalBuilderExecutorManagerFactoryImpl factory = new IncrementalBuilderExecutorManagerFactoryImpl();
+        final IncrementalBuilderExecutorManagerFactoryImpl factory = new IncrementalBuilderExecutorManagerFactoryImpl(null,
+                                                                                                                      null,
+                                                                                                                      null,
+                                                                                                                      null,
+                                                                                                                      new ExecutorServiceProducer().produceUnmanagedExecutorService());
 
         final IncrementalBuilderExecutorManager executor1 = factory.getExecutorManager();
 
-        assertNotNull( executor1 );
-        assertTrue( executor1 instanceof IncrementalBuilderExecutorManager );
-        assertSame( service,
-                    executor1 );
+        assertNotNull(executor1);
+        assertTrue(executor1 instanceof IncrementalBuilderExecutorManager);
+        assertSame(service,
+                   executor1);
 
         final IncrementalBuilderExecutorManager executor2 = factory.getExecutorManager();
 
-        assertNotNull( executor2 );
-        assertTrue( executor2 instanceof IncrementalBuilderExecutorManager );
-        assertSame( service,
-                    executor2 );
+        assertNotNull(executor2);
+        assertTrue(executor2 instanceof IncrementalBuilderExecutorManager);
+        assertSame(service,
+                   executor2);
 
-        assertSame( executor1,
-                    executor2 );
+        assertSame(executor1,
+                   executor2);
     }
 
     @Test
     public void testUseExecutorThreadPool() {
         //Test ExecutorService is a "simple" implementation
-        System.setProperty( "org.uberfire.async.executor.safemode",
-                            "true" );
+        System.setProperty("org.uberfire.async.executor.safemode",
+                           "true");
 
-        final IncrementalBuilderExecutorManagerFactoryImpl factory = new IncrementalBuilderExecutorManagerFactoryImpl();
+        final IncrementalBuilderExecutorManagerFactoryImpl factory = new IncrementalBuilderExecutorManagerFactoryImpl(null,
+                                                                                                                      null,
+                                                                                                                      null,
+                                                                                                                      null,
+                                                                                                                      new ExecutorServiceProducer().produceUnmanagedExecutorService());
         final IncrementalBuilderExecutorManager executor1 = factory.getExecutorManager();
 
-        assertNotNull( executor1 );
-        assertTrue( executor1 instanceof IncrementalBuilderExecutorManager );
+        assertNotNull(executor1);
+        assertTrue(executor1 instanceof IncrementalBuilderExecutorManager);
 
         final IncrementalBuilderExecutorManager executor2 = factory.getExecutorManager();
 
-        assertNotNull( executor2 );
-        assertTrue( executor2 instanceof IncrementalBuilderExecutorManager );
+        assertNotNull(executor2);
+        assertTrue(executor2 instanceof IncrementalBuilderExecutorManager);
 
-        assertSame( executor1,
-                    executor2 );
+        assertSame(executor1,
+                   executor2);
     }
 
     public static class MockInitialContextFactory implements InitialContextFactory {
@@ -109,14 +118,12 @@ public class IncrementalBuilderExecutorManagerFactoryImplTest {
         private static final ThreadLocal<Context> currentContext = new ThreadLocal<Context>();
 
         @Override
-        public Context getInitialContext( final Hashtable<?, ?> environment ) throws NamingException {
+        public Context getInitialContext(final Hashtable<?, ?> environment) throws NamingException {
             return currentContext.get();
         }
 
-        public static void setCurrentContext( final Context context ) {
-            currentContext.set( context );
+        public static void setCurrentContext(final Context context) {
+            currentContext.set(context);
         }
-
     }
-
 }

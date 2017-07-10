@@ -22,7 +22,6 @@ import javax.ejb.Asynchronous;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -32,6 +31,7 @@ import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.concurrent.Managed;
 
 import static javax.ejb.TransactionAttributeType.NOT_SUPPORTED;
 
@@ -40,23 +40,33 @@ import static javax.ejb.TransactionAttributeType.NOT_SUPPORTED;
 @TransactionAttribute(NOT_SUPPORTED)
 public class IncrementalBuilderExecutorManager {
 
-    @Inject
     private ProjectService<? extends Project> projectService;
 
-    @Inject
     private BuildService buildService;
 
-    @Inject
     private Event<BuildResults> buildResultsEvent;
 
-    @Inject
     private Event<IncrementalBuildResults> incrementalBuildResultsEvent;
 
+    private ExecutorService executorService;
+
+    public IncrementalBuilderExecutorManager() {
+    }
+
     @Inject
-    private ManagedExecutorService managedExecutorService;
+    public IncrementalBuilderExecutorManager(ProjectService<? extends Project> projectService,
+                                             BuildService buildService,
+                                             Event<BuildResults> buildResultsEvent,
+                                             Event<IncrementalBuildResults> incrementalBuildResultsEvent,
+                                             @Managed ExecutorService executorService) {
+        this.projectService = projectService;
+        this.buildService = buildService;
+        this.buildResultsEvent = buildResultsEvent;
+        this.incrementalBuildResultsEvent = incrementalBuildResultsEvent;
+        this.executorService = executorService;
+    }
 
     private AtomicBoolean useExecService = new AtomicBoolean(false);
-    private ExecutorService executorService = null;
 
     @Asynchronous
     public void execute(final AsyncIncrementalBuilder incrementalBuilder) {
@@ -90,9 +100,6 @@ public class IncrementalBuilderExecutorManager {
     }
 
     private ExecutorService getExecutorService() {
-        if (executorService == null) {
-            executorService = managedExecutorService;
-        }
         return executorService;
     }
 
