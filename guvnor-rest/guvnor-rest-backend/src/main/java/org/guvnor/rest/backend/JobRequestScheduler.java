@@ -17,7 +17,7 @@ package org.guvnor.rest.backend;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.concurrent.ManagedExecutorService;
+import java.util.concurrent.ExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -52,6 +52,7 @@ import org.guvnor.rest.client.TestProjectRequest;
 import org.guvnor.rest.client.UpdateOrganizationalUnitRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.concurrent.Managed;
 
 import static org.guvnor.rest.backend.cmd.AbstractJobCommand.JOB_REQUEST_KEY;
 
@@ -61,137 +62,219 @@ import static org.guvnor.rest.backend.cmd.AbstractJobCommand.JOB_REQUEST_KEY;
 @ApplicationScoped
 public class JobRequestScheduler {
 
-    private static final Logger logger = LoggerFactory.getLogger( JobRequestScheduler.class );
+    private static final Logger logger = LoggerFactory.getLogger(JobRequestScheduler.class);
 
-    @Inject
-    private ManagedExecutorService managedExecutorService;
+    private ExecutorService executorService;
 
-    @Inject
     private JobResultManager jobResultManager;
 
-    @Inject
     private JobRequestHelper jobRequestHelper;
 
-    public void createOrCloneRepositoryRequest( final CreateOrCloneRepositoryRequest jobRequest ) {
-        final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository", jobRequest.getRepository().getName());
-        params.put("Operation", "createOrCloneRepository");
+    public JobRequestScheduler() {
 
-        scheduleJob(jobRequest, new CreateOrCloneRepositoryCmd(jobRequestHelper, jobResultManager, params));
     }
 
-    public void removeRepositoryRequest( final RemoveRepositoryRequest jobRequest ) {
-        final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository", jobRequest.getRepositoryName());
-        params.put("Operation", "removeRepository");
-
-        scheduleJob(jobRequest, new RemoveRepositoryCmd(jobRequestHelper, jobResultManager, params));
+    @Inject
+    public JobRequestScheduler(@Managed ExecutorService executorService,
+                               JobResultManager jobResultManager,
+                               JobRequestHelper jobRequestHelper) {
+        this.executorService = executorService;
+        this.jobResultManager = jobResultManager;
+        this.jobRequestHelper = jobRequestHelper;
     }
 
-    public void createProjectRequest( final CreateProjectRequest jobRequest ) {
+    public void createOrCloneRepositoryRequest(final CreateOrCloneRepositoryRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository", jobRequest.getRepositoryName());
-        params.put("Project", jobRequest.getProjectName());
-        params.put("Operation", "createProject");
+        params.put("Repository",
+                   jobRequest.getRepository().getName());
+        params.put("Operation",
+                   "createOrCloneRepository");
 
-        scheduleJob(jobRequest, new CreateProjectCmd(jobRequestHelper, jobResultManager, params));
+        scheduleJob(jobRequest,
+                    new CreateOrCloneRepositoryCmd(jobRequestHelper,
+                                                   jobResultManager,
+                                                   params));
     }
 
-    public void deleteProjectRequest( final DeleteProjectRequest jobRequest ) {
+    public void removeRepositoryRequest(final RemoveRepositoryRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository", jobRequest.getRepositoryName());
-        params.put("Project", jobRequest.getProjectName());
-        params.put("Operation", "deleteProject");
+        params.put("Repository",
+                   jobRequest.getRepositoryName());
+        params.put("Operation",
+                   "removeRepository");
 
-        scheduleJob(jobRequest, new DeleteProjectCmd(jobRequestHelper, jobResultManager, params));
+        scheduleJob(jobRequest,
+                    new RemoveRepositoryCmd(jobRequestHelper,
+                                            jobResultManager,
+                                            params));
     }
 
-    public void compileProjectRequest( final CompileProjectRequest jobRequest ) {
+    public void createProjectRequest(final CreateProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository", jobRequest.getRepositoryName());
-        params.put("Project", jobRequest.getProjectName());
-        params.put("Operation", "compileProject");
+        params.put("Repository",
+                   jobRequest.getRepositoryName());
+        params.put("Project",
+                   jobRequest.getProjectName());
+        params.put("Operation",
+                   "createProject");
 
-        scheduleJob(jobRequest, new CompileProjectCmd(jobRequestHelper, jobResultManager, params));
+        scheduleJob(jobRequest,
+                    new CreateProjectCmd(jobRequestHelper,
+                                         jobResultManager,
+                                         params));
     }
 
-    public void installProjectRequest( final InstallProjectRequest jobRequest ) {
+    public void deleteProjectRequest(final DeleteProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository", jobRequest.getRepositoryName());
-        params.put("Project", jobRequest.getProjectName());
-        params.put("Operation", "installProject");
+        params.put("Repository",
+                   jobRequest.getRepositoryName());
+        params.put("Project",
+                   jobRequest.getProjectName());
+        params.put("Operation",
+                   "deleteProject");
 
-        scheduleJob(jobRequest, new InstallProjectCmd(jobRequestHelper, jobResultManager, params));
+        scheduleJob(jobRequest,
+                    new DeleteProjectCmd(jobRequestHelper,
+                                         jobResultManager,
+                                         params));
     }
 
-    public void testProjectRequest( final TestProjectRequest jobRequest ) {
+    public void compileProjectRequest(final CompileProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository", jobRequest.getRepositoryName());
-        params.put("Project", jobRequest.getProjectName());
-        params.put("Operation", "testProject");
+        params.put("Repository",
+                   jobRequest.getRepositoryName());
+        params.put("Project",
+                   jobRequest.getProjectName());
+        params.put("Operation",
+                   "compileProject");
 
-        scheduleJob(jobRequest, new TestProjectCmd(jobRequestHelper, jobResultManager, params));
+        scheduleJob(jobRequest,
+                    new CompileProjectCmd(jobRequestHelper,
+                                          jobResultManager,
+                                          params));
     }
 
-    public void deployProjectRequest( final DeployProjectRequest jobRequest ) {
+    public void installProjectRequest(final InstallProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository", jobRequest.getRepositoryName());
-        params.put("Project", jobRequest.getProjectName());
-        params.put("Operation", "deployProject");
+        params.put("Repository",
+                   jobRequest.getRepositoryName());
+        params.put("Project",
+                   jobRequest.getProjectName());
+        params.put("Operation",
+                   "installProject");
 
-        scheduleJob(jobRequest, new DeployProjectCmd(jobRequestHelper, jobResultManager, params));
+        scheduleJob(jobRequest,
+                    new InstallProjectCmd(jobRequestHelper,
+                                          jobResultManager,
+                                          params));
     }
 
-    public void createOrganizationalUnitRequest( final CreateOrganizationalUnitRequest jobRequest ) {
+    public void testProjectRequest(final TestProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Operation", "createOrgUnit");
+        params.put("Repository",
+                   jobRequest.getRepositoryName());
+        params.put("Project",
+                   jobRequest.getProjectName());
+        params.put("Operation",
+                   "testProject");
 
-        scheduleJob(jobRequest, new CreateOrgUnitCmd(jobRequestHelper, jobResultManager, params));
+        scheduleJob(jobRequest,
+                    new TestProjectCmd(jobRequestHelper,
+                                       jobResultManager,
+                                       params));
     }
 
-    public void updateOrganizationalUnitRequest( final UpdateOrganizationalUnitRequest jobRequest ) {
+    public void deployProjectRequest(final DeployProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Operation", "updateOrgUnit");
+        params.put("Repository",
+                   jobRequest.getRepositoryName());
+        params.put("Project",
+                   jobRequest.getProjectName());
+        params.put("Operation",
+                   "deployProject");
 
-        scheduleJob(jobRequest, new UpdateOrgUnitCmd(jobRequestHelper, jobResultManager, params));
+        scheduleJob(jobRequest,
+                    new DeployProjectCmd(jobRequestHelper,
+                                         jobResultManager,
+                                         params));
     }
 
-    public void addRepositoryToOrganizationalUnitRequest( final AddRepositoryToOrganizationalUnitRequest jobRequest ) {
+    public void createOrganizationalUnitRequest(final CreateOrganizationalUnitRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository", jobRequest.getRepositoryName());
-        params.put("Operation", "addRepositoryToOrgUnit");
+        params.put("Operation",
+                   "createOrgUnit");
 
-        scheduleJob(jobRequest, new AddRepositoryToOrgUnitCmd(jobRequestHelper, jobResultManager, params));
+        scheduleJob(jobRequest,
+                    new CreateOrgUnitCmd(jobRequestHelper,
+                                         jobResultManager,
+                                         params));
     }
 
-    public void removeRepositoryFromOrganizationalUnitRequest( final RemoveRepositoryFromOrganizationalUnitRequest jobRequest ) {
+    public void updateOrganizationalUnitRequest(final UpdateOrganizationalUnitRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository", jobRequest.getRepositoryName());
-        params.put("Operation", "removeRepositoryFromOrgUnit");
+        params.put("Operation",
+                   "updateOrgUnit");
 
-        scheduleJob(jobRequest, new RemoveRepositoryFromOrgUnitCmd(jobRequestHelper, jobResultManager, params));
+        scheduleJob(jobRequest,
+                    new UpdateOrgUnitCmd(jobRequestHelper,
+                                         jobResultManager,
+                                         params));
     }
 
-    public void removeOrganizationalUnitRequest( final RemoveOrganizationalUnitRequest jobRequest ) {
+    public void addRepositoryToOrganizationalUnitRequest(final AddRepositoryToOrganizationalUnitRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Operation", "removeOrgUnit");
+        params.put("Repository",
+                   jobRequest.getRepositoryName());
+        params.put("Operation",
+                   "addRepositoryToOrgUnit");
 
-        scheduleJob(jobRequest, new RemoveOrgUnitCmd(jobRequestHelper, jobResultManager, params));
+        scheduleJob(jobRequest,
+                    new AddRepositoryToOrgUnitCmd(jobRequestHelper,
+                                                  jobResultManager,
+                                                  params));
+    }
+
+    public void removeRepositoryFromOrganizationalUnitRequest(final RemoveRepositoryFromOrganizationalUnitRequest jobRequest) {
+        final Map<String, Object> params = getContext(jobRequest);
+        params.put("Repository",
+                   jobRequest.getRepositoryName());
+        params.put("Operation",
+                   "removeRepositoryFromOrgUnit");
+
+        scheduleJob(jobRequest,
+                    new RemoveRepositoryFromOrgUnitCmd(jobRequestHelper,
+                                                       jobResultManager,
+                                                       params));
+    }
+
+    public void removeOrganizationalUnitRequest(final RemoveOrganizationalUnitRequest jobRequest) {
+        final Map<String, Object> params = getContext(jobRequest);
+        params.put("Operation",
+                   "removeOrgUnit");
+
+        scheduleJob(jobRequest,
+                    new RemoveOrgUnitCmd(jobRequestHelper,
+                                         jobResultManager,
+                                         params));
     }
 
     protected Map<String, Object> getContext(JobRequest jobRequest) {
         final Map<String, Object> params = new HashMap<String, Object>();
-        params.put(JOB_REQUEST_KEY, jobRequest);
-        params.put("BusinessKey", jobRequest.getJobId());
-        params.put("Retries", 0);
+        params.put(JOB_REQUEST_KEY,
+                   jobRequest);
+        params.put("BusinessKey",
+                   jobRequest.getJobId());
+        params.put("Retries",
+                   0);
         return params;
     }
 
-    private void scheduleJob(final JobRequest jobRequest, final AbstractJobCommand command){
+    private void scheduleJob(final JobRequest jobRequest,
+                             final AbstractJobCommand command) {
         jobRequest.setStatus(JobStatus.APPROVED);
         logger.debug("Scheduling job request with id: {} and command class: {}",
-                jobRequest.getJobId(), command.getClass().getName() );
-        this.managedExecutorService.execute(command);
+                     jobRequest.getJobId(),
+                     command.getClass().getName());
+        this.executorService.execute(command);
     }
-
 }
