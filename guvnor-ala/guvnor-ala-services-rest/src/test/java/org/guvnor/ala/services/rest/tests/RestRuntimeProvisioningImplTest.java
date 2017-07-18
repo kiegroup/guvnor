@@ -16,13 +16,14 @@
 
 package org.guvnor.ala.services.rest.tests;
 
-import com.spotify.docker.client.DockerException;
 import javax.inject.Inject;
 
+import com.spotify.docker.client.DockerException;
 import org.guvnor.ala.config.ProviderConfig;
 import org.guvnor.ala.docker.access.DockerAccessInterface;
 import org.guvnor.ala.docker.access.impl.DockerAccessInterfaceImpl;
 import org.guvnor.ala.docker.config.DockerProviderConfig;
+import org.guvnor.ala.docker.config.DockerRuntimeConfig;
 import org.guvnor.ala.docker.executor.DockerProviderConfigExecutor;
 import org.guvnor.ala.docker.executor.DockerRuntimeExecExecutor;
 import org.guvnor.ala.docker.model.DockerProvider;
@@ -31,7 +32,9 @@ import org.guvnor.ala.docker.model.DockerRuntime;
 import org.guvnor.ala.docker.service.DockerRuntimeManager;
 import org.guvnor.ala.pipeline.ConfigExecutor;
 import org.guvnor.ala.pipeline.FunctionConfigExecutor;
+import org.guvnor.ala.pipeline.execution.impl.PipelineExecutorTaskManagerImpl;
 import org.guvnor.ala.registry.RuntimeRegistry;
+import org.guvnor.ala.registry.local.InMemoryPipelineExecutorRegistry;
 import org.guvnor.ala.registry.local.InMemoryRuntimeRegistry;
 import org.guvnor.ala.runtime.RuntimeBuilder;
 import org.guvnor.ala.runtime.RuntimeDestroyer;
@@ -41,9 +44,12 @@ import org.guvnor.ala.runtime.providers.ProviderBuilder;
 import org.guvnor.ala.runtime.providers.ProviderId;
 import org.guvnor.ala.runtime.providers.ProviderType;
 import org.guvnor.ala.services.api.RuntimeProvisioningService;
+import org.guvnor.ala.services.api.RuntimeQuery;
+import org.guvnor.ala.services.api.RuntimeQueryBuilder;
 import org.guvnor.ala.services.api.itemlist.ProviderList;
 import org.guvnor.ala.services.api.itemlist.ProviderTypeList;
 import org.guvnor.ala.services.api.itemlist.RuntimeList;
+import org.guvnor.ala.services.api.itemlist.RuntimeQueryResultItemList;
 import org.guvnor.ala.services.rest.RestRuntimeProvisioningServiceImpl;
 import org.guvnor.ala.services.rest.factories.ProviderFactory;
 import org.guvnor.ala.services.rest.factories.RuntimeFactory;
@@ -58,10 +64,9 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.commons.lifecycle.Disposable;
 
 import static org.junit.Assert.*;
-import org.uberfire.commons.lifecycle.Disposable;
-import org.guvnor.ala.docker.config.DockerRuntimeConfig;
 
 /**
  * Test that shows how to work with the Runtime Provisioning Service
@@ -117,6 +122,9 @@ public class RestRuntimeProvisioningImplTest {
         deployment.addClass( org.guvnor.ala.runtime.providers.ProviderDestroyer.class );
         deployment.addClass( org.guvnor.ala.runtime.providers.ProviderId.class );
 
+        deployment.addClass(PipelineExecutorTaskManagerImpl.class);
+        deployment.addClass(InMemoryPipelineExecutorRegistry.class);
+
         deployment.addAsManifestResource( EmptyAsset.INSTANCE, "beans.xml" );
         return deployment;
     }
@@ -169,13 +177,16 @@ public class RestRuntimeProvisioningImplTest {
 
         RuntimeList allRuntimes = runtimeService.getRuntimes(0, 10, "", true);
         assertEquals( 1, allRuntimes.getItems().size() );
-        
+
+        RuntimeQuery query = RuntimeQueryBuilder.newInstance().withProviderId(p.getId()).build();
+        RuntimeQueryResultItemList queryResult = runtimeService.executeQuery(query);
+        assertEquals(1, queryResult.getItems().size());
+
         runtimeService.destroyRuntime( newRuntime );
         
         allRuntimes = runtimeService.getRuntimes(0, 10, "", true);
         assertEquals( 0, allRuntimes.getItems().size() );
-        
-        
+
     }
 
 }

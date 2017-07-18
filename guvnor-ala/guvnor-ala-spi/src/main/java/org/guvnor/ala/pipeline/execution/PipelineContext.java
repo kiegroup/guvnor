@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,8 +24,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.Stage;
+
+import static org.guvnor.ala.pipeline.execution.PipelineExecutor.PIPELINE_EXECUTION_ID;
 
 /*
  * Represent the contextual information used by the Pipeline Executor. 
@@ -35,10 +38,11 @@ import org.guvnor.ala.pipeline.Stage;
 
 public class PipelineContext {
 
-    private final Iterator<Stage> iterator;
+    private String executionId;
+    private final Iterator<Stage > iterator;
     private final Pipeline pipeline;
     private Optional<Object> lastOutput = Optional.empty();
-    private Optional<Stage<Object, ?>> currentStage = Optional.empty();
+    private Optional<Stage<Object, ?> > currentStage = Optional.empty();
     private Map<String, Object> values = new HashMap<>();
 
     private final Deque<Consumer<?>> callbacks = new LinkedList<>();
@@ -50,6 +54,10 @@ public class PipelineContext {
     PipelineContext( final Pipeline pipeline ) {
         this.pipeline = pipeline;
         this.iterator = pipeline.getStages().iterator();
+    }
+
+    public String getExecutionId() {
+        return executionId;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -70,6 +78,11 @@ public class PipelineContext {
         }
 
         this.values.put( "input", initialInput );
+        if ( initialInput instanceof Input) {
+            executionId = ((Input) initialInput).computeIfAbsent(PIPELINE_EXECUTION_ID, generator -> ExecutionIdGenerator.generateExecutionId());
+        } else {
+            executionId = ExecutionIdGenerator.generateExecutionId();
+        }
         if ( iterator.hasNext() ) {
             currentStage = Optional.of( iterator.next() );
         } else {
@@ -86,7 +99,7 @@ public class PipelineContext {
         return !currentStage.isPresent() && lastOutput.isPresent();
     }
 
-    Optional<Stage<Object, ?>> getCurrentStage() {
+    Optional<Stage<Object, ?> > getCurrentStage() {
         return currentStage;
     }
 

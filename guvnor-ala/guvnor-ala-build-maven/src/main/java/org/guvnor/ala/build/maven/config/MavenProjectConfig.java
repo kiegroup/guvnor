@@ -17,29 +17,45 @@ package org.guvnor.ala.build.maven.config;
 
 import org.guvnor.ala.config.ProjectConfig;
 
-/*
+/**
  * Maven specific Project configuration. This interface represents the basic information needed
- *  to configure a Maven Project. 
+ * to configure a Maven Project.
  * @see ProjectConfig
  */
 public interface MavenProjectConfig extends ProjectConfig {
 
-    /*
+    /**
+     * Standard attribute name for setting the project base dir. Pipeline inputs that want to set the project base dir
+     * should use this parameter name.
+     */
+    String PROJECT_DIR = "project-dir";
+
+    /**
+     * Standard attribute name for setting the project temp dir. Pipeline inputs that want to set the project temp dir
+     * should use this parameter name.
+     */
+    String PROJECT_TEMP_DIR = "project-temp-dir";
+
+    /**
+     * Standard attribute name for setting the preserve temp dir option. Pipeline inputs that want to set the preserve
+     * temp dir option should use this parameter name.
+     */
+    String PRESERVE_TEMP_DIR = "preserve-temp-dir";
+
+    /**
      * Get the Project Base Dir
-     * in case of the Project Base Dir is not provided, 
-     *  the expression ${input.project-dir} will be resolved by the pipeline input's map
-     * @return String with the project dir path.
-    */
+     * @return String with the project dir path if provided, if not it will default to resolve the expression
+     * ${input.project-dir} from the Pipeline input map.
+     */
     default String getProjectDir() {
-        return "${input.project-dir}";
+        return "${input." + PROJECT_DIR + "}";
     }
 
     default String getProjectTempDir() {
-        return "${input.project-temp-dir}";
+        return "${input." + PROJECT_TEMP_DIR + "}";
     }
 
     default boolean recreateTempDir() {
-        return Boolean.parseBoolean( "${input.preserve-temp-dir}" );
+        return Boolean.parseBoolean("${input." + PRESERVE_TEMP_DIR + "}");
     }
-
 }

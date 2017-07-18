@@ -29,6 +29,7 @@ import org.guvnor.ala.runtime.providers.ProviderId;
 public abstract class BaseRuntime implements Runtime {
 
     private String id;
+    private String name;
     private RuntimeConfig config;
     private ProviderId providerId;
     private RuntimeEndpoint endpoint;
@@ -41,8 +42,9 @@ public abstract class BaseRuntime implements Runtime {
     public BaseRuntime() {
     }
 
-    public BaseRuntime( String id, RuntimeConfig config, ProviderId providerId, RuntimeEndpoint endpoint, RuntimeInfo info, RuntimeState state ) {
+    public BaseRuntime( String id, String name, RuntimeConfig config, ProviderId providerId, RuntimeEndpoint endpoint, RuntimeInfo info, RuntimeState state ) {
         this.id = id;
+        this.name = name;
         this.config = config;
         this.providerId = providerId;
         this.endpoint = endpoint;
@@ -55,6 +57,10 @@ public abstract class BaseRuntime implements Runtime {
         return id;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
     @Override
     public RuntimeConfig getConfig() {
         return config;
@@ -82,7 +88,14 @@ public abstract class BaseRuntime implements Runtime {
 
     @Override
     public String toString() {
-        return "Runtime{" + "id=" + id + ", config=" + config + ", info=" + info + ", state=" + state + ", endpoint=" + endpoint + ", providerId=" + providerId + '}';
+        return "BaseRuntime{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", config=" + config +
+                ", providerId=" + providerId +
+                ", endpoint=" + endpoint +
+                ", info=" + info +
+                ", state=" + state +
+                '}';
     }
-    
 }

@@ -104,7 +104,7 @@ public class DockerRuntimeManager implements RuntimeManager {
                 stateString = "Killed";
             }
 
-            DockerRuntime newRuntime = new DockerRuntime( runtime.getId(), runtime.getConfig(), runtime.getProviderId(), runtime.getEndpoint(),
+            DockerRuntime newRuntime = new DockerRuntime( runtime.getId(), runtime.getName(), runtime.getConfig(), runtime.getProviderId(), runtime.getEndpoint(),
                     runtime.getInfo(), new DockerRuntimeState( stateString, state.startedAt().toString() ) );
             runtimeRegistry.registerRuntime( newRuntime );
 

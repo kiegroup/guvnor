@@ -16,6 +16,7 @@
 
 package org.guvnor.ala.config;
 
+import org.guvnor.ala.runtime.RuntimeId;
 import org.guvnor.ala.runtime.providers.ProviderId;
 
 /**
@@ -24,10 +25,27 @@ import org.guvnor.ala.runtime.providers.ProviderId;
  */
 public interface RuntimeConfig extends Config {
 
+    /**
+     * Standard attribute name for referencing or defining a runtime. Pipeline inputs that wants to refer to an already
+     * registered runtime, or wants to create a runtime during pipeline execution should use this parameter for
+     * holding the runtime name.
+     */
+    String RUNTIME_NAME = "runtime-name";
+
     /*
      * Get the providerId for that runtime configuration
      * @return the providerId
      * @see ProviderId
      */
     ProviderId getProviderId();
+
+    /**
+     * Gets the human readable name for the runtime within the provider. The runtime name must be unique within the
+     * provider. When no runtime name is provided, the by default name for the generated Runtime will be the
+     * RuntimeId.getId() value. @see {@link RuntimeId}
+     * @return the runtime name.
+     */
+    default String getRuntimeName() {
+        return "${input." + RUNTIME_NAME + "}";
+    }
 }

@@ -36,7 +36,9 @@ import org.guvnor.ala.docker.model.DockerRuntime;
 import org.guvnor.ala.docker.service.DockerRuntimeManager;
 import org.guvnor.ala.pipeline.ConfigExecutor;
 import org.guvnor.ala.pipeline.FunctionConfigExecutor;
+import org.guvnor.ala.pipeline.execution.impl.PipelineExecutorTaskManagerImpl;
 import org.guvnor.ala.registry.RuntimeRegistry;
+import org.guvnor.ala.registry.local.InMemoryPipelineExecutorRegistry;
 import org.guvnor.ala.registry.local.InMemoryRuntimeRegistry;
 import org.guvnor.ala.runtime.RuntimeBuilder;
 import org.guvnor.ala.runtime.RuntimeDestroyer;
@@ -160,6 +162,9 @@ public class RestPipelineEventsTest {
 
         deployment.addClass( MockPipelineEventListener.class );
 
+        deployment.addClass(PipelineExecutorTaskManagerImpl.class);
+        deployment.addClass(InMemoryPipelineExecutorRegistry.class);
+
         deployment.addAsManifestResource( EmptyAsset.INSTANCE, "beans.xml" );
         return deployment;
     }
@@ -192,7 +197,7 @@ public class RestPipelineEventsTest {
         input.put( "origin", "https://github.com/salaboy/drools-workshop" );
         input.put( "project-dir", "drools-webapp-example" );
 
-        pipelineService.runPipeline( "mypipe", input );
+        pipelineService.runPipeline( "mypipe", input, false );
 
         assertEquals( 6, listener.getEvents().size() );
         assertTrue( listener.getEvents().get( 0 ) instanceof BeforePipelineExecutionEvent );

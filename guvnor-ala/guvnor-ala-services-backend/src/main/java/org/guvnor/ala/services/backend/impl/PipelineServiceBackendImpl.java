@@ -16,44 +16,91 @@
 
 package org.guvnor.ala.services.backend.impl;
 
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.PipelineConfig;
-import org.guvnor.ala.services.exceptions.BusinessException;
+import org.guvnor.ala.runtime.providers.ProviderType;
 import org.guvnor.ala.services.api.PipelineService;
 import org.guvnor.ala.services.api.backend.PipelineServiceBackend;
-import org.guvnor.ala.services.api.itemlist.PipelineConfigsList;
+import org.guvnor.ala.services.exceptions.BusinessException;
 import org.jboss.errai.bus.server.annotations.Service;
 
 @Service
 @ApplicationScoped
-public class PipelineServiceBackendImpl implements PipelineServiceBackend {
+public class PipelineServiceBackendImpl
+        implements PipelineServiceBackend {
 
     private PipelineService pipelineService;
 
     public PipelineServiceBackendImpl() {
+        //Empty constructor for Weld proxying
     }
 
     @Inject
-    public PipelineServiceBackendImpl( final PipelineService pipelineService ) {
+    public PipelineServiceBackendImpl(final PipelineService pipelineService) {
         this.pipelineService = pipelineService;
     }
 
     @Override
-    public PipelineConfigsList getPipelineConfigs( Integer page, Integer pageSize, String sort, boolean sortOrder )
-            throws BusinessException {
-        return pipelineService.getPipelineConfigs( page, pageSize, sort, sortOrder );
+    public List<PipelineConfig> getPipelineConfigs(Integer page,
+                                                   Integer pageSize,
+                                                   String sort,
+                                                   boolean sortOrder) throws BusinessException {
+        return pipelineService.getPipelineConfigs(page,
+                                                  pageSize,
+                                                  sort,
+                                                  sortOrder).getItems();
     }
 
     @Override
-    public String newPipeline( PipelineConfig config ) throws BusinessException {
-        return pipelineService.newPipeline( config );
+    public List<PipelineConfig> getPipelineConfigs(ProviderType providerType,
+                                                   Integer page,
+                                                   Integer pageSize,
+                                                   String sort,
+                                                   boolean sortOrder) throws BusinessException {
+        return pipelineService.getPipelineConfigs(providerType.getProviderTypeName(),
+                                                  providerType.getVersion(),
+                                                  page,
+                                                  pageSize,
+                                                  sort,
+                                                  sortOrder).getItems();
     }
 
     @Override
-    public void runPipeline( String id, Input input ) throws BusinessException {
-        pipelineService.runPipeline( id, input );
+    public List<String> getPipelineNames(ProviderType providerType,
+                                         Integer page,
+                                         Integer pageSize,
+                                         String sort,
+                                         boolean sortOrder) throws BusinessException {
+        return pipelineService.getPipelineNames(providerType.getProviderTypeName(),
+                                                providerType.getVersion(),
+                                                page,
+                                                pageSize,
+                                                sort,
+                                                sortOrder);
     }
 
+    @Override
+    public String newPipeline(PipelineConfig pipelineConfig,
+                              ProviderType providerType) throws BusinessException {
+        return pipelineService.newPipeline(pipelineConfig,
+                                           providerType);
+    }
+
+    @Override
+    public String newPipeline(PipelineConfig config) throws BusinessException {
+        return pipelineService.newPipeline(config);
+    }
+
+    @Override
+    public String runPipeline(String id,
+                              Input input,
+                              boolean async) throws BusinessException {
+        return pipelineService.runPipeline(id,
+                                           input,
+                                           async);
+    }
 }

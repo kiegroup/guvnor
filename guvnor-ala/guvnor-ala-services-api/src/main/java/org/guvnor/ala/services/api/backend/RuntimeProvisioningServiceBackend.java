@@ -17,96 +17,109 @@
 package org.guvnor.ala.services.api.backend;
 
 import java.util.List;
-import org.guvnor.ala.config.ProviderConfig;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+import org.guvnor.ala.config.ProviderConfig;
 import org.guvnor.ala.config.RuntimeConfig;
 import org.guvnor.ala.runtime.Runtime;
 import org.guvnor.ala.runtime.providers.Provider;
 import org.guvnor.ala.runtime.providers.ProviderType;
+import org.guvnor.ala.services.api.RuntimeQuery;
+import org.guvnor.ala.services.api.RuntimeQueryResultItem;
 import org.guvnor.ala.services.exceptions.BusinessException;
+import org.jboss.errai.bus.server.annotations.Remote;
 
-/*
- * Runtime Provisioning Service Backend interface. It allows us to register and interact with different Provisioning Providers and
- *  to create new Runtimes on these providers.
+/**
+ * Runtime Provisioning Service Backend interface. It allows the registering and interaction with different Provisioning
+ * Providers and the creation of new Runtimes on these providers.
  * Backend @Remote implementation to be used in CDI environments with Errai
  */
 @Remote
 public interface RuntimeProvisioningServiceBackend {
 
-    /*
+    /**
      * Get all the registered ProviderTypes
-     * @return ProviderTypeList containing all the registered provider types
-     * @see ProviderTypeList
+     * @return a list containing all the registered provider types
      * @throw BusinessException in case of an internal exception
      */
-    List<ProviderType> getProviderTypes( Integer page, Integer pageSize,
-            String sort, boolean sortOrder ) throws BusinessException;
+    List<ProviderType> getProviderTypes(Integer page,
+                                        Integer pageSize,
+                                        String sort,
+                                        boolean sortOrder) throws BusinessException;
 
-    /*
+    /**
      * Get all the registered Providers
-     * @return ProviderList containing all the registered providers
-     * @see ProviderList
+     * @return a list containing all the registered providers
      * @throw BusinessException in case of an internal exception
      */
-    List<Provider> getProviders( Integer page, Integer pageSize,
-            String sort, boolean sortOrder ) throws BusinessException;
+    List<Provider> getProviders(Integer page,
+                                Integer pageSize,
+                                String sort,
+                                boolean sortOrder) throws BusinessException;
 
-    /*
+    /**
      * Register a new Provider
-     * @param ProviderConfig used to create the new Provider
+     * @param conf a ProviderConfig to use for creating the Provider
      * @throw BusinessException in case of an internal exception
      */
-    void registerProvider( final ProviderConfig conf ) throws BusinessException;
+    void registerProvider(final ProviderConfig conf) throws BusinessException;
 
-    /*
+    /**
      * Unregister an existing Provider
-     * @param String provider name
+     * @param name a provider name
      * @throw BusinessException in case of an internal exception
      */
-    void unregisterProvider( final String name ) throws BusinessException;
+    void unregisterProvider(final String name) throws BusinessException;
 
-    /*
+    /**
      * Create a new Runtime
-     * @param RuntimeConfig containing the configuration used to create the new Runtime
+     * @param conf a RuntimeConfig containing the configuration used to create the new Runtime
      * @throw BusinessException in case of an internal exception
      */
-    String newRuntime( final RuntimeConfig conf ) throws BusinessException;
+    String newRuntime(final RuntimeConfig conf) throws BusinessException;
 
-    /*
+    /**
      * Destroy an existing  Runtime
-     * @param String runtimeId of the runtime to destroy
+     * @param runtimeId the identifier of the runtime to destroy
      * @throw BusinessException in case of an internal exception
      */
-    void destroyRuntime( final String runtimeId ) throws BusinessException;
+    void destroyRuntime(final String runtimeId) throws BusinessException;
 
-    /*
+    /**
      * Get All Runtimes
-     * @return RuntimeList containing all the registered Runtimes 
+     * @return a list containing all the registered Runtimes
      * @throw BusinessException in case of an internal exception
      */
-    List<Runtime> getRuntimes( Integer page, Integer pageSize,
-            String sort, boolean sortOrder ) throws BusinessException;
+    List<Runtime> getRuntimes(Integer page,
+                              Integer pageSize,
+                              String sort,
+                              boolean sortOrder) throws BusinessException;
 
-    /*
+    /**
      * Start a given Runtime
-     * @param String runtimeId of the runtime to be started
+     * @param runtimeId the identifier of the runtime to be started
      * @throw BusinessException in case of an internal exception
      */
-    void startRuntime( final String runtimeId ) throws BusinessException;
+    void startRuntime(final String runtimeId) throws BusinessException;
 
-    /*
+    /**
      * Stop a given Runtime
-     * @param String runtimeId of the runtime to be stopped
+     * @param runtimeId the identifier of the runtime to be stopped
      * @throw BusinessException in case of an internal exception
      */
-    void stopRuntime( final String runtimeId ) throws BusinessException;
+    void stopRuntime(final String runtimeId) throws BusinessException;
 
-    /*
+    /**
      * Restart a given Runtime
-     * @param String runtimeId of the runtime to be restarted
+     * @param runtimeId the identifier of the runtime to be restarted
      * @throw BusinessException in case of an internal exception
      */
-    void restartRuntime( final String runtimeId ) throws BusinessException;
+    void restartRuntime(final String runtimeId) throws BusinessException;
 
+    /**
+     * Executes a query against the runtime system.
+     * @param query a runtime query to execute.
+     * @return a list of runtime query result items that fulfils the query parameters.
+     * @throws BusinessException in case of an internal exception
+     */
+    List<RuntimeQueryResultItem> executeQuery(final RuntimeQuery query) throws BusinessException;
 }

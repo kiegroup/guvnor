@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 JBoss, by Red Hat, Inc
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,26 +22,19 @@ import org.guvnor.ala.pipeline.Stage;
 /*
  * Event emitted by the PipelineExecutor in the case of an Error in the pipeline execution
 */
-public class OnErrorPipelineExecutionEvent implements PipelineEvent {
+public class OnErrorPipelineExecutionEvent
+        extends StageExecutionPipelineEvent {
 
-    private final Pipeline pipeline;
-    private final Stage stage;
     private final Throwable error;
 
-    public OnErrorPipelineExecutionEvent( final Pipeline pipeline,
-                                          final Stage stage,
-                                          final Throwable error ) {
-        this.pipeline = pipeline;
-        this.stage = stage;
+    public OnErrorPipelineExecutionEvent(final String executionId,
+                                         final Pipeline pipeline,
+                                         final Stage stage,
+                                         final Throwable error) {
+        super(executionId,
+              pipeline,
+              stage);
         this.error = error;
-    }
-
-    public Stage getStage() {
-        return stage;
-    }
-
-    public Pipeline getPipeline() {
-        return pipeline;
     }
 
     public Throwable getError() {
