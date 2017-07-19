@@ -17,7 +17,6 @@
 package org.guvnor.structure.backend.organizationalunit;
 
 import java.util.Collection;
-
 import javax.enterprise.event.Event;
 
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
@@ -27,6 +26,8 @@ import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
+import org.guvnor.structure.security.OrganizationalUnitAction;
+import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
@@ -85,19 +86,61 @@ public class OrganizationalUnitServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        organizationalUnitService.registeredOrganizationalUnits.put("A", mock(OrganizationalUnit.class));
-        when(authorizationManager.authorize(any(Resource.class), any(User.class))).thenReturn(false);
+        organizationalUnitService.registeredOrganizationalUnits.put("A",
+                                                                    mock(OrganizationalUnit.class));
+        when(authorizationManager.authorize(any(Resource.class),
+                                            any(User.class))).thenReturn(false);
+        doReturn(mock(ConfigGroup.class)).when(configurationFactory).newConfigGroup(any(),
+                                                                                    any(),
+                                                                                    any());
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("name").when(organizationalUnit).getName();
+        doReturn(organizationalUnit).when(organizationalUnitFactory).newOrganizationalUnit(any());
     }
 
     @Test
     public void testAllOrgUnits() throws Exception {
         Collection<OrganizationalUnit> orgUnits = organizationalUnitService.getAllOrganizationalUnits();
-        assertEquals(orgUnits.size(), 1);
+        assertEquals(orgUnits.size(),
+                     1);
     }
 
     @Test
     public void testSecuredOrgUnits() throws Exception {
         Collection<OrganizationalUnit> orgUnits = organizationalUnitService.getOrganizationalUnits();
-        assertEquals(orgUnits.size(), 0);
+        assertEquals(orgUnits.size(),
+                     0);
+    }
+
+    @Test
+    public void createOrganizationalUnitWithDuplicatedNameTest() {
+        setOUCreationPermission(true);
+
+        final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit("a",
+                                                                                         "owner",
+                                                                                         "default.group.id");
+
+        assertNull(ou);
+
+        verify(organizationalUnitFactory,
+               never()).newOrganizationalUnit(any());
+    }
+
+    @Test
+    public void createValidOrganizationalUnitTest() {
+        setOUCreationPermission(true);
+
+        final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit("name",
+                                                                                         "owner",
+                                                                                         "default.group.id");
+
+        assertNotNull(ou);
+        verify(organizationalUnitFactory).newOrganizationalUnit(any());
+    }
+
+    private void setOUCreationPermission(final boolean hasPermission) {
+        when(authorizationManager.authorize(eq(OrganizationalUnit.RESOURCE_TYPE),
+                                            eq(OrganizationalUnitAction.CREATE),
+                                            any(User.class))).thenReturn(hasPermission);
     }
 }

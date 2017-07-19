@@ -93,6 +93,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-services-api</artifactId>
     </dependency>
