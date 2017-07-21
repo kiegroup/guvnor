@@ -25,14 +25,12 @@ import org.jboss.errai.bus.server.annotations.Remote;
 @Remote
 public interface AssetManagementService {
 
-    void configureRepository( final String repository,
-                              final String sourceBranch,
-                              final String devBranch,
-                              final String releaseBranch,
-                              final String version );
+    void configureRepository(final String repository,
+                             final String sourceBranch,
+                             final String devBranch,
+                             final String releaseBranch,
+                             final String version);
 
-
-    Set<Project> getProjects( final Repository repository,
-                              final String branch );
-
+    Set<Project> getProjects(final Repository repository,
+                             final String branch);
 }

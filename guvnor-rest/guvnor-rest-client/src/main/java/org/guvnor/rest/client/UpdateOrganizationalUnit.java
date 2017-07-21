@@ -20,10 +20,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class UpdateOrganizationalUnit extends Entity {
-    
+
     private String owner;
     private String defaultGroupId;
-    
+
     public String getOwner() {
         return owner;
     }
@@ -36,8 +36,7 @@ public class UpdateOrganizationalUnit extends Entity {
         return defaultGroupId;
     }
 
-    public void setDefaultGroupId( String defaultGroupId ) {
+    public void setDefaultGroupId(String defaultGroupId) {
         this.defaultGroupId = defaultGroupId;
     }
-
 }

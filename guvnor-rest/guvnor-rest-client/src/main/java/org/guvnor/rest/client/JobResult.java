@@ -33,7 +33,7 @@ public class JobResult implements Serializable {
         return status;
     }
 
-    public void setStatus( JobStatus status ) {
+    public void setStatus(JobStatus status) {
         this.status = status;
     }
 
@@ -41,7 +41,7 @@ public class JobResult implements Serializable {
         return jobId;
     }
 
-    public void setJobId( String jobId ) {
+    public void setJobId(String jobId) {
         this.jobId = jobId;
     }
 
@@ -49,7 +49,7 @@ public class JobResult implements Serializable {
         return result;
     }
 
-    public void setResult( String result ) {
+    public void setResult(String result) {
         this.result = result;
     }
 
@@ -57,7 +57,7 @@ public class JobResult implements Serializable {
         return lastModified;
     }
 
-    public void setLastModified( long lastModified ) {
+    public void setLastModified(long lastModified) {
         this.lastModified = lastModified;
     }
 
@@ -65,7 +65,7 @@ public class JobResult implements Serializable {
         return detailedResult;
     }
 
-    public void setDetailedResult( List<String> detailedResult ) {
+    public void setDetailedResult(List<String> detailedResult) {
         this.detailedResult = detailedResult;
     }
 }

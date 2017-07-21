@@ -25,4 +25,5 @@ import org.uberfire.client.annotations.WorkbenchPerspective;
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "Asset Management")
 public class AssetManagementPerspective extends BaseAssetPerspective {
+
 }

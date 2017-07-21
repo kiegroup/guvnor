@@ -22,7 +22,7 @@ public class AddNewProviderEvent {
 
     private final ProviderType providerType;
 
-    public AddNewProviderEvent(final ProviderType providerType ) {
+    public AddNewProviderEvent(final ProviderType providerType) {
         this.providerType = providerType;
     }
 

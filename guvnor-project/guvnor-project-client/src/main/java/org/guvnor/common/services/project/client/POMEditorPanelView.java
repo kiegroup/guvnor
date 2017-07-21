@@ -26,73 +26,72 @@ public interface POMEditorPanelView extends HasBusyIndicator,
 
     interface Presenter {
 
-        void addNameChangeHandler( final NameChangeHandler changeHandler );
+        void addNameChangeHandler(final NameChangeHandler changeHandler);
 
-        void addGroupIdChangeHandler( final GroupIdChangeHandler changeHandler );
+        void addGroupIdChangeHandler(final GroupIdChangeHandler changeHandler);
 
-        void addArtifactIdChangeHandler( final ArtifactIdChangeHandler changeHandler );
+        void addArtifactIdChangeHandler(final ArtifactIdChangeHandler changeHandler);
 
-        void addVersionChangeHandler( final VersionChangeHandler changeHandler );
+        void addVersionChangeHandler(final VersionChangeHandler changeHandler);
 
-        void onNameChange( final String name );
+        void onNameChange(final String name);
 
-        void onDescriptionChange( final String description );
+        void onDescriptionChange(final String description);
 
         void onOpenProjectContext();
 
-        void disableGroupID( final String reason );
+        void disableGroupID(final String reason);
 
-        void disableVersion( final String reason );
+        void disableVersion(final String reason);
 
         POM getPom();
 
-        void setValidName( final boolean isValid );
+        void setValidName(final boolean isValid);
 
-        void setValidGroupID( final boolean isValid );
+        void setValidGroupID(final boolean isValid);
 
-        void setValidArtifactID( final boolean isValid );
+        void setValidArtifactID(final boolean isValid);
 
-        void setValidVersion( final boolean isValid );
-
+        void setValidVersion(final boolean isValid);
     }
 
-    void setPresenter( final Presenter presenter );
+    void setPresenter(final Presenter presenter);
 
     String getTitleWidget();
 
-    void setTitleText( final String titleText );
+    void setTitleText(final String titleText);
 
     void setProjectModelTitleText();
 
-    void showSaveSuccessful( final String fileName );
+    void showSaveSuccessful(final String fileName);
 
-    void setName( final String projectName );
+    void setName(final String projectName);
 
-    void setDescription( final String projectDescription );
+    void setDescription(final String projectDescription);
 
-    void setArtifactID( final String artifactID );
+    void setArtifactID(final String artifactID);
 
     void showParentGAV();
 
     void hideParentGAV();
 
-    void setParentGAV( GAV gav );
+    void setParentGAV(GAV gav);
 
-    void setGAV( GAV gav );
+    void setGAV(GAV gav);
 
-    void addGroupIdChangeHandler( final GroupIdChangeHandler changeHandler );
+    void addGroupIdChangeHandler(final GroupIdChangeHandler changeHandler);
 
-    void addArtifactIdChangeHandler( final ArtifactIdChangeHandler changeHandler );
+    void addArtifactIdChangeHandler(final ArtifactIdChangeHandler changeHandler);
 
-    void addVersionChangeHandler( final VersionChangeHandler changeHandler );
+    void addVersionChangeHandler(final VersionChangeHandler changeHandler);
 
     void setReadOnly();
 
-    void disableGroupID( final String reason );
+    void disableGroupID(final String reason);
 
-    void disableArtifactID( final String reason );
+    void disableArtifactID(final String reason);
 
-    void disableVersion( final String reason );
+    void disableVersion(final String reason);
 
     void enableGroupID();
 
@@ -100,12 +99,11 @@ public interface POMEditorPanelView extends HasBusyIndicator,
 
     void enableVersion();
 
-    void setValidName( final boolean isValid );
+    void setValidName(final boolean isValid);
 
-    void setValidGroupID( final boolean isValid );
+    void setValidGroupID(final boolean isValid);
 
-    void setValidArtifactID( final boolean isValid );
+    void setValidArtifactID(final boolean isValid);
 
-    void setValidVersion( final boolean isValid );
-
+    void setValidVersion(final boolean isValid);
 }

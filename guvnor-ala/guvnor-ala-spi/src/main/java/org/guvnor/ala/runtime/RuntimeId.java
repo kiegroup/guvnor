@@ -22,7 +22,6 @@ import org.guvnor.ala.runtime.providers.ProviderId;
 /**
  * Represents an unique Id for the Runtime,
  * containing also a reference to the ProviderId where this Runtime belongs
- *
  * @see Runtime
  */
 public interface RuntimeId {
@@ -45,5 +44,4 @@ public interface RuntimeId {
      * @see ProviderId
      */
     ProviderId getProviderId();
-
 }

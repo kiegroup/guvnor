@@ -28,13 +28,12 @@ public interface RuntimeDestroyer {
      * @return true if the destroyer supports the Runtime, false otherwise
      * @see RuntimeId
      */
-    boolean supports( final RuntimeId runtimeId );
+    boolean supports(final RuntimeId runtimeId);
 
     /*
      * Destroy the specified Runtime
      * @param RuntimeId to be destroyed
      * @see RuntimeId
      */
-    void destroy( final RuntimeId runtimeId );
-
+    void destroy(final RuntimeId runtimeId);
 }

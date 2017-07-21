@@ -21,8 +21,8 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.guvnor.ala.security.Credentials;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.*;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 
 /*
  * Service Host representation with credentials
@@ -47,16 +47,16 @@ public interface Host<C extends Credentials> {
      * @param String repositoryId
      * @return Repository with the provided Repository Id
     */
-    Repository getRepository( final String id );
+    Repository getRepository(final String id);
 
-     /*
-     * Get Repository for the Host
-     * @param String repositoryId
-     * @param Map<String, String> with repository configurations
-     * @return Repository with the provided Repository Id and configurations
-    */
-    Repository getRepository( final String id,
-                              final Map<String, String> config );
+    /*
+    * Get Repository for the Host
+    * @param String repositoryId
+    * @param Map<String, String> with repository configurations
+    * @return Repository with the provided Repository Id and configurations
+   */
+    Repository getRepository(final String id,
+                             final Map<String, String> config);
 
     /*
      * Get Repository for the Host
@@ -65,8 +65,7 @@ public interface Host<C extends Credentials> {
      * @param Map<String, String> with repository configurations
      * @return Repository with the provided Repository Id and configurations
     */
-    Repository getRepository( final C credential,
-                              final String repositoryId,
-                              final Map<String, String> config );
-
+    Repository getRepository(final C credential,
+                             final String repositoryId,
+                             final Map<String, String> config);
 }

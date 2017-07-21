@@ -26,131 +26,163 @@ import org.uberfire.java.nio.file.attribute.FileTime;
 public class DublinCoreAttributesMock
         implements DublinCoreAttributes {
 
-    @Override public List<String> titles() {
+    @Override
+    public List<String> titles() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> creators() {
+    @Override
+    public List<String> creators() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> subjects() {
+    @Override
+    public List<String> subjects() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> descriptions() {
+    @Override
+    public List<String> descriptions() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> publishers() {
+    @Override
+    public List<String> publishers() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> contributors() {
+    @Override
+    public List<String> contributors() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> types() {
+    @Override
+    public List<String> types() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> formats() {
+    @Override
+    public List<String> formats() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> identifiers() {
+    @Override
+    public List<String> identifiers() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> sources() {
+    @Override
+    public List<String> sources() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> languages() {
+    @Override
+    public List<String> languages() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> relations() {
+    @Override
+    public List<String> relations() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> coverages() {
+    @Override
+    public List<String> coverages() {
         return new ArrayList<String>();
     }
 
-    @Override public List<String> rights() {
+    @Override
+    public List<String> rights() {
         return new ArrayList<String>();
     }
 
-    @Override public FileTime lastModifiedTime() {
+    @Override
+    public FileTime lastModifiedTime() {
         return new FileTime() {
-            @Override public long to(TimeUnit unit) {
+            @Override
+            public long to(TimeUnit unit) {
                 return 0;
             }
 
-            @Override public long toMillis() {
+            @Override
+            public long toMillis() {
                 return 0;
             }
 
-            @Override public int compareTo(FileTime fileTime) {
+            @Override
+            public int compareTo(FileTime fileTime) {
                 return 0;
             }
         };
     }
 
-    @Override public FileTime lastAccessTime() {
+    @Override
+    public FileTime lastAccessTime() {
         return new FileTime() {
-            @Override public long to(TimeUnit unit) {
+            @Override
+            public long to(TimeUnit unit) {
                 return 0;
             }
 
-            @Override public long toMillis() {
+            @Override
+            public long toMillis() {
                 return 0;
             }
 
-            @Override public int compareTo(FileTime fileTime) {
+            @Override
+            public int compareTo(FileTime fileTime) {
                 return 0;
             }
         };
     }
 
-    @Override public FileTime creationTime() {
+    @Override
+    public FileTime creationTime() {
         return new FileTime() {
-            @Override public long to(TimeUnit unit) {
+            @Override
+            public long to(TimeUnit unit) {
                 return 0;
             }
 
-            @Override public long toMillis() {
+            @Override
+            public long toMillis() {
                 return 0;
             }
 
-            @Override public int compareTo(FileTime fileTime) {
+            @Override
+            public int compareTo(FileTime fileTime) {
                 return 0;
             }
         };
     }
 
-    @Override public boolean isRegularFile() {
+    @Override
+    public boolean isRegularFile() {
         return false;
     }
 
-    @Override public boolean isDirectory() {
+    @Override
+    public boolean isDirectory() {
         return false;
     }
 
-    @Override public boolean isSymbolicLink() {
+    @Override
+    public boolean isSymbolicLink() {
         return false;
     }
 
-    @Override public boolean isOther() {
+    @Override
+    public boolean isOther() {
         return false;
     }
 
-    @Override public long size() {
+    @Override
+    public long size() {
         return 0;
     }
 
-    @Override public Object fileKey() {
+    @Override
+    public Object fileKey() {
         return null;
     }
 }

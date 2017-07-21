@@ -27,7 +27,7 @@ import org.uberfire.backend.vfs.Path;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DefaultProjectResourcePathResolverTest {
 
     private DefaultProjectResourcePathResolver resolver;
@@ -41,20 +41,22 @@ public class DefaultProjectResourcePathResolverTest {
     @Before
     public void setUp() {
         resolver = new DefaultProjectResourcePathResolver();
-        when( pkg.getPackageMainResourcesPath() ).thenReturn( packageMainResourcesPath );
+        when(pkg.getPackageMainResourcesPath()).thenReturn(packageMainResourcesPath);
     }
 
     @Test
     public void testAcceptFile() {
-        assertTrue( resolver.accept( "txt" ) );
-        assertTrue( resolver.accept( "java" ) );
-        assertTrue( resolver.accept( null ) );
-        assertTrue( resolver.accept( "" ) );
+        assertTrue(resolver.accept("txt"));
+        assertTrue(resolver.accept("java"));
+        assertTrue(resolver.accept(null));
+        assertTrue(resolver.accept(""));
     }
 
     @Test
     public void testResolveByDefaultPath() {
-        assertEquals( packageMainResourcesPath, resolver.resolveDefaultPath( pkg ) );
-        verify( pkg, times( 1 ) ).getPackageMainResourcesPath();
+        assertEquals(packageMainResourcesPath,
+                     resolver.resolveDefaultPath(pkg));
+        verify(pkg,
+               times(1)).getPackageMainResourcesPath();
     }
 }

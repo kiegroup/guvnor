@@ -1,4 +1,3 @@
-
 package org.guvnor.ala.wildfly.executor;
 
 import java.io.File;
@@ -29,60 +28,68 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.guvnor.ala.util.RuntimeConfigHelper.buildRuntimeName;
 
 public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration> implements RuntimeBuilder<T, WildflyRuntime>,
-        RuntimeDestroyer,
-        FunctionConfigExecutor<T, WildflyRuntime> {
+                                                                                          RuntimeDestroyer,
+                                                                                          FunctionConfigExecutor<T, WildflyRuntime> {
 
     private final RuntimeRegistry runtimeRegistry;
     private final WildflyAccessInterface wildfly;
-    protected static final Logger LOG = LoggerFactory.getLogger( WildflyRuntimeExecExecutor.class );
+    protected static final Logger LOG = LoggerFactory.getLogger(WildflyRuntimeExecExecutor.class);
 
     @Inject
-    public WildflyRuntimeExecExecutor( final RuntimeRegistry runtimeRegistry,
-            final WildflyAccessInterface wildfly ) {
+    public WildflyRuntimeExecExecutor(final RuntimeRegistry runtimeRegistry,
+                                      final WildflyAccessInterface wildfly) {
         this.runtimeRegistry = runtimeRegistry;
         this.wildfly = wildfly;
     }
 
     @Override
-    public Optional<WildflyRuntime> apply( final WildflyRuntimeConfiguration config ) {
-        final Optional<WildflyRuntime> runtime = create( config );
-        if ( runtime.isPresent() ) {
-            runtimeRegistry.registerRuntime( runtime.get() );
+    public Optional<WildflyRuntime> apply(final WildflyRuntimeConfiguration config) {
+        final Optional<WildflyRuntime> runtime = create(config);
+        if (runtime.isPresent()) {
+            runtimeRegistry.registerRuntime(runtime.get());
         }
         return runtime;
     }
 
-    private Optional<WildflyRuntime> create( final WildflyRuntimeConfiguration runtimeConfig ) throws ProvisioningException {
+    private Optional<WildflyRuntime> create(final WildflyRuntimeConfiguration runtimeConfig) throws ProvisioningException {
 
         String warPath = runtimeConfig.getWarPath();
-        final Optional<WildflyProvider> _wildflyProvider = runtimeRegistry.getProvider( runtimeConfig.getProviderId(), WildflyProvider.class );
+        final Optional<WildflyProvider> _wildflyProvider = runtimeRegistry.getProvider(runtimeConfig.getProviderId(),
+                                                                                       WildflyProvider.class);
 
         WildflyProvider wildflyProvider = _wildflyProvider.get();
-        File file = new File( warPath );
+        File file = new File(warPath);
         final String id = file.getName();
 
-        WildflyAppState appState = wildfly.getWildflyClient( wildflyProvider ).getAppState( id );
+        WildflyAppState appState = wildfly.getWildflyClient(wildflyProvider).getAppState(id);
         if ("NA".equals(appState.getState())) {
-            int result = wildfly.getWildflyClient( wildflyProvider ).deploy( file );
-            if ( result != 200 ) {
-                throw new ProvisioningException( "Deployment to Wildfly Failed with error code: " + result );
+            int result = wildfly.getWildflyClient(wildflyProvider).deploy(file);
+            if (result != 200) {
+                throw new ProvisioningException("Deployment to Wildfly Failed with error code: " + result);
             }
         } else if ("Running".equals(appState.getState()) &&
-                  (isNullOrEmpty(runtimeConfig.getRedeployStrategy()) || "auto".equals(runtimeConfig.getRedeployStrategy()))) {
-            wildfly.getWildflyClient( wildflyProvider ).undeploy( id );
-            int result = wildfly.getWildflyClient( wildflyProvider ).deploy( file );
-            if ( result != 200 ) {
-                throw new ProvisioningException( "Deployment to Wildfly Failed with error code: " + result );
+                (isNullOrEmpty(runtimeConfig.getRedeployStrategy()) || "auto".equals(runtimeConfig.getRedeployStrategy()))) {
+            wildfly.getWildflyClient(wildflyProvider).undeploy(id);
+            int result = wildfly.getWildflyClient(wildflyProvider).deploy(file);
+            if (result != 200) {
+                throw new ProvisioningException("Deployment to Wildfly Failed with error code: " + result);
             }
         }
 
-        String appContext = id.substring( 0, id.lastIndexOf( ".war" ) );
+        String appContext = id.substring(0,
+                                         id.lastIndexOf(".war"));
         WildflyRuntimeEndpoint endpoint = new WildflyRuntimeEndpoint();
-        endpoint.setHost( wildfly.getWildflyClient( wildflyProvider ).getHost() );
-        endpoint.setPort( wildfly.getWildflyClient( wildflyProvider ).getPort() );
-        endpoint.setContext( appContext );
-        return Optional.of( new WildflyRuntime( id, buildRuntimeName(runtimeConfig, id), runtimeConfig, wildflyProvider,
-                endpoint, new WildflyRuntimeInfo(), new WildflyRuntimeState() ) );
+        endpoint.setHost(wildfly.getWildflyClient(wildflyProvider).getHost());
+        endpoint.setPort(wildfly.getWildflyClient(wildflyProvider).getPort());
+        endpoint.setContext(appContext);
+        return Optional.of(new WildflyRuntime(id,
+                                              buildRuntimeName(runtimeConfig,
+                                                               id),
+                                              runtimeConfig,
+                                              wildflyProvider,
+                                              endpoint,
+                                              new WildflyRuntimeInfo(),
+                                              new WildflyRuntimeState()));
     }
 
     @Override
@@ -96,25 +103,25 @@ public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration> i
     }
 
     @Override
-    public boolean supports( final RuntimeConfig config ) {
+    public boolean supports(final RuntimeConfig config) {
         return config instanceof WildflyRuntimeConfiguration;
     }
 
     @Override
-    public boolean supports( final RuntimeId runtimeId ) {
+    public boolean supports(final RuntimeId runtimeId) {
         return runtimeId instanceof WildflyRuntime
-                || runtimeRegistry.getRuntimeById( runtimeId.getId() ) instanceof WildflyRuntime;
+                || runtimeRegistry.getRuntimeById(runtimeId.getId()) instanceof WildflyRuntime;
     }
 
     @Override
-    public void destroy( final RuntimeId runtimeId ) {
-        final Optional<WildflyProvider> _wildflyProvider = runtimeRegistry.getProvider( runtimeId.getProviderId(), WildflyProvider.class );
+    public void destroy(final RuntimeId runtimeId) {
+        final Optional<WildflyProvider> _wildflyProvider = runtimeRegistry.getProvider(runtimeId.getProviderId(),
+                                                                                       WildflyProvider.class);
         WildflyProvider wildflyProvider = _wildflyProvider.get();
-        int result = wildfly.getWildflyClient( wildflyProvider ).undeploy( runtimeId.getId() );
-        if ( result != 200 ) {
-            throw new ProvisioningException( "UnDeployment to Wildfly Failed with error code: " + result );
+        int result = wildfly.getWildflyClient(wildflyProvider).undeploy(runtimeId.getId());
+        if (result != 200) {
+            throw new ProvisioningException("UnDeployment to Wildfly Failed with error code: " + result);
         }
-        runtimeRegistry.unregisterRuntime( runtimeId );
-
+        runtimeRegistry.unregisterRuntime(runtimeId);
     }
 }

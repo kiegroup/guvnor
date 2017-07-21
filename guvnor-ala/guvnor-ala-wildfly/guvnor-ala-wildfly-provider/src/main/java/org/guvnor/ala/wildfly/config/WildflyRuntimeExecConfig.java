@@ -24,6 +24,6 @@ import org.guvnor.ala.config.RuntimeConfig;
  * @see RuntimeConfig
  */
 public interface WildflyRuntimeExecConfig extends WildflyRuntimeConfiguration,
-                                                        RuntimeConfig {
+                                                  RuntimeConfig {
 
 }

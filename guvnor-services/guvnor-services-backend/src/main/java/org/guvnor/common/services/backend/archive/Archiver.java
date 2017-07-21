@@ -44,10 +44,11 @@ public class Archiver {
         this.ioService = ioService;
     }
 
-    public void archive( final ByteArrayOutputStream outputStream,
-                         final String uri ) throws IOException, URISyntaxException {
+    public void archive(final ByteArrayOutputStream outputStream,
+                        final String uri) throws IOException, URISyntaxException {
 
-        init(outputStream, uri);
+        init(outputStream,
+             uri);
         zip();
     }
 
@@ -60,10 +61,10 @@ public class Archiver {
         zipWriter.close();
     }
 
-    private void init( final ByteArrayOutputStream outputStream,
-                       final String uri ) throws URISyntaxException {
+    private void init(final ByteArrayOutputStream outputStream,
+                      final String uri) throws URISyntaxException {
         this.originalPath = ioService.get(new URI(uri));
-        this.zipWriter = new ZipWriter( outputStream );
+        this.zipWriter = new ZipWriter(outputStream);
     }
 
     private void addPath(DirectoryStream<Path> directoryStream) throws IOException {
@@ -76,19 +77,20 @@ public class Archiver {
         }
     }
 
-    private void addFile( final Path subPath ) throws IOException {
-        zipWriter.addFile( getZipEntry( subPath ),
-                           ioService.newInputStream( subPath ) );
+    private void addFile(final Path subPath) throws IOException {
+        zipWriter.addFile(getZipEntry(subPath),
+                          ioService.newInputStream(subPath));
     }
 
-    private ZipEntry getZipEntry( final Path subPath ) {
-        return new ZipEntry(FileNameResolver.resolve(subPath.toUri().getPath(), originalPath.toUri().getPath()));
+    private ZipEntry getZipEntry(final Path subPath) {
+        return new ZipEntry(FileNameResolver.resolve(subPath.toUri().getPath(),
+                                                     originalPath.toUri().getPath()));
     }
 
     static class FileNameResolver {
 
-        static protected String resolve( final String subPath,
-                                         final String originalPath ) {
+        static protected String resolve(final String subPath,
+                                        final String originalPath) {
             if ("/".equals(originalPath)) {
                 return subPath.substring(originalPath.length());
             } else {
@@ -96,7 +98,7 @@ public class Archiver {
             }
         }
 
-        private static String getBaseFolder( final String originalPath ) {
+        private static String getBaseFolder(final String originalPath) {
             if (originalPath.contains("/")) {
                 return originalPath.substring(originalPath.lastIndexOf("/") + 1) + "/";
             } else {

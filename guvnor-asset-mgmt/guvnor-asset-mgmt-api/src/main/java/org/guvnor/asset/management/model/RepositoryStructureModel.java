@@ -36,13 +36,13 @@ public class RepositoryStructureModel {
 
     private Path pathToPOM;
 
-    private List<String> modules = new ArrayList<String>( );
+    private List<String> modules = new ArrayList<String>();
 
-    private Map<String, Project> modulesProject = new HashMap<String, Project>( );
+    private Map<String, Project> modulesProject = new HashMap<String, Project>();
 
-    private List<Project> orphanProjects = new ArrayList<Project>( );
+    private List<Project> orphanProjects = new ArrayList<Project>();
 
-    private Map<String, POM> orphanProjectsPOM = new HashMap<String, POM>( );
+    private Map<String, POM> orphanProjectsPOM = new HashMap<String, POM>();
 
     private Boolean managed;
 
@@ -53,11 +53,11 @@ public class RepositoryStructureModel {
         return pom;
     }
 
-    public void setPOM( POM pom ) {
+    public void setPOM(POM pom) {
         this.pom = pom;
     }
 
-    public void setPOMMetaData( Metadata POMMetaData ) {
+    public void setPOMMetaData(Metadata POMMetaData) {
         this.POMMetaData = POMMetaData;
     }
 
@@ -69,7 +69,7 @@ public class RepositoryStructureModel {
         return pathToPOM;
     }
 
-    public void setPathToPOM( Path pathToPOM ) {
+    public void setPathToPOM(Path pathToPOM) {
         this.pathToPOM = pathToPOM;
     }
 
@@ -77,10 +77,10 @@ public class RepositoryStructureModel {
         return modules;
     }
 
-    public void setModules( final Collection<String> modules ) {
+    public void setModules(final Collection<String> modules) {
         this.modules.clear();
-        for ( final String module : modules ) {
-            this.modules.add( module );
+        for (final String module : modules) {
+            this.modules.add(module);
         }
     }
 
@@ -96,7 +96,7 @@ public class RepositoryStructureModel {
         return managed != null && managed;
     }
 
-    public void setManaged( Boolean managed ) {
+    public void setManaged(Boolean managed) {
         this.managed = managed;
     }
 
@@ -109,18 +109,18 @@ public class RepositoryStructureModel {
     }
 
     public Project getSingleProject() {
-        return orphanProjects != null && isSingleProject() ? orphanProjects.get( 0 ) : null;
+        return orphanProjects != null && isSingleProject() ? orphanProjects.get(0) : null;
     }
 
     public POM getSingleProjectPOM() {
         Project project = getSingleProject();
-        if ( project != null ) {
-            return orphanProjectsPOM.get( project.getIdentifier() );
+        if (project != null) {
+            return orphanProjectsPOM.get(project.getIdentifier());
         }
         return null;
     }
 
-    public void setOrphanProjects( List<Project> orphanProjects ) {
+    public void setOrphanProjects(List<Project> orphanProjects) {
         this.orphanProjects = orphanProjects;
     }
 
@@ -128,7 +128,7 @@ public class RepositoryStructureModel {
         return modulesProject;
     }
 
-    public void setModulesProject( Map<String, Project> modulesProject ) {
+    public void setModulesProject(Map<String, Project> modulesProject) {
         this.modulesProject = modulesProject;
     }
 
@@ -136,7 +136,7 @@ public class RepositoryStructureModel {
         return orphanProjectsPOM;
     }
 
-    public void setOrphanProjectsPOM( Map<String, POM> orphanProjectsPOM ) {
+    public void setOrphanProjectsPOM(Map<String, POM> orphanProjectsPOM) {
         this.orphanProjectsPOM = orphanProjectsPOM;
     }
 

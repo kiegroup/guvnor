@@ -30,36 +30,35 @@ public interface RuntimeManager {
     * @return boolean true if the RuntimeId supplied represent a 
     *  Runtime that is supported by this RuntimeManager
     */
-    boolean supports( final RuntimeId runtimeId );
+    boolean supports(final RuntimeId runtimeId);
 
     /*
     * Starts the Runtime
     * @param RuntimeId 
     */
-    void start( final RuntimeId runtimeId ) throws RuntimeOperationException;
-    
+    void start(final RuntimeId runtimeId) throws RuntimeOperationException;
+
     /*
     * Stops the Runtime
     * @param RuntimeId 
     */
-    void stop( final RuntimeId runtimeId ) throws RuntimeOperationException;
-    
+    void stop(final RuntimeId runtimeId) throws RuntimeOperationException;
+
     /*
     * Restarts the Runtime
     * @param RuntimeId 
     */
-    void restart( final RuntimeId runtimeId ) throws RuntimeOperationException;
-    
+    void restart(final RuntimeId runtimeId) throws RuntimeOperationException;
+
     /*
     * Refresh the Runtime
     * @param RuntimeId 
     */
-    void refresh( final RuntimeId runtimeId ) throws RuntimeOperationException;
-    
+    void refresh(final RuntimeId runtimeId) throws RuntimeOperationException;
+
     /*
     * Pause the Runtime
     * @param RuntimeId 
     */
-    void pause( final RuntimeId runtimeId ) throws RuntimeOperationException;
-
+    void pause(final RuntimeId runtimeId) throws RuntimeOperationException;
 }

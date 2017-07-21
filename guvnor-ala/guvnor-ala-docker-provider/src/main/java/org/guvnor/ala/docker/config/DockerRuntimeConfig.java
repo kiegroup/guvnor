@@ -25,7 +25,7 @@ import org.guvnor.ala.config.RuntimeConfig;
  * @see RuntimeConfig
  */
 public interface DockerRuntimeConfig extends ProvisioningConfig,
-        RuntimeConfig {
+                                             RuntimeConfig {
 
     /*
      * Get the Docker Image Name to be executed
@@ -45,5 +45,4 @@ public interface DockerRuntimeConfig extends ProvisioningConfig,
      * @return String with the Docker Pull value.
      */
     boolean isPull();
-
 }

@@ -17,8 +17,8 @@
 package org.guvnor.ala.config;
 
 /**
- * Build Configuration base interface. Provide different implementations for 
- *  different types of builds.
+ * Build Configuration base interface. Provide different implementations for
+ * different types of builds.
  */
 public interface BuildConfig extends Config {
 

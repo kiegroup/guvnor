@@ -28,5 +28,4 @@ public interface MetadataServerSideService
     Metadata getMetadata(final Path resource);
 
     List<String> getTags(final Path resource);
-
 }

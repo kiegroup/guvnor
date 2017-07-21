@@ -24,8 +24,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class TestResultMessage {
 
     private String identifier;
-    private int    runCount;
-    private Long   runTime;
+    private int runCount;
+    private Long runTime;
     private List<Failure> failures = new ArrayList<Failure>();
 
     public TestResultMessage() {
@@ -75,9 +75,9 @@ public class TestResultMessage {
     @Override
     public String toString() {
         return "TestResultMessage{" +
-               "identifier=" + identifier +
-               ", runCount=" + runCount +
-               ", failures=" + failures +
-               '}';
+                "identifier=" + identifier +
+                ", runCount=" + runCount +
+                ", failures=" + failures +
+                '}';
     }
 }

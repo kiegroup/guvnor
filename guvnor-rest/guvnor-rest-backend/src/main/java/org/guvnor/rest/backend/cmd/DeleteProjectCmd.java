@@ -27,9 +27,11 @@ import org.guvnor.rest.client.JobStatus;
 public class DeleteProjectCmd extends AbstractJobCommand {
 
     public DeleteProjectCmd(final JobRequestHelper jobRequestHelper,
-                                     final JobResultManager jobResultManager,
-                                     final Map<String, Object> context) {
-        super(jobRequestHelper, jobResultManager, context);
+                            final JobResultManager jobResultManager,
+                            final Map<String, Object> context) {
+        super(jobRequestHelper,
+              jobResultManager,
+              context);
     }
 
     @Override
@@ -38,12 +40,16 @@ public class DeleteProjectCmd extends AbstractJobCommand {
         DeleteProjectRequest jobRequest = (DeleteProjectRequest) request;
 
         JobResult result = null;
-        try { 
-            result = helper.deleteProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName());
-        } finally { 
+        try {
+            result = helper.deleteProject(jobRequest.getJobId(),
+                                          jobRequest.getRepositoryName(),
+                                          jobRequest.getProjectName());
+        } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug( "-----deleteProject--- , repositoryName: {}, project : {} [{}]", 
-                    jobRequest.getRepositoryName(), jobRequest.getProjectName(), status);
+            logger.debug("-----deleteProject--- , repositoryName: {}, project : {} [{}]",
+                         jobRequest.getRepositoryName(),
+                         jobRequest.getProjectName(),
+                         status);
         }
         return result;
     }

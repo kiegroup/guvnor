@@ -40,7 +40,7 @@ public class SystemMessage {
         return messageType;
     }
 
-    public void setMessageType( String messageType ) {
+    public void setMessageType(String messageType) {
         this.messageType = messageType;
     }
 
@@ -48,7 +48,7 @@ public class SystemMessage {
         return userId;
     }
 
-    public void setUserId( String userId ) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -56,7 +56,7 @@ public class SystemMessage {
         return id;
     }
 
-    public void setId( long id ) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -64,7 +64,7 @@ public class SystemMessage {
         return level;
     }
 
-    public void setLevel( Level level ) {
+    public void setLevel(Level level) {
         this.level = level;
     }
 
@@ -72,7 +72,7 @@ public class SystemMessage {
         return path;
     }
 
-    public void setPath( Path path ) {
+    public void setPath(Path path) {
         this.path = path;
     }
 
@@ -80,7 +80,7 @@ public class SystemMessage {
         return line;
     }
 
-    public void setLine( int line ) {
+    public void setLine(int line) {
         this.line = line;
     }
 
@@ -88,7 +88,7 @@ public class SystemMessage {
         return column;
     }
 
-    public void setColumn( int column ) {
+    public void setColumn(int column) {
         this.column = column;
     }
 
@@ -96,7 +96,7 @@ public class SystemMessage {
         return text;
     }
 
-    public void setText( String text ) {
+    public void setText(String text) {
         this.text = text;
     }
 
@@ -106,32 +106,32 @@ public class SystemMessage {
      * validation by the underlying KieBuilder.
      */
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof SystemMessage ) ) {
+        if (!(o instanceof SystemMessage)) {
             return false;
         }
 
         SystemMessage that = (SystemMessage) o;
 
-        if ( messageType != null ? !messageType.equals( that.messageType ) : that.messageType != null ) {
+        if (messageType != null ? !messageType.equals(that.messageType) : that.messageType != null) {
             return false;
         }
-        if ( column != that.column ) {
+        if (column != that.column) {
             return false;
         }
-        if ( line != that.line ) {
+        if (line != that.line) {
             return false;
         }
-        if ( level != that.level ) {
+        if (level != that.level) {
             return false;
         }
-        if ( path != null ? !path.equals( that.path ) : that.path != null ) {
+        if (path != null ? !path.equals(that.path) : that.path != null) {
             return false;
         }
-        if ( text != null ? !text.equals( that.text ) : that.text != null ) {
+        if (text != null ? !text.equals(that.text) : that.text != null) {
             return false;
         }
 
@@ -147,17 +147,16 @@ public class SystemMessage {
     public int hashCode() {
         int result = level != null ? level.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( messageType != null ? messageType.hashCode() : 0 );
+        result = 31 * result + (messageType != null ? messageType.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( path != null ? path.hashCode() : 0 );
+        result = 31 * result + (path != null ? path.hashCode() : 0);
         result = ~~result;
         result = 31 * result + line;
         result = ~~result;
         result = 31 * result + column;
         result = ~~result;
-        result = 31 * result + ( text != null ? text.hashCode() : 0 );
+        result = 31 * result + (text != null ? text.hashCode() : 0);
         result = ~~result;
         return result;
     }
-
 }

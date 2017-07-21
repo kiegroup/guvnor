@@ -91,5 +91,4 @@ public class GuvnorAlaUIConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String ProviderConfigEmptyView_ProviderTypeNotProperlyConfiguredMessage = "ProviderConfigEmptyView.ProviderTypeNotProperlyConfiguredMessage";
-
 }

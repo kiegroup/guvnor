@@ -28,8 +28,8 @@ import org.uberfire.commons.async.DescriptiveRunnable;
 
 public abstract class AbstractJobCommand implements DescriptiveRunnable {
 
-    protected static final Logger logger = LoggerFactory.getLogger( AbstractJobCommand.class );
-            
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractJobCommand.class);
+
     public static final String JOB_REQUEST_KEY = "JobRequest";
 
     protected final JobRequestHelper jobRequestHelper;
@@ -47,7 +47,7 @@ public abstract class AbstractJobCommand implements DescriptiveRunnable {
     }
 
     // for command implementations
-    
+
     protected JobRequestHelper getHelper() throws Exception {
         return jobRequestHelper;
     }
@@ -62,7 +62,7 @@ public abstract class AbstractJobCommand implements DescriptiveRunnable {
     }
 
     // private helper methods
-       
+
     private JobResultManager getJobManager() throws Exception {
         return jobResultManager;
     }
@@ -73,51 +73,58 @@ public abstract class AbstractJobCommand implements DescriptiveRunnable {
     }
 
     @Override
-    public void run()  {
+    public void run() {
         try {
             // approval
             JobRequest request = getJobRequest();
             JobResult result = createResult(request);
 
             // save job
-            logger.debug( "--- job {} ---, status: {}",  result.getJobId(), result.getStatus());
+            logger.debug("--- job {} ---, status: {}",
+                         result.getJobId(),
+                         result.getStatus());
             JobResultManager jobMgr = getJobManager();
             result.setLastModified(System.currentTimeMillis());
             jobMgr.putJob(result);
 
             // if approved, process
-            if( JobStatus.APPROVED.equals(request.getStatus()) ) {
+            if (JobStatus.APPROVED.equals(request.getStatus())) {
                 try {
                     result = internalExecute(request);
-                } catch( Exception e ) {
+                } catch (Exception e) {
                     result.setStatus(JobStatus.SERVER_ERROR);
                     result.setResult("Request failed because of " + e.getClass().getSimpleName() + ": " + e.getMessage());
                     logger.error("{} [{}] failed because of thrown {}: {}",
-                            request.getClass().getSimpleName(), request.getJobId(),
-                            e.getClass().getSimpleName(), e.getMessage(), e);
+                                 request.getClass().getSimpleName(),
+                                 request.getJobId(),
+                                 e.getClass().getSimpleName(),
+                                 e.getMessage(),
+                                 e);
                 }
 
                 // save job
-                logger.debug( "--- job {} ---, status: {}",  result.getJobId(), result.getStatus());
+                logger.debug("--- job {} ---, status: {}",
+                             result.getJobId(),
+                             result.getStatus());
                 result.setLastModified(System.currentTimeMillis());
                 jobMgr.putJob(result);
             }
         } catch (Throwable e) {
-            logger.error("Error executing job class: {}, error: {}", this.getClass().getName(), e.getMessage());
+            logger.error("Error executing job class: {}, error: {}",
+                         this.getClass().getName(),
+                         e.getMessage());
             throw new RuntimeException(e);
         }
     }
-  
-    private JobResult createResult(JobRequest jobRequest) { 
+
+    private JobResult createResult(JobRequest jobRequest) {
         final JobResult jobResult = new JobResult();
-        jobResult.setJobId( jobRequest.getJobId() );
-        jobResult.setStatus( jobRequest.getStatus() ); 
+        jobResult.setJobId(jobRequest.getJobId());
+        jobResult.setStatus(jobRequest.getStatus());
         return jobResult;
     }
 
-
     protected abstract JobResult internalExecute(JobRequest request) throws Exception;
-   
 }
 
 

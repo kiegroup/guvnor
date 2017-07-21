@@ -17,8 +17,8 @@ package org.guvnor.ala.docker.access;
 
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
-import org.uberfire.commons.lifecycle.Disposable;
 import org.guvnor.ala.runtime.providers.ProviderId;
+import org.uberfire.commons.lifecycle.Disposable;
 
 /**
  * This interface abstracts the Docker client interactions
@@ -31,6 +31,5 @@ public interface DockerAccessInterface extends Disposable {
      * @return DockerClient for the ProviderId, if it doesn't exist it creates a new DockerClient
      * @see DockerClient
      */
-    DockerClient getDockerClient( final ProviderId providerId ) throws DockerException, InterruptedException;
-
+    DockerClient getDockerClient(final ProviderId providerId) throws DockerException, InterruptedException;
 }

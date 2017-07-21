@@ -1,4 +1,3 @@
-
 package org.guvnor.ala.docker.executor;
 
 import java.io.File;
@@ -22,9 +21,9 @@ import org.guvnor.ala.config.RuntimeConfig;
 import org.guvnor.ala.config.SourceConfig;
 import org.guvnor.ala.docker.access.DockerAccessInterface;
 import org.guvnor.ala.docker.access.impl.DockerAccessInterfaceImpl;
+import org.guvnor.ala.docker.config.DockerProviderConfig;
 import org.guvnor.ala.docker.config.impl.ContextAwareDockerProvisioningConfig;
 import org.guvnor.ala.docker.config.impl.ContextAwareDockerRuntimeExecConfig;
-import org.guvnor.ala.docker.config.DockerProviderConfig;
 import org.guvnor.ala.docker.config.impl.DockerBuildConfigImpl;
 import org.guvnor.ala.docker.config.impl.DockerProviderConfigImpl;
 import org.guvnor.ala.docker.model.DockerRuntime;
@@ -46,8 +45,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static java.util.Arrays.*;
-import static org.guvnor.ala.pipeline.StageUtil.*;
+import static java.util.Arrays.asList;
+import static org.guvnor.ala.pipeline.StageUtil.config;
 import static org.junit.Assert.*;
 
 /**
@@ -59,12 +58,12 @@ public class DockerExecutorTest {
 
     @Before
     public void setUp() throws IOException {
-        tempPath = Files.createTempDirectory( "xxx" ).toFile();
+        tempPath = Files.createTempDirectory("xxx").toFile();
     }
 
     @After
     public void tearDown() {
-        FileUtils.deleteQuietly( tempPath );
+        FileUtils.deleteQuietly(tempPath);
     }
 
     @Test
@@ -74,83 +73,116 @@ public class DockerExecutorTest {
         final InMemoryRuntimeRegistry runtimeRegistry = new InMemoryRuntimeRegistry();
         final DockerAccessInterface dockerAccessInterface = new DockerAccessInterfaceImpl();
 
-        final Stage<Input, SourceConfig> sourceConfig = config( "Git Source", (s) -> new GitConfigImpl() );
-        final Stage<SourceConfig, ProjectConfig> projectConfig = config( "Maven Project", (s) -> new MavenProjectConfigImpl() );
-        final Stage<ProjectConfig, BuildConfig> buildConfig = config( "Maven Build Config", (s) -> new MavenBuildConfigImpl() );
-        final Stage<BuildConfig, BuildConfig> dockerBuildConfig = config( "Docker Build Config", (s) -> new DockerBuildConfigImpl() );
-        final Stage<BuildConfig, BinaryConfig> buildExec = config( "Maven Build", (s) -> new MavenBuildExecConfigImpl() );
-        final Stage<BinaryConfig, ProviderConfig> providerConfig = config( "Docker Provider Config", (s) -> new DockerProviderConfigImpl() );
+        final Stage<Input, SourceConfig> sourceConfig = config("Git Source",
+                                                               (s) -> new GitConfigImpl());
+        final Stage<SourceConfig, ProjectConfig> projectConfig = config("Maven Project",
+                                                                        (s) -> new MavenProjectConfigImpl());
+        final Stage<ProjectConfig, BuildConfig> buildConfig = config("Maven Build Config",
+                                                                     (s) -> new MavenBuildConfigImpl());
+        final Stage<BuildConfig, BuildConfig> dockerBuildConfig = config("Docker Build Config",
+                                                                         (s) -> new DockerBuildConfigImpl());
+        final Stage<BuildConfig, BinaryConfig> buildExec = config("Maven Build",
+                                                                  (s) -> new MavenBuildExecConfigImpl());
+        final Stage<BinaryConfig, ProviderConfig> providerConfig = config("Docker Provider Config",
+                                                                          (s) -> new DockerProviderConfigImpl());
 
-        final Stage<ProviderConfig, ProvisioningConfig> runtimeConfig = config( "Docker Runtime Config", (s) -> new ContextAwareDockerProvisioningConfig() );
+        final Stage<ProviderConfig, ProvisioningConfig> runtimeConfig = config("Docker Runtime Config",
+                                                                               (s) -> new ContextAwareDockerProvisioningConfig());
 
-        final Stage<ProvisioningConfig, RuntimeConfig> runtimeExec = config( "Docker Runtime Exec", (s) -> new ContextAwareDockerRuntimeExecConfig() );
+        final Stage<ProvisioningConfig, RuntimeConfig> runtimeExec = config("Docker Runtime Exec",
+                                                                            (s) -> new ContextAwareDockerRuntimeExecConfig());
 
         final Pipeline pipe = PipelineFactory
-                .startFrom( sourceConfig )
-                .andThen( projectConfig )
-                .andThen( buildConfig )
-                .andThen( dockerBuildConfig )
-                .andThen( buildExec )
-                .andThen( providerConfig )
-                .andThen( runtimeConfig )
-                .andThen( runtimeExec ).buildAs( "my pipe" );
+                .startFrom(sourceConfig)
+                .andThen(projectConfig)
+                .andThen(buildConfig)
+                .andThen(dockerBuildConfig)
+                .andThen(buildExec)
+                .andThen(providerConfig)
+                .andThen(runtimeConfig)
+                .andThen(runtimeExec).buildAs("my pipe");
 
-        DockerRuntimeExecExecutor dockerRuntimeExecExecutor = new DockerRuntimeExecExecutor( runtimeRegistry, dockerAccessInterface );
+        DockerRuntimeExecExecutor dockerRuntimeExecExecutor = new DockerRuntimeExecExecutor(runtimeRegistry,
+                                                                                            dockerAccessInterface);
 
-        final PipelineExecutor executor = new PipelineExecutor( asList( new GitConfigExecutor( sourceRegistry ),
-                new MavenProjectConfigExecutor( sourceRegistry ),
-                new MavenBuildConfigExecutor(),
-                new MavenBuildExecConfigExecutor( buildRegistry ),
-                new DockerBuildConfigExecutor(),
-                new DockerProviderConfigExecutor( runtimeRegistry ),
-                new DockerProvisioningConfigExecutor(), dockerRuntimeExecExecutor ) );
+        final PipelineExecutor executor = new PipelineExecutor(asList(new GitConfigExecutor(sourceRegistry),
+                                                                      new MavenProjectConfigExecutor(sourceRegistry),
+                                                                      new MavenBuildConfigExecutor(),
+                                                                      new MavenBuildExecConfigExecutor(buildRegistry),
+                                                                      new DockerBuildConfigExecutor(),
+                                                                      new DockerProviderConfigExecutor(runtimeRegistry),
+                                                                      new DockerProvisioningConfigExecutor(),
+                                                                      dockerRuntimeExecExecutor));
 
-        executor.execute( new Input() {
-            {
-                put( "repo-name", "drools-workshop" );
-                put( "create-repo", "true" );
-                put( "branch", "master" );
-                put( "out-dir", tempPath.getAbsolutePath() );
-                put( "origin", "https://github.com/kiegroup/drools-workshop" );
-                put( "project-dir", "drools-webapp-example" );
-            }
-        }, pipe, (Runtime b) -> System.out.println( b ) );
+        executor.execute(new Input() {
+                             {
+                                 put("repo-name",
+                                     "drools-workshop");
+                                 put("create-repo",
+                                     "true");
+                                 put("branch",
+                                     "master");
+                                 put("out-dir",
+                                     tempPath.getAbsolutePath());
+                                 put("origin",
+                                     "https://github.com/kiegroup/drools-workshop");
+                                 put("project-dir",
+                                     "drools-webapp-example");
+                             }
+                         },
+                         pipe,
+                         (Runtime b) -> System.out.println(b));
 
-        List<Runtime> allRuntimes = runtimeRegistry.getRuntimes(0, 10, "", true);
+        List<Runtime> allRuntimes = runtimeRegistry.getRuntimes(0,
+                                                                10,
+                                                                "",
+                                                                true);
 
-        assertEquals( 1, allRuntimes.size() );
+        assertEquals(1,
+                     allRuntimes.size());
 
-        Runtime runtime = allRuntimes.get( 0 );
+        Runtime runtime = allRuntimes.get(0);
 
-        assertTrue( runtime instanceof DockerRuntime );
+        assertTrue(runtime instanceof DockerRuntime);
 
-        DockerRuntime dockerRuntime = ( DockerRuntime ) runtime;
+        DockerRuntime dockerRuntime = (DockerRuntime) runtime;
 
-        DockerRuntimeManager runtimeManager = new DockerRuntimeManager( runtimeRegistry, dockerAccessInterface );
+        DockerRuntimeManager runtimeManager = new DockerRuntimeManager(runtimeRegistry,
+                                                                       dockerAccessInterface);
 
-        allRuntimes = runtimeRegistry.getRuntimes(0, 10, "", true);
+        allRuntimes = runtimeRegistry.getRuntimes(0,
+                                                  10,
+                                                  "",
+                                                  true);
 
-        assertEquals( 1, allRuntimes.size() );
+        assertEquals(1,
+                     allRuntimes.size());
 
-        runtime = allRuntimes.get( 0 );
+        runtime = allRuntimes.get(0);
 
-        dockerRuntime = ( DockerRuntime ) runtime;
+        dockerRuntime = (DockerRuntime) runtime;
 
-        assertEquals( "Running", dockerRuntime.getState().getState() );
+        assertEquals("Running",
+                     dockerRuntime.getState().getState());
 
-        runtimeManager.stop( dockerRuntime );
+        runtimeManager.stop(dockerRuntime);
 
-        allRuntimes = runtimeRegistry.getRuntimes(0, 10, "", true);
+        allRuntimes = runtimeRegistry.getRuntimes(0,
+                                                  10,
+                                                  "",
+                                                  true);
 
-        assertEquals( 1, allRuntimes.size() );
+        assertEquals(1,
+                     allRuntimes.size());
 
-        runtime = allRuntimes.get( 0 );
+        runtime = allRuntimes.get(0);
 
-        dockerRuntime = ( DockerRuntime ) runtime;
+        dockerRuntime = (DockerRuntime) runtime;
 
-        assertEquals( "Stopped", dockerRuntime.getState().getState() );
+        assertEquals("Stopped",
+                     dockerRuntime.getState().getState());
 
-        dockerRuntimeExecExecutor.destroy( runtime );
+        dockerRuntimeExecExecutor.destroy(runtime);
 
         dockerAccessInterface.dispose();
     }
@@ -160,69 +192,91 @@ public class DockerExecutorTest {
         final InMemoryRuntimeRegistry runtimeRegistry = new InMemoryRuntimeRegistry();
         final DockerAccessInterface dockerAccessInterface = new DockerAccessInterfaceImpl();
 
-        final Stage<Input, ProviderConfig> providerConfig = config( "Docker Provider Config", (s) -> new DockerProviderConfig() {
-        } );
+        final Stage<Input, ProviderConfig> providerConfig = config("Docker Provider Config",
+                                                                   (s) -> new DockerProviderConfig() {
+                                                                   });
 
-        final Stage<ProviderConfig, ProvisioningConfig> runtimeConfig = config( "Docker Runtime Config", (s) -> new ContextAwareDockerProvisioningConfig() {
-        } );
+        final Stage<ProviderConfig, ProvisioningConfig> runtimeConfig = config("Docker Runtime Config",
+                                                                               (s) -> new ContextAwareDockerProvisioningConfig() {
+                                                                               });
 
-        final Stage<ProvisioningConfig, RuntimeConfig> runtimeExec = config( "Docker Runtime Exec", (s) -> new ContextAwareDockerRuntimeExecConfig() );
+        final Stage<ProvisioningConfig, RuntimeConfig> runtimeExec = config("Docker Runtime Exec",
+                                                                            (s) -> new ContextAwareDockerRuntimeExecConfig());
 
         final Pipeline pipe = PipelineFactory
-                .startFrom( providerConfig )
-                .andThen( runtimeConfig )
-                .andThen( runtimeExec ).buildAs( "my pipe" );
+                .startFrom(providerConfig)
+                .andThen(runtimeConfig)
+                .andThen(runtimeExec).buildAs("my pipe");
 
-        DockerRuntimeExecExecutor dockerRuntimeExecExecutor = new DockerRuntimeExecExecutor( runtimeRegistry, dockerAccessInterface );
-        final PipelineExecutor executor = new PipelineExecutor( asList( new DockerProviderConfigExecutor( runtimeRegistry ),
-                new DockerProvisioningConfigExecutor(),
-                dockerRuntimeExecExecutor ) );
-        executor.execute( new Input() {
-            {
-                put( "image-name", "kitematic/hello-world-nginx" );
-                put( "port-number", "8080" );
-                put( "docker-pull", "true" );
-            }
-        }, pipe, (Runtime b) -> System.out.println( b ) );
+        DockerRuntimeExecExecutor dockerRuntimeExecExecutor = new DockerRuntimeExecExecutor(runtimeRegistry,
+                                                                                            dockerAccessInterface);
+        final PipelineExecutor executor = new PipelineExecutor(asList(new DockerProviderConfigExecutor(runtimeRegistry),
+                                                                      new DockerProvisioningConfigExecutor(),
+                                                                      dockerRuntimeExecExecutor));
+        executor.execute(new Input() {
+                             {
+                                 put("image-name",
+                                     "kitematic/hello-world-nginx");
+                                 put("port-number",
+                                     "8080");
+                                 put("docker-pull",
+                                     "true");
+                             }
+                         },
+                         pipe,
+                         (Runtime b) -> System.out.println(b));
 
-        List<Runtime> allRuntimes = runtimeRegistry.getRuntimes(0, 10, "", true);
+        List<Runtime> allRuntimes = runtimeRegistry.getRuntimes(0,
+                                                                10,
+                                                                "",
+                                                                true);
 
-        assertEquals( 1, allRuntimes.size() );
+        assertEquals(1,
+                     allRuntimes.size());
 
-        Runtime runtime = allRuntimes.get( 0 );
+        Runtime runtime = allRuntimes.get(0);
 
-        assertTrue( runtime instanceof DockerRuntime );
+        assertTrue(runtime instanceof DockerRuntime);
 
-        DockerRuntime dockerRuntime = ( DockerRuntime ) runtime;
+        DockerRuntime dockerRuntime = (DockerRuntime) runtime;
 
-        DockerRuntimeManager runtimeManager = new DockerRuntimeManager( runtimeRegistry, dockerAccessInterface );
+        DockerRuntimeManager runtimeManager = new DockerRuntimeManager(runtimeRegistry,
+                                                                       dockerAccessInterface);
 
+        allRuntimes = runtimeRegistry.getRuntimes(0,
+                                                  10,
+                                                  "",
+                                                  true);
 
-        allRuntimes = runtimeRegistry.getRuntimes(0, 10, "", true);
+        assertEquals(1,
+                     allRuntimes.size());
 
-        assertEquals( 1, allRuntimes.size() );
+        runtime = allRuntimes.get(0);
 
-        runtime = allRuntimes.get( 0 );
+        dockerRuntime = (DockerRuntime) runtime;
 
-        dockerRuntime = ( DockerRuntime ) runtime;
+        assertEquals("Running",
+                     dockerRuntime.getState().getState());
 
-        assertEquals( "Running", dockerRuntime.getState().getState() );
+        runtimeManager.stop(dockerRuntime);
 
-        runtimeManager.stop( dockerRuntime );
+        allRuntimes = runtimeRegistry.getRuntimes(0,
+                                                  10,
+                                                  "",
+                                                  true);
 
-        allRuntimes = runtimeRegistry.getRuntimes(0, 10, "", true);
+        assertEquals(1,
+                     allRuntimes.size());
 
-        assertEquals( 1, allRuntimes.size() );
+        runtime = allRuntimes.get(0);
 
-        runtime = allRuntimes.get( 0 );
+        dockerRuntime = (DockerRuntime) runtime;
 
-        dockerRuntime = ( DockerRuntime ) runtime;
+        assertEquals("Stopped",
+                     dockerRuntime.getState().getState());
 
-        assertEquals( "Stopped", dockerRuntime.getState().getState() );
-
-        dockerRuntimeExecExecutor.destroy( runtime );
+        dockerRuntimeExecExecutor.destroy(runtime);
 
         dockerAccessInterface.dispose();
     }
-
 }

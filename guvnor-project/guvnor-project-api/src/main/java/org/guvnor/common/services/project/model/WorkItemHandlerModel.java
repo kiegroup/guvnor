@@ -41,20 +41,20 @@ public class WorkItemHandlerModel {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        WorkItemHandlerModel that = ( WorkItemHandlerModel ) o;
+        WorkItemHandlerModel that = (WorkItemHandlerModel) o;
 
-        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+        if (name != null ? !name.equals(that.name) : that.name != null) {
             return false;
         }
-        if ( type != null ? !type.equals( that.type ) : that.type != null ) {
+        if (type != null ? !type.equals(that.type) : that.type != null) {
             return false;
         }
 
@@ -65,7 +65,7 @@ public class WorkItemHandlerModel {
     public int hashCode() {
         int result = type != null ? type.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = ~~result;
         return result;
     }

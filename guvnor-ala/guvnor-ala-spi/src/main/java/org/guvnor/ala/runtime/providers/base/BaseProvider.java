@@ -16,6 +16,7 @@
 package org.guvnor.ala.runtime.providers.base;
 
 import java.util.Objects;
+
 import org.guvnor.ala.config.ProviderConfig;
 import org.guvnor.ala.runtime.providers.Provider;
 import org.guvnor.ala.runtime.providers.ProviderType;
@@ -35,8 +36,9 @@ public abstract class BaseProvider implements Provider {
     public BaseProvider() {
     }
 
-    public BaseProvider( final String id,
-                         final ProviderType providerType, ProviderConfig config ) {
+    public BaseProvider(final String id,
+                        final ProviderType providerType,
+                        ProviderConfig config) {
         this.id = id;
         this.providerType = providerType;
         this.config = config;
@@ -65,37 +67,36 @@ public abstract class BaseProvider implements Provider {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Objects.hashCode( this.id );
-        hash = 97 * hash + Objects.hashCode( this.config );
-        hash = 97 * hash + Objects.hashCode( this.providerType );
+        hash = 97 * hash + Objects.hashCode(this.id);
+        hash = 97 * hash + Objects.hashCode(this.config);
+        hash = 97 * hash + Objects.hashCode(this.providerType);
         return hash;
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj ) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( obj == null ) {
+        if (obj == null) {
             return false;
         }
-        if ( getClass() != obj.getClass() ) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        final BaseProvider other = ( BaseProvider ) obj;
-        if ( !Objects.equals( this.id, other.id ) ) {
+        final BaseProvider other = (BaseProvider) obj;
+        if (!Objects.equals(this.id,
+                            other.id)) {
             return false;
         }
-        if ( !Objects.equals( this.config, other.config ) ) {
+        if (!Objects.equals(this.config,
+                            other.config)) {
             return false;
         }
-        if ( !Objects.equals( this.providerType, other.providerType ) ) {
+        if (!Objects.equals(this.providerType,
+                            other.providerType)) {
             return false;
         }
         return true;
     }
-    
-    
-    
-
 }

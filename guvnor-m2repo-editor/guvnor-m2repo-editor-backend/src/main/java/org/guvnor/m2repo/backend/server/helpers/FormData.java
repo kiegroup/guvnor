@@ -20,6 +20,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.guvnor.common.services.project.model.GAV;
 
 public class FormData {
+
     private FileItem file;
     private GAV gav;
 
@@ -41,5 +42,4 @@ public class FormData {
     public void setGav(GAV gav) {
         this.gav = gav;
     }
-
 }

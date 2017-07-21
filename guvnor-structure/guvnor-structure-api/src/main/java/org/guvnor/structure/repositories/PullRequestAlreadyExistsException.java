@@ -25,8 +25,7 @@ public class PullRequestAlreadyExistsException extends RuntimeException {
         super();
     }
 
-    public PullRequestAlreadyExistsException( PullRequest pullRequest ) {
-        super( "The pull request already exists = " + pullRequest );
+    public PullRequestAlreadyExistsException(PullRequest pullRequest) {
+        super("The pull request already exists = " + pullRequest);
     }
-
 }

@@ -16,8 +16,8 @@
 package org.guvnor.common.services.project.builder.events;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Event to invalidate an entry in a DataModelOracleCache. The resource path is used within the Event
@@ -32,14 +32,13 @@ public class InvalidateDMOPackageCacheEvent {
     public InvalidateDMOPackageCacheEvent() {
     }
 
-    public InvalidateDMOPackageCacheEvent( final Path resourcePath ) {
-        PortablePreconditions.checkNotNull( "resourcePath",
-                                            resourcePath );
+    public InvalidateDMOPackageCacheEvent(final Path resourcePath) {
+        PortablePreconditions.checkNotNull("resourcePath",
+                                           resourcePath);
         this.resourcePath = resourcePath;
     }
 
     public Path getResourcePath() {
         return this.resourcePath;
     }
-
 }

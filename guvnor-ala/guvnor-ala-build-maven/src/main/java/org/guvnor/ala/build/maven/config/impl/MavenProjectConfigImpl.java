@@ -32,9 +32,9 @@ public class MavenProjectConfigImpl implements MavenProjectConfig,
         this.recreateTempDir = MavenProjectConfig.super.recreateTempDir();
     }
 
-    public MavenProjectConfigImpl( final String projectDir,
-                                   final String projectTempDir,
-                                   final boolean recreateTempDir ) {
+    public MavenProjectConfigImpl(final String projectDir,
+                                  final String projectTempDir,
+                                  final boolean recreateTempDir) {
         this.projectDir = projectDir;
         this.projectTempDir = projectTempDir;
         this.recreateTempDir = recreateTempDir;
@@ -60,14 +60,14 @@ public class MavenProjectConfigImpl implements MavenProjectConfig,
         return "MavenProjectConfigImpl{" +
                 "projectDir='" + projectDir + '\'' +
                 ", projectTempDir='" + projectTempDir + '\'' +
-                 ", recreateTempDir=" + recreateTempDir +
+                ", recreateTempDir=" + recreateTempDir +
                 '}';
     }
 
     @Override
-    public MavenProjectConfig asNewClone( final MavenProjectConfig source ) {
-        return new MavenProjectConfigImpl( source.getProjectDir(),
-                                           source.getProjectTempDir(),
-                                           source.recreateTempDir() );
+    public MavenProjectConfig asNewClone(final MavenProjectConfig source) {
+        return new MavenProjectConfigImpl(source.getProjectDir(),
+                                          source.getProjectTempDir(),
+                                          source.recreateTempDir());
     }
 }

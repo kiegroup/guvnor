@@ -39,8 +39,12 @@ import org.guvnor.m2repo.model.HTMLFileManagerFields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.guvnor.m2repo.model.HTMLFileManagerFields.*;
-import static org.guvnor.m2repo.utils.FileNameUtilities.*;
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_MISSING_POM;
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_OK;
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_UNABLE_TO_PARSE_POM;
+import static org.guvnor.m2repo.utils.FileNameUtilities.isJar;
+import static org.guvnor.m2repo.utils.FileNameUtilities.isKJar;
+import static org.guvnor.m2repo.utils.FileNameUtilities.isPom;
 
 public class HttpPostHelper {
 
@@ -138,7 +142,7 @@ public class HttpPostHelper {
                 // is available() safe?
                 jarStream.mark(jarStream.available());
 
-                PomModel pomModel = PomModelResolver.resolveFromJar( jarStream);
+                PomModel pomModel = PomModelResolver.resolveFromJar(jarStream);
 
                 //If we were able to get a POM model we can get the GAV
                 if (pomModel != null) {

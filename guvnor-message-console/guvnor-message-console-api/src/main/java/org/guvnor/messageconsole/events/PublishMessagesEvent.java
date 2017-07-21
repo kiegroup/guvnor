@@ -24,5 +24,4 @@ public class PublishMessagesEvent extends PublishBaseEvent {
     public PublishMessagesEvent() {
         //needed for marshalling.
     }
-
 }

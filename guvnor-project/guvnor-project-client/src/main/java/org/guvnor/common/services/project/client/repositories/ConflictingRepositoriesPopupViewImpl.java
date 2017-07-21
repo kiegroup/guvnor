@@ -50,7 +50,7 @@ public class ConflictingRepositoriesPopupViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    private static Binder uiBinder = GWT.create(Binder.class);
 
     @UiField
     Heading header;
@@ -70,38 +70,38 @@ public class ConflictingRepositoriesPopupViewImpl
     TextColumn<MavenRepositoryMetadata> repositorySourceColumn;
 
     public ConflictingRepositoriesPopupViewImpl() {
-        setTitle( ProjectResources.CONSTANTS.ConflictingRepositoriesTitle() );
-        setBody( uiBinder.createAndBindUi( this ) );
-        add( footer );
+        setTitle(ProjectResources.CONSTANTS.ConflictingRepositoriesTitle());
+        setBody(uiBinder.createAndBindUi(this));
+        add(footer);
         setup();
     }
 
     private void setup() {
         //Setup table
-        table.setStriped( true );
-        table.setCondensed( true );
-        table.setBordered( true );
+        table.setStriped(true);
+        table.setCondensed(true);
+        table.setBordered(true);
 
         //Columns
         repositoryIdColumn = new TextColumn<MavenRepositoryMetadata>() {
 
             @Override
-            public String getValue( final MavenRepositoryMetadata metadata ) {
+            public String getValue(final MavenRepositoryMetadata metadata) {
                 return metadata.getId();
             }
         };
         repositoryUrlColumn = new TextColumn<MavenRepositoryMetadata>() {
 
             @Override
-            public String getValue( final MavenRepositoryMetadata metadata ) {
+            public String getValue(final MavenRepositoryMetadata metadata) {
                 return metadata.getUrl();
             }
         };
         repositorySourceColumn = new TextColumn<MavenRepositoryMetadata>() {
 
             @Override
-            public String getValue( final MavenRepositoryMetadata metadata ) {
-                switch ( metadata.getSource() ) {
+            public String getValue(final MavenRepositoryMetadata metadata) {
+                switch (metadata.getSource()) {
                     case LOCAL:
                         return ProjectResources.CONSTANTS.RepositorySourceLocal();
                     case PROJECT:
@@ -115,20 +115,20 @@ public class ConflictingRepositoriesPopupViewImpl
             }
         };
 
-        table.addColumn( repositoryIdColumn,
-                         new TextHeader( ProjectResources.CONSTANTS.RepositoryId() ) );
-        table.addColumn( repositoryUrlColumn,
-                         new TextHeader( ProjectResources.CONSTANTS.RepositoryUrl() ) );
-        table.addColumn( repositorySourceColumn,
-                         new TextHeader( ProjectResources.CONSTANTS.RepositorySource() ) );
+        table.addColumn(repositoryIdColumn,
+                        new TextHeader(ProjectResources.CONSTANTS.RepositoryId()));
+        table.addColumn(repositoryUrlColumn,
+                        new TextHeader(ProjectResources.CONSTANTS.RepositoryUrl()));
+        table.addColumn(repositorySourceColumn,
+                        new TextHeader(ProjectResources.CONSTANTS.RepositorySource()));
 
         //Link data
-        dataProvider.addDataDisplay( table );
-        dataProvider.setList( repositories );
+        dataProvider.addDataDisplay(table);
+        dataProvider.setList(repositories);
     }
 
     @Override
-    public void init( final Presenter presenter ) {
+    public void init(final Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -138,50 +138,49 @@ public class ConflictingRepositoriesPopupViewImpl
     }
 
     @Override
-    public void setContent( final GAV gav,
-                            final Set<MavenRepositoryMetadata> repositories ) {
-        this.repositories = sortRepositories( repositories );
-        this.dataProvider.setList( this.repositories );
-        this.header.setText( ProjectResources.CONSTANTS.ConflictingRepositoriesGAVDescription( gav.getGroupId(),
-                                                                                               gav.getArtifactId(),
-                                                                                               gav.getVersion() ) );
+    public void setContent(final GAV gav,
+                           final Set<MavenRepositoryMetadata> repositories) {
+        this.repositories = sortRepositories(repositories);
+        this.dataProvider.setList(this.repositories);
+        this.header.setText(ProjectResources.CONSTANTS.ConflictingRepositoriesGAVDescription(gav.getGroupId(),
+                                                                                             gav.getArtifactId(),
+                                                                                             gav.getVersion()));
     }
 
-    private List<MavenRepositoryMetadata> sortRepositories( final Set<MavenRepositoryMetadata> repositories ) {
+    private List<MavenRepositoryMetadata> sortRepositories(final Set<MavenRepositoryMetadata> repositories) {
         final List<MavenRepositoryMetadata> sortedRepositories = new ArrayList<MavenRepositoryMetadata>();
-        sortedRepositories.addAll( repositories );
-        Collections.sort( sortedRepositories,
-                          new Comparator<MavenRepositoryMetadata>() {
-                              @Override
-                              public int compare( final MavenRepositoryMetadata md1,
-                                                  final MavenRepositoryMetadata md2 ) {
-                                  if ( md1.getSource().equals( md2.getSource() ) ) {
-                                      return md1.getId().compareToIgnoreCase( md2.getId() );
-                                  }
-                                  return md1.getSource().ordinal() - md2.getSource().ordinal();
-                              }
-                          } );
+        sortedRepositories.addAll(repositories);
+        Collections.sort(sortedRepositories,
+                         new Comparator<MavenRepositoryMetadata>() {
+                             @Override
+                             public int compare(final MavenRepositoryMetadata md1,
+                                                final MavenRepositoryMetadata md2) {
+                                 if (md1.getSource().equals(md2.getSource())) {
+                                     return md1.getId().compareToIgnoreCase(md2.getId());
+                                 }
+                                 return md1.getSource().ordinal() - md2.getSource().ordinal();
+                             }
+                         });
         return sortedRepositories;
     }
 
     @Override
     public void addOKButton() {
-        footer.addButton( CommonConstants.INSTANCE.OK(),
-                          new Command() {
-                              @Override
-                              public void execute() {
-                                  presenter.hide();
-                              }
-                          },
-                          IconType.PLUS,
-                          ButtonType.PRIMARY );
+        footer.addButton(CommonConstants.INSTANCE.OK(),
+                         new Command() {
+                             @Override
+                             public void execute() {
+                                 presenter.hide();
+                             }
+                         },
+                         IconType.PLUS,
+                         ButtonType.PRIMARY);
     }
 
     @Override
-    public void addOverrideButton( final Command command ) {
-        footer.addButton( ProjectResources.CONSTANTS.ConflictingRepositoriesOverride(),
-                          command,
-                          ButtonType.DEFAULT );
+    public void addOverrideButton(final Command command) {
+        footer.addButton(ProjectResources.CONSTANTS.ConflictingRepositoriesOverride(),
+                         command,
+                         ButtonType.DEFAULT);
     }
-
 }

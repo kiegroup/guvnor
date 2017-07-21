@@ -18,9 +18,9 @@ package org.guvnor.ala.ui.client.handler;
 
 import org.guvnor.ala.ui.client.util.ContentChangeHandler;
 import org.guvnor.ala.ui.client.wizard.provider.ProviderConfigurationPagePresenter;
-import org.jboss.errai.common.client.api.IsElement;
 import org.guvnor.ala.ui.model.Provider;
 import org.guvnor.ala.ui.model.ProviderConfiguration;
+import org.jboss.errai.common.client.api.IsElement;
 import org.uberfire.client.callbacks.Callback;
 
 /**

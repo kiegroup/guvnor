@@ -28,5 +28,4 @@ public interface StylesCss
     String caption();
 
     String pom();
-
 }

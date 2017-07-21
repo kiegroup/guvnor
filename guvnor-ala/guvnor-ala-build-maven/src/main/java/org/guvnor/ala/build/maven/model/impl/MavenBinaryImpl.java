@@ -36,12 +36,21 @@ public class MavenBinaryImpl implements MavenBinary,
 
     private final String groupId;
 
-    public MavenBinaryImpl(final Path path, final String name, final String groupId, final String artifactId, final String version) {
-        this.path = checkNotNull("path", path);
-        this.name = checkNotNull("name", name);
-        this.artifactId = checkNotNull("artifactId", artifactId);
-        this.version = checkNotNull("version", version);
-        this.groupId = checkNotNull("groupId", groupId);
+    public MavenBinaryImpl(final Path path,
+                           final String name,
+                           final String groupId,
+                           final String artifactId,
+                           final String version) {
+        this.path = checkNotNull("path",
+                                 path);
+        this.name = checkNotNull("name",
+                                 name);
+        this.artifactId = checkNotNull("artifactId",
+                                       artifactId);
+        this.version = checkNotNull("version",
+                                    version);
+        this.groupId = checkNotNull("groupId",
+                                    groupId);
     }
 
     @Override
@@ -76,7 +85,11 @@ public class MavenBinaryImpl implements MavenBinary,
 
     @Override
     public MavenBinary asNewClone(final MavenBinary source) {
-        return new MavenBinaryImpl(source.getPath(), source.getName(), groupId, artifactId, version);
+        return new MavenBinaryImpl(source.getPath(),
+                                   source.getName(),
+                                   groupId,
+                                   artifactId,
+                                   version);
     }
 
     @Override

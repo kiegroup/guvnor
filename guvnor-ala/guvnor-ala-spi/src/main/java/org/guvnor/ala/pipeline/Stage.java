@@ -28,13 +28,12 @@ public interface Stage<INPUT, OUTPUT> {
      * Execute the current stage based on the Input 
      *   and execute the consumer callback after the execution.
      */
-    void execute( final INPUT input,
-            final Consumer<OUTPUT> callback );
+    void execute(final INPUT input,
+                 final Consumer<OUTPUT> callback);
 
     /*
      * Get the Stage name
      * @return String the name for the stage.
      */
     String getName();
-
 }

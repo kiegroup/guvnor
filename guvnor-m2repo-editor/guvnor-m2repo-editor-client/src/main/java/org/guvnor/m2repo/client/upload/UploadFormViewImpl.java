@@ -41,9 +41,9 @@ public class UploadFormViewImpl
 
     private FormStyleLayout form = new FormStyleLayout();
 
-    private final TextBox hiddenGroupIdField = GWT.create( TextBox.class );
-    private final TextBox hiddenArtifactIdField = GWT.create( TextBox.class );
-    private final TextBox hiddenVersionIdField = GWT.create( TextBox.class );
+    private final TextBox hiddenGroupIdField = GWT.create(TextBox.class);
+    private final TextBox hiddenArtifactIdField = GWT.create(TextBox.class);
+    private final TextBox hiddenVersionIdField = GWT.create(TextBox.class);
     private FormStyleItem groupIdItem;
     private FormStyleItem artifactIdItem;
     private FormStyleItem versionIdItem;
@@ -53,60 +53,65 @@ public class UploadFormViewImpl
     protected FileUpload uploader;
 
     public UploadFormViewImpl() {
-        this.setTitle( M2RepoEditorConstants.INSTANCE.ArtifactUpload() );
-        this.setBody( doUploadForm() );
-        this.add( new ModalFooter() {{
-            add( new Button( M2RepoEditorConstants.INSTANCE.Cancel() ) {{
-                addClickHandler( new ClickHandler() {
+        this.setTitle(M2RepoEditorConstants.INSTANCE.ArtifactUpload());
+        this.setBody(doUploadForm());
+        this.add(new ModalFooter() {{
+            add(new Button(M2RepoEditorConstants.INSTANCE.Cancel()) {{
+                addClickHandler(new ClickHandler() {
                     @Override
-                    public void onClick( ClickEvent event ) {
+                    public void onClick(ClickEvent event) {
                         hide();
                     }
-                } );
-            }} );
-        }} );
+                });
+            }});
+        }});
     }
 
     private Form doUploadForm() {
-        form.setAction( getWebContext() + "/maven2wb" );
-        form.setEncoding( FormPanel.ENCODING_MULTIPART );
-        form.setMethod( FormPanel.METHOD_POST );
-        form.setType( FormType.HORIZONTAL );
+        form.setAction(getWebContext() + "/maven2wb");
+        form.setEncoding(FormPanel.ENCODING_MULTIPART);
+        form.setMethod(FormPanel.METHOD_POST);
+        form.setType(FormType.HORIZONTAL);
 
         /*
          * After upgrade of GWT-BOOTSTRAP3 version, will be needed to register
          * org.gwtbootstrap3.client.ui.Form.SubmitHandler
          */
         form.addHandler(new FormPanel.SubmitHandler() {
-            @Override
-            public void onSubmit(com.google.gwt.user.client.ui.FormPanel.SubmitEvent submitEvent) {
-                presenter.handleSubmit(submitEvent);
-            }
-        } , FormPanel.SubmitEvent.getType());
+                            @Override
+                            public void onSubmit(com.google.gwt.user.client.ui.FormPanel.SubmitEvent submitEvent) {
+                                presenter.handleSubmit(submitEvent);
+                            }
+                        },
+                        FormPanel.SubmitEvent.getType());
 
-        form.addSubmitCompleteHandler( new Form.SubmitCompleteHandler() {
-            public void onSubmitComplete( final Form.SubmitCompleteEvent event ) {
-                presenter.handleSubmitComplete( event );
+        form.addSubmitCompleteHandler(new Form.SubmitCompleteHandler() {
+            public void onSubmitComplete(final Form.SubmitCompleteEvent event) {
+                presenter.handleSubmitComplete(event);
             }
-        } );
+        });
 
-        uploader = new FileUpload( new Command() {
+        uploader = new FileUpload(new Command() {
             @Override
             public void execute() {
                 form.submit();
             }
-        } );
+        });
 
-        uploader.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
+        uploader.setName(HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH);
 
-        hiddenGroupIdField.setName( HTMLFileManagerFields.GROUP_ID );
-        hiddenArtifactIdField.setName( HTMLFileManagerFields.ARTIFACT_ID );
-        hiddenVersionIdField.setName( HTMLFileManagerFields.VERSION_ID );
+        hiddenGroupIdField.setName(HTMLFileManagerFields.GROUP_ID);
+        hiddenArtifactIdField.setName(HTMLFileManagerFields.ARTIFACT_ID);
+        hiddenVersionIdField.setName(HTMLFileManagerFields.VERSION_ID);
 
-        form.addAttribute( "File", uploader );
-        groupIdItem = form.addAttribute( "Group ID", hiddenGroupIdField );
-        artifactIdItem = form.addAttribute( "Artifact ID", hiddenArtifactIdField );
-        versionIdItem = form.addAttribute( "Version ID", hiddenVersionIdField );
+        form.addAttribute("File",
+                          uploader);
+        groupIdItem = form.addAttribute("Group ID",
+                                        hiddenGroupIdField);
+        artifactIdItem = form.addAttribute("Artifact ID",
+                                           hiddenArtifactIdField);
+        versionIdItem = form.addAttribute("Version ID",
+                                          hiddenVersionIdField);
 
         hideGAVInputs();
 
@@ -114,21 +119,23 @@ public class UploadFormViewImpl
     }
 
     private String getWebContext() {
-        String context = GWT.getModuleBaseURL().replace( GWT.getModuleName() + "/", "" );
-        if ( context.endsWith( "/" ) ) {
-            context = context.substring( 0, context.length() - 1 );
+        String context = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/",
+                                                        "");
+        if (context.endsWith("/")) {
+            context = context.substring(0,
+                                        context.length() - 1);
         }
         return context;
     }
 
     @Override
-    public void init( final Presenter presenter ) {
+    public void init(final Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
     public void showUploadingBusy() {
-        BusyPopup.showMessage( M2RepoEditorConstants.INSTANCE.Uploading() );
+        BusyPopup.showMessage(M2RepoEditorConstants.INSTANCE.Uploading());
     }
 
     @Override
@@ -138,64 +145,70 @@ public class UploadFormViewImpl
 
     @Override
     public void showSelectFileUploadWarning() {
-        showMessage( M2RepoEditorConstants.INSTANCE.SelectFileUpload() );
+        showMessage(M2RepoEditorConstants.INSTANCE.SelectFileUpload());
     }
 
     @Override
     public void showUnsupportedFileTypeWarning() {
-        showMessage( M2RepoEditorConstants.INSTANCE.UnsupportedFileType() );
+        showMessage(M2RepoEditorConstants.INSTANCE.UnsupportedFileType());
     }
 
     @Override
     public void showUploadedSuccessfullyMessage() {
-        showMessage( M2RepoEditorConstants.INSTANCE.UploadedSuccessfully() );
+        showMessage(M2RepoEditorConstants.INSTANCE.UploadedSuccessfully());
     }
 
     @Override
     public void showInvalidJarNoPomWarning() {
-        showMessage( M2RepoEditorConstants.INSTANCE.InvalidJarNotPom() );
+        showMessage(M2RepoEditorConstants.INSTANCE.InvalidJarNotPom());
     }
 
     @Override
     public void showInvalidPomWarning() {
-        showMessage( M2RepoEditorConstants.INSTANCE.InvalidPom() );
+        showMessage(M2RepoEditorConstants.INSTANCE.InvalidPom());
     }
 
     @Override
-    public void showUploadFailedError( final String message ) {
-        showErrorMessage( M2RepoEditorConstants.INSTANCE.UploadFailed() + message );
+    public void showUploadFailedError(final String message) {
+        showErrorMessage(M2RepoEditorConstants.INSTANCE.UploadFailed() + message);
     }
 
     @Override
     public void showGAVInputs() {
-        hiddenArtifactIdField.setVisible( true );
-        hiddenGroupIdField.setVisible( true );
-        hiddenVersionIdField.setVisible( true );
-        toggleFormStyleItem( groupIdItem, true );
-        toggleFormStyleItem( artifactIdItem, true );
-        toggleFormStyleItem( versionIdItem, true );
+        hiddenArtifactIdField.setVisible(true);
+        hiddenGroupIdField.setVisible(true);
+        hiddenVersionIdField.setVisible(true);
+        toggleFormStyleItem(groupIdItem,
+                            true);
+        toggleFormStyleItem(artifactIdItem,
+                            true);
+        toggleFormStyleItem(versionIdItem,
+                            true);
     }
 
     @Override
     public void hideGAVInputs() {
-        toggleFormStyleItem( groupIdItem, false );
-        toggleFormStyleItem( artifactIdItem, false );
-        toggleFormStyleItem( versionIdItem, false );
-        hideTextBox( hiddenArtifactIdField );
-        hideTextBox( hiddenGroupIdField );
-        hideTextBox( hiddenVersionIdField );
+        toggleFormStyleItem(groupIdItem,
+                            false);
+        toggleFormStyleItem(artifactIdItem,
+                            false);
+        toggleFormStyleItem(versionIdItem,
+                            false);
+        hideTextBox(hiddenArtifactIdField);
+        hideTextBox(hiddenGroupIdField);
+        hideTextBox(hiddenVersionIdField);
     }
 
-    private void toggleFormStyleItem( final FormStyleItem item,
-                                      final boolean toggle ) {
-        if ( item != null ) {
-            item.setVisible( toggle );
+    private void toggleFormStyleItem(final FormStyleItem item,
+                                     final boolean toggle) {
+        if (item != null) {
+            item.setVisible(toggle);
         }
     }
 
-    private void hideTextBox( final TextBox textBox ) {
-        textBox.setText( null );
-        textBox.setVisible( false );
+    private void hideTextBox(final TextBox textBox) {
+        textBox.setText(null);
+        textBox.setVisible(false);
     }
 
     @Override
@@ -203,11 +216,11 @@ public class UploadFormViewImpl
         return uploader.getFilename();
     }
 
-    private void showMessage( final String message ) {
-        Window.alert( message );
+    private void showMessage(final String message) {
+        Window.alert(message);
     }
 
-    private void showErrorMessage( final String message ) {
-        ErrorPopup.showMessage( message );
+    private void showErrorMessage(final String message) {
+        ErrorPopup.showMessage(message);
     }
 }

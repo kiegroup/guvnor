@@ -29,19 +29,19 @@ public interface PipelineBuilder<INPUT extends Config, OUTPUT extends Config> {
      * This method allows you to add a new stage to the pipeline. 
      * @return the Fluent Builder
      */
-    <T extends Config> PipelineBuilder<INPUT, T> andThen( final Stage<? super OUTPUT, T> nextStep );
+    <T extends Config> PipelineBuilder<INPUT, T> andThen(final Stage<? super OUTPUT, T> nextStep);
 
     /*
      * This method builds the pipeline and return a new Pipeline instance.
      * @param String name for the pipeline to be built.
      * @return the constructed Pipeline
      */
-    Pipeline buildAs( final String name );
+    Pipeline buildAs(final String name);
 
     /*
      * This method builds the pipeline based on the provided PipelineConfig
      * @param PipelineConfig containing the pipeline configuration
      * @return the constructed Pipeline
      */
-    Pipeline build( final PipelineConfig config );
+    Pipeline build(final PipelineConfig config);
 }

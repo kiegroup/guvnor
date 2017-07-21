@@ -30,32 +30,29 @@ public class RepositoryStructureDataPresenter
     private final RepositoryStructureDataView view;
 
     @Inject
-    public RepositoryStructureDataPresenter( final RepositoryStructureDataView view ) {
+    public RepositoryStructureDataPresenter(final RepositoryStructureDataView view) {
         this.view = view;
 
         view.clear();
-        setMode( RepositoryStructureDataView.ViewMode.CREATE_STRUCTURE );
+        setMode(RepositoryStructureDataView.ViewMode.CREATE_STRUCTURE);
     }
 
-    public void setMode( final RepositoryStructureDataView.ViewMode mode ) {
+    public void setMode(final RepositoryStructureDataView.ViewMode mode) {
 
-        if ( mode == RepositoryStructureDataView.ViewMode.CREATE_STRUCTURE ) {
+        if (mode == RepositoryStructureDataView.ViewMode.CREATE_STRUCTURE) {
             view.setCreateStructureText();
-
-        } else if ( mode == RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT ) {
+        } else if (mode == RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT) {
             view.setEditSingleModuleProjectText();
 
-            view.setEditModuleVisibility( true );
-
-        } else if ( mode == RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT ) {
+            view.setEditModuleVisibility(true);
+        } else if (mode == RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT) {
             view.setEditMultiModuleProjectText();
 
-            view.setEditModuleVisibility( true );
-
-        } else if ( mode == RepositoryStructureDataView.ViewMode.EDIT_UNMANAGED_REPOSITORY ) {
+            view.setEditModuleVisibility(true);
+        } else if (mode == RepositoryStructureDataView.ViewMode.EDIT_UNMANAGED_REPOSITORY) {
             view.setEditUnmanagedRepositoryText();
 
-            view.setEditModuleVisibility( false );
+            view.setEditModuleVisibility(false);
         }
     }
 
@@ -69,14 +66,14 @@ public class RepositoryStructureDataPresenter
     }
 
     public GAV getGav() {
-        return new GAV( view.getGroupId(),
-                        view.getArtifactId(),
-                        view.getVersion() );
+        return new GAV(view.getGroupId(),
+                       view.getArtifactId(),
+                       view.getVersion());
     }
 
-    public void setGav( final GAV gav ) {
-        view.setGroupId( gav.getGroupId() );
-        view.setArtifactId( gav.getArtifactId() );
-        view.setVersion( gav.getVersion() );
+    public void setGav(final GAV gav) {
+        view.setGroupId(gav.getGroupId());
+        view.setArtifactId(gav.getArtifactId());
+        view.setVersion(gav.getVersion());
     }
 }

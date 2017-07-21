@@ -17,11 +17,12 @@ package org.guvnor.common.services.project.backend.server.utils;
 
 public class NullSafeEquals {
 
-    static boolean areValuesEqual( final String a, final String b ) {
-        if ( a == null || b == null ) {
+    static boolean areValuesEqual(final String a,
+                                  final String b) {
+        if (a == null || b == null) {
             return false;
         } else {
-            return a.equals( b );
+            return a.equals(b);
         }
     }
 }

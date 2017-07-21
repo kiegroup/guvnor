@@ -29,7 +29,7 @@ public class UpdateOrganizationalUnitRequest extends JobRequest {
         return organizationalUnitName;
     }
 
-    public void setOrganizationalUnitName( String organizationalUnitName ) {
+    public void setOrganizationalUnitName(String organizationalUnitName) {
         this.organizationalUnitName = organizationalUnitName;
     }
 
@@ -37,7 +37,7 @@ public class UpdateOrganizationalUnitRequest extends JobRequest {
         return owner;
     }
 
-    public void setOwner( String owner ) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
@@ -45,7 +45,7 @@ public class UpdateOrganizationalUnitRequest extends JobRequest {
         return defaultGroupId;
     }
 
-    public void setDefaultGroupId( String defaultGroupId ) {
+    public void setDefaultGroupId(String defaultGroupId) {
         this.defaultGroupId = defaultGroupId;
     }
 }

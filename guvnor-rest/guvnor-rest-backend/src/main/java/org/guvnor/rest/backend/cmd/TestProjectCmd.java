@@ -27,9 +27,11 @@ import org.guvnor.rest.client.TestProjectRequest;
 public class TestProjectCmd extends AbstractJobCommand {
 
     public TestProjectCmd(final JobRequestHelper jobRequestHelper,
-                                     final JobResultManager jobResultManager,
-                                     final Map<String, Object> context) {
-        super(jobRequestHelper, jobResultManager, context);
+                          final JobResultManager jobResultManager,
+                          final Map<String, Object> context) {
+        super(jobRequestHelper,
+              jobResultManager,
+              context);
     }
 
     @Override
@@ -38,12 +40,16 @@ public class TestProjectCmd extends AbstractJobCommand {
         TestProjectRequest jobRequest = (TestProjectRequest) request;
 
         JobResult result = null;
-        try { 
-            result = helper.testProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
-        } finally { 
+        try {
+            result = helper.testProject(jobRequest.getJobId(),
+                                        jobRequest.getRepositoryName(),
+                                        jobRequest.getProjectName());
+        } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug( "-----testProject--- , repositoryName: {}, project name: {} [{}]",
-                    jobRequest.getRepositoryName(), jobRequest.getProjectName(), status);
+            logger.debug("-----testProject--- , repositoryName: {}, project name: {} [{}]",
+                         jobRequest.getRepositoryName(),
+                         jobRequest.getProjectName(),
+                         status);
         }
         return result;
     }

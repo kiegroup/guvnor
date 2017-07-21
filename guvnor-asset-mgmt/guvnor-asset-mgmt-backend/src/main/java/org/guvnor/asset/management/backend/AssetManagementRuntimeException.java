@@ -21,8 +21,10 @@ public class AssetManagementRuntimeException extends RuntimeException {
         super(s);
     }
 
-    public AssetManagementRuntimeException(String s, Throwable throwable) {
-        super(s, throwable);
+    public AssetManagementRuntimeException(String s,
+                                           Throwable throwable) {
+        super(s,
+              throwable);
     }
 
     public AssetManagementRuntimeException(Throwable throwable) {

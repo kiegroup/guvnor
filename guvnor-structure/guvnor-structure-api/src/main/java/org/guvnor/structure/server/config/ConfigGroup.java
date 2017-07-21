@@ -32,7 +32,7 @@ public class ConfigGroup {
         return name;
     }
 
-    public void setName( final String name ) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -40,7 +40,7 @@ public class ConfigGroup {
         return description;
     }
 
-    public void setDescription( final String description ) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -48,7 +48,7 @@ public class ConfigGroup {
         return type;
     }
 
-    public void setType( final ConfigType type ) {
+    public void setType(final ConfigType type) {
         this.type = type;
     }
 
@@ -56,27 +56,28 @@ public class ConfigGroup {
         return items.values();
     }
 
-    public void addConfigItem( final ConfigItem configItem ) {
-        if ( !this.items.containsKey( configItem.getName() ) ) {
-            setConfigItem( configItem );
+    public void addConfigItem(final ConfigItem configItem) {
+        if (!this.items.containsKey(configItem.getName())) {
+            setConfigItem(configItem);
         }
     }
 
-    public void setConfigItem( final ConfigItem configItem ) {
-        this.items.put( configItem.getName(), configItem );
+    public void setConfigItem(final ConfigItem configItem) {
+        this.items.put(configItem.getName(),
+                       configItem);
     }
 
-    public ConfigItem getConfigItem( final String name ) {
-        return this.items.get( name );
+    public ConfigItem getConfigItem(final String name) {
+        return this.items.get(name);
     }
 
-    public void removeConfigItem( final String name ) {
-        this.items.remove( name );
+    public void removeConfigItem(final String name) {
+        this.items.remove(name);
     }
 
-    public String getConfigItemValue( final String name ) {
-        ConfigItem<String> configItem = this.items.get( name );
-        if ( configItem == null ) {
+    public String getConfigItemValue(final String name) {
+        ConfigItem<String> configItem = this.items.get(name);
+        if (configItem == null) {
             return null;
         } else {
             return configItem.getValue();
@@ -87,8 +88,7 @@ public class ConfigGroup {
         return enabled;
     }
 
-    public void setEnabled( final boolean enabled ) {
+    public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
     }
-
 }

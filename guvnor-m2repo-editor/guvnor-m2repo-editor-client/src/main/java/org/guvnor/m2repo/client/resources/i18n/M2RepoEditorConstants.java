@@ -18,7 +18,6 @@ package org.guvnor.m2repo.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
-import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 /**
  * EnumEditor I18N constants
@@ -27,13 +26,13 @@ public interface M2RepoEditorConstants
         extends
         Messages {
 
-    public static final M2RepoEditorConstants INSTANCE = GWT.create( M2RepoEditorConstants.class );
+    public static final M2RepoEditorConstants INSTANCE = GWT.create(M2RepoEditorConstants.class);
 
     String OK();
 
-    String InvalidModelName( final String name );
+    String InvalidModelName(final String name);
 
-    String NameTakenForModel( final String name );
+    String NameTakenForModel(final String name);
 
     String ModelNameChangeWarning();
 
@@ -45,7 +44,7 @@ public interface M2RepoEditorConstants
 
     String DoesNotExtend();
 
-    String CreatesCircularDependency( final String text );
+    String CreatesCircularDependency(final String text);
 
     String TypeExtends();
 
@@ -53,9 +52,9 @@ public interface M2RepoEditorConstants
 
     String AddAnnotation();
 
-    String AreYouSureYouWantToRemoveTheField0( final String name );
+    String AreYouSureYouWantToRemoveTheField0(final String name);
 
-    String AreYouSureYouWantToRemoveTheAnnotation0( final String name );
+    String AreYouSureYouWantToRemoveTheAnnotation0(final String name);
 
     String MoveUp();
 
@@ -69,7 +68,7 @@ public interface M2RepoEditorConstants
 
     String AddNewFactType();
 
-    String InvalidDataTypeName( final String dataType );
+    String InvalidDataTypeName(final String dataType);
 
     String Type();
 

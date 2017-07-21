@@ -40,28 +40,30 @@ public class ProjectScopedResolutionStrategySupplierTest {
 
     @Before
     public void setup() {
-        projectScopedResolutionStrategySupplier = spy( new ProjectScopedResolutionStrategySupplier( scopeResolutionStrategies ) );
+        projectScopedResolutionStrategySupplier = spy(new ProjectScopedResolutionStrategySupplier(scopeResolutionStrategies));
 
-        project = mock( Project.class );
-        doReturn( "projectIdentifier" ).when( project ).getIdentifier();
-        doReturn( "projectIdentifierEncoded" ).when( project ).getEncodedIdentifier();
+        project = mock(Project.class);
+        doReturn("projectIdentifier").when(project).getIdentifier();
+        doReturn("projectIdentifierEncoded").when(project).getEncodedIdentifier();
     }
 
     @Test
     public void getWithoutProjectTest() {
         final PreferenceScopeResolutionStrategyInfo preferenceScopeResolutionStrategyInfo = projectScopedResolutionStrategySupplier.get();
 
-        verify( scopeResolutionStrategies ).getUserInfoFor( null, null );
+        verify(scopeResolutionStrategies).getUserInfoFor(null,
+                                                         null);
     }
 
     @Test
     public void getWithProjectTest() {
-        ProjectContextChangeEvent event = mock( ProjectContextChangeEvent.class );
-        doReturn( project ).when( event ).getProject();
+        ProjectContextChangeEvent event = mock(ProjectContextChangeEvent.class);
+        doReturn(project).when(event).getProject();
 
-        projectScopedResolutionStrategySupplier.selectedProjectChanged( event );
+        projectScopedResolutionStrategySupplier.selectedProjectChanged(event);
         final PreferenceScopeResolutionStrategyInfo preferenceScopeResolutionStrategyInfo = projectScopedResolutionStrategySupplier.get();
 
-        verify( scopeResolutionStrategies ).getUserInfoFor( "project", "projectIdentifierEncoded" );
+        verify(scopeResolutionStrategies).getUserInfoFor("project",
+                                                         "projectIdentifierEncoded");
     }
 }

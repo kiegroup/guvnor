@@ -36,37 +36,37 @@ public class CommentedOptionFactoryImpl
     }
 
     @Inject
-    public CommentedOptionFactoryImpl( SessionInfo safeSessionInfo ) {
-        this.safeSessionInfo = new SafeSessionInfo( safeSessionInfo );
+    public CommentedOptionFactoryImpl(SessionInfo safeSessionInfo) {
+        this.safeSessionInfo = new SafeSessionInfo(safeSessionInfo);
     }
 
     @Override
-    public CommentedOption makeCommentedOption( final String commitMessage ) {
-        new SafeSessionInfo( safeSessionInfo );
-        return makeCommentedOption( commitMessage,
-                                    safeSessionInfo.getIdentity(),
-                                    safeSessionInfo );
+    public CommentedOption makeCommentedOption(final String commitMessage) {
+        new SafeSessionInfo(safeSessionInfo);
+        return makeCommentedOption(commitMessage,
+                                   safeSessionInfo.getIdentity(),
+                                   safeSessionInfo);
     }
 
     @Override
-    public CommentedOption makeCommentedOption( final String commitMessage,
-                                                final User identity,
-                                                final SessionInfo sessionInfo ) {
-        return new CommentedOption( new SafeSessionInfo( sessionInfo ).getId(),
-                                    getIdentityName( identity ),
-                                    null,
-                                    commitMessage,
-                                    new Date() );
+    public CommentedOption makeCommentedOption(final String commitMessage,
+                                               final User identity,
+                                               final SessionInfo sessionInfo) {
+        return new CommentedOption(new SafeSessionInfo(sessionInfo).getId(),
+                                   getIdentityName(identity),
+                                   null,
+                                   commitMessage,
+                                   new Date());
     }
 
     @Override
-    public CommentedOption makeCommentedOption( final String sessionId,
-                                                final String commitMessage ) {
-        return new CommentedOption( sessionId,
-                                    safeSessionInfo.getIdentity().getIdentifier(),
-                                    null,
-                                    commitMessage,
-                                    new Date() );
+    public CommentedOption makeCommentedOption(final String sessionId,
+                                               final String commitMessage) {
+        return new CommentedOption(sessionId,
+                                   safeSessionInfo.getIdentity().getIdentifier(),
+                                   null,
+                                   commitMessage,
+                                   new Date());
     }
 
     @Override
@@ -79,10 +79,10 @@ public class CommentedOptionFactoryImpl
         return safeSessionInfo.getIdentity().getIdentifier();
     }
 
-    protected String getIdentityName( final User identity ) {
+    protected String getIdentityName(final User identity) {
         try {
             return identity.getIdentifier();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             return UNKNOWN_IDENTITY;
         }
     }

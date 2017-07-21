@@ -15,9 +15,13 @@
  */
 package org.guvnor.structure.organizationalunit;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.structure.client.security.OrganizationalUnitTreeProvider;
-import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,13 +33,8 @@ import org.uberfire.security.client.authz.tree.PermissionNode;
 import org.uberfire.security.client.authz.tree.PermissionTree;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class OrganizationalUnitTreeProviderTest {
@@ -59,7 +58,8 @@ public class OrganizationalUnitTreeProviderTest {
     @Before
     public void setup() {
         permissionManager = new DefaultPermissionManager();
-        treeProvider = new OrganizationalUnitTreeProvider(permissionManager, new CallerMock<>(searchService));
+        treeProvider = new OrganizationalUnitTreeProvider(permissionManager,
+                                                          new CallerMock<>(searchService));
         rootNode = treeProvider.buildRootNode();
         rootNode.setPermissionTree(permissionTree);
 
@@ -70,22 +70,29 @@ public class OrganizationalUnitTreeProviderTest {
         when(orgUnit1.getResourceType()).thenReturn(OrganizationalUnit.RESOURCE_TYPE);
         when(orgUnit2.getResourceType()).thenReturn(OrganizationalUnit.RESOURCE_TYPE);
         when(permissionTree.getChildrenResourceIds(any())).thenReturn(null);
-        when(searchService.searchByName(anyString(), anyInt(), anyBoolean())).thenReturn(Arrays.asList(orgUnit1, orgUnit2));
+        when(searchService.searchByName(anyString(),
+                                        anyInt(),
+                                        anyBoolean())).thenReturn(Arrays.asList(orgUnit1,
+                                                                                orgUnit2));
     }
 
     @Test
     public void testRootNode() {
-        assertEquals(rootNode.getPermissionList().size(), 4);
+        assertEquals(rootNode.getPermissionList().size(),
+                     4);
         checkDependencies(rootNode);
     }
 
     @Test
     public void testChildrenNodes() {
         rootNode.expand(children -> {
-            verify(searchService).searchByName(anyString(), anyInt(), anyBoolean());
+            verify(searchService).searchByName(anyString(),
+                                               anyInt(),
+                                               anyBoolean());
             for (PermissionNode child : children) {
                 List<Permission> permissionList = child.getPermissionList();
-                assertEquals(permissionList.size(), 3);
+                assertEquals(permissionList.size(),
+                             3);
                 checkDependencies(child);
 
                 List<String> permissionNames = permissionList.stream()
@@ -104,9 +111,9 @@ public class OrganizationalUnitTreeProviderTest {
             Collection<Permission> dependencies = permissionNode.getDependencies(permission);
 
             if (permission.getName().startsWith("orgunit.read")) {
-                assertEquals(dependencies.size(), 2);
-            }
-            else {
+                assertEquals(dependencies.size(),
+                             2);
+            } else {
                 assertNull(dependencies);
             }
         }

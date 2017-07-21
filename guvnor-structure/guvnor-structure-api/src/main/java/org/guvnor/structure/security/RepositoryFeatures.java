@@ -22,5 +22,4 @@ public interface RepositoryFeatures {
      * Configure Repository Process
      */
     String CONFIGURE_REPOSITORY = "repository.configure";
-
 }

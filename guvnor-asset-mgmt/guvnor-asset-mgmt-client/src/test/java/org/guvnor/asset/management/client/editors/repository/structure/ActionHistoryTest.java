@@ -34,27 +34,27 @@ public class ActionHistoryTest {
 
     @Test
     public void testCleanHistory() throws Exception {
-        assertTrue( history.alreadyUpToDate( new Project() ) );
+        assertTrue(history.alreadyUpToDate(new Project()));
     }
 
     @Test
     public void testLastDeletedModule() throws Exception {
         final Project project = new Project();
-        history.setLastDeletedModule( project );
-        assertFalse( history.alreadyUpToDate( project ) );
+        history.setLastDeletedModule(project);
+        assertFalse(history.alreadyUpToDate(project));
     }
 
     @Test
     public void testLastAddedModule() throws Exception {
         final Project project = new Project();
-        history.setLastAddedModule( project );
-        assertFalse( history.alreadyUpToDate( project ) );
+        history.setLastAddedModule(project);
+        assertFalse(history.alreadyUpToDate(project));
     }
 
     @Test
     public void testLastAddedModuleNewModule() throws Exception {
         final Project project = new Project();
-        history.setLastAddedModule( project );
-        assertTrue( history.alreadyUpToDate( mock( Project.class ) ) );
+        history.setLastAddedModule(project);
+        assertTrue(history.alreadyUpToDate(mock(Project.class)));
     }
 }

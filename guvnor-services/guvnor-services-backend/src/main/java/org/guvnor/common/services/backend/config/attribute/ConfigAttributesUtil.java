@@ -30,22 +30,22 @@ public final class ConfigAttributesUtil {
 
     }
 
-    public static Map<String, Object> toMap( final ConfigAttributes attrs,
-                                             final String... attributes ) {
+    public static Map<String, Object> toMap(final ConfigAttributes attrs,
+                                            final String... attributes) {
         return new HashMap<String, Object>() {{
-            for ( final String attribute : attributes ) {
-                checkNotEmpty( "attribute", attribute );
+            for (final String attribute : attributes) {
+                checkNotEmpty("attribute",
+                              attribute);
 
-                if ( attribute.equals( "*" ) ) {
+                if (attribute.equals("*")) {
                     break;
                 }
             }
         }};
     }
 
-    private static String buildAttrName( final String title,
-                                         final int i ) {
+    private static String buildAttrName(final String title,
+                                        final int i) {
         return title + "[" + i + "]";
     }
-
 }

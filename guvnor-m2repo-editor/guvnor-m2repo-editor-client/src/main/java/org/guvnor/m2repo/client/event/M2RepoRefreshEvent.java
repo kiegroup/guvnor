@@ -19,5 +19,4 @@ public class M2RepoRefreshEvent {
 
     public M2RepoRefreshEvent() {
     }
-
 }

@@ -44,32 +44,32 @@ public class RepositoryStructureViewImpl
 
     }
 
-    private static RepositoryStructureViewImplBinder uiBinder = GWT.create( RepositoryStructureViewImplBinder.class );
+    private static RepositoryStructureViewImplBinder uiBinder = GWT.create(RepositoryStructureViewImplBinder.class);
 
     @UiField
     Row dataViewContainer;
 
-    @UiField( provided = true )
+    @UiField(provided = true)
     RepositoryStructureDataPresenter dataPresenter;
 
     @UiField
     Row modulesViewContainer;
 
-    @UiField( provided = true )
+    @UiField(provided = true)
     ProjectModulesView modulesView;
 
     @Inject
     ConfigureScreenPopupViewImpl configureScreenPopupView;
 
     @Inject
-    public RepositoryStructureViewImpl( final RepositoryStructureDataPresenter dataPresenter,
-                                        final ProjectModulesView modulesView ) {
+    public RepositoryStructureViewImpl(final RepositoryStructureDataPresenter dataPresenter,
+                                       final ProjectModulesView modulesView) {
         this.dataPresenter = dataPresenter;
         this.modulesView = modulesView;
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public void setPresenter( final RepositoryStructurePresenter presenter ) {
+    public void setPresenter(final RepositoryStructurePresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -79,8 +79,8 @@ public class RepositoryStructureViewImpl
     }
 
     @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override
@@ -99,13 +99,13 @@ public class RepositoryStructureViewImpl
     }
 
     @Override
-    public void setModulesViewVisible( final boolean visible ) {
-        modulesViewContainer.setVisible( visible );
+    public void setModulesViewVisible(final boolean visible) {
+        modulesViewContainer.setVisible(visible);
     }
 
     @Override
-    public void setDataPresenterModel( final GAV gav ) {
-        dataPresenter.setGav( gav );
+    public void setDataPresenterModel(final GAV gav) {
+        dataPresenter.setGav(gav);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class RepositoryStructureViewImpl
     }
 
     @Override
-    public void setDataPresenterMode( final RepositoryStructureDataView.ViewMode mode ) {
-        dataPresenter.setMode( mode );
+    public void setDataPresenterMode(final RepositoryStructureDataView.ViewMode mode) {
+        dataPresenter.setMode(mode);
     }
 }

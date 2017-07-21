@@ -20,11 +20,10 @@ import org.uberfire.client.callbacks.Callback;
 
 public interface ProjectWizard {
 
-    void initialise(  );
-    
-    void initialise( final POM pom );
+    void initialise();
 
-    void start( final Callback<Project> callback,
-                final boolean openEditor );
+    void initialise(final POM pom);
 
+    void start(final Callback<Project> callback,
+               final boolean openEditor);
 }

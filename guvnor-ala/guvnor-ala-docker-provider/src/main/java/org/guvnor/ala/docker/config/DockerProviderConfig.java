@@ -40,5 +40,4 @@ public interface DockerProviderConfig extends ProviderConfig {
     default String getHostIp() {
         return "0.0.0.0";
     }
-
 }

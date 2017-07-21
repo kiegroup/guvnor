@@ -19,10 +19,10 @@ package org.guvnor.ala.ui.service;
 import java.util.Collection;
 import java.util.Map;
 
-import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProviderType;
-import org.jboss.errai.bus.server.annotations.Remote;
+import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProviderTypeStatus;
+import org.jboss.errai.bus.server.annotations.Remote;
 
 /**
  * Service for managing the provider types.

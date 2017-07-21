@@ -27,9 +27,11 @@ import org.guvnor.rest.client.JobStatus;
 public class CreateOrgUnitCmd extends AbstractJobCommand {
 
     public CreateOrgUnitCmd(final JobRequestHelper jobRequestHelper,
-                                     final JobResultManager jobResultManager,
-                                     final Map<String, Object> context) {
-        super(jobRequestHelper, jobResultManager, context);
+                            final JobResultManager jobResultManager,
+                            final Map<String, Object> context) {
+        super(jobRequestHelper,
+              jobResultManager,
+              context);
     }
 
     @Override
@@ -38,16 +40,18 @@ public class CreateOrgUnitCmd extends AbstractJobCommand {
         CreateOrganizationalUnitRequest jobRequest = (CreateOrganizationalUnitRequest) request;
 
         JobResult result = null;
-        try { 
-            result = helper.createOrganizationalUnit( jobRequest.getJobId(),
-                                                      jobRequest.getOrganizationalUnitName(),
-                                                      jobRequest.getOwner(),
-                                                      jobRequest.getDefaultGroupId(),
-                                                      jobRequest.getRepositories() );
-        } finally { 
+        try {
+            result = helper.createOrganizationalUnit(jobRequest.getJobId(),
+                                                     jobRequest.getOrganizationalUnitName(),
+                                                     jobRequest.getOwner(),
+                                                     jobRequest.getDefaultGroupId(),
+                                                     jobRequest.getRepositories());
+        } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug( "-----createOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {} [{}]",
-                    jobRequest.getOrganizationalUnitName(), jobRequest.getOwner(), status );
+            logger.debug("-----createOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {} [{}]",
+                         jobRequest.getOrganizationalUnitName(),
+                         jobRequest.getOwner(),
+                         status);
         }
         return result;
     }

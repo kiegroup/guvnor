@@ -20,8 +20,7 @@ package org.guvnor.common.services.builder;
  */
 public class ObservablePOMFile implements ResourceChangeObservableFile {
 
-    public boolean accept( final String fileName ) {
-        return fileName.equals( "pom.xml" );
+    public boolean accept(final String fileName) {
+        return fileName.equals("pom.xml");
     }
-
 }

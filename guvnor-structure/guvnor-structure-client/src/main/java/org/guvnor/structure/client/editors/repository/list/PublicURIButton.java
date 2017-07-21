@@ -23,17 +23,19 @@ import org.gwtbootstrap3.client.ui.Button;
 public class PublicURIButton
         extends Button {
 
-    public PublicURIButton( final PublicURI protocol,
-                            final boolean isNotFirst ) {
-        super( getProtocol( protocol ) );
-        getElement().getStyle().setMarginLeft( 5, Style.Unit.PX );
+    public PublicURIButton(final PublicURI protocol,
+                           final boolean isNotFirst) {
+        super(getProtocol(protocol));
+        getElement().getStyle().setMarginLeft(5,
+                                              Style.Unit.PX);
 
-        if ( isNotFirst ) {
-            getElement().getStyle().setPaddingLeft( 5, Style.Unit.PX );
+        if (isNotFirst) {
+            getElement().getStyle().setPaddingLeft(5,
+                                                   Style.Unit.PX);
         }
     }
 
-    private static String getProtocol( final PublicURI publicURI ) {
+    private static String getProtocol(final PublicURI publicURI) {
         return publicURI.getProtocol() == null ? "default" : publicURI.getProtocol();
     }
 }

@@ -17,9 +17,10 @@ package org.guvnor.common.services.project.builder.events;
 
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Event to invalidate all entries in a DataModelOracleCache for the Project containing the given resource.
@@ -38,10 +39,15 @@ public class InvalidateDMOProjectCacheEvent {
     public InvalidateDMOProjectCacheEvent() {
     }
 
-    public InvalidateDMOProjectCacheEvent(SessionInfo sessionInfo, Project project, Path resourcePath) {
-        checkNotNull( "sessionInfo", sessionInfo );
-        checkNotNull( "project", project);
-        checkNotNull( "resourcePath", resourcePath );
+    public InvalidateDMOProjectCacheEvent(SessionInfo sessionInfo,
+                                          Project project,
+                                          Path resourcePath) {
+        checkNotNull("sessionInfo",
+                     sessionInfo);
+        checkNotNull("project",
+                     project);
+        checkNotNull("resourcePath",
+                     resourcePath);
         this.sessionInfo = sessionInfo;
         this.project = project;
         this.resourcePath = resourcePath;
@@ -58,5 +64,4 @@ public class InvalidateDMOProjectCacheEvent {
     public Project getProject() {
         return project;
     }
-
 }

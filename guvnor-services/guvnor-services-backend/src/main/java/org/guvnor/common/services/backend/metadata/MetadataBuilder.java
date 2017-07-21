@@ -16,9 +16,6 @@
 
 package org.guvnor.common.services.backend.metadata;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +25,9 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.java.nio.base.version.VersionRecord;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  *
@@ -68,109 +68,113 @@ public final class MetadataBuilder {
         return new MetadataBuilder();
     }
 
-    public MetadataBuilder withPath( final Path path ) {
-        this.path = checkNotNull( "path", path );
+    public MetadataBuilder withPath(final Path path) {
+        this.path = checkNotNull("path",
+                                 path);
         return this;
     }
-    
-    public MetadataBuilder withRealPath( final Path realPath ) {
-        this.realPath = checkNotNull( "realPath", realPath );
+
+    public MetadataBuilder withRealPath(final Path realPath) {
+        this.realPath = checkNotNull("realPath",
+                                     realPath);
         return this;
     }
-    
-    public MetadataBuilder withCheckinComment( final String checkinComment ) {
+
+    public MetadataBuilder withCheckinComment(final String checkinComment) {
         this.checkinComment = checkinComment;
         return this;
     }
 
-    public MetadataBuilder withLastContributor( final String lastContributor ) {
+    public MetadataBuilder withLastContributor(final String lastContributor) {
         this.lastContributor = lastContributor;
         return this;
     }
 
-    public MetadataBuilder withCreator( final String creator ) {
-        this.creator = checkNotEmpty( "creator", creator );
+    public MetadataBuilder withCreator(final String creator) {
+        this.creator = checkNotEmpty("creator",
+                                     creator);
         return this;
     }
 
-    public MetadataBuilder withLastModified( final Date date ) {
-        this.lastModified = checkNotNull( "date", date );
+    public MetadataBuilder withLastModified(final Date date) {
+        this.lastModified = checkNotNull("date",
+                                         date);
         return this;
     }
 
-    public MetadataBuilder withDateCreated( final Date date ) {
-        this.dateCreated = checkNotNull( "date", date );
+    public MetadataBuilder withDateCreated(final Date date) {
+        this.dateCreated = checkNotNull("date",
+                                        date);
         return this;
     }
 
-    public MetadataBuilder withSubject( final String subject ) {
+    public MetadataBuilder withSubject(final String subject) {
         this.subject = subject;
         return this;
     }
 
-    public MetadataBuilder withType( final String type ) {
+    public MetadataBuilder withType(final String type) {
         this.type = type;
         return this;
     }
 
-    public MetadataBuilder withExternalRelation( final String externalRelation ) {
+    public MetadataBuilder withExternalRelation(final String externalRelation) {
         this.externalRelation = externalRelation;
         return this;
     }
 
-    public MetadataBuilder withExternalSource( final String externalSource ) {
+    public MetadataBuilder withExternalSource(final String externalSource) {
         this.externalSource = externalSource;
         return this;
     }
 
-    public MetadataBuilder withDescription( final String description ) {
+    public MetadataBuilder withDescription(final String description) {
         this.description = description;
         return this;
     }
 
-    public MetadataBuilder withTags( final List<String> tags ) {
+    public MetadataBuilder withTags(final List<String> tags) {
         this.tags = tags;
         return this;
     }
 
-    public MetadataBuilder withDiscussion( final List<DiscussionRecord> discussion ) {
+    public MetadataBuilder withDiscussion(final List<DiscussionRecord> discussion) {
         this.discussion = discussion;
         return this;
     }
 
-    public MetadataBuilder withVersion( final List<VersionRecord> version ) {
+    public MetadataBuilder withVersion(final List<VersionRecord> version) {
         this.version = version;
         return this;
     }
-    
-    public MetadataBuilder withLockInfo( final LockInfo lockInfo ) {
+
+    public MetadataBuilder withLockInfo(final LockInfo lockInfo) {
         this.lockInfo = lockInfo;
         return this;
     }
 
-    public MetadataBuilder withGenerated( final boolean generated ) {
+    public MetadataBuilder withGenerated(final boolean generated) {
         this.generated = generated;
         return this;
     }
-    
-    public Metadata build() {
-        return new Metadata( path,
-                             realPath,
-                             checkinComment,
-                             lastContributor,
-                             creator,
-                             lastModified,
-                             dateCreated,
-                             subject,
-                             type,
-                             externalRelation,
-                             externalSource,
-                             description,
-                             tags,
-                             discussion,
-                             version,
-                             lockInfo,
-                             generated );
-    }
 
+    public Metadata build() {
+        return new Metadata(path,
+                            realPath,
+                            checkinComment,
+                            lastContributor,
+                            creator,
+                            lastModified,
+                            dateCreated,
+                            subject,
+                            type,
+                            externalRelation,
+                            externalSource,
+                            description,
+                            tags,
+                            discussion,
+                            version,
+                            lockInfo,
+                            generated);
+    }
 }

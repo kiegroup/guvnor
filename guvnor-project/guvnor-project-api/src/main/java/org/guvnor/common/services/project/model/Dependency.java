@@ -27,16 +27,17 @@ public class Dependency
     public Dependency() {
     }
 
-    public Dependency( GAV gav ) {
-        super( gav.getGroupId(), gav.getArtifactId(), gav.getVersion() );
+    public Dependency(GAV gav) {
+        super(gav.getGroupId(),
+              gav.getArtifactId(),
+              gav.getVersion());
     }
 
     public String getScope() {
         return scope;
     }
 
-    public void setScope( String scope ) {
+    public void setScope(String scope) {
         this.scope = scope;
     }
-
 }

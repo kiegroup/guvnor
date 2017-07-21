@@ -32,5 +32,4 @@ public interface MavenDependencyConfig extends BinaryConfig {
     default String getArtifact() {
         return "${input.artifact}";
     }
-
 }

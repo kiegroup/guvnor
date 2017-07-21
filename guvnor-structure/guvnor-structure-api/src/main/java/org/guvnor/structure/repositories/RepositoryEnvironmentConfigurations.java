@@ -23,13 +23,16 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.guvnor.structure.repositories.EnvironmentParameters.*;
+import static org.guvnor.structure.repositories.EnvironmentParameters.INIT;
+import static org.guvnor.structure.repositories.EnvironmentParameters.MANAGED;
+import static org.guvnor.structure.repositories.EnvironmentParameters.ORIGIN;
+import static org.guvnor.structure.repositories.EnvironmentParameters.PASSWORD;
+import static org.guvnor.structure.repositories.EnvironmentParameters.USER_NAME;
 
 @Portable
 public class RepositoryEnvironmentConfigurations {
 
     private Map<String, Object> configurationMap = new HashMap<>();
-
 
     public Map<String, Object> getConfigurationMap() {
         return configurationMap;
@@ -39,56 +42,56 @@ public class RepositoryEnvironmentConfigurations {
 
         List<RepositoryEnvironmentConfiguration> list = new ArrayList<>();
 
-        for ( Map.Entry<String, Object> entry : configurationMap.entrySet() ) {
-            list.add( new RepositoryEnvironmentConfiguration( entry.getKey(),
-                                                              entry.getValue() ) );
+        for (Map.Entry<String, Object> entry : configurationMap.entrySet()) {
+            list.add(new RepositoryEnvironmentConfiguration(entry.getKey(),
+                                                            entry.getValue()));
         }
 
         return list;
     }
 
-    public boolean containsConfiguration( final String configurationName ) {
-        return configurationMap.containsKey( configurationName );
+    public boolean containsConfiguration(final String configurationName) {
+        return configurationMap.containsKey(configurationName);
     }
 
-    public void setManaged( final boolean managed ) {
-        configurationMap.put( MANAGED,
-                              managed );
+    public void setManaged(final boolean managed) {
+        configurationMap.put(MANAGED,
+                             managed);
     }
 
-    public void setOrigin( final String origin ) {
-        configurationMap.put( ORIGIN,
-                              origin );
+    public void setOrigin(final String origin) {
+        configurationMap.put(ORIGIN,
+                             origin);
     }
 
-    public void setUserName( final String user ) {
-        configurationMap.put( USER_NAME,
-                              user );
+    public void setUserName(final String user) {
+        configurationMap.put(USER_NAME,
+                             user);
     }
 
-    public void setPassword( final String password ) {
-        configurationMap.put( PASSWORD,
-                              password );
+    public void setPassword(final String password) {
+        configurationMap.put(PASSWORD,
+                             password);
     }
 
-    public void setInit( final boolean init ) {
-        configurationMap.put( INIT,
-                              init );
+    public void setInit(final boolean init) {
+        configurationMap.put(INIT,
+                             init);
     }
 
     public Boolean isManaged() {
-        return ( Boolean ) configurationMap.get( MANAGED );
+        return (Boolean) configurationMap.get(MANAGED);
     }
 
     public Object getUserName() {
-        return configurationMap.get( USER_NAME );
+        return configurationMap.get(USER_NAME);
     }
 
     public Object getPassword() {
-        return configurationMap.get( PASSWORD );
+        return configurationMap.get(PASSWORD);
     }
 
     public Object getOrigin() {
-        return configurationMap.get( ORIGIN );
+        return configurationMap.get(ORIGIN);
     }
 }

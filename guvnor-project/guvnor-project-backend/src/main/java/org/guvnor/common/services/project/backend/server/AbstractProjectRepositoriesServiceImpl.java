@@ -43,10 +43,10 @@ public abstract class AbstractProjectRepositoriesServiceImpl<T extends Project>
         //WELD proxy
     }
 
-    public AbstractProjectRepositoriesServiceImpl( final IOService ioService,
-                                                   final ProjectRepositoryResolver repositoryResolver,
-                                                   final ProjectRepositoriesContentHandler contentHandler,
-                                                   final CommentedOptionFactory commentedOptionFactory ) {
+    public AbstractProjectRepositoriesServiceImpl(final IOService ioService,
+                                                  final ProjectRepositoryResolver repositoryResolver,
+                                                  final ProjectRepositoriesContentHandler contentHandler,
+                                                  final CommentedOptionFactory commentedOptionFactory) {
         this.ioService = ioService;
         this.repositoryResolver = repositoryResolver;
         this.contentHandler = contentHandler;
@@ -54,70 +54,67 @@ public abstract class AbstractProjectRepositoriesServiceImpl<T extends Project>
     }
 
     @Override
-    public ProjectRepositories create( final Path path ) {
-        final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
-        if ( ioService.exists( nioPath ) ) {
-            throw new FileAlreadyExistsException( path.toString() );
+    public ProjectRepositories create(final Path path) {
+        final org.uberfire.java.nio.file.Path nioPath = Paths.convert(path);
+        if (ioService.exists(nioPath)) {
+            throw new FileAlreadyExistsException(path.toString());
         }
 
         try {
-            ioService.startBatch( nioPath.getFileSystem(),
-                                  commentedOptionFactory.makeCommentedOption( "Creating " + path.toString() + "..." ) );
+            ioService.startBatch(nioPath.getFileSystem(),
+                                 commentedOptionFactory.makeCommentedOption("Creating " + path.toString() + "..."));
 
-            final T project = getProject( path );
+            final T project = getProject(path);
             final Set<MavenRepositoryMetadata> content = new HashSet<MavenRepositoryMetadata>();
-            if ( project == null ) {
-                content.addAll( repositoryResolver.getRemoteRepositoriesMetaData() );
+            if (project == null) {
+                content.addAll(repositoryResolver.getRemoteRepositoriesMetaData());
             } else {
-                content.addAll( repositoryResolver.getRemoteRepositoriesMetaData( project ) );
+                content.addAll(repositoryResolver.getRemoteRepositoriesMetaData(project));
             }
 
-            final ProjectRepositories repositories = createProjectRepositories( content );
-            ioService.write( Paths.convert( path ),
-                             contentHandler.toString( repositories ) );
+            final ProjectRepositories repositories = createProjectRepositories(content);
+            ioService.write(Paths.convert(path),
+                            contentHandler.toString(repositories));
 
             return repositories;
-
         } finally {
             ioService.endBatch();
         }
     }
 
-    private ProjectRepositories createProjectRepositories( final Set<MavenRepositoryMetadata> content ) {
+    private ProjectRepositories createProjectRepositories(final Set<MavenRepositoryMetadata> content) {
         final Set<ProjectRepositories.ProjectRepository> projectRepositories = new HashSet<ProjectRepositories.ProjectRepository>();
-        for ( MavenRepositoryMetadata md : content ) {
-            projectRepositories.add( new ProjectRepositories.ProjectRepository( true,
-                                                                                md ) );
+        for (MavenRepositoryMetadata md : content) {
+            projectRepositories.add(new ProjectRepositories.ProjectRepository(true,
+                                                                              md));
         }
-        final ProjectRepositories repositories = new ProjectRepositories( projectRepositories );
+        final ProjectRepositories repositories = new ProjectRepositories(projectRepositories);
         return repositories;
     }
 
     @Override
-    public ProjectRepositories load( final Path path ) {
-        final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
-        if ( ioService.exists( nioPath ) ) {
-            final String content = ioService.readAllString( nioPath );
-            return contentHandler.toModel( content );
+    public ProjectRepositories load(final Path path) {
+        final org.uberfire.java.nio.file.Path nioPath = Paths.convert(path);
+        if (ioService.exists(nioPath)) {
+            final String content = ioService.readAllString(nioPath);
+            return contentHandler.toModel(content);
         } else {
-            return create( path );
+            return create(path);
         }
     }
 
     @Override
-    public Path save( final Path resource,
-                      final ProjectRepositories projectRepositories,
-                      final String comment ) {
+    public Path save(final Path resource,
+                     final ProjectRepositories projectRepositories,
+                     final String comment) {
         try {
-            ioService.write( Paths.convert( resource ),
-                             contentHandler.toString( projectRepositories ) );
+            ioService.write(Paths.convert(resource),
+                            contentHandler.toString(projectRepositories));
             return resource;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    protected abstract T getProject( final Path path );
-
+    protected abstract T getProject(final Path path);
 }

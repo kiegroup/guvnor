@@ -34,20 +34,20 @@ public class ManagedStatusUpdater {
     }
 
     @Inject
-    public ManagedStatusUpdater( final RepositoryService repositoryService,
-                                 final Event<RepositoryEnvironmentUpdatedEvent> repositoryUpdatedEvent ) {
+    public ManagedStatusUpdater(final RepositoryService repositoryService,
+                                final Event<RepositoryEnvironmentUpdatedEvent> repositoryUpdatedEvent) {
         this.repositoryService = repositoryService;
         this.repositoryUpdatedEvent = repositoryUpdatedEvent;
     }
 
-    public Repository updateManagedStatus( final Repository repository,
-                                           final boolean managed ) {
+    public Repository updateManagedStatus(final Repository repository,
+                                          final boolean managed) {
         final RepositoryEnvironmentConfigurations config = new RepositoryEnvironmentConfigurations();
 
-        config.setManaged( managed );
-        final Repository updatedRepo = repositoryService.updateRepositoryConfiguration( repository,
-                                                                                        config );
-        repositoryUpdatedEvent.fire( new RepositoryEnvironmentUpdatedEvent( updatedRepo ) );
+        config.setManaged(managed);
+        final Repository updatedRepo = repositoryService.updateRepositoryConfiguration(repository,
+                                                                                       config);
+        repositoryUpdatedEvent.fire(new RepositoryEnvironmentUpdatedEvent(updatedRepo));
 
         return updatedRepo;
     }

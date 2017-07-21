@@ -30,14 +30,14 @@ public final class StageUtil {
 
     }
 
-    public static <INPUT extends Config, OUTPUT extends Config> Stage<INPUT, OUTPUT> config( final String name,
-            final Function<INPUT, OUTPUT> f ) {
+    public static <INPUT extends Config, OUTPUT extends Config> Stage<INPUT, OUTPUT> config(final String name,
+                                                                                            final Function<INPUT, OUTPUT> f) {
         return new Stage<INPUT, OUTPUT>() {
 
             @Override
-            public void execute( final INPUT input,
-                    final Consumer<OUTPUT> callback ) {
-                callback.accept( f.apply( input ) );
+            public void execute(final INPUT input,
+                                final Consumer<OUTPUT> callback) {
+                callback.accept(f.apply(input));
             }
 
             @Override
@@ -47,13 +47,14 @@ public final class StageUtil {
         };
     }
 
-    public static <OUTPUT extends Config> Stage<?, OUTPUT> config( final String name,
-            final Supplier<OUTPUT> s ) {
-        return config( name, ignore -> s.get() );
+    public static <OUTPUT extends Config> Stage<?, OUTPUT> config(final String name,
+                                                                  final Supplier<OUTPUT> s) {
+        return config(name,
+                      ignore -> s.get());
     }
 
     public static <T extends Config> Stage<T, T> identity() {
-        return config( "Identity", Function.identity() );
+        return config("Identity",
+                      Function.identity());
     }
-
 }

@@ -31,14 +31,14 @@ public class MavenLocalRepositoryUtils {
      * @return
      * @throws IOException
      */
-    public static java.nio.file.Path getRepositoryPath( final GAV gav ) throws IOException {
-        final java.nio.file.Path tempLocalRepositoryBasePath = java.nio.file.Files.createTempDirectory( "m2-" + toFileName( gav ) );
+    public static java.nio.file.Path getRepositoryPath(final GAV gav) throws IOException {
+        final java.nio.file.Path tempLocalRepositoryBasePath = java.nio.file.Files.createTempDirectory("m2-" + toFileName(gav));
         return tempLocalRepositoryBasePath;
     }
 
-    private static String toFileName( final GAV gav ) {
+    private static String toFileName(final GAV gav) {
         final StringBuilder sb = new StringBuilder();
-        sb.append( "m2-" ).append( gav.getGroupId() + "-" + gav.getArtifactId() + "-" + gav.getVersion() );
+        sb.append("m2-").append(gav.getGroupId() + "-" + gav.getArtifactId() + "-" + gav.getVersion());
         return sb.toString();
     }
 
@@ -46,31 +46,29 @@ public class MavenLocalRepositoryUtils {
      * Destroy the temporary local Maven Repository and all content.
      * @param m2Folder
      */
-    public static void tearDownMavenRepository( final java.nio.file.Path m2Folder ) {
-        if ( m2Folder != null ) {
+    public static void tearDownMavenRepository(final java.nio.file.Path m2Folder) {
+        if (m2Folder != null) {
             try {
-                Files.walkFileTree( m2Folder,
-                                    new java.nio.file.SimpleFileVisitor<java.nio.file.Path>() {
+                Files.walkFileTree(m2Folder,
+                                   new java.nio.file.SimpleFileVisitor<java.nio.file.Path>() {
 
-                                        @Override
-                                        public FileVisitResult visitFile( final java.nio.file.Path file,
-                                                                          final BasicFileAttributes attrs ) throws IOException {
-                                            Files.delete( file );
-                                            return FileVisitResult.CONTINUE;
-                                        }
+                                       @Override
+                                       public FileVisitResult visitFile(final java.nio.file.Path file,
+                                                                        final BasicFileAttributes attrs) throws IOException {
+                                           Files.delete(file);
+                                           return FileVisitResult.CONTINUE;
+                                       }
 
-                                        @Override
-                                        public FileVisitResult postVisitDirectory( final java.nio.file.Path dir,
-                                                                                   final IOException exc ) throws IOException {
-                                            Files.delete( dir );
-                                            return FileVisitResult.CONTINUE;
-                                        }
-
-                                    } );
-            } catch ( IOException ioe ) {
+                                       @Override
+                                       public FileVisitResult postVisitDirectory(final java.nio.file.Path dir,
+                                                                                 final IOException exc) throws IOException {
+                                           Files.delete(dir);
+                                           return FileVisitResult.CONTINUE;
+                                       }
+                                   });
+            } catch (IOException ioe) {
                 //Swallow
             }
         }
     }
-
 }

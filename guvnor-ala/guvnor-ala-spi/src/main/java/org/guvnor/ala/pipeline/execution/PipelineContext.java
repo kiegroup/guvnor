@@ -39,10 +39,10 @@ import static org.guvnor.ala.pipeline.execution.PipelineExecutor.PIPELINE_EXECUT
 public class PipelineContext {
 
     private String executionId;
-    private final Iterator<Stage > iterator;
+    private final Iterator<Stage> iterator;
     private final Pipeline pipeline;
     private Optional<Object> lastOutput = Optional.empty();
-    private Optional<Stage<Object, ?> > currentStage = Optional.empty();
+    private Optional<Stage<Object, ?>> currentStage = Optional.empty();
     private Map<String, Object> values = new HashMap<>();
 
     private final Deque<Consumer<?>> callbacks = new LinkedList<>();
@@ -51,7 +51,7 @@ public class PipelineContext {
         return lastOutput;
     }
 
-    PipelineContext( final Pipeline pipeline ) {
+    PipelineContext(final Pipeline pipeline) {
         this.pipeline = pipeline;
         this.iterator = pipeline.getStages().iterator();
     }
@@ -60,35 +60,38 @@ public class PipelineContext {
         return executionId;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    void pushOutput( final String id,
-                     final Object value ) {
-        lastOutput = Optional.of( value );
-        this.values.put( id, value );
-        if ( iterator.hasNext() ) {
-            currentStage = Optional.of( iterator.next() );
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    void pushOutput(final String id,
+                    final Object value) {
+        lastOutput = Optional.of(value);
+        this.values.put(id,
+                        value);
+        if (iterator.hasNext()) {
+            currentStage = Optional.of(iterator.next());
         } else {
             currentStage = Optional.empty();
         }
     }
 
-    void start( final Object initialInput ) {
-        if ( isStarted() ) {
-            throw new RuntimeException( "Process has already been started." );
+    void start(final Object initialInput) {
+        if (isStarted()) {
+            throw new RuntimeException("Process has already been started.");
         }
 
-        this.values.put( "input", initialInput );
-        if ( initialInput instanceof Input) {
-            executionId = ((Input) initialInput).computeIfAbsent(PIPELINE_EXECUTION_ID, generator -> ExecutionIdGenerator.generateExecutionId());
+        this.values.put("input",
+                        initialInput);
+        if (initialInput instanceof Input) {
+            executionId = ((Input) initialInput).computeIfAbsent(PIPELINE_EXECUTION_ID,
+                                                                 generator -> ExecutionIdGenerator.generateExecutionId());
         } else {
             executionId = ExecutionIdGenerator.generateExecutionId();
         }
-        if ( iterator.hasNext() ) {
-            currentStage = Optional.of( iterator.next() );
+        if (iterator.hasNext()) {
+            currentStage = Optional.of(iterator.next());
         } else {
             currentStage = Optional.empty();
         }
-        lastOutput = Optional.of( initialInput );
+        lastOutput = Optional.of(initialInput);
     }
 
     boolean isStarted() {
@@ -99,21 +102,21 @@ public class PipelineContext {
         return !currentStage.isPresent() && lastOutput.isPresent();
     }
 
-    Optional<Stage<Object, ?> > getCurrentStage() {
+    Optional<Stage<Object, ?>> getCurrentStage() {
         return currentStage;
     }
 
-    void pushCallback( final Consumer<?> callback ) {
-        callbacks.push( callback );
+    void pushCallback(final Consumer<?> callback) {
+        callbacks.push(callback);
     }
 
     boolean hasCallbacks() {
         return !callbacks.isEmpty();
     }
 
-    void applyCallbackAndPop( final Object value ) {
+    void applyCallbackAndPop(final Object value) {
         final Consumer callback = callbacks.peek();
-        callback.accept( value );
+        callback.accept(value);
         callbacks.pop();
     }
 

@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import org.guvnor.ala.registry.RuntimeRegistry;
@@ -35,7 +34,7 @@ import org.guvnor.ala.runtime.providers.Provider;
 import org.guvnor.ala.runtime.providers.ProviderId;
 import org.guvnor.ala.runtime.providers.ProviderType;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * @TODO: This is an implementation for local testing. A
@@ -59,140 +58,167 @@ public class InMemoryRuntimeRegistry implements RuntimeRegistry {
     }
 
     @Override
-    public void registerProviderType( ProviderType pt ) {
-        providerTypes.put( pt.getProviderTypeName(), pt );
+    public void registerProviderType(ProviderType pt) {
+        providerTypes.put(pt.getProviderTypeName(),
+                          pt);
     }
 
     @Override
-    public List<ProviderType> getProviderTypes( Integer page, Integer pageSize, String sort, boolean sortOrder ) {
+    public List<ProviderType> getProviderTypes(Integer page,
+                                               Integer pageSize,
+                                               String sort,
+                                               boolean sortOrder) {
         Collection<ProviderType> values = providerTypes.values();
-        return PageSortUtils.pageSort( values, (ProviderType pt1, ProviderType pt2) -> {
-            switch ( sort ) {
-                case "providerTypeName":
-                    return pt1.getProviderTypeName().compareTo( pt2.getProviderTypeName() );
-                case "version":
-                    return pt1.getVersion().compareTo( pt2.getVersion() );
-                default:
-                    return pt1.toString().compareTo( pt2.toString() );
-            }
-        }, page, pageSize, sort, sortOrder );
-
+        return PageSortUtils.pageSort(values,
+                                      (ProviderType pt1, ProviderType pt2) -> {
+                                          switch (sort) {
+                                              case "providerTypeName":
+                                                  return pt1.getProviderTypeName().compareTo(pt2.getProviderTypeName());
+                                              case "version":
+                                                  return pt1.getVersion().compareTo(pt2.getVersion());
+                                              default:
+                                                  return pt1.toString().compareTo(pt2.toString());
+                                          }
+                                      },
+                                      page,
+                                      pageSize,
+                                      sort,
+                                      sortOrder);
     }
 
     @Override
-    public ProviderType getProviderType( String provider ) {
-        return providerTypes.get( provider );
+    public ProviderType getProviderType(String provider) {
+        return providerTypes.get(provider);
     }
 
     @Override
-    public void unregisterProviderType( ProviderType providerType ) {
-        providerTypes.remove( providerType.getProviderTypeName() );
+    public void unregisterProviderType(ProviderType providerType) {
+        providerTypes.remove(providerType.getProviderTypeName());
     }
 
     @Override
-    public void registerProvider( Provider provider ) {
-        providers.put( provider.getId(), provider );
-        if ( providersByType.get( provider.getProviderType() ) != null ) {
-            List<Provider> providersInType = providersByType.get( provider.getProviderType() );
-            for ( Provider p : providersInType ) {
-                if ( p.getId().equals( provider.getId() ) ) {
-                    providersInType.remove( p );
+    public void registerProvider(Provider provider) {
+        providers.put(provider.getId(),
+                      provider);
+        if (providersByType.get(provider.getProviderType()) != null) {
+            List<Provider> providersInType = providersByType.get(provider.getProviderType());
+            for (Provider p : providersInType) {
+                if (p.getId().equals(provider.getId())) {
+                    providersInType.remove(p);
                 }
             }
         }
-        providersByType.computeIfAbsent( provider.getProviderType(), providerType -> new CopyOnWriteArrayList<>() )
-                .add( provider );
+        providersByType.computeIfAbsent(provider.getProviderType(),
+                                        providerType -> new CopyOnWriteArrayList<>())
+                .add(provider);
     }
 
     @Override
-    public List<Provider> getProviders( Integer page, Integer pageSize, String sort, boolean sortOrder ) {
+    public List<Provider> getProviders(Integer page,
+                                       Integer pageSize,
+                                       String sort,
+                                       boolean sortOrder) {
         Collection<Provider> values = providers.values();
-        return PageSortUtils.pageSort( values, (Provider p1, Provider p2) -> {
-            switch ( sort ) {
-                case "id":
-                    return p1.getId().compareTo( p2.getId() );
-                case "providerTypeName":
-                    return p1.getProviderType().getProviderTypeName().compareTo( p2.getProviderType().getProviderTypeName() );
-                case "version":
-                    return p1.getProviderType().getVersion().compareTo( p2.getProviderType().getVersion() );
-                default:
-                    return p1.toString().compareTo( p2.toString() );
-            }
-        }, page, pageSize, sort, sortOrder );
+        return PageSortUtils.pageSort(values,
+                                      (Provider p1, Provider p2) -> {
+                                          switch (sort) {
+                                              case "id":
+                                                  return p1.getId().compareTo(p2.getId());
+                                              case "providerTypeName":
+                                                  return p1.getProviderType().getProviderTypeName().compareTo(p2.getProviderType().getProviderTypeName());
+                                              case "version":
+                                                  return p1.getProviderType().getVersion().compareTo(p2.getProviderType().getVersion());
+                                              default:
+                                                  return p1.toString().compareTo(p2.toString());
+                                          }
+                                      },
+                                      page,
+                                      pageSize,
+                                      sort,
+                                      sortOrder);
     }
 
     @Override
-    public List<Provider> getProvidersByType( ProviderType type ) {
-        return providersByType.getOrDefault( type, Collections.emptyList() );
+    public List<Provider> getProvidersByType(ProviderType type) {
+        return providersByType.getOrDefault(type,
+                                            Collections.emptyList());
     }
 
     @Override
-    public Provider getProvider( String providerName ) {
-        return providers.get( providerName );
+    public Provider getProvider(String providerName) {
+        return providers.get(providerName);
     }
 
     @Override
-    public void unregisterProvider( Provider provider ) {
-        List<Provider> filteredProviders = providersByType.get( provider.getProviderType() );
-        if ( filteredProviders != null ) {
-            filteredProviders.remove( provider );
+    public void unregisterProvider(Provider provider) {
+        List<Provider> filteredProviders = providersByType.get(provider.getProviderType());
+        if (filteredProviders != null) {
+            filteredProviders.remove(provider);
         }
-        providers.remove( provider.getId() );
+        providers.remove(provider.getId());
     }
 
     @Override
-    public void unregisterProvider( String providerName ) {
-        for ( Provider p : providers.values() ) {
-            if ( p.getId().equals( providerName ) ) {
-                unregisterProvider( p );
+    public void unregisterProvider(String providerName) {
+        for (Provider p : providers.values()) {
+            if (p.getId().equals(providerName)) {
+                unregisterProvider(p);
             }
         }
     }
 
     @Override
-    public void registerRuntime( Runtime runtime ) {
-        final Provider provider = providers.get( runtime.getProviderId().getId() );
-        if ( runtimesByProviderType.get( provider.getProviderType() ) != null ) {
-            List<Runtime> runtimes = runtimesByProviderType.get( provider.getProviderType() );
-            for ( Runtime r : runtimes ) {
-                if ( r.getId().equals( runtime.getId() ) ) {
-                    runtimes.remove( r );
+    public void registerRuntime(Runtime runtime) {
+        final Provider provider = providers.get(runtime.getProviderId().getId());
+        if (runtimesByProviderType.get(provider.getProviderType()) != null) {
+            List<Runtime> runtimes = runtimesByProviderType.get(provider.getProviderType());
+            for (Runtime r : runtimes) {
+                if (r.getId().equals(runtime.getId())) {
+                    runtimes.remove(r);
                 }
             }
         }
-        runtimesByProviderType.computeIfAbsent( provider.getProviderType(), providerType -> new CopyOnWriteArrayList<>() )
-                .add( runtime );
+        runtimesByProviderType.computeIfAbsent(provider.getProviderType(),
+                                               providerType -> new CopyOnWriteArrayList<>())
+                .add(runtime);
     }
 
     @Override
-    public List<Runtime> getRuntimes( Integer page, Integer pageSize, String sort, boolean sortOrder ) {
+    public List<Runtime> getRuntimes(Integer page,
+                                     Integer pageSize,
+                                     String sort,
+                                     boolean sortOrder) {
         List<Runtime> runtimes = new ArrayList<>();
-        for ( List<Runtime> rs : runtimesByProviderType.values() ) {
-            runtimes.addAll( rs );
+        for (List<Runtime> rs : runtimesByProviderType.values()) {
+            runtimes.addAll(rs);
         }
-        return PageSortUtils.pageSort( runtimes, (Runtime r1, Runtime r2) -> {
-            switch ( sort ) {
-                case "id":
-                    return r1.getId().compareTo( r2.getId() );
-                case "state":
-                    return r1.getState().getState().compareTo( r2.getState().getState() );
-                default:
-                    return r1.toString().compareTo( r2.toString() );
-            }
-        }, page, pageSize, sort, sortOrder );
-
+        return PageSortUtils.pageSort(runtimes,
+                                      (Runtime r1, Runtime r2) -> {
+                                          switch (sort) {
+                                              case "id":
+                                                  return r1.getId().compareTo(r2.getId());
+                                              case "state":
+                                                  return r1.getState().getState().compareTo(r2.getState().getState());
+                                              default:
+                                                  return r1.toString().compareTo(r2.toString());
+                                          }
+                                      },
+                                      page,
+                                      pageSize,
+                                      sort,
+                                      sortOrder);
     }
 
     @Override
-    public List<Runtime> getRuntimesByProvider( ProviderType providerType ) {
-        return new ArrayList<>( runtimesByProviderType.get( providerType ) );
+    public List<Runtime> getRuntimesByProvider(ProviderType providerType) {
+        return new ArrayList<>(runtimesByProviderType.get(providerType));
     }
 
     @Override
-    public Runtime getRuntimeById( String id ) {
-        for ( ProviderType pt : runtimesByProviderType.keySet() ) {
-            for ( Runtime r : runtimesByProviderType.get( pt ) ) {
-                if ( r.getId().equals( id ) ) {
+    public Runtime getRuntimeById(String id) {
+        for (ProviderType pt : runtimesByProviderType.keySet()) {
+            for (Runtime r : runtimesByProviderType.get(pt)) {
+                if (r.getId().equals(id)) {
                     return r;
                 }
             }
@@ -201,23 +227,25 @@ public class InMemoryRuntimeRegistry implements RuntimeRegistry {
     }
 
     @Override
-    public <T extends Provider> Optional<T> getProvider( final ProviderId providerId,
-            final Class<T> clazz ) {
-        checkNotNull( "providerId", providerId );
-        checkNotNull( "clazz", clazz );
+    public <T extends Provider> Optional<T> getProvider(final ProviderId providerId,
+                                                        final Class<T> clazz) {
+        checkNotNull("providerId",
+                     providerId);
+        checkNotNull("clazz",
+                     clazz);
 
-        final Provider value = providers.get( providerId.getId() );
-        return Optional.ofNullable( value )
-                .filter( provider -> clazz.isInstance( provider ) )
-                .map( provider -> clazz.cast( provider ) );
+        final Provider value = providers.get(providerId.getId());
+        return Optional.ofNullable(value)
+                .filter(provider -> clazz.isInstance(provider))
+                .map(provider -> clazz.cast(provider));
     }
 
     @Override
-    public void unregisterRuntime( final RuntimeId runtime ) {
-        final Provider provider = providers.get( runtime.getProviderId().getId() );
-        List<Runtime> filteredRuntimes = runtimesByProviderType.get( provider.getProviderType() );
-        if ( filteredRuntimes != null ) {
-            filteredRuntimes.remove( runtime );
+    public void unregisterRuntime(final RuntimeId runtime) {
+        final Provider provider = providers.get(runtime.getProviderId().getId());
+        List<Runtime> filteredRuntimes = runtimesByProviderType.get(provider.getProviderType());
+        if (filteredRuntimes != null) {
+            filteredRuntimes.remove(runtime);
         }
     }
 }

@@ -60,42 +60,41 @@ public class OrganizationalUnitManagerPresenterTest {
     @Mock
     private OrganizationalUnit organizationalUnitA;
 
-    private OrganizationalUnitManagerView view = mock( OrganizationalUnitManagerView.class );
-    private OrganizationalUnitService mockOUService = mock( OrganizationalUnitService.class );
+    private OrganizationalUnitManagerView view = mock(OrganizationalUnitManagerView.class);
+    private OrganizationalUnitService mockOUService = mock(OrganizationalUnitService.class);
 
-    private Caller<OrganizationalUnitService> organizationalUnitService = new CallerMock<OrganizationalUnitService>( mockOUService );
-    private RepositoryService mockRepositoryService = mock( RepositoryService.class );
+    private Caller<OrganizationalUnitService> organizationalUnitService = new CallerMock<OrganizationalUnitService>(mockOUService);
+    private RepositoryService mockRepositoryService = mock(RepositoryService.class);
 
-    private Caller<RepositoryService> repositoryService = new CallerMock<RepositoryService>( mockRepositoryService );
+    private Caller<RepositoryService> repositoryService = new CallerMock<RepositoryService>(mockRepositoryService);
 
     private OrganizationalUnitManagerPresenterImpl presenter;
 
-    private OrganizationalUnit mockOU = mock( OrganizationalUnit.class );
+    private OrganizationalUnit mockOU = mock(OrganizationalUnit.class);
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        presenter = new OrganizationalUnitManagerPresenterImpl( view,
-                                                                organizationalUnitService,
-                                                                repositoryService,
-                                                                organizationalUnitController,
-                                                                addOrganizationalUnitPopup,
-                                                                editOrganizationalUnitPopup,
-                                                                createOUEvent,
-                                                                deleteOUEvent );
+        presenter = new OrganizationalUnitManagerPresenterImpl(view,
+                                                               organizationalUnitService,
+                                                               repositoryService,
+                                                               organizationalUnitController,
+                                                               addOrganizationalUnitPopup,
+                                                               editOrganizationalUnitPopup,
+                                                               createOUEvent,
+                                                               deleteOUEvent);
 
-        when( mockOU.getName() ).thenReturn( "mock" );
-        when( mockOU.getOwner() ).thenReturn( "mock" );
-        when( mockOU.getDefaultGroupId() ).thenReturn( "mock" );
+        when(mockOU.getName()).thenReturn("mock");
+        when(mockOU.getOwner()).thenReturn("mock");
+        when(mockOU.getDefaultGroupId()).thenReturn("mock");
 
-        when( mockOUService.getOrganizationalUnits() ).thenReturn( new ArrayList<OrganizationalUnit>() );
-        when( mockOUService.getOrganizationalUnit( anyString() ) ).thenReturn( organizationalUnitA );
+        when(mockOUService.getOrganizationalUnits()).thenReturn(new ArrayList<OrganizationalUnit>());
+        when(mockOUService.getOrganizationalUnit(anyString())).thenReturn(organizationalUnitA);
 
-        when( mockOUService.createOrganizationalUnit( any( String.class ),
-                                                      any( String.class ),
-                                                      any( String.class ),
-                                                      any( Collection.class ) ) ).thenReturn( mockOU );
-
+        when(mockOUService.createOrganizationalUnit(any(String.class),
+                                                    any(String.class),
+                                                    any(String.class),
+                                                    any(Collection.class))).thenReturn(mockOU);
 
         when(organizationalUnitController.canCreateOrgUnits()).thenReturn(false);
         when(organizationalUnitController.canUpdateOrgUnit(organizationalUnitA)).thenReturn(true);
@@ -125,19 +124,19 @@ public class OrganizationalUnitManagerPresenterTest {
 
     @Test
     public void testCreateOUEvent() {
-        presenter.createNewOrganizationalUnit( mockOU.getName(),
-                                               mockOU.getOwner(),
-                                               mockOU.getDefaultGroupId() );
+        presenter.createNewOrganizationalUnit(mockOU.getName(),
+                                              mockOU.getOwner(),
+                                              mockOU.getDefaultGroupId());
 
-        verify( createOUEvent,
-                times( 1 ) ).fire( any( AfterCreateOrganizationalUnitEvent.class ) );
+        verify(createOUEvent,
+               times(1)).fire(any(AfterCreateOrganizationalUnitEvent.class));
     }
 
     @Test
     public void testDeleteOUEvent() {
-        presenter.deleteOrganizationalUnit( mockOU );
+        presenter.deleteOrganizationalUnit(mockOU);
 
-        verify( deleteOUEvent,
-                times( 1 ) ).fire( any( AfterDeleteOrganizationalUnitEvent.class ) );
+        verify(deleteOUEvent,
+               times(1)).fire(any(AfterDeleteOrganizationalUnitEvent.class));
     }
 }

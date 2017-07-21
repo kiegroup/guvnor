@@ -29,8 +29,8 @@ public class CDITestSetup {
 
     public final SimpleFileSystemProvider fileSystemProvider = new SimpleFileSystemProvider();
     public BeanManager beanManager;
-    public Paths       paths;
-    private Weld       weld;
+    public Paths paths;
+    private Weld weld;
 
     public void setUp() throws Exception {
         // Bootstrap WELD container
@@ -39,7 +39,7 @@ public class CDITestSetup {
         beanManager = weldContainer.getBeanManager();
 
         // Instantiate Paths used in tests for Path conversion
-        paths = getReference( Paths.class );
+        paths = getReference(Paths.class);
 
         // Ensure URLs use the default:// scheme
         fileSystemProvider.forceAsDefault();
@@ -51,11 +51,11 @@ public class CDITestSetup {
         }
     }
 
-    public <T> T getReference( Class<T> clazz ) {
-        Bean bean = ( Bean ) beanManager.getBeans( clazz ).iterator().next();
-        CreationalContext cc = beanManager.createCreationalContext( bean );
-        return ( T ) beanManager.getReference( bean,
-                                               clazz,
-                                               cc );
+    public <T> T getReference(Class<T> clazz) {
+        Bean bean = (Bean) beanManager.getBeans(clazz).iterator().next();
+        CreationalContext cc = beanManager.createCreationalContext(bean);
+        return (T) beanManager.getReference(bean,
+                                            clazz,
+                                            cc);
     }
 }

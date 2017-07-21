@@ -19,8 +19,8 @@ package org.guvnor.ala.runtime;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.guvnor.ala.config.RuntimeConfig;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.*;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 
 /**
  * This interface represent the Runtime instance information.
@@ -28,6 +28,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
  */
 @JsonTypeInfo(use = CLASS, include = WRAPPER_OBJECT)
 public interface RuntimeInfo {
+
     /*
      * Get the RuntimeConfig used to build this runtime
      * @return RuntimeConfig with the configuration used to create this Runtime

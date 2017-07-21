@@ -18,7 +18,7 @@ package org.guvnor.structure.repositories;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Portable
 public class NewBranchEvent {
@@ -29,18 +29,21 @@ public class NewBranchEvent {
     private Path branchPath;
     private Long timestamp;
 
-
     public NewBranchEvent() {
     }
 
-    public NewBranchEvent( final String repositoryAlias,
-                           final String branchName,
-                           final Path branchPath,
-                           final Long timestamp ) {
-        this.repositoryAlias = checkNotNull("repositoryAlias", repositoryAlias);
-        this.branchName = checkNotNull("branchName", branchName);
-        this.branchPath = checkNotNull("branchPath", branchPath);
-        this.timestamp = checkNotNull("timestamp", timestamp);
+    public NewBranchEvent(final String repositoryAlias,
+                          final String branchName,
+                          final Path branchPath,
+                          final Long timestamp) {
+        this.repositoryAlias = checkNotNull("repositoryAlias",
+                                            repositoryAlias);
+        this.branchName = checkNotNull("branchName",
+                                       branchName);
+        this.branchPath = checkNotNull("branchPath",
+                                       branchPath);
+        this.timestamp = checkNotNull("timestamp",
+                                      timestamp);
     }
 
     public String getBranchName() {

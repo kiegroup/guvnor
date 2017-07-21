@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.security.OrgUnitResourceType;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.security.ResourceType;
 
@@ -38,9 +37,9 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     public OrganizationalUnitImpl() {
     }
 
-    public OrganizationalUnitImpl( final String name,
-                                   final String owner,
-                                   final String defaultGroupId ) {
+    public OrganizationalUnitImpl(final String name,
+                                  final String owner,
+                                  final String defaultGroupId) {
         this.name = name;
         this.owner = owner;
         this.defaultGroupId = defaultGroupId;
@@ -77,23 +76,23 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof OrganizationalUnitImpl ) ) {
+        if (!(o instanceof OrganizationalUnitImpl)) {
             return false;
         }
 
         OrganizationalUnitImpl ou = (OrganizationalUnitImpl) o;
 
-        if ( name != null ? !name.equals( ou.name ) : ou.name != null ) {
+        if (name != null ? !name.equals(ou.name) : ou.name != null) {
             return false;
         }
-        if ( owner != null ? !owner.equals( ou.owner ) : ou.owner != null ) {
+        if (owner != null ? !owner.equals(ou.owner) : ou.owner != null) {
             return false;
         }
-        if ( defaultGroupId != null ? !defaultGroupId.equals( ou.defaultGroupId ) : ou.defaultGroupId != null ) {
+        if (defaultGroupId != null ? !defaultGroupId.equals(ou.defaultGroupId) : ou.defaultGroupId != null) {
             return false;
         }
 
@@ -104,9 +103,9 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( owner != null ? owner.hashCode() : 0 );
+        result = 31 * result + (owner != null ? owner.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( defaultGroupId != null ? defaultGroupId.hashCode() : 0 );
+        result = 31 * result + (defaultGroupId != null ? defaultGroupId.hashCode() : 0);
         result = ~~result;
         return result;
     }

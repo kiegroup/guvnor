@@ -22,8 +22,8 @@ public interface ProjectResourcePaths {
 
     public static final String POM_PATH = "pom.xml";
 
-    public static final String MAIN_SRC_PATH       = "src/main/java";
-    public static final String TEST_SRC_PATH       = "src/test/java";
+    public static final String MAIN_SRC_PATH = "src/main/java";
+    public static final String TEST_SRC_PATH = "src/test/java";
     public static final String MAIN_RESOURCES_PATH = "src/main/resources";
     public static final String TEST_RESOURCES_PATH = "src/test/resources";
 
@@ -33,5 +33,4 @@ public interface ProjectResourcePaths {
             TEST_SRC_PATH,
             TEST_RESOURCES_PATH
     };
-
 }

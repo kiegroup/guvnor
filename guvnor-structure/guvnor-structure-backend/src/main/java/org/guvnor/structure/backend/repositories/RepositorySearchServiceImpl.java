@@ -39,7 +39,9 @@ public class RepositorySearchServiceImpl implements RepositorySearchService {
     }
 
     @Override
-    public Collection<Repository> searchByAlias(String pattern, int maxItems, boolean caseSensitive) {
+    public Collection<Repository> searchByAlias(String pattern,
+                                                int maxItems,
+                                                boolean caseSensitive) {
         List<Repository> results = new ArrayList<>();
         for (Repository repo : repositoryService.getAllRepositories()) {
             String alias = repo.getAlias();

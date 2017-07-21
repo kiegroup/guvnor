@@ -39,33 +39,32 @@ public class JarDetailPopup extends BaseModal {
 
     }
 
-    private static JarDetailPopupWidgetBinder uiBinder = GWT.create( JarDetailPopupWidgetBinder.class );
+    private static JarDetailPopupWidgetBinder uiBinder = GWT.create(JarDetailPopupWidgetBinder.class);
 
     @UiField
     protected Pre pom;
 
-    public JarDetailPopup( final String details ) {
+    public JarDetailPopup(final String details) {
         PatternFlyBootstrapper.ensurePrettifyIsAvailable();
-        setTitle( M2RepoEditorConstants.INSTANCE.JarDetails() );
-        setHideOtherModals( false );
+        setTitle(M2RepoEditorConstants.INSTANCE.JarDetails());
+        setHideOtherModals(false);
 
-        setBody( uiBinder.createAndBindUi( this ) );
-        add( new ModalFooterOKButton( new Command() {
+        setBody(uiBinder.createAndBindUi(this));
+        add(new ModalFooterOKButton(new Command() {
             @Override
             public void execute() {
                 hide();
             }
-        } ) );
+        }));
 
-        this.pom.setHTML( details );
-        addShowHandler( new ModalShowHandler() {
+        this.pom.setHTML(details);
+        addShowHandler(new ModalShowHandler() {
             @Override
-            public void onShow( ModalShowEvent evt ) {
+            public void onShow(ModalShowEvent evt) {
                 initPrettify();
             }
-        } );
+        });
     }
-
 
     public static native void initPrettify() /*-{
         $wnd.prettyPrint();

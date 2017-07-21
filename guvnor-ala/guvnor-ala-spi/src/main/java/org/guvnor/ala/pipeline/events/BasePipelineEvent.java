@@ -21,7 +21,6 @@ import org.guvnor.ala.pipeline.Pipeline;
 public class BasePipelineEvent
         implements PipelineEvent {
 
-
     private final String executionId;
 
     private final Pipeline pipeline;
@@ -40,5 +39,4 @@ public class BasePipelineEvent
     public Pipeline getPipeline() {
         return pipeline;
     }
-
 }

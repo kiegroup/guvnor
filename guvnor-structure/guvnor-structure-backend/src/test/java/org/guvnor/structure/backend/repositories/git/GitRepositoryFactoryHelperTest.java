@@ -37,7 +37,6 @@ import static org.mockito.Mockito.*;
 
 public class GitRepositoryFactoryHelperTest {
 
-
     private IOService ioService;
     private GitRepositoryFactoryHelper helper;
     private FileSystem fileSystem;
@@ -50,7 +49,8 @@ public class GitRepositoryFactoryHelperTest {
 
         fileSystem = mock(FileSystem.class);
         when(
-                ioService.newFileSystem(any(URI.class), anyMap())
+                ioService.newFileSystem(any(URI.class),
+                                        anyMap())
         ).thenReturn(
                 fileSystem
         );
@@ -78,18 +78,22 @@ public class GitRepositoryFactoryHelperTest {
         configGroup.setName("test");
 
         ConfigItem configItem = new ConfigItem();
-        configItem.setName( "replaceIfExists" );
-        configItem.setValue( false );
-        configGroup.setConfigItem( configItem );
+        configItem.setName("replaceIfExists");
+        configItem.setValue(false);
+        configGroup.setConfigItem(configItem);
 
-        when( ioService.newFileSystem(any(URI.class), anyMap()))
-                .thenThrow(FileSystemAlreadyExistsException.class );
-        when( ioService.getFileSystem(any(URI.class))).thenReturn(fileSystem);
+        when(ioService.newFileSystem(any(URI.class),
+                                     anyMap()))
+                .thenThrow(FileSystemAlreadyExistsException.class);
+        when(ioService.getFileSystem(any(URI.class))).thenReturn(fileSystem);
 
         helper.newRepository(configGroup);
 
-        verify(ioService, never()).delete(any(Path.class));
-        verify(ioService, times(1)).newFileSystem(any(URI.class), anyMap());
+        verify(ioService,
+               never()).delete(any(Path.class));
+        verify(ioService,
+               times(1)).newFileSystem(any(URI.class),
+                                       anyMap());
     }
 
     @Test
@@ -101,26 +105,30 @@ public class GitRepositoryFactoryHelperTest {
         configGroup.setName("test");
 
         ConfigItem configItem = new ConfigItem();
-        configItem.setName( "replaceIfExists" );
-        configItem.setValue( true );
-        configGroup.setConfigItem( configItem );
+        configItem.setName("replaceIfExists");
+        configItem.setValue(true);
+        configGroup.setConfigItem(configItem);
 
-        when( ioService.newFileSystem(any(URI.class), anyMap()))
-                .thenThrow(FileSystemAlreadyExistsException.class )
+        when(ioService.newFileSystem(any(URI.class),
+                                     anyMap()))
+                .thenThrow(FileSystemAlreadyExistsException.class)
                 .thenReturn(fileSystem);
-        when( ioService.getFileSystem(any(URI.class))).thenReturn(fileSystem);
+        when(ioService.getFileSystem(any(URI.class))).thenReturn(fileSystem);
 
         helper.newRepository(configGroup);
 
-        verify(ioService, times(1)).delete(any(Path.class));
-        verify(ioService, times(2)).newFileSystem(any(URI.class), anyMap());
+        verify(ioService,
+               times(1)).delete(any(Path.class));
+        verify(ioService,
+               times(2)).newFileSystem(any(URI.class),
+                                       anyMap());
     }
 
     @Test
     public void testBranches() throws Exception {
 
         rootDirectories.add(createPath("default://origin@uf-playground"));
-        rootDirectories.add( createPath("default://master@uf-playground"));
+        rootDirectories.add(createPath("default://master@uf-playground"));
         rootDirectories.add(createPath("default://branch1@uf-playground"));
 
         ConfigGroup configGroup = getConfigGroup();
@@ -128,8 +136,9 @@ public class GitRepositoryFactoryHelperTest {
 
         Repository repository = helper.newRepository(configGroup);
 
-        assertEquals(3, repository.getBranches().size());
-        assertTrue(repository.getRoot().toURI().contains( "master" ));
+        assertEquals(3,
+                     repository.getBranches().size());
+        assertTrue(repository.getRoot().toURI().contains("master"));
     }
 
     private Path createPath(String uri) {

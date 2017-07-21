@@ -20,22 +20,21 @@ public interface CustomFormConfiguration {
 
     String getFactType();
 
-    void setFactType( String factType );
+    void setFactType(String factType);
 
     String getFieldName();
 
-    void setFieldName( String fieldName );
+    void setFieldName(String fieldName);
 
     String getCustomFormURL();
 
-    void setCustomFormURL( String url );
+    void setCustomFormURL(String url);
 
     int getCustomFormHeight();
 
-    void setCustomFormHeight( int height );
+    void setCustomFormHeight(int height);
 
     int getCustomFormWidth();
 
-    void setCustomFormWidth( int width );
-
+    void setCustomFormWidth(int width);
 }

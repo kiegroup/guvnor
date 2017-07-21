@@ -75,15 +75,15 @@ public class RepositoryInfoPageViewImpl extends Composite
 
     private boolean managedRepository = false;
 
-    private static RepositoryInfoPageBinder uiBinder = GWT.create( RepositoryInfoPageBinder.class );
+    private static RepositoryInfoPageBinder uiBinder = GWT.create(RepositoryInfoPageBinder.class);
 
     public RepositoryInfoPageViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         initialiseFields();
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -98,43 +98,43 @@ public class RepositoryInfoPageViewImpl extends Composite
     }
 
     @Override
-    public void setName( String name ) {
-        this.nameTextBox.setText( name );
+    public void setName(String name) {
+        this.nameTextBox.setText(name);
     }
 
-    public void setNameErrorMessage( String message ) {
-        nameHelpBlock.setText( message );
+    public void setNameErrorMessage(String message) {
+        nameHelpBlock.setText(message);
     }
 
-    public void clearNameErrorMessage( ) {
-        nameHelpBlock.setText( null );
+    public void clearNameErrorMessage() {
+        nameHelpBlock.setText(null);
     }
 
     @Override
-    public void setValidOU( boolean ouValid ) {
+    public void setValidOU(boolean ouValid) {
         //not apply for this case
     }
 
     @Override
-    public void setVisibleOU( boolean visible ) {
-        organizationalUnitDropdown.setVisible( visible );
+    public void setVisibleOU(boolean visible) {
+        organizationalUnitDropdown.setVisible(visible);
     }
 
     @Override
-    public void initOrganizationalUnits( List<Pair<String, String>> organizationalUnits ) {
+    public void initOrganizationalUnits(List<Pair<String, String>> organizationalUnits) {
 
         organizationalUnitDropdown.clear();
 
         final Option select = new Option();
-        select.setText( CoreConstants.INSTANCE.SelectEntry() );
-        select.setValue( NOT_SELECTED );
-        organizationalUnitDropdown.add( select );
-        if ( organizationalUnits != null ) {
-            for ( Pair<String, String> organizationalUnitInfo : organizationalUnits ) {
+        select.setText(CoreConstants.INSTANCE.SelectEntry());
+        select.setValue(NOT_SELECTED);
+        organizationalUnitDropdown.add(select);
+        if (organizationalUnits != null) {
+            for (Pair<String, String> organizationalUnitInfo : organizationalUnits) {
                 final Option option = new Option();
-                option.setValue( organizationalUnitInfo.getK1() );
-                option.setText( organizationalUnitInfo.getK2() );
-                organizationalUnitDropdown.add( option );
+                option.setValue(organizationalUnitInfo.getK1());
+                option.setText(organizationalUnitInfo.getK2());
+                organizationalUnitDropdown.add(option);
             }
         }
         organizationalUnitDropdown.refresh();
@@ -146,13 +146,13 @@ public class RepositoryInfoPageViewImpl extends Composite
     }
 
     @Override
-    public void enabledManagedRepositoryCreation( boolean enabled ) {
-        managedReposiotryGroup.setVisible( enabled );
+    public void enabledManagedRepositoryCreation(boolean enabled) {
+        managedReposiotryGroup.setVisible(enabled);
     }
 
     @Override
-    public void alert( String message ) {
-        Window.alert( message );
+    public void alert(String message) {
+        Window.alert(message);
     }
 
     private void initialiseFields() {
@@ -162,17 +162,16 @@ public class RepositoryInfoPageViewImpl extends Composite
             public void onChange(ChangeEvent event) {
                 presenter.onNameChange();
             }
-        } );
+        });
 
-        organizationalUnitDropdown.addValueChangeHandler( e -> presenter.onOUChange() );
+        organizationalUnitDropdown.addValueChangeHandler(e -> presenter.onOUChange());
 
-        isManagedRepository.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+        isManagedRepository.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
-            public void onValueChange( ValueChangeEvent<Boolean> event ) {
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
                 managedRepository = event.getValue();
                 presenter.onManagedRepositoryChange();
             }
-        } );
+        });
     }
-
 }

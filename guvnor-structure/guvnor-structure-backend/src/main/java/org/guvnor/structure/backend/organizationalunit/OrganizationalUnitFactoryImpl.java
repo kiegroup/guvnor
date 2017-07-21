@@ -27,8 +27,6 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 
-import static org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil.*;
-
 public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory {
 
     @Inject
@@ -38,27 +36,27 @@ public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory 
     private BackwardCompatibleUtil backward;
 
     @Override
-    public OrganizationalUnit newOrganizationalUnit( ConfigGroup groupConfig ) {
+    public OrganizationalUnit newOrganizationalUnit(ConfigGroup groupConfig) {
 
-        OrganizationalUnitImpl organizationalUnit = new OrganizationalUnitImpl( groupConfig.getName(),
-                                                                                groupConfig.getConfigItemValue( "owner" ),
-                                                                                groupConfig.getConfigItemValue( "defaultGroupId" ) );
-        ConfigItem<List<String>> repositories = groupConfig.getConfigItem( "repositories" );
-        if ( repositories != null ) {
-            for ( String alias : repositories.getValue() ) {
+        OrganizationalUnitImpl organizationalUnit = new OrganizationalUnitImpl(groupConfig.getName(),
+                                                                               groupConfig.getConfigItemValue("owner"),
+                                                                               groupConfig.getConfigItemValue("defaultGroupId"));
+        ConfigItem<List<String>> repositories = groupConfig.getConfigItem("repositories");
+        if (repositories != null) {
+            for (String alias : repositories.getValue()) {
 
-                final Repository repo = repositoryService.getRepository( alias );
-                if ( repo != null ) {
-                    organizationalUnit.getRepositories().add( repo );
+                final Repository repo = repositoryService.getRepository(alias);
+                if (repo != null) {
+                    organizationalUnit.getRepositories().add(repo);
                 }
             }
         }
 
         //Copy in Security Roles required to access this resource
-        ConfigItem<List<String>> groups = backward.compat( groupConfig ).getConfigItem( "security:groups" );
-        if ( groups != null ) {
-            for ( String group : groups.getValue() ) {
-                organizationalUnit.getGroups().add( group );
+        ConfigItem<List<String>> groups = backward.compat(groupConfig).getConfigItem("security:groups");
+        if (groups != null) {
+            for (String group : groups.getValue()) {
+                organizationalUnit.getGroups().add(group);
             }
         }
         return organizationalUnit;

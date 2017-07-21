@@ -34,121 +34,124 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 
-import static org.uberfire.backend.server.util.Paths.*;
+import static org.uberfire.backend.server.util.Paths.convert;
 
 public class GitRepositoryBuilder {
 
-    private final IOService       ioService;
+    private final IOService ioService;
     private final PasswordService secureService;
-    private       GitRepository   repo;
+    private GitRepository repo;
 
-    public GitRepositoryBuilder( final IOService ioService,
-                                 final PasswordService secureService ) {
+    public GitRepositoryBuilder(final IOService ioService,
+                                final PasswordService secureService) {
         this.ioService = ioService;
         this.secureService = secureService;
     }
 
-    public Repository build( final ConfigGroup repoConfig ) {
+    public Repository build(final ConfigGroup repoConfig) {
 
-        repo = new GitRepository( repoConfig.getName() );
+        repo = new GitRepository(repoConfig.getName());
 
-        if ( !repo.isValid() ) {
-            throw new IllegalStateException( "Repository " + repoConfig.getName() + " not valid" );
+        if (!repo.isValid()) {
+            throw new IllegalStateException("Repository " + repoConfig.getName() + " not valid");
         } else {
 
-            addEnvironmentParameters( repoConfig.getItems() );
+            addEnvironmentParameters(repoConfig.getItems());
 
-            FileSystem fileSystem = createFileSystem( repo );
+            FileSystem fileSystem = createFileSystem(repo);
 
-            setBranches( fileSystem );
+            setBranches(fileSystem);
 
-            setPublicURIs( fileSystem );
+            setPublicURIs(fileSystem);
 
             return repo;
         }
     }
 
-    private void setPublicURIs( final FileSystem fileSystem ) {
-        final String[] uris = fileSystem.toString().split( "\\r?\\n" );
-        final List<PublicURI> publicURIs = new ArrayList<PublicURI>( uris.length );
+    private void setPublicURIs(final FileSystem fileSystem) {
+        final String[] uris = fileSystem.toString().split("\\r?\\n");
+        final List<PublicURI> publicURIs = new ArrayList<PublicURI>(uris.length);
 
-        for ( final String s : uris ) {
-            final int protocolStart = s.indexOf( "://" );
-            publicURIs.add( getPublicURI( s,
-                                          protocolStart ) );
+        for (final String s : uris) {
+            final int protocolStart = s.indexOf("://");
+            publicURIs.add(getPublicURI(s,
+                                        protocolStart));
         }
-        repo.setPublicURIs( publicURIs );
+        repo.setPublicURIs(publicURIs);
     }
 
-    private PublicURI getPublicURI( final String s,
-                                    final int protocolStart ) {
-        if ( protocolStart > 0 ) {
-            return new DefaultPublicURI( s.substring( 0, protocolStart ),
-                                         s );
+    private PublicURI getPublicURI(final String s,
+                                   final int protocolStart) {
+        if (protocolStart > 0) {
+            return new DefaultPublicURI(s.substring(0,
+                                                    protocolStart),
+                                        s);
         } else {
-            return new DefaultPublicURI( s );
+            return new DefaultPublicURI(s);
         }
     }
 
-    private void setBranches( final FileSystem fileSystem ) {
-        final Map<String, Path> branches = getBranches( fileSystem );
+    private void setBranches(final FileSystem fileSystem) {
+        final Map<String, Path> branches = getBranches(fileSystem);
 
-        repo.setBranches( branches );
+        repo.setBranches(branches);
 
-        repo.setRoot( getDefaultRoot( fileSystem,
-                                      branches ) );
+        repo.setRoot(getDefaultRoot(fileSystem,
+                                    branches));
     }
 
-    private void addEnvironmentParameters( final Collection<ConfigItem> items ) {
-        for ( final ConfigItem item : items ) {
-            if ( item instanceof SecureConfigItem ) {
-                repo.addEnvironmentParameter( item.getName(),
-                                              secureService.decrypt( item.getValue().toString() ) );
+    private void addEnvironmentParameters(final Collection<ConfigItem> items) {
+        for (final ConfigItem item : items) {
+            if (item instanceof SecureConfigItem) {
+                repo.addEnvironmentParameter(item.getName(),
+                                             secureService.decrypt(item.getValue().toString()));
             } else {
-                repo.addEnvironmentParameter( item.getName(),
-                                              item.getValue() );
+                repo.addEnvironmentParameter(item.getName(),
+                                             item.getValue());
             }
         }
     }
 
-    private org.uberfire.backend.vfs.Path getDefaultRoot( final FileSystem fileSystem,
-                                                          final Map<String, org.uberfire.backend.vfs.Path> branches ) {
+    private org.uberfire.backend.vfs.Path getDefaultRoot(final FileSystem fileSystem,
+                                                         final Map<String, org.uberfire.backend.vfs.Path> branches) {
         org.uberfire.backend.vfs.Path defaultRoot;
-        if ( branches.containsKey( "master" ) ) {
-            defaultRoot = branches.get( "master" );
+        if (branches.containsKey("master")) {
+            defaultRoot = branches.get("master");
         } else {
-            defaultRoot = convert( fileSystem.getRootDirectories().iterator().next() );
+            defaultRoot = convert(fileSystem.getRootDirectories().iterator().next());
         }
         return defaultRoot;
     }
 
-    private FileSystem createFileSystem( final GitRepository repo ) {
+    private FileSystem createFileSystem(final GitRepository repo) {
         FileSystem fs = null;
         URI uri = null;
         try {
-            uri = URI.create( repo.getUri() );
-            fs = newFileSystem( uri );
-        } catch ( final FileSystemAlreadyExistsException e ) {
-            fs = ioService.getFileSystem( uri );
-            Object replaceIfExists = repo.getEnvironment().get( "replaceIfExists" );
-            if ( replaceIfExists != null && Boolean.valueOf( replaceIfExists.toString() ) ) {
-                org.uberfire.java.nio.file.Path root = fs.getPath( null );
-                ioService.delete( root );
-                fs = newFileSystem( uri );
+            uri = URI.create(repo.getUri());
+            fs = newFileSystem(uri);
+        } catch (final FileSystemAlreadyExistsException e) {
+            fs = ioService.getFileSystem(uri);
+            Object replaceIfExists = repo.getEnvironment().get("replaceIfExists");
+            if (replaceIfExists != null && Boolean.valueOf(replaceIfExists.toString())) {
+                org.uberfire.java.nio.file.Path root = fs.getPath(null);
+                ioService.delete(root);
+                fs = newFileSystem(uri);
             }
-        } catch ( final Throwable ex ) {
-            throw new RuntimeException( ex.getCause().getMessage(), ex );
+        } catch (final Throwable ex) {
+            throw new RuntimeException(ex.getCause().getMessage(),
+                                       ex);
         }
         return fs;
     }
 
-    private FileSystem newFileSystem( URI uri ) {
-        return ioService.newFileSystem( uri,
-                new HashMap<String, Object>( repo.getEnvironment() ) {{
-                    if ( !repo.getEnvironment().containsKey( "origin" ) ) {
-                        put( "init", true );
-                    }
-                }} );
+    private FileSystem newFileSystem(URI uri) {
+        return ioService.newFileSystem(uri,
+                                       new HashMap<String, Object>(repo.getEnvironment()) {{
+                                           if (!repo.getEnvironment().containsKey("origin")) {
+                                               put("init",
+                                                   true);
+                                           }
+                                       }});
     }
 
     /**
@@ -156,21 +159,22 @@ public class GitRepositoryBuilder {
      * @param fs
      * @return
      */
-    private Map<String, org.uberfire.backend.vfs.Path> getBranches(final FileSystem fs ) {
+    private Map<String, org.uberfire.backend.vfs.Path> getBranches(final FileSystem fs) {
         Map<String, org.uberfire.backend.vfs.Path> branches = new HashMap<String, org.uberfire.backend.vfs.Path>();
-        for ( final org.uberfire.java.nio.file.Path path : fs.getRootDirectories() ) {
-            String gitBranch = getBranchName( path );
-            branches.put( gitBranch, convert( path ) );
+        for (final org.uberfire.java.nio.file.Path path : fs.getRootDirectories()) {
+            String gitBranch = getBranchName(path);
+            branches.put(gitBranch,
+                         convert(path));
         }
         return branches;
     }
 
-    protected String getBranchName( final org.uberfire.java.nio.file.Path path ) {
+    protected String getBranchName(final org.uberfire.java.nio.file.Path path) {
         URI uri = path.toUri();
         String gitBranch = uri.getAuthority();
 
-        if ( gitBranch.indexOf( "@" ) != -1 ) {
-            return gitBranch.split( "@" )[0];
+        if (gitBranch.indexOf("@") != -1) {
+            return gitBranch.split("@")[0];
         }
 
         return gitBranch;

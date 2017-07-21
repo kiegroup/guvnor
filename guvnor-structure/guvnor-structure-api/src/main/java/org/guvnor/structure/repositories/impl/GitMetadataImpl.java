@@ -27,7 +27,8 @@ import org.guvnor.structure.repositories.PullRequest;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Represents information about a repository. It contains the origin name
@@ -42,34 +43,50 @@ public class GitMetadataImpl implements GitMetadata {
     private String name;
     private List<PullRequest> pullRequests;
 
-    public GitMetadataImpl( String name ) {
-        this( name, "", new ArrayList<>(), new ArrayList<>() );
+    public GitMetadataImpl(String name) {
+        this(name,
+             "",
+             new ArrayList<>(),
+             new ArrayList<>());
     }
 
-    public GitMetadataImpl( String name,
-                            String origin ) {
-        this( name, origin, new ArrayList<>(), new ArrayList<>() );
+    public GitMetadataImpl(String name,
+                           String origin) {
+        this(name,
+             origin,
+             new ArrayList<>(),
+             new ArrayList<>());
     }
 
-    public GitMetadataImpl( String name,
-                            List<String> forks ) {
-        this( name, "", forks, new ArrayList<>() );
+    public GitMetadataImpl(String name,
+                           List<String> forks) {
+        this(name,
+             "",
+             forks,
+             new ArrayList<>());
     }
 
-    public GitMetadataImpl( String name,
-                            String origin,
-                            List<String> forks ) {
-        this( name, origin, forks, new ArrayList<>() );
+    public GitMetadataImpl(String name,
+                           String origin,
+                           List<String> forks) {
+        this(name,
+             origin,
+             forks,
+             new ArrayList<>());
     }
 
-    public GitMetadataImpl( @MapsTo("name") String name,
-                            @MapsTo("origin") String origin,
-                            @MapsTo("forks") List<String> forks,
-                            @MapsTo("pullRequests") List<PullRequest> pullRequests ) {
-        this.name = checkNotEmpty( "name", name );
-        this.origin = checkNotNull( "origin", origin );
-        this.forks = checkNotNull( "forks", forks );
-        this.pullRequests = checkNotNull( "pullRequests", pullRequests );
+    public GitMetadataImpl(@MapsTo("name") String name,
+                           @MapsTo("origin") String origin,
+                           @MapsTo("forks") List<String> forks,
+                           @MapsTo("pullRequests") List<PullRequest> pullRequests) {
+        this.name = checkNotEmpty("name",
+                                  name);
+        this.origin = checkNotNull("origin",
+                                   origin);
+        this.forks = checkNotNull("forks",
+                                  forks);
+        this.pullRequests = checkNotNull("pullRequests",
+                                         pullRequests);
     }
 
     @Override
@@ -79,7 +96,7 @@ public class GitMetadataImpl implements GitMetadata {
 
     @Override
     public List<String> getForks() {
-        return new ArrayList<>( forks );
+        return new ArrayList<>(forks);
     }
 
     @Override
@@ -89,38 +106,40 @@ public class GitMetadataImpl implements GitMetadata {
 
     @Override
     public List<PullRequest> getPullRequests() {
-        return new ArrayList<>( this.pullRequests );
+        return new ArrayList<>(this.pullRequests);
     }
 
     @Override
-    public List<PullRequest> getPullRequests( final Predicate<? super PullRequest> filter ) {
+    public List<PullRequest> getPullRequests(final Predicate<? super PullRequest> filter) {
         final List<PullRequest> prs = this.getPullRequests();
-        return prs.stream().filter( filter ).collect( Collectors.toList() );
+        return prs.stream().filter(filter).collect(Collectors.toList());
     }
 
     @Override
-    public PullRequest getPullRequest( long id ) {
-        final List<PullRequest> prs = this.getPullRequests( elem -> elem.getId() == id );
-        if ( prs.size() == 0 ) {
-            throw new NoSuchElementException( "The Pull Request with ID #" + id + " not found" );
+    public PullRequest getPullRequest(long id) {
+        final List<PullRequest> prs = this.getPullRequests(elem -> elem.getId() == id);
+        if (prs.size() == 0) {
+            throw new NoSuchElementException("The Pull Request with ID #" + id + " not found");
         }
-        final PullRequest pr = prs.get( 0 );
+        final PullRequest pr = prs.get(0);
 
-        return new PullRequestImpl( pr.getId(), pr.getSourceRepository(), pr.getSourceBranch(), pr.getTargetRepository(), pr.getTargetBranch(), pr.getStatus() );
-
+        return new PullRequestImpl(pr.getId(),
+                                   pr.getSourceRepository(),
+                                   pr.getSourceBranch(),
+                                   pr.getTargetRepository(),
+                                   pr.getTargetBranch(),
+                                   pr.getStatus());
     }
 
     @Override
-    public boolean exists( final PullRequest pullRequest ) {
+    public boolean exists(final PullRequest pullRequest) {
         return this.getPullRequests().stream().anyMatch(
                 pr -> {
-                    return pr.getSourceBranch().equals( pullRequest.getSourceBranch() )
-                            && pr.getSourceRepository().equals( pullRequest.getSourceRepository() )
-                            && pr.getTargetBranch().equals( pullRequest.getTargetBranch() )
-                            && pr.getTargetRepository().equals( pullRequest.getTargetRepository() )
-                            && pr.getStatus().equals( pullRequest.getStatus() );
-
-                } );
+                    return pr.getSourceBranch().equals(pullRequest.getSourceBranch())
+                            && pr.getSourceRepository().equals(pullRequest.getSourceRepository())
+                            && pr.getTargetBranch().equals(pullRequest.getTargetBranch())
+                            && pr.getTargetRepository().equals(pullRequest.getTargetRepository())
+                            && pr.getStatus().equals(pullRequest.getStatus());
+                });
     }
-
 }

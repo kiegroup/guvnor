@@ -22,23 +22,23 @@ public class ActionHistory {
 
     private Project lastAddedModule;
 
-    private Project    lastDeletedModule;
+    private Project lastDeletedModule;
 
     public void reset() {
         lastAddedModule = null;
         lastDeletedModule = null;
     }
 
-    public void setLastDeletedModule( final Project lastDeletedModule ) {
+    public void setLastDeletedModule(final Project lastDeletedModule) {
         this.lastDeletedModule = lastDeletedModule;
     }
 
-    public void setLastAddedModule( final Project lastAddedModule ) {
+    public void setLastAddedModule(final Project lastAddedModule) {
         this.lastAddedModule = lastAddedModule;
     }
 
-    public boolean alreadyUpToDate( final Project project ) {
-        return (!lastAddedModuleExists() || !lastAddedModule.equals( project )) && !lastDeletedModuleExist();
+    public boolean alreadyUpToDate(final Project project) {
+        return (!lastAddedModuleExists() || !lastAddedModule.equals(project)) && !lastDeletedModuleExist();
     }
 
     private boolean lastDeletedModuleExist() {

@@ -50,5 +50,4 @@ public class PipelineExecutorTraceImpl
     public PipelineExecutorTask getTask() {
         return task;
     }
-
 }

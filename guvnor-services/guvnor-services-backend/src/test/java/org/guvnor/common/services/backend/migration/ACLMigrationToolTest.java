@@ -16,7 +16,6 @@
 package org.guvnor.common.services.backend.migration;
 
 import java.util.Collections;
-
 import javax.enterprise.inject.Instance;
 
 import org.guvnor.common.services.project.model.Project;
@@ -42,8 +41,8 @@ import org.uberfire.security.authz.PermissionCollection;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ACLMigrationToolTest {
@@ -80,12 +79,17 @@ public class ACLMigrationToolTest {
     public void setUp() {
         permissionManager = new DefaultPermissionManager();
         authorizationPolicy = permissionManager.newAuthorizationPolicy().build();
-        migrationTool = spy(new ACLMigrationTool(organizationalUnitService, repositoryService, mock(Instance.class), permissionManager, policyStorage));
+        migrationTool = spy(new ACLMigrationTool(organizationalUnitService,
+                                                 repositoryService,
+                                                 mock(Instance.class),
+                                                 permissionManager,
+                                                 policyStorage));
 
         when(migrationTool.getProjectService()).thenReturn(projectService);
         when(organizationalUnitService.getAllOrganizationalUnits()).thenReturn(Collections.singleton(orgUnit1));
         when(repositoryService.getAllRepositories()).thenReturn(Collections.singleton(repo1));
-        when(projectService.getAllProjects(repo1, "master")).thenReturn(Collections.singleton(project1));
+        when(projectService.getAllProjects(repo1,
+                                           "master")).thenReturn(Collections.singleton(project1));
 
         when(orgUnit1.getIdentifier()).thenReturn("orgUnit1");
         when(orgUnit1.getResourceType()).thenReturn(OrganizationalUnit.RESOURCE_TYPE);
@@ -108,27 +112,34 @@ public class ACLMigrationToolTest {
         verify(migrationTool).migrateRepositories(authorizationPolicy);
         verify(policyStorage).savePolicy(authorizationPolicy);
 
-        assertEquals(authorizationPolicy.getRoles().size(), 0);
-        assertEquals(authorizationPolicy.getGroups().size(), 2);
+        assertEquals(authorizationPolicy.getRoles().size(),
+                     0);
+        assertEquals(authorizationPolicy.getGroups().size(),
+                     2);
 
         PermissionCollection pc1 = authorizationPolicy.getPermissions(new GroupImpl("group1"));
         assertNotNull(pc1);
-        assertEquals(pc1.collection().size(), 2);
+        assertEquals(pc1.collection().size(),
+                     2);
 
         Permission p1 = pc1.get("orgunit.read.orgUnit1");
         assertNotNull(p1);
-        assertEquals(p1.getResult(), AuthorizationResult.ACCESS_GRANTED);
+        assertEquals(p1.getResult(),
+                     AuthorizationResult.ACCESS_GRANTED);
 
         Permission p2 = pc1.get("repository.read.repo1");
         assertNotNull(p2);
-        assertEquals(p2.getResult(), AuthorizationResult.ACCESS_GRANTED);
+        assertEquals(p2.getResult(),
+                     AuthorizationResult.ACCESS_GRANTED);
 
         PermissionCollection pc2 = authorizationPolicy.getPermissions(new GroupImpl("group2"));
         assertNotNull(pc2);
-        assertEquals(pc2.collection().size(), 1);
+        assertEquals(pc2.collection().size(),
+                     1);
 
         Permission p3 = pc2.get("project.read.project1");
         assertNotNull(p3);
-        assertEquals(p3.getResult(), AuthorizationResult.ACCESS_GRANTED);
+        assertEquals(p3.getResult(),
+                     AuthorizationResult.ACCESS_GRANTED);
     }
 }

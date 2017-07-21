@@ -59,54 +59,53 @@ public class MetadataServiceImplTest {
         //Ensure URLs use the default:// scheme
         fileSystemProvider.forceAsDefault();
 
-        path = fileSystemProvider.getPath( this.getClass().getResource( "myfile.file" ).toURI() );
+        path = fileSystemProvider.getPath(this.getClass().getResource("myfile.file").toURI());
 
-        service = new MetadataServiceImpl( ioService,
-                                           configIOService,
-                                           sessionInfo );
+        service = new MetadataServiceImpl(ioService,
+                                          configIOService,
+                                          sessionInfo);
     }
 
     @Test
     public void testGetEmptyTagsNoOtherMetaView() {
-        final List<String> tags = service.getTags( path );
+        final List<String> tags = service.getTags(path);
 
-        assertNotNull( tags );
-        assertEquals( 0,
-                      tags.size() );
+        assertNotNull(tags);
+        assertEquals(0,
+                     tags.size());
     }
 
     @Test
     public void testGetEmptyTags() {
-        when( otherMetaView.readAttributes() ).thenReturn( new OtherMetaAttributesMock() );
-        when( ioService.getFileAttributeView( path,
-                                              OtherMetaView.class ) ).thenReturn( otherMetaView );
-        final List<String> tags = service.getTags( path );
+        when(otherMetaView.readAttributes()).thenReturn(new OtherMetaAttributesMock());
+        when(ioService.getFileAttributeView(path,
+                                            OtherMetaView.class)).thenReturn(otherMetaView);
+        final List<String> tags = service.getTags(path);
 
-        assertNotNull( tags );
-        assertEquals( 0,
-                      tags.size() );
+        assertNotNull(tags);
+        assertEquals(0,
+                     tags.size());
     }
 
     @Test
     public void testGetTags() {
-        when( otherMetaView.readAttributes() ).thenReturn( new OtherMetaAttributesMock() {
+        when(otherMetaView.readAttributes()).thenReturn(new OtherMetaAttributesMock() {
 
             List<String> tags = new ArrayList<String>() {{
-                add( "tag1" );
+                add("tag1");
             }};
 
             @Override
             public List<String> tags() {
                 return tags;
             }
-        } );
-        when( ioService.getFileAttributeView( path,
-                                              OtherMetaView.class ) ).thenReturn( otherMetaView );
-        final List<String> tags = service.getTags( path );
+        });
+        when(ioService.getFileAttributeView(path,
+                                            OtherMetaView.class)).thenReturn(otherMetaView);
+        final List<String> tags = service.getTags(path);
 
-        assertNotNull( tags );
-        assertEquals( 1,
-                      tags.size() );
+        assertNotNull(tags);
+        assertEquals(1,
+                     tags.size());
     }
-
 }

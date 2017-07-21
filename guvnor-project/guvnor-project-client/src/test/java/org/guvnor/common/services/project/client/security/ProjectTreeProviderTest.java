@@ -27,7 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionManager;
@@ -60,7 +59,8 @@ public class ProjectTreeProviderTest {
     @Before
     public void setup() {
         permissionManager = new DefaultPermissionManager();
-        treeProvider = new ProjectTreeProvider(permissionManager, new CallerMock<>(searchService));
+        treeProvider = new ProjectTreeProvider(permissionManager,
+                                               new CallerMock<>(searchService));
         rootNode = treeProvider.buildRootNode();
         rootNode.setPermissionTree(permissionTree);
 
@@ -71,22 +71,29 @@ public class ProjectTreeProviderTest {
         when(project1.getResourceType()).thenReturn(Project.RESOURCE_TYPE);
         when(project2.getResourceType()).thenReturn(Project.RESOURCE_TYPE);
         when(permissionTree.getChildrenResourceIds(any())).thenReturn(null);
-        when(searchService.searchByName(anyString(), anyInt(), anyBoolean())).thenReturn(Arrays.asList(project1, project2));
+        when(searchService.searchByName(anyString(),
+                                        anyInt(),
+                                        anyBoolean())).thenReturn(Arrays.asList(project1,
+                                                                                project2));
     }
 
     @Test
     public void testRootNode() {
-        assertEquals(rootNode.getPermissionList().size(), 5);
+        assertEquals(rootNode.getPermissionList().size(),
+                     5);
         checkDependencies(rootNode);
     }
 
     @Test
     public void testChildrenNodes() {
         rootNode.expand(children -> {
-            verify(searchService).searchByName(anyString(), anyInt(), anyBoolean());
+            verify(searchService).searchByName(anyString(),
+                                               anyInt(),
+                                               anyBoolean());
             for (PermissionNode child : children) {
                 List<Permission> permissionList = child.getPermissionList();
-                assertEquals(permissionList.size(), 4);
+                assertEquals(permissionList.size(),
+                             4);
                 checkDependencies(child);
 
                 List<String> permissionNames = permissionList.stream()
@@ -106,9 +113,9 @@ public class ProjectTreeProviderTest {
             Collection<Permission> dependencies = permissionNode.getDependencies(permission);
 
             if (permission.getName().startsWith("project.read")) {
-                assertEquals(dependencies.size(), 3);
-            }
-            else {
+                assertEquals(dependencies.size(),
+                             3);
+            } else {
                 assertNull(dependencies);
             }
         }

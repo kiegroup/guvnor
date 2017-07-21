@@ -36,7 +36,7 @@ public class RepositoriesViewImpl
         implements RepositoriesView,
                    RequiresResize {
 
-    private static RepositoriesEditorViewBinder uiBinder = GWT.create( RepositoriesEditorViewBinder.class );
+    private static RepositoriesEditorViewBinder uiBinder = GWT.create(RepositoriesEditorViewBinder.class);
 
     @UiField
     public FlowPanel panel;
@@ -44,29 +44,29 @@ public class RepositoriesViewImpl
     private RepositoriesPresenter presenter;
 
     public RepositoriesViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public RepositoryItemPresenter addRepository( final Repository repository,
-                                                  final String branch ) {
-        final RepositoryItemPresenter item = IOC.getBeanManager().lookupBean( RepositoryItemPresenter.class ).newInstance();
+    public RepositoryItemPresenter addRepository(final Repository repository,
+                                                 final String branch) {
+        final RepositoryItemPresenter item = IOC.getBeanManager().lookupBean(RepositoryItemPresenter.class).newInstance();
 
-        item.setRepository( repository,
-                            branch);
-        panel.add( item );
+        item.setRepository(repository,
+                           branch);
+        panel.add(item);
 
         return item;
     }
 
     @Override
-    public boolean confirmDeleteRepository( final Repository repository ) {
-        return Window.confirm( CoreConstants.INSTANCE.ConfirmDeleteRepository0( repository.getAlias() ) );
+    public boolean confirmDeleteRepository(final Repository repository) {
+        return Window.confirm(CoreConstants.INSTANCE.ConfirmDeleteRepository0(repository.getAlias()));
     }
 
     @Override
-    public void removeIfExists( final RepositoryItemPresenter repositoryItem ) {
-        panel.remove( repositoryItem );
+    public void removeIfExists(final RepositoryItemPresenter repositoryItem) {
+        panel.remove(repositoryItem);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class RepositoriesViewImpl
     }
 
     @Override
-    public void setPresenter( final RepositoriesPresenter presenter ) {
+    public void setPresenter(final RepositoriesPresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -83,7 +83,8 @@ public class RepositoriesViewImpl
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        panel.setPixelSize( width, height );
+        panel.setPixelSize(width,
+                           height);
     }
 
     interface RepositoriesEditorViewBinder

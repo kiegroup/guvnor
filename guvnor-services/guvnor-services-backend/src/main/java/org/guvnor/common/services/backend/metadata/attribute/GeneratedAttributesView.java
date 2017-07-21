@@ -34,13 +34,13 @@ public class GeneratedAttributesView extends AbstractBasicFileAttributeView<Abst
 
     private GeneratedFileAttributes generatedFileAttributes;
 
-    public GeneratedAttributesView( AbstractPath path ) {
-        super( path );
+    public GeneratedAttributesView(AbstractPath path) {
+        super(path);
 
         final boolean generated = extractGenerated();
 
-        final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView( path,
-                                                                                                    BasicFileAttributeView.class ).readAttributes();
+        final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView(path,
+                                                                                                   BasicFileAttributeView.class).readAttributes();
 
         this.generatedFileAttributes = new GeneratedFileAttributes() {
             @Override
@@ -98,7 +98,7 @@ public class GeneratedAttributesView extends AbstractBasicFileAttributeView<Abst
     private boolean extractGenerated() {
         final Map<String, Object> content = path.getAttrStorage().getContent();
 
-        return Boolean.parseBoolean( String.valueOf( content.get( GENERATED_ATTRIBUTE_NAME ) ) );
+        return Boolean.parseBoolean(String.valueOf(content.get(GENERATED_ATTRIBUTE_NAME)));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class GeneratedAttributesView extends AbstractBasicFileAttributeView<Abst
 
     @Override
     public Class[] viewTypes() {
-        return new Class[]{ GeneratedAttributesView.class };
+        return new Class[]{GeneratedAttributesView.class};
     }
 
     @Override

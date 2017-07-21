@@ -52,12 +52,15 @@ public class AbstractFileServletTest {
         final String clientId = "1";
         final String sessionId = "2";
 
-        when( request.getSession( eq( true ) ) ).thenReturn( httpSession );
-        when( request.getParameter( eq( "clientId" ) ) ).thenReturn( clientId );
-        when( provider.createOrGetSession( httpSession, clientId ) ).thenReturn( queueSession );
-        when( queueSession.getSessionId() ).thenReturn( sessionId );
+        when(request.getSession(eq(true))).thenReturn(httpSession);
+        when(request.getParameter(eq("clientId"))).thenReturn(clientId);
+        when(provider.createOrGetSession(httpSession,
+                                         clientId)).thenReturn(queueSession);
+        when(queueSession.getSessionId()).thenReturn(sessionId);
 
-        assertEquals( sessionId, abstractFileServlet().getSessionId( request, provider ) );
+        assertEquals(sessionId,
+                     abstractFileServlet().getSessionId(request,
+                                                        provider));
     }
 
     @Test
@@ -65,46 +68,49 @@ public class AbstractFileServletTest {
         final String clientId = null;
         final String sessionId = "InvalidSessionId";
 
-        when( request.getSession( eq( true ) ) ).thenReturn( httpSession );
-        when( request.getParameter( eq( "clientId" ) ) ).thenReturn( clientId );
-        when( provider.createOrGetSession( httpSession, "0" ) ).thenReturn( queueSession );
-        when( queueSession.getSessionId() ).thenReturn( sessionId );
+        when(request.getSession(eq(true))).thenReturn(httpSession);
+        when(request.getParameter(eq("clientId"))).thenReturn(clientId);
+        when(provider.createOrGetSession(httpSession,
+                                         "0")).thenReturn(queueSession);
+        when(queueSession.getSessionId()).thenReturn(sessionId);
 
-        assertEquals( sessionId, abstractFileServlet().getSessionId( request, provider ) );
+        assertEquals(sessionId,
+                     abstractFileServlet().getSessionId(request,
+                                                        provider));
     }
 
     private AbstractFileServlet abstractFileServlet() {
         return new AbstractFileServlet() {
             @Override
-            protected InputStream doLoad( final Path path,
-                                          final HttpServletRequest request ) {
+            protected InputStream doLoad(final Path path,
+                                         final HttpServletRequest request) {
                 return null;
             }
 
             @Override
-            protected void doCreate( final Path path,
-                                     final InputStream data,
-                                     final HttpServletRequest request,
-                                     final String comment ) {
+            protected void doCreate(final Path path,
+                                    final InputStream data,
+                                    final HttpServletRequest request,
+                                    final String comment) {
 
             }
 
             @Override
-            protected void doUpdate( final Path path,
-                                     final InputStream data,
-                                     final HttpServletRequest request,
-                                     final String comment ) {
+            protected void doUpdate(final Path path,
+                                    final InputStream data,
+                                    final HttpServletRequest request,
+                                    final String comment) {
 
             }
 
             @Override
-            protected Path convertPath( final String fileName,
-                                        final String contextPath ) throws URISyntaxException {
+            protected Path convertPath(final String fileName,
+                                       final String contextPath) throws URISyntaxException {
                 return null;
             }
 
             @Override
-            protected Path convertPath( final String fullPath ) throws URISyntaxException {
+            protected Path convertPath(final String fullPath) throws URISyntaxException {
                 return null;
             }
         };

@@ -23,8 +23,8 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.guvnor.ala.config.RuntimeConfig;
-import org.guvnor.ala.runtime.RuntimeBuilder;
 import org.guvnor.ala.runtime.Runtime;
+import org.guvnor.ala.runtime.RuntimeBuilder;
 import org.guvnor.ala.runtime.RuntimeDestroyer;
 import org.guvnor.ala.runtime.RuntimeId;
 
@@ -38,25 +38,23 @@ public class RuntimeFactory {
     }
 
     @Inject
-    public RuntimeFactory( final Instance<RuntimeBuilder<?, ?>> builders,
-            final Instance<RuntimeDestroyer> destroyers ) {
-        builders.forEach( this.builders::add );
-        destroyers.forEach( this.destroyers::add );
+    public RuntimeFactory(final Instance<RuntimeBuilder<?, ?>> builders,
+                          final Instance<RuntimeDestroyer> destroyers) {
+        builders.forEach(this.builders::add);
+        destroyers.forEach(this.destroyers::add);
     }
 
-    public Optional<Runtime> newRuntime( RuntimeConfig config ) {
+    public Optional<Runtime> newRuntime(RuntimeConfig config) {
         return builders.stream()
-                .filter( rb -> rb.supports( config ) )
-                .findFirst().flatMap( rb -> {
-                    return ( Optional<Runtime> ) rb.apply( config );
-                } );
+                .filter(rb -> rb.supports(config))
+                .findFirst().flatMap(rb -> {
+                    return (Optional<Runtime>) rb.apply(config);
+                });
     }
 
-    public void destroyRuntime( RuntimeId runtimeId ) {
+    public void destroyRuntime(RuntimeId runtimeId) {
         destroyers.stream()
-                .filter( rd -> rd.supports( runtimeId ) )
-                .findFirst().get().destroy( runtimeId );
-
+                .filter(rd -> rd.supports(runtimeId))
+                .findFirst().get().destroy(runtimeId);
     }
-
 }

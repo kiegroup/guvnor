@@ -24,8 +24,8 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 @Remote
 public interface RepositoryServiceEditor {
 
-    List<VersionRecord> revertHistory( final String alias,
-                                       final Path path,
-                                       final String comment,
-                                       final VersionRecord record );
+    List<VersionRecord> revertHistory(final String alias,
+                                      final Path path,
+                                      final String comment,
+                                      final VersionRecord record);
 }

@@ -27,7 +27,7 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.commons.data.Pair.*;
+import static org.uberfire.commons.data.Pair.newPair;
 
 /**
  *
@@ -37,10 +37,11 @@ public class ConfigView extends AbstractBasicFileAttributeView<AbstractPath>
 
     private final ConfigAttributes attrs;
 
-    public ConfigView( final AbstractPath path ) {
-        super( path );
+    public ConfigView(final AbstractPath path) {
+        super(path);
 
-        final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView( path, BasicFileAttributeView.class ).readAttributes();
+        final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView(path,
+                                                                                                   BasicFileAttributeView.class).readAttributes();
 
         this.attrs = new ConfigAttributes() {
 
@@ -91,14 +92,17 @@ public class ConfigView extends AbstractBasicFileAttributeView<AbstractPath>
         };
     }
 
-    private Pair<Integer, String> extractValue( final Map.Entry<String, Object> entry ) {
-        int start = entry.getKey().indexOf( '[' );
-        if ( start < 0 ) {
-            return newPair( 0, entry.getValue().toString() );
+    private Pair<Integer, String> extractValue(final Map.Entry<String, Object> entry) {
+        int start = entry.getKey().indexOf('[');
+        if (start < 0) {
+            return newPair(0,
+                           entry.getValue().toString());
         }
-        int end = entry.getKey().indexOf( ']' );
+        int end = entry.getKey().indexOf(']');
 
-        return newPair( Integer.valueOf( entry.getKey().substring( start + 1, end ) ), entry.getValue().toString() );
+        return newPair(Integer.valueOf(entry.getKey().substring(start + 1,
+                                                                end)),
+                       entry.getValue().toString());
     }
 
     @Override
@@ -112,13 +116,13 @@ public class ConfigView extends AbstractBasicFileAttributeView<AbstractPath>
     }
 
     @Override
-    public Map<String, Object> readAttributes( final String... attributes ) {
-        return ConfigAttributesUtil.toMap( readAttributes(), attributes );
+    public Map<String, Object> readAttributes(final String... attributes) {
+        return ConfigAttributesUtil.toMap(readAttributes(),
+                                          attributes);
     }
 
     @Override
     public Class<? extends BasicFileAttributeView>[] viewTypes() {
-        return new Class[]{ ConfigView.class };
+        return new Class[]{ConfigView.class};
     }
-
 }

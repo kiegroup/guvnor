@@ -28,22 +28,22 @@ import org.uberfire.backend.vfs.Path;
 public class DefaultProjectResourcePathResolver
         implements ProjectResourcePathResolver {
 
-    public DefaultProjectResourcePathResolver( ) {
+    public DefaultProjectResourcePathResolver() {
         //Empty constructor for Weld proxying
     }
 
     @Override
-    public int getPriority( ) {
+    public int getPriority() {
         return -1;
     }
 
     @Override
-    public boolean accept( String resourceType ) {
+    public boolean accept(String resourceType) {
         return true;
     }
 
     @Override
-    public Path resolveDefaultPath( Package pkg ) {
+    public Path resolveDefaultPath(Package pkg) {
         return pkg.getPackageMainResourcesPath();
     }
 }

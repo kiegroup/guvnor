@@ -24,17 +24,17 @@ public class ArgumentNotSetException extends Exception {
         super();
     }
 
-    public ArgumentNotSetException( String message,
-                                    Throwable cause ) {
-        super( message, cause );
+    public ArgumentNotSetException(String message,
+                                   Throwable cause) {
+        super(message,
+              cause);
     }
 
-    public ArgumentNotSetException( String message ) {
-        super( message );
+    public ArgumentNotSetException(String message) {
+        super(message);
     }
 
-    public ArgumentNotSetException( Throwable cause ) {
-        super( cause );
+    public ArgumentNotSetException(Throwable cause) {
+        super(cause);
     }
-
 }

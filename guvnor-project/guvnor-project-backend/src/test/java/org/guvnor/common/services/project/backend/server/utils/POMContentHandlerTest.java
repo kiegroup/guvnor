@@ -18,7 +18,6 @@ package org.guvnor.common.services.project.backend.server.utils;
 import java.io.IOException;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.junit.Test;
@@ -42,19 +41,19 @@ public class POMContentHandlerTest {
         final POMContentHandler handler = new POMContentHandler();
         final GAV gav = new GAV();
         gav.setGroupId("org.guvnor");
-        gav.setArtifactId( "test" );
-        gav.setVersion( "0.0.1" );
-        final POM pom = new POM( "name",
-                                 "description",
-                                 gav );
-        final String xml = handler.toString( pom );
+        gav.setArtifactId("test");
+        gav.setVersion("0.0.1");
+        final POM pom = new POM("name",
+                                "description",
+                                gav);
+        final String xml = handler.toString(pom);
 
-        assertContainsIgnoreWhitespace( GAV_GROUP_ID_XML,
-                                        xml );
-        assertContainsIgnoreWhitespace( GAV_ARTIFACT_ID_XML,
-                                        xml );
-        assertContainsIgnoreWhitespace( GAV_VERSION_XML,
-                                        xml );
+        assertContainsIgnoreWhitespace(GAV_GROUP_ID_XML,
+                                       xml);
+        assertContainsIgnoreWhitespace(GAV_ARTIFACT_ID_XML,
+                                       xml);
+        assertContainsIgnoreWhitespace(GAV_VERSION_XML,
+                                       xml);
     }
 
     @Test
@@ -70,28 +69,29 @@ public class POMContentHandlerTest {
                 + "<description>description</description>"
                 + "</project>";
 
-        final POM pom = handler.toModel( xml );
-        assertEquals( "org.guvnor",
-                      pom.getGav().getGroupId() );
-        assertEquals( "test",
-                      pom.getGav().getArtifactId() );
-        assertEquals( "0.0.1",
-                      pom.getGav().getVersion() );
-        assertEquals( "name",
-                      pom.getName() );
-        assertEquals( "description",
-                      pom.getDescription() );
+        final POM pom = handler.toModel(xml);
+        assertEquals("org.guvnor",
+                     pom.getGav().getGroupId());
+        assertEquals("test",
+                     pom.getGav().getArtifactId());
+        assertEquals("0.0.1",
+                     pom.getGav().getVersion());
+        assertEquals("name",
+                     pom.getName());
+        assertEquals("description",
+                     pom.getDescription());
 
-        final String enrichedXml = handler.toString( pom,
-                                                     xml );
+        final String enrichedXml = handler.toString(pom,
+                                                    xml);
 
-        assertContainsIgnoreWhitespace( GAV_GROUP_ID_XML,
-                                        enrichedXml );
-        assertContainsIgnoreWhitespace( GAV_ARTIFACT_ID_XML,
-                                        enrichedXml );
-        assertContainsIgnoreWhitespace( GAV_VERSION_XML,
-                                        enrichedXml );
+        assertContainsIgnoreWhitespace(GAV_GROUP_ID_XML,
+                                       enrichedXml);
+        assertContainsIgnoreWhitespace(GAV_ARTIFACT_ID_XML,
+                                       enrichedXml);
+        assertContainsIgnoreWhitespace(GAV_VERSION_XML,
+                                       enrichedXml);
     }
+
     @Test
     public void testPOMContentHandlerExistingJarProject() throws IOException, XmlPullParserException {
         /*
@@ -110,12 +110,11 @@ public class POMContentHandlerTest {
                 + "<description>description</description>"
                 + "</project>";
 
-        final String enrichedXml = handler.toString( handler.toModel( xml ),
-                                                     xml );
+        final String enrichedXml = handler.toString(handler.toModel(xml),
+                                                    xml);
 
-
-        assertContainsIgnoreWhitespace( "<packaging>something</packaging>",
-                                        enrichedXml );
+        assertContainsIgnoreWhitespace("<packaging>something</packaging>",
+                                       enrichedXml);
     }
 
     @Test
@@ -141,29 +140,29 @@ public class POMContentHandlerTest {
                 + "</build>"
                 + "</project>";
 
-        final POM pom = handler.toModel( xml );
-        assertEquals( "org.guvnor",
-                      pom.getGav().getGroupId() );
-        assertEquals( "test",
-                      pom.getGav().getArtifactId() );
-        assertEquals( "0.0.1",
-                      pom.getGav().getVersion() );
-        assertEquals( "name",
-                      pom.getName() );
-        assertEquals( "description",
-                      pom.getDescription() );
+        final POM pom = handler.toModel(xml);
+        assertEquals("org.guvnor",
+                     pom.getGav().getGroupId());
+        assertEquals("test",
+                     pom.getGav().getArtifactId());
+        assertEquals("0.0.1",
+                     pom.getGav().getVersion());
+        assertEquals("name",
+                     pom.getName());
+        assertEquals("description",
+                     pom.getDescription());
 
-        final String enrichedXml = handler.toString( pom,
-                                                     xml );
+        final String enrichedXml = handler.toString(pom,
+                                                    xml);
 
-        assertContainsIgnoreWhitespace( GAV_GROUP_ID_XML,
-                                        enrichedXml );
-        assertContainsIgnoreWhitespace( GAV_ARTIFACT_ID_XML,
-                                        enrichedXml );
-        assertContainsIgnoreWhitespace( GAV_VERSION_XML,
-                                        enrichedXml );
-        assertContainsIgnoreWhitespace( EXISTING_PLUGIN_XML,
-                                        enrichedXml );
+        assertContainsIgnoreWhitespace(GAV_GROUP_ID_XML,
+                                       enrichedXml);
+        assertContainsIgnoreWhitespace(GAV_ARTIFACT_ID_XML,
+                                       enrichedXml);
+        assertContainsIgnoreWhitespace(GAV_VERSION_XML,
+                                       enrichedXml);
+        assertContainsIgnoreWhitespace(EXISTING_PLUGIN_XML,
+                                       enrichedXml);
     }
 
     @Test
@@ -196,19 +195,21 @@ public class POMContentHandlerTest {
         final POM pom = handler.toModel(xml);
 
         assertNotNull(pom.getParent());
-        assertEquals("org.tadaa", pom.getParent().getGroupId());
-        assertEquals("tadaa", pom.getParent().getArtifactId());
-        assertEquals("1.2.3", pom.getParent().getVersion());
+        assertEquals("org.tadaa",
+                     pom.getParent().getGroupId());
+        assertEquals("tadaa",
+                     pom.getParent().getArtifactId());
+        assertEquals("1.2.3",
+                     pom.getParent().getVersion());
     }
 
-    private void assertContainsIgnoreWhitespace( final String expected,
-                                                 final String xml ) {
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" );
-        final String cleanActual = xml.replaceAll( "\\s+",
-                                                      "" );
+    private void assertContainsIgnoreWhitespace(final String expected,
+                                                final String xml) {
+        final String cleanExpected = expected.replaceAll("\\s+",
+                                                         "");
+        final String cleanActual = xml.replaceAll("\\s+",
+                                                  "");
 
-        assertTrue( cleanActual.contains( cleanExpected ) );
+        assertTrue(cleanActual.contains(cleanExpected));
     }
-
 }

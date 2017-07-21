@@ -24,5 +24,4 @@ public class ServiceUtil {
                                               String key) {
         return map.get(key) != null ? map.get(key).toString() : null;
     }
-
 }

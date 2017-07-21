@@ -42,5 +42,4 @@ public class HTMLFileManagerFields {
 
     //Indicator for upload being successful
     public static final String UPLOAD_OK = "OK";
-
 }

@@ -49,15 +49,15 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
-import org.uberfire.java.nio.file.Path;
 
 /**
  * Test the Wildfly Provider by starting a docker image of wildfly and deploying
  * an application there.
  */
-@RunWith( ArquillianConditionalRunner.class )
+@RunWith(ArquillianConditionalRunner.class)
 public class WildflyRuntimeTest {
 
     private static final String CONTAINER = "swarm";
@@ -72,99 +72,109 @@ public class WildflyRuntimeTest {
     @BeforeClass
     public static void setUp() {
         try {
-            tempPath = Files.createTempDirectory( "ooo" ).toFile();
-        } catch ( IOException e ) {
+            tempPath = Files.createTempDirectory("ooo").toFile();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @AfterClass
     public static void tearDown() {
-        FileUtils.deleteQuietly( tempPath );
+        FileUtils.deleteQuietly(tempPath);
     }
 
     @Test
-    @InSequence( 1 )
+    @InSequence(1)
     public void shouldBeAbleToCreateAndStartTest() {
-        cc.create( CONTAINER );
-        cc.start( CONTAINER );
+        cc.create(CONTAINER);
+        cc.start(CONTAINER);
     }
 
     @Test
-    @InSequence( 2 )
+    @InSequence(2)
     public void waitForAppBuildTest() {
         final GitHub gitHub = new GitHub();
-        final GitRepository repository = ( GitRepository ) gitHub.getRepository( "salaboy/drools-workshop", new HashMap<String, String>() {
-            {
-                put( "out-dir", tempPath.getAbsolutePath() );
-            }
-        } );
-        final Optional<Source> _source = new GitConfigExecutor( new InMemorySourceRegistry() ).apply( new GitConfigImpl( tempPath.getAbsolutePath(),
-                "master",
-                "https://github.com/salaboy/drools-workshop",
-                "drools-workshop-build",
-                "true" ) );
+        final GitRepository repository = (GitRepository) gitHub.getRepository("salaboy/drools-workshop",
+                                                                              new HashMap<String, String>() {
+                                                                                  {
+                                                                                      put("out-dir",
+                                                                                          tempPath.getAbsolutePath());
+                                                                                  }
+                                                                              });
+        final Optional<Source> _source = new GitConfigExecutor(new InMemorySourceRegistry()).apply(new GitConfigImpl(tempPath.getAbsolutePath(),
+                                                                                                                     "master",
+                                                                                                                     "https://github.com/salaboy/drools-workshop",
+                                                                                                                     "drools-workshop-build",
+                                                                                                                     "true"));
 
-        assertTrue( _source.isPresent() );
+        assertTrue(_source.isPresent());
         final Source source = _source.get();
-        assertNotNull( source );
+        assertNotNull(source);
 
         List<String> goals = new ArrayList<>();
-        goals.add( "package" );
+        goals.add("package");
         Properties properties = new Properties();
-        properties.setProperty( "failIfNoTests", "false" );
-        final Path projectRoot = source.getPath().resolve( "drools-webapp-example" );
-        final InputStream pomStream = org.uberfire.java.nio.file.Files.newInputStream( projectRoot.resolve( "pom.xml" ) );
-        final MavenProject project = MavenProjectLoader.parseMavenPom( pomStream );
-        RepositoryVisitor repositoryVisitor = new RepositoryVisitor( projectRoot, project.getName() );
+        properties.setProperty("failIfNoTests",
+                               "false");
+        final Path projectRoot = source.getPath().resolve("drools-webapp-example");
+        final InputStream pomStream = org.uberfire.java.nio.file.Files.newInputStream(projectRoot.resolve("pom.xml"));
+        final MavenProject project = MavenProjectLoader.parseMavenPom(pomStream);
+        RepositoryVisitor repositoryVisitor = new RepositoryVisitor(projectRoot,
+                                                                    project.getName());
         final String expectedBinary = project.getArtifact().getArtifactId() + "-" + project.getArtifact().getVersion() + "." + project.getArtifact().getType();
-        final org.guvnor.ala.build.maven.model.MavenProject mavenProject = new MavenProjectImpl( project.getId(),
-                project.getArtifact().getType(),
-                project.getName(),
-                expectedBinary,
-                source.getPath(),
-                source.getPath().resolve( "drools-webapp-example" ),
-                source.getPath().resolve( "target" ).resolve( expectedBinary ).toAbsolutePath(),
-                repositoryVisitor.getRoot().getAbsolutePath(),
-                null );
+        final org.guvnor.ala.build.maven.model.MavenProject mavenProject = new MavenProjectImpl(project.getId(),
+                                                                                                project.getArtifact().getType(),
+                                                                                                project.getName(),
+                                                                                                expectedBinary,
+                                                                                                source.getPath(),
+                                                                                                source.getPath().resolve("drools-webapp-example"),
+                                                                                                source.getPath().resolve("target").resolve(expectedBinary).toAbsolutePath(),
+                                                                                                repositoryVisitor.getRoot().getAbsolutePath(),
+                                                                                                null);
 
-        final File pom = new File( mavenProject.getTempDir(), "pom.xml" );
-        MavenBuildExecutor.executeMaven( pom, properties, goals.toArray( new String[0] ) );
+        final File pom = new File(mavenProject.getTempDir(),
+                                  "pom.xml");
+        MavenBuildExecutor.executeMaven(pom,
+                                        properties,
+                                        goals.toArray(new String[0]));
 
         final File file = new File(repositoryVisitor.getRoot().getAbsolutePath() + "/target/" + mavenProject.getExpectedBinary());
 
-        WildflyClient wildflyClient = new WildflyClient( "", "admin", "Admin#70365", ip, 8080, 9990 );
+        WildflyClient wildflyClient = new WildflyClient("",
+                                                        "admin",
+                                                        "Admin#70365",
+                                                        ip,
+                                                        8080,
+                                                        9990);
 
-        wildflyClient.deploy( file );
+        wildflyClient.deploy(file);
 
         final String id = file.getName();
 
-        WildflyAppState appState = wildflyClient.getAppState( id );
+        WildflyAppState appState = wildflyClient.getAppState(id);
 
-        assertNotNull( appState );
+        assertNotNull(appState);
 
-        assertTrue( appState.getState().equals( "Running" ) );
+        assertTrue(appState.getState().equals("Running"));
 
-        wildflyClient.undeploy( id );
+        wildflyClient.undeploy(id);
 
-        appState = wildflyClient.getAppState( id );
-        assertNotNull( appState );
+        appState = wildflyClient.getAppState(id);
+        assertNotNull(appState);
 
-        assertTrue( appState.getState().equals( "NA" ) );
-        wildflyClient.deploy( file );
+        assertTrue(appState.getState().equals("NA"));
+        wildflyClient.deploy(file);
 
-        appState = wildflyClient.getAppState( id );
-        assertNotNull( appState );
+        appState = wildflyClient.getAppState(id);
+        assertNotNull(appState);
 
-        assertTrue( appState.getState().equals( "Running" ) );
-
+        assertTrue(appState.getState().equals("Running"));
     }
 
     @Test
-    @InSequence( 3 )
+    @InSequence(3)
     public void shouldBeAbleToStopAndDestroyTest() {
-        cc.stop( CONTAINER );
-        cc.destroy( CONTAINER );
+        cc.stop(CONTAINER);
+        cc.destroy(CONTAINER);
     }
-
 }

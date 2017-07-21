@@ -73,25 +73,25 @@ public class FileExplorerPresenter
     private GuvnorStructureContext guvnorStructureContext;
 
     private Map<String, Repository> repositories = new HashMap<String, Repository>();
-    private GuvnorStructureContextChangeHandler.HandlerRegistration       changeHandlerRegistration;
+    private GuvnorStructureContextChangeHandler.HandlerRegistration changeHandlerRegistration;
     private GuvnorStructureContextBranchChangeHandler.HandlerRegistration branchChangeHandlerRegistration;
 
     public FileExplorerPresenter() {
     }
 
     @Inject
-    public FileExplorerPresenter( final FileExplorerView view,
-                                  final GuvnorStructureContext guvnorStructureContext ) {
+    public FileExplorerPresenter(final FileExplorerView view,
+                                 final GuvnorStructureContext guvnorStructureContext) {
         this.view = view;
         this.guvnorStructureContext = guvnorStructureContext;
-        this.changeHandlerRegistration = this.guvnorStructureContext.addGuvnorStructureContextChangeHandler( this );
-        this.branchChangeHandlerRegistration = this.guvnorStructureContext.addGuvnorStructureContextBranchChangeHandler( this );
+        this.changeHandlerRegistration = this.guvnorStructureContext.addGuvnorStructureContextChangeHandler(this);
+        this.branchChangeHandlerRegistration = this.guvnorStructureContext.addGuvnorStructureContextBranchChangeHandler(this);
 
-        view.init( this );
+        view.init(this);
     }
 
-    private boolean isDirectory( final Map response ) {
-        return response != null && response.containsKey( "isDirectory" ) && ( Boolean ) response.get( "isDirectory" );
+    private boolean isDirectory(final Map response) {
+        return response != null && response.containsKey("isDirectory") && (Boolean) response.get("isDirectory");
     }
 
     @OnStartup
@@ -99,46 +99,47 @@ public class FileExplorerPresenter
 
         view.reset();
 
-        guvnorStructureContext.getRepositories( new Callback<Collection<Repository>>() {
+        guvnorStructureContext.getRepositories(new Callback<Collection<Repository>>() {
             @Override
-            public void callback( final Collection<Repository> response ) {
-                for ( final Repository root : response ) {
-                    if ( repositories.containsKey( root.getAlias() ) ) {
-                        view.removeRepository( root );
+            public void callback(final Collection<Repository> response) {
+                for (final Repository root : response) {
+                    if (repositories.containsKey(root.getAlias())) {
+                        view.removeRepository(root);
                     }
-                    view.addNewRepository( root,
-                                           guvnorStructureContext.getCurrentBranch( root.getAlias() ) );
-                    repositories.put( root.getAlias(), root );
+                    view.addNewRepository(root,
+                                          guvnorStructureContext.getCurrentBranch(root.getAlias()));
+                    repositories.put(root.getAlias(),
+                                     root);
                 }
             }
-        } );
+        });
     }
 
     @OnShutdown
     public void onShutdown() {
-        guvnorStructureContext.removeHandler( changeHandlerRegistration );
-        guvnorStructureContext.removeHandler( branchChangeHandlerRegistration );
+        guvnorStructureContext.removeHandler(changeHandlerRegistration);
+        guvnorStructureContext.removeHandler(branchChangeHandlerRegistration);
     }
 
-    public void loadDirectoryContent( final FileExplorerItem item,
-                                      final Path path ) {
-        vfsService.call( new RemoteCallback<DirectoryStream<Path>>() {
+    public void loadDirectoryContent(final FileExplorerItem item,
+                                     final Path path) {
+        vfsService.call(new RemoteCallback<DirectoryStream<Path>>() {
             @Override
-            public void callback( DirectoryStream<Path> response ) {
-                for ( final Path child : response ) {
-                    vfsService.call( new RemoteCallback<Map>() {
+            public void callback(DirectoryStream<Path> response) {
+                for (final Path child : response) {
+                    vfsService.call(new RemoteCallback<Map>() {
                         @Override
-                        public void callback( final Map response ) {
-                            if ( isDirectory( response ) ) {
-                                item.addDirectory( child );
+                        public void callback(final Map response) {
+                            if (isDirectory(response)) {
+                                item.addDirectory(child);
                             } else {
-                                item.addFile( child );
+                                item.addFile(child);
                             }
                         }
-                    } ).readAttributes( child );
+                    }).readAttributes(child);
                 }
             }
-        } ).newDirectoryStream( path );
+        }).newDirectoryStream(path);
     }
 
     @WorkbenchPartView
@@ -146,8 +147,8 @@ public class FileExplorerPresenter
         return view;
     }
 
-    private boolean isRegularFile( final Map response ) {
-        return response != null && response.containsKey( "isRegularFile" ) && ( Boolean ) response.get( "isRegularFile" );
+    private boolean isRegularFile(final Map response) {
+        return response != null && response.containsKey("isRegularFile") && (Boolean) response.get("isRegularFile");
     }
 
     @WorkbenchPartTitle
@@ -160,108 +161,112 @@ public class FileExplorerPresenter
         return CompassPosition.WEST;
     }
 
-    public void redirect( final Path path ) {
+    public void redirect(final Path path) {
 
-        pathSelectedEvent.fire( new PathSelectedEvent( path ) );
+        pathSelectedEvent.fire(new PathSelectedEvent(path));
 
-        vfsService.call( new RemoteCallback<Map>() {
+        vfsService.call(new RemoteCallback<Map>() {
             @Override
-            public void callback( final Map response ) {
-                if ( isRegularFile( response ) ) {
-                    placeManager.goTo( path );
+            public void callback(final Map response) {
+                if (isRegularFile(response)) {
+                    placeManager.goTo(path);
                 }
             }
-        } ).readAttributes( path );
+        }).readAttributes(path);
     }
 
     public void redirectRepositoryList() {
-        placeManager.goTo( new DefaultPlaceRequest( "RepositoriesEditor" ) );
+        placeManager.goTo(new DefaultPlaceRequest("RepositoriesEditor"));
     }
 
-    public void redirect( final Repository repo ) {
-        placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias", repo.getAlias() ) );
-    }
-
-    @Override
-    public void onNewRepositoryAdded( final Repository repository ) {
-        if ( repository == null ) {
-            return;
-        }
-        if ( repositories.containsKey( repository.getAlias() ) ) {
-            view.removeRepository( repository );
-        }
-        view.addNewRepository( repository,
-                               repository.getDefaultBranch() );
-        repositories.put( repository.getAlias(), repository );
+    public void redirect(final Repository repo) {
+        placeManager.goTo(new DefaultPlaceRequest("RepositoryEditor").addParameter("alias",
+                                                                                   repo.getAlias()));
     }
 
     @Override
-    public void onRepositoryDeleted( final Repository repository ) {
-        if ( repository == null ) {
+    public void onNewRepositoryAdded(final Repository repository) {
+        if (repository == null) {
             return;
         }
-        if ( repositories.containsKey( repository.getAlias() ) ) {
-            view.removeRepository( repository );
-            repositories.remove( repository.getAlias() );
+        if (repositories.containsKey(repository.getAlias())) {
+            view.removeRepository(repository);
+        }
+        view.addNewRepository(repository,
+                              repository.getDefaultBranch());
+        repositories.put(repository.getAlias(),
+                         repository);
+    }
+
+    @Override
+    public void onRepositoryDeleted(final Repository repository) {
+        if (repository == null) {
+            return;
+        }
+        if (repositories.containsKey(repository.getAlias())) {
+            view.removeRepository(repository);
+            repositories.remove(repository.getAlias());
         }
     }
 
     @Override
-    public void onBranchChange( final String alias,
-                                final String branch ) {
-        if ( alias == null ) {
+    public void onBranchChange(final String alias,
+                               final String branch) {
+        if (alias == null) {
             return;
         }
 
-        if ( repositories.containsKey( alias ) ) {
-            final Repository repository = repositories.get( alias );
-            view.removeRepository( repository );
+        if (repositories.containsKey(alias)) {
+            final Repository repository = repositories.get(alias);
+            view.removeRepository(repository);
 
             // refresh repository
-            view.addNewRepository( repository,
-                                   branch );
+            view.addNewRepository(repository,
+                                  branch);
         }
     }
 
     @Override
-    public void onNewBranchAdded( String repositoryAlias, String branchName, Path branchPath ) {
+    public void onNewBranchAdded(String repositoryAlias,
+                                 String branchName,
+                                 Path branchPath) {
         //currently no actions needed
     }
 
     // Refresh when a Resource has been added
-    public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
-        refreshView( event.getPath() );
+    public void onResourceAdded(@Observes final ResourceAddedEvent event) {
+        refreshView(event.getPath());
     }
 
     // Refresh when a Resource has been deleted
-    public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
-        refreshView( event.getPath() );
+    public void onResourceDeleted(@Observes final ResourceDeletedEvent event) {
+        refreshView(event.getPath());
     }
 
     // Refresh when a Resource has been copied
-    public void onResourceCopied( @Observes final ResourceCopiedEvent event ) {
-        refreshView( event.getDestinationPath() );
+    public void onResourceCopied(@Observes final ResourceCopiedEvent event) {
+        refreshView(event.getDestinationPath());
     }
 
     // Refresh when a Resource has been renamed
-    public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
-        refreshView( event.getDestinationPath() );
+    public void onResourceRenamed(@Observes final ResourceRenamedEvent event) {
+        refreshView(event.getDestinationPath());
     }
 
     // Refresh when a batch Resource change has occurred
-    public void onBatchResourceChange( @Observes final ResourceBatchChangesEvent event ) {
+    public void onBatchResourceChange(@Observes final ResourceBatchChangesEvent event) {
         reset();
     }
 
-    public void onSystemRepositoryChanged( @Observes SystemRepositoryChangedEvent event ) {
+    public void onSystemRepositoryChanged(@Observes SystemRepositoryChangedEvent event) {
         reset();
     }
 
-    private void refreshView( final Path path ) {
+    private void refreshView(final Path path) {
         final String pathUri = path.toURI();
-        for ( Repository repository : repositories.values() ) {
+        for (Repository repository : repositories.values()) {
             final String repositoryUri = repository.getRoot().toURI();
-            if ( pathUri.startsWith( repositoryUri ) ) {
+            if (pathUri.startsWith(repositoryUri)) {
                 reset();
                 break;
             }

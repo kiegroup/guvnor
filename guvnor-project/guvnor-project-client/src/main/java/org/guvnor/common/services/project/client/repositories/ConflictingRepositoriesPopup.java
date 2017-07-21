@@ -28,7 +28,7 @@ import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class ConflictingRepositoriesPopup
@@ -41,37 +41,37 @@ public class ConflictingRepositoriesPopup
     }
 
     @Inject
-    public ConflictingRepositoriesPopup( final User identity,
-                                         final ConflictingRepositoriesPopupView view ) {
+    public ConflictingRepositoriesPopup(final User identity,
+                                        final ConflictingRepositoriesPopupView view) {
         this.identity = identity;
         this.view = view;
-        view.init( this );
+        view.init(this);
     }
 
     @Override
-    public void setContent( final GAV gav,
-                            final Set<MavenRepositoryMetadata> metadata,
-                            final Command command ) {
-        checkNotNull( "gav",
-                      gav );
-        checkNotNull( "metadata",
-                      metadata );
-        checkNotNull( "command",
-                      command );
+    public void setContent(final GAV gav,
+                           final Set<MavenRepositoryMetadata> metadata,
+                           final Command command) {
+        checkNotNull("gav",
+                     gav);
+        checkNotNull("metadata",
+                     metadata);
+        checkNotNull("command",
+                     command);
 
-        view.setContent( gav,
-                         metadata );
+        view.setContent(gav,
+                        metadata);
 
         view.clear();
         view.addOKButton();
-        if ( isUserAdministrator() ) {
-            view.addOverrideButton( command );
+        if (isUserAdministrator()) {
+            view.addOverrideButton(command);
         }
     }
 
     private boolean isUserAdministrator() {
         final Set<Role> roles = identity.getRoles();
-        return roles.contains( new RoleImpl( AppRoles.ADMIN.getName() ) );
+        return roles.contains(new RoleImpl(AppRoles.ADMIN.getName()));
     }
 
     @Override
@@ -83,5 +83,4 @@ public class ConflictingRepositoriesPopup
     public void hide() {
         view.hide();
     }
-
 }

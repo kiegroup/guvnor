@@ -18,12 +18,12 @@ package org.guvnor.ala.runtime;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.*;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 
 /**
- * This interface represent the Runtime Endpoint, meaning the endpoint that 
- *  can be used to interact against this Runtime
+ * This interface represent the Runtime Endpoint, meaning the endpoint that
+ * can be used to interact against this Runtime
  */
 @JsonTypeInfo(use = CLASS, include = WRAPPER_OBJECT)
 public interface RuntimeEndpoint {

@@ -25,9 +25,8 @@ public class DotFileFilter implements DirectoryStream.Filter<Path> {
 
     @Override
     //Don't process MetaData files
-    public boolean accept( final Path path ) {
+    public boolean accept(final Path path) {
         final String fileName = path.getFileName().toString();
-        return fileName.startsWith( "." );
+        return fileName.startsWith(".");
     }
-
 }

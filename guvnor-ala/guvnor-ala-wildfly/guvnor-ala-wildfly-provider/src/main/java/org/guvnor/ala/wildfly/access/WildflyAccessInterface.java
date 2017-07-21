@@ -15,8 +15,8 @@
  */
 package org.guvnor.ala.wildfly.access;
 
-import org.uberfire.commons.lifecycle.Disposable;
 import org.guvnor.ala.runtime.providers.ProviderId;
+import org.uberfire.commons.lifecycle.Disposable;
 
 /**
  * This interface abstracts the Wildfly client interactions
@@ -29,6 +29,5 @@ public interface WildflyAccessInterface extends Disposable {
      * @return WildflyClient for the provided ProviderId
      * @see WildflyClient
      */
-    WildflyClient getWildflyClient( final ProviderId providerId );
-
+    WildflyClient getWildflyClient(final ProviderId providerId);
 }

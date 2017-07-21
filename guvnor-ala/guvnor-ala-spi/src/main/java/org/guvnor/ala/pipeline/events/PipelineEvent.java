@@ -26,5 +26,4 @@ public interface PipelineEvent {
      * @return The UUID identifier for this pipeline execution.
      */
     String getExecutionId();
-
 }

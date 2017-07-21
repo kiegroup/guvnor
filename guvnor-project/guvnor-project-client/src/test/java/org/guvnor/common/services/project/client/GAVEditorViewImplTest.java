@@ -49,7 +49,7 @@ public class GAVEditorViewImplTest {
     @Before
     public void init() {
         view = new GAVEditorViewImpl();
-        view.setPresenter( presenter );
+        view.setPresenter(presenter);
         view.artifactIdTextBox = textBoxArtifact;
         view.groupIdTextBox = textBoxGroup;
         view.versionTextBox = textBoxVersion;
@@ -57,29 +57,28 @@ public class GAVEditorViewImplTest {
 
     @Test
     public void testArtifactChange() {
-        when( textBoxArtifact.getText() ).thenReturn( "artifact" );
+        when(textBoxArtifact.getText()).thenReturn("artifact");
 
-        view.onArtifactIdChange( event );
-        verify( presenter,
-                times( 1 ) ).onArtifactIdChange( "artifact" );
+        view.onArtifactIdChange(event);
+        verify(presenter,
+               times(1)).onArtifactIdChange("artifact");
     }
 
     @Test
     public void testGroupChange() {
-        when( textBoxGroup.getText() ).thenReturn( "group" );
+        when(textBoxGroup.getText()).thenReturn("group");
 
-        view.onGroupIdChange( event );
-        verify( presenter,
-                times( 1 ) ).onGroupIdChange( "group" );
+        view.onGroupIdChange(event);
+        verify(presenter,
+               times(1)).onGroupIdChange("group");
     }
 
     @Test
     public void testVersionChange() {
-        when( textBoxVersion.getText() ).thenReturn( "version" );
+        when(textBoxVersion.getText()).thenReturn("version");
 
-        view.onVersionChange( event );
-        verify( presenter,
-                times( 1 ) ).onVersionChange( "version" );
+        view.onVersionChange(event);
+        verify(presenter,
+               times(1)).onVersionChange("version");
     }
-
 }

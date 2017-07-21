@@ -28,11 +28,10 @@ public class DockerProviderConfigImpl implements DockerProviderConfig,
     public DockerProviderConfigImpl() {
         this.name = DockerProviderConfig.super.getName();
         this.hostIp = DockerProviderConfig.super.getHostIp();
-
     }
 
-    public DockerProviderConfigImpl( final String name,
-                                     final String hostIp ) {
+    public DockerProviderConfigImpl(final String name,
+                                    final String hostIp) {
         this.name = name;
         this.hostIp = hostIp;
     }
@@ -47,11 +46,11 @@ public class DockerProviderConfigImpl implements DockerProviderConfig,
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setHostIp( String hostIp ) {
+    public void setHostIp(String hostIp) {
         this.hostIp = hostIp;
     }
 
@@ -61,7 +60,8 @@ public class DockerProviderConfigImpl implements DockerProviderConfig,
     }
 
     @Override
-    public DockerProviderConfig asNewClone( final DockerProviderConfig origin ) {
-        return new DockerProviderConfigImpl( origin.getName(), origin.getHostIp() );
+    public DockerProviderConfig asNewClone(final DockerProviderConfig origin) {
+        return new DockerProviderConfigImpl(origin.getName(),
+                                            origin.getHostIp());
     }
 }

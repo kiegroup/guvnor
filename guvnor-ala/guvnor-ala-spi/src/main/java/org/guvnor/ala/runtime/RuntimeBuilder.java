@@ -30,6 +30,5 @@ import org.guvnor.ala.config.RuntimeConfig;
 */
 public interface RuntimeBuilder<T extends RuntimeConfig, R extends Runtime> extends Function<T, Optional<R>> {
 
-    boolean supports( final RuntimeConfig config );
-
+    boolean supports(final RuntimeConfig config);
 }

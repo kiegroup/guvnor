@@ -36,7 +36,7 @@ import org.uberfire.mocks.CallerMock;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class RepositoryManagedStatusUpdaterTest {
 
     @GwtMock
@@ -71,71 +71,72 @@ public class RepositoryManagedStatusUpdaterTest {
     @Before
     public void setUp() throws Exception {
 
-        when( service.updateManagedStatus( eq( repository ),
-                                           anyBoolean() ) ).thenReturn( updatedRepository );
+        when(service.updateManagedStatus(eq(repository),
+                                         anyBoolean())).thenReturn(updatedRepository);
 
-        updater = new RepositoryManagedStatusUpdater( new CallerMock<>( service ),
-                                                      wizard );
+        updater = new RepositoryManagedStatusUpdater(new CallerMock<>(service),
+                                                     wizard);
 
-        updater.bind( view,
-                      history,
-                      presenter );
+        updater.bind(view,
+                     history,
+                     presenter);
     }
 
     @Test
     public void testUpdateNonManaged() throws Exception {
-        updater.updateNonManaged( repository,
-                                  "master" );
-        verify( view ).showBusyIndicator( "CreatingRepositoryStructure" );
+        updater.updateNonManaged(repository,
+                                 "master");
+        verify(view).showBusyIndicator("CreatingRepositoryStructure");
 
-        verify( service ).updateManagedStatus( repository,
-                                               false );
+        verify(service).updateManagedStatus(repository,
+                                            false);
 
-        verify( presenter ).loadModel( updatedRepository,
-                                       "master" );
+        verify(presenter).loadModel(updatedRepository,
+                                    "master");
     }
 
     @Test
     public void testInitSingleProject() throws Exception {
-        updater.initSingleProject( repository,
-                                   "master" );
+        updater.initSingleProject(repository,
+                                  "master");
 
-        verify( wizard ).initialise( any( POM.class ) );
+        verify(wizard).initialise(any(POM.class));
 
-        verify( wizard ).start( callbackArgumentCaptor.capture(),
-                                eq( false ) );
+        verify(wizard).start(callbackArgumentCaptor.capture(),
+                             eq(false));
 
         final Project project = new Project();
-        callbackArgumentCaptor.getValue().callback( project );
+        callbackArgumentCaptor.getValue().callback(project);
 
-        verify( history ).setLastAddedModule( project );
+        verify(history).setLastAddedModule(project);
 
-        verify( service ).updateManagedStatus( repository,
-                                               true );
+        verify(service).updateManagedStatus(repository,
+                                            true);
 
-        verify( presenter ).loadModel( updatedRepository,
-                                       "master" );
+        verify(presenter).loadModel(updatedRepository,
+                                    "master");
     }
 
     @Test
     public void testInitSingleProjectNullProject() throws Exception {
-        updater.initSingleProject( repository,
-                                   "master" );
+        updater.initSingleProject(repository,
+                                  "master");
 
-        verify( wizard ).initialise( any( POM.class ) );
+        verify(wizard).initialise(any(POM.class));
 
-        verify( wizard ).start( callbackArgumentCaptor.capture(),
-                                eq( false ) );
+        verify(wizard).start(callbackArgumentCaptor.capture(),
+                             eq(false));
 
-        callbackArgumentCaptor.getValue().callback( null );
+        callbackArgumentCaptor.getValue().callback(null);
 
-        verify( history ).setLastAddedModule( null );
+        verify(history).setLastAddedModule(null);
 
-        verify( service, never() ).updateManagedStatus( any( Repository.class ),
-                                                        anyBoolean() );
+        verify(service,
+               never()).updateManagedStatus(any(Repository.class),
+                                            anyBoolean());
 
-        verify( presenter, never() ).loadModel( any( Repository.class ),
-                                                anyString() );
+        verify(presenter,
+               never()).loadModel(any(Repository.class),
+                                  anyString());
     }
-
 }

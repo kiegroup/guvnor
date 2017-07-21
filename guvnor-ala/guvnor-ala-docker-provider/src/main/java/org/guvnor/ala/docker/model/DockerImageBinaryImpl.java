@@ -20,7 +20,7 @@ import org.guvnor.ala.build.Project;
 import org.guvnor.ala.config.CloneableConfig;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class DockerImageBinaryImpl implements DockerImageBinary,
                                               CloneableConfig<DockerImageBinary> {
@@ -28,9 +28,10 @@ public class DockerImageBinaryImpl implements DockerImageBinary,
     private String type;
     private Project sourceProject;
 
-    public DockerImageBinaryImpl( final Project sourceProject ) {
+    public DockerImageBinaryImpl(final Project sourceProject) {
         this.type = "Docker";
-        this.sourceProject = checkNotNull( "sourceProject", sourceProject );
+        this.sourceProject = checkNotNull("sourceProject",
+                                          sourceProject);
     }
 
     @Override
@@ -54,7 +55,7 @@ public class DockerImageBinaryImpl implements DockerImageBinary,
     }
 
     @Override
-    public DockerImageBinary asNewClone( final DockerImageBinary source ) {
-        return new DockerImageBinaryImpl( source.getProject() );
+    public DockerImageBinary asNewClone(final DockerImageBinary source) {
+        return new DockerImageBinaryImpl(source.getProject());
     }
 }

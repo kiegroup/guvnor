@@ -23,7 +23,7 @@ public interface ProjectConstants
 
     String ProjectModel();
 
-    String SaveSuccessful( String fileName );
+    String SaveSuccessful(String fileName);
 
     String GroupID();
 
@@ -75,9 +75,9 @@ public interface ProjectConstants
 
     String ConflictingRepositoriesTitle();
 
-    String ConflictingRepositoriesGAVDescription( String groupId,
-                                                  String artifactId,
-                                                  String version );
+    String ConflictingRepositoriesGAVDescription(String groupId,
+                                                 String artifactId,
+                                                 String version);
 
     String ConflictingRepositoriesOverride();
 

@@ -37,7 +37,7 @@ public class PublishBatchMessagesEvent extends PublishBaseEvent {
     /**
      * List of messages to selective unpublish. This messages will allways be unpublished independent of cleanExisting value.
      */
-    private List<SystemMessage> messagesToUnpublish = new ArrayList<SystemMessage>( );
+    private List<SystemMessage> messagesToUnpublish = new ArrayList<SystemMessage>();
 
     public PublishBatchMessagesEvent() {
         //needed for marshalling.
@@ -47,7 +47,7 @@ public class PublishBatchMessagesEvent extends PublishBaseEvent {
         return cleanExisting;
     }
 
-    public void setCleanExisting( boolean cleanExisting ) {
+    public void setCleanExisting(boolean cleanExisting) {
         this.cleanExisting = cleanExisting;
     }
 
@@ -55,7 +55,7 @@ public class PublishBatchMessagesEvent extends PublishBaseEvent {
         return messageType;
     }
 
-    public void setMessageType( String messageType ) {
+    public void setMessageType(String messageType) {
         this.messageType = messageType;
     }
 
@@ -63,7 +63,7 @@ public class PublishBatchMessagesEvent extends PublishBaseEvent {
         return messagesToUnpublish;
     }
 
-    public void setMessagesToUnpublish( List<SystemMessage> messagesToUnpublish ) {
+    public void setMessagesToUnpublish(List<SystemMessage> messagesToUnpublish) {
         this.messagesToUnpublish = messagesToUnpublish;
     }
 }

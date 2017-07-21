@@ -21,5 +21,4 @@ public class InvalidValueException
     public InvalidValueException(String details) {
         super(details);
     }
-
 }

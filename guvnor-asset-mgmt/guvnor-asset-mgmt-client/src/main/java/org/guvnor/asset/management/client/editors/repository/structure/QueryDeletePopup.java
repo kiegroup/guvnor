@@ -24,35 +24,35 @@ import org.uberfire.mvp.Command;
 
 public class QueryDeletePopup {
 
-    public static void showDeletePopup( final String contentText,
-                                        final Command yesCommand ) {
-        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                                                                                  contentText,
-                                                                                  yesCommand,
-                                                                                  CommonConstants.INSTANCE.YES(),
-                                                                                  ButtonType.DANGER,
-                                                                                  IconType.TRASH,
-                                                                                  new Command() {
-                                                                                      @Override
-                                                                                      public void execute() {
-                                                                                          //do nothing
-                                                                                      }
-                                                                                  },
-                                                                                  null,
-                                                                                  ButtonType.DEFAULT,
-                                                                                  null,
-                                                                                  new Command() {
-                                                                                      @Override
-                                                                                      public void execute() {
-                                                                                          //do nothing.
-                                                                                      }
-                                                                                  },
-                                                                                  null,
-                                                                                  ButtonType.DEFAULT,
-                                                                                  null
-                                                                                );
+    public static void showDeletePopup(final String contentText,
+                                       final Command yesCommand) {
+        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
+                                                                                 contentText,
+                                                                                 yesCommand,
+                                                                                 CommonConstants.INSTANCE.YES(),
+                                                                                 ButtonType.DANGER,
+                                                                                 IconType.TRASH,
+                                                                                 new Command() {
+                                                                                     @Override
+                                                                                     public void execute() {
+                                                                                         //do nothing
+                                                                                     }
+                                                                                 },
+                                                                                 null,
+                                                                                 ButtonType.DEFAULT,
+                                                                                 null,
+                                                                                 new Command() {
+                                                                                     @Override
+                                                                                     public void execute() {
+                                                                                         //do nothing.
+                                                                                     }
+                                                                                 },
+                                                                                 null,
+                                                                                 ButtonType.DEFAULT,
+                                                                                 null
+        );
 
-        yesNoCancelPopup.setClosable( false );
+        yesNoCancelPopup.setClosable(false);
         yesNoCancelPopup.show();
     }
 }

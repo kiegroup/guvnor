@@ -44,7 +44,7 @@ public class ProjectModulesViewImpl extends Composite
 
     }
 
-    private static ProjectModulesEditorViewImplUIBinder uiBinder = GWT.create( ProjectModulesEditorViewImplUIBinder.class );
+    private static ProjectModulesEditorViewImplUIBinder uiBinder = GWT.create(ProjectModulesEditorViewImplUIBinder.class);
 
     @UiField(provided = true)
     final SimpleTable<ProjectModuleRow> modulesTable = new SimpleTable<ProjectModuleRow>();
@@ -65,112 +65,110 @@ public class ProjectModulesViewImpl extends Composite
         addModuleColumn();
         addEditModuleColumn();
         addDeleteModuleColumn();
-        modulesTable.setToolBarVisible( false );
+        modulesTable.setToolBarVisible(false);
 
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void setPresenter( final Presenter presenter ) {
+    public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
-        presenter.addDataDisplay( modulesTable );
+        presenter.addDataDisplay(modulesTable);
     }
 
     @Override
-    public void setMode( final ViewMode mode ) {
-        if ( mode == ViewMode.PROJECTS_VIEW ) {
-            addModuleButton.setText( Constants.INSTANCE.NewProject() );
-            modulesLabel.setText( Constants.INSTANCE.Projects() );
-            if ( modulesColumn != null ) {
-                modulesColumn.setDataStoreName( Constants.INSTANCE.Project() );
+    public void setMode(final ViewMode mode) {
+        if (mode == ViewMode.PROJECTS_VIEW) {
+            addModuleButton.setText(Constants.INSTANCE.NewProject());
+            modulesLabel.setText(Constants.INSTANCE.Projects());
+            if (modulesColumn != null) {
+                modulesColumn.setDataStoreName(Constants.INSTANCE.Project());
             }
-
         } else {
-            addModuleButton.setText( Constants.INSTANCE.AddModule() );
-            modulesLabel.setText( Constants.INSTANCE.Modules() );
-            if ( modulesColumn != null ) {
-                modulesColumn.setDataStoreName( Constants.INSTANCE.Module() );
+            addModuleButton.setText(Constants.INSTANCE.AddModule());
+            modulesLabel.setText(Constants.INSTANCE.Modules());
+            if (modulesColumn != null) {
+                modulesColumn.setDataStoreName(Constants.INSTANCE.Module());
             }
         }
     }
 
     @Override
-    public void enableActions( final boolean value ) {
-        addModuleButton.setEnabled( value );
+    public void enableActions(final boolean value) {
+        addModuleButton.setEnabled(value);
         actionsEnabled = value;
     }
 
     private void addModuleColumn() {
-        modulesColumn = new Column<ProjectModuleRow, String>( new TextCell() ) {
+        modulesColumn = new Column<ProjectModuleRow, String>(new TextCell()) {
             @Override
-            public String getValue( final ProjectModuleRow row ) {
+            public String getValue(final ProjectModuleRow row) {
                 return row.getName();
             }
         };
-        modulesTable.addColumn( modulesColumn,
-                                Constants.INSTANCE.Module() );
-        modulesTable.setColumnWidth( modulesColumn,
-                                     70,
-                                     Style.Unit.PCT );
+        modulesTable.addColumn(modulesColumn,
+                               Constants.INSTANCE.Module());
+        modulesTable.setColumnWidth(modulesColumn,
+                                    70,
+                                    Style.Unit.PCT);
     }
 
     private void addDeleteModuleColumn() {
-        final ButtonCell deleteModuleButton = new ButtonCell( IconType.TRASH,
-                                                              ButtonType.DANGER,
-                                                              ButtonSize.SMALL );
-        final Column<ProjectModuleRow, String> deleteModuleColumn = new Column<ProjectModuleRow, String>( deleteModuleButton ) {
+        final ButtonCell deleteModuleButton = new ButtonCell(IconType.TRASH,
+                                                             ButtonType.DANGER,
+                                                             ButtonSize.SMALL);
+        final Column<ProjectModuleRow, String> deleteModuleColumn = new Column<ProjectModuleRow, String>(deleteModuleButton) {
             @Override
-            public String getValue( final ProjectModuleRow moduleRow ) {
+            public String getValue(final ProjectModuleRow moduleRow) {
                 return Constants.INSTANCE.DeleteModule();
             }
         };
-        deleteModuleColumn.setFieldUpdater( new FieldUpdater<ProjectModuleRow, String>() {
-            public void update( final int index,
-                                final ProjectModuleRow moduleRow,
-                                final String value ) {
-                if ( presenter != null && actionsEnabled ) {
-                    presenter.onDeleteModule( moduleRow );
+        deleteModuleColumn.setFieldUpdater(new FieldUpdater<ProjectModuleRow, String>() {
+            public void update(final int index,
+                               final ProjectModuleRow moduleRow,
+                               final String value) {
+                if (presenter != null && actionsEnabled) {
+                    presenter.onDeleteModule(moduleRow);
                 }
             }
-        } );
+        });
 
-        modulesTable.addColumn( deleteModuleColumn,
-                                "" );
-        modulesTable.setColumnWidth( deleteModuleColumn,
-                                     15,
-                                     Style.Unit.PCT );
-
+        modulesTable.addColumn(deleteModuleColumn,
+                               "");
+        modulesTable.setColumnWidth(deleteModuleColumn,
+                                    15,
+                                    Style.Unit.PCT);
     }
 
     private void addEditModuleColumn() {
-        final ButtonCell editModuleButton = new ButtonCell( IconType.EDIT,
-                                                            ButtonType.PRIMARY,
-                                                            ButtonSize.SMALL );
-        final Column<ProjectModuleRow, String> editModuleColumn = new Column<ProjectModuleRow, String>( editModuleButton ) {
+        final ButtonCell editModuleButton = new ButtonCell(IconType.EDIT,
+                                                           ButtonType.PRIMARY,
+                                                           ButtonSize.SMALL);
+        final Column<ProjectModuleRow, String> editModuleColumn = new Column<ProjectModuleRow, String>(editModuleButton) {
             @Override
-            public String getValue( final ProjectModuleRow moduleRow ) {
+            public String getValue(final ProjectModuleRow moduleRow) {
                 return Constants.INSTANCE.EditModule();
             }
         };
-        editModuleColumn.setFieldUpdater( new FieldUpdater<ProjectModuleRow, String>() {
-            public void update( final int index,
-                                final ProjectModuleRow moduleRow,
-                                final String value ) {
-                if ( presenter != null && actionsEnabled ) {
-                    presenter.onEditModule( moduleRow );
+        editModuleColumn.setFieldUpdater(new FieldUpdater<ProjectModuleRow, String>() {
+            public void update(final int index,
+                               final ProjectModuleRow moduleRow,
+                               final String value) {
+                if (presenter != null && actionsEnabled) {
+                    presenter.onEditModule(moduleRow);
                 }
             }
-        } );
+        });
 
-        modulesTable.addColumn( editModuleColumn, "" );
-        modulesTable.setColumnWidth( editModuleColumn,
-                                     15,
-                                     Style.Unit.PCT );
+        modulesTable.addColumn(editModuleColumn,
+                               "");
+        modulesTable.setColumnWidth(editModuleColumn,
+                                    15,
+                                    Style.Unit.PCT);
     }
 
     @UiHandler("addModuleButton")
-    void onAddModuleButtonClick( final ClickEvent e ) {
+    void onAddModuleButtonClick(final ClickEvent e) {
         presenter.onAddModule();
     }
-
 }

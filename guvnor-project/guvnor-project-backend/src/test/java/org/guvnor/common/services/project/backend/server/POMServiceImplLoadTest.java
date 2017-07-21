@@ -25,12 +25,8 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.service.M2RepoService;
-import org.guvnor.test.TempFiles;
-import org.guvnor.test.TestTempFileSystem;
 import org.guvnor.test.WeldJUnitRunner;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -42,11 +38,11 @@ import org.uberfire.java.nio.file.Path;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( WeldJUnitRunner.class )
+@RunWith(WeldJUnitRunner.class)
 public class POMServiceImplLoadTest {
 
     @Inject
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     IOService ioService;
 
     @Inject
@@ -60,57 +56,66 @@ public class POMServiceImplLoadTest {
 
     private POMService service;
 
-    private IOService          ioServiceSpy;
+    private IOService ioServiceSpy;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks( this );
+        MockitoAnnotations.initMocks(this);
 
-        ioServiceSpy = spy( ioService );
+        ioServiceSpy = spy(ioService);
 
-        service = new POMServiceImpl( ioServiceSpy,
-                                      pomContentHandler,
-                                      m2RepoService,
-                                      metadataService );
+        service = new POMServiceImpl(ioServiceSpy,
+                                     pomContentHandler,
+                                     m2RepoService,
+                                     metadataService);
     }
 
     @Test
     public void testLoad() throws Exception {
-        final URL url = this.getClass().getResource( "/TestProject/pom.xml" );
+        final URL url = this.getClass().getResource("/TestProject/pom.xml");
 
-        final Path path = ioService.get( url.toURI() );
+        final Path path = ioService.get(url.toURI());
 
-        POM pom = service.load( Paths.convert( path ) );
+        POM pom = service.load(Paths.convert(path));
 
-        assertEquals( "org.test", pom.getGav().getGroupId() );
-        assertEquals( "my-test", pom.getGav().getArtifactId() );
-        assertEquals( "1.0", pom.getGav().getVersion() );
+        assertEquals("org.test",
+                     pom.getGav().getGroupId());
+        assertEquals("my-test",
+                     pom.getGav().getArtifactId());
+        assertEquals("1.0",
+                     pom.getGav().getVersion());
 
-        assertEquals( 2, pom.getDependencies().size() );
+        assertEquals(2,
+                     pom.getDependencies().size());
 
-        assertContainsDependency( "org.apache.commons", "commons-lang3", "compile",
-                                  pom.getDependencies() );
-        assertContainsDependency( "org.jboss.weld", "weld-core", "test",
-                                  pom.getDependencies() );
+        assertContainsDependency("org.apache.commons",
+                                 "commons-lang3",
+                                 "compile",
+                                 pom.getDependencies());
+        assertContainsDependency("org.jboss.weld",
+                                 "weld-core",
+                                 "test",
+                                 pom.getDependencies());
     }
 
-    private void assertContainsDependency( String groupID,
-                                           String artifactID,
-                                           String scope,
-                                           List<Dependency> dependencies ) {
+    private void assertContainsDependency(String groupID,
+                                          String artifactID,
+                                          String scope,
+                                          List<Dependency> dependencies) {
         boolean foundOne = false;
-        for ( Dependency dependency : dependencies ) {
-            if ( groupID.equals( dependency.getGroupId() )
-                    && artifactID.equals( dependency.getArtifactId() )
+        for (Dependency dependency : dependencies) {
+            if (groupID.equals(dependency.getGroupId())
+                    && artifactID.equals(dependency.getArtifactId())
                     &&
                     (
-                            scope.equals( dependency.getScope() )
-                                    || (scope.equals( "compile" ) && dependency.getScope() == null)
-                    ) ) {
+                            scope.equals(dependency.getScope())
+                                    || (scope.equals("compile") && dependency.getScope() == null)
+                    )) {
                 foundOne = true;
             }
         }
 
-        assertTrue( "Did not find dependency: " + groupID + ":" + artifactID + ":" + scope, foundOne );
+        assertTrue("Did not find dependency: " + groupID + ":" + artifactID + ":" + scope,
+                   foundOne);
     }
 }

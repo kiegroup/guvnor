@@ -33,5 +33,4 @@ public interface MavenBinary extends Binary {
     String getVersion();
 
     String getGroupId();
-
 }

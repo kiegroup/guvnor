@@ -55,7 +55,7 @@ public class POMResourceTypeDefinition
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().equals( getPrefix() + "." + getSuffix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().equals(getPrefix() + "." + getSuffix());
     }
 }

@@ -32,9 +32,9 @@ public class DockerBuildConfigImpl implements DockerBuildConfig,
         this.push = DockerBuildConfig.super.push();
     }
 
-    public DockerBuildConfigImpl( final String username,
-                                  final String password,
-                                  final Boolean push ) {
+    public DockerBuildConfigImpl(final String username,
+                                 final String password,
+                                 final Boolean push) {
         this.username = username;
         this.password = password;
         this.push = push;
@@ -43,7 +43,6 @@ public class DockerBuildConfigImpl implements DockerBuildConfig,
     @Override
     public boolean push() {
         return push;
-
     }
 
     @Override
@@ -62,9 +61,9 @@ public class DockerBuildConfigImpl implements DockerBuildConfig,
     }
 
     @Override
-    public DockerBuildConfig asNewClone( final DockerBuildConfig source ) {
-        return new DockerBuildConfigImpl( source.getUsername(),
-                                          source.getPassword(),
-                                          source.push() );
+    public DockerBuildConfig asNewClone(final DockerBuildConfig source) {
+        return new DockerBuildConfigImpl(source.getUsername(),
+                                         source.getPassword(),
+                                         source.push());
     }
 }

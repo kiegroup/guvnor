@@ -20,6 +20,5 @@ import org.guvnor.structure.server.config.ConfigGroup;
 
 public interface RepositoryFactory {
 
-    Repository newRepository( final ConfigGroup repoConfig );
-
+    Repository newRepository(final ConfigGroup repoConfig);
 }

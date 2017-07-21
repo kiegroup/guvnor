@@ -18,22 +18,28 @@ package org.guvnor.common.services.backend.archive;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class FileNameResolverTest {
 
     @Test
     public void testNormal() throws Exception {
-        assertEquals("hello/file.txt", Archiver.FileNameResolver.resolve("hello/file.txt", "hello"));
+        assertEquals("hello/file.txt",
+                     Archiver.FileNameResolver.resolve("hello/file.txt",
+                                                       "hello"));
     }
 
     @Test
     public void testFewFolders() throws Exception {
-        assertEquals("hello/file.txt", Archiver.FileNameResolver.resolve("project/hello/file.txt", "project/hello"));
+        assertEquals("hello/file.txt",
+                     Archiver.FileNameResolver.resolve("project/hello/file.txt",
+                                                       "project/hello"));
     }
 
     @Test
     public void testRoot() throws Exception {
-        assertEquals("file.txt", Archiver.FileNameResolver.resolve("/file.txt", "/"));
+        assertEquals("file.txt",
+                     Archiver.FileNameResolver.resolve("/file.txt",
+                                                       "/"));
     }
 }

@@ -20,6 +20,5 @@ package org.guvnor.common.services.builder;
  */
 public interface ResourceChangeObservableFile {
 
-    boolean accept( final String fileName );
-
+    boolean accept(final String fileName);
 }

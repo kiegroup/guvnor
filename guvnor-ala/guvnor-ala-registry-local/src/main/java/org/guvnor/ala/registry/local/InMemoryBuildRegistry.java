@@ -37,17 +37,16 @@ public class InMemoryBuildRegistry implements BuildRegistry {
 
     public InMemoryBuildRegistry() {
         binariesByName = new ConcurrentHashMap<>();
-
     }
 
     @Override
-    public void registerBinary( Binary binary ) {
-        binariesByName.put( binary.getName(), binary );
+    public void registerBinary(Binary binary) {
+        binariesByName.put(binary.getName(),
+                           binary);
     }
 
     @Override
     public List<Binary> getAllBinaries() {
-        return new ArrayList<>( binariesByName.values() );
+        return new ArrayList<>(binariesByName.values());
     }
-
 }

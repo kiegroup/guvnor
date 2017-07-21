@@ -44,7 +44,7 @@ public class AddOrganizationalUnitPopup extends BaseModal implements UberView<Or
 
     }
 
-    private static AddOrganizationalUnitPopupBinder uiBinder = GWT.create( AddOrganizationalUnitPopupBinder.class );
+    private static AddOrganizationalUnitPopupBinder uiBinder = GWT.create(AddOrganizationalUnitPopupBinder.class);
 
     @UiField
     FormGroup nameGroup;
@@ -83,52 +83,53 @@ public class AddOrganizationalUnitPopup extends BaseModal implements UberView<Or
         }
     };
 
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
-                                                                                      cancelCommand );
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(okCommand,
+                                                                                     cancelCommand);
 
     private boolean groupIdManuallyChanged = false;
 
     public AddOrganizationalUnitPopup() {
-        setTitle( OrganizationalUnitManagerConstants.INSTANCE.AddOrganizationalUnitPopupTitle() );
+        setTitle(OrganizationalUnitManagerConstants.INSTANCE.AddOrganizationalUnitPopupTitle());
 
-        setBody( uiBinder.createAndBindUi( this ) );
-        add( footer );
+        setBody(uiBinder.createAndBindUi(this));
+        add(footer);
 
-        nameTextBox.addKeyPressHandler( new KeyPressHandler() {
+        nameTextBox.addKeyPressHandler(new KeyPressHandler() {
             @Override
-            public void onKeyPress( final KeyPressEvent event ) {
-                nameGroup.setValidationState( ValidationState.NONE );
-                nameHelpInline.setText( "" );
+            public void onKeyPress(final KeyPressEvent event) {
+                nameGroup.setValidationState(ValidationState.NONE);
+                nameHelpInline.setText("");
             }
-        } );
+        });
     }
 
     @Override
-    public void init( final OrganizationalUnitManagerPresenter presenter ) {
+    public void init(final OrganizationalUnitManagerPresenter presenter) {
         this.presenter = presenter;
     }
 
     @UiHandler("nameTextBox")
-    void nameChanged( final ValueChangeEvent<String> event ) {
+    void nameChanged(final ValueChangeEvent<String> event) {
         // Only change the value of the default group id of it hasn't been modified manually already
-        if ( !groupIdManuallyChanged ) {
-            if ( nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty() ) {
-                defaultGroupIdTextBox.setText( "" );
+        if (!groupIdManuallyChanged) {
+            if (nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty()) {
+                defaultGroupIdTextBox.setText("");
             } else {
-                presenter.getSanitizedGroupId( nameTextBox.getText(), new RemoteCallback<String>() {
-                    @Override
-                    public void callback( final String sanitizedGroupId ) {
-                        defaultGroupIdTextBox.setText( sanitizedGroupId );
-                    }
-                } );
+                presenter.getSanitizedGroupId(nameTextBox.getText(),
+                                              new RemoteCallback<String>() {
+                                                  @Override
+                                                  public void callback(final String sanitizedGroupId) {
+                                                      defaultGroupIdTextBox.setText(sanitizedGroupId);
+                                                  }
+                                              });
             }
         }
     }
 
     @UiHandler("defaultGroupIdTextBox")
-    void groupIdChangedChanged( final ValueChangeEvent<String> event ) {
+    void groupIdChangedChanged(final ValueChangeEvent<String> event) {
         String input = defaultGroupIdTextBox.getText();
-        if ( input == null || input.trim().isEmpty() || input.trim().equals( nameTextBox.getText() ) ) {
+        if (input == null || input.trim().isEmpty() || input.trim().equals(nameTextBox.getText())) {
             groupIdManuallyChanged = false;
         } else {
             groupIdManuallyChanged = true;
@@ -136,65 +137,65 @@ public class AddOrganizationalUnitPopup extends BaseModal implements UberView<Or
     }
 
     private void onOKButtonClick() {
-        nameGroup.setValidationState( ValidationState.NONE );
-        if ( nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty() ) {
-            nameGroup.setValidationState( ValidationState.ERROR );
-            nameHelpInline.setText( OrganizationalUnitManagerConstants.INSTANCE.OrganizationalUnitNameIsMandatory() );
+        nameGroup.setValidationState(ValidationState.NONE);
+        if (nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty()) {
+            nameGroup.setValidationState(ValidationState.ERROR);
+            nameHelpInline.setText(OrganizationalUnitManagerConstants.INSTANCE.OrganizationalUnitNameIsMandatory());
             return;
         }
 
-        if ( defaultGroupIdTextBox.getText() == null || defaultGroupIdTextBox.getText().trim().isEmpty() ) {
-            defaultGroupIdGroup.setValidationState( ValidationState.ERROR );
-            defaultGroupIdHelpInline.setText( OrganizationalUnitManagerConstants.INSTANCE.DefaultGroupIdIsMandatory() );
+        if (defaultGroupIdTextBox.getText() == null || defaultGroupIdTextBox.getText().trim().isEmpty()) {
+            defaultGroupIdGroup.setValidationState(ValidationState.ERROR);
+            defaultGroupIdHelpInline.setText(OrganizationalUnitManagerConstants.INSTANCE.DefaultGroupIdIsMandatory());
             return;
         } else {
-            presenter.checkValidGroupId( defaultGroupIdTextBox.getText(), new RemoteCallback<Boolean>() {
-                @Override
-                public void callback( Boolean valid ) {
-                    if ( !valid ) {
-                        defaultGroupIdGroup.setValidationState( ValidationState.ERROR );
-                        defaultGroupIdHelpInline.setText( OrganizationalUnitManagerConstants.INSTANCE.InvalidGroupId() );
-                        return;
-                    } else {
-                        presenter.checkIfOrganizationalUnitExists( nameTextBox.getText(),
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        onOKSuccess();
-                                    }
-                                },
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        nameGroup.setValidationState( ValidationState.ERROR );
-                                        nameHelpInline.setText( OrganizationalUnitManagerConstants.INSTANCE.OrganizationalUnitAlreadyExists() );
-                                    }
-
-                                }
-                        );
-                    }
-                }
-            } );
+            presenter.checkValidGroupId(defaultGroupIdTextBox.getText(),
+                                        new RemoteCallback<Boolean>() {
+                                            @Override
+                                            public void callback(Boolean valid) {
+                                                if (!valid) {
+                                                    defaultGroupIdGroup.setValidationState(ValidationState.ERROR);
+                                                    defaultGroupIdHelpInline.setText(OrganizationalUnitManagerConstants.INSTANCE.InvalidGroupId());
+                                                    return;
+                                                } else {
+                                                    presenter.checkIfOrganizationalUnitExists(nameTextBox.getText(),
+                                                                                              new Command() {
+                                                                                                  @Override
+                                                                                                  public void execute() {
+                                                                                                      onOKSuccess();
+                                                                                                  }
+                                                                                              },
+                                                                                              new Command() {
+                                                                                                  @Override
+                                                                                                  public void execute() {
+                                                                                                      nameGroup.setValidationState(ValidationState.ERROR);
+                                                                                                      nameHelpInline.setText(OrganizationalUnitManagerConstants.INSTANCE.OrganizationalUnitAlreadyExists());
+                                                                                                  }
+                                                                                              }
+                                                    );
+                                                }
+                                            }
+                                        });
         }
     }
 
     private void onOKSuccess() {
-        presenter.createNewOrganizationalUnit( nameTextBox.getText(),
-                                               ownerTextBox.getText(),
-                                               defaultGroupIdTextBox.getText() );
+        presenter.createNewOrganizationalUnit(nameTextBox.getText(),
+                                              ownerTextBox.getText(),
+                                              defaultGroupIdTextBox.getText());
         hide();
     }
 
     @Override
     public void show() {
-        nameTextBox.setText( "" );
-        nameGroup.setValidationState( ValidationState.NONE );
-        nameHelpInline.setText( "" );
-        defaultGroupIdTextBox.setText( "" );
-        defaultGroupIdGroup.setValidationState( ValidationState.NONE );
-        defaultGroupIdHelpInline.setText( "" );
+        nameTextBox.setText("");
+        nameGroup.setValidationState(ValidationState.NONE);
+        nameHelpInline.setText("");
+        defaultGroupIdTextBox.setText("");
+        defaultGroupIdGroup.setValidationState(ValidationState.NONE);
+        defaultGroupIdHelpInline.setText("");
         this.groupIdManuallyChanged = false;
-        ownerTextBox.setText( "" );
+        ownerTextBox.setText("");
         super.show();
     }
 }

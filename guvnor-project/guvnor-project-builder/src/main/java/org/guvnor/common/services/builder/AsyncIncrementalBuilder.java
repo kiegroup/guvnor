@@ -24,10 +24,10 @@ import org.guvnor.common.services.project.service.ProjectService;
 
 public interface AsyncIncrementalBuilder {
 
-    public void execute( final ProjectService projectService,
-                         final BuildService buildService,
-                         final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
-                         final Event<BuildResults> buildResultsEvent );
+    public void execute(final ProjectService projectService,
+                        final BuildService buildService,
+                        final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
+                        final Event<BuildResults> buildResultsEvent);
 
     String getDescription();
 }

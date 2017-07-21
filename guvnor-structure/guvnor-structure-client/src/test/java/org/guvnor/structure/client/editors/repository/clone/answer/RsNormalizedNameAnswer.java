@@ -29,26 +29,26 @@ public class RsNormalizedNameAnswer implements Answer<RepositoryService> {
     private String normalizedName;
     private RepositoryService repoService;
 
-    public RsNormalizedNameAnswer( String normalizedName,
-                                   RepositoryService repoService ) {
+    public RsNormalizedNameAnswer(String normalizedName,
+                                  RepositoryService repoService) {
         this.normalizedName = normalizedName;
         this.repoService = repoService;
     }
 
     @Override
-    public RepositoryService answer( InvocationOnMock invocation ) throws Throwable {
+    public RepositoryService answer(InvocationOnMock invocation) throws Throwable {
 
-        when( repoService.normalizeRepositoryName( any( String.class ) ) ).then( new Answer<String>() {
+        when(repoService.normalizeRepositoryName(any(String.class))).then(new Answer<String>() {
 
             @Override
-            public String answer( InvocationOnMock invocation ) throws Throwable {
+            public String answer(InvocationOnMock invocation) throws Throwable {
                 return normalizedName;
             }
-        } );
+        });
 
         @SuppressWarnings("unchecked")
-        final RemoteCallback<String> callback = (RemoteCallback<String>) invocation.getArguments()[ 0 ];
-        callback.callback( normalizedName );
+        final RemoteCallback<String> callback = (RemoteCallback<String>) invocation.getArguments()[0];
+        callback.callback(normalizedName);
 
         return repoService;
     }

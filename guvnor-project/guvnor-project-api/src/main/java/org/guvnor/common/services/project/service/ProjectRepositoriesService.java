@@ -25,10 +25,9 @@ import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 public interface ProjectRepositoriesService
         extends SupportsRead<ProjectRepositories> {
 
-    ProjectRepositories create( final Path path );
+    ProjectRepositories create(final Path path);
 
-    Path save( final Path path,
-               final ProjectRepositories content,
-               final String comment );
-
+    Path save(final Path path,
+              final ProjectRepositories content,
+              final String comment);
 }

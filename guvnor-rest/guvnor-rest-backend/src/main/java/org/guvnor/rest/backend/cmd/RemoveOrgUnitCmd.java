@@ -27,9 +27,11 @@ import org.guvnor.rest.client.RemoveOrganizationalUnitRequest;
 public class RemoveOrgUnitCmd extends AbstractJobCommand {
 
     public RemoveOrgUnitCmd(final JobRequestHelper jobRequestHelper,
-                                     final JobResultManager jobResultManager,
-                                     final Map<String, Object> context) {
-        super(jobRequestHelper, jobResultManager, context);
+                            final JobResultManager jobResultManager,
+                            final Map<String, Object> context) {
+        super(jobRequestHelper,
+              jobResultManager,
+              context);
     }
 
     @Override
@@ -38,12 +40,14 @@ public class RemoveOrgUnitCmd extends AbstractJobCommand {
         RemoveOrganizationalUnitRequest jobRequest = (RemoveOrganizationalUnitRequest) request;
 
         JobResult result = null;
-        try { 
-            result = helper.removeOrganizationalUnit(jobRequest.getJobId(), jobRequest.getOrganizationalUnitName());
-        } finally { 
+        try {
+            result = helper.removeOrganizationalUnit(jobRequest.getJobId(),
+                                                     jobRequest.getOrganizationalUnitName());
+        } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug( "-----removeOrganizationalUnit--- , OrganizationalUnit name: {}",
-                    jobRequest.getOrganizationalUnitName(), status);
+            logger.debug("-----removeOrganizationalUnit--- , OrganizationalUnit name: {}",
+                         jobRequest.getOrganizationalUnitName(),
+                         status);
         }
         return result;
     }

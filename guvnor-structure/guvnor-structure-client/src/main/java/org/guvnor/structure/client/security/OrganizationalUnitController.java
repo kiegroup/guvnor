@@ -39,33 +39,45 @@ public class OrganizationalUnitController {
     private User user;
 
     @Inject
-    public OrganizationalUnitController(AuthorizationManager authorizationManager, User user) {
+    public OrganizationalUnitController(AuthorizationManager authorizationManager,
+                                        User user) {
         this.authorizationManager = authorizationManager;
         this.user = user;
     }
 
-
     public boolean canCreateOrgUnits() {
-        return authorizationManager.authorize(OrganizationalUnit.RESOURCE_TYPE, OrganizationalUnitAction.CREATE, user);
+        return authorizationManager.authorize(OrganizationalUnit.RESOURCE_TYPE,
+                                              OrganizationalUnitAction.CREATE,
+                                              user);
     }
 
     public boolean canReadOrgUnits() {
-        return authorizationManager.authorize(OrganizationalUnit.RESOURCE_TYPE, OrganizationalUnitAction.READ, user);
+        return authorizationManager.authorize(OrganizationalUnit.RESOURCE_TYPE,
+                                              OrganizationalUnitAction.READ,
+                                              user);
     }
 
     public boolean canReadOrgUnit(OrganizationalUnit organizationalUnit) {
-        return authorizationManager.authorize(organizationalUnit, OrganizationalUnitAction.READ, user);
+        return authorizationManager.authorize(organizationalUnit,
+                                              OrganizationalUnitAction.READ,
+                                              user);
     }
 
     public boolean canUpdateOrgUnit(OrganizationalUnit organizationalUnit) {
-        return authorizationManager.authorize(organizationalUnit, OrganizationalUnitAction.UPDATE, user);
+        return authorizationManager.authorize(organizationalUnit,
+                                              OrganizationalUnitAction.UPDATE,
+                                              user);
     }
 
     public boolean canDeleteOrgUnit(OrganizationalUnit organizationalUnit) {
-        return authorizationManager.authorize(organizationalUnit, OrganizationalUnitAction.DELETE, user);
+        return authorizationManager.authorize(organizationalUnit,
+                                              OrganizationalUnitAction.DELETE,
+                                              user);
     }
 
     public boolean canReadRepository(Repository repository) {
-        return authorizationManager.authorize(repository, RepositoryAction.READ, user);
+        return authorizationManager.authorize(repository,
+                                              RepositoryAction.READ,
+                                              user);
     }
 }

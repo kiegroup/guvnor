@@ -31,8 +31,8 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.uberfire.backend.server.util.Paths.*;
-import static org.uberfire.java.nio.file.StandardCopyOption.*;
+import static org.uberfire.backend.server.util.Paths.convert;
+import static org.uberfire.java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Service
 @ApplicationScoped
@@ -49,22 +49,27 @@ public class RepositoryServiceEditorImpl implements RepositoryServiceEditor {
     private SessionInfo sessionInfo;
 
     @Override
-    public List<VersionRecord> revertHistory( final String alias,
-                                              final Path path,
-                                              final String _comment,
-                                              final VersionRecord record ) {
-        final org.uberfire.java.nio.file.Path history = ioService.get( URI.create( record.uri() ) );
+    public List<VersionRecord> revertHistory(final String alias,
+                                             final Path path,
+                                             final String _comment,
+                                             final VersionRecord record) {
+        final org.uberfire.java.nio.file.Path history = ioService.get(URI.create(record.uri()));
 
         final String comment;
-        if ( _comment == null || _comment.trim().isEmpty() ) {
+        if (_comment == null || _comment.trim().isEmpty()) {
             comment = "revert history from commit {" + record.comment() + "}";
         } else {
             comment = _comment;
         }
 
-        ioService.move( history, convert( path ), REPLACE_EXISTING, new CommentedOption( sessionInfo.getId(), sessionInfo.getIdentity().getIdentifier(), null, comment ) );
+        ioService.move(history,
+                       convert(path),
+                       REPLACE_EXISTING,
+                       new CommentedOption(sessionInfo.getId(),
+                                           sessionInfo.getIdentity().getIdentifier(),
+                                           null,
+                                           comment));
 
-        return new ArrayList<VersionRecord>( repositoryService.getRepositoryInfo( alias ).getInitialVersionList() );
+        return new ArrayList<VersionRecord>(repositoryService.getRepositoryInfo(alias).getInitialVersionList());
     }
-
 }

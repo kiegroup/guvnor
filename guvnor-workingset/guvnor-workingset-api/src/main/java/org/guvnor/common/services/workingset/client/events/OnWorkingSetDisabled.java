@@ -29,8 +29,8 @@ public class OnWorkingSetDisabled {
     public OnWorkingSetDisabled() {
     }
 
-    public OnWorkingSetDisabled( final Path resource,
-                                 final Path workingSet ) {
+    public OnWorkingSetDisabled(final Path resource,
+                                final Path workingSet) {
         this.resource = resource;
         this.workingSet = workingSet;
     }

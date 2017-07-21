@@ -23,7 +23,9 @@ public class NewOrganizationalUnitEvent extends OrganizationalUnitEventBase {
     public NewOrganizationalUnitEvent() {
     }
 
-    public NewOrganizationalUnitEvent( final OrganizationalUnit organizationalUnit, final String userName ) {
-        super( organizationalUnit, userName );
+    public NewOrganizationalUnitEvent(final OrganizationalUnit organizationalUnit,
+                                      final String userName) {
+        super(organizationalUnit,
+              userName);
     }
 }

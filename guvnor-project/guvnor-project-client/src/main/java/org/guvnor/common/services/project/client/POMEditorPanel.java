@@ -28,7 +28,6 @@ import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class POMEditorPanel
@@ -46,100 +45,102 @@ public class POMEditorPanel
     }
 
     @Inject
-    public POMEditorPanel( final POMEditorPanelView view,
-                           final SyncBeanManager iocManager,
-                           final GAVPreferences gavPreferences,
-                           final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier ) {
+    public POMEditorPanel(final POMEditorPanelView view,
+                          final SyncBeanManager iocManager,
+                          final GAVPreferences gavPreferences,
+                          final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier) {
         this.view = view;
         this.iocManager = iocManager;
         this.gavPreferences = gavPreferences;
         this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
-        view.setPresenter( this );
+        view.setPresenter(this);
     }
 
-    public void setPOM( POM model,
-                        boolean isReadOnly ) {
-        if ( isReadOnly ) {
+    public void setPOM(POM model,
+                       boolean isReadOnly) {
+        if (isReadOnly) {
             view.setReadOnly();
         }
 
         this.model = model;
 
-        gavPreferences.load( projectScopedResolutionStrategySupplier.get(), loadedGAVPreferences -> {
-            view.setName( model.getName() );
-            view.setDescription( model.getDescription() );
-            view.enableGroupID();
-            view.enableArtifactID();
-            view.enableVersion();
+        gavPreferences.load(projectScopedResolutionStrategySupplier.get(),
+                            loadedGAVPreferences -> {
+                                view.setName(model.getName());
+                                view.setDescription(model.getDescription());
+                                view.enableGroupID();
+                                view.enableArtifactID();
+                                view.enableVersion();
 
-            if ( model.hasParent() ) {
-                view.setParentGAV( model.getParent() );
-                view.showParentGAV();
-                if ( !loadedGAVPreferences.isChildGAVEditEnabled() ) {
-                    view.disableGroupID( "" );
-                    view.disableVersion( "" );
-                }
-            } else {
-                view.hideParentGAV();
-            }
+                                if (model.hasParent()) {
+                                    view.setParentGAV(model.getParent());
+                                    view.showParentGAV();
+                                    if (!loadedGAVPreferences.isChildGAVEditEnabled()) {
+                                        view.disableGroupID("");
+                                        view.disableVersion("");
+                                    }
+                                } else {
+                                    view.hideParentGAV();
+                                }
 
-            view.setGAV( model.getGav() );
-            view.addArtifactIdChangeHandler( POMEditorPanel.this::setTitle );
-            setTitle( model.getGav().getArtifactId() );
-        }, throwable -> {
-            throw new RuntimeException( throwable );
-        } );
+                                view.setGAV(model.getGav());
+                                view.addArtifactIdChangeHandler(POMEditorPanel.this::setTitle);
+                                setTitle(model.getGav().getArtifactId());
+                            },
+                            throwable -> {
+                                throw new RuntimeException(throwable);
+                            });
     }
 
-    public void setArtifactID( final String artifactID ) {
-        view.setArtifactID( artifactID );
+    public void setArtifactID(final String artifactID) {
+        view.setArtifactID(artifactID);
     }
 
-    private void setTitle( final String titleText ) {
-        if ( titleText == null || titleText.isEmpty() ) {
+    private void setTitle(final String titleText) {
+        if (titleText == null || titleText.isEmpty()) {
             view.setProjectModelTitleText();
         } else {
-            view.setTitleText( titleText );
+            view.setTitleText(titleText);
         }
     }
 
     @Override
-    public void addNameChangeHandler( final NameChangeHandler changeHandler ) {
-        nameChangeHandlers.add( changeHandler );
+    public void addNameChangeHandler(final NameChangeHandler changeHandler) {
+        nameChangeHandlers.add(changeHandler);
     }
 
     @Override
-    public void addGroupIdChangeHandler( final GroupIdChangeHandler changeHandler ) {
-        this.view.addGroupIdChangeHandler( changeHandler );
+    public void addGroupIdChangeHandler(final GroupIdChangeHandler changeHandler) {
+        this.view.addGroupIdChangeHandler(changeHandler);
     }
 
     @Override
-    public void addArtifactIdChangeHandler( final ArtifactIdChangeHandler changeHandler ) {
-        this.view.addArtifactIdChangeHandler( changeHandler );
+    public void addArtifactIdChangeHandler(final ArtifactIdChangeHandler changeHandler) {
+        this.view.addArtifactIdChangeHandler(changeHandler);
     }
 
     @Override
-    public void addVersionChangeHandler( final VersionChangeHandler changeHandler ) {
-        this.view.addVersionChangeHandler( changeHandler );
+    public void addVersionChangeHandler(final VersionChangeHandler changeHandler) {
+        this.view.addVersionChangeHandler(changeHandler);
     }
 
     @Override
-    public void onNameChange( final String name ) {
-        this.model.setName( name );
-        for ( NameChangeHandler changeHandler : nameChangeHandlers ) {
-            changeHandler.onChange( name );
+    public void onNameChange(final String name) {
+        this.model.setName(name);
+        for (NameChangeHandler changeHandler : nameChangeHandlers) {
+            changeHandler.onChange(name);
         }
     }
 
     @Override
-    public void onDescriptionChange( final String description ) {
-        this.model.setDescription( description );
+    public void onDescriptionChange(final String description) {
+        this.model.setDescription(description);
     }
 
     @Override
     public void onOpenProjectContext() {
-        SyncBeanDef<PlaceManager> placeManagerSyncBeanDef = iocManager.lookupBean( PlaceManager.class );
-        placeManagerSyncBeanDef.getInstance().goTo( "repositoryStructureScreen" );
+        SyncBeanDef<PlaceManager> placeManagerSyncBeanDef = iocManager.lookupBean(PlaceManager.class);
+        placeManagerSyncBeanDef.getInstance().goTo("repositoryStructureScreen");
     }
 
     @Override
@@ -148,13 +149,13 @@ public class POMEditorPanel
     }
 
     @Override
-    public void disableGroupID( final String reason ) {
-        view.disableGroupID( reason );
+    public void disableGroupID(final String reason) {
+        view.disableGroupID(reason);
     }
 
     @Override
-    public void disableVersion( final String reason ) {
-        view.disableVersion( reason );
+    public void disableVersion(final String reason) {
+        view.disableVersion(reason);
     }
 
     @Override
@@ -163,23 +164,22 @@ public class POMEditorPanel
     }
 
     @Override
-    public void setValidName( final boolean isValid ) {
-        view.setValidName( isValid );
+    public void setValidName(final boolean isValid) {
+        view.setValidName(isValid);
     }
 
     @Override
-    public void setValidGroupID( final boolean isValid ) {
-        view.setValidGroupID( isValid );
+    public void setValidGroupID(final boolean isValid) {
+        view.setValidGroupID(isValid);
     }
 
     @Override
-    public void setValidArtifactID( final boolean isValid ) {
-        view.setValidArtifactID( isValid );
+    public void setValidArtifactID(final boolean isValid) {
+        view.setValidArtifactID(isValid);
     }
 
     @Override
-    public void setValidVersion( final boolean isValid ) {
-        view.setValidVersion( isValid );
+    public void setValidVersion(final boolean isValid) {
+        view.setValidVersion(isValid);
     }
-
 }

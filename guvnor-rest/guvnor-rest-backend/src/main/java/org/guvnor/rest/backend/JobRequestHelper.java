@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -346,7 +345,8 @@ public class JobRequestHelper {
                 result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
                 result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
             } catch (Throwable t) {
-                Optional<GAVAlreadyExistsException> gaeOpt = findCause(t, GAVAlreadyExistsException.class);
+                Optional<GAVAlreadyExistsException> gaeOpt = findCause(t,
+                                                                       GAVAlreadyExistsException.class);
                 if (gaeOpt.isPresent()) {
                     GAVAlreadyExistsException gae = gaeOpt.get();
                     result.setStatus(JobStatus.DUPLICATE_RESOURCE);
@@ -357,7 +357,6 @@ public class JobRequestHelper {
                     result.setDetailedResult(errorResult);
                     result.setStatus(JobStatus.FAIL);
                 }
-
             }
             return result;
         }
@@ -454,7 +453,8 @@ public class JobRequestHelper {
                 result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
                 result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
             } catch (RuntimeException ex) {
-                GAVAlreadyExistsException gae = findCause(ex, GAVAlreadyExistsException.class).orElseThrow(() -> ex);
+                GAVAlreadyExistsException gae = findCause(ex,
+                                                          GAVAlreadyExistsException.class).orElseThrow(() -> ex);
                 result.setStatus(JobStatus.DUPLICATE_RESOURCE);
                 result.setResult("Project's GAV [" + gae.getGAV() + "] already exists at [" + toString(gae.getRepositories()) + "]");
                 return result;
@@ -679,13 +679,15 @@ public class JobRequestHelper {
         return Paths.convert(repository.getBranchRoot(repository.getDefaultBranch()));
     }
 
-    private <T> Optional<T> findCause(Throwable t, Class<T> causeClass) {
+    private <T> Optional<T> findCause(Throwable t,
+                                      Class<T> causeClass) {
         if (t == null) {
             return Optional.empty();
         } else if (t.getClass().equals(causeClass)) {
-            return Optional.of((T)t);
+            return Optional.of((T) t);
         } else {
-            return findCause(t.getCause(), causeClass);
+            return findCause(t.getCause(),
+                             causeClass);
         }
     }
 }

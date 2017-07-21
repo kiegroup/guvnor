@@ -46,34 +46,33 @@ public class AppConfigServiceImpl implements AppConfigService {
     @Any
     private Instance<SystemPropertiesInitializer> systemPropertiesInitializers;
 
-    public void configureOnEvent( @Observes ApplicationStarted applicationStartedEvent ) {
+    public void configureOnEvent(@Observes ApplicationStarted applicationStartedEvent) {
         loadPreferences();
     }
 
     @Override
     public synchronized Map<String, String> loadPreferences() {
         try {
-            if ( preferences == null ) {
+            if (preferences == null) {
                 preferences = new HashMap<String, String>();
 
                 //Load preferences from all stores
-                if ( preferencesLoaders != null ) {
-                    for ( ApplicationPreferencesLoader loader : preferencesLoaders ) {
-                        preferences.putAll( loader.load() );
+                if (preferencesLoaders != null) {
+                    for (ApplicationPreferencesLoader loader : preferencesLoaders) {
+                        preferences.putAll(loader.load());
                     }
                 }
 
                 //Perform any post-load handling of preferences
-                if ( systemPropertiesInitializers != null ) {
-                    for ( SystemPropertiesInitializer initializer : systemPropertiesInitializers ) {
-                        initializer.setSystemProperties( preferences );
+                if (systemPropertiesInitializers != null) {
+                    for (SystemPropertiesInitializer initializer : systemPropertiesInitializers) {
+                        initializer.setSystemProperties(preferences);
                     }
                 }
             }
             return preferences;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 

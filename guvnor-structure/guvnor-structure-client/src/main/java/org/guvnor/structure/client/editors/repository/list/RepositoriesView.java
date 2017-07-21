@@ -22,15 +22,14 @@ import org.guvnor.structure.repositories.Repository;
 public interface RepositoriesView
         extends IsWidget {
 
-    RepositoryItemPresenter addRepository( final Repository repository,
-                                           final String branch );
+    RepositoryItemPresenter addRepository(final Repository repository,
+                                          final String branch);
 
-    boolean confirmDeleteRepository( final Repository repository );
+    boolean confirmDeleteRepository(final Repository repository);
 
-    void removeIfExists( final RepositoryItemPresenter repositoryItem );
+    void removeIfExists(final RepositoryItemPresenter repositoryItem);
 
     void clear();
 
-    void setPresenter( final RepositoriesPresenter presenter );
-
+    void setPresenter(final RepositoriesPresenter presenter);
 }

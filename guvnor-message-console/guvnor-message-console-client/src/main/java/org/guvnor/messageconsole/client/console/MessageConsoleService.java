@@ -63,145 +63,145 @@ public class MessageConsoleService {
 
     private String currentPerspective;
 
-    public void publishMessages( final @Observes PublishMessagesEvent publishEvent ) {
-        publishMessages( publishEvent.getSessionId(),
-                         publishEvent.getUserId(),
-                         publishEvent.getPlace(),
-                         publishEvent.getMessagesToPublish() );
-        if ( publishEvent.isShowSystemConsole() && checkWhiteList()) {
-            placeManager.goTo( MESSAGE_CONSOLE );
+    public void publishMessages(final @Observes PublishMessagesEvent publishEvent) {
+        publishMessages(publishEvent.getSessionId(),
+                        publishEvent.getUserId(),
+                        publishEvent.getPlace(),
+                        publishEvent.getMessagesToPublish());
+        if (publishEvent.isShowSystemConsole() && checkWhiteList()) {
+            placeManager.goTo(MESSAGE_CONSOLE);
         }
     }
 
-    public void unpublishMessages( final @Observes UnpublishMessagesEvent unpublishEvent ) {
-        unpublishMessages( unpublishEvent.getSessionId(),
-                           unpublishEvent.getUserId(),
-                           unpublishEvent.getMessageType(),
-                           unpublishEvent.getMessagesToUnpublish() );
-        if ( unpublishEvent.isShowSystemConsole() && checkWhiteList()) {
-            placeManager.goTo( MESSAGE_CONSOLE );
+    public void unpublishMessages(final @Observes UnpublishMessagesEvent unpublishEvent) {
+        unpublishMessages(unpublishEvent.getSessionId(),
+                          unpublishEvent.getUserId(),
+                          unpublishEvent.getMessageType(),
+                          unpublishEvent.getMessagesToUnpublish());
+        if (unpublishEvent.isShowSystemConsole() && checkWhiteList()) {
+            placeManager.goTo(MESSAGE_CONSOLE);
         }
     }
 
-    public void publishBatchMessages( final @Observes PublishBatchMessagesEvent publishBatchEvent ) {
-        if ( publishBatchEvent.isCleanExisting() ) {
-            unpublishMessages( publishBatchEvent.getSessionId(),
-                               publishBatchEvent.getUserId(),
-                               publishBatchEvent.getMessageType(),
-                               publishBatchEvent.getMessagesToUnpublish() );
+    public void publishBatchMessages(final @Observes PublishBatchMessagesEvent publishBatchEvent) {
+        if (publishBatchEvent.isCleanExisting()) {
+            unpublishMessages(publishBatchEvent.getSessionId(),
+                              publishBatchEvent.getUserId(),
+                              publishBatchEvent.getMessageType(),
+                              publishBatchEvent.getMessagesToUnpublish());
         } else {
             //only remove provided messages
-            removeRowsByMessage( publishBatchEvent.getMessagesToUnpublish() );
+            removeRowsByMessage(publishBatchEvent.getMessagesToUnpublish());
         }
-        publishMessages( publishBatchEvent.getSessionId(),
-                         publishBatchEvent.getUserId(),
-                         publishBatchEvent.getPlace(),
-                         publishBatchEvent.getMessagesToPublish() );
-        if ( publishBatchEvent.isShowSystemConsole() && checkWhiteList()) {
-            placeManager.goTo( MESSAGE_CONSOLE );
+        publishMessages(publishBatchEvent.getSessionId(),
+                        publishBatchEvent.getUserId(),
+                        publishBatchEvent.getPlace(),
+                        publishBatchEvent.getMessagesToPublish());
+        if (publishBatchEvent.isShowSystemConsole() && checkWhiteList()) {
+            placeManager.goTo(MESSAGE_CONSOLE);
         }
     }
 
-    public void addDataDisplay( final HasData<MessageConsoleServiceRow> display ) {
-        dataProvider.addDataDisplay( display );
+    public void addDataDisplay(final HasData<MessageConsoleServiceRow> display) {
+        dataProvider.addDataDisplay(display);
     }
 
-    public void onPerspectiveChange( final @Observes PerspectiveChange perspectiveChange ) {
+    public void onPerspectiveChange(final @Observes PerspectiveChange perspectiveChange) {
         currentPerspective = perspectiveChange.getIdentifier();
     }
 
-    private void publishMessages( final String sessionId,
-                                  final String userId,
-                                  final PublishMessagesEvent.Place place,
-                                  final List<SystemMessage> messages ) {
+    private void publishMessages(final String sessionId,
+                                 final String userId,
+                                 final PublishMessagesEvent.Place place,
+                                 final List<SystemMessage> messages) {
         List<MessageConsoleServiceRow> list = dataProvider.getList();
-        List<SystemMessage> newMessages = filterMessages( sessionId, userId, null, messages );
+        List<SystemMessage> newMessages = filterMessages(sessionId,
+                                                         userId,
+                                                         null,
+                                                         messages);
         List<MessageConsoleServiceRow> newRows = new ArrayList<MessageConsoleServiceRow>();
 
-        int index = ( place != null && place == PublishMessagesEvent.Place.TOP ) ? 0 : ( list != null && list.size() > 0 ? list.size() : 0 );
+        int index = (place != null && place == PublishMessagesEvent.Place.TOP) ? 0 : (list != null && list.size() > 0 ? list.size() : 0);
 
-        for ( SystemMessage systemMessage : newMessages ) {
-            newRows.add( new MessageConsoleServiceRow( sessionId,
-                                                       userId,
-                                                       systemMessage ) );
+        for (SystemMessage systemMessage : newMessages) {
+            newRows.add(new MessageConsoleServiceRow(sessionId,
+                                                     userId,
+                                                     systemMessage));
         }
 
-        list.addAll( index,
-                     newRows );
+        list.addAll(index,
+                    newRows);
     }
 
-    private void unpublishMessages( final String sessionId,
-                                    final String userId,
-                                    final String messageType,
-                                    final List<SystemMessage> messages ) {
+    private void unpublishMessages(final String sessionId,
+                                   final String userId,
+                                   final String messageType,
+                                   final List<SystemMessage> messages) {
 
         String currentSessionId = sessionInfo != null ? sessionInfo.getId() : null;
         String currentUserId = identity != null ? identity.getIdentifier() : null;
 
         List<MessageConsoleServiceRow> rowsToDelete = new ArrayList<MessageConsoleServiceRow>();
-        for ( MessageConsoleServiceRow row : dataProvider.getList() ) {
-            if ( sessionId == null && userId == null ) {
+        for (MessageConsoleServiceRow row : dataProvider.getList()) {
+            if (sessionId == null && userId == null) {
                 //delete messages for all users and sessions
-                if ( messageType == null || messageType.equals( row.getMessageType() ) ) {
-                    rowsToDelete.add( row );
+                if (messageType == null || messageType.equals(row.getMessageType())) {
+                    rowsToDelete.add(row);
                 }
-            } else if ( sessionId != null ) {
+            } else if (sessionId != null) {
                 //messages for a given session, no matter what the user have, sessions are unique.
-                if ( sessionId.equals( currentSessionId ) && ( messageType == null || messageType.equals( row.getMessageType() ) ) ) {
-                    rowsToDelete.add( row );
+                if (sessionId.equals(currentSessionId) && (messageType == null || messageType.equals(row.getMessageType()))) {
+                    rowsToDelete.add(row);
                 }
-
             } else {
                 //messages for a user.
-                if ( userId.equals( currentUserId ) && ( messageType == null || messageType.equals( row.getMessageType() ) ) ) {
-                    rowsToDelete.add( row );
+                if (userId.equals(currentUserId) && (messageType == null || messageType.equals(row.getMessageType()))) {
+                    rowsToDelete.add(row);
                 }
             }
         }
 
-        dataProvider.getList().removeAll( rowsToDelete );
-        removeRowsByMessage( messages );
+        dataProvider.getList().removeAll(rowsToDelete);
+        removeRowsByMessage(messages);
     }
 
-    private void removeRowsByMessage( final List<SystemMessage> messages ) {
+    private void removeRowsByMessage(final List<SystemMessage> messages) {
         List<MessageConsoleServiceRow> rowsToDelete = new ArrayList<MessageConsoleServiceRow>();
-        if ( messages != null ) {
-            for ( MessageConsoleServiceRow row : dataProvider.getList() ) {
-                if ( messages.contains( row.getMessage() ) ) {
-                    rowsToDelete.add( row );
+        if (messages != null) {
+            for (MessageConsoleServiceRow row : dataProvider.getList()) {
+                if (messages.contains(row.getMessage())) {
+                    rowsToDelete.add(row);
                 }
             }
-            dataProvider.getList().removeAll( rowsToDelete );
+            dataProvider.getList().removeAll(rowsToDelete);
         }
     }
 
-    private List<SystemMessage> filterMessages( final String sessionId,
-                                                final String userId,
-                                                final String messageType,
-                                                final List<SystemMessage> messages ) {
+    private List<SystemMessage> filterMessages(final String sessionId,
+                                               final String userId,
+                                               final String messageType,
+                                               final List<SystemMessage> messages) {
         List<SystemMessage> result = new ArrayList<SystemMessage>();
 
         String currentSessionId = sessionInfo != null ? sessionInfo.getId() : null;
         String currentUserId = identity != null ? identity.getIdentifier() : null;
 
-        if ( messages != null ) {
-            for ( SystemMessage message : messages ) {
-                if ( sessionId == null && userId == null ) {
+        if (messages != null) {
+            for (SystemMessage message : messages) {
+                if (sessionId == null && userId == null) {
                     //messages for all users, all sessions.
-                    if ( messageType == null || messageType.equals( message.getMessageType() ) ) {
-                        result.add( message );
+                    if (messageType == null || messageType.equals(message.getMessageType())) {
+                        result.add(message);
                     }
-
-                } else if ( sessionId != null ) {
+                } else if (sessionId != null) {
                     //messages for a given session, no matter what the user have, sessions are unique.
-                    if ( sessionId.equals( currentSessionId ) && ( messageType == null || messageType.equals( message.getMessageType() ) ) ) {
-                        result.add( message );
+                    if (sessionId.equals(currentSessionId) && (messageType == null || messageType.equals(message.getMessageType()))) {
+                        result.add(message);
                     }
-
                 } else {
                     //messages for a user.
-                    if ( userId.equals( currentUserId ) && ( messageType == null || messageType.equals( message.getMessageType() ) ) ) {
-                        result.add( message );
+                    if (userId.equals(currentUserId) && (messageType == null || messageType.equals(message.getMessageType()))) {
+                        result.add(message);
                     }
                 }
             }
@@ -221,8 +221,8 @@ public class MessageConsoleService {
         }
     }
 
-    private SyncBeanDef<MessageConsoleWhiteList> reLookupBean( SyncBeanDef<MessageConsoleWhiteList> baseBean ) {
-        return (SyncBeanDef<MessageConsoleWhiteList>) iocManager.lookupBean( baseBean.getBeanClass() );
+    private SyncBeanDef<MessageConsoleWhiteList> reLookupBean(SyncBeanDef<MessageConsoleWhiteList> baseBean) {
+        return (SyncBeanDef<MessageConsoleWhiteList>) iocManager.lookupBean(baseBean.getBeanClass());
     }
 
     private Collection<SyncBeanDef<MessageConsoleWhiteList>> getAvailableWhiteLists() {

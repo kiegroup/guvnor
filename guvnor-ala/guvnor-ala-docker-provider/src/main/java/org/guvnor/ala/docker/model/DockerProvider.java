@@ -24,8 +24,7 @@ import org.guvnor.ala.runtime.providers.Provider;
  * @see Provider
  */
 public interface DockerProvider extends ProviderConfig,
-                                            Provider {
+                                        Provider {
 
     String getHostId();
-
 }

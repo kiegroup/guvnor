@@ -25,7 +25,7 @@ import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 
 @EntryPoint
-@Bundle( "preferences/resources/i18n/ProjectPreferencesConstants.properties" )
+@Bundle("preferences/resources/i18n/ProjectPreferencesConstants.properties")
 public class ProjectEntryPoint {
 
     private AdminPage adminPage;
@@ -33,8 +33,8 @@ public class ProjectEntryPoint {
     private ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
 
     @Inject
-    public ProjectEntryPoint( final AdminPage adminPage,
-                              final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier ) {
+    public ProjectEntryPoint(final AdminPage adminPage,
+                             final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier) {
         this.adminPage = adminPage;
         this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
     }
@@ -45,13 +45,14 @@ public class ProjectEntryPoint {
     }
 
     private void setupProjectAdminPage() {
-        adminPage.addScreen( "project", "Project Settings" );
+        adminPage.addScreen("project",
+                            "Project Settings");
 
-        adminPage.addPreference( "project",
-                                 "GeneralPreferences",
-                                 "General",
-                                 "fa-gears",
-                                 "general",
-                                 projectScopedResolutionStrategySupplier );
+        adminPage.addPreference("project",
+                                "GeneralPreferences",
+                                "General",
+                                "fa-gears",
+                                "general",
+                                projectScopedResolutionStrategySupplier);
     }
 }

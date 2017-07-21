@@ -29,34 +29,31 @@ public interface RepositoryStructureView
         extends HasBusyIndicator,
                 IsWidget {
 
-
     interface Presenter {
 
         void clearView();
 
-        void setModel( RepositoryStructureModel model );
+        void setModel(RepositoryStructureModel model);
 
-        void loadModel( final Repository repository,
-                        final String branch );
-
+        void loadModel(final Repository repository,
+                       final String branch);
     }
 
     GAV getDataPresenterGav();
 
-    void setDataPresenterMode( final RepositoryStructureDataView.ViewMode mode );
+    void setDataPresenterMode(final RepositoryStructureDataView.ViewMode mode);
 
-    void setDataPresenterModel( final GAV gav );
+    void setDataPresenterModel(final GAV gav);
 
     void clearDataView();
 
-    void setPresenter( final RepositoryStructurePresenter repositoryStructurePresenter );
+    void setPresenter(final RepositoryStructurePresenter repositoryStructurePresenter);
 
     ProjectModulesView getModulesView();
 
-    void setModulesViewVisible( final boolean visible );
+    void setModulesViewVisible(final boolean visible);
 
     void clear();
 
     ConfigureScreenPopupViewImpl getConfigureScreenPopupView();
-
 }

@@ -43,57 +43,88 @@ public class RuntimeEndpointsTestIT {
     @Ignore
     public void checkService() {
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target( APP_URL );
-        ResteasyWebTarget restEasyTarget = ( ResteasyWebTarget ) target;
-        RuntimeProvisioningService proxy = restEasyTarget.proxy( RuntimeProvisioningService.class );
+        WebTarget target = client.target(APP_URL);
+        ResteasyWebTarget restEasyTarget = (ResteasyWebTarget) target;
+        RuntimeProvisioningService proxy = restEasyTarget.proxy(RuntimeProvisioningService.class);
 
-        ProviderTypeList allProviderTypes = proxy.getProviderTypes( 0, 10, "", true );
+        ProviderTypeList allProviderTypes = proxy.getProviderTypes(0,
+                                                                   10,
+                                                                   "",
+                                                                   true);
 
-        assertNotNull( allProviderTypes );
-        assertEquals( 2, allProviderTypes.getItems().size() );
+        assertNotNull(allProviderTypes);
+        assertEquals(2,
+                     allProviderTypes.getItems().size());
 
         DockerProviderConfig dockerProviderConfig = new DockerProviderConfigImpl();
-        proxy.registerProvider( dockerProviderConfig );
+        proxy.registerProvider(dockerProviderConfig);
 
-        ProviderList allProviders = proxy.getProviders( 0, 10, "", true );
-        assertEquals( 1, allProviders.getItems().size() );
-        assertTrue( allProviders.getItems().get( 0 ) instanceof DockerProvider );
-        DockerProvider dockerProvider = ( DockerProvider ) allProviders.getItems().get( 0 );
-        DockerRuntimeConfig runtimeConfig = new DockerRuntimeConfigImpl( dockerProvider, "kitematic/hello-world-nginx", "8080", true );
+        ProviderList allProviders = proxy.getProviders(0,
+                                                       10,
+                                                       "",
+                                                       true);
+        assertEquals(1,
+                     allProviders.getItems().size());
+        assertTrue(allProviders.getItems().get(0) instanceof DockerProvider);
+        DockerProvider dockerProvider = (DockerProvider) allProviders.getItems().get(0);
+        DockerRuntimeConfig runtimeConfig = new DockerRuntimeConfigImpl(dockerProvider,
+                                                                        "kitematic/hello-world-nginx",
+                                                                        "8080",
+                                                                        true);
 
-        RuntimeList allRuntimes = proxy.getRuntimes( 0, 10, "", true );
-        assertEquals( 0, allRuntimes.getItems().size() );
+        RuntimeList allRuntimes = proxy.getRuntimes(0,
+                                                    10,
+                                                    "",
+                                                    true);
+        assertEquals(0,
+                     allRuntimes.getItems().size());
 
-        String newRuntime = proxy.newRuntime( runtimeConfig );
+        String newRuntime = proxy.newRuntime(runtimeConfig);
 
-        allRuntimes = proxy.getRuntimes( 0, 10, "", true );
-        assertEquals( 1, allRuntimes.getItems().size() );
+        allRuntimes = proxy.getRuntimes(0,
+                                        10,
+                                        "",
+                                        true);
+        assertEquals(1,
+                     allRuntimes.getItems().size());
 
-        allRuntimes = proxy.getRuntimes( 0, 10, "", true );
-        assertEquals( 1, allRuntimes.getItems().size() );
+        allRuntimes = proxy.getRuntimes(0,
+                                        10,
+                                        "",
+                                        true);
+        assertEquals(1,
+                     allRuntimes.getItems().size());
 
-        Runtime runtime = allRuntimes.getItems().get( 0 );
+        Runtime runtime = allRuntimes.getItems().get(0);
 
-        assertTrue( runtime instanceof DockerRuntime );
-        DockerRuntime dockerRuntime = ( DockerRuntime ) runtime;
+        assertTrue(runtime instanceof DockerRuntime);
+        DockerRuntime dockerRuntime = (DockerRuntime) runtime;
 
-        assertEquals( "Running", dockerRuntime.getState().getState() );
-        proxy.stopRuntime( newRuntime );
+        assertEquals("Running",
+                     dockerRuntime.getState().getState());
+        proxy.stopRuntime(newRuntime);
 
-        allRuntimes = proxy.getRuntimes( 0, 10, "", true );
-        assertEquals( 1, allRuntimes.getItems().size() );
-        runtime = allRuntimes.getItems().get( 0 );
+        allRuntimes = proxy.getRuntimes(0,
+                                        10,
+                                        "",
+                                        true);
+        assertEquals(1,
+                     allRuntimes.getItems().size());
+        runtime = allRuntimes.getItems().get(0);
 
-        assertTrue( runtime instanceof DockerRuntime );
-        dockerRuntime = ( DockerRuntime ) runtime;
+        assertTrue(runtime instanceof DockerRuntime);
+        dockerRuntime = (DockerRuntime) runtime;
 
-        assertEquals( "Stopped", dockerRuntime.getState().getState() );
+        assertEquals("Stopped",
+                     dockerRuntime.getState().getState());
 
-        proxy.destroyRuntime( newRuntime );
+        proxy.destroyRuntime(newRuntime);
 
-        allRuntimes = proxy.getRuntimes( 0, 10, "", true );
-        assertEquals( 0, allRuntimes.getItems().size() );
-
+        allRuntimes = proxy.getRuntimes(0,
+                                        10,
+                                        "",
+                                        true);
+        assertEquals(0,
+                     allRuntimes.getItems().size());
     }
-
 }

@@ -35,7 +35,7 @@ public class RepositoryStructureDataViewImpl
 
     }
 
-    private static NewRepositoryStructureDataViewImplUIBinder uiBinder = GWT.create( NewRepositoryStructureDataViewImplUIBinder.class );
+    private static NewRepositoryStructureDataViewImplUIBinder uiBinder = GWT.create(NewRepositoryStructureDataViewImplUIBinder.class);
 
     @UiField
     FormControlStatic groupIdTextBox;
@@ -59,12 +59,12 @@ public class RepositoryStructureDataViewImpl
     Legend projectTypeLabel;
 
     public RepositoryStructureDataViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void setGroupId( final String groupId ) {
-        groupIdTextBox.setText( groupId );
+    public void setGroupId(final String groupId) {
+        groupIdTextBox.setText(groupId);
     }
 
     @Override
@@ -73,8 +73,8 @@ public class RepositoryStructureDataViewImpl
     }
 
     @Override
-    public void setArtifactId( final String artifactId ) {
-        artifactIdTextBox.setText( artifactId );
+    public void setArtifactId(final String artifactId) {
+        artifactIdTextBox.setText(artifactId);
     }
 
     @Override
@@ -83,8 +83,8 @@ public class RepositoryStructureDataViewImpl
     }
 
     @Override
-    public void setVersion( final String version ) {
-        versionTextBox.setText( version );
+    public void setVersion(final String version) {
+        versionTextBox.setText(version);
     }
 
     @Override
@@ -94,47 +94,46 @@ public class RepositoryStructureDataViewImpl
 
     @Override
     public void setEditUnmanagedRepositoryText() {
-        projectTypeLabel.setText( Constants.INSTANCE.Repository_structure_view_edit_unmanaged_projectTypeLabel() );
+        projectTypeLabel.setText(Constants.INSTANCE.Repository_structure_view_edit_unmanaged_projectTypeLabel());
     }
 
     @Override
-    public void setEditModuleVisibility( final boolean visible ) {
-        groupIdTextBox.setVisible( visible );
-        groupIdTextBoxHelpInline.setVisible( visible );
-        artifactIdTextBox.setVisible( visible );
-        artifactIdTextBoxHelpInline.setVisible( visible );
-        versionTextBox.setVisible( visible );
-        versionTextBoxHelpInline.setVisible( visible );
+    public void setEditModuleVisibility(final boolean visible) {
+        groupIdTextBox.setVisible(visible);
+        groupIdTextBoxHelpInline.setVisible(visible);
+        artifactIdTextBox.setVisible(visible);
+        artifactIdTextBoxHelpInline.setVisible(visible);
+        versionTextBox.setVisible(visible);
+        versionTextBoxHelpInline.setVisible(visible);
     }
 
     @Override
     public void setEditMultiModuleProjectText() {
-        projectTypeLabel.setText( Constants.INSTANCE.Repository_structure_view_edit_multi_projectTypeLabel() );
-        groupIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_multi_groupIdTextBoxHelpInline() );
-        artifactIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_multi_artifactIdTextBoxHelpInline() );
-        versionTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_multi_versionTextBoxHelpInline() );
+        projectTypeLabel.setText(Constants.INSTANCE.Repository_structure_view_edit_multi_projectTypeLabel());
+        groupIdTextBoxHelpInline.setText(Constants.INSTANCE.Repository_structure_view_edit_multi_groupIdTextBoxHelpInline());
+        artifactIdTextBoxHelpInline.setText(Constants.INSTANCE.Repository_structure_view_edit_multi_artifactIdTextBoxHelpInline());
+        versionTextBoxHelpInline.setText(Constants.INSTANCE.Repository_structure_view_edit_multi_versionTextBoxHelpInline());
     }
 
     @Override
     public void setEditSingleModuleProjectText() {
-        projectTypeLabel.setText( Constants.INSTANCE.Repository_structure_view_edit_single_projectTypeLabel() );
-        groupIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_single_groupIdTextBoxHelpInline() );
-        artifactIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_single_artifactIdTextBoxHelpInline() );
-        versionTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_edit_single_versionTextBoxHelpInline() );
+        projectTypeLabel.setText(Constants.INSTANCE.Repository_structure_view_edit_single_projectTypeLabel());
+        groupIdTextBoxHelpInline.setText(Constants.INSTANCE.Repository_structure_view_edit_single_groupIdTextBoxHelpInline());
+        artifactIdTextBoxHelpInline.setText(Constants.INSTANCE.Repository_structure_view_edit_single_artifactIdTextBoxHelpInline());
+        versionTextBoxHelpInline.setText(Constants.INSTANCE.Repository_structure_view_edit_single_versionTextBoxHelpInline());
     }
 
     @Override
     public void setCreateStructureText() {
-        projectTypeLabel.setText( Constants.INSTANCE.Repository_structure_view_create_projectTypeLabel() );
-        groupIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_create_groupIdTextBoxHelpInline() );
-        artifactIdTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_create_artifactIdTextBoxHelpInline() );
-        versionTextBoxHelpInline.setText( Constants.INSTANCE.Repository_structure_view_create_versionTextBoxHelpInline() );
+        projectTypeLabel.setText(Constants.INSTANCE.Repository_structure_view_create_projectTypeLabel());
+        groupIdTextBoxHelpInline.setText(Constants.INSTANCE.Repository_structure_view_create_groupIdTextBoxHelpInline());
+        artifactIdTextBoxHelpInline.setText(Constants.INSTANCE.Repository_structure_view_create_artifactIdTextBoxHelpInline());
+        versionTextBoxHelpInline.setText(Constants.INSTANCE.Repository_structure_view_create_versionTextBoxHelpInline());
     }
 
     public void clear() {
-        groupIdTextBox.setText( null );
-        artifactIdTextBox.setText( null );
-        versionTextBox.setText( null );
+        groupIdTextBox.setText(null);
+        artifactIdTextBox.setText(null);
+        versionTextBox.setText(null);
     }
-
 }

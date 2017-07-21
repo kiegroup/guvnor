@@ -34,22 +34,21 @@ public class DefaultApplicationPreferencesLoader implements ApplicationPreferenc
     @Inject
     private ConfigurationService configurationService;
 
-    private static final Logger log = LoggerFactory.getLogger( DefaultApplicationPreferencesLoader.class );
+    private static final Logger log = LoggerFactory.getLogger(DefaultApplicationPreferencesLoader.class);
 
     @Override
     public Map<String, String> load() {
         final Map<String, String> preferences = new HashMap<String, String>();
-        final List<ConfigGroup> configs = configurationService.getConfiguration( ConfigType.GLOBAL );
-        for ( ConfigGroup config : configs ) {
-            for ( ConfigItem item : config.getItems() ) {
+        final List<ConfigGroup> configs = configurationService.getConfiguration(ConfigType.GLOBAL);
+        for (ConfigGroup config : configs) {
+            for (ConfigItem item : config.getItems()) {
                 final String name = item.getName();
-                final String value = config.getConfigItemValue( name );
-                log.info( "Setting preference '" + name + "' to '" + value + "'." );
-                preferences.put( name,
-                                 value );
+                final String value = config.getConfigItemValue(name);
+                log.info("Setting preference '" + name + "' to '" + value + "'.");
+                preferences.put(name,
+                                value);
             }
         }
         return preferences;
     }
-
 }

@@ -30,12 +30,15 @@ public class BasePipeline implements Pipeline {
     public BasePipeline() {
     }
 
-    public BasePipeline( String name, List<Stage> stages ) {
+    public BasePipeline(String name,
+                        List<Stage> stages) {
         this.name = name;
         this.stages = stages;
     }
 
-    public BasePipeline( String name, List<Stage> stages, PipelineConfig config ) {
+    public BasePipeline(String name,
+                        List<Stage> stages,
+                        PipelineConfig config) {
         this.name = name;
         this.stages = stages;
         this.config = config;
@@ -51,11 +54,11 @@ public class BasePipeline implements Pipeline {
         return stages;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setStages( List<Stage> stages ) {
+    public void setStages(List<Stage> stages) {
         this.stages = stages;
     }
 
@@ -64,8 +67,7 @@ public class BasePipeline implements Pipeline {
         return config;
     }
 
-    public void setConfig( PipelineConfig config ) {
+    public void setConfig(PipelineConfig config) {
         this.config = config;
     }
-
 }

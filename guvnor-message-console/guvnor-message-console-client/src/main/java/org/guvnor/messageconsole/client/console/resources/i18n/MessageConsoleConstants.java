@@ -43,5 +43,4 @@ public interface MessageConsoleConstants extends Messages {
     String WarningLevelTitle();
 
     String InfoLevelTitle();
-
 }

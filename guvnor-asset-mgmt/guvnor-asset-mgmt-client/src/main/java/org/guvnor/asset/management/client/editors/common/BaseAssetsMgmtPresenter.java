@@ -27,9 +27,9 @@ import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -70,46 +70,49 @@ public abstract class BaseAssetsMgmtPresenter {
     }
 
     public void loadRepositories() {
-        repositoryServices.call( new RemoteCallback<List<Repository>>() {
+        repositoryServices.call(new RemoteCallback<List<Repository>>() {
             @Override
-            public void callback( final List<Repository> repositoriesResults ) {
+            public void callback(final List<Repository> repositoriesResults) {
                 repositories.clear();
                 baseView.getChooseRepositoryBox().clear();
-                baseView.getChooseRepositoryBox().addItem( constants.Select_Repository() );
-                for ( Repository r : repositoriesResults ) {
-                    repositories.put( r.getAlias(), r );
+                baseView.getChooseRepositoryBox().addItem(constants.Select_Repository());
+                for (Repository r : repositoriesResults) {
+                    repositories.put(r.getAlias(),
+                                     r);
                 }
 
-                for ( Map.Entry<String, Repository> entry : repositories.entrySet() ) {
-                    if ( authorizationManager.authorize( entry.getValue(), identity ) && isManaged( entry.getValue() ) ) {
-                        baseView.getChooseRepositoryBox().addItem( entry.getKey(), entry.getValue().getAlias() );
+                for (Map.Entry<String, Repository> entry : repositories.entrySet()) {
+                    if (authorizationManager.authorize(entry.getValue(),
+                                                       identity) && isManaged(entry.getValue())) {
+                        baseView.getChooseRepositoryBox().addItem(entry.getKey(),
+                                                                  entry.getValue().getAlias());
                     }
                 }
             }
-        } ).getRepositories();
+        }).getRepositories();
     }
 
-    public boolean isManaged( Repository value ) {
-        return value != null && value.getEnvironment() != null && Boolean.TRUE.equals( value.getEnvironment().get( "managed" ) );
+    public boolean isManaged(Repository value) {
+        return value != null && value.getEnvironment() != null && Boolean.TRUE.equals(value.getEnvironment().get("managed"));
     }
 
-    public Repository getRepository( String alias ) {
-        return repositories.get( alias );
+    public Repository getRepository(String alias) {
+        return repositories.get(alias);
     }
 
     public Collection<Repository> getRepositories() {
         return repositories.values();
     }
 
-    private void onRepositoryAdded( @Observes final NewRepositoryEvent event ) {
+    private void onRepositoryAdded(@Observes final NewRepositoryEvent event) {
         loadRepositories();
     }
 
-    private void onRepositoryRemovedEvent( @Observes RepositoryRemovedEvent event ) {
+    private void onRepositoryRemovedEvent(@Observes RepositoryRemovedEvent event) {
         loadRepositories();
     }
 
-    private void onRepositoryUpdatedEvent( @Observes RepositoryEnvironmentUpdatedEvent event ) {
+    private void onRepositoryUpdatedEvent(@Observes RepositoryEnvironmentUpdatedEvent event) {
         loadRepositories();
     }
 }

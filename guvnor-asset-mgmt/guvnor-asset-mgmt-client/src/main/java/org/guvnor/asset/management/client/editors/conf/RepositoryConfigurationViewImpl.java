@@ -43,7 +43,7 @@ public class RepositoryConfigurationViewImpl extends Composite implements Reposi
 
     }
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    private static Binder uiBinder = GWT.create(Binder.class);
 
     @Inject
     private PlaceManager placeManager;
@@ -74,44 +74,47 @@ public class RepositoryConfigurationViewImpl extends Composite implements Reposi
     @Inject
     private Event<NotificationEvent> notification;
 
-    private Constants constants = GWT.create( Constants.class );
+    private Constants constants = GWT.create(Constants.class);
 
     public RepositoryConfigurationViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void init( final RepositoryConfigurationPresenter presenter ) {
+    public void init(final RepositoryConfigurationPresenter presenter) {
         this.presenter = presenter;
 
-        configureButton.setText( constants.Configure_Repository() );
-        sourceBranchText.setText( "master" );
-        devBranchText.setText( "dev" );
-        releaseBranchText.setText( "release" );
-        currentVersionText.setReadOnly( true );
-        chooseRepositoryBox.addChangeHandler( new ChangeHandler() {
+        configureButton.setText(constants.Configure_Repository());
+        sourceBranchText.setText("master");
+        devBranchText.setText("dev");
+        releaseBranchText.setText("release");
+        currentVersionText.setReadOnly(true);
+        chooseRepositoryBox.addChangeHandler(new ChangeHandler() {
 
             @Override
-            public void onChange( ChangeEvent event ) {
+            public void onChange(ChangeEvent event) {
                 String value = chooseRepositoryBox.getSelectedValue();
-                GWT.log( value );
+                GWT.log(value);
 
-                presenter.loadRepositoryStructure( value );
+                presenter.loadRepositoryStructure(value);
             }
-        } );
+        });
         presenter.loadRepositories();
     }
 
     @UiHandler("configureButton")
-    public void configureButton( ClickEvent e ) {
+    public void configureButton(ClickEvent e) {
 
-        presenter.configureRepository( chooseRepositoryBox.getSelectedValue(), sourceBranchText.getText(), devBranchText.getText(), releaseBranchText.getText(), versionText.getText() );
-
+        presenter.configureRepository(chooseRepositoryBox.getSelectedValue(),
+                                      sourceBranchText.getText(),
+                                      devBranchText.getText(),
+                                      releaseBranchText.getText(),
+                                      versionText.getText());
     }
 
     @Override
-    public void displayNotification( String text ) {
-        notification.fire( new NotificationEvent( text ) );
+    public void displayNotification(String text) {
+        notification.fire(new NotificationEvent(text));
     }
 
     @Override
@@ -120,12 +123,12 @@ public class RepositoryConfigurationViewImpl extends Composite implements Reposi
     }
 
     @Override
-    public void setCurrentVersionText( final String text ) {
-        currentVersionText.setText( text );
+    public void setCurrentVersionText(final String text) {
+        currentVersionText.setText(text);
     }
 
     @Override
-    public void setVersionText( final String text ) {
-        versionText.setText( text );
+    public void setVersionText(final String text) {
+        versionText.setText(text);
     }
 }

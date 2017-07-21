@@ -42,7 +42,7 @@ import org.uberfire.lifecycle.OnShutdown;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.security.annotations.ResourceCheck;
 
-import static org.guvnor.structure.client.security.RepositoryController.*;
+import static org.guvnor.structure.client.security.RepositoryController.REPOSITORY_DELETE;
 
 @Dependent
 @WorkbenchScreen(identifier = "RepositoriesEditor")
@@ -55,25 +55,25 @@ public class RepositoriesPresenter
     private GuvnorStructureContext guvnorStructureContext;
 
     private Map<Repository, RepositoryItemPresenter> repositoryToWidgetMap = new HashMap<Repository, RepositoryItemPresenter>();
-    private RepositoriesView    view;
+    private RepositoriesView view;
     private HandlerRegistration changeHandlerRegistration;
 
     public RepositoriesPresenter() {
     }
 
     @Inject
-    public RepositoriesPresenter( final RepositoriesView view,
-                                  final GuvnorStructureContext guvnorStructureContext,
-                                  final Caller<RepositoryService> repositoryService,
-                                  final RepositoryController repositoryController ) {
+    public RepositoriesPresenter(final RepositoriesView view,
+                                 final GuvnorStructureContext guvnorStructureContext,
+                                 final Caller<RepositoryService> repositoryService,
+                                 final RepositoryController repositoryController) {
         this.view = view;
         this.guvnorStructureContext = guvnorStructureContext;
         this.repositoryService = repositoryService;
         this.repositoryController = repositoryController;
 
-        changeHandlerRegistration = guvnorStructureContext.addGuvnorStructureContextChangeHandler( this );
+        changeHandlerRegistration = guvnorStructureContext.addGuvnorStructureContextChangeHandler(this);
 
-        view.setPresenter( this );
+        view.setPresenter(this);
     }
 
     @OnStartup
@@ -83,25 +83,24 @@ public class RepositoriesPresenter
 
     @OnShutdown
     public void shutdown() {
-        guvnorStructureContext.removeHandler( changeHandlerRegistration );
+        guvnorStructureContext.removeHandler(changeHandlerRegistration);
     }
 
     private void loadContent() {
         repositoryToWidgetMap.clear();
         view.clear();
 
-        guvnorStructureContext.getRepositories( new Callback<Collection<Repository>>() {
+        guvnorStructureContext.getRepositories(new Callback<Collection<Repository>>() {
             @Override
-            public void callback( final Collection<Repository> response ) {
-                for ( final Repository repo : response ) {
-                    repositoryToWidgetMap.put( repo,
-                            addRepositoryItem( repo,
-                                    guvnorStructureContext.getCurrentBranch( repo.getAlias() ) ) );
+            public void callback(final Collection<Repository> response) {
+                for (final Repository repo : response) {
+                    repositoryToWidgetMap.put(repo,
+                                              addRepositoryItem(repo,
+                                                                guvnorStructureContext.getCurrentBranch(repo.getAlias())));
                 }
             }
-        } );
+        });
     }
-
 
     @WorkbenchPartTitle
     public String getTitle() {
@@ -113,57 +112,61 @@ public class RepositoriesPresenter
         return view.asWidget();
     }
 
-    @ResourceCheck(action=REPOSITORY_DELETE)
-    public void removeRepository( final Repository repository ) {
-        if ( view.confirmDeleteRepository( repository ) ) {
-            repositoryService.call().removeRepository( repository.getAlias() );
+    @ResourceCheck(action = REPOSITORY_DELETE)
+    public void removeRepository(final Repository repository) {
+        if (view.confirmDeleteRepository(repository)) {
+            repositoryService.call().removeRepository(repository.getAlias());
         }
     }
 
     @Override
-    public void onNewRepositoryAdded( final Repository repository ) {
-        addRepositoryItem( repository,
-                           repository.getDefaultBranch() );
+    public void onNewRepositoryAdded(final Repository repository) {
+        addRepositoryItem(repository,
+                          repository.getDefaultBranch());
     }
 
     @Override
-    public void onNewBranchAdded( String repositoryAlias, String branchName, Path branchPath ) {
-        Repository repository =  getRepositoryByAlias( repositoryAlias );
-        if ( repository != null && ( repository instanceof GitRepository) ) {
+    public void onNewBranchAdded(String repositoryAlias,
+                                 String branchName,
+                                 Path branchPath) {
+        Repository repository = getRepositoryByAlias(repositoryAlias);
+        if (repository != null && (repository instanceof GitRepository)) {
             //only git repositories exists
-            RepositoryItemPresenter itemPresenter = repositoryToWidgetMap.remove( repository );
-            if ( itemPresenter != null ) {
-                ( ( GitRepository ) repository ).addBranch( branchName, branchPath );
-                repositoryToWidgetMap.put( repository, itemPresenter );
+            RepositoryItemPresenter itemPresenter = repositoryToWidgetMap.remove(repository);
+            if (itemPresenter != null) {
+                ((GitRepository) repository).addBranch(branchName,
+                                                       branchPath);
+                repositoryToWidgetMap.put(repository,
+                                          itemPresenter);
                 itemPresenter.refreshBranches();
             }
         }
     }
 
     @Override
-    public void onRepositoryDeleted( final Repository repository ) {
-        final RepositoryItemPresenter repositoryItem = repositoryToWidgetMap.remove( repository );
-        view.removeIfExists( repositoryItem );
+    public void onRepositoryDeleted(final Repository repository) {
+        final RepositoryItemPresenter repositoryItem = repositoryToWidgetMap.remove(repository);
+        view.removeIfExists(repositoryItem);
     }
 
-    private RepositoryItemPresenter addRepositoryItem( final Repository newRepository,
-                                                       final String branch ) {
-        final RepositoryItemPresenter repositoryItemPresenter = view.addRepository( newRepository,
-                branch );
-        repositoryItemPresenter.addRemoveRepositoryCommand( this );
-        repositoryToWidgetMap.put( newRepository,
-                repositoryItemPresenter );
+    private RepositoryItemPresenter addRepositoryItem(final Repository newRepository,
+                                                      final String branch) {
+        final RepositoryItemPresenter repositoryItemPresenter = view.addRepository(newRepository,
+                                                                                   branch);
+        repositoryItemPresenter.addRemoveRepositoryCommand(this);
+        repositoryToWidgetMap.put(newRepository,
+                                  repositoryItemPresenter);
 
         return repositoryItemPresenter;
     }
 
-    public void onSystemRepositoryChanged( @Observes final SystemRepositoryChangedEvent event ) {
+    public void onSystemRepositoryChanged(@Observes final SystemRepositoryChangedEvent event) {
         loadContent();
     }
 
-    private Repository getRepositoryByAlias( final String alias ) {
-        for ( Repository repository : repositoryToWidgetMap.keySet() ) {
-            if ( repository.getAlias().equals( alias ) ) {
+    private Repository getRepositoryByAlias(final String alias) {
+        for (Repository repository : repositoryToWidgetMap.keySet()) {
+            if (repository.getAlias().equals(alias)) {
                 return repository;
             }
         }

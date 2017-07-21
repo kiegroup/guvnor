@@ -34,66 +34,66 @@ import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 @Dependent
 public class RepositoryManagedStatusUpdater {
 
-    private final ProjectWizard                      wizard;
+    private final ProjectWizard wizard;
     private final Caller<RepositoryStructureService> repositoryStructureService;
 
     private HasBusyIndicator view;
-    private ActionHistory                     history;
+    private ActionHistory history;
     private RepositoryStructureView.Presenter presenter;
 
     @Inject
-    public RepositoryManagedStatusUpdater( final Caller<RepositoryStructureService> repositoryStructureService,
-                                           final ProjectWizard wizard ) {
+    public RepositoryManagedStatusUpdater(final Caller<RepositoryStructureService> repositoryStructureService,
+                                          final ProjectWizard wizard) {
         this.repositoryStructureService = repositoryStructureService;
         this.wizard = wizard;
     }
 
-    public void bind( final HasBusyIndicator view,
-                      final ActionHistory history,
-                      final RepositoryStructureView.Presenter initRepository ) {
+    public void bind(final HasBusyIndicator view,
+                     final ActionHistory history,
+                     final RepositoryStructureView.Presenter initRepository) {
         this.view = view;
         this.history = history;
         this.presenter = initRepository;
     }
 
-    public void updateNonManaged( final Repository repository,
-                                  final String branch ) {
-        setManagedStatus( repository,
-                          branch,
-                          false );
+    public void updateNonManaged(final Repository repository,
+                                 final String branch) {
+        setManagedStatus(repository,
+                         branch,
+                         false);
     }
 
-    public void initSingleProject( final Repository repository,
-                                   final String branch ) {
-        wizard.initialise( new POM() );
-        wizard.start( new Callback<Project>() {
-                          @Override
-                          public void callback( final Project result ) {
+    public void initSingleProject(final Repository repository,
+                                  final String branch) {
+        wizard.initialise(new POM());
+        wizard.start(new Callback<Project>() {
+                         @Override
+                         public void callback(final Project result) {
 
-                              history.setLastAddedModule( result );
+                             history.setLastAddedModule(result);
 
-                              if ( result != null ) {
-                                  setManagedStatus( repository,
-                                                    branch,
-                                                    true );
-                              }
-                          }
-                      },
-                      false );
+                             if (result != null) {
+                                 setManagedStatus(repository,
+                                                  branch,
+                                                  true);
+                             }
+                         }
+                     },
+                     false);
     }
 
-    private void setManagedStatus( final Repository repository,
-                                   final String branch,
-                                   final boolean managed ) {
-        view.showBusyIndicator( Constants.INSTANCE.CreatingRepositoryStructure() );
-        repositoryStructureService.call( new RemoteCallback<Repository>() {
-                                             @Override
-                                             public void callback( Repository repository ) {
-                                                 presenter.loadModel( repository,
-                                                                      branch );
-                                             }
-                                         },
-                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).updateManagedStatus( repository,
-                                                                                                                 managed );
+    private void setManagedStatus(final Repository repository,
+                                  final String branch,
+                                  final boolean managed) {
+        view.showBusyIndicator(Constants.INSTANCE.CreatingRepositoryStructure());
+        repositoryStructureService.call(new RemoteCallback<Repository>() {
+                                            @Override
+                                            public void callback(Repository repository) {
+                                                presenter.loadModel(repository,
+                                                                    branch);
+                                            }
+                                        },
+                                        new HasBusyIndicatorDefaultErrorCallback(view)).updateManagedStatus(repository,
+                                                                                                            managed);
     }
 }

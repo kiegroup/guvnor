@@ -20,7 +20,7 @@ public class ProjectModuleRow {
 
     private String name;
 
-    public ProjectModuleRow( String name ) {
+    public ProjectModuleRow(String name) {
         this.name = name;
     }
 
@@ -28,21 +28,22 @@ public class ProjectModuleRow {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    @Override public boolean equals( Object o ) {
-        if ( this == o ) {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        ProjectModuleRow that = ( ProjectModuleRow ) o;
+        ProjectModuleRow that = (ProjectModuleRow) o;
 
-        return name != null ? name.equals( that.name ) : that.name == null;
+        return name != null ? name.equals(that.name) : that.name == null;
     }
 
     @Override

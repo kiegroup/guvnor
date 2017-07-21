@@ -30,10 +30,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.client.callbacks.Callback;
 
-import static org.guvnor.structure.client.editors.TestUtil.*;
+import static org.guvnor.structure.client.editors.TestUtil.makeRepository;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class FileExplorerPresenterTest {
 
     @Mock
@@ -41,82 +41,85 @@ public class FileExplorerPresenterTest {
 
     private GuvnorStructureContext context;
 
-    private FileExplorerPresenter  presenter;
+    private FileExplorerPresenter presenter;
     private Collection<Repository> repositories;
-    private Repository             myRepo;
+    private Repository myRepo;
     private String myRepoBranch = "master";
     private Repository yourRepo;
     private String yourRepoBranch = "master";
 
-    private GuvnorStructureContextChangeHandler.HandlerRegistration       changeHandlerRegistration;
+    private GuvnorStructureContextChangeHandler.HandlerRegistration changeHandlerRegistration;
     private GuvnorStructureContextBranchChangeHandler.HandlerRegistration branchChangeHandlerRegistration;
 
     @Before
     public void setUp() throws Exception {
         repositories = new ArrayList<>();
 
-        myRepo = makeRepository( "my-repo",
-                                 "master", "dev" );
-        repositories.add( myRepo );
-        yourRepo = makeRepository( "your-repo",
-                                   "master", "release" );
-        repositories.add( yourRepo );
+        myRepo = makeRepository("my-repo",
+                                "master",
+                                "dev");
+        repositories.add(myRepo);
+        yourRepo = makeRepository("your-repo",
+                                  "master",
+                                  "release");
+        repositories.add(yourRepo);
 
-        context = spy( new GuvnorStructureContext() {
+        context = spy(new GuvnorStructureContext() {
             @Override
-            public void getRepositories( final Callback<Collection<Repository>> callback ) {
-                callback.callback( repositories );
+            public void getRepositories(final Callback<Collection<Repository>> callback) {
+                callback.callback(repositories);
             }
 
             @Override
-            public GuvnorStructureContextChangeHandler.HandlerRegistration addGuvnorStructureContextChangeHandler( final GuvnorStructureContextChangeHandler handler ) {
+            public GuvnorStructureContextChangeHandler.HandlerRegistration addGuvnorStructureContextChangeHandler(final GuvnorStructureContextChangeHandler handler) {
                 return changeHandlerRegistration;
             }
 
             @Override
-            public GuvnorStructureContextBranchChangeHandler.HandlerRegistration addGuvnorStructureContextBranchChangeHandler( final GuvnorStructureContextBranchChangeHandler handler ) {
+            public GuvnorStructureContextBranchChangeHandler.HandlerRegistration addGuvnorStructureContextBranchChangeHandler(final GuvnorStructureContextBranchChangeHandler handler) {
                 return branchChangeHandlerRegistration;
             }
 
             @Override
-            public String getCurrentBranch( final String alias ) {
-                if ( alias.equals( "my-repo" ) ) {
+            public String getCurrentBranch(final String alias) {
+                if (alias.equals("my-repo")) {
                     return myRepoBranch;
-                } else if ( alias.equals( "your-repo" ) ) {
+                } else if (alias.equals("your-repo")) {
                     return yourRepoBranch;
                 } else {
                     return null;
                 }
             }
-        } );
+        });
 
-        presenter = new FileExplorerPresenter( view,
-                                               context );
+        presenter = new FileExplorerPresenter(view,
+                                              context);
     }
 
     @Test
     public void testSetPresenter() throws Exception {
-        verify( view ).init( presenter );
+        verify(view).init(presenter);
     }
 
     @Test
     public void testAddHandlers() throws Exception {
-        verify( context ).addGuvnorStructureContextChangeHandler( presenter );
-        verify( context ).addGuvnorStructureContextBranchChangeHandler( presenter );
+        verify(context).addGuvnorStructureContextChangeHandler(presenter);
+        verify(context).addGuvnorStructureContextBranchChangeHandler(presenter);
     }
 
     @Test
     public void testRemoveHandlers() throws Exception {
 
-        verify( context, never() ).removeHandler( any( GuvnorStructureContextBranchChangeHandler.HandlerRegistration.class ) );
-        verify( context, never() ).removeHandler( any( GuvnorStructureContextChangeHandler.HandlerRegistration.class ) );
+        verify(context,
+               never()).removeHandler(any(GuvnorStructureContextBranchChangeHandler.HandlerRegistration.class));
+        verify(context,
+               never()).removeHandler(any(GuvnorStructureContextChangeHandler.HandlerRegistration.class));
 
         presenter.onShutdown();
 
-        verify( context ).removeHandler( branchChangeHandlerRegistration );
-        verify( context ).removeHandler( changeHandlerRegistration );
+        verify(context).removeHandler(branchChangeHandlerRegistration);
+        verify(context).removeHandler(changeHandlerRegistration);
     }
-
 
     @Test
     public void testOnStartUp() throws Exception {
@@ -126,13 +129,12 @@ public class FileExplorerPresenterTest {
 
         presenter.reset();
 
-        verify( view, times( 2 ) ).addNewRepository( any( Repository.class ),
-                                                     anyString() );
-        verify( view ).addNewRepository( myRepo,
-                                         "dev" );
-        verify( view ).addNewRepository( yourRepo,
-                                         "master" );
-
+        verify(view,
+               times(2)).addNewRepository(any(Repository.class),
+                                          anyString());
+        verify(view).addNewRepository(myRepo,
+                                      "dev");
+        verify(view).addNewRepository(yourRepo,
+                                      "master");
     }
-
 }

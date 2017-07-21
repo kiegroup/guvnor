@@ -26,35 +26,35 @@ public class RepositoryRequest extends Entity {
     private String requestType;
     private String gitURL;
     private String organizationalUnitName;
-    
+
     public String getUserName() {
         return userName;
     }
-    
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
-    
+
     public String getPassword() {
         return password;
     }
-    
+
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
     public String getRequestType() {
         return requestType;
     }
-    
+
     public void setRequestType(String requestType) {
         this.requestType = requestType;
     }
-    
+
     public String getGitURL() {
         return gitURL;
     }
-    
+
     public void setGitURL(String gitURL) {
         this.gitURL = gitURL;
     }
@@ -63,7 +63,7 @@ public class RepositoryRequest extends Entity {
         return organizationalUnitName;
     }
 
-    public void setOrganizationalUnitName( String organizationalUnitName ) {
+    public void setOrganizationalUnitName(String organizationalUnitName) {
         this.organizationalUnitName = organizationalUnitName;
-    } 
+    }
 }

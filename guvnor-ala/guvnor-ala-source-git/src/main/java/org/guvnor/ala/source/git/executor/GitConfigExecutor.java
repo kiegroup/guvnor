@@ -30,7 +30,7 @@ import org.guvnor.ala.source.git.UFLocal;
 import org.guvnor.ala.source.git.config.GitConfig;
 import org.uberfire.java.nio.file.FileSystems;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 
 public class GitConfigExecutor implements FunctionConfigExecutor<GitConfig, Source> {
 
@@ -43,21 +43,26 @@ public class GitConfigExecutor implements FunctionConfigExecutor<GitConfig, Sour
 
     @Override
     public Optional<Source> apply(final GitConfig gitConfig) {
-        checkNotEmpty("repo-name parameter is mandatory", gitConfig.getRepoName());
+        checkNotEmpty("repo-name parameter is mandatory",
+                      gitConfig.getRepoName());
         if (Boolean.parseBoolean(gitConfig.getCreateRepo())) {
             final URI uri = URI.create("git://" + gitConfig.getRepoName());
-            FileSystems.newFileSystem(uri, new HashMap<String, Object>() {
-                {
-                    if (gitConfig.getOrigin() != null && !gitConfig.getOrigin().isEmpty()) {
-                        put("origin", gitConfig.getOrigin());
-                    } else {
-                        put("init", Boolean.TRUE);
-                    }
-                    if (gitConfig.getOutPath() != null && !gitConfig.getOutPath().isEmpty()) {
-                        put("out-dir", gitConfig.getOutPath());
-                    }
-                }
-            });
+            FileSystems.newFileSystem(uri,
+                                      new HashMap<String, Object>() {
+                                          {
+                                              if (gitConfig.getOrigin() != null && !gitConfig.getOrigin().isEmpty()) {
+                                                  put("origin",
+                                                      gitConfig.getOrigin());
+                                              } else {
+                                                  put("init",
+                                                      Boolean.TRUE);
+                                              }
+                                              if (gitConfig.getOutPath() != null && !gitConfig.getOutPath().isEmpty()) {
+                                                  put("out-dir",
+                                                      gitConfig.getOutPath());
+                                              }
+                                          }
+                                      });
         } else {
             final URI uri = URI.create("git://" + gitConfig.getRepoName() + "?sync");
             try {
@@ -66,12 +71,15 @@ public class GitConfigExecutor implements FunctionConfigExecutor<GitConfig, Sour
                 // The repo might not support sync, because it doesn't have an origin, we should move forward for now.
             }
         }
-        final GitRepository gitRepository = (GitRepository) new UFLocal().getRepository(gitConfig.getRepoName(), Collections.emptyMap());
+        final GitRepository gitRepository = (GitRepository) new UFLocal().getRepository(gitConfig.getRepoName(),
+                                                                                        Collections.emptyMap());
         final Optional<Source> source_ = Optional.ofNullable(gitRepository.getSource((gitConfig.getBranch() != null && !gitConfig.getBranch().isEmpty()) ? gitConfig.getBranch() : "master"));
         if (source_.isPresent()) {
             Source source = source_.get();
-            sourceRegistry.registerRepositorySources(source.getPath(), gitRepository);
-            sourceRegistry.registerSource(gitRepository, source);
+            sourceRegistry.registerRepositorySources(source.getPath(),
+                                                     gitRepository);
+            sourceRegistry.registerSource(gitRepository,
+                                          source);
         }
         return source_;
     }

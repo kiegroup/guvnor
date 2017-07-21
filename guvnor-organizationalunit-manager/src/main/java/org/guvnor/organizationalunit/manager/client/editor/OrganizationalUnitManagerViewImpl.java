@@ -53,21 +53,21 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
 
     private static final Comparator<OrganizationalUnit> ORGANIZATIONAL_UNIT_COMPARATOR = new Comparator<OrganizationalUnit>() {
         @Override
-        public int compare( final OrganizationalUnit o1,
-                            final OrganizationalUnit o2 ) {
-            return o1.getName().toLowerCase().compareTo( o2.getName().toLowerCase() );
+        public int compare(final OrganizationalUnit o1,
+                           final OrganizationalUnit o2) {
+            return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
         }
     };
 
     private static final Comparator<Repository> REPOSITORY_COMPARATOR = new Comparator<Repository>() {
         @Override
-        public int compare( final Repository o1,
-                            final Repository o2 ) {
-            return o1.getAlias().toLowerCase().compareTo( o2.getAlias().toLowerCase() );
+        public int compare(final Repository o1,
+                           final Repository o2) {
+            return o1.getAlias().toLowerCase().compareTo(o2.getAlias().toLowerCase());
         }
     };
 
-    private static OrganizationalUnitManagerViewBinder uiBinder = GWT.create( OrganizationalUnitManagerViewBinder.class );
+    private static OrganizationalUnitManagerViewBinder uiBinder = GWT.create(OrganizationalUnitManagerViewBinder.class);
 
     @UiField
     ListBox lstOrganizationalUnits;
@@ -100,43 +100,43 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
     private List<Repository> sortedAvailableRepositories = new ArrayList<Repository>();
 
     public OrganizationalUnitManagerViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        lstOrganizationalUnits.addChangeHandler( new ChangeHandler() {
+        lstOrganizationalUnits.addChangeHandler(new ChangeHandler() {
 
             @Override
-            public void onChange( final ChangeEvent event ) {
+            public void onChange(final ChangeEvent event) {
                 final int selectedOrganizationalUnitIndex = lstOrganizationalUnits.getSelectedIndex();
-                if ( selectedOrganizationalUnitIndex == -1 ) {
+                if (selectedOrganizationalUnitIndex == -1) {
                     return;
                 }
-                if ( sortedOrganizationalUnits.isEmpty() ) {
+                if (sortedOrganizationalUnits.isEmpty()) {
                     return;
                 }
-                final OrganizationalUnit selectedOrganizationalUnit = sortedOrganizationalUnits.get( selectedOrganizationalUnitIndex );
-                presenter.organizationalUnitSelected( selectedOrganizationalUnit );
-                btnAddRepository.setEnabled( false );
-                btnRemoveRepository.setEnabled( false );
+                final OrganizationalUnit selectedOrganizationalUnit = sortedOrganizationalUnits.get(selectedOrganizationalUnitIndex);
+                presenter.organizationalUnitSelected(selectedOrganizationalUnit);
+                btnAddRepository.setEnabled(false);
+                btnRemoveRepository.setEnabled(false);
             }
-        } );
+        });
 
-        lstOrganizationalUnitRepositories.addChangeHandler( new ChangeHandler() {
+        lstOrganizationalUnitRepositories.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange( final ChangeEvent event ) {
-                btnRemoveRepository.setEnabled( true );
+            public void onChange(final ChangeEvent event) {
+                btnRemoveRepository.setEnabled(true);
             }
-        } );
+        });
 
-        lstAvailableRepositories.addChangeHandler( new ChangeHandler() {
+        lstAvailableRepositories.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange( final ChangeEvent event ) {
-                btnAddRepository.setEnabled( true );
+            public void onChange(final ChangeEvent event) {
+                btnAddRepository.setEnabled(true);
             }
-        } );
+        });
     }
 
     @Override
-    public void init( final OrganizationalUnitManagerPresenter presenter ) {
+    public void init(final OrganizationalUnitManagerPresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -148,126 +148,123 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
         lstOrganizationalUnits.clear();
         lstOrganizationalUnitRepositories.clear();
         lstAvailableRepositories.clear();
-        btnAddRepository.setEnabled( false );
-        btnRemoveRepository.setEnabled( false );
-        btnDeleteOrganizationalUnit.setEnabled( false );
-        btnEditOrganizationalUnit.setEnabled( false );
+        btnAddRepository.setEnabled(false);
+        btnRemoveRepository.setEnabled(false);
+        btnDeleteOrganizationalUnit.setEnabled(false);
+        btnEditOrganizationalUnit.setEnabled(false);
     }
 
     @Override
-    public void setOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits ) {
+    public void setOrganizationalUnits(final Collection<OrganizationalUnit> organizationalUnits) {
         final int selectedOrganizationalUnitIndex = lstOrganizationalUnits.getSelectedIndex();
-        final OrganizationalUnit selectedOrganizationalUnit = ( selectedOrganizationalUnitIndex < 0 ? null : sortedOrganizationalUnits.get( selectedOrganizationalUnitIndex ) );
+        final OrganizationalUnit selectedOrganizationalUnit = (selectedOrganizationalUnitIndex < 0 ? null : sortedOrganizationalUnits.get(selectedOrganizationalUnitIndex));
 
         lstOrganizationalUnits.clear();
         sortedOrganizationalUnits.clear();
-        if ( !( organizationalUnits == null || organizationalUnits.isEmpty() ) ) {
-            lstOrganizationalUnits.setEnabled( true );
-            sortedOrganizationalUnits = sortOrganizationalUnits( organizationalUnits );
-            for ( OrganizationalUnit organizationalUnit : sortedOrganizationalUnits ) {
-                lstOrganizationalUnits.addItem( getOrganizationalUnitDisplayName( organizationalUnit ) );
+        if (!(organizationalUnits == null || organizationalUnits.isEmpty())) {
+            lstOrganizationalUnits.setEnabled(true);
+            sortedOrganizationalUnits = sortOrganizationalUnits(organizationalUnits);
+            for (OrganizationalUnit organizationalUnit : sortedOrganizationalUnits) {
+                lstOrganizationalUnits.addItem(getOrganizationalUnitDisplayName(organizationalUnit));
             }
-
         } else {
-            lstOrganizationalUnits.setEnabled( false );
-            lstOrganizationalUnits.addItem( OrganizationalUnitManagerConstants.INSTANCE.NoOrganizationalUnitsDefined() );
+            lstOrganizationalUnits.setEnabled(false);
+            lstOrganizationalUnits.addItem(OrganizationalUnitManagerConstants.INSTANCE.NoOrganizationalUnitsDefined());
         }
 
-        if ( sortedOrganizationalUnits.contains( selectedOrganizationalUnit ) ) {
-            lstOrganizationalUnits.setSelectedIndex( sortedOrganizationalUnits.indexOf( selectedOrganizationalUnit ) );
-            presenter.organizationalUnitSelected( selectedOrganizationalUnit );
-
+        if (sortedOrganizationalUnits.contains(selectedOrganizationalUnit)) {
+            lstOrganizationalUnits.setSelectedIndex(sortedOrganizationalUnits.indexOf(selectedOrganizationalUnit));
+            presenter.organizationalUnitSelected(selectedOrganizationalUnit);
         } else {
             lstOrganizationalUnitRepositories.clear();
-            lstOrganizationalUnitRepositories.setEnabled( false );
-            lstOrganizationalUnitRepositories.addItem( OrganizationalUnitManagerConstants.INSTANCE.NoOrganizationalUnitSelected() );
+            lstOrganizationalUnitRepositories.setEnabled(false);
+            lstOrganizationalUnitRepositories.addItem(OrganizationalUnitManagerConstants.INSTANCE.NoOrganizationalUnitSelected());
             lstAvailableRepositories.clear();
-            lstAvailableRepositories.setEnabled( false );
-            lstAvailableRepositories.addItem( OrganizationalUnitManagerConstants.INSTANCE.NoOrganizationalUnitSelected() );
-            btnDeleteOrganizationalUnit.setEnabled( false );
-            btnEditOrganizationalUnit.setEnabled( false );
+            lstAvailableRepositories.setEnabled(false);
+            lstAvailableRepositories.addItem(OrganizationalUnitManagerConstants.INSTANCE.NoOrganizationalUnitSelected());
+            btnDeleteOrganizationalUnit.setEnabled(false);
+            btnEditOrganizationalUnit.setEnabled(false);
         }
-
     }
 
-    private String getOrganizationalUnitDisplayName( final OrganizationalUnit organizationalUnit ) {
-        final StringBuilder sb = new StringBuilder( organizationalUnit.getName() );
-        if ( !( organizationalUnit.getOwner() == null || organizationalUnit.getOwner().isEmpty() ) ) {
-            sb.append( " : " ).append( organizationalUnit.getOwner() );
+    private String getOrganizationalUnitDisplayName(final OrganizationalUnit organizationalUnit) {
+        final StringBuilder sb = new StringBuilder(organizationalUnit.getName());
+        if (!(organizationalUnit.getOwner() == null || organizationalUnit.getOwner().isEmpty())) {
+            sb.append(" : ").append(organizationalUnit.getOwner());
         }
         return sb.toString();
     }
 
-    private List<OrganizationalUnit> sortOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits ) {
+    private List<OrganizationalUnit> sortOrganizationalUnits(final Collection<OrganizationalUnit> organizationalUnits) {
         final List<OrganizationalUnit> sortedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
-        sortedOrganizationalUnits.addAll( organizationalUnits );
-        Collections.sort( sortedOrganizationalUnits,
-                          ORGANIZATIONAL_UNIT_COMPARATOR );
+        sortedOrganizationalUnits.addAll(organizationalUnits);
+        Collections.sort(sortedOrganizationalUnits,
+                         ORGANIZATIONAL_UNIT_COMPARATOR);
         return sortedOrganizationalUnits;
     }
 
     @Override
-    public void setOrganizationalUnitRepositories( final Collection<Repository> repositories,
-                                                   final Collection<Repository> availableRepositories ) {
+    public void setOrganizationalUnitRepositories(final Collection<Repository> repositories,
+                                                  final Collection<Repository> availableRepositories) {
         lstOrganizationalUnitRepositories.clear();
         sortedOrganizationalUnitRepositories.clear();
-        if ( !( repositories == null || repositories.isEmpty() ) ) {
-            lstOrganizationalUnitRepositories.setEnabled( true );
-            sortedOrganizationalUnitRepositories = sortRepositories( repositories );
-            for ( Repository repository : sortedOrganizationalUnitRepositories ) {
-                lstOrganizationalUnitRepositories.addItem( repository.getAlias() );
+        if (!(repositories == null || repositories.isEmpty())) {
+            lstOrganizationalUnitRepositories.setEnabled(true);
+            sortedOrganizationalUnitRepositories = sortRepositories(repositories);
+            for (Repository repository : sortedOrganizationalUnitRepositories) {
+                lstOrganizationalUnitRepositories.addItem(repository.getAlias());
             }
         } else {
-            lstOrganizationalUnitRepositories.setEnabled( false );
-            lstOrganizationalUnitRepositories.addItem( OrganizationalUnitManagerConstants.INSTANCE.NoRepositoriesDefined() );
+            lstOrganizationalUnitRepositories.setEnabled(false);
+            lstOrganizationalUnitRepositories.addItem(OrganizationalUnitManagerConstants.INSTANCE.NoRepositoriesDefined());
         }
 
         lstAvailableRepositories.clear();
         sortedAvailableRepositories.clear();
-        sortedAvailableRepositories.addAll( availableRepositories );
-        sortedAvailableRepositories.removeAll( sortedOrganizationalUnitRepositories );
-        if ( !( sortedAvailableRepositories == null || sortedAvailableRepositories.isEmpty() ) ) {
-            lstAvailableRepositories.setEnabled( true );
-            for ( Repository repo : sortedAvailableRepositories ) {
-                lstAvailableRepositories.addItem( repo.getAlias() );
+        sortedAvailableRepositories.addAll(availableRepositories);
+        sortedAvailableRepositories.removeAll(sortedOrganizationalUnitRepositories);
+        if (!(sortedAvailableRepositories == null || sortedAvailableRepositories.isEmpty())) {
+            lstAvailableRepositories.setEnabled(true);
+            for (Repository repo : sortedAvailableRepositories) {
+                lstAvailableRepositories.addItem(repo.getAlias());
             }
         } else {
-            lstAvailableRepositories.setEnabled( false );
-            lstAvailableRepositories.addItem( OrganizationalUnitManagerConstants.INSTANCE.NoRepositoriesAvailable() );
+            lstAvailableRepositories.setEnabled(false);
+            lstAvailableRepositories.addItem(OrganizationalUnitManagerConstants.INSTANCE.NoRepositoriesAvailable());
         }
     }
 
-    private List<Repository> sortRepositories( final Collection<Repository> repositories ) {
+    private List<Repository> sortRepositories(final Collection<Repository> repositories) {
         final List<Repository> sortedRepositories = new ArrayList<Repository>();
-        sortedRepositories.addAll( repositories );
-        Collections.sort( sortedRepositories,
-                          REPOSITORY_COMPARATOR );
+        sortedRepositories.addAll(repositories);
+        Collections.sort(sortedRepositories,
+                         REPOSITORY_COMPARATOR);
         return sortedRepositories;
     }
 
     @Override
-    public void addOrganizationalUnit( final OrganizationalUnit newOrganizationalUnit ) {
-        final Collection<OrganizationalUnit> existingOrganizationalUnits = new ArrayList<OrganizationalUnit>( sortedOrganizationalUnits );
-        existingOrganizationalUnits.add( newOrganizationalUnit );
-        setOrganizationalUnits( existingOrganizationalUnits );
+    public void addOrganizationalUnit(final OrganizationalUnit newOrganizationalUnit) {
+        final Collection<OrganizationalUnit> existingOrganizationalUnits = new ArrayList<OrganizationalUnit>(sortedOrganizationalUnits);
+        existingOrganizationalUnits.add(newOrganizationalUnit);
+        setOrganizationalUnits(existingOrganizationalUnits);
     }
 
     @Override
-    public void deleteOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
+    public void deleteOrganizationalUnit(final OrganizationalUnit organizationalUnit) {
         //Deselect selected Organizational Units as we've deleted it. This
         //forces the view to correctly update to show nothing is selected!
-        for ( int i = 0; i < lstOrganizationalUnits.getItemCount(); i++ ) {
-            lstOrganizationalUnits.setItemSelected( i,
-                                                    false );
+        for (int i = 0; i < lstOrganizationalUnits.getItemCount(); i++) {
+            lstOrganizationalUnits.setItemSelected(i,
+                                                   false);
         }
-        final Collection<OrganizationalUnit> existingOrganizationalUnits = new ArrayList<OrganizationalUnit>( sortedOrganizationalUnits );
-        existingOrganizationalUnits.remove( organizationalUnit );
-        setOrganizationalUnits( existingOrganizationalUnits );
+        final Collection<OrganizationalUnit> existingOrganizationalUnits = new ArrayList<OrganizationalUnit>(sortedOrganizationalUnits);
+        existingOrganizationalUnits.remove(organizationalUnit);
+        setOrganizationalUnits(existingOrganizationalUnits);
     }
 
     @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override
@@ -293,63 +290,61 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
     }
 
     @UiHandler("btnAddOrganizationalUnit")
-    public void onClickAddOrganizationalUnitButton( final ClickEvent event ) {
+    public void onClickAddOrganizationalUnitButton(final ClickEvent event) {
         presenter.addNewOrganizationalUnit();
     }
 
     @UiHandler("btnDeleteOrganizationalUnit")
-    public void onClickDeleteOrganizationalUnitButton( final ClickEvent event ) {
+    public void onClickDeleteOrganizationalUnitButton(final ClickEvent event) {
         final int selectedOrganizationalUnitIndex = lstOrganizationalUnits.getSelectedIndex();
-        if ( selectedOrganizationalUnitIndex < 0 ) {
+        if (selectedOrganizationalUnitIndex < 0) {
             return;
         }
-        final OrganizationalUnit organizationalUnit = sortedOrganizationalUnits.get( selectedOrganizationalUnitIndex );
-        if ( Window.confirm( OrganizationalUnitManagerConstants.INSTANCE.ConfirmOrganizationalUnitDeletion0( organizationalUnit.getName() ) ) ) {
-            presenter.deleteOrganizationalUnit( organizationalUnit );
+        final OrganizationalUnit organizationalUnit = sortedOrganizationalUnits.get(selectedOrganizationalUnitIndex);
+        if (Window.confirm(OrganizationalUnitManagerConstants.INSTANCE.ConfirmOrganizationalUnitDeletion0(organizationalUnit.getName()))) {
+            presenter.deleteOrganizationalUnit(organizationalUnit);
         }
     }
 
     @UiHandler("btnEditOrganizationalUnit")
-    public void onClickEditOrganizationalUnitButton( final ClickEvent event ) {
+    public void onClickEditOrganizationalUnitButton(final ClickEvent event) {
         final int selectedOrganizationalUnitIndex = lstOrganizationalUnits.getSelectedIndex();
-        if ( selectedOrganizationalUnitIndex < 0 ) {
+        if (selectedOrganizationalUnitIndex < 0) {
             return;
         }
-        final OrganizationalUnit organizationalUnit = sortedOrganizationalUnits.get( selectedOrganizationalUnitIndex );
-        presenter.editOrganizationalUnit( organizationalUnit );
+        final OrganizationalUnit organizationalUnit = sortedOrganizationalUnits.get(selectedOrganizationalUnitIndex);
+        presenter.editOrganizationalUnit(organizationalUnit);
     }
 
     @UiHandler("btnAddRepository")
-    public void onClickAddRepositoryButton( final ClickEvent event ) {
+    public void onClickAddRepositoryButton(final ClickEvent event) {
         final int selectedOrganizationalUnitIndex = lstOrganizationalUnits.getSelectedIndex();
-        final OrganizationalUnit selectedOrganizationalUnit = ( selectedOrganizationalUnitIndex < 0 ? null : sortedOrganizationalUnits.get( selectedOrganizationalUnitIndex ) );
-        if ( selectedOrganizationalUnit == null ) {
+        final OrganizationalUnit selectedOrganizationalUnit = (selectedOrganizationalUnitIndex < 0 ? null : sortedOrganizationalUnits.get(selectedOrganizationalUnitIndex));
+        if (selectedOrganizationalUnit == null) {
             return;
         }
         final int selectedRepositoryIndex = lstAvailableRepositories.getSelectedIndex();
-        final Repository selectedRepository = ( selectedRepositoryIndex < 0 ? null : sortedAvailableRepositories.get( selectedRepositoryIndex ) );
-        if ( selectedRepository == null ) {
+        final Repository selectedRepository = (selectedRepositoryIndex < 0 ? null : sortedAvailableRepositories.get(selectedRepositoryIndex));
+        if (selectedRepository == null) {
             return;
         }
-        presenter.addOrganizationalUnitRepository( selectedOrganizationalUnit,
-                                                   selectedRepository );
-
+        presenter.addOrganizationalUnitRepository(selectedOrganizationalUnit,
+                                                  selectedRepository);
     }
 
     @UiHandler("btnRemoveRepository")
-    public void onClickRemoveRepositoryButton( final ClickEvent event ) {
+    public void onClickRemoveRepositoryButton(final ClickEvent event) {
         final int selectedOrganizationalUnitIndex = lstOrganizationalUnits.getSelectedIndex();
-        final OrganizationalUnit selectedOrganizationalUnit = ( selectedOrganizationalUnitIndex < 0 ? null : sortedOrganizationalUnits.get( selectedOrganizationalUnitIndex ) );
-        if ( selectedOrganizationalUnit == null ) {
+        final OrganizationalUnit selectedOrganizationalUnit = (selectedOrganizationalUnitIndex < 0 ? null : sortedOrganizationalUnits.get(selectedOrganizationalUnitIndex));
+        if (selectedOrganizationalUnit == null) {
             return;
         }
         final int selectedRepositoryIndex = lstOrganizationalUnitRepositories.getSelectedIndex();
-        final Repository selectedRepository = ( selectedRepositoryIndex < 0 ? null : sortedOrganizationalUnitRepositories.get( selectedRepositoryIndex ) );
-        if ( selectedRepository == null ) {
+        final Repository selectedRepository = (selectedRepositoryIndex < 0 ? null : sortedOrganizationalUnitRepositories.get(selectedRepositoryIndex));
+        if (selectedRepository == null) {
             return;
         }
-        presenter.removeOrganizationalUnitRepository( selectedOrganizationalUnit,
-                                                      selectedRepository );
+        presenter.removeOrganizationalUnitRepository(selectedOrganizationalUnit,
+                                                     selectedRepository);
     }
-
 }

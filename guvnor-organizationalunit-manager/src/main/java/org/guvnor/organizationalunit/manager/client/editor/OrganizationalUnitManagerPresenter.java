@@ -24,33 +24,35 @@ public interface OrganizationalUnitManagerPresenter {
 
     void loadOrganizationalUnits();
 
-    void organizationalUnitSelected( final OrganizationalUnit organizationalUnit );
+    void organizationalUnitSelected(final OrganizationalUnit organizationalUnit);
 
     void addNewOrganizationalUnit();
 
-    void createNewOrganizationalUnit( final String organizationalUnitName,
-                                      final String organizationalUnitOwner,
-                                      final String defaultGroupId );
+    void createNewOrganizationalUnit(final String organizationalUnitName,
+                                     final String organizationalUnitOwner,
+                                     final String defaultGroupId);
 
-    void editOrganizationalUnit( final OrganizationalUnit organizationalUnit );
+    void editOrganizationalUnit(final OrganizationalUnit organizationalUnit);
 
-    void saveOrganizationalUnit( final String organizationalUnitName,
-                                 final String organizationalUnitOwner,
-                                 final String defaultGroupId );
+    void saveOrganizationalUnit(final String organizationalUnitName,
+                                final String organizationalUnitOwner,
+                                final String defaultGroupId);
 
-    void deleteOrganizationalUnit( final OrganizationalUnit organizationalUnit );
+    void deleteOrganizationalUnit(final OrganizationalUnit organizationalUnit);
 
-    void addOrganizationalUnitRepository( final OrganizationalUnit organizationalUnit,
-                                          final Repository repository );
+    void addOrganizationalUnitRepository(final OrganizationalUnit organizationalUnit,
+                                         final Repository repository);
 
-    void removeOrganizationalUnitRepository( final OrganizationalUnit organizationalUnit,
-                                             final Repository repository );
+    void removeOrganizationalUnitRepository(final OrganizationalUnit organizationalUnit,
+                                            final Repository repository);
 
-    void checkIfOrganizationalUnitExists( final String organizationalUnitName,
-                                          final Command onSuccessCommand,
-                                          final Command onFailureCommand );
+    void checkIfOrganizationalUnitExists(final String organizationalUnitName,
+                                         final Command onSuccessCommand,
+                                         final Command onFailureCommand);
 
-    void checkValidGroupId( final String proposedGroupId, RemoteCallback<Boolean> callback );
+    void checkValidGroupId(final String proposedGroupId,
+                           RemoteCallback<Boolean> callback);
 
-    void getSanitizedGroupId( final String proposedGroupId, RemoteCallback<String> callback );
+    void getSanitizedGroupId(final String proposedGroupId,
+                             RemoteCallback<String> callback);
 }

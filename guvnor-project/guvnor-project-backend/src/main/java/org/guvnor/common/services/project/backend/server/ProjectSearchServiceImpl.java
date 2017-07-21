@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -43,7 +42,8 @@ public class ProjectSearchServiceImpl implements ProjectSearchService {
     private Instance<ProjectService<? extends Project>> projectServices;
 
     @Inject
-    public ProjectSearchServiceImpl(RepositoryService repositoryService, Instance<ProjectService<? extends Project>> projectServices) {
+    public ProjectSearchServiceImpl(RepositoryService repositoryService,
+                                    Instance<ProjectService<? extends Project>> projectServices) {
         this.repositoryService = repositoryService;
         this.projectServices = projectServices;
     }
@@ -53,12 +53,15 @@ public class ProjectSearchServiceImpl implements ProjectSearchService {
     }
 
     @Override
-    public Collection<Project> searchByName(String pattern, int maxItems, boolean caseSensitive) {
+    public Collection<Project> searchByName(String pattern,
+                                            int maxItems,
+                                            boolean caseSensitive) {
         List<Project> results = new ArrayList<>();
         for (Repository repository : repositoryService.getAllRepositories()) {
             ProjectService projectService = getProjectService();
             if (projectService != null) {
-                Set<Project> repositoryProjects = projectService.getAllProjects(repository, "master");
+                Set<Project> repositoryProjects = projectService.getAllProjects(repository,
+                                                                                "master");
                 for (Project project : repositoryProjects) {
                     String name = project.getProjectName();
                     if (caseSensitive ? name.contains(pattern) : name.toLowerCase().contains(pattern.toLowerCase())) {
@@ -79,7 +82,8 @@ public class ProjectSearchServiceImpl implements ProjectSearchService {
         for (Repository repository : repositoryService.getAllRepositories()) {
             ProjectService projectService = getProjectService();
             if (projectService != null) {
-                Set<Project> repositoryProjects = projectService.getAllProjects(repository, "master");
+                Set<Project> repositoryProjects = projectService.getAllProjects(repository,
+                                                                                "master");
                 for (Project project : repositoryProjects) {
                     if (ids.contains(project.getIdentifier())) {
                         results.add(project);

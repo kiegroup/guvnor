@@ -27,5 +27,4 @@ public class FileManagerFields {
     public static final String FORM_FIELD_NAME = "fileName";
     public static final String FORM_FIELD_FULL_PATH = "attachmentFullPath";
     public static final String FORM_FIELD_OPERATION = "operation";
-
 }

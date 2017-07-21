@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.guvnor.common.services.backend.metadata.attribute.DiscussionView;
-import org.guvnor.common.services.backend.metadata.attribute.GeneratedFileAttributes;
 import org.guvnor.common.services.backend.metadata.attribute.GeneratedAttributesView;
+import org.guvnor.common.services.backend.metadata.attribute.GeneratedFileAttributes;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
@@ -80,51 +80,51 @@ public class MetadataCreatorTest {
     public void setUp() throws Exception {
 
         versionRecords = new ArrayList<VersionRecord>();
-        versionRecords.add( createVersionRecord() );
+        versionRecords.add(createVersionRecord());
 
-        VersionAttributes versionAttributes = new VersionAttributesMock( versionRecords );
-        when( versionAttributeView.readAttributes() ).thenReturn( versionAttributes );
+        VersionAttributes versionAttributes = new VersionAttributesMock(versionRecords);
+        when(versionAttributeView.readAttributes()).thenReturn(versionAttributes);
 
-        when( dcoreView.readAttributes() ).thenReturn( new DublinCoreAttributesMock() );
-        when( otherMetaView.readAttributes() ).thenReturn( new OtherMetaAttributesMock() );
-        when( discussView.readAttributes() ).thenReturn( new DiscussionAttributesMock() );
-        when( generatedAttributesView.readAttributes() ).thenReturn( generatedFileAttributes );
+        when(dcoreView.readAttributes()).thenReturn(new DublinCoreAttributesMock());
+        when(otherMetaView.readAttributes()).thenReturn(new OtherMetaAttributesMock());
+        when(discussView.readAttributes()).thenReturn(new DiscussionAttributesMock());
+        when(generatedAttributesView.readAttributes()).thenReturn(generatedFileAttributes);
 
         fileSystemProvider = new SimpleFileSystemProvider();
 
         //Ensure URLs use the default:// scheme
         fileSystemProvider.forceAsDefault();
 
-        mainFilePath = fileSystemProvider.getPath( this.getClass().getResource( "myfile.file" ).toURI() );
+        mainFilePath = fileSystemProvider.getPath(this.getClass().getResource("myfile.file").toURI());
 
-        service = new MetadataCreator( mainFilePath,
-                                       configIOService,
-                                       sessionInfo,
-                                       dcoreView,
-                                       discussView,
-                                       otherMetaView,
-                                       versionAttributeView,
-                                       generatedAttributesView );
+        service = new MetadataCreator(mainFilePath,
+                                      configIOService,
+                                      sessionInfo,
+                                      dcoreView,
+                                      discussView,
+                                      otherMetaView,
+                                      versionAttributeView,
+                                      generatedAttributesView);
     }
 
     @Test
     public void testSimple() throws Exception {
         Metadata metadata = service.create();
 
-        assertNotNull( metadata );
-        assertNotNull( metadata.getTags() );
-        assertNotNull( metadata.getDiscussion() );
-        assertNotNull( metadata.getVersion() );
+        assertNotNull(metadata);
+        assertNotNull(metadata.getTags());
+        assertNotNull(metadata.getDiscussion());
+        assertNotNull(metadata.getVersion());
     }
 
     @Test
     public void testGeneratedAttributes() {
-        when( generatedFileAttributes.isGenerated() ).thenReturn( true );
-        when( generatedAttributesView.readAttributes() ).thenReturn( generatedFileAttributes );
+        when(generatedFileAttributes.isGenerated()).thenReturn(true);
+        when(generatedAttributesView.readAttributes()).thenReturn(generatedFileAttributes);
 
         Metadata metadata = service.create();
 
-        assertTrue( metadata.isGenerated() );
+        assertTrue(metadata.isGenerated());
     }
 
     @Test
@@ -134,87 +134,86 @@ public class MetadataCreatorTest {
         FileSystemProviders.getDefaultProvider();
 
         //Mock FileSystem operations
-        final AtomicBoolean exists = new AtomicBoolean( false );
-        when( configIOService.exists( any( Path.class ) ) ).<Boolean>thenAnswer( new Answer<Boolean>() {
+        final AtomicBoolean exists = new AtomicBoolean(false);
+        when(configIOService.exists(any(Path.class))).<Boolean>thenAnswer(new Answer<Boolean>() {
             @Override
-            public Boolean answer( InvocationOnMock invocation ) throws Throwable {
+            public Boolean answer(InvocationOnMock invocation) throws Throwable {
                 return exists.get();
             }
-        } );
-        when( configIOService.write( any( Path.class ),
-                                     any( String.class ) ) ).<Path>thenAnswer( new Answer<Path>() {
+        });
+        when(configIOService.write(any(Path.class),
+                                   any(String.class))).<Path>thenAnswer(new Answer<Path>() {
             @Override
-            public Path answer( final InvocationOnMock invocation ) throws Throwable {
-                exists.set( true );
+            public Path answer(final InvocationOnMock invocation) throws Throwable {
+                exists.set(true);
                 return mainFilePath;
             }
-        } );
-        when( configIOService.readAllString( any( Path.class ) ) ).<String>thenAnswer( new Answer<String>() {
+        });
+        when(configIOService.readAllString(any(Path.class))).<String>thenAnswer(new Answer<String>() {
             @Override
-            public String answer( InvocationOnMock invocation ) throws Throwable {
-                if ( !exists.get() ) {
+            public String answer(InvocationOnMock invocation) throws Throwable {
+                if (!exists.get()) {
                     throw new NoSuchFileException();
                 }
                 return "content";
             }
-        } );
-        doAnswer( new Answer<Void>() {
+        });
+        doAnswer(new Answer<Void>() {
             @Override
-            public Void answer( InvocationOnMock invocation ) throws Throwable {
-                exists.set( false );
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                exists.set(false);
                 return null;
             }
-        } ).when( configIOService ).delete( any( Path.class ) );
+        }).when(configIOService).delete(any(Path.class));
 
         final int THREADS = 100;
         final Result result = new Result();
         final ExecutorService es = Executors.newCachedThreadPool();
-        for ( int i = 0; i < THREADS; i++ ) {
+        for (int i = 0; i < THREADS; i++) {
             final int threadCount = i;
             final Operation op = i % 2 == 1 ? Operation.WRITE : Operation.CHECK;
-            es.execute( new Runnable() {
+            es.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
 
-                        System.out.println( "[Thread : " + threadCount + "] Running..." );
-                        switch ( op ) {
+                        System.out.println("[Thread : " + threadCount + "] Running...");
+                        switch (op) {
                             case WRITE:
-                                System.out.println( "[Thread : " + threadCount + "] Writing..." + output() );
-                                configIOService.write( mainFilePath,
-                                                       "content" );
-                                configIOService.delete( mainFilePath );
+                                System.out.println("[Thread : " + threadCount + "] Writing..." + output());
+                                configIOService.write(mainFilePath,
+                                                      "content");
+                                configIOService.delete(mainFilePath);
                                 break;
                             case CHECK:
-                                System.out.println( "[Thread : " + threadCount + "] Checking..." + output() );
+                                System.out.println("[Thread : " + threadCount + "] Checking..." + output());
                                 service.create();
                         }
-
-                    } catch ( Throwable e ) {
-                        result.setFailed( true );
-                        result.setException( e );
+                    } catch (Throwable e) {
+                        result.setFailed(true);
+                        result.setException(e);
                     } finally {
-                        System.out.println( "[Thread : " + threadCount + "] Completed." );
+                        System.out.println("[Thread : " + threadCount + "] Completed.");
                     }
                 }
 
                 private String output() {
-                    if ( exists.get() ) {
+                    if (exists.get()) {
                         return "Exists";
                     } else {
                         return "Not exists";
                     }
                 }
-            } );
+            });
         }
 
         try {
             es.shutdown();
-            es.awaitTermination( 1000 * 5,
-                                 TimeUnit.MILLISECONDS );
-        } catch ( InterruptedException e ) {
+            es.awaitTermination(1000 * 5,
+                                TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
         }
-        if ( result.isFailed() ) {
+        if (result.isFailed()) {
             throw result.getException();
         }
     }
@@ -233,7 +232,7 @@ public class MetadataCreatorTest {
             return exception;
         }
 
-        public void setException( Throwable exception ) {
+        public void setException(Throwable exception) {
             this.exception = exception;
         }
 
@@ -241,7 +240,7 @@ public class MetadataCreatorTest {
             return failed;
         }
 
-        public void setFailed( boolean failed ) {
+        public void setFailed(boolean failed) {
             this.failed = failed;
         }
     }

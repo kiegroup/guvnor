@@ -39,67 +39,69 @@ public class POMContentHandler {
         // Weld needs this for proxying.
     }
 
-    public String toString( final POM pomModel )
+    public String toString(final POM pomModel)
             throws IOException {
-        return toString( pomModel,
-                         new Model() );
+        return toString(pomModel,
+                        new Model());
     }
 
-    private String toString( final POM pom,
-                             final Model model ) throws IOException {
+    private String toString(final POM pom,
+                            final Model model) throws IOException {
         model.setName(pom.getName());
         model.setDescription(pom.getDescription());
         model.setArtifactId(pom.getGav().getArtifactId());
         model.setModelVersion(pom.getModelVersion());
 
-        model.setGroupId( pom.getGav().getGroupId() );
-        model.setVersion( pom.getGav().getVersion() );
+        model.setGroupId(pom.getGav().getGroupId());
+        model.setVersion(pom.getGav().getVersion());
 
-        model.setPackaging( pom.getPackaging() );
+        model.setPackaging(pom.getPackaging());
 
-        model.setParent( getParent( pom ) );
-        model.setBuild( getBuild( pom, model ) );
-        model.setModules( getModules( pom ) );
-        model.setRepositories( getRepositories( pom ) );
-        new DependencyUpdater( model.getDependencies() ).updateDependencies( pom.getDependencies() );
+        model.setParent(getParent(pom));
+        model.setBuild(getBuild(pom,
+                                model));
+        model.setModules(getModules(pom));
+        model.setRepositories(getRepositories(pom));
+        new DependencyUpdater(model.getDependencies()).updateDependencies(pom.getDependencies());
 
         StringWriter stringWriter = new StringWriter();
-        new MavenXpp3Writer().write( stringWriter, model );
+        new MavenXpp3Writer().write(stringWriter,
+                                    model);
         return stringWriter.toString();
     }
 
-    private Build getBuild( final POM pom,
-                            final Model model ) {
-        return new BuildContentHandler().update( pom.getBuild(),
-                                                 model.getBuild() );
+    private Build getBuild(final POM pom,
+                           final Model model) {
+        return new BuildContentHandler().update(pom.getBuild(),
+                                                model.getBuild());
     }
 
-    private ArrayList<Repository> getRepositories( final POM pom ) {
+    private ArrayList<Repository> getRepositories(final POM pom) {
         ArrayList<Repository> result = new ArrayList<Repository>();
         for (org.guvnor.common.services.project.model.Repository repository : pom.getRepositories()) {
-            result.add( fromClientModelToPom( repository ) );
+            result.add(fromClientModelToPom(repository));
         }
         return result;
     }
 
-    private ArrayList<String> getModules( final POM pom ) {
+    private ArrayList<String> getModules(final POM pom) {
         ArrayList<String> result = new ArrayList<String>();
-        if ( pom.getModules() != null ) {
+        if (pom.getModules() != null) {
             for (String module : pom.getModules()) {
-                result.add( module );
+                result.add(module);
             }
         }
         return result;
     }
 
-    private Parent getParent( final POM pom ) {
-        if ( pom.getParent() == null ) {
+    private Parent getParent(final POM pom) {
+        if (pom.getParent() == null) {
             return null;
         } else {
             Parent parent = new Parent();
-            parent.setGroupId( pom.getParent().getGroupId() );
-            parent.setArtifactId( pom.getParent().getArtifactId() );
-            parent.setVersion( pom.getParent().getVersion() );
+            parent.setGroupId(pom.getParent().getGroupId());
+            parent.setArtifactId(pom.getParent().getArtifactId());
+            parent.setVersion(pom.getParent().getVersion());
             return parent;
         }
     }
@@ -110,14 +112,14 @@ public class POMContentHandler {
      * @return pom.xml for saving, The original pom.xml with the fields edited in gavModel replaced.
      * @throws IOException
      */
-    public String toString( final POM gavModel,
-                            final String originalPomAsText ) throws IOException, XmlPullParserException {
+    public String toString(final POM gavModel,
+                           final String originalPomAsText) throws IOException, XmlPullParserException {
 
-        return toString( gavModel,
-                         new MavenXpp3Reader().read( new StringReader( originalPomAsText ) ) );
+        return toString(gavModel,
+                        new MavenXpp3Reader().read(new StringReader(originalPomAsText)));
     }
 
-    private Repository fromClientModelToPom( final org.guvnor.common.services.project.model.Repository from ) {
+    private Repository fromClientModelToPom(final org.guvnor.common.services.project.model.Repository from) {
         Repository to = new Repository();
         to.setId(from.getId());
         to.setName(from.getName());
@@ -126,7 +128,7 @@ public class POMContentHandler {
         return to;
     }
 
-    public POM toModel( final String pomAsString ) throws IOException, XmlPullParserException {
+    public POM toModel(final String pomAsString) throws IOException, XmlPullParserException {
         Model model = new MavenXpp3Reader().read(new StringReader(pomAsString));
 
         POM pomModel = new POM(
@@ -139,29 +141,31 @@ public class POMContentHandler {
                 )
         );
 
-        pomModel.setPackaging( model.getPackaging() );
+        pomModel.setPackaging(model.getPackaging());
 
         if (model.getParent() != null) {
-            pomModel.setParent( new GAV( model.getParent().getGroupId(), model.getParent().getArtifactId(), model.getParent().getVersion() ) );
+            pomModel.setParent(new GAV(model.getParent().getGroupId(),
+                                       model.getParent().getArtifactId(),
+                                       model.getParent().getVersion()));
         }
 
         pomModel.getModules().clear();
         for (String module : model.getModules()) {
-            pomModel.getModules().add( module );
-            pomModel.setPackaging( "pom" );
+            pomModel.getModules().add(module);
+            pomModel.setPackaging("pom");
         }
         for (Repository repository : model.getRepositories()) {
-            pomModel.addRepository( fromPomModelToClientModel( repository ) );
+            pomModel.addRepository(fromPomModelToClientModel(repository));
         }
 
-        pomModel.setDependencies( new DependencyContentHandler().fromPomModelToClientModel( model.getDependencies() ) );
+        pomModel.setDependencies(new DependencyContentHandler().fromPomModelToClientModel(model.getDependencies()));
 
-        pomModel.setBuild( new BuildContentHandler().fromPomModelToClientModel( model.getBuild() ) );
+        pomModel.setBuild(new BuildContentHandler().fromPomModelToClientModel(model.getBuild()));
 
         return pomModel;
     }
 
-    private org.guvnor.common.services.project.model.Repository fromPomModelToClientModel( final Repository from ) {
+    private org.guvnor.common.services.project.model.Repository fromPomModelToClientModel(final Repository from) {
         org.guvnor.common.services.project.model.Repository to = new org.guvnor.common.services.project.model.Repository();
 
         to.setId(from.getId());

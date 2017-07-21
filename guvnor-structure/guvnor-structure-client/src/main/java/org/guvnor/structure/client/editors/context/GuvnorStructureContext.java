@@ -39,9 +39,9 @@ import org.uberfire.client.callbacks.Callback;
 @ApplicationScoped
 public class GuvnorStructureContext {
 
-    private final HashMap<GuvnorStructureContextChangeHandler.HandlerRegistration, GuvnorStructureContextChangeHandler>             handlers             = new HashMap<>();
+    private final HashMap<GuvnorStructureContextChangeHandler.HandlerRegistration, GuvnorStructureContextChangeHandler> handlers = new HashMap<>();
     private final HashMap<GuvnorStructureContextBranchChangeHandler.HandlerRegistration, GuvnorStructureContextBranchChangeHandler> branchChangeHandlers = new HashMap<>();
-    private final HashMap<String, String>                                                                                           aliasBranch          = new HashMap<>();
+    private final HashMap<String, String> aliasBranch = new HashMap<>();
 
     private Caller<RepositoryService> repositoryService;
 
@@ -49,149 +49,151 @@ public class GuvnorStructureContext {
     }
 
     @Inject
-    public GuvnorStructureContext( final Caller<RepositoryService> repositoryService ) {
+    public GuvnorStructureContext(final Caller<RepositoryService> repositoryService) {
         this.repositoryService = repositoryService;
     }
 
-    public void getRepositories( final Callback<Collection<Repository>> callback ) {
-        repositoryService.call( new RemoteCallback<Collection<Repository>>() {
+    public void getRepositories(final Callback<Collection<Repository>> callback) {
+        repositoryService.call(new RemoteCallback<Collection<Repository>>() {
             @Override
-            public void callback( final Collection<Repository> response ) {
+            public void callback(final Collection<Repository> response) {
 
-                final Collection<String> foundAliases = updateRepositories( response );
+                final Collection<String> foundAliases = updateRepositories(response);
 
-                removeMissingAliases( foundAliases );
+                removeMissingAliases(foundAliases);
 
-                callback.callback( response );
+                callback.callback(response);
             }
-        } ).getRepositories();
+        }).getRepositories();
     }
 
-    private Collection<String> updateRepositories( final Collection<Repository> response ) {
+    private Collection<String> updateRepositories(final Collection<Repository> response) {
         final Collection<String> foundAliases = new ArrayList<>();
 
-        for ( final Repository repository : response ) {
+        for (final Repository repository : response) {
 
-            foundAliases.add( repository.getAlias() );
+            foundAliases.add(repository.getAlias());
 
-            updateRepository( repository );
+            updateRepository(repository);
         }
 
         return foundAliases;
     }
 
-    private void updateRepository( final Repository repository ) {
-        if ( isNewRepository( repository ) ) {
-            aliasBranch.put( repository.getAlias(),
-                             repository.getDefaultBranch() );
+    private void updateRepository(final Repository repository) {
+        if (isNewRepository(repository)) {
+            aliasBranch.put(repository.getAlias(),
+                            repository.getDefaultBranch());
         } else {
-            updateBranch( repository );
+            updateBranch(repository);
         }
     }
 
-    private void updateBranch( final Repository repository ) {
-        final String branch = aliasBranch.get( repository.getAlias() );
+    private void updateBranch(final Repository repository) {
+        final String branch = aliasBranch.get(repository.getAlias());
 
-        if ( branch == null || hasBranchBeenRemoved( repository,
-                                                     branch ) ) {
-            aliasBranch.put( repository.getAlias(),
-                    repository.getDefaultBranch() );
+        if (branch == null || hasBranchBeenRemoved(repository,
+                                                   branch)) {
+            aliasBranch.put(repository.getAlias(),
+                            repository.getDefaultBranch());
         }
     }
 
-    private boolean isNewRepository( final Repository repository ) {
-        return !aliasBranch.containsKey( repository.getAlias() );
+    private boolean isNewRepository(final Repository repository) {
+        return !aliasBranch.containsKey(repository.getAlias());
     }
 
-    private boolean hasBranchBeenRemoved( final Repository repository,
-                                          final String branch ) {
-        return !repository.getBranches().contains( branch );
+    private boolean hasBranchBeenRemoved(final Repository repository,
+                                         final String branch) {
+        return !repository.getBranches().contains(branch);
     }
 
-    private void removeMissingAliases( final Collection<String> foundAliases ) {
-        for ( final String missingAlias : getMissingAliases( foundAliases ) ) {
-            aliasBranch.remove( missingAlias );
+    private void removeMissingAliases(final Collection<String> foundAliases) {
+        for (final String missingAlias : getMissingAliases(foundAliases)) {
+            aliasBranch.remove(missingAlias);
         }
     }
 
-    private Collection<String> getMissingAliases( final Collection<String> foundAliases ) {
+    private Collection<String> getMissingAliases(final Collection<String> foundAliases) {
         final Collection<String> missingAliases = new ArrayList<>();
 
-        for ( final String alias : aliasBranch.keySet() ) {
-            if ( !foundAliases.contains( alias ) ) {
-                missingAliases.add( alias );
+        for (final String alias : aliasBranch.keySet()) {
+            if (!foundAliases.contains(alias)) {
+                missingAliases.add(alias);
             }
         }
 
         return missingAliases;
     }
 
-    public GuvnorStructureContextChangeHandler.HandlerRegistration addGuvnorStructureContextChangeHandler( final GuvnorStructureContextChangeHandler handler ) {
+    public GuvnorStructureContextChangeHandler.HandlerRegistration addGuvnorStructureContextChangeHandler(final GuvnorStructureContextChangeHandler handler) {
         final GuvnorStructureContextChangeHandler.HandlerRegistration handlerRegistration = new GuvnorStructureContextChangeHandler.HandlerRegistration();
 
-        handlers.put( handlerRegistration,
-                      handler );
+        handlers.put(handlerRegistration,
+                     handler);
 
         return handlerRegistration;
     }
 
-    public GuvnorStructureContextBranchChangeHandler.HandlerRegistration addGuvnorStructureContextBranchChangeHandler( final GuvnorStructureContextBranchChangeHandler handler ) {
+    public GuvnorStructureContextBranchChangeHandler.HandlerRegistration addGuvnorStructureContextBranchChangeHandler(final GuvnorStructureContextBranchChangeHandler handler) {
         final GuvnorStructureContextBranchChangeHandler.HandlerRegistration handlerRegistration = new GuvnorStructureContextBranchChangeHandler.HandlerRegistration();
 
-        branchChangeHandlers.put( handlerRegistration,
-                                  handler );
+        branchChangeHandlers.put(handlerRegistration,
+                                 handler);
 
         return handlerRegistration;
     }
 
-    public void changeBranch( final String alias,
-                              final String branch ) {
+    public void changeBranch(final String alias,
+                             final String branch) {
 
-        aliasBranch.put( alias,
-                         branch );
+        aliasBranch.put(alias,
+                        branch);
 
-        for ( final GuvnorStructureContextBranchChangeHandler handler : branchChangeHandlers.values() ) {
-            handler.onBranchChange( alias,
-                                    branch );
+        for (final GuvnorStructureContextBranchChangeHandler handler : branchChangeHandlers.values()) {
+            handler.onBranchChange(alias,
+                                   branch);
         }
     }
 
-    public void onNewRepository( final @Observes NewRepositoryEvent event ) {
+    public void onNewRepository(final @Observes NewRepositoryEvent event) {
 
         final Repository newRepository = event.getNewRepository();
 
-        aliasBranch.put( newRepository.getAlias(),
-                         newRepository.getDefaultBranch() );
+        aliasBranch.put(newRepository.getAlias(),
+                        newRepository.getDefaultBranch());
 
-        for ( final GuvnorStructureContextChangeHandler handler : handlers.values() ) {
-            handler.onNewRepositoryAdded( newRepository );
+        for (final GuvnorStructureContextChangeHandler handler : handlers.values()) {
+            handler.onNewRepositoryAdded(newRepository);
         }
     }
 
-    public void onNewBranch( final @Observes NewBranchEvent event ) {
-        for ( final GuvnorStructureContextChangeHandler handler : handlers.values() ) {
-            handler.onNewBranchAdded( event.getRepositoryAlias(), event.getBranchName(), event.getBranchPath() );
+    public void onNewBranch(final @Observes NewBranchEvent event) {
+        for (final GuvnorStructureContextChangeHandler handler : handlers.values()) {
+            handler.onNewBranchAdded(event.getRepositoryAlias(),
+                                     event.getBranchName(),
+                                     event.getBranchPath());
         }
     }
 
-    public void onRepositoryRemoved( final @Observes RepositoryRemovedEvent event ) {
+    public void onRepositoryRemoved(final @Observes RepositoryRemovedEvent event) {
 
-        aliasBranch.remove( event.getRepository().getAlias() );
+        aliasBranch.remove(event.getRepository().getAlias());
 
-        for ( final GuvnorStructureContextChangeHandler handler : handlers.values() ) {
-            handler.onRepositoryDeleted( event.getRepository() );
+        for (final GuvnorStructureContextChangeHandler handler : handlers.values()) {
+            handler.onRepositoryDeleted(event.getRepository());
         }
     }
 
-    public void removeHandler( final GuvnorStructureContextChangeHandler.HandlerRegistration handlerRegistration ) {
-        handlers.remove( handlerRegistration );
+    public void removeHandler(final GuvnorStructureContextChangeHandler.HandlerRegistration handlerRegistration) {
+        handlers.remove(handlerRegistration);
     }
 
-    public void removeHandler( final GuvnorStructureContextBranchChangeHandler.HandlerRegistration handlerRegistration ) {
-        branchChangeHandlers.remove( handlerRegistration );
+    public void removeHandler(final GuvnorStructureContextBranchChangeHandler.HandlerRegistration handlerRegistration) {
+        branchChangeHandlers.remove(handlerRegistration);
     }
 
-    public String getCurrentBranch( final String alias ) {
-        return aliasBranch.get( alias );
+    public String getCurrentBranch(final String alias) {
+        return aliasBranch.get(alias);
     }
 }

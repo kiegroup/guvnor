@@ -36,15 +36,14 @@ public class WildflyProviderConfigImpl implements WildflyProviderConfig,
         this.managementPort = WildflyProviderConfig.super.getManagementPort();
         this.user = WildflyProviderConfig.super.getUser();
         this.password = WildflyProviderConfig.super.getPassword();
-
     }
 
-    public WildflyProviderConfigImpl( final String name,
-                                      final String hostIp,
-                                      final String port,
-                                      final String managementPort,
-                                      final String user,
-                                      final String password ) {
+    public WildflyProviderConfigImpl(final String name,
+                                     final String hostIp,
+                                     final String port,
+                                     final String managementPort,
+                                     final String user,
+                                     final String password) {
         this.name = name;
         this.hostIp = hostIp;
         this.port = port;
@@ -84,12 +83,12 @@ public class WildflyProviderConfigImpl implements WildflyProviderConfig,
     }
 
     @Override
-    public WildflyProviderConfig asNewClone( final WildflyProviderConfig origin ) {
-        return new WildflyProviderConfigImpl( origin.getName(),
-                                              origin.getHostIp(),
-                                              origin.getPort(),
-                                              origin.getManagementPort(),
-                                              origin.getUser(),
-                                              origin.getPassword() );
+    public WildflyProviderConfig asNewClone(final WildflyProviderConfig origin) {
+        return new WildflyProviderConfigImpl(origin.getName(),
+                                             origin.getHostIp(),
+                                             origin.getPort(),
+                                             origin.getManagementPort(),
+                                             origin.getUser(),
+                                             origin.getPassword());
     }
 }

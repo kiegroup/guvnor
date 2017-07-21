@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -57,7 +56,8 @@ public class JobResultManager {
 
     @PostConstruct
     public void start() {
-        if (!created.compareAndSet(0, 1)) {
+        if (!created.compareAndSet(0,
+                                   1)) {
             throw new IllegalStateException("Only 1 JobResultManager instance is allowed per container!");
         }
         Cache cache = new Cache(maxCacheSize);
@@ -69,11 +69,11 @@ public class JobResultManager {
     }
 
     public void putJob(JobResult job) {
-        jobs.put(job.getJobId(), job);
+        jobs.put(job.getJobId(),
+                 job);
     }
 
     public JobResult removeJob(String jobId) {
         return jobs.remove(jobId);
     }
-
 }

@@ -23,8 +23,9 @@ public class RemoveOrganizationalUnitEvent extends OrganizationalUnitEventBase {
     public RemoveOrganizationalUnitEvent() {
     }
 
-    public RemoveOrganizationalUnitEvent( final OrganizationalUnit organizationalUnit, final String userName ) {
-        super( organizationalUnit, userName );
+    public RemoveOrganizationalUnitEvent(final OrganizationalUnit organizationalUnit,
+                                         final String userName) {
+        super(organizationalUnit,
+              userName);
     }
-
 }

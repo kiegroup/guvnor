@@ -17,6 +17,7 @@
 package org.guvnor.ala.runtime.base;
 
 import java.util.Objects;
+
 import org.guvnor.ala.config.RuntimeConfig;
 import org.guvnor.ala.runtime.RuntimeInfo;
 
@@ -33,7 +34,7 @@ public class BaseRuntimeInfo implements RuntimeInfo {
     public BaseRuntimeInfo() {
     }
 
-    public BaseRuntimeInfo( RuntimeConfig config ) {
+    public BaseRuntimeInfo(RuntimeConfig config) {
 
         this.config = config;
     }
@@ -51,28 +52,26 @@ public class BaseRuntimeInfo implements RuntimeInfo {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + Objects.hashCode( this.config );
+        hash = 67 * hash + Objects.hashCode(this.config);
         return hash;
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj ) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( obj == null ) {
+        if (obj == null) {
             return false;
         }
-        if ( getClass() != obj.getClass() ) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        final BaseRuntimeInfo other = ( BaseRuntimeInfo ) obj;
-        if ( !Objects.equals( this.config, other.config ) ) {
+        final BaseRuntimeInfo other = (BaseRuntimeInfo) obj;
+        if (!Objects.equals(this.config,
+                            other.config)) {
             return false;
         }
         return true;
     }
-    
-    
-
 }

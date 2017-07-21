@@ -44,48 +44,52 @@ public class MavenProjectConfigExecutor implements BiFunctionConfigExecutor<Sour
     private final SourceRegistry sourceRegistry;
 
     @Inject
-    public MavenProjectConfigExecutor( final SourceRegistry sourceRegistry ) {
+    public MavenProjectConfigExecutor(final SourceRegistry sourceRegistry) {
         this.sourceRegistry = sourceRegistry;
     }
 
     @Override
-    public Optional<ProjectConfig> apply( final Source source,
-                                          final MavenProjectConfig mavenProjectConfig ) {
-        final Path projectRoot = source.getPath().resolve( mavenProjectConfig.getProjectDir() );
-        final InputStream pomStream = Files.newInputStream( projectRoot.resolve( "pom.xml" ) );
-        final MavenProject project = MavenProjectLoader.parseMavenPom( pomStream );
+    public Optional<ProjectConfig> apply(final Source source,
+                                         final MavenProjectConfig mavenProjectConfig) {
+        final Path projectRoot = source.getPath().resolve(mavenProjectConfig.getProjectDir());
+        final InputStream pomStream = Files.newInputStream(projectRoot.resolve("pom.xml"));
+        final MavenProject project = MavenProjectLoader.parseMavenPom(pomStream);
 
-        final Collection<PlugIn> buildPlugins = extractPlugins( project );
+        final Collection<PlugIn> buildPlugins = extractPlugins(project);
 
         final String expectedBinary = project.getArtifact().getArtifactId() + "-" + project.getArtifact().getVersion() + "." + project.getArtifact().getType();
         final String _tempDir = mavenProjectConfig.getProjectTempDir().trim();
 
         final RepositoryVisitor repositoryVisitor;
-        if ( _tempDir.isEmpty() ) {
-            repositoryVisitor = new RepositoryVisitor( projectRoot, project.getName() );
+        if (_tempDir.isEmpty()) {
+            repositoryVisitor = new RepositoryVisitor(projectRoot,
+                                                      project.getName());
         } else {
-            repositoryVisitor = new RepositoryVisitor( projectRoot, _tempDir, mavenProjectConfig.recreateTempDir() );
+            repositoryVisitor = new RepositoryVisitor(projectRoot,
+                                                      _tempDir,
+                                                      mavenProjectConfig.recreateTempDir());
         }
-        final org.guvnor.ala.build.maven.model.MavenProject mavenProject = new MavenProjectImpl( project.getId(),
-                                                                                                 project.getArtifact().getType(),
-                                                                                                 project.getName(),
-                                                                                                 expectedBinary,
-                                                                                                 source.getPath(),
-                                                                                                 source.getPath().resolve( mavenProjectConfig.getProjectDir() ),
-                                                                                                 source.getPath().resolve( "target" ).resolve( expectedBinary ).toAbsolutePath(),
-                                                                                                 repositoryVisitor.getRoot().getAbsolutePath(),
-                                                                                                 buildPlugins );
+        final org.guvnor.ala.build.maven.model.MavenProject mavenProject = new MavenProjectImpl(project.getId(),
+                                                                                                project.getArtifact().getType(),
+                                                                                                project.getName(),
+                                                                                                expectedBinary,
+                                                                                                source.getPath(),
+                                                                                                source.getPath().resolve(mavenProjectConfig.getProjectDir()),
+                                                                                                source.getPath().resolve("target").resolve(expectedBinary).toAbsolutePath(),
+                                                                                                repositoryVisitor.getRoot().getAbsolutePath(),
+                                                                                                buildPlugins);
 
-        sourceRegistry.registerProject( source, mavenProject );
+        sourceRegistry.registerProject(source,
+                                       mavenProject);
 
-        return Optional.of( mavenProject );
+        return Optional.of(mavenProject);
     }
 
-    private Collection<PlugIn> extractPlugins( final MavenProject project ) {
-        final Collection<PlugIn> result = new ArrayList<>( project.getBuildPlugins().size() );
-        for ( org.apache.maven.model.Plugin plugin : project.getBuildPlugins() ) {
-            final Map<String, Object> config = extractConfig( plugin.getConfiguration() );
-            result.add( new PlugIn() {
+    private Collection<PlugIn> extractPlugins(final MavenProject project) {
+        final Collection<PlugIn> result = new ArrayList<>(project.getBuildPlugins().size());
+        for (org.apache.maven.model.Plugin plugin : project.getBuildPlugins()) {
+            final Map<String, Object> config = extractConfig(plugin.getConfiguration());
+            result.add(new PlugIn() {
                 @Override
                 public String getId() {
                     return plugin.getKey();
@@ -95,18 +99,19 @@ public class MavenProjectConfigExecutor implements BiFunctionConfigExecutor<Sour
                 public Map<String, ?> getConfiguration() {
                     return config;
                 }
-            } );
+            });
         }
         return result;
     }
 
-    private Map<String, Object> extractConfig( final Object configuration ) {
-        if ( configuration instanceof Xpp3Dom ) {
+    private Map<String, Object> extractConfig(final Object configuration) {
+        if (configuration instanceof Xpp3Dom) {
             final Map<String, Object> result = new HashMap<>();
-            extractConfig( result, (Xpp3Dom) configuration );
-            if ( result.containsKey( "configuration" ) ) {
-                if ( result.get( "configuration" ) != null ) {
-                    return (Map<String, Object>) result.get( "configuration" );
+            extractConfig(result,
+                          (Xpp3Dom) configuration);
+            if (result.containsKey("configuration")) {
+                if (result.get("configuration") != null) {
+                    return (Map<String, Object>) result.get("configuration");
                 } else {
                     return Collections.emptyMap();
                 }
@@ -115,16 +120,19 @@ public class MavenProjectConfigExecutor implements BiFunctionConfigExecutor<Sour
         return Collections.emptyMap();
     }
 
-    private void extractConfig( final Map<String, Object> content,
-                                final Xpp3Dom xmlData ) {
-        if ( xmlData.getChildCount() > 0 ) {
-            final Map<String, Object> config = new HashMap<>( xmlData.getChildCount() );
-            for ( final Xpp3Dom child : xmlData.getChildren() ) {
-                extractConfig( config, child );
+    private void extractConfig(final Map<String, Object> content,
+                               final Xpp3Dom xmlData) {
+        if (xmlData.getChildCount() > 0) {
+            final Map<String, Object> config = new HashMap<>(xmlData.getChildCount());
+            for (final Xpp3Dom child : xmlData.getChildren()) {
+                extractConfig(config,
+                              child);
             }
-            content.put( xmlData.getName(), config );
+            content.put(xmlData.getName(),
+                        config);
         } else {
-            content.put( xmlData.getName(), xmlData.getValue() );
+            content.put(xmlData.getName(),
+                        xmlData.getValue());
         }
     }
 

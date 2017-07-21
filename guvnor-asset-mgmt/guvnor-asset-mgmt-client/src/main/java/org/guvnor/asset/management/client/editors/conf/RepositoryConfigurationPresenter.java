@@ -39,7 +39,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchScreen( identifier = "Repository Configuration" )
+@WorkbenchScreen(identifier = "Repository Configuration")
 public class RepositoryConfigurationPresenter
         extends BaseAssetsMgmtPresenter {
 
@@ -47,10 +47,9 @@ public class RepositoryConfigurationPresenter
             extends UberView<RepositoryConfigurationPresenter>,
                     BaseAssetsMgmtView {
 
-        void setCurrentVersionText( final String text );
+        void setCurrentVersionText(final String text);
 
-        void setVersionText( final String text );
-
+        void setVersionText(final String text);
     }
 
     @Inject
@@ -63,7 +62,7 @@ public class RepositoryConfigurationPresenter
     private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
     @OnStartup
-    public void onStartup( final PlaceRequest place ) {
+    public void onStartup(final PlaceRequest place) {
         this.place = place;
     }
 
@@ -85,69 +84,73 @@ public class RepositoryConfigurationPresenter
         baseView = view;
     }
 
-    public void loadRepositoryStructure( String repositoryAlias ) {
-        if ( !repositoryAlias.equals( constants.Select_Repository() ) ) {
-            for ( Repository repository : getRepositories() ) {
-                if ( ( repository.getAlias() ).equals( repositoryAlias ) ) {
-                    load( repository );
+    public void loadRepositoryStructure(String repositoryAlias) {
+        if (!repositoryAlias.equals(constants.Select_Repository())) {
+            for (Repository repository : getRepositories()) {
+                if ((repository.getAlias()).equals(repositoryAlias)) {
+                    load(repository);
                     return;
                 }
             }
         }
     }
 
-    private void load( final Repository repository ) {
+    private void load(final Repository repository) {
         repositoryStructureServices.call(new RemoteCallback<RepositoryStructureModel>() {
             @Override
-            public void callback( RepositoryStructureModel model ) {
-                final POM pom = getPom( model );
+            public void callback(RepositoryStructureModel model) {
+                final POM pom = getPom(model);
 
-                if ( pom != null ) {
+                if (pom != null) {
                     // don't include snapshot for branch names
-                    view.setCurrentVersionText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
-                    view.setVersionText( pom.getGav().getVersion().replace( "-SNAPSHOT", "" ) );
-
+                    view.setCurrentVersionText(pom.getGav().getVersion().replace("-SNAPSHOT",
+                                                                                 ""));
+                    view.setVersionText(pom.getGav().getVersion().replace("-SNAPSHOT",
+                                                                          ""));
                 } else {
-                    view.setCurrentVersionText( constants.No_Project_Structure_Available() );
-                    view.setVersionText( "1.0.0" );
+                    view.setCurrentVersionText(constants.No_Project_Structure_Available());
+                    view.setVersionText("1.0.0");
                 }
             }
-        } ).load( repository,
-                  repository.getDefaultBranch() );
+        }).load(repository,
+                repository.getDefaultBranch());
     }
 
-    private POM getPom( final RepositoryStructureModel model ) {
-        if ( model != null && (model.isSingleProject() || model.isMultiModule()) ) {
+    private POM getPom(final RepositoryStructureModel model) {
+        if (model != null && (model.isSingleProject() || model.isMultiModule())) {
             return model.getActivePom();
         }
         return null;
     }
 
-    public void configureRepository( String repository,
-                                     String sourceBranch,
-                                     String devBranch,
-                                     String releaseBranch,
-                                     String version ) {
-        assetManagementServices.call( new RemoteCallback<Long>() {
-                                          @Override
-                                          public void callback( Long taskId ) {
-                                              view.displayNotification( "Repository Configuration Started!" );
-                                          }
-                                      }, new ErrorCallback<Message>() {
-                                          @Override
-                                          public boolean error( Message message, Throwable throwable ) {
-                                              errorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
-                                              return true;
-                                          }
-                                      }
-        ).configureRepository( repository, sourceBranch, devBranch, releaseBranch, version );
-
+    public void configureRepository(String repository,
+                                    String sourceBranch,
+                                    String devBranch,
+                                    String releaseBranch,
+                                    String version) {
+        assetManagementServices.call(new RemoteCallback<Long>() {
+                                         @Override
+                                         public void callback(Long taskId) {
+                                             view.displayNotification("Repository Configuration Started!");
+                                         }
+                                     },
+                                     new ErrorCallback<Message>() {
+                                         @Override
+                                         public boolean error(Message message,
+                                                              Throwable throwable) {
+                                             errorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
+                                             return true;
+                                         }
+                                     }
+        ).configureRepository(repository,
+                              sourceBranch,
+                              devBranch,
+                              releaseBranch,
+                              version);
     }
 
     @OnOpen
     public void onOpen() {
-        view.getChooseRepositoryBox().setFocus( true );
-
+        view.getChooseRepositoryBox().setFocus(true);
     }
-
 }

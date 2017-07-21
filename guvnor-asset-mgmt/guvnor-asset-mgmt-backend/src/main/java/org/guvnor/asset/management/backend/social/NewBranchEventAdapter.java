@@ -16,20 +16,20 @@
 
 package org.guvnor.asset.management.backend.social;
 
-import org.guvnor.asset.management.backend.social.i18n.Constants;
-import org.guvnor.asset.management.social.AssetManagementEventTypes;
-import org.guvnor.structure.repositories.NewBranchEvent;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.ext.uberfire.social.activities.model.SocialEventType;
 import org.ext.uberfire.social.activities.repository.SocialUserRepository;
 import org.ext.uberfire.social.activities.service.SocialAdapter;
 import org.ext.uberfire.social.activities.service.SocialCommandTypeFilter;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import org.guvnor.asset.management.backend.social.i18n.Constants;
+import org.guvnor.asset.management.social.AssetManagementEventTypes;
+import org.guvnor.structure.repositories.NewBranchEvent;
 
 @ApplicationScoped
 public class NewBranchEventAdapter
@@ -52,8 +52,8 @@ public class NewBranchEventAdapter
     }
 
     @Override
-    public boolean shouldInterceptThisEvent( Object event ) {
-        if ( event.getClass().getSimpleName().equals( eventToIntercept().getSimpleName() ) ) {
+    public boolean shouldInterceptThisEvent(Object event) {
+        if (event.getClass().getSimpleName().equals(eventToIntercept().getSimpleName())) {
             return true;
         } else {
             return false;
@@ -61,16 +61,18 @@ public class NewBranchEventAdapter
     }
 
     @Override
-    public SocialActivitiesEvent toSocial( Object object ) {
-        NewBranchEvent event = ( NewBranchEvent ) object;
+    public SocialActivitiesEvent toSocial(Object object) {
+        NewBranchEvent event = (NewBranchEvent) object;
 
         return new SocialActivitiesEvent(
                 socialUserRepository.systemUser(),
                 AssetManagementEventTypes.BRANCH_CREATED.name(),
-                new Date( event.getTimestamp() )
+                new Date(event.getTimestamp())
         )
-                .withLink( event.getRepositoryAlias(), event.getBranchPath().toURI() )
-                .withAdicionalInfo( getAdditionalInfo( event.getBranchName(), event.getRepositoryAlias() ) );
+                .withLink(event.getRepositoryAlias(),
+                          event.getBranchPath().toURI())
+                .withAdicionalInfo(getAdditionalInfo(event.getBranchName(),
+                                                     event.getRepositoryAlias()));
     }
 
     @Override
@@ -83,9 +85,9 @@ public class NewBranchEventAdapter
         return new ArrayList<String>();
     }
 
-    private String getAdditionalInfo( String branch, String repository ) {
-        return constants.configure_repository_branch_created( branch, repository );
-
+    private String getAdditionalInfo(String branch,
+                                     String repository) {
+        return constants.configure_repository_branch_created(branch,
+                                                             repository);
     }
-
 }

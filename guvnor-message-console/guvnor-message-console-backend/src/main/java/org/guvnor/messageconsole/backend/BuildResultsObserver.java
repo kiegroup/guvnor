@@ -37,38 +37,38 @@ public class BuildResultsObserver {
     @Inject
     private Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
 
-    public void addBuildMessages( final @Observes BuildResults results ) {
+    public void addBuildMessages(final @Observes BuildResults results) {
 
         PublishBatchMessagesEvent batchMessages = new PublishBatchMessagesEvent();
-        batchMessages.setCleanExisting( true );
-        batchMessages.setMessageType( MessageUtils.BUILD_SYSTEM_MESSAGE );
+        batchMessages.setCleanExisting(true);
+        batchMessages.setMessageType(MessageUtils.BUILD_SYSTEM_MESSAGE);
 
-        if ( results.getMessages() != null ) {
-            for ( BuildMessage buildMessage : results.getMessages() ) {
-                batchMessages.getMessagesToPublish().add( MessageUtils.convert( buildMessage ) );
+        if (results.getMessages() != null) {
+            for (BuildMessage buildMessage : results.getMessages()) {
+                batchMessages.getMessagesToPublish().add(MessageUtils.convert(buildMessage));
             }
         }
 
-        publishBatchMessagesEvent.fire( batchMessages );
+        publishBatchMessagesEvent.fire(batchMessages);
     }
 
-    public void addIncrementalBuildMessages( final @Observes IncrementalBuildResults results ) {
+    public void addIncrementalBuildMessages(final @Observes IncrementalBuildResults results) {
 
         PublishBatchMessagesEvent batchMessages = new PublishBatchMessagesEvent();
-        batchMessages.setMessageType( MessageUtils.BUILD_SYSTEM_MESSAGE );
+        batchMessages.setMessageType(MessageUtils.BUILD_SYSTEM_MESSAGE);
 
-        if ( results.getAddedMessages() != null ) {
-            for ( BuildMessage buildMessage : results.getAddedMessages() ) {
-                batchMessages.getMessagesToPublish().add( MessageUtils.convert( buildMessage ) );
+        if (results.getAddedMessages() != null) {
+            for (BuildMessage buildMessage : results.getAddedMessages()) {
+                batchMessages.getMessagesToPublish().add(MessageUtils.convert(buildMessage));
             }
         }
 
-        if ( results.getRemovedMessages() != null ) {
-            for ( BuildMessage buildMessage : results.getRemovedMessages() ) {
-                batchMessages.getMessagesToUnpublish().add( MessageUtils.convert( buildMessage ) );
+        if (results.getRemovedMessages() != null) {
+            for (BuildMessage buildMessage : results.getRemovedMessages()) {
+                batchMessages.getMessagesToUnpublish().add(MessageUtils.convert(buildMessage));
             }
         }
 
-        publishBatchMessagesEvent.fire( batchMessages );
+        publishBatchMessagesEvent.fire(batchMessages);
     }
 }

@@ -15,8 +15,8 @@
 
 package org.guvnor.structure.social;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.ext.uberfire.social.activities.model.SocialEventType;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public enum OrganizationalUnitEventType implements SocialEventType {

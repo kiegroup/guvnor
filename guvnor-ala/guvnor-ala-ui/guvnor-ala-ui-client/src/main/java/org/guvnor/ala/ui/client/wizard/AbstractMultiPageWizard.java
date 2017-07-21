@@ -18,7 +18,6 @@ package org.guvnor.ala.ui.client.wizard;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.event.Event;
 
 import com.google.gwt.user.client.ui.Widget;

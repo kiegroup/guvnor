@@ -34,7 +34,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ManagedStatusUpdaterTest {
 
     @Mock
@@ -59,47 +59,49 @@ public class ManagedStatusUpdaterTest {
     public void setUp() throws Exception {
         repositoryUpdatedEvent = new EventSourceMock<RepositoryEnvironmentUpdatedEvent>() {
             @Override
-            public void fire( final RepositoryEnvironmentUpdatedEvent event ) {
+            public void fire(final RepositoryEnvironmentUpdatedEvent event) {
                 ManagedStatusUpdaterTest.this.updatedEvent = event;
             }
         };
-        when( repositoryService.updateRepositoryConfiguration( eq( originalRepository ),
-                                                               any( RepositoryEnvironmentConfigurations.class ) ) )
-                .thenReturn( updatedRepository );
+        when(repositoryService.updateRepositoryConfiguration(eq(originalRepository),
+                                                             any(RepositoryEnvironmentConfigurations.class)))
+                .thenReturn(updatedRepository);
 
-        managedStatusUpdater = new ManagedStatusUpdater( repositoryService,
-                                                         repositoryUpdatedEvent );
+        managedStatusUpdater = new ManagedStatusUpdater(repositoryService,
+                                                        repositoryUpdatedEvent);
     }
 
     @Test
     public void testMakeManaged() throws Exception {
-        managedStatusUpdater.updateManagedStatus( originalRepository,
-                                                  true );
-        verify( repositoryService ).updateRepositoryConfiguration( eq( originalRepository ),
-                                                                   repositoryEnvironmentConfigurationsCaptor.capture() );
-        assertTrue( repositoryEnvironmentConfigurationsCaptor.getValue().isManaged() );
+        managedStatusUpdater.updateManagedStatus(originalRepository,
+                                                 true);
+        verify(repositoryService).updateRepositoryConfiguration(eq(originalRepository),
+                                                                repositoryEnvironmentConfigurationsCaptor.capture());
+        assertTrue(repositoryEnvironmentConfigurationsCaptor.getValue().isManaged());
     }
 
     @Test
     public void testMakeNotManaged() throws Exception {
-        managedStatusUpdater.updateManagedStatus( originalRepository,
-                                                  false );
-        verify( repositoryService ).updateRepositoryConfiguration( eq( originalRepository ),
-                                                                   repositoryEnvironmentConfigurationsCaptor.capture() );
-        assertFalse( repositoryEnvironmentConfigurationsCaptor.getValue().isManaged() );
+        managedStatusUpdater.updateManagedStatus(originalRepository,
+                                                 false);
+        verify(repositoryService).updateRepositoryConfiguration(eq(originalRepository),
+                                                                repositoryEnvironmentConfigurationsCaptor.capture());
+        assertFalse(repositoryEnvironmentConfigurationsCaptor.getValue().isManaged());
     }
 
     @Test
     public void testUseUpdatedRepositoryForTheEvent() throws Exception {
-        managedStatusUpdater.updateManagedStatus( originalRepository,
-                                                  true );
+        managedStatusUpdater.updateManagedStatus(originalRepository,
+                                                 true);
 
-        assertEquals( updatedRepository, updatedEvent.getUpdatedRepository() );
+        assertEquals(updatedRepository,
+                     updatedEvent.getUpdatedRepository());
     }
 
     @Test
     public void testReturnsUpdatedRepository() throws Exception {
-        assertEquals( updatedRepository, managedStatusUpdater.updateManagedStatus( originalRepository,
-                                                                                   true ) );
+        assertEquals(updatedRepository,
+                     managedStatusUpdater.updateManagedStatus(originalRepository,
+                                                              true));
     }
 }

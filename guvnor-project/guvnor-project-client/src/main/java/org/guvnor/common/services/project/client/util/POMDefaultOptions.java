@@ -17,7 +17,6 @@
 package org.guvnor.common.services.project.client.util;
 
 import java.util.ArrayList;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import org.guvnor.common.services.project.model.Plugin;
@@ -26,7 +25,7 @@ import org.guvnor.common.services.project.model.Plugin;
 public class POMDefaultOptions {
 
     public ArrayList<Plugin> getBuildPlugins() {
-        return new ArrayList<Plugin>(  );
+        return new ArrayList<Plugin>();
     }
 
     public String getPackaging() {

@@ -39,10 +39,10 @@ public class ContextAwareDockerRuntimeExecConfig implements
     public ContextAwareDockerRuntimeExecConfig() {
     }
 
-    public ContextAwareDockerRuntimeExecConfig( final ProviderId providerId,
-                                                final String image,
-                                                final String port,
-                                                final boolean pull ) {
+    public ContextAwareDockerRuntimeExecConfig(final ProviderId providerId,
+                                               final String image,
+                                               final String port,
+                                               final boolean pull) {
         this.providerId = providerId;
         this.image = image;
         this.port = port;
@@ -51,9 +51,9 @@ public class ContextAwareDockerRuntimeExecConfig implements
 
     @Override
     @JsonIgnore
-    public void setContext( final Map<String, ?> context ) {
+    public void setContext(final Map<String, ?> context) {
         this.context = context;
-        final DockerRuntimeConfig dockerRuntimeConfiguration = (DockerRuntimeConfig) context.get( "docker-runtime-config" );
+        final DockerRuntimeConfig dockerRuntimeConfiguration = (DockerRuntimeConfig) context.get("docker-runtime-config");
         this.providerId = dockerRuntimeConfiguration.getProviderId();
         this.image = dockerRuntimeConfiguration.getImage();
         this.port = dockerRuntimeConfiguration.getPort();
@@ -80,19 +80,19 @@ public class ContextAwareDockerRuntimeExecConfig implements
         return pull;
     }
 
-    public void setProviderId( ProviderId providerId ) {
+    public void setProviderId(ProviderId providerId) {
         this.providerId = providerId;
     }
 
-    public void setImage( String image ) {
+    public void setImage(String image) {
         this.image = image;
     }
 
-    public void setPort( String port ) {
+    public void setPort(String port) {
         this.port = port;
     }
 
-    public void setPull( boolean pull ) {
+    public void setPull(boolean pull) {
         this.pull = pull;
     }
 
@@ -102,11 +102,10 @@ public class ContextAwareDockerRuntimeExecConfig implements
     }
 
     @Override
-    public DockerRuntimeExecConfig asNewClone( final DockerRuntimeExecConfig source ) {
-        return new ContextAwareDockerRuntimeExecConfig( source.getProviderId(),
-                                                        source.getImage(),
-                                                        source.getPort(),
-                                                        source.isPull() );
+    public DockerRuntimeExecConfig asNewClone(final DockerRuntimeExecConfig source) {
+        return new ContextAwareDockerRuntimeExecConfig(source.getProviderId(),
+                                                       source.getImage(),
+                                                       source.getPort(),
+                                                       source.isPull());
     }
-
 }

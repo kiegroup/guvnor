@@ -30,7 +30,7 @@ public interface BuildRegistry {
      * @param Binary to be registered
      * @see Binary
     */
-    void registerBinary( final Binary binary );
+    void registerBinary(final Binary binary);
 
     /*
      * Returns all the registered binaraies
@@ -38,5 +38,4 @@ public interface BuildRegistry {
      * @see Binary
     */
     List<Binary> getAllBinaries();
-
 }

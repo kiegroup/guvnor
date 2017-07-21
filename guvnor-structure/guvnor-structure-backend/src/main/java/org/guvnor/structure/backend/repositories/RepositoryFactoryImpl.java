@@ -32,8 +32,8 @@ import org.guvnor.structure.server.config.PasswordService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactoryHelper;
 
-import static org.guvnor.structure.backend.repositories.SystemRepository.*;
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.guvnor.structure.backend.repositories.SystemRepository.SYSTEM_REPO;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
 
 @ApplicationScoped
 public class RepositoryFactoryImpl implements RepositoryFactory {
@@ -49,30 +49,32 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
     private BackwardCompatibleUtil backward;
 
     @Override
-    public Repository newRepository( final ConfigGroup repoConfig ) {
-        checkNotNull( "repoConfig", repoConfig );
-        final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem( EnvironmentParameters.SCHEME );
-        checkNotNull( "schemeConfigItem", schemeConfigItem );
+    public Repository newRepository(final ConfigGroup repoConfig) {
+        checkNotNull("repoConfig",
+                     repoConfig);
+        final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem(EnvironmentParameters.SCHEME);
+        checkNotNull("schemeConfigItem",
+                     schemeConfigItem);
 
         //Find a Helper that can create a repository
         Repository repository = null;
-        for ( RepositoryFactoryHelper helper : helpers ) {
-            if ( helper.accept( repoConfig ) ) {
-                repository = helper.newRepository( repoConfig );
+        for (RepositoryFactoryHelper helper : helpers) {
+            if (helper.accept(repoConfig)) {
+                repository = helper.newRepository(repoConfig);
                 break;
             }
         }
 
         //Check one was created
-        if ( repository == null ) {
-            throw new IllegalArgumentException( "Unrecognized scheme '" + schemeConfigItem.getValue() + "'." );
+        if (repository == null) {
+            throw new IllegalArgumentException("Unrecognized scheme '" + schemeConfigItem.getValue() + "'.");
         }
 
         //Copy in Security Roles required to access this resource
-        ConfigItem<List<String>> groups = backward.compat( repoConfig ).getConfigItem( "security:groups" );
-        if ( groups != null ) {
-            for ( String group : groups.getValue() ) {
-                repository.getGroups().add( group );
+        ConfigItem<List<String>> groups = backward.compat(repoConfig).getConfigItem("security:groups");
+        if (groups != null) {
+            for (String group : groups.getValue()) {
+                repository.getGroups().add(group);
             }
         }
 
@@ -84,5 +86,4 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
     public Repository systemRepository() {
         return SYSTEM_REPO;
     }
-
 }

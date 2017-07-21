@@ -19,13 +19,13 @@ package org.guvnor.common.services.workingset.client.factconstraints;
 public class ValidationResult {
 
     private boolean success;
-    private String  message;
+    private String message;
 
     public boolean isSuccess() {
         return success;
     }
 
-    public void setSuccess( boolean success ) {
+    public void setSuccess(boolean success) {
         this.success = success;
     }
 
@@ -33,8 +33,7 @@ public class ValidationResult {
         return message;
     }
 
-    public void setMessage( String message ) {
+    public void setMessage(String message) {
         this.message = message;
     }
-
 }

@@ -25,15 +25,14 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 
 /**
  * Utility class for client side testing.
- *
+ * <p>
  * Example usage:
- *
+ * <p>
  * OrganizationalUnitService serviceMock = mock( OrganizationalUnitService.class );
  * OrganizationalUnitServiceCallerMock serviceCallerMock = new OrganizationalUnitServiceCallerMock( serviceMock );
  * when( serviceMock.someMethod() ).thenReturn( someValue );
- *
+ * <p>
  * finally pass the serviceCallerMock to the given presenter.
- *
  */
 public class OrganizationalUnitServiceCallerMock
         implements Caller<OrganizationalUnitService> {
@@ -42,8 +41,8 @@ public class OrganizationalUnitServiceCallerMock
 
     protected RemoteCallback remoteCallback;
 
-    public OrganizationalUnitServiceCallerMock( OrganizationalUnitService organizationalUnitService ) {
-        this.organizationalUnitServiceWrapper = new OrganizationalUnitServiceWrapper( organizationalUnitService );
+    public OrganizationalUnitServiceCallerMock(OrganizationalUnitService organizationalUnitService) {
+        this.organizationalUnitServiceWrapper = new OrganizationalUnitServiceWrapper(organizationalUnitService);
     }
 
     @Override
@@ -52,12 +51,14 @@ public class OrganizationalUnitServiceCallerMock
     }
 
     @Override
-    public OrganizationalUnitService call( RemoteCallback<?> remoteCallback ) {
-        return call( remoteCallback, null );
+    public OrganizationalUnitService call(RemoteCallback<?> remoteCallback) {
+        return call(remoteCallback,
+                    null);
     }
 
     @Override
-    public OrganizationalUnitService call( RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback ) {
+    public OrganizationalUnitService call(RemoteCallback<?> remoteCallback,
+                                          ErrorCallback<?> errorCallback) {
         this.remoteCallback = remoteCallback;
         return organizationalUnitServiceWrapper;
     }
@@ -67,95 +68,117 @@ public class OrganizationalUnitServiceCallerMock
 
         OrganizationalUnitService organizationalUnitService;
 
-        public OrganizationalUnitServiceWrapper( OrganizationalUnitService organizationalUnitService ) {
+        public OrganizationalUnitServiceWrapper(OrganizationalUnitService organizationalUnitService) {
             this.organizationalUnitService = organizationalUnitService;
         }
 
         @Override
-        public OrganizationalUnit getOrganizationalUnit( String name ) {
-            OrganizationalUnit result = organizationalUnitService.getOrganizationalUnit( name );
-            remoteCallback.callback( result );
+        public OrganizationalUnit getOrganizationalUnit(String name) {
+            OrganizationalUnit result = organizationalUnitService.getOrganizationalUnit(name);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
         public Collection<OrganizationalUnit> getAllOrganizationalUnits() {
             Collection<OrganizationalUnit> result = organizationalUnitService.getAllOrganizationalUnits();
-            remoteCallback.callback( result );
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
         public Collection<OrganizationalUnit> getOrganizationalUnits() {
             Collection<OrganizationalUnit> result = organizationalUnitService.getOrganizationalUnits();
-            remoteCallback.callback( result );
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public OrganizationalUnit createOrganizationalUnit( String name, String owner, String defaultGroupId ) {
-            OrganizationalUnit result = organizationalUnitService.createOrganizationalUnit( name, owner, defaultGroupId );
-            remoteCallback.callback( result );
+        public OrganizationalUnit createOrganizationalUnit(String name,
+                                                           String owner,
+                                                           String defaultGroupId) {
+            OrganizationalUnit result = organizationalUnitService.createOrganizationalUnit(name,
+                                                                                           owner,
+                                                                                           defaultGroupId);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public OrganizationalUnit createOrganizationalUnit( String name, String owner, String defaultGroupId, Collection<Repository> repositories ) {
-            OrganizationalUnit result = organizationalUnitService.createOrganizationalUnit( name, owner, defaultGroupId, repositories );
-            remoteCallback.callback( result );
+        public OrganizationalUnit createOrganizationalUnit(String name,
+                                                           String owner,
+                                                           String defaultGroupId,
+                                                           Collection<Repository> repositories) {
+            OrganizationalUnit result = organizationalUnitService.createOrganizationalUnit(name,
+                                                                                           owner,
+                                                                                           defaultGroupId,
+                                                                                           repositories);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public OrganizationalUnit updateOrganizationalUnit( String name, String owner, String defaultGroupId ) {
-            OrganizationalUnit result = organizationalUnitService.updateOrganizationalUnit( name, owner, defaultGroupId );
-            remoteCallback.callback( result );
+        public OrganizationalUnit updateOrganizationalUnit(String name,
+                                                           String owner,
+                                                           String defaultGroupId) {
+            OrganizationalUnit result = organizationalUnitService.updateOrganizationalUnit(name,
+                                                                                           owner,
+                                                                                           defaultGroupId);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public void addRepository( OrganizationalUnit organizationalUnit, Repository repository ) {
-            organizationalUnitService.addRepository( organizationalUnit, repository );
+        public void addRepository(OrganizationalUnit organizationalUnit,
+                                  Repository repository) {
+            organizationalUnitService.addRepository(organizationalUnit,
+                                                    repository);
         }
 
         @Override
-        public void removeRepository( OrganizationalUnit organizationalUnit, Repository repository ) {
-            organizationalUnitService.removeRepository( organizationalUnit, repository );
+        public void removeRepository(OrganizationalUnit organizationalUnit,
+                                     Repository repository) {
+            organizationalUnitService.removeRepository(organizationalUnit,
+                                                       repository);
         }
 
         @Override
-        public void addGroup( OrganizationalUnit organizationalUnit, String group ) {
-            organizationalUnitService.addGroup( organizationalUnit, group );
+        public void addGroup(OrganizationalUnit organizationalUnit,
+                             String group) {
+            organizationalUnitService.addGroup(organizationalUnit,
+                                               group);
         }
 
         @Override
-        public void removeGroup( OrganizationalUnit organizationalUnit, String group ) {
-            organizationalUnitService.removeGroup( organizationalUnit, group );
+        public void removeGroup(OrganizationalUnit organizationalUnit,
+                                String group) {
+            organizationalUnitService.removeGroup(organizationalUnit,
+                                                  group);
         }
 
         @Override
-        public void removeOrganizationalUnit( String name ) {
-            organizationalUnitService.removeOrganizationalUnit( name );
+        public void removeOrganizationalUnit(String name) {
+            organizationalUnitService.removeOrganizationalUnit(name);
         }
 
         @Override
-        public OrganizationalUnit getParentOrganizationalUnit( Repository repository ) {
-            OrganizationalUnit result = organizationalUnitService.getParentOrganizationalUnit( repository );
-            remoteCallback.callback( result );
+        public OrganizationalUnit getParentOrganizationalUnit(Repository repository) {
+            OrganizationalUnit result = organizationalUnitService.getParentOrganizationalUnit(repository);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public String getSanitizedDefaultGroupId( String proposedGroupId ) {
-            String result = organizationalUnitService.getSanitizedDefaultGroupId( proposedGroupId );
-            remoteCallback.callback( result );
+        public String getSanitizedDefaultGroupId(String proposedGroupId) {
+            String result = organizationalUnitService.getSanitizedDefaultGroupId(proposedGroupId);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public Boolean isValidGroupId( String proposedGroupId ) {
-            Boolean result = organizationalUnitService.isValidGroupId( proposedGroupId );
-            remoteCallback.callback( result );
+        public Boolean isValidGroupId(String proposedGroupId) {
+            Boolean result = organizationalUnitService.isValidGroupId(proposedGroupId);
+            remoteCallback.callback(result);
             return result;
         }
     }

@@ -32,27 +32,29 @@ public class RsCreateRepositoryAnswer implements Answer<RepositoryService> {
     private Repository repository;
     private RepositoryService repoService;
 
-    public RsCreateRepositoryAnswer( Repository repository,
-                                     RepositoryService repoService ) {
+    public RsCreateRepositoryAnswer(Repository repository,
+                                    RepositoryService repoService) {
         this.repository = repository;
         this.repoService = repoService;
     }
 
     @Override
-    public RepositoryService answer( InvocationOnMock invocation ) throws Throwable {
+    public RepositoryService answer(InvocationOnMock invocation) throws Throwable {
 
-        when( repoService.createRepository( any( OrganizationalUnit.class ), any( String.class ), any( String.class ),
-                                            any(RepositoryEnvironmentConfigurations.class) ) ).then( new Answer<Repository>() {
+        when(repoService.createRepository(any(OrganizationalUnit.class),
+                                          any(String.class),
+                                          any(String.class),
+                                          any(RepositoryEnvironmentConfigurations.class))).then(new Answer<Repository>() {
 
             @Override
-            public Repository answer( InvocationOnMock invocation ) throws Throwable {
+            public Repository answer(InvocationOnMock invocation) throws Throwable {
                 return repository;
             }
-        } );
+        });
 
         @SuppressWarnings("unchecked")
-        final RemoteCallback<Repository> callback = (RemoteCallback<Repository>) invocation.getArguments()[ 0 ];
-        callback.callback( repository );
+        final RemoteCallback<Repository> callback = (RemoteCallback<Repository>) invocation.getArguments()[0];
+        callback.callback(repository);
 
         return repoService;
     }

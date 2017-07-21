@@ -31,15 +31,14 @@ public class DockerRuntimeConfigImpl implements DockerRuntimeConfig,
     public DockerRuntimeConfigImpl() {
     }
 
-    public DockerRuntimeConfigImpl( ProviderId providerId,
-                                    String image,
-                                    String port,
-                                    boolean pull ) {
+    public DockerRuntimeConfigImpl(ProviderId providerId,
+                                   String image,
+                                   String port,
+                                   boolean pull) {
         this.providerId = providerId;
         this.image = image;
         this.port = port;
         this.pull = pull;
-
     }
 
     @Override
@@ -62,19 +61,19 @@ public class DockerRuntimeConfigImpl implements DockerRuntimeConfig,
         return providerId;
     }
 
-    public void setImage( String image ) {
+    public void setImage(String image) {
         this.image = image;
     }
 
-    public void setPort( String port ) {
+    public void setPort(String port) {
         this.port = port;
     }
 
-    public void setPull( boolean pull ) {
+    public void setPull(boolean pull) {
         this.pull = pull;
     }
 
-    public void setProviderId( ProviderId providerId ) {
+    public void setProviderId(ProviderId providerId) {
         this.providerId = providerId;
     }
 
@@ -84,10 +83,10 @@ public class DockerRuntimeConfigImpl implements DockerRuntimeConfig,
     }
 
     @Override
-    public DockerRuntimeConfig asNewClone( final DockerRuntimeConfig source ) {
-        return new DockerRuntimeConfigImpl( source.getProviderId(),
-                                            source.getImage(),
-                                            source.getPort(),
-                                            source.isPull() );
+    public DockerRuntimeConfig asNewClone(final DockerRuntimeConfig source) {
+        return new DockerRuntimeConfigImpl(source.getProviderId(),
+                                           source.getImage(),
+                                           source.getPort(),
+                                           source.isPull());
     }
 }

@@ -27,7 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class RepositoryStructureContextTest {
 
     private RepositoryStructureContext context;
@@ -38,7 +38,6 @@ public class RepositoryStructureContextTest {
     @Mock
     Project currentProject;
 
-
     @Before
     public void setUp() throws Exception {
         context = new RepositoryStructureContext();
@@ -46,43 +45,41 @@ public class RepositoryStructureContextTest {
 
     @Test
     public void testEmptySetupProjectChanged() throws Exception {
-        assertTrue( context.activeProjectChanged( new Project() ) );
+        assertTrue(context.activeProjectChanged(new Project()));
     }
 
     @Test
     public void testEmptySetupRepositoryChanged() throws Exception {
-        assertTrue( context.repositoryOrBranchChanged( mock( Repository.class ),
-                                                       "master" ) );
+        assertTrue(context.repositoryOrBranchChanged(mock(Repository.class),
+                                                     "master"));
     }
 
     @Test
     public void testProjectChanged() throws Exception {
-        context.reset( currentRepository,
-                       "master",
-                       currentProject );
+        context.reset(currentRepository,
+                      "master",
+                      currentProject);
 
-        assertTrue( context.activeProjectChanged( new Project() ) );
+        assertTrue(context.activeProjectChanged(new Project()));
     }
 
     @Test
     public void testRepositoryChanged() throws Exception {
-        context.reset( currentRepository,
-                       "master",
-                       currentProject );
+        context.reset(currentRepository,
+                      "master",
+                      currentProject);
 
-        assertTrue( context.repositoryOrBranchChanged( mock( Repository.class ),
-                                                       "master" ) );
+        assertTrue(context.repositoryOrBranchChanged(mock(Repository.class),
+                                                     "master"));
     }
 
     @Test
     public void testBranchChanged() throws Exception {
-        context.reset( currentRepository,
-                       "master",
-                       currentProject );
+        context.reset(currentRepository,
+                      "master",
+                      currentProject);
 
-        assertTrue( context.repositoryOrBranchChanged( currentRepository,
-                                                       "dev" ) );
+        assertTrue(context.repositoryOrBranchChanged(currentRepository,
+                                                     "dev"));
     }
-
-
 }

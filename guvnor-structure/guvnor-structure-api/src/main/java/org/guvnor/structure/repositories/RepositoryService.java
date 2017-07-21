@@ -26,20 +26,20 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 @Remote
 public interface RepositoryService {
 
-    RepositoryInfo getRepositoryInfo( final String alias );
+    RepositoryInfo getRepositoryInfo(final String alias);
 
-    List<VersionRecord> getRepositoryHistory( final String alias,
-                                              final int startIndex );
+    List<VersionRecord> getRepositoryHistory(final String alias,
+                                             final int startIndex);
 
-    List<VersionRecord> getRepositoryHistory( final String alias,
-                                              final int startIndex,
-                                              final int endIndex );
+    List<VersionRecord> getRepositoryHistory(final String alias,
+                                             final int startIndex,
+                                             final int endIndex);
 
-    List<VersionRecord> getRepositoryHistoryAll( final String alias );
+    List<VersionRecord> getRepositoryHistoryAll(final String alias);
 
-    Repository getRepository( final String alias );
+    Repository getRepository(final String alias);
 
-    Repository getRepository( final Path root );
+    Repository getRepository(final Path root);
 
     /**
      * Get all the repositories. Security checks are omitted.
@@ -51,28 +51,27 @@ public interface RepositoryService {
      */
     Collection<Repository> getRepositories();
 
-    Repository createRepository( final OrganizationalUnit organizationalUnit,
-                                 final String scheme,
-                                 final String alias,
-                                 final RepositoryEnvironmentConfigurations configurations ) throws RepositoryAlreadyExistsException;
+    Repository createRepository(final OrganizationalUnit organizationalUnit,
+                                final String scheme,
+                                final String alias,
+                                final RepositoryEnvironmentConfigurations configurations) throws RepositoryAlreadyExistsException;
 
-    Repository createRepository( final String scheme,
-                                 final String alias,
-                                 final RepositoryEnvironmentConfigurations configurations ) throws RepositoryAlreadyExistsException;
+    Repository createRepository(final String scheme,
+                                final String alias,
+                                final RepositoryEnvironmentConfigurations configurations) throws RepositoryAlreadyExistsException;
 
-    String normalizeRepositoryName( final String name );
+    String normalizeRepositoryName(final String name);
 
-    boolean validateRepositoryName( final String name );
+    boolean validateRepositoryName(final String name);
 
-    void addGroup( final Repository repository,
-                   final String group );
+    void addGroup(final Repository repository,
+                  final String group);
 
-    void removeGroup( final Repository repository,
-                      final String group );
+    void removeGroup(final Repository repository,
+                     final String group);
 
-    void removeRepository( final String alias );
+    void removeRepository(final String alias);
 
-    Repository updateRepositoryConfiguration( final Repository repository,
-                                              final RepositoryEnvironmentConfigurations repositoryConfigurationonfig );
-
+    Repository updateRepositoryConfiguration(final Repository repository,
+                                             final RepositoryEnvironmentConfigurations repositoryConfigurationonfig);
 }

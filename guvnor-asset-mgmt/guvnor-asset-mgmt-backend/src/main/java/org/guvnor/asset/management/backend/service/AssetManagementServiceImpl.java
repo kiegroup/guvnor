@@ -46,7 +46,6 @@ import org.uberfire.java.nio.file.Path;
 @ApplicationScoped
 public class AssetManagementServiceImpl implements AssetManagementService {
 
-
     private Instance<ProjectService<?>> projectService;
 
     private IOService ioService;
@@ -64,12 +63,12 @@ public class AssetManagementServiceImpl implements AssetManagementService {
     }
 
     @Inject
-    public AssetManagementServiceImpl( final Event<NewBranchEvent> newBranchEvent,
-                                       final Event<ConfigureRepositoryEvent> configureRepositoryEvent,
-                                       final POMService pomService,
-                                       @Named("ioStrategy") final IOService ioService,
-                                       final RepositoryService repositoryService,
-                                       final Instance<ProjectService<?>> projectService ) {
+    public AssetManagementServiceImpl(final Event<NewBranchEvent> newBranchEvent,
+                                      final Event<ConfigureRepositoryEvent> configureRepositoryEvent,
+                                      final POMService pomService,
+                                      @Named("ioStrategy") final IOService ioService,
+                                      final RepositoryService repositoryService,
+                                      final Instance<ProjectService<?>> projectService) {
         this.ioService = ioService;
         this.newBranchEvent = newBranchEvent;
         this.configureRepositoryEvent = configureRepositoryEvent;
@@ -79,11 +78,11 @@ public class AssetManagementServiceImpl implements AssetManagementService {
     }
 
     @Override
-    public void configureRepository( final String repository,
-                                     final String sourceBranch,
-                                     final String devBranch,
-                                     final String releaseBranch,
-                                     final String version ) {
+    public void configureRepository(final String repository,
+                                    final String sourceBranch,
+                                    final String devBranch,
+                                    final String releaseBranch,
+                                    final String version) {
 
         String branchName = devBranch;
         if (version != null && !version.isEmpty()) {
@@ -93,7 +92,8 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         Path branchPath = ioService.get(URI.create("default://" + branchName + "@" + repository));
         Path branchOriginPath = ioService.get(URI.create("default://" + sourceBranch + "@" + repository));
 
-        ioService.copy(branchOriginPath, branchPath);
+        ioService.copy(branchOriginPath,
+                       branchPath);
 
         // update development branch project
         Repository repo = repositoryService.getRepository(Paths.convert(branchPath));
@@ -113,10 +113,16 @@ public class AssetManagementServiceImpl implements AssetManagementService {
 
             POM pom = pomService.load(project.getPomXMLPath());
             pom.getGav().setVersion(devVersion);
-            pomService.save(project.getPomXMLPath(), pom, null, "Update project version on development branch");
+            pomService.save(project.getPomXMLPath(),
+                            pom,
+                            null,
+                            "Update project version on development branch");
         }
 
-        newBranchEvent.fire(new NewBranchEvent(repository, branchName, Paths.convert(branchPath), System.currentTimeMillis()) );
+        newBranchEvent.fire(new NewBranchEvent(repository,
+                                               branchName,
+                                               Paths.convert(branchPath),
+                                               System.currentTimeMillis()));
 
         // create release branch
         branchName = releaseBranch;
@@ -126,45 +132,51 @@ public class AssetManagementServiceImpl implements AssetManagementService {
         branchPath = ioService.get(URI.create("default://" + branchName + "@" + repository));
         branchOriginPath = ioService.get(URI.create("default://" + sourceBranch + "@" + repository));
 
-        ioService.copy(branchOriginPath, branchPath);
+        ioService.copy(branchOriginPath,
+                       branchPath);
 
-        newBranchEvent.fire(new NewBranchEvent(repository, branchName, Paths.convert(branchPath), System.currentTimeMillis()) );
+        newBranchEvent.fire(new NewBranchEvent(repository,
+                                               branchName,
+                                               Paths.convert(branchPath),
+                                               System.currentTimeMillis()));
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("RepositoryName", repository);
-        parameters.put("SourceBranchName", sourceBranch);
-        parameters.put("DevBranchName", devBranch);
-        parameters.put("RelBranchName", releaseBranch);
-        parameters.put("Version", version);
+        parameters.put("RepositoryName",
+                       repository);
+        parameters.put("SourceBranchName",
+                       sourceBranch);
+        parameters.put("DevBranchName",
+                       devBranch);
+        parameters.put("RelBranchName",
+                       releaseBranch);
+        parameters.put("Version",
+                       version);
         configureRepositoryEvent.fire(new ConfigureRepositoryEvent(parameters));
     }
 
-
     @Override
-    public Set<Project> getProjects( final Repository repository,
-                                     final String branch ) {
-        return projectService.get().getProjects( repository,
-                                                 branch );
+    public Set<Project> getProjects(final Repository repository,
+                                    final String branch) {
+        return projectService.get().getProjects(repository,
+                                                branch);
     }
 
-    private Set<Project> getProjects( final Repository repository ) {
+    private Set<Project> getProjects(final Repository repository) {
         final Set<Project> authorizedProjects = new HashSet<Project>();
-        if ( repository == null ) {
+        if (repository == null) {
             return authorizedProjects;
         }
         final Path repositoryRoot = Paths.convert(repository.getRoot());
-        final DirectoryStream<Path> nioRepositoryPaths = ioService.newDirectoryStream( repositoryRoot );
-        for ( Path nioRepositoryPath : nioRepositoryPaths ) {
-            if ( Files.isDirectory(nioRepositoryPath) ) {
-                final org.uberfire.backend.vfs.Path projectPath = Paths.convert( nioRepositoryPath );
+        final DirectoryStream<Path> nioRepositoryPaths = ioService.newDirectoryStream(repositoryRoot);
+        for (Path nioRepositoryPath : nioRepositoryPaths) {
+            if (Files.isDirectory(nioRepositoryPath)) {
+                final org.uberfire.backend.vfs.Path projectPath = Paths.convert(nioRepositoryPath);
                 final Project project = projectService.get().resolveProject(projectPath);
-                if ( project != null ) {
-                    authorizedProjects.add( project );
-
+                if (project != null) {
+                    authorizedProjects.add(project);
                 }
             }
         }
         return authorizedProjects;
     }
-
 }

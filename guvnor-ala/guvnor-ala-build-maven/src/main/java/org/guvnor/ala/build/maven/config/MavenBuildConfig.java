@@ -34,14 +34,14 @@ public interface MavenBuildConfig extends BuildConfig {
     */
     default List<String> getGoals() {
         final List<String> result = new ArrayList<>();
-        result.add( "package" );
+        result.add("package");
         return result;
     }
 
     default Properties getProperties() {
         final Properties result = new Properties();
-        result.setProperty("failIfNoTests", "false" );
+        result.setProperty("failIfNoTests",
+                           "false");
         return result;
     }
-
 }

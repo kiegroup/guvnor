@@ -79,7 +79,7 @@ public class RepositoryStructurePresenterTest {
 
     private Event<ProjectContextChangeEvent> contextChangeEvent = new EventSourceMock<ProjectContextChangeEvent>() {
         @Override
-        public void fire( ProjectContextChangeEvent event ) {
+        public void fire(ProjectContextChangeEvent event) {
             //Do nothing. Default implementation throws an Exception
         }
     };
@@ -110,31 +110,31 @@ public class RepositoryStructurePresenterTest {
     @Before
     public void setup() {
 
-        when( project.getIdentifier() ).thenReturn( "id" );
+        when(project.getIdentifier()).thenReturn("id");
 
-        final Caller<POMService> pomServiceCaller = new CallerMock<POMService>( pomService );
-        final Caller<RepositoryStructureService> repositoryStructureServiceCaller = new CallerMock<RepositoryStructureService>( repositoryStructureService );
+        final Caller<POMService> pomServiceCaller = new CallerMock<POMService>(pomService);
+        final Caller<RepositoryStructureService> repositoryStructureServiceCaller = new CallerMock<RepositoryStructureService>(repositoryStructureService);
 
-        when( view.getModulesView() ).thenReturn( modulesView );
+        when(view.getModulesView()).thenReturn(modulesView);
 
-        presenter = new RepositoryStructurePresenter( view,
-                                                      pomServiceCaller,
-                                                      repositoryStructureServiceCaller,
-                                                      mock( RepositoryStructureTitle.class ),
-                                                      contextChangeEvent,
-                                                      conflictingRepositoriesPopup,
-                                                      mock( RepositoryStructureMenu.class ),
-                                                      placeManager,
-                                                      workbenchContext,
-                                                      wizard,
-                                                      mock( RepositoryManagedStatusUpdater.class ) ) {
+        presenter = new RepositoryStructurePresenter(view,
+                                                     pomServiceCaller,
+                                                     repositoryStructureServiceCaller,
+                                                     mock(RepositoryStructureTitle.class),
+                                                     contextChangeEvent,
+                                                     conflictingRepositoriesPopup,
+                                                     mock(RepositoryStructureMenu.class),
+                                                     placeManager,
+                                                     workbenchContext,
+                                                     wizard,
+                                                     mock(RepositoryManagedStatusUpdater.class)) {
             @Override
-            ObservablePath createObservablePath( final Path path ) {
-                return new ObservablePathImpl().wrap( path );
+            ObservablePath createObservablePath(final Path path) {
+                return new ObservablePathImpl().wrap(path);
             }
 
             @Override
-            void destroyObservablePath( final ObservablePath path ) {
+            void destroyObservablePath(final ObservablePath path) {
                 //Do nothing
             }
         };
@@ -142,384 +142,388 @@ public class RepositoryStructurePresenterTest {
 
     @Test
     public void testOnStartupNoRepositoryNoProject() throws Exception {
-        when( workbenchContext.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(organizationalUnit);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
-        verify( view,
-                times( 1 ) ).setModulesViewVisible( eq( false ) );
-        verify( view,
-                times( 1 ) ).clearDataView();
-        verify( modulesView,
-                times( 1 ) ).enableActions( eq( true ) );
+        verify(view,
+               times(1)).setModulesViewVisible(eq(false));
+        verify(view,
+               times(1)).clearDataView();
+        verify(modulesView,
+               times(1)).enableActions(eq(true));
     }
 
     @Test
     public void testOnStartupWithRepositoryNoProject() throws Exception {
-        when( workbenchContext.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
-        when( workbenchContext.getActiveRepository() ).thenReturn( repository );
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(organizationalUnit);
+        when(workbenchContext.getActiveRepository()).thenReturn(repository);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
-        verify( view,
-                times( 1 ) ).setModulesViewVisible( eq( false ) );
-        verify( view,
-                times( 1 ) ).clearDataView();
-        verify( modulesView,
-                times( 1 ) ).enableActions( eq( true ) );
+        verify(view,
+               times(1)).setModulesViewVisible(eq(false));
+        verify(view,
+               times(1)).clearDataView();
+        verify(modulesView,
+               times(1)).enableActions(eq(true));
     }
 
     @Test
     public void testOnStartupWithRepositoryWithProjectNoModel() throws Exception {
-        when( workbenchContext.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
-        when( workbenchContext.getActiveRepository() ).thenReturn( repository );
-        when( workbenchContext.getActiveProject() ).thenReturn( project );
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(organizationalUnit);
+        when(workbenchContext.getActiveRepository()).thenReturn(repository);
+        when(workbenchContext.getActiveProject()).thenReturn(project);
 
         final RepositoryStructureModel model = null;
-        when( repositoryStructureService.load( eq( repository ),
-                                               anyString()) ).thenReturn( model );
+        when(repositoryStructureService.load(eq(repository),
+                                             anyString())).thenReturn(model);
 
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
-        verify( view,
-                times( 1 ) ).setModulesViewVisible( eq( false ) );
-        verify( view,
-                times( 1 ) ).clearDataView();
-        verify( modulesView,
-                times( 1 ) ).enableActions( eq( true ) );
-        verify( view,
-                times( 1 ) ).showBusyIndicator( Constants.INSTANCE.Loading() );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
+        verify(view,
+               times(1)).setModulesViewVisible(eq(false));
+        verify(view,
+               times(1)).clearDataView();
+        verify(modulesView,
+               times(1)).enableActions(eq(true));
+        verify(view,
+               times(1)).showBusyIndicator(Constants.INSTANCE.Loading());
+        verify(view,
+               times(1)).hideBusyIndicator();
     }
 
     @Test
     public void testOnStartupWithRepositoryWithProjectWithModel_SingleModule() throws Exception {
-        when( workbenchContext.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
-        when( workbenchContext.getActiveRepository() ).thenReturn( repository );
-        when( workbenchContext.getActiveProject() ).thenReturn( project );
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(organizationalUnit);
+        when(workbenchContext.getActiveRepository()).thenReturn(repository);
+        when(workbenchContext.getActiveProject()).thenReturn(project);
 
         final RepositoryStructureModel model = new RepositoryStructureModel();
-        model.setManaged( true );
-        model.setOrphanProjects( new ArrayList<Project>() {{
-            add( project );
-        }} );
-        model.setOrphanProjectsPOM( new HashMap<String, POM>() {
+        model.setManaged(true);
+        model.setOrphanProjects(new ArrayList<Project>() {{
+            add(project);
+        }});
+        model.setOrphanProjectsPOM(new HashMap<String, POM>() {
             {
-                put( project.getIdentifier(), new POM( new GAV( "groupId",
-                                                                 "artifactId",
-                                                                 "version" ) ) );
+                put(project.getIdentifier(),
+                    new POM(new GAV("groupId",
+                                    "artifactId",
+                                    "version")));
             }
-        } );
+        });
 
-        when( repositoryStructureService.load( eq( repository ),
-                                               anyString() ) ).thenReturn( model );
+        when(repositoryStructureService.load(eq(repository),
+                                             anyString())).thenReturn(model);
 
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
-        verify( view,
-                times( 1 ) ).clearDataView();
-        verify( modulesView,
-                times( 1 ) ).enableActions( eq( true ) );
-        verify( view,
-                times( 1 ) ).showBusyIndicator( Constants.INSTANCE.Loading() );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
+        verify(view,
+               times(1)).clearDataView();
+        verify(modulesView,
+               times(1)).enableActions(eq(true));
+        verify(view,
+               times(1)).showBusyIndicator(Constants.INSTANCE.Loading());
+        verify(view,
+               times(1)).hideBusyIndicator();
 
-        verify( view,
-                times( 1 ) ).setDataPresenterMode( eq( RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT ) );
-        verify( modulesView,
-                times( 1 ) ).setMode( eq( ProjectModulesView.ViewMode.PROJECTS_VIEW ) );
-        verify( view,
-                times( 1 ) ).setDataPresenterModel( any( GAV.class ) );
-        verify( view,
-                times( 1 ) ).setModulesViewVisible( eq( false ) );
+        verify(view,
+               times(1)).setDataPresenterMode(eq(RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT));
+        verify(modulesView,
+               times(1)).setMode(eq(ProjectModulesView.ViewMode.PROJECTS_VIEW));
+        verify(view,
+               times(1)).setDataPresenterModel(any(GAV.class));
+        verify(view,
+               times(1)).setModulesViewVisible(eq(false));
     }
 
     @Test
     public void testOnStartupWithRepositoryWithProjectWithModel_MultiModule() throws Exception {
-        when( workbenchContext.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
-        when( workbenchContext.getActiveRepository() ).thenReturn( repository );
-        when( workbenchContext.getActiveProject() ).thenReturn( project );
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(organizationalUnit);
+        when(workbenchContext.getActiveRepository()).thenReturn(repository);
+        when(workbenchContext.getActiveProject()).thenReturn(project);
 
         final RepositoryStructureModel model = new RepositoryStructureModel();
-        final POM pom = new POM( new GAV( "groupId",
-                                          "artifactId",
-                                          "version" ) );
-        model.setPathToPOM( mock( Path.class ) );
-        model.setManaged( true );
-        model.setPOM( pom );
-        when( repositoryStructureService.load( eq( repository ),
-                                               anyString() ) ).thenReturn( model );
+        final POM pom = new POM(new GAV("groupId",
+                                        "artifactId",
+                                        "version"));
+        model.setPathToPOM(mock(Path.class));
+        model.setManaged(true);
+        model.setPOM(pom);
+        when(repositoryStructureService.load(eq(repository),
+                                             anyString())).thenReturn(model);
 
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
-        verify( view,
-                times( 1 ) ).clearDataView();
-        verify( modulesView,
-                times( 1 ) ).enableActions( eq( true ) );
-        verify( view,
-                times( 1 ) ).showBusyIndicator( Constants.INSTANCE.Loading() );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
+        verify(view,
+               times(1)).clearDataView();
+        verify(modulesView,
+               times(1)).enableActions(eq(true));
+        verify(view,
+               times(1)).showBusyIndicator(Constants.INSTANCE.Loading());
+        verify(view,
+               times(1)).hideBusyIndicator();
 
-        verify( view,
-                times( 1 ) ).setDataPresenterMode( eq( RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT ) );
-        verify( modulesView,
-                times( 1 ) ).setMode( eq( ProjectModulesView.ViewMode.MODULES_VIEW ) );
-        verify( view,
-                times( 1 ) ).setDataPresenterModel( eq( pom.getGav() ) );
-        verify( view,
-                times( 1 ) ).setModulesViewVisible( eq( true ) );
+        verify(view,
+               times(1)).setDataPresenterMode(eq(RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT));
+        verify(modulesView,
+               times(1)).setMode(eq(ProjectModulesView.ViewMode.MODULES_VIEW));
+        verify(view,
+               times(1)).setDataPresenterModel(eq(pom.getGav()));
+        verify(view,
+               times(1)).setModulesViewVisible(eq(true));
     }
 
     @Test
     public void testOnInitRepositoryStructureNonClashingGAV() {
-        when( workbenchContext.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
-        when( workbenchContext.getActiveRepository() ).thenReturn( repository );
-        when( workbenchContext.getActiveProject() ).thenReturn( project );
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(organizationalUnit);
+        when(workbenchContext.getActiveRepository()).thenReturn(repository);
+        when(workbenchContext.getActiveProject()).thenReturn(project);
 
         final RepositoryStructureModel model = new RepositoryStructureModel();
-        final POM pom = new POM( new GAV( "groupId",
-                                          "artifactId",
-                                          "version" ) );
-        model.setManaged( true );
-        model.setPOM( pom );
-        when( repositoryStructureService.load( eq( repository ),
-                                               anyString() ) ).thenReturn( model );
+        final POM pom = new POM(new GAV("groupId",
+                                        "artifactId",
+                                        "version"));
+        model.setManaged(true);
+        model.setPOM(pom);
+        when(repositoryStructureService.load(eq(repository),
+                                             anyString())).thenReturn(model);
 
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
         presenter.onInitRepositoryStructure();
 
-        verify( view,
-                times( 2 ) ).showBusyIndicator( eq( Constants.INSTANCE.Loading() ) );
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( Constants.INSTANCE.CreatingRepositoryStructure() ) );
-        verify( view,
-                times( 3 ) ).hideBusyIndicator();
+        verify(view,
+               times(2)).showBusyIndicator(eq(Constants.INSTANCE.Loading()));
+        verify(view,
+               times(1)).showBusyIndicator(eq(Constants.INSTANCE.CreatingRepositoryStructure()));
+        verify(view,
+               times(3)).hideBusyIndicator();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testOnInitRepositoryStructureClashingGAV() {
-        when( workbenchContext.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
-        when( workbenchContext.getActiveRepository() ).thenReturn( repository );
-        when( workbenchContext.getActiveProject() ).thenReturn( project );
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(organizationalUnit);
+        when(workbenchContext.getActiveRepository()).thenReturn(repository);
+        when(workbenchContext.getActiveProject()).thenReturn(project);
 
         final RepositoryStructureModel model = new RepositoryStructureModel();
-        final POM pom = new POM( new GAV( "groupId",
-                                          "artifactId",
-                                          "version" ) );
-        model.setManaged( true );
-        model.setPOM( pom );
-        when( repositoryStructureService.load( eq( repository ),
-                                               anyString() ) ).thenReturn( model );
+        final POM pom = new POM(new GAV("groupId",
+                                        "artifactId",
+                                        "version"));
+        model.setManaged(true);
+        model.setPOM(pom);
+        when(repositoryStructureService.load(eq(repository),
+                                             anyString())).thenReturn(model);
 
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
-        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException( pom.getGav(),
-                                                                             new HashSet<MavenRepositoryMetadata>() {{
-                                                                                 add( new MavenRepositoryMetadata( "local-id",
-                                                                                                                   "local-url",
-                                                                                                                   MavenRepositorySource.LOCAL ) );
-                                                                             }} );
-        doThrow( gae ).when( repositoryStructureService ).initRepositoryStructure( any( GAV.class ),
-                                                                                   eq( repository ),
-                                                                                   eq( DeploymentMode.VALIDATED ) );
+        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException(pom.getGav(),
+                                                                            new HashSet<MavenRepositoryMetadata>() {{
+                                                                                add(new MavenRepositoryMetadata("local-id",
+                                                                                                                "local-url",
+                                                                                                                MavenRepositorySource.LOCAL));
+                                                                            }});
+        doThrow(gae).when(repositoryStructureService).initRepositoryStructure(any(GAV.class),
+                                                                              eq(repository),
+                                                                              eq(DeploymentMode.VALIDATED));
 
         presenter.onInitRepositoryStructure();
 
-        verify( repositoryStructureService,
-                times( 1 ) ).load( eq( repository ),
-                                   anyString() );
+        verify(repositoryStructureService,
+               times(1)).load(eq(repository),
+                              anyString());
 
-        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
+        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
 
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).setContent( eq( pom.getGav() ),
-                                         any( Set.class ),
-                                         commandArgumentCaptor.capture() );
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).show();
+        verify(conflictingRepositoriesPopup,
+               times(1)).setContent(eq(pom.getGav()),
+                                    any(Set.class),
+                                    commandArgumentCaptor.capture());
+        verify(conflictingRepositoriesPopup,
+               times(1)).show();
 
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( Constants.INSTANCE.Loading() ) );
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( Constants.INSTANCE.CreatingRepositoryStructure() ) );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
+        verify(view,
+               times(1)).showBusyIndicator(eq(Constants.INSTANCE.Loading()));
+        verify(view,
+               times(1)).showBusyIndicator(eq(Constants.INSTANCE.CreatingRepositoryStructure()));
+        verify(view,
+               times(1)).hideBusyIndicator();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testOnInitRepositoryStructureClashingGAVForced() {
-        when( workbenchContext.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
-        when( workbenchContext.getActiveRepository() ).thenReturn( repository );
-        when( workbenchContext.getActiveProject() ).thenReturn( project );
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(organizationalUnit);
+        when(workbenchContext.getActiveRepository()).thenReturn(repository);
+        when(workbenchContext.getActiveProject()).thenReturn(project);
 
         final RepositoryStructureModel model = new RepositoryStructureModel();
-        final POM pom = new POM( new GAV( "groupId",
-                                          "artifactId",
-                                          "version" ) );
-        model.setManaged( true );
-        model.setPOM( pom );
-        when( repositoryStructureService.load( eq( repository ),
-                                               anyString() ) ).thenReturn( model );
+        final POM pom = new POM(new GAV("groupId",
+                                        "artifactId",
+                                        "version"));
+        model.setManaged(true);
+        model.setPOM(pom);
+        when(repositoryStructureService.load(eq(repository),
+                                             anyString())).thenReturn(model);
 
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
-        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException( pom.getGav(),
-                                                                             new HashSet<MavenRepositoryMetadata>() {{
-                                                                                 add( new MavenRepositoryMetadata( "local-id",
-                                                                                                                   "local-url",
-                                                                                                                   MavenRepositorySource.LOCAL ) );
-                                                                             }} );
-        doThrow( gae ).when( repositoryStructureService ).initRepositoryStructure( any( GAV.class ),
-                                                                                   eq( repository ),
-                                                                                   eq( DeploymentMode.VALIDATED ) );
+        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException(pom.getGav(),
+                                                                            new HashSet<MavenRepositoryMetadata>() {{
+                                                                                add(new MavenRepositoryMetadata("local-id",
+                                                                                                                "local-url",
+                                                                                                                MavenRepositorySource.LOCAL));
+                                                                            }});
+        doThrow(gae).when(repositoryStructureService).initRepositoryStructure(any(GAV.class),
+                                                                              eq(repository),
+                                                                              eq(DeploymentMode.VALIDATED));
 
         presenter.onInitRepositoryStructure();
 
-        verify( repositoryStructureService,
-                times( 1 ) ).load( eq( repository ),
-                                   anyString() );
+        verify(repositoryStructureService,
+               times(1)).load(eq(repository),
+                              anyString());
 
-        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
+        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
 
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).setContent( eq( pom.getGav() ),
-                                         any( Set.class ),
-                                         commandArgumentCaptor.capture() );
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).show();
+        verify(conflictingRepositoriesPopup,
+               times(1)).setContent(eq(pom.getGav()),
+                                    any(Set.class),
+                                    commandArgumentCaptor.capture());
+        verify(conflictingRepositoriesPopup,
+               times(1)).show();
 
         //Emulate User electing to force save
-        assertNotNull( commandArgumentCaptor.getValue() );
+        assertNotNull(commandArgumentCaptor.getValue());
         commandArgumentCaptor.getValue().execute();
 
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).hide();
+        verify(conflictingRepositoriesPopup,
+               times(1)).hide();
 
-        verify( repositoryStructureService,
-                times( 2 ) ).load( eq( repository ),
-                                   anyString() );
+        verify(repositoryStructureService,
+               times(2)).load(eq(repository),
+                              anyString());
 
-        verify( view,
-                times( 2 ) ).showBusyIndicator( eq( Constants.INSTANCE.Loading() ) );
-        verify( view,
-                times( 2 ) ).showBusyIndicator( eq( Constants.INSTANCE.CreatingRepositoryStructure() ) );
-        verify( view,
-                times( 3 ) ).hideBusyIndicator();
+        verify(view,
+               times(2)).showBusyIndicator(eq(Constants.INSTANCE.Loading()));
+        verify(view,
+               times(2)).showBusyIndicator(eq(Constants.INSTANCE.CreatingRepositoryStructure()));
+        verify(view,
+               times(3)).hideBusyIndicator();
     }
 
     @Test
     public void testOnAddModuleSingleModule() {
-        when( organizationalUnit.getDefaultGroupId() ).thenReturn( "TestUnitByDefGroupId" );
-        when( workbenchContext.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
-        when( workbenchContext.getActiveRepository() ).thenReturn( repository );
-        when( workbenchContext.getActiveProject() ).thenReturn( project );
+        when(organizationalUnit.getDefaultGroupId()).thenReturn("TestUnitByDefGroupId");
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(organizationalUnit);
+        when(workbenchContext.getActiveRepository()).thenReturn(repository);
+        when(workbenchContext.getActiveProject()).thenReturn(project);
 
         final RepositoryStructureModel model = new RepositoryStructureModel();
-        model.setManaged( true );
-        model.setOrphanProjects( new ArrayList<Project>() {{
-            add( project );
-        }} );
-        model.setOrphanProjectsPOM( new HashMap<String, POM>() {
+        model.setManaged(true);
+        model.setOrphanProjects(new ArrayList<Project>() {{
+            add(project);
+        }});
+        model.setOrphanProjectsPOM(new HashMap<String, POM>() {
             {
-                put( project.getIdentifier(), new POM( new GAV( "groupId",
-                                                                 "artifactId",
-                                                                 "version" ) ) );
+                put(project.getIdentifier(),
+                    new POM(new GAV("groupId",
+                                    "artifactId",
+                                    "version")));
             }
-        } );
-        when( repositoryStructureService.load( eq( repository ),
-                                               anyString() ) ).thenReturn( model );
+        });
+        when(repositoryStructureService.load(eq(repository),
+                                             anyString())).thenReturn(model);
 
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
         presenter.onAddModule();
 
-        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-        verify( wizard,
-                times( 1 ) ).initialise( pomArgumentCaptor.capture() );
-        verify( wizard,
-                times( 1 ) ).start( Matchers.<Callback<Project>>any(),
-                eq( false ) );
+        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+        verify(wizard,
+               times(1)).initialise(pomArgumentCaptor.capture());
+        verify(wizard,
+               times(1)).start(Matchers.<Callback<Project>>any(),
+                               eq(false));
 
         final POM pom = pomArgumentCaptor.getValue();
-        assertNotNull( pom );
-        assertNotNull( pom.getGav() );
+        assertNotNull(pom);
+        assertNotNull(pom.getGav());
         //The organizational unit name should have been suggested as groupId by default.
-        assertEquals( "TestUnitByDefGroupId", pom.getGav().getGroupId() );
-        assertNull( pom.getGav().getArtifactId() );
-        assertNull( pom.getGav().getVersion() );
+        assertEquals("TestUnitByDefGroupId",
+                     pom.getGav().getGroupId());
+        assertNull(pom.getGav().getArtifactId());
+        assertNull(pom.getGav().getVersion());
     }
 
     @Test
     public void testOnAddModuleMultiModule() {
-        when( workbenchContext.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
-        when( workbenchContext.getActiveRepository() ).thenReturn( repository );
-        when( workbenchContext.getActiveProject() ).thenReturn( project );
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(organizationalUnit);
+        when(workbenchContext.getActiveRepository()).thenReturn(repository);
+        when(workbenchContext.getActiveProject()).thenReturn(project);
 
         final RepositoryStructureModel model = new RepositoryStructureModel();
-        final POM pom = new POM( new GAV( "groupId",
-                                          "artifactId",
-                                          "version" ) );
-        model.setManaged( true );
-        model.setPOM( pom );
-        when( repositoryStructureService.load( eq( repository ),
-                                               anyString() ) ).thenReturn( model );
+        final POM pom = new POM(new GAV("groupId",
+                                        "artifactId",
+                                        "version"));
+        model.setManaged(true);
+        model.setPOM(pom);
+        when(repositoryStructureService.load(eq(repository),
+                                             anyString())).thenReturn(model);
 
-        when( view.getDataPresenterGav() ).thenReturn( new GAV( "groupId", "artifactId", "version" ) );
+        when(view.getDataPresenterGav()).thenReturn(new GAV("groupId",
+                                                            "artifactId",
+                                                            "version"));
 
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
         presenter.onAddModule();
 
-        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-        verify( wizard,
-                times( 1 ) ).initialise( pomArgumentCaptor.capture() );
-        verify( wizard,
-                times( 1 ) ).start( Matchers.<Callback<Project>>any(),
-                                    eq( false ) );
+        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+        verify(wizard,
+               times(1)).initialise(pomArgumentCaptor.capture());
+        verify(wizard,
+               times(1)).start(Matchers.<Callback<Project>>any(),
+                               eq(false));
 
         final POM wizardPom = pomArgumentCaptor.getValue();
-        assertNotNull( wizardPom );
+        assertNotNull(wizardPom);
 
         final GAV moduleGAV = wizardPom.getGav();
-        assertNotNull( moduleGAV );
-        assertEquals( "groupId",
-                      moduleGAV.getGroupId() );
-        assertNull( moduleGAV.getArtifactId() );
-        assertEquals( "version",
-                      moduleGAV.getVersion() );
+        assertNotNull(moduleGAV);
+        assertEquals("groupId",
+                     moduleGAV.getGroupId());
+        assertNull(moduleGAV.getArtifactId());
+        assertEquals("version",
+                     moduleGAV.getVersion());
 
         final GAV parentGav = wizardPom.getParent();
-        assertNotNull( parentGav );
-        assertEquals( "groupId",
-                      parentGav.getGroupId() );
-        assertEquals( "artifactId",
-                      parentGav.getArtifactId() );
-        assertEquals( "version",
-                      parentGav.getVersion() );
+        assertNotNull(parentGav);
+        assertEquals("groupId",
+                     parentGav.getGroupId());
+        assertEquals("artifactId",
+                     parentGav.getArtifactId());
+        assertEquals("version",
+                     parentGav.getVersion());
     }
-
 }

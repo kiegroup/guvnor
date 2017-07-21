@@ -20,16 +20,16 @@ import java.util.Map;
 
 public interface FieldDataProvider {
 
-    public void setFactTYpe( String factType );
+    public void setFactTYpe(String factType);
 
-    public void setFieldName( String fieldName );
+    public void setFieldName(String fieldName);
 
     public String[] getArgumentKeys();
 
-    public Object getArgumentValue( String key );
+    public Object getArgumentValue(String key);
 
-    public void setArgumentValue( String key,
-                                  Object value );
+    public void setArgumentValue(String key,
+                                 Object value);
 
     public Map<Object, String> getData();
 

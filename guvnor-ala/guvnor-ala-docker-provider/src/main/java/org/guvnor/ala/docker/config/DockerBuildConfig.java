@@ -44,7 +44,6 @@ public interface DockerBuildConfig extends BuildConfig {
      *  ${input.docker-push} from the Pipeline's Input map
      */
     default boolean push() {
-        return Boolean.parseBoolean( "${input.docker-push}" );
+        return Boolean.parseBoolean("${input.docker-push}");
     }
-
 }

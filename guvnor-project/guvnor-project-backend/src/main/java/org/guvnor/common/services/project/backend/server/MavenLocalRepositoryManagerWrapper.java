@@ -38,72 +38,71 @@ public class MavenLocalRepositoryManagerWrapper implements LocalRepositoryManage
     private final String tempLocalRepositoryBaseDir;
     private final LocalRepositoryManager delegate;
 
-    public MavenLocalRepositoryManagerWrapper( final String tempLocalRepositoryBaseDir,
-                                               final LocalRepositoryManager delegate ) {
-        this.tempLocalRepositoryBaseDir = PortablePreconditions.checkNotNull( "tempLocalRepositoryBaseDir",
-                                                                              tempLocalRepositoryBaseDir );
-        this.delegate = PortablePreconditions.checkNotNull( "delegate",
-                                                            delegate );
+    public MavenLocalRepositoryManagerWrapper(final String tempLocalRepositoryBaseDir,
+                                              final LocalRepositoryManager delegate) {
+        this.tempLocalRepositoryBaseDir = PortablePreconditions.checkNotNull("tempLocalRepositoryBaseDir",
+                                                                             tempLocalRepositoryBaseDir);
+        this.delegate = PortablePreconditions.checkNotNull("delegate",
+                                                           delegate);
     }
 
     @Override
     public LocalRepository getRepository() {
-        return new LocalRepository( tempLocalRepositoryBaseDir );
+        return new LocalRepository(tempLocalRepositoryBaseDir);
     }
 
     @Override
-    public String getPathForLocalArtifact( final Artifact artifact ) {
-        return delegate.getPathForLocalArtifact( artifact );
+    public String getPathForLocalArtifact(final Artifact artifact) {
+        return delegate.getPathForLocalArtifact(artifact);
     }
 
     @Override
-    public String getPathForRemoteArtifact( final Artifact artifact,
-                                            final RemoteRepository repository,
-                                            final String context ) {
-        return delegate.getPathForRemoteArtifact( artifact,
-                                                  repository,
-                                                  context );
+    public String getPathForRemoteArtifact(final Artifact artifact,
+                                           final RemoteRepository repository,
+                                           final String context) {
+        return delegate.getPathForRemoteArtifact(artifact,
+                                                 repository,
+                                                 context);
     }
 
     @Override
-    public String getPathForLocalMetadata( final Metadata metadata ) {
-        return delegate.getPathForLocalMetadata( metadata );
+    public String getPathForLocalMetadata(final Metadata metadata) {
+        return delegate.getPathForLocalMetadata(metadata);
     }
 
     @Override
-    public String getPathForRemoteMetadata( final Metadata metadata,
-                                            final RemoteRepository repository,
-                                            final String context ) {
-        return delegate.getPathForRemoteMetadata( metadata,
-                                                  repository,
-                                                  context );
+    public String getPathForRemoteMetadata(final Metadata metadata,
+                                           final RemoteRepository repository,
+                                           final String context) {
+        return delegate.getPathForRemoteMetadata(metadata,
+                                                 repository,
+                                                 context);
     }
 
     @Override
-    public LocalArtifactResult find( final RepositorySystemSession session,
-                                     final LocalArtifactRequest request ) {
-        return new LocalArtifactResult( request );
+    public LocalArtifactResult find(final RepositorySystemSession session,
+                                    final LocalArtifactRequest request) {
+        return new LocalArtifactResult(request);
     }
 
     @Override
-    public void add( final RepositorySystemSession session,
-                     final LocalArtifactRegistration request ) {
-        delegate.add( session,
-                      request );
+    public void add(final RepositorySystemSession session,
+                    final LocalArtifactRegistration request) {
+        delegate.add(session,
+                     request);
     }
 
     @Override
-    public LocalMetadataResult find( final RepositorySystemSession session,
-                                     final LocalMetadataRequest request ) {
-        return delegate.find( session,
-                              request );
+    public LocalMetadataResult find(final RepositorySystemSession session,
+                                    final LocalMetadataRequest request) {
+        return delegate.find(session,
+                             request);
     }
 
     @Override
-    public void add( final RepositorySystemSession session,
-                     final LocalMetadataRegistration request ) {
-        delegate.add( session,
-                      request );
+    public void add(final RepositorySystemSession session,
+                    final LocalMetadataRegistration request) {
+        delegate.add(session,
+                     request);
     }
-
 }

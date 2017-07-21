@@ -25,7 +25,7 @@ import javax.ws.rs.core.Application;
  * java -jar guvnor-ala-distribution-swarm.jar
  * After that you can interact with the services at: http://<host>:<port>/api
  */
-@ApplicationPath( "/api" )
+@ApplicationPath("/api")
 public class App extends Application {
 
 }

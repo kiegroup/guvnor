@@ -26,7 +26,7 @@ public interface NavigatorResources
         extends
         ClientBundle {
 
-    NavigatorResources INSTANCE = GWT.create( NavigatorResources.class );
+    NavigatorResources INSTANCE = GWT.create(NavigatorResources.class);
 
     @Source("css/Navigator.css")
     NavigatorStyle css();

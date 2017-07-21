@@ -48,7 +48,7 @@ public class CreateRepositoryWizardModel {
         return manged;
     }
 
-    public void setManged( boolean manged ) {
+    public void setManged(boolean manged) {
         this.manged = manged;
     }
 
@@ -56,7 +56,7 @@ public class CreateRepositoryWizardModel {
         return repositoryName;
     }
 
-    public void setRepositoryName( String repositoryName ) {
+    public void setRepositoryName(String repositoryName) {
         this.repositoryName = repositoryName;
     }
 
@@ -64,7 +64,7 @@ public class CreateRepositoryWizardModel {
         return organizationalUnit;
     }
 
-    public void setOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
+    public void setOrganizationalUnit(OrganizationalUnit organizationalUnit) {
         this.organizationalUnit = organizationalUnit;
     }
 
@@ -72,7 +72,7 @@ public class CreateRepositoryWizardModel {
         return projectName;
     }
 
-    public void setProjectName( String projectName ) {
+    public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
 
@@ -80,7 +80,7 @@ public class CreateRepositoryWizardModel {
         return projectDescription;
     }
 
-    public void setProjectDescription( String projectDescription ) {
+    public void setProjectDescription(String projectDescription) {
         this.projectDescription = projectDescription;
     }
 
@@ -88,7 +88,7 @@ public class CreateRepositoryWizardModel {
         return groupId;
     }
 
-    public void setGroupId( String groupId ) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
@@ -96,7 +96,7 @@ public class CreateRepositoryWizardModel {
         return artifactId;
     }
 
-    public void setArtifactId( String artifactId ) {
+    public void setArtifactId(String artifactId) {
         this.artifactId = artifactId;
     }
 
@@ -104,7 +104,7 @@ public class CreateRepositoryWizardModel {
         return version;
     }
 
-    public void setVersion( String version ) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -112,7 +112,7 @@ public class CreateRepositoryWizardModel {
         return multiModule;
     }
 
-    public void setMultiModule( boolean multiModule ) {
+    public void setMultiModule(boolean multiModule) {
         this.multiModule = multiModule;
     }
 
@@ -120,7 +120,7 @@ public class CreateRepositoryWizardModel {
         return configureRepository;
     }
 
-    public void setConfigureRepository( boolean configureRepository ) {
+    public void setConfigureRepository(boolean configureRepository) {
         this.configureRepository = configureRepository;
     }
 
@@ -128,7 +128,7 @@ public class CreateRepositoryWizardModel {
         return mandatoryOU;
     }
 
-    public void setMandatoryOU( boolean mandatoryOU ) {
+    public void setMandatoryOU(boolean mandatoryOU) {
         this.mandatoryOU = mandatoryOU;
     }
 }

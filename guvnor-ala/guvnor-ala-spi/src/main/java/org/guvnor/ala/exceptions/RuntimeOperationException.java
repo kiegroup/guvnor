@@ -17,17 +17,18 @@
 package org.guvnor.ala.exceptions;
 
 /**
- * RuntimeOperationException to be used in different RUntimeManager 
+ * RuntimeOperationException to be used in different RUntimeManager
  * implementations.
  */
 public class RuntimeOperationException extends RuntimeException {
 
-    public RuntimeOperationException( String message ) {
-        super( message );
+    public RuntimeOperationException(String message) {
+        super(message);
     }
 
-    public RuntimeOperationException( String message, Throwable cause ) {
-        super( message, cause );
+    public RuntimeOperationException(String message,
+                                     Throwable cause) {
+        super(message,
+              cause);
     }
-
 }

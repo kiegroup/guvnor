@@ -30,23 +30,22 @@ public interface ExtendedM2RepoService extends M2RepoService {
      * @param is InputStream holding JAR
      * @param gav GAV representing the JAR
      */
-    void deployJar( InputStream is,
-                    GAV gav );
+    void deployJar(InputStream is,
+                   GAV gav);
 
     /**
      * Convenience method for unit tests - to avoid deploying to additional (possibly external) repositories
      * @param is InputStream holding JAR
      * @param gav GAV representing the JAR
      */
-    void deployJarInternal( InputStream is,
-                            GAV gav );
+    void deployJarInternal(InputStream is,
+                           GAV gav);
 
     /**
      * Deploy POM to local Maven Repository and Workbench's remote Maven Repository.
      * @param is InputStream holding POM
      * @param gav GAV representing the POM
      */
-    void deployPom( InputStream is,
-                    GAV gav );
-
+    void deployPom(InputStream is,
+                   GAV gav);
 }

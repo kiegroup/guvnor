@@ -29,16 +29,15 @@ public class PackageAlreadyExistsException extends FileSystemException {
         super();
     }
 
-    public PackageAlreadyExistsException( String file ) {
-        super( file );
+    public PackageAlreadyExistsException(String file) {
+        super(file);
     }
 
-    public PackageAlreadyExistsException( String file,
-                                          String other,
-                                          String reason ) {
-        super( file,
-               other,
-               reason );
+    public PackageAlreadyExistsException(String file,
+                                         String other,
+                                         String reason) {
+        super(file,
+              other,
+              reason);
     }
-
 }

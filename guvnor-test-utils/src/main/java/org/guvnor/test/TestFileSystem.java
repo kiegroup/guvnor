@@ -25,7 +25,7 @@ import org.uberfire.backend.vfs.Path;
 public class TestFileSystem
         extends CDITestSetup {
 
-    private final TempFiles                tempFiles;
+    private final TempFiles tempFiles;
     private final HashMap<Path, File> pathToFile = new HashMap<Path, File>();
 
     public TestFileSystem() throws Exception {
@@ -35,32 +35,32 @@ public class TestFileSystem
         setUp();
     }
 
-    public Path createTempFile( final String fullFileName ) throws IOException {
-        final File file = tempFiles.createTempFile( fullFileName );
-        final Path path = paths.convert( fileSystemProvider.getPath( file.toURI() ) );
+    public Path createTempFile(final String fullFileName) throws IOException {
+        final File file = tempFiles.createTempFile(fullFileName);
+        final Path path = paths.convert(fileSystemProvider.getPath(file.toURI()));
 
-        pathToFile.put( path,
-                        file );
-
-        return path;
-    }
-
-    public Path createTempDirectory( final String fullDirectoryName ) throws IOException {
-        final File file = tempFiles.createTempDirectory( fullDirectoryName );
-        final Path path = paths.convert( fileSystemProvider.getPath( file.toURI() ) );
-
-        pathToFile.put( path,
-                        file );
+        pathToFile.put(path,
+                       file);
 
         return path;
     }
 
-    public void deleteFile( final Path path ) {
-        getFile( path ).delete();
+    public Path createTempDirectory(final String fullDirectoryName) throws IOException {
+        final File file = tempFiles.createTempDirectory(fullDirectoryName);
+        final Path path = paths.convert(fileSystemProvider.getPath(file.toURI()));
+
+        pathToFile.put(path,
+                       file);
+
+        return path;
     }
 
-    public File getFile( final Path path ) {
-        return pathToFile.get( path );
+    public void deleteFile(final Path path) {
+        getFile(path).delete();
+    }
+
+    public File getFile(final Path path) {
+        return pathToFile.get(path);
     }
 
     public void tearDown() {

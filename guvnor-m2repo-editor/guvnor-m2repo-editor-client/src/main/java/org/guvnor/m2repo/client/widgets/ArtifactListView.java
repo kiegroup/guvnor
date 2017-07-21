@@ -24,29 +24,29 @@ import org.uberfire.client.mvp.UberView;
 
 public interface ArtifactListView extends UberView<ArtifactListPresenter> {
 
-    void setContentHeight( String s );
+    void setContentHeight(String s);
 
-    void setup( final ColumnType... columns );
+    void setup(final ColumnType... columns);
 
-    void addColumn( final Column<JarListPageRow, ?> column,
-                    final String caption );
+    void addColumn(final Column<JarListPageRow, ?> column,
+                   final String caption);
 
-    void addColumn( final Column<JarListPageRow, ?> column,
-                    final String caption,
-                    final boolean visible );
+    void addColumn(final Column<JarListPageRow, ?> column,
+                   final String caption,
+                   final boolean visible);
 
-    void addColumn( final Column<JarListPageRow, ?> column,
-                    final String caption,
-                    final double width,
-                    final Style.Unit unit );
+    void addColumn(final Column<JarListPageRow, ?> column,
+                   final String caption,
+                   final double width,
+                   final Style.Unit unit);
 
-    void addColumn( final Column<JarListPageRow, ?> column,
-                    final String caption,
-                    final boolean visible,
-                    final double width,
-                    final Style.Unit unit );
+    void addColumn(final Column<JarListPageRow, ?> column,
+                   final String caption,
+                   final boolean visible,
+                   final double width,
+                   final Style.Unit unit);
 
-    void showPom( String pomText );
+    void showPom(String pomText);
 
     HasData<JarListPageRow> getDisplay();
 

@@ -20,17 +20,16 @@ import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import org.guvnor.common.services.project.events.NewProjectEvent;
-import org.guvnor.common.services.project.social.ProjectEventType;
-import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.ext.uberfire.social.activities.model.SocialEventType;
 import org.ext.uberfire.social.activities.repository.SocialUserRepository;
 import org.ext.uberfire.social.activities.service.SocialAdapter;
 import org.ext.uberfire.social.activities.service.SocialCommandTypeFilter;
+import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.social.ProjectEventType;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -39,7 +38,7 @@ import org.uberfire.backend.vfs.Path;
 @ApplicationScoped
 public class NewProjectEventAdapter implements SocialAdapter<NewProjectEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger( NewProjectEventAdapter.class );
+    private static final Logger logger = LoggerFactory.getLogger(NewProjectEventAdapter.class);
 
     @Inject
     private SocialUserRepository socialUserRepository;
@@ -58,46 +57,49 @@ public class NewProjectEventAdapter implements SocialAdapter<NewProjectEvent> {
     }
 
     @Override
-    public boolean shouldInterceptThisEvent( Object event ) {
-        return event.getClass().getSimpleName().equals( eventToIntercept().getSimpleName() );
+    public boolean shouldInterceptThisEvent(Object event) {
+        return event.getClass().getSimpleName().equals(eventToIntercept().getSimpleName());
     }
 
     @Override
-    public SocialActivitiesEvent toSocial( Object object ) {
+    public SocialActivitiesEvent toSocial(Object object) {
 
         SocialActivitiesEvent socialActivitiesEvent;
-        NewProjectEvent event = ( NewProjectEvent ) object;
+        NewProjectEvent event = (NewProjectEvent) object;
 
         Path repositoryRootPath = event.getProject().getRootPath();
         Repository repository = null;
         String repositoryAlias = null;
 
         try {
-            repositoryRootPath = Paths.convert( Paths.convert( repositoryRootPath ).getRoot() );
-            repository = repositoryService.getRepository( repositoryRootPath );
+            repositoryRootPath = Paths.convert(Paths.convert(repositoryRootPath).getRoot());
+            repository = repositoryService.getRepository(repositoryRootPath);
             repositoryAlias = repository.getAlias();
-        } catch ( Exception e ) {
-            logger.error( "It was not possible to establish the repository for project root path: " + event.getProject().getRootPath(), e );
-            logger.error( "Social event won't be fired for this project." );
+        } catch (Exception e) {
+            logger.error("It was not possible to establish the repository for project root path: " + event.getProject().getRootPath(),
+                         e);
+            logger.error("Social event won't be fired for this project.");
         }
 
         socialActivitiesEvent = new SocialActivitiesEvent(
-                socialUserRepository.findSocialUser( event.getIdentity() ),
+                socialUserRepository.findSocialUser(event.getIdentity()),
                 socialEventType().name(),
                 new Date()
         )
-        .withDescription( event.getProject().getProjectName() );
+                .withDescription(event.getProject().getProjectName());
 
-        if ( repositoryAlias != null ) {
-            socialActivitiesEvent.withLink( event.getProject().getProjectName(), event.getProject().getRootPath().toURI(), SocialActivitiesEvent.LINK_TYPE.CUSTOM )
-            .withParam( "repositoryAlias", repository.getAlias() )
-            .withParam( "currentBranch", "get the branch form the link");
-
+        if (repositoryAlias != null) {
+            socialActivitiesEvent.withLink(event.getProject().getProjectName(),
+                                           event.getProject().getRootPath().toURI(),
+                                           SocialActivitiesEvent.LINK_TYPE.CUSTOM)
+                    .withParam("repositoryAlias",
+                               repository.getAlias())
+                    .withParam("currentBranch",
+                               "get the branch form the link");
         }
-        socialActivitiesEvent.withAdicionalInfo( getAdditionalInfo( event ) );
+        socialActivitiesEvent.withAdicionalInfo(getAdditionalInfo(event));
 
         return socialActivitiesEvent;
-
     }
 
     @Override
@@ -110,8 +112,7 @@ public class NewProjectEventAdapter implements SocialAdapter<NewProjectEvent> {
         return new ArrayList<String>();
     }
 
-    private String getAdditionalInfo( NewProjectEvent event ) {
+    private String getAdditionalInfo(NewProjectEvent event) {
         return "added";
     }
-
 }

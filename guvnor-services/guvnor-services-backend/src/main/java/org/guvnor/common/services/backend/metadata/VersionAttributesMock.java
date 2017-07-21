@@ -32,81 +32,101 @@ public class VersionAttributesMock implements VersionAttributes {
         this.versionRecords = versionRecords;
     }
 
-    @Override public FileTime lastModifiedTime() {
+    @Override
+    public FileTime lastModifiedTime() {
         return new FileTime() {
-            @Override public long to(TimeUnit unit) {
+            @Override
+            public long to(TimeUnit unit) {
                 return 0;
             }
 
-            @Override public long toMillis() {
+            @Override
+            public long toMillis() {
                 return 0;
             }
 
-            @Override public int compareTo(FileTime fileTime) {
+            @Override
+            public int compareTo(FileTime fileTime) {
                 return 0;
             }
         };
     }
 
-    @Override public FileTime lastAccessTime() {
+    @Override
+    public FileTime lastAccessTime() {
         return new FileTime() {
-            @Override public long to(TimeUnit unit) {
+            @Override
+            public long to(TimeUnit unit) {
                 return 0;
             }
 
-            @Override public long toMillis() {
+            @Override
+            public long toMillis() {
                 return 0;
             }
 
-            @Override public int compareTo(FileTime fileTime) {
+            @Override
+            public int compareTo(FileTime fileTime) {
                 return 0;
             }
         };
     }
 
-    @Override public FileTime creationTime() {
+    @Override
+    public FileTime creationTime() {
         return new FileTime() {
-            @Override public long to(TimeUnit unit) {
+            @Override
+            public long to(TimeUnit unit) {
                 return 0;
             }
 
-            @Override public long toMillis() {
+            @Override
+            public long toMillis() {
                 return 0;
             }
 
-            @Override public int compareTo(FileTime fileTime) {
+            @Override
+            public int compareTo(FileTime fileTime) {
                 return 0;
             }
         };
     }
 
-    @Override public boolean isRegularFile() {
+    @Override
+    public boolean isRegularFile() {
         return false;
     }
 
-    @Override public boolean isDirectory() {
+    @Override
+    public boolean isDirectory() {
         return false;
     }
 
-    @Override public boolean isSymbolicLink() {
+    @Override
+    public boolean isSymbolicLink() {
         return false;
     }
 
-    @Override public boolean isOther() {
+    @Override
+    public boolean isOther() {
         return false;
     }
 
-    @Override public long size() {
+    @Override
+    public long size() {
         return 0;
     }
 
-    @Override public Object fileKey() {
+    @Override
+    public Object fileKey() {
         return null;
     }
 
-    @Override public VersionHistory history() {
+    @Override
+    public VersionHistory history() {
         return new VersionHistory() {
-            @Override public List<VersionRecord> records() {
+            @Override
+            public List<VersionRecord> records() {
                 return versionRecords;
             }
         };

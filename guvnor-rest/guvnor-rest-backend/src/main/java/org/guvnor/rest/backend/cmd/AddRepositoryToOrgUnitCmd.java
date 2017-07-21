@@ -27,9 +27,11 @@ import org.guvnor.rest.client.JobStatus;
 public class AddRepositoryToOrgUnitCmd extends AbstractJobCommand {
 
     public AddRepositoryToOrgUnitCmd(final JobRequestHelper jobRequestHelper,
-                                      final JobResultManager jobResultManager,
-                                      final Map<String, Object> context) {
-        super(jobRequestHelper, jobResultManager, context);
+                                     final JobResultManager jobResultManager,
+                                     final Map<String, Object> context) {
+        super(jobRequestHelper,
+              jobResultManager,
+              context);
     }
 
     @Override
@@ -38,12 +40,16 @@ public class AddRepositoryToOrgUnitCmd extends AbstractJobCommand {
         AddRepositoryToOrganizationalUnitRequest jobRequest = (AddRepositoryToOrganizationalUnitRequest) request;
 
         JobResult result = null;
-        try { 
-            result = helper.addRepositoryToOrganizationalUnit( jobRequest.getJobId(), jobRequest.getOrganizationalUnitName(), jobRequest.getRepositoryName() );
-        } finally { 
+        try {
+            result = helper.addRepositoryToOrganizationalUnit(jobRequest.getJobId(),
+                                                              jobRequest.getOrganizationalUnitName(),
+                                                              jobRequest.getRepositoryName());
+        } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug( "-----addRepositoryToOrganizationalUnit--- , OrganizationalUnit name: {}, repository name: {} [{}]", 
-                    jobRequest.getOrganizationalUnitName(), jobRequest.getRepositoryName(), status );
+            logger.debug("-----addRepositoryToOrganizationalUnit--- , OrganizationalUnit name: {}, repository name: {} [{}]",
+                         jobRequest.getOrganizationalUnitName(),
+                         jobRequest.getRepositoryName(),
+                         status);
         }
         return result;
     }

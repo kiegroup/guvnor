@@ -20,7 +20,7 @@ import org.guvnor.structure.server.config.ConfigGroup;
 
 public interface RepositoryFactoryHelper {
 
-    boolean accept( ConfigGroup repoConfig );
+    boolean accept(ConfigGroup repoConfig);
 
-    Repository newRepository( ConfigGroup repoConfig );
+    Repository newRepository(ConfigGroup repoConfig);
 }

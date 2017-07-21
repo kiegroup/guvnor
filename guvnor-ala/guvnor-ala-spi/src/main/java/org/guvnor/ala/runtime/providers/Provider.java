@@ -18,8 +18,8 @@ package org.guvnor.ala.runtime.providers;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.guvnor.ala.config.ProviderConfig;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.*;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 
 /**
  * A provider represent a running entity that allows us to provision new
@@ -35,5 +35,4 @@ public interface Provider extends ProviderId {
      * @see ProviderConfig
     */
     ProviderConfig getConfig();
-
 }

@@ -28,13 +28,13 @@ public class DefaultWorkbenchPreferenceScopeResolutionStrategies implements Work
     public DefaultWorkbenchPreferenceScopeResolutionStrategies() {
     }
 
-    public DefaultWorkbenchPreferenceScopeResolutionStrategies( final PreferenceScopeResolutionStrategy preferenceScopeResolutionStrategy ) {
+    public DefaultWorkbenchPreferenceScopeResolutionStrategies(final PreferenceScopeResolutionStrategy preferenceScopeResolutionStrategy) {
         this.preferenceScopeResolutionStrategy = preferenceScopeResolutionStrategy;
     }
 
     @Override
-    public PreferenceScopeResolutionStrategyInfo getUserInfoFor( final String scopeType,
-                                                                 final String scopeKey ) {
+    public PreferenceScopeResolutionStrategyInfo getUserInfoFor(final String scopeType,
+                                                                final String scopeKey) {
         return preferenceScopeResolutionStrategy.getInfo();
     }
 }

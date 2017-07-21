@@ -30,7 +30,8 @@ public class OrganizationalUnitEventBase {
     public OrganizationalUnitEventBase() {
     }
 
-    public OrganizationalUnitEventBase( final OrganizationalUnit organizationalUnit, final String userName ) {
+    public OrganizationalUnitEventBase(final OrganizationalUnit organizationalUnit,
+                                       final String userName) {
         this.organizationalUnit = organizationalUnit;
         this.userName = userName;
     }
@@ -39,7 +40,7 @@ public class OrganizationalUnitEventBase {
         return organizationalUnit;
     }
 
-    public void setOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
+    public void setOrganizationalUnit(OrganizationalUnit organizationalUnit) {
         this.organizationalUnit = organizationalUnit;
     }
 
@@ -50,5 +51,4 @@ public class OrganizationalUnitEventBase {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
 }

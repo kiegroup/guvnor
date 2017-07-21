@@ -37,7 +37,7 @@ public class GAVEditorViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    private static Binder uiBinder = GWT.create(Binder.class);
 
     @UiField
     FormGroup groupIdGroup;
@@ -69,121 +69,120 @@ public class GAVEditorViewImpl
     private Presenter presenter;
 
     public GAVEditorViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void setPresenter( final Presenter presenter ) {
+    public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setGroupId( final String id ) {
-        groupIdTextBox.setText( id );
+    public void setGroupId(final String id) {
+        groupIdTextBox.setText(id);
     }
 
     @Override
-    public void setArtifactId( final String id ) {
-        artifactIdTextBox.setText( id );
+    public void setArtifactId(final String id) {
+        artifactIdTextBox.setText(id);
     }
 
     @Override
-    public void setVersion( final String version ) {
-        versionTextBox.setText( version );
+    public void setVersion(final String version) {
+        versionTextBox.setText(version);
     }
 
     @Override
-    public void disableGroupID( final String reason ) {
-        groupIdTextBox.setEnabled( false );
-        groupIdTextBox.setTitle( reason );
+    public void disableGroupID(final String reason) {
+        groupIdTextBox.setEnabled(false);
+        groupIdTextBox.setTitle(reason);
     }
 
     @Override
-    public void disableArtifactID( final String reason ) {
-        artifactIdTextBox.setEnabled( false );
-        artifactIdTextBox.setTitle( reason );
+    public void disableArtifactID(final String reason) {
+        artifactIdTextBox.setEnabled(false);
+        artifactIdTextBox.setTitle(reason);
     }
 
     @Override
-    public void disableVersion( final String reason ) {
-        versionTextBox.setEnabled( false );
-        versionTextBox.setTitle( reason );
+    public void disableVersion(final String reason) {
+        versionTextBox.setEnabled(false);
+        versionTextBox.setTitle(reason);
     }
 
     @Override
     public void setReadOnly() {
-        groupIdTextBox.setReadOnly( true );
-        artifactIdTextBox.setReadOnly( true );
-        versionTextBox.setReadOnly( true );
+        groupIdTextBox.setReadOnly(true);
+        artifactIdTextBox.setReadOnly(true);
+        versionTextBox.setReadOnly(true);
     }
 
     @Override
     public void enableGroupID() {
-        groupIdTextBox.setEnabled( true );
-        groupIdTextBox.setTitle( "" );
+        groupIdTextBox.setEnabled(true);
+        groupIdTextBox.setTitle("");
     }
 
     @Override
     public void enableArtifactID() {
-        artifactIdTextBox.setEnabled( true );
-        artifactIdTextBox.setTitle( "" );
+        artifactIdTextBox.setEnabled(true);
+        artifactIdTextBox.setTitle("");
     }
 
     @Override
     public void enableVersion() {
-        versionTextBox.setEnabled( true );
-        versionTextBox.setTitle( "" );
+        versionTextBox.setEnabled(true);
+        versionTextBox.setTitle("");
     }
 
     @Override
-    public void setValidGroupID( final boolean isValid ) {
-        if ( isValid ) {
-            groupIdGroup.setValidationState( ValidationState.NONE );
-            groupIdHelpBlock.setText( "" );
+    public void setValidGroupID(final boolean isValid) {
+        if (isValid) {
+            groupIdGroup.setValidationState(ValidationState.NONE);
+            groupIdHelpBlock.setText("");
         } else {
-            groupIdGroup.setValidationState( ValidationState.ERROR );
-            groupIdHelpBlock.setText( ProjectResources.CONSTANTS.invalidGroupId() );
+            groupIdGroup.setValidationState(ValidationState.ERROR);
+            groupIdHelpBlock.setText(ProjectResources.CONSTANTS.invalidGroupId());
         }
     }
 
     @Override
-    public void setValidArtifactID( final boolean isValid ) {
-        if ( isValid ) {
-            artifactIdGroup.setValidationState( ValidationState.NONE );
-            artifactIdHelpBlock.setText( "" );
+    public void setValidArtifactID(final boolean isValid) {
+        if (isValid) {
+            artifactIdGroup.setValidationState(ValidationState.NONE);
+            artifactIdHelpBlock.setText("");
         } else {
-            artifactIdGroup.setValidationState( ValidationState.ERROR );
-            artifactIdHelpBlock.setText( ProjectResources.CONSTANTS.invalidArtifactId() );
+            artifactIdGroup.setValidationState(ValidationState.ERROR);
+            artifactIdHelpBlock.setText(ProjectResources.CONSTANTS.invalidArtifactId());
         }
     }
 
     @Override
-    public void setValidVersion( final boolean isValid ) {
-        if ( isValid ) {
-            versionGroup.setValidationState( ValidationState.NONE );
-            versionHelpBlock.setText( "" );
+    public void setValidVersion(final boolean isValid) {
+        if (isValid) {
+            versionGroup.setValidationState(ValidationState.NONE);
+            versionHelpBlock.setText("");
         } else {
-            versionGroup.setValidationState( ValidationState.ERROR );
-            versionHelpBlock.setText( ProjectResources.CONSTANTS.invalidVersion() );
+            versionGroup.setValidationState(ValidationState.ERROR);
+            versionHelpBlock.setText(ProjectResources.CONSTANTS.invalidVersion());
         }
     }
 
     @UiHandler("groupIdTextBox")
     //Use KeyUpEvent as ValueChangeEvent is only fired when the focus is lost
-    public void onGroupIdChange( final KeyUpEvent event ) {
-        presenter.onGroupIdChange( groupIdTextBox.getText() );
+    public void onGroupIdChange(final KeyUpEvent event) {
+        presenter.onGroupIdChange(groupIdTextBox.getText());
     }
 
     @UiHandler("artifactIdTextBox")
     //Use KeyUpEvent as ValueChangeEvent is only fired when the focus is lost
-    public void onArtifactIdChange( final KeyUpEvent event ) {
-        presenter.onArtifactIdChange( artifactIdTextBox.getText() );
+    public void onArtifactIdChange(final KeyUpEvent event) {
+        presenter.onArtifactIdChange(artifactIdTextBox.getText());
     }
 
     @UiHandler("versionTextBox")
     //Use KeyUpEvent as ValueChangeEvent is only fired when the focus is lost
-    public void onVersionChange( final KeyUpEvent event ) {
-        presenter.onVersionChange( versionTextBox.getText() );
+    public void onVersionChange(final KeyUpEvent event) {
+        presenter.onVersionChange(versionTextBox.getText());
     }
-
 }

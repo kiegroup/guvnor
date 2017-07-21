@@ -34,77 +34,71 @@ public interface BuildService {
      * Full build without deployment
      * @param project
      */
-    BuildResults build( final Project project );
+    BuildResults build(final Project project);
 
     /**
      * Full build with deployment
      * @param project
      */
-    BuildResults buildAndDeploy( final Project project );
+    BuildResults buildAndDeploy(final Project project);
 
     /**
      * Full build with forced deployment to Maven. Pre-existing artifacts with the same GAV will be overwritten.
-     * @param project
-     *         Project to be built
-     * @param mode
-     *         The deployment mode
+     * @param project Project to be built
+     * @param mode The deployment mode
      */
-    BuildResults buildAndDeploy( final Project project,
-                                 final DeploymentMode mode );
+    BuildResults buildAndDeploy(final Project project,
+                                final DeploymentMode mode);
 
     /**
      * Full build with deployment with ability to suppress any post operations handlers to ensure
      * that only build and deploy was invoked
      * @param project
      */
-    BuildResults buildAndDeploy( final Project project,
-                                 final boolean suppressHandlers );
+    BuildResults buildAndDeploy(final Project project,
+                                final boolean suppressHandlers);
 
     /**
      * Full build with forced deployment to Maven. Pre-existing artifacts with the same GAV will be overwritten. This
      * method has the ability to suppress any post operations handlers to ensure * that only build and deploy is invoked
-     * @param project
-     *         Project to be built
-     * @param suppressHandlers
-     *         true to ignore post-processing
-     * @param mode
-     *         The deployment mode
+     * @param project Project to be built
+     * @param suppressHandlers true to ignore post-processing
+     * @param mode The deployment mode
      */
-    BuildResults buildAndDeploy( final Project project,
-                                 final boolean suppressHandlers,
-                                 final DeploymentMode mode );
+    BuildResults buildAndDeploy(final Project project,
+                                final boolean suppressHandlers,
+                                final DeploymentMode mode);
 
     /**
      * Check whether a Project has been built
      * @param project
      * @return
      */
-    boolean isBuilt( final Project project );
+    boolean isBuilt(final Project project);
 
     /**
      * Add a Package resource to the build.
      * @param resource
      */
-    IncrementalBuildResults addPackageResource( final Path resource );
+    IncrementalBuildResults addPackageResource(final Path resource);
 
     /**
      * Remove a Package resource from the build.
      * @param resource
      */
-    IncrementalBuildResults deletePackageResource( final Path resource );
+    IncrementalBuildResults deletePackageResource(final Path resource);
 
     /**
      * Update an existing Package resource in the build.
      * @param resource
      */
-    IncrementalBuildResults updatePackageResource( final Path resource );
+    IncrementalBuildResults updatePackageResource(final Path resource);
 
     /**
      * Process a batch of changes to a Project's resources.
      * @param project
      * @param changes
      */
-    IncrementalBuildResults applyBatchResourceChanges( final Project project,
-                                                       final Map<Path, Collection<ResourceChange>> changes );
-
+    IncrementalBuildResults applyBatchResourceChanges(final Project project,
+                                                      final Map<Path, Collection<ResourceChange>> changes);
 }

@@ -86,7 +86,6 @@ public class RuntimeQueryResultItem {
      */
     private String runtimeEndpoint;
 
-
     public RuntimeQueryResultItem() {
     }
 

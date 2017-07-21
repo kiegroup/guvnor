@@ -39,9 +39,9 @@ public class WorkbenchPreferenceScopeResolutionStrategiesProducer {
 
     @Produces
     @Customizable
-    public WorkbenchPreferenceScopeResolutionStrategies workbenchPreferenceScopeResolutionStrategiesProducer( final InjectionPoint ip ) {
-        if ( this.workbenchPreferenceScopeResolutionStrategies.isUnsatisfied() ) {
-            return new DefaultWorkbenchPreferenceScopeResolutionStrategies( preferenceScopeResolutionStrategy );
+    public WorkbenchPreferenceScopeResolutionStrategies workbenchPreferenceScopeResolutionStrategiesProducer(final InjectionPoint ip) {
+        if (this.workbenchPreferenceScopeResolutionStrategies.isUnsatisfied()) {
+            return new DefaultWorkbenchPreferenceScopeResolutionStrategies(preferenceScopeResolutionStrategy);
         }
 
         return this.workbenchPreferenceScopeResolutionStrategies.get();

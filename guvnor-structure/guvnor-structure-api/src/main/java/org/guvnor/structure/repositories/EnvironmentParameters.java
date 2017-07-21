@@ -34,5 +34,4 @@ public class EnvironmentParameters {
     public static final String PASSWORD = "crypt:password";
 
     public static final String INIT = "init";
-
 }

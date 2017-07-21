@@ -41,14 +41,14 @@ public class JarListPageRequest extends PageRequest {
     private String dataSourceName;
     private boolean isAscending;
 
-    public JarListPageRequest( @MapsTo("startRowIndex") final int startRowIndex,
-                               @MapsTo("pageSize") final Integer pageSize,
-                               @MapsTo("filters") final String filters,
-                               @MapsTo("fileFormats") final List<String> fileFormats,
-                               @MapsTo("dataSourceName") final String dataSourceName,
-                               @MapsTo("isAscending") final boolean isAscending ) {
-        super( startRowIndex,
-               pageSize );
+    public JarListPageRequest(@MapsTo("startRowIndex") final int startRowIndex,
+                              @MapsTo("pageSize") final Integer pageSize,
+                              @MapsTo("filters") final String filters,
+                              @MapsTo("fileFormats") final List<String> fileFormats,
+                              @MapsTo("dataSourceName") final String dataSourceName,
+                              @MapsTo("isAscending") final boolean isAscending) {
+        super(startRowIndex,
+              pageSize);
         this.filters = filters;
         this.fileFormats = fileFormats;
         this.dataSourceName = dataSourceName;

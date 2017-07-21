@@ -33,7 +33,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
-import static org.guvnor.structure.repositories.EnvironmentParameters.*;
+import static org.guvnor.structure.repositories.EnvironmentParameters.MANAGED;
 
 public class RepositoryStructureModelLoader {
 
@@ -49,119 +49,118 @@ public class RepositoryStructureModelLoader {
     @Inject
     private MetadataService metadataService;
 
-    public RepositoryStructureModel load( final Repository repository,
-                                          final String branch,
-                                          final boolean includeModules ) {
-        if ( repository == null ) {
+    public RepositoryStructureModel load(final Repository repository,
+                                         final String branch,
+                                         final boolean includeModules) {
+        if (repository == null) {
             return null;
         }
 
-        final Project project = projectService.resolveToParentProject( repository.getBranchRoot( branch ) );
+        final Project project = projectService.resolveToParentProject(repository.getBranchRoot(branch));
 
-        if ( project != null ) {
-            return getModel( repository,
-                             includeModules,
-                             project );
-
+        if (project != null) {
+            return getModel(repository,
+                            includeModules,
+                            project);
         } else {
-            return getModel( repository,
-                             branch );
+            return getModel(repository,
+                            branch);
         }
     }
 
-    private RepositoryStructureModel getModel( final Repository repository,
-                                               final String branch ) {
+    private RepositoryStructureModel getModel(final Repository repository,
+                                              final String branch) {
 
         final RepositoryStructureModel model = new RepositoryStructureModel();
 
         //if no parent pom.xml present we must check if there are orphan projects for this repository.
-        final Set<Project> repositoryProjects = projectService.getProjects( repository,
-                                                                            branch );
+        final Set<Project> repositoryProjects = projectService.getProjects(repository,
+                                                                           branch);
 
-        switch ( getManagedStatus( repository ) ) {
+        switch (getManagedStatus(repository)) {
             case MANAGED:
-                model.setManaged( true );
+                model.setManaged(true);
                 break;
             case UNMANAGED:
-                model.setManaged( false );
+                model.setManaged(false);
                 break;
             case UNKNOWN:
-                if ( repositoryProjects.isEmpty() ) {
+                if (repositoryProjects.isEmpty()) {
                     //there are no projects and the managed attribute is not set, means the repository was never initialized.
                     return null;
-                } else if ( repositoryProjects.size() > 1 ) {
+                } else if (repositoryProjects.size() > 1) {
                     //update managed status
-                    managedStatusUpdater.updateManagedStatus( repository,
-                                                              false );
+                    managedStatusUpdater.updateManagedStatus(repository,
+                                                             false);
                 } else {
                     break;
                 }
         }
 
-        model.setOrphanProjects( new ArrayList<>( repositoryProjects ) );
-        for ( Project orphanProject : repositoryProjects ) {
-            final POM pom = pomService.load( orphanProject.getPomXMLPath() );
-            model.getOrphanProjectsPOM().put( orphanProject.getIdentifier(),
-                                              pom );
+        model.setOrphanProjects(new ArrayList<>(repositoryProjects));
+        for (Project orphanProject : repositoryProjects) {
+            final POM pom = pomService.load(orphanProject.getPomXMLPath());
+            model.getOrphanProjectsPOM().put(orphanProject.getIdentifier(),
+                                             pom);
         }
 
         return model;
     }
 
-    private RepositoryStructureModel getModel( final Repository repository,
-                                               final boolean includeModules,
-                                               final Project project ) {
+    private RepositoryStructureModel getModel(final Repository repository,
+                                              final boolean includeModules,
+                                              final Project project) {
         final RepositoryStructureModel model = new RepositoryStructureModel();
 
-        switch ( getManagedStatus( repository ) ) {
+        switch (getManagedStatus(repository)) {
             case MANAGED:
-                model.setManaged( true );
+                model.setManaged(true);
                 break;
             case UNMANAGED:
-                model.setManaged( false );
+                model.setManaged(false);
                 break;
             case UNKNOWN:
                 break;
         }
 
-        if ( !model.isManaged() ) {
+        if (!model.isManaged()) {
             //uncommon case, the repository is managed. Update managed status.
-            managedStatusUpdater.updateManagedStatus( repository,
-                                                      true );
-            model.setManaged( true );
+            managedStatusUpdater.updateManagedStatus(repository,
+                                                     true);
+            model.setManaged(true);
         }
 
-        model.setPOM( pomService.load( project.getPomXMLPath() ) );
-        model.setPOMMetaData( metadataService.getMetadata( project.getPomXMLPath() ) );
-        model.setPathToPOM( project.getPomXMLPath() );
-        model.setModules( project.getModules() );
+        model.setPOM(pomService.load(project.getPomXMLPath()));
+        model.setPOMMetaData(metadataService.getMetadata(project.getPomXMLPath()));
+        model.setPathToPOM(project.getPomXMLPath());
+        model.setModules(project.getModules());
 
-        if ( includeModules && project.getModules() != null ) {
-            model.setModulesProject( getModuleProjects( project.getRootPath(),
-                                                        project.getModules() ) );
+        if (includeModules && project.getModules() != null) {
+            model.setModulesProject(getModuleProjects(project.getRootPath(),
+                                                      project.getModules()));
         }
 
         return model;
     }
 
-    private Map<String, Project> getModuleProjects( final Path projectRootPath,
-                                                    final Collection<String> moduleNames ) {
+    private Map<String, Project> getModuleProjects(final Path projectRootPath,
+                                                   final Collection<String> moduleNames) {
         final Map<String, Project> result = new HashMap<>();
 
-        final org.uberfire.java.nio.file.Path parentPath = Paths.convert( projectRootPath );
+        final org.uberfire.java.nio.file.Path parentPath = Paths.convert(projectRootPath);
 
-        for ( final String moduleName : moduleNames ) {
-            result.put( moduleName,
-                        projectService.resolveProject( Paths.convert( parentPath.resolve( moduleName ) ) ) );
+        for (final String moduleName : moduleNames) {
+            result.put(moduleName,
+                       projectService.resolveProject(Paths.convert(parentPath.resolve(moduleName))));
         }
 
         return result;
     }
 
-    private ManagedStatus getManagedStatus( final Repository repository ) {
-        if ( repository.getEnvironment() != null ) {
-            final Boolean managed = (Boolean) repository.getEnvironment().get( MANAGED );
-            if ( Boolean.TRUE.equals( managed ) ) {
+    private ManagedStatus getManagedStatus(final Repository repository) {
+        if (repository.getEnvironment() != null) {
+            final Boolean managed = (Boolean) repository.getEnvironment().get(MANAGED);
+            if (Boolean.TRUE.equals(managed)) {
                 return ManagedStatus.MANAGED;
             } else {
                 return ManagedStatus.UNMANAGED;
@@ -176,5 +175,4 @@ public class RepositoryStructureModelLoader {
         UNMANAGED,
         UNKNOWN
     }
-
 }

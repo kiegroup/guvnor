@@ -33,39 +33,42 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.commons.data.Pair.*;
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.commons.data.Pair.newPair;
+import static org.uberfire.commons.validation.Preconditions.checkCondition;
+import static org.uberfire.commons.validation.Preconditions.checkNotEmpty;
 
 public class OtherMetaView
         extends AbstractBasicFileAttributeView<AbstractPath>
         implements NeedsPreloadedAttrs {
 
     public static final String TAG = "othermeta.tag";
-    public static final String MODE     = "othermeta.mode";
+    public static final String MODE = "othermeta.mode";
 
     private static final Set<String> PROPERTIES = new HashSet<String>() {{
-        add( TAG );
-        add( MODE );
+        add(TAG);
+        add(MODE);
     }};
 
     private final OtherMetaAttributes attrs;
 
-    public OtherMetaView( final AbstractPath path ) {
-        super( path );
+    public OtherMetaView(final AbstractPath path) {
+        super(path);
         final Map<String, Object> content = path.getAttrStorage().getContent();
 
         final Map<Integer, String> _categories = new TreeMap<Integer, String>();
 
-        for ( final Map.Entry<String, Object> entry : content.entrySet() ) {
-            if ( entry.getKey().startsWith( TAG ) ) {
-                final Pair<Integer, Object> result = extractValue( entry );
-                _categories.put( result.getK1(), result.getK2().toString() );
-            } 
+        for (final Map.Entry<String, Object> entry : content.entrySet()) {
+            if (entry.getKey().startsWith(TAG)) {
+                final Pair<Integer, Object> result = extractValue(entry);
+                _categories.put(result.getK1(),
+                                result.getK2().toString());
+            }
         }
 
-        final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView( path, BasicFileAttributeView.class ).readAttributes();
+        final BasicFileAttributes fileAttrs = path.getFileSystem().provider().getFileAttributeView(path,
+                                                                                                   BasicFileAttributeView.class).readAttributes();
 
-        final List<String> categories = new ArrayList<String>( _categories.values() );
+        final List<String> categories = new ArrayList<String>(_categories.values());
 
         this.attrs = new OtherMetaAttributes() {
 
@@ -121,14 +124,17 @@ public class OtherMetaView
         };
     }
 
-    private Pair<Integer, Object> extractValue( final Map.Entry<String, Object> entry ) {
-        int start = entry.getKey().indexOf( '[' );
-        if ( start < 0 ) {
-            return newPair( 0, entry.getValue() );
+    private Pair<Integer, Object> extractValue(final Map.Entry<String, Object> entry) {
+        int start = entry.getKey().indexOf('[');
+        if (start < 0) {
+            return newPair(0,
+                           entry.getValue());
         }
-        int end = entry.getKey().indexOf( ']' );
+        int end = entry.getKey().indexOf(']');
 
-        return newPair( Integer.valueOf( entry.getKey().substring( start + 1, end ) ), entry.getValue() );
+        return newPair(Integer.valueOf(entry.getKey().substring(start + 1,
+                                                                end)),
+                       entry.getValue());
     }
 
     @Override
@@ -142,22 +148,24 @@ public class OtherMetaView
     }
 
     @Override
-    public Map<String, Object> readAttributes( final String... attributes ) {
-        return OtherMetaAttributesUtil.toMap( readAttributes(), attributes );
+    public Map<String, Object> readAttributes(final String... attributes) {
+        return OtherMetaAttributesUtil.toMap(readAttributes(),
+                                             attributes);
     }
 
     @Override
     public Class<? extends BasicFileAttributeView>[] viewTypes() {
-        return new Class[]{ OtherMetaView.class };
+        return new Class[]{OtherMetaView.class};
     }
 
     @Override
-    public void setAttribute( final String attribute,
-                              final Object value ) throws IOException {
-        checkNotEmpty( "attribute", attribute );
-        checkCondition( "invalid attribute", PROPERTIES.contains( attribute ) );
+    public void setAttribute(final String attribute,
+                             final Object value) throws IOException {
+        checkNotEmpty("attribute",
+                      attribute);
+        checkCondition("invalid attribute",
+                       PROPERTIES.contains(attribute));
 
         throw new NotImplementedException();
     }
-
 }

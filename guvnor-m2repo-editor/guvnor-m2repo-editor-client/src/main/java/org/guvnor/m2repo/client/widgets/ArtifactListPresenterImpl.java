@@ -49,9 +49,9 @@ public class ArtifactListPresenterImpl
     private boolean notify = true;
 
     @Inject
-    public ArtifactListPresenterImpl( ArtifactListView view,
-                                      Caller<M2RepoService> m2RepoService,
-                                      Event<NotificationEvent> notification ) {
+    public ArtifactListPresenterImpl(ArtifactListView view,
+                                     Caller<M2RepoService> m2RepoService,
+                                     Event<NotificationEvent> notification) {
         this.view = view;
         this.m2RepoService = m2RepoService;
         this.notification = notification;
@@ -59,8 +59,9 @@ public class ArtifactListPresenterImpl
 
     @PostConstruct
     public void init() {
-        view.init( this );
-        dataProvider = new RefreshableAsyncDataProvider( view, m2RepoService );
+        view.init(this);
+        dataProvider = new RefreshableAsyncDataProvider(view,
+                                                        m2RepoService);
     }
 
     @Override
@@ -69,53 +70,54 @@ public class ArtifactListPresenterImpl
     }
 
     @Override
-    public void setup( final ColumnType... columns ) {
-        view.setup( columns );
+    public void setup(final ColumnType... columns) {
+        view.setup(columns);
     }
 
     @Override
-    public void notifyOnRefresh( final boolean notify ) {
+    public void notifyOnRefresh(final boolean notify) {
         this.notify = notify;
     }
 
     @Override
     public void refresh() {
         dataProvider.refresh();
-        if ( notify ) {
-            notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
+        if (notify) {
+            notification.fire(new NotificationEvent(view.getRefreshNotificationMessage()));
         }
     }
 
     @Override
-    public void search( final String filter ) {
-        search( filter, null );
+    public void search(final String filter) {
+        search(filter,
+               null);
     }
 
     @Override
-    public void search( final String filter,
-                        final List<String> fileFormats ) {
-        dataProvider.setFilter( filter );
-        dataProvider.setFileFormats( fileFormats );
+    public void search(final String filter,
+                       final List<String> fileFormats) {
+        dataProvider.setFilter(filter);
+        dataProvider.setFileFormats(fileFormats);
 
-        if ( dataProvider.getDataDisplays().isEmpty() ) {
-            dataProvider.addDataDisplay( view.getDisplay() );
+        if (dataProvider.getDataDisplays().isEmpty()) {
+            dataProvider.addDataDisplay(view.getDisplay());
         } else {
             dataProvider.goToFirstPage();
         }
 
-        if ( notify ) {
-            notification.fire( new NotificationEvent( view.getRefreshNotificationMessage() ) );
+        if (notify) {
+            notification.fire(new NotificationEvent(view.getRefreshNotificationMessage()));
         }
     }
 
     @Override
-    public void onOpenPom( String path ) {
-        m2RepoService.call( new RemoteCallback<String>() {
+    public void onOpenPom(String path) {
+        m2RepoService.call(new RemoteCallback<String>() {
             @Override
-            public void callback( final String response ) {
-                view.showPom( response );
+            public void callback(final String response) {
+                view.showPom(response);
             }
-        } ).getPomText( path );
+        }).getPomText(path);
     }
 
     /**
@@ -128,67 +130,68 @@ public class ArtifactListPresenterImpl
         private String filter;
         private List<String> fileFormats;
 
-        protected RefreshableAsyncDataProvider( final ArtifactListView view,
-                                                final Caller<M2RepoService> m2RepoService ) {
-            this.view = PortablePreconditions.checkNotNull( "view",
-                                                            view );
-            this.m2RepoService = PortablePreconditions.checkNotNull( "m2RepoService",
-                                                                     m2RepoService );
+        protected RefreshableAsyncDataProvider(final ArtifactListView view,
+                                               final Caller<M2RepoService> m2RepoService) {
+            this.view = PortablePreconditions.checkNotNull("view",
+                                                           view);
+            this.m2RepoService = PortablePreconditions.checkNotNull("m2RepoService",
+                                                                    m2RepoService);
         }
 
-        protected void setFilter( String filter ) {
+        protected void setFilter(String filter) {
             this.filter = filter;
         }
 
-        protected void setFileFormats( List<String> fileFormats ) {
+        protected void setFileFormats(List<String> fileFormats) {
             this.fileFormats = fileFormats;
         }
 
         protected void goToFirstPage() {
-            for ( HasData<JarListPageRow> display : getDataDisplays() ) {
-                boolean wasOnFirstPage = ( display.getVisibleRange().getStart() == 0 );
-                display.setVisibleRange( 0, display.getVisibleRange().getLength() );
-                if ( wasOnFirstPage ) {
-                    onRangeChanged( display );
+            for (HasData<JarListPageRow> display : getDataDisplays()) {
+                boolean wasOnFirstPage = (display.getVisibleRange().getStart() == 0);
+                display.setVisibleRange(0,
+                                        display.getVisibleRange().getLength());
+                if (wasOnFirstPage) {
+                    onRangeChanged(display);
                 }
             }
         }
 
         protected void refresh() {
-            for ( HasData<JarListPageRow> display : getDataDisplays() ) {
-                onRangeChanged( display );
+            for (HasData<JarListPageRow> display : getDataDisplays()) {
+                onRangeChanged(display);
             }
         }
 
         @Override
-        protected void onRangeChanged( HasData<JarListPageRow> display ) {
+        protected void onRangeChanged(HasData<JarListPageRow> display) {
             final Range range = display.getVisibleRange();
-            JarListPageRequest request = new JarListPageRequest( range.getStart(),
-                                                                 range.getLength(),
-                                                                 filter,
-                                                                 fileFormats,
-                                                                 getSortColumnDataStoreName(),
-                                                                 isSortColumnAscending() );
+            JarListPageRequest request = new JarListPageRequest(range.getStart(),
+                                                                range.getLength(),
+                                                                filter,
+                                                                fileFormats,
+                                                                getSortColumnDataStoreName(),
+                                                                isSortColumnAscending());
 
-            m2RepoService.call( new RemoteCallback<PageResponse<JarListPageRow>>() {
+            m2RepoService.call(new RemoteCallback<PageResponse<JarListPageRow>>() {
                 @Override
-                public void callback( final PageResponse<JarListPageRow> response ) {
-                    updateRowCount( response.getTotalRowSize(),
-                                    response.isTotalRowSizeExact() );
-                    updateRowData( response.getStartRowIndex(),
-                                   response.getPageRowList() );
+                public void callback(final PageResponse<JarListPageRow> response) {
+                    updateRowCount(response.getTotalRowSize(),
+                                   response.isTotalRowSizeExact());
+                    updateRowData(response.getStartRowIndex(),
+                                  response.getPageRowList());
                 }
-            } ).listArtifacts( request );
+            }).listArtifacts(request);
         }
 
         private String getSortColumnDataStoreName() {
             final ColumnSortList columnSortList = view.getColumnSortList();
-            return ( columnSortList == null || columnSortList.size() == 0 ) ? null : columnSortList.get( 0 ).getColumn().getDataStoreName();
+            return (columnSortList == null || columnSortList.size() == 0) ? null : columnSortList.get(0).getColumn().getDataStoreName();
         }
 
         private boolean isSortColumnAscending() {
             final ColumnSortList columnSortList = view.getColumnSortList();
-            return ( columnSortList == null || columnSortList.size() == 0 ) ? DEFAULT_ORDER_ASCENDING : columnSortList.get( 0 ).isAscending();
+            return (columnSortList == null || columnSortList.size() == 0) ? DEFAULT_ORDER_ASCENDING : columnSortList.get(0).isAscending();
         }
     }
 }

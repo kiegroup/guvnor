@@ -27,7 +27,7 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.*;
 
 public class WizardBaseTest {
 

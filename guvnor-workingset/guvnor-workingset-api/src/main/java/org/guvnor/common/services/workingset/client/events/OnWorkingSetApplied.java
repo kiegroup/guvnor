@@ -30,8 +30,8 @@ public class OnWorkingSetApplied {
     public OnWorkingSetApplied() {
     }
 
-    public OnWorkingSetApplied( final Path resource,
-                                final Path workingSet ) {
+    public OnWorkingSetApplied(final Path resource,
+                               final Path workingSet) {
         this.resource = resource;
         this.workingSet = workingSet;
     }

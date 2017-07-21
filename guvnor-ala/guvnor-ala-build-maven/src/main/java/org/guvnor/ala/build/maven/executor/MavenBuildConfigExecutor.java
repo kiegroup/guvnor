@@ -27,9 +27,11 @@ import org.guvnor.ala.pipeline.BiFunctionConfigExecutor;
 public class MavenBuildConfigExecutor implements BiFunctionConfigExecutor<Project, MavenBuildConfig, BuildConfig> {
 
     @Override
-    public Optional<BuildConfig> apply( final Project project,
-                                        final MavenBuildConfig mavenBuildConfig ) {
-        return Optional.of( new MavenBuildImpl( project, mavenBuildConfig.getGoals(), mavenBuildConfig.getProperties() ) );
+    public Optional<BuildConfig> apply(final Project project,
+                                       final MavenBuildConfig mavenBuildConfig) {
+        return Optional.of(new MavenBuildImpl(project,
+                                              mavenBuildConfig.getGoals(),
+                                              mavenBuildConfig.getProperties()));
     }
 
     @Override
@@ -46,5 +48,4 @@ public class MavenBuildConfigExecutor implements BiFunctionConfigExecutor<Projec
     public String inputId() {
         return "maven-config";
     }
-
 }

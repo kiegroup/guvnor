@@ -26,12 +26,11 @@ public interface ProviderDestroyer {
      * @return boolean true if the Destroyer supports the 
      * Provider associated with the provided ProviderId
      */
-    boolean supports( final ProviderId providerId );
+    boolean supports(final ProviderId providerId);
 
     /*
      * Destroy the  provider
      * @param ProviderId the provider that we want to destroy
      */
-    void destroy( final ProviderId providerId );
-
+    void destroy(final ProviderId providerId);
 }

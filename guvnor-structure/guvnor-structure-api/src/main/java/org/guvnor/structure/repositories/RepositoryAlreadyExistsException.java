@@ -24,8 +24,7 @@ public class RepositoryAlreadyExistsException extends RuntimeException {
         super();
     }
 
-    public RepositoryAlreadyExistsException( final String alias ) {
-        super( alias );
+    public RepositoryAlreadyExistsException(final String alias) {
+        super(alias);
     }
-
 }

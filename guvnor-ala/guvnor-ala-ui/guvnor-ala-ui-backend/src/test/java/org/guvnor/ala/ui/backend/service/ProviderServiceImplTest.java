@@ -44,18 +44,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.guvnor.ala.ui.ProvisioningManagementBackendTestCommons.mockProviderListSPI;
 import static org.guvnor.ala.ui.ProvisioningManagementBackendTestCommons.mockProviderTypeSPI;
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.PROVIDER_ID;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProviderServiceImplTest {

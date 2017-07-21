@@ -30,7 +30,7 @@ public class FormData {
         return file;
     }
 
-    public void setFile( final FileItem file ) {
+    public void setFile(final FileItem file) {
         this.file = file;
     }
 
@@ -38,7 +38,7 @@ public class FormData {
         return operation;
     }
 
-    public void setOperation( final FileOperation operation ) {
+    public void setOperation(final FileOperation operation) {
         this.operation = operation;
     }
 
@@ -46,8 +46,7 @@ public class FormData {
         return targetPath;
     }
 
-    public void setTargetPath( final Path targetPath ) {
+    public void setTargetPath(final Path targetPath) {
         this.targetPath = targetPath;
     }
-
 }

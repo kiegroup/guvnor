@@ -26,13 +26,13 @@ public interface UploadFormView extends UberView<Presenter> {
 
     interface Presenter {
 
-        void handleSubmitComplete( AbstractForm.SubmitCompleteEvent event );
+        void handleSubmitComplete(AbstractForm.SubmitCompleteEvent event);
 
         /*
          * After upgrade of GWT-BOOTSTRAP3 version, will be needed to handle
          * org.gwtbootstrap3.client.ui.Form.SubmitEvent
          */
-        void handleSubmit( FormPanel.SubmitEvent event );
+        void handleSubmit(FormPanel.SubmitEvent event);
     }
 
     String getFileName();
@@ -47,7 +47,7 @@ public interface UploadFormView extends UberView<Presenter> {
 
     void showInvalidPomWarning();
 
-    void showUploadFailedError( String message );
+    void showUploadFailedError(String message);
 
     void showGAVInputs();
 
@@ -62,5 +62,4 @@ public interface UploadFormView extends UberView<Presenter> {
     void hide();
 
     HandlerRegistration addHideHandler(final ModalHideHandler modalHideHandler);
-
 }

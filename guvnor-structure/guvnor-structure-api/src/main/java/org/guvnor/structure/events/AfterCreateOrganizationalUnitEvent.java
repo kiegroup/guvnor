@@ -25,13 +25,12 @@ public class AfterCreateOrganizationalUnitEvent {
 
     private final OrganizationalUnit organizationalUnit;
 
-    public AfterCreateOrganizationalUnitEvent( final OrganizationalUnit organizationalUnit ) {
-        this.organizationalUnit = PortablePreconditions.checkNotNull( "organizationalUnit",
-                                                                      organizationalUnit );
+    public AfterCreateOrganizationalUnitEvent(final OrganizationalUnit organizationalUnit) {
+        this.organizationalUnit = PortablePreconditions.checkNotNull("organizationalUnit",
+                                                                     organizationalUnit);
     }
 
     public OrganizationalUnit getOrganizationalUnit() {
         return organizationalUnit;
     }
-
 }

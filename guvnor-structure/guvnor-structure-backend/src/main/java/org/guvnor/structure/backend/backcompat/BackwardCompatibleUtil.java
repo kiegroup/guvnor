@@ -33,22 +33,22 @@ public class BackwardCompatibleUtil {
     }
 
     @Inject
-    public BackwardCompatibleUtil( ConfigurationFactory configurationFactory ) {
+    public BackwardCompatibleUtil(ConfigurationFactory configurationFactory) {
         this.configurationFactory = configurationFactory;
     }
 
-    public ConfigGroup compat( final ConfigGroup configGroup ) {
-        if ( configGroup != null ) {
-            final ConfigItem<List<String>> roles = configGroup.getConfigItem( "security:roles" );
-            if ( roles != null ) {
-                configGroup.addConfigItem( configurationFactory.newConfigItem( "security:groups",
-                                                                               new ArrayList<String>( roles.getValue() ) ) );
-                configGroup.removeConfigItem( "security:roles" );
+    public ConfigGroup compat(final ConfigGroup configGroup) {
+        if (configGroup != null) {
+            final ConfigItem<List<String>> roles = configGroup.getConfigItem("security:roles");
+            if (roles != null) {
+                configGroup.addConfigItem(configurationFactory.newConfigItem("security:groups",
+                                                                             new ArrayList<String>(roles.getValue())));
+                configGroup.removeConfigItem("security:roles");
             }
-            final ConfigItem<List<String>> groups = configGroup.getConfigItem( "security:groups" );
-            if ( groups == null ) {
-                configGroup.addConfigItem( configurationFactory.newConfigItem( "security:groups",
-                                                                               new ArrayList<String>() ) );
+            final ConfigItem<List<String>> groups = configGroup.getConfigItem("security:groups");
+            if (groups == null) {
+                configGroup.addConfigItem(configurationFactory.newConfigItem("security:groups",
+                                                                             new ArrayList<String>()));
             }
         }
         return configGroup;

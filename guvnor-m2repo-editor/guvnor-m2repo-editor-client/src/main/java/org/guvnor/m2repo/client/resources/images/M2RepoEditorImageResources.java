@@ -24,7 +24,7 @@ public interface M2RepoEditorImageResources
         extends
         ClientBundle {
 
-    public static final M2RepoEditorImageResources INSTANCE = GWT.create( M2RepoEditorImageResources.class );
+    public static final M2RepoEditorImageResources INSTANCE = GWT.create(M2RepoEditorImageResources.class);
 
     @Source("edit.gif")
     ImageResource edit();
@@ -34,7 +34,7 @@ public interface M2RepoEditorImageResources
 
     @Source("shuffle_down.gif")
     ImageResource shuffleDown();
-    
+
     @Source("model_large.png")
     ImageResource modelLarge();
 }

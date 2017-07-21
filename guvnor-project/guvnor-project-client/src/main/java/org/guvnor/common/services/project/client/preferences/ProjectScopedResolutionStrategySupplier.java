@@ -37,21 +37,23 @@ public class ProjectScopedResolutionStrategySupplier implements Supplier<Prefere
     }
 
     @Inject
-    public ProjectScopedResolutionStrategySupplier( final WorkbenchPreferenceScopeResolutionStrategies scopeResolutionStrategies ) {
+    public ProjectScopedResolutionStrategySupplier(final WorkbenchPreferenceScopeResolutionStrategies scopeResolutionStrategies) {
         this.scopeResolutionStrategies = scopeResolutionStrategies;
     }
 
-    public void selectedProjectChanged( @Observes final ProjectContextChangeEvent event ) {
+    public void selectedProjectChanged(@Observes final ProjectContextChangeEvent event) {
         this.project = event.getProject();
     }
 
     @Override
     public PreferenceScopeResolutionStrategyInfo get() {
-        if ( project == null ) {
-            return scopeResolutionStrategies.getUserInfoFor( null, null );
+        if (project == null) {
+            return scopeResolutionStrategies.getUserInfoFor(null,
+                                                            null);
         }
 
         final String projectIdentifier = project.getEncodedIdentifier();
-        return scopeResolutionStrategies.getUserInfoFor( "project", projectIdentifier );
+        return scopeResolutionStrategies.getUserInfoFor("project",
+                                                        projectIdentifier);
     }
 }

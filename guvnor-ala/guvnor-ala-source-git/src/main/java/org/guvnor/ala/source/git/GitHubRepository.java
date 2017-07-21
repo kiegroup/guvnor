@@ -19,29 +19,35 @@ package org.guvnor.ala.source.git;
 import java.net.URI;
 import java.util.Map;
 
-import org.uberfire.commons.config.ConfigProperties;
 import org.guvnor.ala.source.Host;
+import org.uberfire.commons.config.ConfigProperties;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 
 public class GitHubRepository extends GitRepository {
 
     private final String group;
 
-    public GitHubRepository( final Host host,
-                             final String id,
-                             final String group,
-                             final String name,
-                             final URI uri,
-                             final GitCredentials credentials,
-                             final Map<String, String> env,
-                             final ConfigProperties config ) {
-        super( host, id, name, uri, credentials, env, config );
-        this.group = checkNotEmpty( "group", group );
+    public GitHubRepository(final Host host,
+                            final String id,
+                            final String group,
+                            final String name,
+                            final URI uri,
+                            final GitCredentials credentials,
+                            final Map<String, String> env,
+                            final ConfigProperties config) {
+        super(host,
+              id,
+              name,
+              uri,
+              credentials,
+              env,
+              config);
+        this.group = checkNotEmpty("group",
+                                   group);
     }
 
     public String getGroup() {
         return group;
     }
-
 }

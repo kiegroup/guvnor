@@ -48,16 +48,23 @@ public class MavenDependencyConfigExecutor implements FunctionConfigExecutor<Mav
     @Override
     public Optional<MavenBinary> apply(final MavenDependencyConfig config) {
         final String artifactId = config.getArtifact();
-        checkNotEmpty("artifact parameter is mandatory", artifactId);
-        LOGGER.debug("Resolving Artifact: {}", artifactId);
+        checkNotEmpty("artifact parameter is mandatory",
+                      artifactId);
+        LOGGER.debug("Resolving Artifact: {}",
+                     artifactId);
         final Artifact artifact = resolveArtifact(artifactId);
         if (artifact == null) {
             throw new RuntimeException("Cannot resolve Maven artifact. Look at the previous logs for more information.");
         }
         final String absolutePath = artifact.getFile().getAbsolutePath();
-        LOGGER.debug("Resolved Artifact path: {}", absolutePath);
+        LOGGER.debug("Resolved Artifact path: {}",
+                     absolutePath);
         final Path path = FileSystems.getFileSystem(URI.create("file://default")).getPath(absolutePath);
-        final MavenBinary binary = new MavenBinaryImpl(path, artifact.getArtifactId(), artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
+        final MavenBinary binary = new MavenBinaryImpl(path,
+                                                       artifact.getArtifactId(),
+                                                       artifact.getGroupId(),
+                                                       artifact.getArtifactId(),
+                                                       artifact.getVersion());
         buildRegistry.registerBinary(binary);
         return Optional.of(binary);
     }
@@ -78,7 +85,6 @@ public class MavenDependencyConfigExecutor implements FunctionConfigExecutor<Mav
     }
 
     protected Artifact resolveArtifact(final String artifactId) {
-        return MavenRepository.getMavenRepository().resolveArtifact( artifactId);
+        return MavenRepository.getMavenRepository().resolveArtifact(artifactId);
     }
-
 }

@@ -24,39 +24,53 @@ import java.util.List;
 
 public class PageSortUtils {
 
-    public static <T> List<T> pageSort( Collection<T> values, Comparator<T> comparator, Integer page, Integer pageSize, String sort, boolean sortOrder ) {
-        if ( page < 0 ) {
-            throw new IllegalStateException( "Page must be greater or equals than 0" );
+    public static <T> List<T> pageSort(Collection<T> values,
+                                       Comparator<T> comparator,
+                                       Integer page,
+                                       Integer pageSize,
+                                       String sort,
+                                       boolean sortOrder) {
+        if (page < 0) {
+            throw new IllegalStateException("Page must be greater or equals than 0");
         }
-        if ( pageSize < 1 ) {
-            throw new IllegalStateException( "PageSize must be greater than 0" );
+        if (pageSize < 1) {
+            throw new IllegalStateException("PageSize must be greater than 0");
         }
         // If the page is 0 and the amount of values is less than the pageSize, just return the values
-        if ( page == 0 && values.size() <= pageSize ) {
-            List<T> result = new ArrayList<>( values );
-            sort( result, comparator, sort, sortOrder );
+        if (page == 0 && values.size() <= pageSize) {
+            List<T> result = new ArrayList<>(values);
+            sort(result,
+                 comparator,
+                 sort,
+                 sortOrder);
             return result;
         }
         // if the values are less than  (pageSize * page) means that in the requested page there is no item
-        if ( values.size() <= pageSize * page ) {
+        if (values.size() <= pageSize * page) {
             return Collections.emptyList();
         }
-        List<T> result = new ArrayList<>( pageSize );
-        List<T> allValues = new ArrayList<>( values );
-        for ( int i = page * pageSize; i < ( page * pageSize ) + pageSize; i++ ) {
-            if ( allValues.size() > i ) {
-                result.add( allValues.get( i ) );
+        List<T> result = new ArrayList<>(pageSize);
+        List<T> allValues = new ArrayList<>(values);
+        for (int i = page * pageSize; i < (page * pageSize) + pageSize; i++) {
+            if (allValues.size() > i) {
+                result.add(allValues.get(i));
             }
         }
-        sort( result, comparator, sort, sortOrder );
+        sort(result,
+             comparator,
+             sort,
+             sortOrder);
         return result;
     }
 
-    private static <T> void sort( List<T> list, Comparator<T> comparator, String sort, boolean sortOrder ) {
-        if ( sort != null && !sort.equals( "" ) ) {
-            list.sort( comparator );
-            if ( !sortOrder ) {
-                Collections.reverse( list );
+    private static <T> void sort(List<T> list,
+                                 Comparator<T> comparator,
+                                 String sort,
+                                 boolean sortOrder) {
+        if (sort != null && !sort.equals("")) {
+            list.sort(comparator);
+            if (!sortOrder) {
+                Collections.reverse(list);
             }
         }
     }

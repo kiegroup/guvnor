@@ -56,15 +56,15 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.guvnor.structure.repositories.EnvironmentParameters.*;
-import static org.guvnor.structure.server.config.ConfigType.*;
-import static org.uberfire.backend.server.util.Paths.*;
+import static org.guvnor.structure.repositories.EnvironmentParameters.SCHEME;
+import static org.guvnor.structure.server.config.ConfigType.REPOSITORY;
+import static org.uberfire.backend.server.util.Paths.convert;
 
 @Service
 @ApplicationScoped
 public class RepositoryServiceImpl implements RepositoryService {
 
-    private static final Logger logger = LoggerFactory.getLogger( RepositoryServiceImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(RepositoryServiceImpl.class);
 
     private static final int HISTORY_PAGE_SIZE = 10;
 
@@ -105,95 +105,104 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Inject
     private SessionInfo sessionInfo;
 
-    private Repository createRepository( final ConfigGroup repositoryConfig ) {
-        final Repository repository = repositoryFactory.newRepository( repositoryConfig );
-        configurationService.addConfiguration( repositoryConfig );
-        configuredRepositories.add( repository );
+    private Repository createRepository(final ConfigGroup repositoryConfig) {
+        final Repository repository = repositoryFactory.newRepository(repositoryConfig);
+        configurationService.addConfiguration(repositoryConfig);
+        configuredRepositories.add(repository);
         return repository;
     }
 
-    public RepositoryInfo getRepositoryInfo( final String alias ) {
-        final Repository repo = getRepository( alias );
+    public RepositoryInfo getRepositoryInfo(final String alias) {
+        final Repository repo = getRepository(alias);
         String ouName = null;
-        for ( final OrganizationalUnit ou : organizationalUnitService.getAllOrganizationalUnits() ) {
-            for ( Repository repository : ou.getRepositories() ) {
-                if ( repository.getAlias().equals( alias ) ) {
+        for (final OrganizationalUnit ou : organizationalUnitService.getAllOrganizationalUnits()) {
+            for (Repository repository : ou.getRepositories()) {
+                if (repository.getAlias().equals(alias)) {
                     ouName = ou.getName();
                 }
             }
         }
 
-        return new RepositoryInfo( repo.getIdentifier(),
-                                   alias,
-                                   ouName,
-                                   repo.getRoot(),
-                                   repo.getPublicURIs(),
-                                   getRepositoryHistory( alias,
-                                                         0,
-                                                         HISTORY_PAGE_SIZE ) );
+        return new RepositoryInfo(repo.getIdentifier(),
+                                  alias,
+                                  ouName,
+                                  repo.getRoot(),
+                                  repo.getPublicURIs(),
+                                  getRepositoryHistory(alias,
+                                                       0,
+                                                       HISTORY_PAGE_SIZE));
     }
 
     @Override
-    public List<VersionRecord> getRepositoryHistory( final String alias,
-                                                     final int startIndex ) {
-        return getRepositoryHistory( alias, startIndex, startIndex + HISTORY_PAGE_SIZE );
+    public List<VersionRecord> getRepositoryHistory(final String alias,
+                                                    final int startIndex) {
+        return getRepositoryHistory(alias,
+                                    startIndex,
+                                    startIndex + HISTORY_PAGE_SIZE);
     }
 
     @Override
-    public List<VersionRecord> getRepositoryHistory( String alias,
-                                                     int startIndex,
-                                                     int endIndex ) {
-        final Repository repo = getRepository( alias );
+    public List<VersionRecord> getRepositoryHistory(String alias,
+                                                    int startIndex,
+                                                    int endIndex) {
+        final Repository repo = getRepository(alias);
 
         //This is a work-around for https://bugzilla.redhat.com/show_bug.cgi?id=1199215
         //org.kie.workbench.common.screens.contributors.backend.dataset.ContributorsManager is trying to
         //load a Repository's history for a Repository associated with an Organizational Unit before the
         //Repository has been setup.
-        if ( repo == null ) {
+        if (repo == null) {
             return Collections.EMPTY_LIST;
         }
 
-        final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( convert( repo.getRoot() ), VersionAttributeView.class );
+        final VersionAttributeView versionAttributeView = ioService.getFileAttributeView(convert(repo.getRoot()),
+                                                                                         VersionAttributeView.class);
         final List<VersionRecord> records = versionAttributeView.readAttributes().history().records();
 
-        if ( startIndex < 0 ) {
+        if (startIndex < 0) {
             startIndex = 0;
         }
-        if ( endIndex < 0 || endIndex > records.size() ) {
+        if (endIndex < 0 || endIndex > records.size()) {
             endIndex = records.size();
         }
-        if ( startIndex >= records.size() || startIndex >= endIndex ) {
+        if (startIndex >= records.size() || startIndex >= endIndex) {
             return Collections.emptyList();
         }
 
-        Collections.reverse( records );
+        Collections.reverse(records);
 
-        final List<VersionRecord> result = new ArrayList<VersionRecord>( endIndex - startIndex );
-        for ( VersionRecord record : records.subList( startIndex, endIndex ) ) {
-            result.add( new PortableVersionRecord( record.id(), record.author(), record.email(), record.comment(), record.date(), record.uri() ) );
+        final List<VersionRecord> result = new ArrayList<VersionRecord>(endIndex - startIndex);
+        for (VersionRecord record : records.subList(startIndex,
+                                                    endIndex)) {
+            result.add(new PortableVersionRecord(record.id(),
+                                                 record.author(),
+                                                 record.email(),
+                                                 record.comment(),
+                                                 record.date(),
+                                                 record.uri()));
         }
 
         return result;
     }
 
     @Override
-    public Repository getRepository( final String alias ) {
-        return configuredRepositories.getRepositoryByRepositoryAlias( alias );
+    public Repository getRepository(final String alias) {
+        return configuredRepositories.getRepositoryByRepositoryAlias(alias);
     }
 
     @Override
-    public Repository getRepository( final Path root ) {
-        return configuredRepositories.getRepositoryByRootPath( root );
+    public Repository getRepository(final Path root) {
+        return configuredRepositories.getRepositoryByRootPath(root);
     }
 
     @Override
-    public String normalizeRepositoryName( String name ) {
-        return TextUtil.normalizeRepositoryName( name );
+    public String normalizeRepositoryName(String name) {
+        return TextUtil.normalizeRepositoryName(name);
     }
 
     @Override
-    public boolean validateRepositoryName( String name ) {
-        return name != null && !"".equals( name ) && name.equals( normalizeRepositoryName( name ) );
+    public boolean validateRepositoryName(String name) {
+        return name != null && !"".equals(name) && name.equals(normalizeRepositoryName(name));
     }
 
     @Override
@@ -204,41 +213,45 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public Collection<Repository> getRepositories() {
         Collection<Repository> result = new ArrayList<>();
-        for ( Repository repository : configuredRepositories.getAllConfiguredRepositories() ) {
-            if ( authorizationManager.authorize( repository, sessionInfo.getIdentity() ) ) {
-                result.add( repository );
+        for (Repository repository : configuredRepositories.getAllConfiguredRepositories()) {
+            if (authorizationManager.authorize(repository,
+                                               sessionInfo.getIdentity())) {
+                result.add(repository);
             }
         }
         return result;
     }
 
     @Override
-    public Repository createRepository( final OrganizationalUnit organizationalUnit,
-                                        final String scheme,
-                                        final String alias,
-                                        final RepositoryEnvironmentConfigurations repositoryEnvironmentConfigurations ) throws RepositoryAlreadyExistsException {
+    public Repository createRepository(final OrganizationalUnit organizationalUnit,
+                                       final String scheme,
+                                       final String alias,
+                                       final RepositoryEnvironmentConfigurations repositoryEnvironmentConfigurations) throws RepositoryAlreadyExistsException {
 
         try {
 
-            final Repository repository = createRepository( scheme,
-                                                            alias,
-                                                            repositoryEnvironmentConfigurations );
-            if ( organizationalUnit != null && repository != null ) {
-                organizationalUnitService.addRepository( organizationalUnit, repository );
+            final Repository repository = createRepository(scheme,
+                                                           alias,
+                                                           repositoryEnvironmentConfigurations);
+            if (organizationalUnit != null && repository != null) {
+                organizationalUnitService.addRepository(organizationalUnit,
+                                                        repository);
             }
-            metadataStore.write( alias, (String) repositoryEnvironmentConfigurations.getOrigin() );
+            metadataStore.write(alias,
+                                (String) repositoryEnvironmentConfigurations.getOrigin());
             return repository;
-        } catch ( final Exception e ) {
-            logger.error( "Error during create repository", e );
-            throw ExceptionUtilities.handleException( e );
+        } catch (final Exception e) {
+            logger.error("Error during create repository",
+                         e);
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    protected ConfigGroup findRepositoryConfig( final String alias ) {
-        final Collection<ConfigGroup> groups = configurationService.getConfiguration( ConfigType.REPOSITORY );
-        if ( groups != null ) {
-            for ( ConfigGroup groupConfig : groups ) {
-                if ( groupConfig.getName().equals( alias ) ) {
+    protected ConfigGroup findRepositoryConfig(final String alias) {
+        final Collection<ConfigGroup> groups = configurationService.getConfiguration(ConfigType.REPOSITORY);
+        if (groups != null) {
+            for (ConfigGroup groupConfig : groups) {
+                if (groupConfig.getName().equals(alias)) {
                     return groupConfig;
                 }
             }
@@ -247,164 +260,171 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public void removeRepository( final String alias ) {
-        final ConfigGroup thisRepositoryConfig = findRepositoryConfig( alias );
+    public void removeRepository(final String alias) {
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(alias);
 
         try {
             configurationService.startBatch();
-            if ( thisRepositoryConfig != null ) {
-                configurationService.removeConfiguration( thisRepositoryConfig );
+            if (thisRepositoryConfig != null) {
+                configurationService.removeConfiguration(thisRepositoryConfig);
             }
 
-            final Repository repo = configuredRepositories.remove( alias );
-            if ( repo != null ) {
-                repositoryRemovedEvent.fire( new RepositoryRemovedEvent( repo ) );
-                ioService.delete( convert( repo.getRoot() ).getFileSystem().getPath( null ) );
+            final Repository repo = configuredRepositories.remove(alias);
+            if (repo != null) {
+                repositoryRemovedEvent.fire(new RepositoryRemovedEvent(repo));
+                ioService.delete(convert(repo.getRoot()).getFileSystem().getPath(null));
             }
 
             //Remove reference to Repository from Organizational Units
             final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getAllOrganizationalUnits();
-            for ( OrganizationalUnit ou : organizationalUnits ) {
-                for ( Repository repository : ou.getRepositories() ) {
-                    if ( repository.getAlias().equals( alias ) ) {
-                        organizationalUnitService.removeRepository( ou,
-                                                                    repository );
-                        metadataStore.delete( alias );
+            for (OrganizationalUnit ou : organizationalUnits) {
+                for (Repository repository : ou.getRepositories()) {
+                    if (repository.getAlias().equals(alias)) {
+                        organizationalUnitService.removeRepository(ou,
+                                                                   repository);
+                        metadataStore.delete(alias);
                     }
                 }
             }
-        } catch ( final Exception e ) {
-            logger.error( "Error during remove repository", e );
-            throw new RuntimeException( e );
+        } catch (final Exception e) {
+            logger.error("Error during remove repository",
+                         e);
+            throw new RuntimeException(e);
         } finally {
             configurationService.endBatch();
         }
     }
 
     @Override
-    public Repository createRepository( final String scheme,
-                                        final String alias,
-                                        final RepositoryEnvironmentConfigurations repositoryEnvironmentConfigurations ) {
+    public Repository createRepository(final String scheme,
+                                       final String alias,
+                                       final RepositoryEnvironmentConfigurations repositoryEnvironmentConfigurations) {
 
-        if ( configuredRepositories.containsAlias( alias ) ) {
-            throw new RepositoryAlreadyExistsException( alias );
+        if (configuredRepositories.containsAlias(alias)) {
+            throw new RepositoryAlreadyExistsException(alias);
         }
 
         Repository repo = null;
         try {
             configurationService.startBatch();
-            final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY, alias, "" );
-            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "security:groups", new ArrayList<String>() ) );
+            final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup(REPOSITORY,
+                                                                                     alias,
+                                                                                     "");
+            repositoryConfig.addConfigItem(configurationFactory.newConfigItem("security:groups",
+                                                                              new ArrayList<String>()));
 
-            if ( !repositoryEnvironmentConfigurations.containsConfiguration( SCHEME ) ) {
-                repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME, scheme ) );
+            if (!repositoryEnvironmentConfigurations.containsConfiguration(SCHEME)) {
+                repositoryConfig.addConfigItem(configurationFactory.newConfigItem(SCHEME,
+                                                                                  scheme));
             }
 
-            for ( final RepositoryEnvironmentConfiguration configuration : repositoryEnvironmentConfigurations.getConfigurationList() ) {
-                repositoryConfig.addConfigItem( getRepositoryConfigItem( configuration ) );
+            for (final RepositoryEnvironmentConfiguration configuration : repositoryEnvironmentConfigurations.getConfigurationList()) {
+                repositoryConfig.addConfigItem(getRepositoryConfigItem(configuration));
             }
 
-            repo = createRepository( repositoryConfig );
+            repo = createRepository(repositoryConfig);
             return repo;
-        } catch ( final Exception e ) {
-            logger.error( "Error during create repository", e );
-            throw ExceptionUtilities.handleException( e );
+        } catch (final Exception e) {
+            logger.error("Error during create repository",
+                         e);
+            throw ExceptionUtilities.handleException(e);
         } finally {
             configurationService.endBatch();
-            if ( repo != null ) {
-                event.fire( new NewRepositoryEvent( repo ) );
+            if (repo != null) {
+                event.fire(new NewRepositoryEvent(repo));
             }
         }
     }
 
-    private ConfigItem getRepositoryConfigItem( final RepositoryEnvironmentConfiguration configuration ) {
-        if ( configuration.isSecuredConfigurationItem() ) {
-            return configurationFactory.newSecuredConfigItem( configuration.getName(),
-                                                              configuration.getValue().toString() );
+    private ConfigItem getRepositoryConfigItem(final RepositoryEnvironmentConfiguration configuration) {
+        if (configuration.isSecuredConfigurationItem()) {
+            return configurationFactory.newSecuredConfigItem(configuration.getName(),
+                                                             configuration.getValue().toString());
         } else {
-            return configurationFactory.newConfigItem( configuration.getName(),
-                                                       configuration.getValue() );
-        }
-
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
-    public void addGroup( final Repository repository,
-                          final String group ) {
-        final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
-
-        if ( thisRepositoryConfig != null ) {
-            final ConfigItem<List> groups = backward.compat( thisRepositoryConfig ).getConfigItem( "security:groups" );
-            groups.getValue().add( group );
-
-            configurationService.updateConfiguration( thisRepositoryConfig );
-
-            configuredRepositories.update( repositoryFactory.newRepository( thisRepositoryConfig ) );
-        } else {
-            throw new IllegalArgumentException( "Repository " + repository.getAlias() + " not found" );
+            return configurationFactory.newConfigItem(configuration.getName(),
+                                                      configuration.getValue());
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public void removeGroup( Repository repository,
-                             String group ) {
-        final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
+    public void addGroup(final Repository repository,
+                         final String group) {
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(repository.getAlias());
 
-        if ( thisRepositoryConfig != null ) {
-            final ConfigItem<List> groups = backward.compat( thisRepositoryConfig ).getConfigItem( "security:groups" );
-            groups.getValue().remove( group );
+        if (thisRepositoryConfig != null) {
+            final ConfigItem<List> groups = backward.compat(thisRepositoryConfig).getConfigItem("security:groups");
+            groups.getValue().add(group);
 
-            configurationService.updateConfiguration( thisRepositoryConfig );
+            configurationService.updateConfiguration(thisRepositoryConfig);
 
-            configuredRepositories.update( repositoryFactory.newRepository( thisRepositoryConfig ) );
+            configuredRepositories.update(repositoryFactory.newRepository(thisRepositoryConfig));
         } else {
-            throw new IllegalArgumentException( "Repository " + repository.getAlias() + " not found" );
+            throw new IllegalArgumentException("Repository " + repository.getAlias() + " not found");
+        }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public void removeGroup(Repository repository,
+                            String group) {
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(repository.getAlias());
+
+        if (thisRepositoryConfig != null) {
+            final ConfigItem<List> groups = backward.compat(thisRepositoryConfig).getConfigItem("security:groups");
+            groups.getValue().remove(group);
+
+            configurationService.updateConfiguration(thisRepositoryConfig);
+
+            configuredRepositories.update(repositoryFactory.newRepository(thisRepositoryConfig));
+        } else {
+            throw new IllegalArgumentException("Repository " + repository.getAlias() + " not found");
         }
     }
 
     @Override
-    public List<VersionRecord> getRepositoryHistoryAll( final String alias ) {
-        return getRepositoryHistory( alias, 0, -1 );
+    public List<VersionRecord> getRepositoryHistoryAll(final String alias) {
+        return getRepositoryHistory(alias,
+                                    0,
+                                    -1);
     }
 
     @Override
-    public Repository updateRepositoryConfiguration( final Repository repository,
-                                                     final RepositoryEnvironmentConfigurations repositoryEnvironmentConfigurations ) {
-        final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
+    public Repository updateRepositoryConfiguration(final Repository repository,
+                                                    final RepositoryEnvironmentConfigurations repositoryEnvironmentConfigurations) {
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(repository.getAlias());
 
-        if ( thisRepositoryConfig != null && repositoryEnvironmentConfigurations != null ) {
+        if (thisRepositoryConfig != null && repositoryEnvironmentConfigurations != null) {
 
             try {
                 configurationService.startBatch();
 
-                for ( final Map.Entry<String, Object> entry : repositoryEnvironmentConfigurations.getConfigurationMap().entrySet() ) {
+                for (final Map.Entry<String, Object> entry : repositoryEnvironmentConfigurations.getConfigurationMap().entrySet()) {
 
-                    ConfigItem configItem = thisRepositoryConfig.getConfigItem( entry.getKey() );
-                    if ( configItem == null ) {
-                        thisRepositoryConfig.addConfigItem( configurationFactory.newConfigItem( entry.getKey(), entry.getValue() ) );
+                    ConfigItem configItem = thisRepositoryConfig.getConfigItem(entry.getKey());
+                    if (configItem == null) {
+                        thisRepositoryConfig.addConfigItem(configurationFactory.newConfigItem(entry.getKey(),
+                                                                                              entry.getValue()));
                     } else {
-                        configItem.setValue( entry.getValue() );
+                        configItem.setValue(entry.getValue());
                     }
                 }
 
-                configurationService.updateConfiguration( thisRepositoryConfig );
+                configurationService.updateConfiguration(thisRepositoryConfig);
 
-                final Repository updatedRepo = repositoryFactory.newRepository( thisRepositoryConfig );
-                configuredRepositories.update( updatedRepo );
+                final Repository updatedRepo = repositoryFactory.newRepository(thisRepositoryConfig);
+                configuredRepositories.update(updatedRepo);
 
                 return updatedRepo;
-            } catch ( final Exception e ) {
-                logger.error( "Error during remove repository", e );
-                throw new RuntimeException( e );
+            } catch (final Exception e) {
+                logger.error("Error during remove repository",
+                             e);
+                throw new RuntimeException(e);
             } finally {
                 configurationService.endBatch();
             }
-
         } else {
-            throw new IllegalArgumentException( "Repository " + repository.getAlias() + " not found" );
+            throw new IllegalArgumentException("Repository " + repository.getAlias() + " not found");
         }
     }
-
 }

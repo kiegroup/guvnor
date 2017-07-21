@@ -22,25 +22,25 @@ import org.guvnor.structure.repositories.Repository;
 public class RepositoryStructureContext {
 
     private Repository currentRepository;
-    private String     currentBranch;
-    private Project    currentProject;
+    private String currentBranch;
+    private Project currentProject;
 
-    public void reset( final Repository currentRepository,
-                       final String currentBranch,
-                       final Project currentProject ) {
+    public void reset(final Repository currentRepository,
+                      final String currentBranch,
+                      final Project currentProject) {
         this.currentRepository = currentRepository;
         this.currentBranch = currentBranch;
         this.currentProject = currentProject;
     }
 
-    public boolean activeProjectChanged( final Project activeProject ) {
-        return activeProject != null && !activeProject.equals( this.currentProject );
+    public boolean activeProjectChanged(final Project activeProject) {
+        return activeProject != null && !activeProject.equals(this.currentProject);
     }
 
-    public boolean repositoryOrBranchChanged( final Repository activeRepository,
-                                              final String activeBranch ) {
+    public boolean repositoryOrBranchChanged(final Repository activeRepository,
+                                             final String activeBranch) {
         return activeRepository != null
-                && (!activeRepository.equals( this.currentRepository )
-                || !activeBranch.equals( this.currentBranch ));
+                && (!activeRepository.equals(this.currentRepository)
+                || !activeBranch.equals(this.currentBranch));
     }
 }

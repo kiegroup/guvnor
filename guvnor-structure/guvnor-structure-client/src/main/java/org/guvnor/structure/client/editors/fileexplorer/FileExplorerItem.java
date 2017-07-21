@@ -20,7 +20,7 @@ import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.core.client.tree.FSTreeItem;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 class FileExplorerItem {
 
@@ -28,30 +28,32 @@ class FileExplorerItem {
 
     private final FSTreeItem parent;
 
-    FileExplorerItem( final FSTreeItem treeItem ) {
-        this.parent = checkNotNull( "parent", treeItem );
+    FileExplorerItem(final FSTreeItem treeItem) {
+        this.parent = checkNotNull("parent",
+                                   treeItem);
     }
 
-    public void addDirectory( final Path child ) {
+    public void addDirectory(final Path child) {
         checkCleanupLoading();
 
-        final FSTreeItem newDirectory = parent.addItem( FSTreeItem.FSType.FOLDER, child.getFileName() );
-        newDirectory.addItem( FSTreeItem.FSType.LOADING,
-                              constants.Loading() );
-        newDirectory.setUserObject( child );
+        final FSTreeItem newDirectory = parent.addItem(FSTreeItem.FSType.FOLDER,
+                                                       child.getFileName());
+        newDirectory.addItem(FSTreeItem.FSType.LOADING,
+                             constants.Loading());
+        newDirectory.setUserObject(child);
     }
 
-    public void addFile( final Path child ) {
+    public void addFile(final Path child) {
         checkCleanupLoading();
 
-        final FSTreeItem newFile = parent.addItem( FSTreeItem.FSType.ITEM, child.getFileName() );
-        newFile.setUserObject( child );
+        final FSTreeItem newFile = parent.addItem(FSTreeItem.FSType.ITEM,
+                                                  child.getFileName());
+        newFile.setUserObject(child);
     }
 
     private void checkCleanupLoading() {
-        if ( parent.getChild( 0 ) != null && parent.getChild( 0 ).getUserObject() == null ) {
-            parent.getChild( 0 ).remove();
+        if (parent.getChild(0) != null && parent.getChild(0).getUserObject() == null) {
+            parent.getChild(0).remove();
         }
     }
-
 }

@@ -26,9 +26,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Radio;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.HelpBlock;
 
 public class RepositoryStructurePageViewImpl extends Composite
         implements RepositoryStructurePageView {
@@ -37,7 +37,7 @@ public class RepositoryStructurePageViewImpl extends Composite
 
     }
 
-    private static RepositoryStructurePageBinder uiBinder = GWT.create( RepositoryStructurePageBinder.class );
+    private static RepositoryStructurePageBinder uiBinder = GWT.create(RepositoryStructurePageBinder.class);
 
     private Presenter presenter;
 
@@ -81,7 +81,7 @@ public class RepositoryStructurePageViewImpl extends Composite
     CheckBox isConfigureRepositoryCheckBox;
 
     public RepositoryStructurePageViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         initializeFields();
     }
 
@@ -91,68 +91,68 @@ public class RepositoryStructurePageViewImpl extends Composite
     }
 
     @Override
-    public void setProjectName( String projectName ) {
-        projectNameTextBox.setText( projectName );
+    public void setProjectName(String projectName) {
+        projectNameTextBox.setText(projectName);
     }
 
     @Override
-    public void setProjectNameErrorMessage( String errorMessage ) {
-        projectNameTextBoxHelpBlock.setText( errorMessage );
+    public void setProjectNameErrorMessage(String errorMessage) {
+        projectNameTextBoxHelpBlock.setText(errorMessage);
     }
 
     @Override
-    public void clearProjectNameErrorMessage( ) {
-        projectNameTextBoxHelpBlock.setText( null );
+    public void clearProjectNameErrorMessage() {
+        projectNameTextBoxHelpBlock.setText(null);
     }
 
     @Override
-    public void setGroupId( String groupId ) {
-        groupIdTextBox.setText( groupId );
+    public void setGroupId(String groupId) {
+        groupIdTextBox.setText(groupId);
     }
 
     @Override
-    public void setGroupIdErrorMessage( String errorMessage ) {
-        groupIdTextBoxHelpBlock.setText( errorMessage );
+    public void setGroupIdErrorMessage(String errorMessage) {
+        groupIdTextBoxHelpBlock.setText(errorMessage);
     }
 
     @Override
     public void clearGroupIdErrorMessage() {
-        groupIdTextBoxHelpBlock.setText( null );
+        groupIdTextBoxHelpBlock.setText(null);
     }
 
     @Override
-    public void setArtifactId( String artifactId ) {
-        artifactIdTextBox.setText( artifactId );
+    public void setArtifactId(String artifactId) {
+        artifactIdTextBox.setText(artifactId);
     }
 
     @Override
-    public void setArtifactIdErrorMessage( String errorMessage ) {
-        artifactIdTextBoxHelpBlock.setText( errorMessage );
+    public void setArtifactIdErrorMessage(String errorMessage) {
+        artifactIdTextBoxHelpBlock.setText(errorMessage);
     }
 
     @Override
     public void clearArtifactIdErrorMessage() {
-        artifactIdTextBoxHelpBlock.setText( null );
+        artifactIdTextBoxHelpBlock.setText(null);
     }
 
     @Override
-    public void setVersion( String version ) {
-        versionTextBox.setText( version );
+    public void setVersion(String version) {
+        versionTextBox.setText(version);
     }
 
     @Override
-    public void setVersionErrorMessage( String errorMessage ) {
-        versionTextBoxHelpBlock.setText( errorMessage );
+    public void setVersionErrorMessage(String errorMessage) {
+        versionTextBoxHelpBlock.setText(errorMessage);
     }
 
     @Override
     public void clearVersionErrorMessage() {
-        versionTextBoxHelpBlock.setText( null );
+        versionTextBoxHelpBlock.setText(null);
     }
 
     @Override
-    public void setConfigureRepository( boolean configureRepository ) {
-        isConfigureRepositoryCheckBox.setValue( configureRepository );
+    public void setConfigureRepository(boolean configureRepository) {
+        isConfigureRepositoryCheckBox.setValue(configureRepository);
     }
 
     @Override
@@ -161,8 +161,8 @@ public class RepositoryStructurePageViewImpl extends Composite
     }
 
     @Override
-    public void setProjectDescription( String projectDescription ) {
-        projectDescriptionTextBox.setText( projectDescription );
+    public void setProjectDescription(String projectDescription) {
+        projectDescriptionTextBox.setText(projectDescription);
     }
 
     @Override
@@ -196,65 +196,68 @@ public class RepositoryStructurePageViewImpl extends Composite
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(Presenter presenter) {
         this.presenter = presenter;
     }
 
     private void initializeFields() {
-        isMultiModuleRadioButton.setValue( true );
-        isConfigureRepositoryCheckBox.setValue( true );
+        isMultiModuleRadioButton.setValue(true);
+        isConfigureRepositoryCheckBox.setValue(true);
 
-        projectNameTextBox.addChangeHandler( new ChangeHandler() {
+        projectNameTextBox.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange( ChangeEvent event ) {
+            public void onChange(ChangeEvent event) {
                 presenter.onProjectNameChange();
             }
-        } );
+        });
 
-        projectDescriptionTextBox.addChangeHandler( new ChangeHandler() {
+        projectDescriptionTextBox.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange( ChangeEvent event ) {
+            public void onChange(ChangeEvent event) {
                 presenter.onProjectDescriptionChange();
             }
-        } );
+        });
 
-        groupIdTextBox.addChangeHandler( new ChangeHandler() {
+        groupIdTextBox.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange( ChangeEvent event ) {
+            public void onChange(ChangeEvent event) {
                 presenter.onGroupIdChange();
             }
-        } );
+        });
 
-        artifactIdTextBox.addChangeHandler( new ChangeHandler() {
-            @Override public void onChange( ChangeEvent event ) {
+        artifactIdTextBox.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
                 presenter.onArtifactIdChange();
             }
-        } );
+        });
 
-        versionTextBox.addChangeHandler( new ChangeHandler() {
+        versionTextBox.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange( ChangeEvent event ) {
+            public void onChange(ChangeEvent event) {
                 presenter.onVersionChange();
             }
-        } );
+        });
 
-        isSingleModuleRadioButton.addClickHandler( new ClickHandler() {
-            @Override public void onClick( ClickEvent event ) {
+        isSingleModuleRadioButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
                 presenter.onSingleModuleChange();
             }
-        } );
+        });
 
-        isMultiModuleRadioButton.addClickHandler( new ClickHandler() {
-            @Override public void onClick( ClickEvent event ) {
+        isMultiModuleRadioButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
                 presenter.onMultiModuleChange();
             }
-        } );
+        });
 
-        isConfigureRepositoryCheckBox.addClickHandler( new ClickHandler() {
-            @Override public void onClick( ClickEvent event ) {
+        isConfigureRepositoryCheckBox.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
                 presenter.onConfigureRepositoryChange();
             }
-        } );
-
+        });
     }
 }

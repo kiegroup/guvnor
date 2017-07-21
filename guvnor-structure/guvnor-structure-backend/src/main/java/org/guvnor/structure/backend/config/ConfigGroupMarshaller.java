@@ -30,34 +30,33 @@ public class ConfigGroupMarshaller {
     private final XStream xstream = new XStream();
 
     public ConfigGroupMarshaller() {
-        backwardCompatibleXstream.alias( "group",
-                       ConfigGroup.class );
-        backwardCompatibleXstream.alias( "item",
-                       ConfigItem.class );
-        backwardCompatibleXstream.alias( "type",
-                       ConfigType.class );
+        backwardCompatibleXstream.alias("group",
+                                        ConfigGroup.class);
+        backwardCompatibleXstream.alias("item",
+                                        ConfigItem.class);
+        backwardCompatibleXstream.alias("type",
+                                        ConfigType.class);
         backwardCompatibleXstream.alias("secureitem",
-                       SecureConfigItem.class);
+                                        SecureConfigItem.class);
         // for backward compatibility only
         backwardCompatibleXstream.alias("org.uberfire.backend.server.config.SecureConfigItem",
-                       SecureConfigItem.class);
+                                        SecureConfigItem.class);
 
-        xstream.alias( "group",
-                ConfigGroup.class );
-        xstream.alias( "item",
-                ConfigItem.class );
-        xstream.alias( "type",
-                ConfigType.class );
+        xstream.alias("group",
+                      ConfigGroup.class);
+        xstream.alias("item",
+                      ConfigItem.class);
+        xstream.alias("type",
+                      ConfigType.class);
         xstream.alias("secureitem",
-                SecureConfigItem.class);
+                      SecureConfigItem.class);
     }
 
-    public String marshall( final ConfigGroup configGroup ) {
-        return xstream.toXML( configGroup );
+    public String marshall(final ConfigGroup configGroup) {
+        return xstream.toXML(configGroup);
     }
 
-    public ConfigGroup unmarshall( final String xml ) {
-        return (ConfigGroup) backwardCompatibleXstream.fromXML( xml );
+    public ConfigGroup unmarshall(final String xml) {
+        return (ConfigGroup) backwardCompatibleXstream.fromXML(xml);
     }
-
 }

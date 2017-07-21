@@ -21,7 +21,8 @@ import org.guvnor.structure.repositories.PullRequestStatus;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Portable
 public class PullRequestImpl implements PullRequest {
@@ -37,27 +38,36 @@ public class PullRequestImpl implements PullRequest {
 
     }
 
-    public PullRequestImpl( final String sourceRepository,
-                            final String sourceBranch,
-                            final String targetRepository,
-                            final String targetBranch ) {
-        this( 0l, sourceRepository, sourceBranch, targetRepository, targetBranch, PullRequestStatus.OPEN );
-
+    public PullRequestImpl(final String sourceRepository,
+                           final String sourceBranch,
+                           final String targetRepository,
+                           final String targetBranch) {
+        this(0l,
+             sourceRepository,
+             sourceBranch,
+             targetRepository,
+             targetBranch,
+             PullRequestStatus.OPEN);
     }
 
-    public PullRequestImpl( @MapsTo("id") final long id,
-                            @MapsTo("sourceRepository") final String sourceRepository,
-                            @MapsTo("sourceBranch") final String sourceBranch,
-                            @MapsTo("targetRepository") final String targetRepository,
-                            @MapsTo("targetBranch") final String targetBranch,
-                            @MapsTo("status") final PullRequestStatus status ) {
+    public PullRequestImpl(@MapsTo("id") final long id,
+                           @MapsTo("sourceRepository") final String sourceRepository,
+                           @MapsTo("sourceBranch") final String sourceBranch,
+                           @MapsTo("targetRepository") final String targetRepository,
+                           @MapsTo("targetBranch") final String targetBranch,
+                           @MapsTo("status") final PullRequestStatus status) {
 
         this.id = id;
-        this.sourceRepository = checkNotEmpty( "sourceRepository", sourceRepository );
-        this.sourceBranch = checkNotEmpty( "sourceBranch", sourceBranch );
-        this.targetRepository = checkNotEmpty( "targetRepository", targetRepository );
-        this.targetBranch = checkNotEmpty( "targetBranch", targetBranch );
-        this.status = checkNotNull( "status", status );
+        this.sourceRepository = checkNotEmpty("sourceRepository",
+                                              sourceRepository);
+        this.sourceBranch = checkNotEmpty("sourceBranch",
+                                          sourceBranch);
+        this.targetRepository = checkNotEmpty("targetRepository",
+                                              targetRepository);
+        this.targetBranch = checkNotEmpty("targetBranch",
+                                          targetBranch);
+        this.status = checkNotNull("status",
+                                   status);
     }
 
     @Override
@@ -91,29 +101,28 @@ public class PullRequestImpl implements PullRequest {
     }
 
     @Override
-    public boolean equals( final Object obj ) {
+    public boolean equals(final Object obj) {
 
-        if ( obj instanceof PullRequest ) {
-            return ( (PullRequest) obj ).getId() == this.getId();
+        if (obj instanceof PullRequest) {
+            return ((PullRequest) obj).getId() == this.getId();
         } else {
-            return super.equals( obj );
+            return super.equals(obj);
         }
-
     }
 
     @Override
     public int hashCode() {
-        int result = Long.hashCode( id );
+        int result = Long.hashCode(id);
         result = ~~result;
-        result = 31 * result + ( targetRepository.hashCode() );
+        result = 31 * result + (targetRepository.hashCode());
         result = ~~result;
-        result = 31 * result + ( targetBranch.hashCode() );
+        result = 31 * result + (targetBranch.hashCode());
         result = ~~result;
-        result = 31 * result + ( sourceRepository.hashCode() );
+        result = 31 * result + (sourceRepository.hashCode());
         result = ~~result;
-        result = 31 * result + ( sourceBranch.hashCode() );
+        result = 31 * result + (sourceBranch.hashCode());
         result = ~~result;
-        result = 31 * result + ( status.hashCode() );
+        result = 31 * result + (status.hashCode());
         result = ~~result;
         return result;
     }
@@ -121,13 +130,13 @@ public class PullRequestImpl implements PullRequest {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append( this.getClass().getSimpleName() );
-        builder.append( " <" + this.getId() + "," + this.getStatus() + "> " );
-        builder.append( " { " );
-        builder.append( " source:( " + this.getSourceRepository() + "," + this.getSourceBranch() + " ) " );
-        builder.append( " -> " );
-        builder.append( " target:( " + this.getTargetRepository() + "," + this.getTargetBranch() + " ) " );
-        builder.append( " } " );
+        builder.append(this.getClass().getSimpleName());
+        builder.append(" <" + this.getId() + "," + this.getStatus() + "> ");
+        builder.append(" { ");
+        builder.append(" source:( " + this.getSourceRepository() + "," + this.getSourceBranch() + " ) ");
+        builder.append(" -> ");
+        builder.append(" target:( " + this.getTargetRepository() + "," + this.getTargetBranch() + " ) ");
+        builder.append(" } ");
         return builder.toString();
     }
 }

@@ -22,5 +22,4 @@ import org.uberfire.java.nio.file.Path;
 public interface Source extends SourceConfig {
 
     Path getPath();
-
 }

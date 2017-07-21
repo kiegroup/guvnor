@@ -34,14 +34,13 @@ public class TestAppSetup {
     @Produces
     @Alternative
     public M2RepoService m2RepoService() {
-        return mock( M2RepoService.class );
+        return mock(M2RepoService.class);
     }
 
     @Produces
     @Alternative
     @Named("uf")
     public ServletContext servletContext() {
-        return mock( ServletContext.class );
+        return mock(ServletContext.class);
     }
-
 }

@@ -32,33 +32,31 @@ public class RuntimeManagerFactory {
     }
 
     @Inject
-    public RuntimeManagerFactory( final Instance<RuntimeManager> managers ) {
-        managers.forEach( this.managers::add );
-
+    public RuntimeManagerFactory(final Instance<RuntimeManager> managers) {
+        managers.forEach(this.managers::add);
     }
 
-    public void startRuntime( RuntimeId runtimeId ) {
+    public void startRuntime(RuntimeId runtimeId) {
         managers.stream()
-                .filter( p -> p.supports( runtimeId ) )
-                .findFirst().get().start( runtimeId );
+                .filter(p -> p.supports(runtimeId))
+                .findFirst().get().start(runtimeId);
     }
 
-    public void stopRuntime( RuntimeId runtimeId ) {
+    public void stopRuntime(RuntimeId runtimeId) {
         managers.stream()
-                .filter( p -> p.supports( runtimeId ) )
-                .findFirst().get().stop( runtimeId );
+                .filter(p -> p.supports(runtimeId))
+                .findFirst().get().stop(runtimeId);
     }
 
-    public void restartRuntime( RuntimeId runtimeId ) {
+    public void restartRuntime(RuntimeId runtimeId) {
         managers.stream()
-                .filter( p -> p.supports( runtimeId ) )
-                .findFirst().get().restart( runtimeId );
+                .filter(p -> p.supports(runtimeId))
+                .findFirst().get().restart(runtimeId);
     }
 
-    public void refreshRuntime( RuntimeId runtimeId ) {
+    public void refreshRuntime(RuntimeId runtimeId) {
         managers.stream()
-                .filter( p -> p.supports( runtimeId ) )
-                .findFirst().get().refresh( runtimeId );
+                .filter(p -> p.supports(runtimeId))
+                .findFirst().get().refresh(runtimeId);
     }
-
 }

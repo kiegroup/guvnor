@@ -31,26 +31,26 @@ public class OuServiceAnswer implements Answer<OrganizationalUnitService> {
     private Collection<OrganizationalUnit> units;
     private OrganizationalUnitService ouService;
 
-    public OuServiceAnswer( Collection<OrganizationalUnit> units,
-                            OrganizationalUnitService ouService ) {
+    public OuServiceAnswer(Collection<OrganizationalUnit> units,
+                           OrganizationalUnitService ouService) {
         this.units = units;
         this.ouService = ouService;
     }
 
     @Override
-    public OrganizationalUnitService answer( InvocationOnMock invocation ) throws Throwable {
+    public OrganizationalUnitService answer(InvocationOnMock invocation) throws Throwable {
 
-        when( ouService.getOrganizationalUnits() ).then( new Answer<Collection<OrganizationalUnit>>() {
+        when(ouService.getOrganizationalUnits()).then(new Answer<Collection<OrganizationalUnit>>() {
 
             @Override
-            public Collection<OrganizationalUnit> answer( InvocationOnMock invocation ) throws Throwable {
+            public Collection<OrganizationalUnit> answer(InvocationOnMock invocation) throws Throwable {
                 return units;
             }
-        } );
+        });
 
         @SuppressWarnings("unchecked")
-        final RemoteCallback<Collection<OrganizationalUnit>> callback = (RemoteCallback<Collection<OrganizationalUnit>>) invocation.getArguments()[ 0 ];
-        callback.callback( units );
+        final RemoteCallback<Collection<OrganizationalUnit>> callback = (RemoteCallback<Collection<OrganizationalUnit>>) invocation.getArguments()[0];
+        callback.callback(units);
 
         return ouService;
     }

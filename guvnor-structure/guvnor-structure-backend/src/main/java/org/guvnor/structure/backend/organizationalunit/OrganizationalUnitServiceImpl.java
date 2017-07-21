@@ -38,7 +38,6 @@ import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnit
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
-import org.guvnor.structure.security.OrganizationalUnitAction;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;

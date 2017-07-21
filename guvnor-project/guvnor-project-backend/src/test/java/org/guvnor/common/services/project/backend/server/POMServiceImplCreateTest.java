@@ -25,7 +25,6 @@ import org.guvnor.test.TestTempFileSystem;
 import org.guvnor.test.WeldJUnitRunner;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -38,11 +37,11 @@ import org.uberfire.io.IOService;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( WeldJUnitRunner.class )
+@RunWith(WeldJUnitRunner.class)
 public class POMServiceImplCreateTest {
 
     @Inject
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     IOService ioService;
 
     @Inject
@@ -66,14 +65,14 @@ public class POMServiceImplCreateTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks( this );
+        MockitoAnnotations.initMocks(this);
 
-        ioServiceSpy = spy( ioService );
+        ioServiceSpy = spy(ioService);
 
-        service = new POMServiceImpl( ioServiceSpy,
-                                      pomContentHandler,
-                                      m2RepoService,
-                                      metadataService );
+        service = new POMServiceImpl(ioServiceSpy,
+                                     pomContentHandler,
+                                     m2RepoService,
+                                     metadataService);
     }
 
     @After
@@ -83,23 +82,23 @@ public class POMServiceImplCreateTest {
 
     @Test
     public void testCreate() throws Exception {
-        final Path path = testFileSystem.createTempDirectory( "/MyTestProject" );
+        final Path path = testFileSystem.createTempDirectory("/MyTestProject");
 
-        service.create( path,
-                        "baseurl?",
-                        new POM() );
+        service.create(path,
+                       "baseurl?",
+                       new POM());
 
-        ArgumentCaptor<org.uberfire.java.nio.file.Path> pathArgumentCaptor = ArgumentCaptor.forClass( org.uberfire.java.nio.file.Path.class );
-        ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass( String.class );
+        ArgumentCaptor<org.uberfire.java.nio.file.Path> pathArgumentCaptor = ArgumentCaptor.forClass(org.uberfire.java.nio.file.Path.class);
+        ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
-        verify( ioServiceSpy ).write( pathArgumentCaptor.capture(), stringArgumentCaptor.capture() );
+        verify(ioServiceSpy).write(pathArgumentCaptor.capture(),
+                                   stringArgumentCaptor.capture());
 
-        assertEquals( pathArgumentCaptor.getValue().toUri().toString(),
-                      path.toURI() + "/pom.xml" );
+        assertEquals(pathArgumentCaptor.getValue().toUri().toString(),
+                     path.toURI() + "/pom.xml");
 
         String pomXML = stringArgumentCaptor.getValue();
 
-        assertTrue( pomXML.contains( "<id>guvnor-m2-repo</id>" ) );
+        assertTrue(pomXML.contains("<id>guvnor-m2-repo</id>"));
     }
-
 }

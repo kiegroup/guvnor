@@ -31,33 +31,36 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 public class WildflyAccessInterfaceImpl
         implements WildflyAccessInterface {
 
-    protected static final Logger LOG = LoggerFactory.getLogger( WildflyAccessInterfaceImpl.class );
+    protected static final Logger LOG = LoggerFactory.getLogger(WildflyAccessInterfaceImpl.class);
     private final Map<String, WildflyClient> clientMap = new ConcurrentHashMap<>();
 
     @Override
-    public WildflyClient getWildflyClient( final ProviderId providerId ) {
-        if ( !clientMap.containsKey( providerId.getId() ) ) {
-            clientMap.put( providerId.getId(), buildClient( providerId ) );
+    public WildflyClient getWildflyClient(final ProviderId providerId) {
+        if (!clientMap.containsKey(providerId.getId())) {
+            clientMap.put(providerId.getId(),
+                          buildClient(providerId));
         }
-        return clientMap.get( providerId.getId() );
+        return clientMap.get(providerId.getId());
     }
 
-    private WildflyClient buildClient( final ProviderId providerId ) {
-        assert ( providerId instanceof WildflyProvider );
-        WildflyProvider wildflyProvider = ( ( WildflyProvider ) providerId );
+    private WildflyClient buildClient(final ProviderId providerId) {
+        assert (providerId instanceof WildflyProvider);
+        WildflyProvider wildflyProvider = ((WildflyProvider) providerId);
 
         return new WildflyClient(
                 wildflyProvider.getId(),
                 wildflyProvider.getUser(),
                 wildflyProvider.getPassword(),
                 wildflyProvider.getHostId(),
-                Integer.valueOf(defaultIfBlank(wildflyProvider.getPort(), "8080")),
-                Integer.valueOf(defaultIfBlank(wildflyProvider.getManagementPort(), "9990"))
+                Integer.valueOf(defaultIfBlank(wildflyProvider.getPort(),
+                                               "8080")),
+                Integer.valueOf(defaultIfBlank(wildflyProvider.getManagementPort(),
+                                               "9990"))
         );
     }
 
     @Override
     public void dispose() {
-        clientMap.values().forEach( WildflyClient::close );
+        clientMap.values().forEach(WildflyClient::close);
     }
 }

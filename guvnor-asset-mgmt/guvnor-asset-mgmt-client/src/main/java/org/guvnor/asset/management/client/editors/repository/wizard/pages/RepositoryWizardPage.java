@@ -33,19 +33,19 @@ public abstract class RepositoryWizardPage implements WizardPage {
     protected boolean structurePageWasVisited = false;
 
     public void fireEvent() {
-        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
-        wizardPageStatusChangeEvent.fire( event );
+        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent(this);
+        wizardPageStatusChangeEvent.fire(event);
     }
 
     public CreateRepositoryWizardModel getModel() {
         return model;
     }
 
-    public void setModel( CreateRepositoryWizardModel model ) {
+    public void setModel(CreateRepositoryWizardModel model) {
         this.model = model;
     }
 
-    public void setStructurePageWasVisited( boolean structurePageWasVisited ) {
+    public void setStructurePageWasVisited(boolean structurePageWasVisited) {
         this.structurePageWasVisited = structurePageWasVisited;
     }
 }

@@ -21,6 +21,5 @@ public interface BaseAssetsMgmtView {
 
     ListBox getChooseRepositoryBox();
 
-    void displayNotification( String text );
-
+    void displayNotification(String text);
 }

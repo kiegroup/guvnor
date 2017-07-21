@@ -27,35 +27,34 @@ public class IdentifierUtils {
      * @param identifiers
      * @return
      */
-    public static String[] convertMavenIdentifierToJavaIdentifier( final String[] identifiers ) {
-        if ( identifiers == null || identifiers.length < 1 ) {
-            return new String[ 0 ];
+    public static String[] convertMavenIdentifierToJavaIdentifier(final String[] identifiers) {
+        if (identifiers == null || identifiers.length < 1) {
+            return new String[0];
         }
-        final String[] legalIdentifiers = new String[ identifiers.length ];
-        for ( int idx = 0; idx < identifiers.length; idx++ ) {
-            final String identifier = identifiers[ idx ];
-            final StringBuilder legalIdentifier = new StringBuilder( "" );
-            Character c = identifier.charAt( 0 );
-            if ( !Character.isJavaIdentifierStart( c ) ) {
-                legalIdentifier.append( "_" );
+        final String[] legalIdentifiers = new String[identifiers.length];
+        for (int idx = 0; idx < identifiers.length; idx++) {
+            final String identifier = identifiers[idx];
+            final StringBuilder legalIdentifier = new StringBuilder("");
+            Character c = identifier.charAt(0);
+            if (!Character.isJavaIdentifierStart(c)) {
+                legalIdentifier.append("_");
             } else {
-                legalIdentifier.append( c );
+                legalIdentifier.append(c);
             }
-            for ( int i = 1; i < identifier.length(); i++ ) {
-                c = identifier.charAt( i );
-                if ( Character.isJavaIdentifierPart( c ) ) {
-                    legalIdentifier.append( c );
+            for (int i = 1; i < identifier.length(); i++) {
+                c = identifier.charAt(i);
+                if (Character.isJavaIdentifierPart(c)) {
+                    legalIdentifier.append(c);
                 } else {
-                    legalIdentifier.append( "_" );
+                    legalIdentifier.append("_");
                 }
             }
-            if ( SourceVersion.isKeyword( legalIdentifier.toString() ) ) {
-                legalIdentifier.insert( 0,
-                                        "_" );
+            if (SourceVersion.isKeyword(legalIdentifier.toString())) {
+                legalIdentifier.insert(0,
+                                       "_");
             }
-            legalIdentifiers[ idx ] = legalIdentifier.toString();
+            legalIdentifiers[idx] = legalIdentifier.toString();
         }
         return legalIdentifiers;
     }
-
 }

@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.checkNotEmpty;
 
 /**
  *
@@ -31,42 +31,49 @@ public final class DiscussionAttributesUtil {
     private DiscussionAttributesUtil() {
     }
 
-    public static Map<String, Object> cleanup( final Map<String, Object> _attrs ) {
-        final Map<String, Object> attrs = new HashMap<String, Object>( _attrs );
+    public static Map<String, Object> cleanup(final Map<String, Object> _attrs) {
+        final Map<String, Object> attrs = new HashMap<String, Object>(_attrs);
 
-        for ( final String key : _attrs.keySet() ) {
-            if ( key.startsWith( DiscussionView.TIMESTAMP ) || key.startsWith( DiscussionView.AUTHOR ) || key.startsWith( DiscussionView.NOTE ) ) {
-                attrs.put( key, null );
+        for (final String key : _attrs.keySet()) {
+            if (key.startsWith(DiscussionView.TIMESTAMP) || key.startsWith(DiscussionView.AUTHOR) || key.startsWith(DiscussionView.NOTE)) {
+                attrs.put(key,
+                          null);
             }
         }
 
         return attrs;
     }
 
-    public static Map<String, Object> toMap( final DiscussionAttributes attrs,
-                                             final String... attributes ) {
+    public static Map<String, Object> toMap(final DiscussionAttributes attrs,
+                                            final String... attributes) {
         return new HashMap<String, Object>() {{
-            for ( final String attribute : attributes ) {
-                checkNotEmpty( "attribute", attribute );
+            for (final String attribute : attributes) {
+                checkNotEmpty("attribute",
+                              attribute);
 
-                if ( attribute.equals( "*" ) || attribute.equals( DiscussionView.DISCUSS ) ) {
-                    for ( int i = 0; i < attrs.discussion().size(); i++ ) {
-                        final DiscussionRecord record = attrs.discussion().get( i );
-                        put( buildAttrName( DiscussionView.TIMESTAMP, i ), record.getTimestamp() );
-                        put( buildAttrName( DiscussionView.AUTHOR, i ), record.getAuthor() );
-                        put( buildAttrName( DiscussionView.NOTE, i ), record.getNote() );
+                if (attribute.equals("*") || attribute.equals(DiscussionView.DISCUSS)) {
+                    for (int i = 0; i < attrs.discussion().size(); i++) {
+                        final DiscussionRecord record = attrs.discussion().get(i);
+                        put(buildAttrName(DiscussionView.TIMESTAMP,
+                                          i),
+                            record.getTimestamp());
+                        put(buildAttrName(DiscussionView.AUTHOR,
+                                          i),
+                            record.getAuthor());
+                        put(buildAttrName(DiscussionView.NOTE,
+                                          i),
+                            record.getNote());
                     }
                 }
-                if ( attribute.equals( "*" ) ) {
+                if (attribute.equals("*")) {
                     break;
                 }
             }
         }};
     }
 
-    private static String buildAttrName( final String title,
-                                         final int i ) {
+    private static String buildAttrName(final String title,
+                                        final int i) {
         return title + "[" + i + "]";
     }
-
 }

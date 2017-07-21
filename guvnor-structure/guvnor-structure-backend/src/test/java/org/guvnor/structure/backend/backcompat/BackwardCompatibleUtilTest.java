@@ -31,56 +31,56 @@ public class BackwardCompatibleUtilTest {
     @Test
     public void backwardCompatibilityNullTest() {
         final ConfigurationFactory factory = new ConfigurationFactoryImpl();
-        final BackwardCompatibleUtil backwardUtil = new BackwardCompatibleUtil( factory );
+        final BackwardCompatibleUtil backwardUtil = new BackwardCompatibleUtil(factory);
 
-        assertNull( backwardUtil.compat( null ) );
+        assertNull(backwardUtil.compat(null));
     }
 
     @Test
     public void backwardCompatibilityNullSecurityRolesTest() {
         final ConfigurationFactory factory = new ConfigurationFactoryImpl();
-        final BackwardCompatibleUtil backwardUtil = new BackwardCompatibleUtil( factory );
+        final BackwardCompatibleUtil backwardUtil = new BackwardCompatibleUtil(factory);
 
-        final ConfigGroup group = factory.newConfigGroup( ConfigType.PROJECT,
-                                                          "cool",
-                                                          "test" );
-        assertNotNull( backwardUtil.compat( group ) );
-        assertNotNull( backwardUtil.compat( group ).getConfigItem( "security:groups" ) );
+        final ConfigGroup group = factory.newConfigGroup(ConfigType.PROJECT,
+                                                         "cool",
+                                                         "test");
+        assertNotNull(backwardUtil.compat(group));
+        assertNotNull(backwardUtil.compat(group).getConfigItem("security:groups"));
     }
 
     @Test
     public void backwardCompatibilityExistingSecurityRolesTest() {
         final ConfigurationFactory factory = new ConfigurationFactoryImpl();
-        final BackwardCompatibleUtil backwardUtil = new BackwardCompatibleUtil( factory );
+        final BackwardCompatibleUtil backwardUtil = new BackwardCompatibleUtil(factory);
 
-        final ConfigGroup group = factory.newConfigGroup( ConfigType.PROJECT,
-                                                          "cool2",
-                                                          "test2" );
+        final ConfigGroup group = factory.newConfigGroup(ConfigType.PROJECT,
+                                                         "cool2",
+                                                         "test2");
 
-        group.addConfigItem( factory.newConfigItem( "security:roles",
-                                                    new ArrayList() {{
-                                                        add( "group1" );
-                                                    }} ) );
-        assertNotNull( backwardUtil.compat( group ).getConfigItem( "security:groups" ) );
-        assertEquals( 1,
-                      ( (List<String>) ( backwardUtil.compat( group ).getConfigItem( "security:groups" ) ).getValue() ).size() );
-        assertNull( backwardUtil.compat( group ).getConfigItem( "security:roles" ) );
+        group.addConfigItem(factory.newConfigItem("security:roles",
+                                                  new ArrayList() {{
+                                                      add("group1");
+                                                  }}));
+        assertNotNull(backwardUtil.compat(group).getConfigItem("security:groups"));
+        assertEquals(1,
+                     ((List<String>) (backwardUtil.compat(group).getConfigItem("security:groups")).getValue()).size());
+        assertNull(backwardUtil.compat(group).getConfigItem("security:roles"));
     }
 
     @Test
     public void backwardCompatibilityEmptySecurityRolesTest() {
         final ConfigurationFactory factory = new ConfigurationFactoryImpl();
-        final BackwardCompatibleUtil backwardUtil = new BackwardCompatibleUtil( factory );
+        final BackwardCompatibleUtil backwardUtil = new BackwardCompatibleUtil(factory);
 
-        final ConfigGroup group = factory.newConfigGroup( ConfigType.PROJECT,
-                                                          "cool3",
-                                                          "test3" );
+        final ConfigGroup group = factory.newConfigGroup(ConfigType.PROJECT,
+                                                         "cool3",
+                                                         "test3");
 
-        group.addConfigItem( factory.newConfigItem( "security:roles", new ArrayList() ) );
-        assertNotNull( backwardUtil.compat( group ).getConfigItem( "security:groups" ) );
-        assertEquals( 0,
-                      ( (List<String>) ( backwardUtil.compat( group ).getConfigItem( "security:groups" ) ).getValue() ).size() );
-        assertNull( backwardUtil.compat( group ).getConfigItem( "security:roles" ) );
+        group.addConfigItem(factory.newConfigItem("security:roles",
+                                                  new ArrayList()));
+        assertNotNull(backwardUtil.compat(group).getConfigItem("security:groups"));
+        assertEquals(0,
+                     ((List<String>) (backwardUtil.compat(group).getConfigItem("security:groups")).getValue()).size());
+        assertNull(backwardUtil.compat(group).getConfigItem("security:roles"));
     }
-
 }

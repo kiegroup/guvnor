@@ -20,16 +20,15 @@ import org.guvnor.ala.build.maven.config.MavenBuildExecConfig;
 import org.guvnor.ala.config.CloneableConfig;
 
 public class MavenBuildExecConfigImpl implements MavenBuildExecConfig,
-                                                 CloneableConfig<MavenBuildExecConfig>{
+                                                 CloneableConfig<MavenBuildExecConfig> {
 
     @Override
     public String toString() {
         return "MavenBuildExecConfigImpl{}";
     }
-    
+
     @Override
-    public MavenBuildExecConfig asNewClone( final MavenBuildExecConfig source ) {
+    public MavenBuildExecConfig asNewClone(final MavenBuildExecConfig source) {
         return new MavenBuildExecConfigImpl();
     }
-    
 }

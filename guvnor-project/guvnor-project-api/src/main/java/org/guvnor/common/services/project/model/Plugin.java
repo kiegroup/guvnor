@@ -33,11 +33,11 @@ public class Plugin {
         return dependencies;
     }
 
-    public void setDependencies( List<Dependency> dependencies ) {
+    public void setDependencies(List<Dependency> dependencies) {
         this.dependencies = dependencies;
     }
 
-    public void setGroupId( String groupId ) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
@@ -45,7 +45,7 @@ public class Plugin {
         return groupId;
     }
 
-    public void setArtifactId( String artifactId ) {
+    public void setArtifactId(String artifactId) {
         this.artifactId = artifactId;
     }
 
@@ -53,7 +53,7 @@ public class Plugin {
         return artifactId;
     }
 
-    public void setVersion( String version ) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -61,7 +61,7 @@ public class Plugin {
         return version;
     }
 
-    public void setExtensions( boolean extensions ) {
+    public void setExtensions(boolean extensions) {
         this.extensions = extensions;
     }
 

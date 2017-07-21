@@ -37,37 +37,37 @@ public class GeneratedFileAttributesViewTest {
 
     @Test
     public void readAttributesGeneratedFile() {
-        readAttributesTest( true );
+        readAttributesTest(true);
     }
 
     @Test
     public void readAttributesNonGeneratedFile() {
-        readAttributesTest( false );
+        readAttributesTest(false);
     }
 
-    private void readAttributesTest( final boolean generated ) {
-        AttrsStorage attrsStorage = mock( AttrsStorage.class );
-        when( attrsStorage.getContent() ).thenReturn( new HashMap<String, Object>() {{
-            put( GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME,
-                 generated );
-        }} );
-        AbstractPath path = mock( AbstractPath.class );
-        when( path.getAttrStorage() ).thenReturn( attrsStorage );
+    private void readAttributesTest(final boolean generated) {
+        AttrsStorage attrsStorage = mock(AttrsStorage.class);
+        when(attrsStorage.getContent()).thenReturn(new HashMap<String, Object>() {{
+            put(GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME,
+                generated);
+        }});
+        AbstractPath path = mock(AbstractPath.class);
+        when(path.getAttrStorage()).thenReturn(attrsStorage);
 
-        FileSystemProvider fileSystemProvider = mock( FileSystemProvider.class );
-        BasicFileAttributeView basicFileAttributeView = mock( BasicFileAttributeView.class );
-        when( basicFileAttributeView.readAttributes() ).thenReturn( mock( BasicFileAttributes.class ) );
-        when( fileSystemProvider.getFileAttributeView( any(),
-                                                       any() ) ).thenReturn( basicFileAttributeView );
-        FileSystem fileSystem = mock( FileSystem.class );
-        when( fileSystem.provider() ).thenReturn( fileSystemProvider );
-        when( path.getFileSystem() ).thenReturn( fileSystem );
+        FileSystemProvider fileSystemProvider = mock(FileSystemProvider.class);
+        BasicFileAttributeView basicFileAttributeView = mock(BasicFileAttributeView.class);
+        when(basicFileAttributeView.readAttributes()).thenReturn(mock(BasicFileAttributes.class));
+        when(fileSystemProvider.getFileAttributeView(any(),
+                                                     any())).thenReturn(basicFileAttributeView);
+        FileSystem fileSystem = mock(FileSystem.class);
+        when(fileSystem.provider()).thenReturn(fileSystemProvider);
+        when(path.getFileSystem()).thenReturn(fileSystem);
 
-        GeneratedAttributesView view = new GeneratedAttributesView( path );
+        GeneratedAttributesView view = new GeneratedAttributesView(path);
 
         GeneratedFileAttributes generatedFileAttributes = view.readAttributes();
 
-        assertEquals( generated,
-                      generatedFileAttributes.isGenerated() );
+        assertEquals(generated,
+                     generatedFileAttributes.isGenerated());
     }
 }

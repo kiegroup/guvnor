@@ -27,31 +27,39 @@ public class Constants {
 
     public static final String CONFIGURE_REPOSITORY = "ConfigureRepository";
 
-    public String getMessage( String key ) {
-        return key != null ? messages.getString( key ) : null;
+    public String getMessage(String key) {
+        return key != null ? messages.getString(key) : null;
     }
 
-    public String getMessage( String key, Object... params ) {
-        final String value = getMessage( key );
-        if ( value != null ) {
-            return MessageFormat.format( value, params );
+    public String getMessage(String key,
+                             Object... params) {
+        final String value = getMessage(key);
+        if (value != null) {
+            return MessageFormat.format(value,
+                                        params);
         }
         return null;
     }
 
-    public String configure_repository_start( String repo ) {
-        return getMessage( "ConfigureRepository_start", repo );
+    public String configure_repository_start(String repo) {
+        return getMessage("ConfigureRepository_start",
+                          repo);
     }
 
-    public String configure_repository_end( String repo ) {
-        return getMessage( "ConfigureRepository_end", repo );
+    public String configure_repository_end(String repo) {
+        return getMessage("ConfigureRepository_end",
+                          repo);
     }
 
-    public String configure_repository_failed( String repo ) {
-        return getMessage( "ConfigureRepository_failed", repo );
+    public String configure_repository_failed(String repo) {
+        return getMessage("ConfigureRepository_failed",
+                          repo);
     }
 
-    public String configure_repository_branch_created( String branch, String repo ) {
-        return getMessage( "ConfigureRepository_branch_created", branch, repo );
+    public String configure_repository_branch_created(String branch,
+                                                      String repo) {
+        return getMessage("ConfigureRepository_branch_created",
+                          branch,
+                          repo);
     }
 }

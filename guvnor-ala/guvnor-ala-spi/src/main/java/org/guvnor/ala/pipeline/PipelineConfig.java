@@ -16,8 +16,9 @@
 
 package org.guvnor.ala.pipeline;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.guvnor.ala.config.Config;
 
 /*

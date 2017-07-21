@@ -27,20 +27,23 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-import static com.google.gwt.dom.client.BrowserEvents.*;
+import static com.google.gwt.dom.client.BrowserEvents.CLICK;
+import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
 
 public class HyperLinkCell extends AbstractCell<HyperLinkCell.HyperLink> {
 
     interface HyperLinkTemplate extends SafeHtmlTemplates {
 
         @Template("<a title=\"{1}\" href=\"#\">{0}</a>")
-        SafeHtml hyperLink( final SafeHtml label, final String title );
+        SafeHtml hyperLink(final SafeHtml label,
+                           final String title);
     }
 
     interface TextTemplate extends SafeHtmlTemplates {
 
         @Template("<span title=\"{1}\">{0}</span>")
-        SafeHtml text( final String label, final String title );
+        SafeHtml text(final String label,
+                      final String title);
     }
 
     /**
@@ -51,22 +54,22 @@ public class HyperLinkCell extends AbstractCell<HyperLinkCell.HyperLink> {
         private String label;
         private boolean isLink;
 
-        public static HyperLink newLink( final String label ) {
-            return new HyperLink( label,
-                                  true );
+        public static HyperLink newLink(final String label) {
+            return new HyperLink(label,
+                                 true);
         }
 
-        public static HyperLink newText( final String label ) {
-            return new HyperLink( label,
-                                  false );
+        public static HyperLink newText(final String label) {
+            return new HyperLink(label,
+                                 false);
         }
 
-        private HyperLink( final String label,
-                           final boolean isLink ) {
-            this.label = PortablePreconditions.checkNotNull( "label",
-                                                             label );
-            this.isLink = PortablePreconditions.checkNotNull( "isLink",
-                                                              isLink );
+        private HyperLink(final String label,
+                          final boolean isLink) {
+            this.label = PortablePreconditions.checkNotNull("label",
+                                                            label);
+            this.isLink = PortablePreconditions.checkNotNull("isLink",
+                                                             isLink);
         }
 
         public String getLabel() {
@@ -76,69 +79,69 @@ public class HyperLinkCell extends AbstractCell<HyperLinkCell.HyperLink> {
         public boolean isLink() {
             return isLink;
         }
-
     }
 
-    private static HyperLinkTemplate hyperLinkTemplate = GWT.create( HyperLinkTemplate.class );
-    private static TextTemplate textTemplate = GWT.create( TextTemplate.class );
+    private static HyperLinkTemplate hyperLinkTemplate = GWT.create(HyperLinkTemplate.class);
+    private static TextTemplate textTemplate = GWT.create(TextTemplate.class);
 
     /**
      * Construct a new HyperLinkCell that will use a given
      * {@link SafeHtmlRenderer}.
      */
     public HyperLinkCell() {
-        super( CLICK,
-               KEYDOWN );
+        super(CLICK,
+              KEYDOWN);
     }
 
     @Override
-    public void onBrowserEvent( final Context context,
-                                final Element parent,
-                                final HyperLink value,
-                                final NativeEvent event,
-                                final ValueUpdater<HyperLink> valueUpdater ) {
-        super.onBrowserEvent( context,
-                              parent,
-                              value,
-                              event,
-                              valueUpdater );
-        if ( CLICK.equals( event.getType() ) ) {
-            onEnterKeyDown( context,
-                            parent,
-                            value,
-                            event,
-                            valueUpdater );
+    public void onBrowserEvent(final Context context,
+                               final Element parent,
+                               final HyperLink value,
+                               final NativeEvent event,
+                               final ValueUpdater<HyperLink> valueUpdater) {
+        super.onBrowserEvent(context,
+                             parent,
+                             value,
+                             event,
+                             valueUpdater);
+        if (CLICK.equals(event.getType())) {
+            onEnterKeyDown(context,
+                           parent,
+                           value,
+                           event,
+                           valueUpdater);
         }
     }
 
     @Override
-    protected void onEnterKeyDown( final Context context,
-                                   final Element parent,
-                                   final HyperLink value,
-                                   final NativeEvent event,
-                                   final ValueUpdater<HyperLink> valueUpdater ) {
+    protected void onEnterKeyDown(final Context context,
+                                  final Element parent,
+                                  final HyperLink value,
+                                  final NativeEvent event,
+                                  final ValueUpdater<HyperLink> valueUpdater) {
         final Element element = event.getEventTarget().cast();
-        if ( !parent.getFirstChildElement().equals( element ) ) {
+        if (!parent.getFirstChildElement().equals(element)) {
             return;
         }
         event.preventDefault();
         event.stopPropagation();
-        if ( valueUpdater != null ) {
-            valueUpdater.update( value );
+        if (valueUpdater != null) {
+            valueUpdater.update(value);
         }
     }
 
     @Override
-    public void render( final Context context,
-                        final HyperLink value,
-                        final SafeHtmlBuilder sb ) {
-        if ( value != null ) {
-            if ( value.isLink() ) {
-                sb.append( hyperLinkTemplate.hyperLink( SafeHtmlUtils.fromString( value.getLabel() ), value.getLabel() ) );
+    public void render(final Context context,
+                       final HyperLink value,
+                       final SafeHtmlBuilder sb) {
+        if (value != null) {
+            if (value.isLink()) {
+                sb.append(hyperLinkTemplate.hyperLink(SafeHtmlUtils.fromString(value.getLabel()),
+                                                      value.getLabel()));
             } else {
-                sb.append( textTemplate.text( value.getLabel(), value.getLabel() ) );
+                sb.append(textTemplate.text(value.getLabel(),
+                                            value.getLabel()));
             }
         }
     }
-
 }

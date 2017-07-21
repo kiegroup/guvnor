@@ -33,15 +33,15 @@ public class MavenRepositoryMetadata implements Serializable {
         //Required for java.io.Serializable
     }
 
-    public MavenRepositoryMetadata( final @MapsTo("id") String id,
-                                    final @MapsTo("url") String url,
-                                    final @MapsTo("source") MavenRepositorySource source ) {
-        this.id = PortablePreconditions.checkNotNull( "id",
-                                                      id );
-        this.url = PortablePreconditions.checkNotNull( "url",
-                                                       url );
-        this.source = PortablePreconditions.checkNotNull( "source",
-                                                          source );
+    public MavenRepositoryMetadata(final @MapsTo("id") String id,
+                                   final @MapsTo("url") String url,
+                                   final @MapsTo("source") MavenRepositorySource source) {
+        this.id = PortablePreconditions.checkNotNull("id",
+                                                     id);
+        this.url = PortablePreconditions.checkNotNull("url",
+                                                      url);
+        this.source = PortablePreconditions.checkNotNull("source",
+                                                         source);
     }
 
     public String getId() {
@@ -57,24 +57,23 @@ public class MavenRepositoryMetadata implements Serializable {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof MavenRepositoryMetadata ) ) {
+        if (!(o instanceof MavenRepositoryMetadata)) {
             return false;
         }
 
         MavenRepositoryMetadata that = (MavenRepositoryMetadata) o;
 
-        if ( !id.equals( that.id ) ) {
+        if (!id.equals(that.id)) {
             return false;
         }
-        if ( !url.equals( that.url ) ) {
+        if (!url.equals(that.url)) {
             return false;
         }
         return source == that.source;
-
     }
 
     @Override
@@ -87,5 +86,4 @@ public class MavenRepositoryMetadata implements Serializable {
         result = ~~result;
         return result;
     }
-
 }

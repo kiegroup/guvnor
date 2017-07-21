@@ -82,7 +82,8 @@ public class UIAppSetup {
             }
         };
 
-        final Stage<Input, SourceConfig> sourceConfigStage = config("Git Source", f -> gitConfig);
+        final Stage<Input, SourceConfig> sourceConfigStage = config("Git Source",
+                                                                    f -> gitConfig);
 
         final MavenProjectConfig projectConfig = new MavenProjectConfig() {
             @Override
@@ -90,7 +91,8 @@ public class UIAppSetup {
                 return "MavenProjectConfig";
             }
         };
-        final Stage<SourceConfig, ProjectConfig> projectConfigStage = config("Maven Project", f -> projectConfig);
+        final Stage<SourceConfig, ProjectConfig> projectConfigStage = config("Maven Project",
+                                                                             f -> projectConfig);
 
         final MavenBuildConfig mavenBuildConfig = new MavenBuildConfig() {
             @Override
@@ -114,26 +116,27 @@ public class UIAppSetup {
                 return result;
             }
         };
-        final Stage<ProjectConfig, BuildConfig> buildConfigStage = config("Maven Build Config", f -> mavenBuildConfig );
+        final Stage<ProjectConfig, BuildConfig> buildConfigStage = config("Maven Build Config",
+                                                                          f -> mavenBuildConfig);
 
-
-        final MavenBuildExecConfig mavenBuildExecConfig =  new MavenBuildExecConfig() {
+        final MavenBuildExecConfig mavenBuildExecConfig = new MavenBuildExecConfig() {
             @Override
             public String toString() {
                 return "MavenBuildExecConfig";
             }
         };
-        final Stage<BuildConfig, BinaryConfig> buildExecStage = config("Maven Build", f -> mavenBuildExecConfig);
+        final Stage<BuildConfig, BinaryConfig> buildExecStage = config("Maven Build",
+                                                                       f -> mavenBuildExecConfig);
 
-
-        final WildflyProviderConfig wildflyProviderConfig =  new WildflyProviderConfig() {
+        final WildflyProviderConfig wildflyProviderConfig = new WildflyProviderConfig() {
             @Override
             public String toString() {
                 return "WildflyProviderConfig";
             }
         };
 
-        final Stage<BinaryConfig, ProviderConfig> providerConfigStage = config("Wildfly Provider Config", f -> wildflyProviderConfig);
+        final Stage<BinaryConfig, ProviderConfig> providerConfigStage = config("Wildfly Provider Config",
+                                                                               f -> wildflyProviderConfig);
 
         final ContextAwareWildflyRuntimeExecConfig wildflyRuntimeExecConfig = new ContextAwareWildflyRuntimeExecConfig() {
             @Override
@@ -142,8 +145,8 @@ public class UIAppSetup {
             }
         };
 
-        final Stage<ProviderConfig, RuntimeConfig> runtimeExecStage = config("Wildfly Runtime Exec", f -> wildflyRuntimeExecConfig);
-
+        final Stage<ProviderConfig, RuntimeConfig> runtimeExecStage = config("Wildfly Runtime Exec",
+                                                                             f -> wildflyRuntimeExecConfig);
 
         final Pipeline pipeline1 = PipelineFactory
                 .startFrom(sourceConfigStage)
@@ -153,7 +156,6 @@ public class UIAppSetup {
                 .andThen(providerConfigStage)
                 .andThen(runtimeExecStage).buildAs("pipeline from stages");
 
-
         final List<Config> configs = new ArrayList<>();
         configs.add(gitConfig);
         configs.add(projectConfig);
@@ -162,11 +164,13 @@ public class UIAppSetup {
         configs.add(wildflyProviderConfig);
         configs.add(wildflyRuntimeExecConfig);
 
-        final PipelineConfigImpl pipelineConfig = new PipelineConfigImpl("pipeline from configs", configs);
+        final PipelineConfigImpl pipelineConfig = new PipelineConfigImpl("pipeline from configs",
+                                                                         configs);
         final Pipeline pipeline2 = PipelineFactory.startFrom(null).build(pipelineConfig);
 
-        pipelineRegistry.registerPipeline(pipeline1, WildflyProviderType.instance());
-        pipelineRegistry.registerPipeline(pipeline2, WildflyProviderType.instance());
-
+        pipelineRegistry.registerPipeline(pipeline1,
+                                          WildflyProviderType.instance());
+        pipelineRegistry.registerPipeline(pipeline2,
+                                          WildflyProviderType.instance());
     }
 }

@@ -19,5 +19,4 @@ package org.guvnor.asset.management.client.editors.repository.structure;
 public interface HasModel<T> {
 
     T getModel();
-
 }

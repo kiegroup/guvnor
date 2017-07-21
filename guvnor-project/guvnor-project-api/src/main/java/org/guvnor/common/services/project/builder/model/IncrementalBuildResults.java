@@ -34,7 +34,7 @@ public class IncrementalBuildResults {
         //Marshalling
     }
 
-    public IncrementalBuildResults( final GAV gav ) {
+    public IncrementalBuildResults(final GAV gav) {
         this.gav = gav;
     }
 
@@ -43,19 +43,19 @@ public class IncrementalBuildResults {
     }
 
     public List<BuildMessage> getAddedMessages() {
-        return Collections.unmodifiableList( addedMessages );
+        return Collections.unmodifiableList(addedMessages);
     }
 
     public List<BuildMessage> getRemovedMessages() {
-        return Collections.unmodifiableList( removedMessages );
+        return Collections.unmodifiableList(removedMessages);
     }
 
-    public void addAddedMessage( final BuildMessage message ) {
-        this.addedMessages.add( message );
+    public void addAddedMessage(final BuildMessage message) {
+        this.addedMessages.add(message);
     }
 
-    public void addRemovedMessage( final BuildMessage message ) {
-        this.removedMessages.add( message );
+    public void addRemovedMessage(final BuildMessage message) {
+        this.removedMessages.add(message);
     }
 
     public void addAllAddedMessages(List<BuildMessage> buildMessages) {

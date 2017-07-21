@@ -27,8 +27,8 @@ import org.guvnor.structure.server.config.PasswordService;
 import org.guvnor.structure.server.repositories.RepositoryFactoryHelper;
 import org.uberfire.io.IOService;
 
-import static org.guvnor.structure.repositories.impl.git.GitRepository.*;
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.guvnor.structure.repositories.impl.git.GitRepository.SCHEME;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
 
 @ApplicationScoped
 public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
@@ -37,7 +37,6 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
 
     @Inject
     private PasswordService secureService;
-
 
     public GitRepositoryFactoryHelper() {
     }
@@ -49,24 +48,28 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
 
     @Override
     public boolean accept(final ConfigGroup repoConfig) {
-        checkNotNull("repoConfig", repoConfig);
+        checkNotNull("repoConfig",
+                     repoConfig);
         final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem(EnvironmentParameters.SCHEME);
-        checkNotNull("schemeConfigItem", schemeConfigItem);
+        checkNotNull("schemeConfigItem",
+                     schemeConfigItem);
         return SCHEME.equals(schemeConfigItem.getValue());
     }
 
     @Override
-    public Repository newRepository( final ConfigGroup repoConfig ) {
+    public Repository newRepository(final ConfigGroup repoConfig) {
 
-        validate( repoConfig );
+        validate(repoConfig);
 
-        return new GitRepositoryBuilder( ioService,
-                                      secureService).build(repoConfig);
+        return new GitRepositoryBuilder(ioService,
+                                        secureService).build(repoConfig);
     }
 
     private void validate(ConfigGroup repoConfig) {
-        checkNotNull("repoConfig", repoConfig);
+        checkNotNull("repoConfig",
+                     repoConfig);
         final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem(EnvironmentParameters.SCHEME);
-        checkNotNull("schemeConfigItem", schemeConfigItem);
+        checkNotNull("schemeConfigItem",
+                     schemeConfigItem);
     }
 }

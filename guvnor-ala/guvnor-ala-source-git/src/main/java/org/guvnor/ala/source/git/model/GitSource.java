@@ -31,8 +31,8 @@ public class GitSource implements Source,
     private final GitRepository repository;
     private final Path path;
 
-    public GitSource( final GitRepository repository,
-                      final Path path ) {
+    public GitSource(final GitRepository repository,
+                     final Path path) {
         this.repository = repository;
         this.path = path;
     }
@@ -47,8 +47,8 @@ public class GitSource implements Source,
     }
 
     @Override
-    public GitSource asNewClone( final GitSource source ) {
-        return new GitSource( source.getRepository(), source.getPath() );
+    public GitSource asNewClone(final GitSource source) {
+        return new GitSource(source.getRepository(),
+                             source.getPath());
     }
-
 }

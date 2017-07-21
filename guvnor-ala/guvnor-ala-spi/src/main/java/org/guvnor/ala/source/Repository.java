@@ -19,8 +19,8 @@ package org.guvnor.ala.source;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.guvnor.ala.exceptions.SourcingException;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.*;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 
 /**
  * Type to represent a Source Code Repository
@@ -56,6 +56,6 @@ public interface Repository {
     * @return the Source from the specified repository path
     * @see Source
      */
-    Source getSource( final String root,
-                      final String... path ) throws SourcingException;
+    Source getSource(final String root,
+                     final String... path) throws SourcingException;
 }

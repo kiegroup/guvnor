@@ -32,9 +32,9 @@ public interface FileDiscoveryService {
      * @param recursive True is sub-folders are to be scanned
      * @return
      */
-    Collection<Path> discoverFiles( final Path pathToSearch,
-                                    final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> filter,
-                                    final boolean recursive );
+    Collection<Path> discoverFiles(final Path pathToSearch,
+                                   final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> filter,
+                                   final boolean recursive);
 
     /**
      * Discover files. Convenience method excluding sub-folders
@@ -42,7 +42,6 @@ public interface FileDiscoveryService {
      * @param filter A filter to restrict the matched files.
      * @return
      */
-    Collection<Path> discoverFiles( final Path pathToSearch,
-                                    final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> filter );
-
+    Collection<Path> discoverFiles(final Path pathToSearch,
+                                   final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> filter);
 }

@@ -31,7 +31,7 @@ public class RemoveOrganizationalUnitRequest extends JobRequest {
         return organizationalUnitName;
     }
 
-    public void setOrganizationalUnitName( String organizationalUnitName ) {
+    public void setOrganizationalUnitName(String organizationalUnitName) {
         this.organizationalUnitName = organizationalUnitName;
     }
 
@@ -39,7 +39,7 @@ public class RemoveOrganizationalUnitRequest extends JobRequest {
         return owner;
     }
 
-    public void setOwner( String owner ) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
@@ -47,7 +47,7 @@ public class RemoveOrganizationalUnitRequest extends JobRequest {
         return description;
     }
 
-    public void setDescription( String description ) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -55,7 +55,7 @@ public class RemoveOrganizationalUnitRequest extends JobRequest {
         return repositories;
     }
 
-    public void setRepositories( List<String> repositories ) {
+    public void setRepositories(List<String> repositories) {
         this.repositories = repositories;
     }
 }

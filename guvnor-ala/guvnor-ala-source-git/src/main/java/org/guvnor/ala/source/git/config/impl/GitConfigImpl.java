@@ -20,7 +20,7 @@ import org.guvnor.ala.config.CloneableConfig;
 import org.guvnor.ala.source.git.config.GitConfig;
 
 public class GitConfigImpl implements GitConfig,
-        CloneableConfig<GitConfig> {
+                                      CloneableConfig<GitConfig> {
 
     private String outPath;
     private String branch;
@@ -36,11 +36,11 @@ public class GitConfigImpl implements GitConfig,
         this.createRepo = GitConfig.super.getCreateRepo();
     }
 
-    public GitConfigImpl( final String outPath,
-            final String branch,
-            final String origin,
-            final String repoName, 
-            final String createRepo ) {
+    public GitConfigImpl(final String outPath,
+                         final String branch,
+                         final String origin,
+                         final String repoName,
+                         final String createRepo) {
         this.outPath = outPath;
         this.branch = branch;
         this.origin = origin;
@@ -51,7 +51,6 @@ public class GitConfigImpl implements GitConfig,
     @Override
     public String getOutPath() {
         return outPath;
-
     }
 
     @Override
@@ -69,19 +68,19 @@ public class GitConfigImpl implements GitConfig,
         return repoName;
     }
 
-    public void setOutPath( String outPath ) {
+    public void setOutPath(String outPath) {
         this.outPath = outPath;
     }
 
-    public void setBranch( String branch ) {
+    public void setBranch(String branch) {
         this.branch = branch;
     }
 
-    public void setOrigin( String origin ) {
+    public void setOrigin(String origin) {
         this.origin = origin;
     }
 
-    public void setRepoName( String repoName ) {
+    public void setRepoName(String repoName) {
         this.repoName = repoName;
     }
 
@@ -89,7 +88,7 @@ public class GitConfigImpl implements GitConfig,
         return createRepo;
     }
 
-    public void setCreateRepo( String createRepo ) {
+    public void setCreateRepo(String createRepo) {
         this.createRepo = createRepo;
     }
 
@@ -98,15 +97,12 @@ public class GitConfigImpl implements GitConfig,
         return "GitConfigImpl{" + "outPath=" + outPath + ", branch=" + branch + ", origin=" + origin + ", repoName=" + repoName + ", createRepo=" + createRepo + '}';
     }
 
-    
-
     @Override
-    public GitConfig asNewClone( final GitConfig source ) {
-        return new GitConfigImpl( source.getOutPath(),
-                source.getBranch(),
-                source.getOrigin(),
-                source.getRepoName(), 
-                source.getCreateRepo() );
+    public GitConfig asNewClone(final GitConfig source) {
+        return new GitConfigImpl(source.getOutPath(),
+                                 source.getBranch(),
+                                 source.getOrigin(),
+                                 source.getRepoName(),
+                                 source.getCreateRepo());
     }
-
 }

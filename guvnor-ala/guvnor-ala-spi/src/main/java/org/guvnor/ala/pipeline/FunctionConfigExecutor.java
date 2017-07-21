@@ -26,6 +26,6 @@ import java.util.function.Function;
  *  @see BiFunction
  */
 public interface FunctionConfigExecutor<T, R> extends ConfigExecutor,
-                                                            Function<T, Optional<R>> {
+                                                      Function<T, Optional<R>> {
 
 }

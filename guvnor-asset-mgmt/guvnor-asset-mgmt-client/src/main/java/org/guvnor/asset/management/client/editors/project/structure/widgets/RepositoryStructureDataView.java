@@ -30,24 +30,23 @@ public interface RepositoryStructureDataView
     interface Presenter {
 
         void onInitRepositoryStructure();
-
     }
 
-    void setGroupId( final String id );
+    void setGroupId(final String id);
 
     String getGroupId();
 
-    void setArtifactId( final String id );
+    void setArtifactId(final String id);
 
     String getArtifactId();
 
-    void setVersion( final String version );
+    void setVersion(final String version);
 
     String getVersion();
 
     void setEditUnmanagedRepositoryText();
 
-    void setEditModuleVisibility( final boolean visible );
+    void setEditModuleVisibility(final boolean visible);
 
     void setEditMultiModuleProjectText();
 
@@ -56,5 +55,4 @@ public interface RepositoryStructureDataView
     void setCreateStructureText();
 
     void clear();
-
 }

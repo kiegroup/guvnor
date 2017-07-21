@@ -38,59 +38,59 @@ public class ProjectRepositoriesContentHandlerTest {
 
     @Test
     public void testNullSourceXml() throws Exception {
-        final ProjectRepositories repositories = handler.toModel( null );
-        assertNotNull( repositories );
-        assertEquals( 0,
-                      repositories.getRepositories().size() );
+        final ProjectRepositories repositories = handler.toModel(null);
+        assertNotNull(repositories);
+        assertEquals(0,
+                     repositories.getRepositories().size());
     }
 
     @Test
     public void testEmptySourceXml() throws Exception {
-        final ProjectRepositories repositories = handler.toModel( "" );
-        assertNotNull( repositories );
-        assertEquals( 0,
-                      repositories.getRepositories().size() );
+        final ProjectRepositories repositories = handler.toModel("");
+        assertNotNull(repositories);
+        assertEquals(0,
+                     repositories.getRepositories().size());
     }
 
     @Test
     public void testNullModel() throws Exception {
-        final String xml = handler.toString( null );
-        assertEquals( "",
-                      xml );
+        final String xml = handler.toString(null);
+        assertEquals("",
+                     xml);
     }
 
     @Test
     public void testEmptyRepositories() throws Exception {
-        final String xml = handler.toString( new ProjectRepositories() );
-        assertEquals( "<project-repositories>\n" +
-                              "  <repositories/>\n" +
-                              "</project-repositories>",
-                      xml );
+        final String xml = handler.toString(new ProjectRepositories());
+        assertEquals("<project-repositories>\n" +
+                             "  <repositories/>\n" +
+                             "</project-repositories>",
+                     xml);
     }
 
     @Test
     public void testRepositoriesMarshalling() throws Exception {
         final Set<ProjectRepositories.ProjectRepository> repositories = new HashSet<ProjectRepositories.ProjectRepository>();
-        repositories.add( new ProjectRepositories.ProjectRepository( true,
-                                                                     new MavenRepositoryMetadata( "id",
-                                                                                                  "url",
-                                                                                                  MavenRepositorySource.LOCAL ) ) );
-        final ProjectRepositories projectRepositories = new ProjectRepositories( repositories );
+        repositories.add(new ProjectRepositories.ProjectRepository(true,
+                                                                   new MavenRepositoryMetadata("id",
+                                                                                               "url",
+                                                                                               MavenRepositorySource.LOCAL)));
+        final ProjectRepositories projectRepositories = new ProjectRepositories(repositories);
 
-        final String xml = handler.toString( projectRepositories );
-        assertEquals( "<project-repositories>\n" +
-                              "  <repositories>\n" +
-                              "    <repository>\n" +
-                              "      <include>true</include>\n" +
-                              "      <metadata>\n" +
-                              "        <id>id</id>\n" +
-                              "        <url>url</url>\n" +
-                              "        <source>LOCAL</source>\n" +
-                              "      </metadata>\n" +
-                              "    </repository>\n" +
-                              "  </repositories>\n" +
-                              "</project-repositories>",
-                      xml );
+        final String xml = handler.toString(projectRepositories);
+        assertEquals("<project-repositories>\n" +
+                             "  <repositories>\n" +
+                             "    <repository>\n" +
+                             "      <include>true</include>\n" +
+                             "      <metadata>\n" +
+                             "        <id>id</id>\n" +
+                             "        <url>url</url>\n" +
+                             "        <source>LOCAL</source>\n" +
+                             "      </metadata>\n" +
+                             "    </repository>\n" +
+                             "  </repositories>\n" +
+                             "</project-repositories>",
+                     xml);
     }
 
     @Test
@@ -108,21 +108,21 @@ public class ProjectRepositoriesContentHandlerTest {
                 "  </repositories>\n" +
                 "</project-repositories>";
 
-        final ProjectRepositories repositories = handler.toModel( xml );
-        assertNotNull( repositories );
-        assertNotNull( repositories.getRepositories() );
-        assertEquals( 1,
-                      repositories.getRepositories().size() );
+        final ProjectRepositories repositories = handler.toModel(xml);
+        assertNotNull(repositories);
+        assertNotNull(repositories.getRepositories());
+        assertEquals(1,
+                     repositories.getRepositories().size());
 
         final ProjectRepositories.ProjectRepository repository = repositories.getRepositories().iterator().next();
-        assertEquals( "id",
-                      repository.getMetadata().getId() );
-        assertEquals( "url",
-                      repository.getMetadata().getUrl() );
-        assertEquals( MavenRepositorySource.LOCAL,
-                      repository.getMetadata().getSource() );
-        assertEquals( true,
-                      repository.isIncluded() );
+        assertEquals("id",
+                     repository.getMetadata().getId());
+        assertEquals("url",
+                     repository.getMetadata().getUrl());
+        assertEquals(MavenRepositorySource.LOCAL,
+                     repository.getMetadata().getSource());
+        assertEquals(true,
+                     repository.isIncluded());
     }
 
     @Test
@@ -138,11 +138,10 @@ public class ProjectRepositoriesContentHandlerTest {
                 "  </repositories>\n" +
                 "</project-repositories>";
 
-        final ProjectRepositories repositories = handler.toModel( xml );
-        assertNotNull( repositories );
-        assertNotNull( repositories.getRepositories() );
-        assertEquals( 0,
-                      repositories.getRepositories().size() );
+        final ProjectRepositories repositories = handler.toModel(xml);
+        assertNotNull(repositories);
+        assertNotNull(repositories.getRepositories());
+        assertEquals(0,
+                     repositories.getRepositories().size());
     }
-
 }

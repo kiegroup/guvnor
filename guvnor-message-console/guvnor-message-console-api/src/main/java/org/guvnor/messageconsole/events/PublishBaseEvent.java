@@ -52,7 +52,7 @@ public abstract class PublishBaseEvent {
         return sessionId;
     }
 
-    public void setSessionId( String sessionId ) {
+    public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
 
@@ -60,7 +60,7 @@ public abstract class PublishBaseEvent {
         return userId;
     }
 
-    public void setUserId( String userId ) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -68,7 +68,7 @@ public abstract class PublishBaseEvent {
         return place;
     }
 
-    public void setPlace( Place place ) {
+    public void setPlace(Place place) {
         this.place = place;
     }
 
@@ -76,7 +76,7 @@ public abstract class PublishBaseEvent {
         return showSystemConsole;
     }
 
-    public void setShowSystemConsole( boolean showSystemConsole ) {
+    public void setShowSystemConsole(boolean showSystemConsole) {
         this.showSystemConsole = showSystemConsole;
     }
 
@@ -84,13 +84,13 @@ public abstract class PublishBaseEvent {
         return messagesToPublish;
     }
 
-    public void setMessagesToPublish( List<SystemMessage> messagesToPublish ) {
+    public void setMessagesToPublish(List<SystemMessage> messagesToPublish) {
         this.messagesToPublish = messagesToPublish;
     }
 
     @Portable
     public static enum Place {
-        TOP, END;
+        TOP,
+        END;
     }
-
 }

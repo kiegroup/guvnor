@@ -28,9 +28,11 @@ import org.guvnor.rest.client.UpdateOrganizationalUnitRequest;
 public class UpdateOrgUnitCmd extends AbstractJobCommand {
 
     public UpdateOrgUnitCmd(final JobRequestHelper jobRequestHelper,
-                                     final JobResultManager jobResultManager,
-                                     final Map<String, Object> context) {
-        super(jobRequestHelper, jobResultManager, context);
+                            final JobResultManager jobResultManager,
+                            final Map<String, Object> context) {
+        super(jobRequestHelper,
+              jobResultManager,
+              context);
     }
 
     @Override
@@ -39,15 +41,18 @@ public class UpdateOrgUnitCmd extends AbstractJobCommand {
         UpdateOrganizationalUnitRequest jobRequest = (UpdateOrganizationalUnitRequest) request;
 
         JobResult result = null;
-        try { 
-            result = helper.updateOrganizationalUnit( jobRequest.getJobId(),
-                                                      jobRequest.getOrganizationalUnitName(),
-                                                      jobRequest.getOwner(),
-                                                      jobRequest.getDefaultGroupId() );
-        } finally { 
+        try {
+            result = helper.updateOrganizationalUnit(jobRequest.getJobId(),
+                                                     jobRequest.getOrganizationalUnitName(),
+                                                     jobRequest.getOwner(),
+                                                     jobRequest.getDefaultGroupId());
+        } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug( "-----updateOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {} {} [{}]",
-                    jobRequest.getOrganizationalUnitName(), jobRequest.getOwner(), jobRequest.getDefaultGroupId(), status );
+            logger.debug("-----updateOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {} {} [{}]",
+                         jobRequest.getOrganizationalUnitName(),
+                         jobRequest.getOwner(),
+                         jobRequest.getDefaultGroupId(),
+                         status);
         }
         return result;
     }

@@ -34,22 +34,22 @@ public class Dependencies
         dependencies = new ArrayList<Dependency>();
     }
 
-    public Dependencies( final List<Dependency> dependencies ) {
+    public Dependencies(final List<Dependency> dependencies) {
         this.dependencies = dependencies;
     }
 
-    public boolean containsDependency( final GAV other ) {
+    public boolean containsDependency(final GAV other) {
         for (Dependency dependency : dependencies) {
-            if ( dependency.isGAVEqual( other ) ) {
+            if (dependency.isGAVEqual(other)) {
                 return true;
             }
         }
         return false;
     }
 
-    public Dependency get( final GAV gav ) {
-        for ( Dependency dependency : dependencies ) {
-            if ( dependency.isGAVEqual( gav ) ) {
+    public Dependency get(final GAV gav) {
+        for (Dependency dependency : dependencies) {
+            if (dependency.isGAVEqual(gav)) {
                 return dependency;
             }
         }
@@ -57,17 +57,17 @@ public class Dependencies
         return null;
     }
 
-    public Collection<GAV> getGavs( final String... scopes ) {
-        final List<String> scopesAsList = Arrays.asList( scopes );
+    public Collection<GAV> getGavs(final String... scopes) {
+        final List<String> scopesAsList = Arrays.asList(scopes);
 
-        if ( scopesAsList.isEmpty() ) {
-            return new ArrayList<GAV>( dependencies );
+        if (scopesAsList.isEmpty()) {
+            return new ArrayList<GAV>(dependencies);
         } else {
             final ArrayList<GAV> result = new ArrayList<GAV>();
 
-            for ( Dependency dependency : dependencies ) {
-                if ( scopesAsList.contains( dependency.getScope() ) ) {
-                    result.add( dependency );
+            for (Dependency dependency : dependencies) {
+                if (scopesAsList.contains(dependency.getScope())) {
+                    result.add(dependency);
                 }
             }
 
@@ -76,98 +76,130 @@ public class Dependencies
     }
 
     public Collection<GAV> getCompileScopedGavs() {
-        return getGavs( "compile", null );
+        return getGavs("compile",
+                       null);
     }
 
-    @Override public int size() {
+    @Override
+    public int size() {
         return dependencies.size();
     }
 
-    @Override public boolean isEmpty() {
+    @Override
+    public boolean isEmpty() {
         return dependencies.isEmpty();
     }
 
-    @Override public boolean contains( Object o ) {
-        return dependencies.contains( o );
+    @Override
+    public boolean contains(Object o) {
+        return dependencies.contains(o);
     }
 
-    @Override public Iterator<Dependency> iterator() {
+    @Override
+    public Iterator<Dependency> iterator() {
         return dependencies.iterator();
     }
 
-    @Override public Object[] toArray() {
+    @Override
+    public Object[] toArray() {
         return dependencies.toArray();
     }
 
-    @Override public <T> T[] toArray( T[] ts ) {
-        return dependencies.toArray( ts );
+    @Override
+    public <T> T[] toArray(T[] ts) {
+        return dependencies.toArray(ts);
     }
 
-    @Override public boolean add( Dependency dependency ) {
-        return dependencies.add( dependency );
+    @Override
+    public boolean add(Dependency dependency) {
+        return dependencies.add(dependency);
     }
 
-    @Override public boolean remove( Object o ) {
-        return dependencies.remove( o );
+    @Override
+    public boolean remove(Object o) {
+        return dependencies.remove(o);
     }
 
-    @Override public boolean containsAll( Collection<?> collection ) {
-        return dependencies.containsAll( collection );
+    @Override
+    public boolean containsAll(Collection<?> collection) {
+        return dependencies.containsAll(collection);
     }
 
-    @Override public boolean addAll( Collection<? extends Dependency> collection ) {
-        return dependencies.addAll( collection );
+    @Override
+    public boolean addAll(Collection<? extends Dependency> collection) {
+        return dependencies.addAll(collection);
     }
 
-    @Override public boolean addAll( int i, Collection<? extends Dependency> collection ) {
-        return dependencies.addAll( i, collection );
+    @Override
+    public boolean addAll(int i,
+                          Collection<? extends Dependency> collection) {
+        return dependencies.addAll(i,
+                                   collection);
     }
 
-    @Override public boolean removeAll( Collection<?> collection ) {
-        return dependencies.removeAll( collection );
+    @Override
+    public boolean removeAll(Collection<?> collection) {
+        return dependencies.removeAll(collection);
     }
 
-    @Override public boolean retainAll( Collection<?> collection ) {
-        return dependencies.retainAll( collection );
+    @Override
+    public boolean retainAll(Collection<?> collection) {
+        return dependencies.retainAll(collection);
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
         dependencies.clear();
     }
 
-    @Override public Dependency get( int i ) {
-        return dependencies.get( i );
+    @Override
+    public Dependency get(int i) {
+        return dependencies.get(i);
     }
 
-    @Override public Dependency set( int i, Dependency dependency ) {
-        return dependencies.set( i, dependency );
+    @Override
+    public Dependency set(int i,
+                          Dependency dependency) {
+        return dependencies.set(i,
+                                dependency);
     }
 
-    @Override public void add( int i, Dependency dependency ) {
-        dependencies.add( i, dependency );
+    @Override
+    public void add(int i,
+                    Dependency dependency) {
+        dependencies.add(i,
+                         dependency);
     }
 
-    @Override public Dependency remove( int i ) {
-        return dependencies.remove( i );
+    @Override
+    public Dependency remove(int i) {
+        return dependencies.remove(i);
     }
 
-    @Override public int indexOf( Object o ) {
-        return dependencies.indexOf( o );
+    @Override
+    public int indexOf(Object o) {
+        return dependencies.indexOf(o);
     }
 
-    @Override public int lastIndexOf( Object o ) {
-        return dependencies.lastIndexOf( o );
+    @Override
+    public int lastIndexOf(Object o) {
+        return dependencies.lastIndexOf(o);
     }
 
-    @Override public ListIterator<Dependency> listIterator() {
+    @Override
+    public ListIterator<Dependency> listIterator() {
         return dependencies.listIterator();
     }
 
-    @Override public ListIterator<Dependency> listIterator( int i ) {
-        return dependencies.listIterator( i );
+    @Override
+    public ListIterator<Dependency> listIterator(int i) {
+        return dependencies.listIterator(i);
     }
 
-    @Override public List<Dependency> subList( int i, int i1 ) {
-        return dependencies.subList( i, i1 );
+    @Override
+    public List<Dependency> subList(int i,
+                                    int i1) {
+        return dependencies.subList(i,
+                                    i1);
     }
 }

@@ -28,9 +28,8 @@ import org.guvnor.ala.config.Config;
 public class Input
         extends HashMap<String, String>
         implements Map<String, String>,
-        Config {
+                   Config {
 
     public Input() {
     }
-
 }

@@ -25,63 +25,65 @@ import org.guvnor.common.services.shared.config.ResourceConfigService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
 
 @Service
 @ApplicationScoped
 public class ResourceConfigServiceImpl implements ResourceConfigService {
 
     @Override
-    public Map<String, Object> configAttrs( final Map<String, Object> attrs) {
-        checkNotNull( "_attrs", attrs );
+    public Map<String, Object> configAttrs(final Map<String, Object> attrs) {
+        checkNotNull("_attrs",
+                     attrs);
 
-        attrs.putAll( ConfigAttributesUtil.toMap( new ConfigAttributes() {
+        attrs.putAll(ConfigAttributesUtil.toMap(new ConfigAttributes() {
 
-            @Override
-            public FileTime lastModifiedTime() {
-                return null;
-            }
+                                                    @Override
+                                                    public FileTime lastModifiedTime() {
+                                                        return null;
+                                                    }
 
-            @Override
-            public FileTime lastAccessTime() {
-                return null;
-            }
+                                                    @Override
+                                                    public FileTime lastAccessTime() {
+                                                        return null;
+                                                    }
 
-            @Override
-            public FileTime creationTime() {
-                return null;
-            }
+                                                    @Override
+                                                    public FileTime creationTime() {
+                                                        return null;
+                                                    }
 
-            @Override
-            public boolean isRegularFile() {
-                return false;
-            }
+                                                    @Override
+                                                    public boolean isRegularFile() {
+                                                        return false;
+                                                    }
 
-            @Override
-            public boolean isDirectory() {
-                return false;
-            }
+                                                    @Override
+                                                    public boolean isDirectory() {
+                                                        return false;
+                                                    }
 
-            @Override
-            public boolean isSymbolicLink() {
-                return false;
-            }
+                                                    @Override
+                                                    public boolean isSymbolicLink() {
+                                                        return false;
+                                                    }
 
-            @Override
-            public boolean isOther() {
-                return false;
-            }
+                                                    @Override
+                                                    public boolean isOther() {
+                                                        return false;
+                                                    }
 
-            @Override
-            public long size() {
-                return 0;
-            }
+                                                    @Override
+                                                    public long size() {
+                                                        return 0;
+                                                    }
 
-            @Override
-            public Object fileKey() {
-                return null;
-            }
-        }, "*" ) );
+                                                    @Override
+                                                    public Object fileKey() {
+                                                        return null;
+                                                    }
+                                                },
+                                                "*"));
 
         return attrs;
     }

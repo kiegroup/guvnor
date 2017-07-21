@@ -29,14 +29,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.project.MavenProject;
 import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.guvnor.ala.build.Project;
-
 import org.guvnor.ala.build.maven.model.impl.MavenProjectImpl;
 import org.guvnor.ala.build.maven.util.MavenBuildExecutor;
-
 import org.guvnor.ala.build.maven.util.RepositoryVisitor;
 import org.guvnor.ala.registry.local.InMemorySourceRegistry;
 import org.guvnor.ala.source.Source;
@@ -44,10 +43,11 @@ import org.guvnor.ala.source.git.GitHub;
 import org.guvnor.ala.source.git.config.impl.GitConfigImpl;
 import org.guvnor.ala.source.git.executor.GitConfigExecutor;
 import org.junit.After;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.java.nio.file.InvalidPathException;
+
+import static org.junit.Assert.*;
 
 /**
  * Maven Compilation output parsing to evaluate the process output
@@ -61,99 +61,111 @@ public class MavenCliOutputTest {
 
     @Before
     public void setUp() throws IOException {
-        tempPath = Files.createTempDirectory( "zzz" ).toFile();
+        tempPath = Files.createTempDirectory("zzz").toFile();
     }
 
     @After
     public void tearDown() {
-        FileUtils.deleteQuietly( tempPath );
+        FileUtils.deleteQuietly(tempPath);
     }
 
     @Test
     public void buildAppAndWaitForMavenOutputTest() throws IOException {
         final GitHub gitHub = new GitHub();
-        gitHub.getRepository( "salaboy/drools-workshop", new HashMap<String, String>() {
-            {
-                put( "out-dir", tempPath.getAbsolutePath() );
-            }
-        } );
+        gitHub.getRepository("salaboy/drools-workshop",
+                             new HashMap<String, String>() {
+                                 {
+                                     put("out-dir",
+                                         tempPath.getAbsolutePath());
+                                 }
+                             });
 
-        final Optional<Source> _source = new GitConfigExecutor( new InMemorySourceRegistry() ).apply( new GitConfigImpl( tempPath.getAbsolutePath(),
-                "master",
-                "https://github.com/kiegroup/drools-workshop",
-                "drools-workshop",
-                "true" ) );
+        final Optional<Source> _source = new GitConfigExecutor(new InMemorySourceRegistry()).apply(new GitConfigImpl(tempPath.getAbsolutePath(),
+                                                                                                                     "master",
+                                                                                                                     "https://github.com/kiegroup/drools-workshop",
+                                                                                                                     "drools-workshop",
+                                                                                                                     "true"));
 
-        assertTrue( _source.isPresent() );
+        assertTrue(_source.isPresent());
         final Source source = _source.get();
 
         boolean buildProcessReady = false;
         Throwable error = null;
         PipedOutputStream baosOut = new PipedOutputStream();
         PipedOutputStream baosErr = new PipedOutputStream();
-        final PrintStream out = new PrintStream( baosOut, true );
-        final PrintStream err = new PrintStream( baosErr, true );
+        final PrintStream out = new PrintStream(baosOut,
+                                                true);
+        final PrintStream err = new PrintStream(baosErr,
+                                                true);
 
         //Build the project in a different thread
-        new Thread( () -> {
-            buildMavenProject( source, out, err );
-        } ).start();
+        new Thread(() -> {
+            buildMavenProject(source,
+                              out,
+                              err);
+        }).start();
 
         // Use the PipeOutputStream to read the execution output and validate that the application was built. 
         StringBuilder sb = new StringBuilder();
         BufferedReader bufferedReader;
-        bufferedReader = new BufferedReader( new InputStreamReader( new PipedInputStream( baosOut ) ) );
+        bufferedReader = new BufferedReader(new InputStreamReader(new PipedInputStream(baosOut)));
         String line;
 
-        while ( !( buildProcessReady || error != null ) ) {
+        while (!(buildProcessReady || error != null)) {
 
-            if ( ( line = bufferedReader.readLine() ) != null ) {
-                sb.append( line ).append( "\n" );
-                if ( line.contains( "Building war:" ) ) {
+            if ((line = bufferedReader.readLine()) != null) {
+                sb.append(line).append("\n");
+                if (line.contains("Building war:")) {
                     buildProcessReady = true;
                     out.close();
                     err.close();
                     baosOut.close();
                     baosErr.close();
-
                 }
             }
-
         }
 
-        assertTrue( sb.toString().contains( "Building war:" ) );
-        assertTrue( buildProcessReady );
-        assertTrue( error == null );
-
+        assertTrue(sb.toString().contains("Building war:"));
+        assertTrue(buildProcessReady);
+        assertTrue(error == null);
     }
 
     /*
      * Build Maven Project from Source using Out and Err PrintStreams for getting the output
      */
-    private void buildMavenProject( Source source, PrintStream out, PrintStream err ) throws org.uberfire.java.nio.IOException, InvalidPathException, SecurityException, UnsupportedOperationException, IllegalArgumentException {
+    private void buildMavenProject(Source source,
+                                   PrintStream out,
+                                   PrintStream err) throws org.uberfire.java.nio.IOException, InvalidPathException, SecurityException, UnsupportedOperationException, IllegalArgumentException {
         List<String> goals = new ArrayList<>();
-        goals.add( "package" );
+        goals.add("package");
         Properties p = new Properties();
-        p.setProperty( "failIfNoTests", "false" );
+        p.setProperty("failIfNoTests",
+                      "false");
 
-        final InputStream pomStream = org.uberfire.java.nio.file.Files.newInputStream( source.getPath().resolve( "drools-webapp-example" ).resolve( "pom.xml" ) );
-        MavenProject project = MavenProjectLoader.parseMavenPom( pomStream );
+        final InputStream pomStream = org.uberfire.java.nio.file.Files.newInputStream(source.getPath().resolve("drools-webapp-example").resolve("pom.xml"));
+        MavenProject project = MavenProjectLoader.parseMavenPom(pomStream);
 
         final String expectedBinary = project.getArtifact().getArtifactId() + "-" + project.getArtifact().getVersion() + "." + project.getArtifact().getType();
-        final org.guvnor.ala.build.maven.model.MavenProject mavenProject = new MavenProjectImpl( project.getId(),
-                project.getArtifact().getType(),
-                project.getName(),
-                expectedBinary,
-                source.getPath(),
-                source.getPath().resolve( "drools-webapp-example" ),
-                source.getPath().resolve( "target" ).resolve( expectedBinary ).toAbsolutePath(),
-                null,
-                null );
-        final File pom = new File( getRepositoryVisitor( mavenProject ).getRoot(), "pom.xml" );
-        MavenBuildExecutor.executeMaven( pom, out, err, p, goals.toArray( new String[0] ) );
+        final org.guvnor.ala.build.maven.model.MavenProject mavenProject = new MavenProjectImpl(project.getId(),
+                                                                                                project.getArtifact().getType(),
+                                                                                                project.getName(),
+                                                                                                expectedBinary,
+                                                                                                source.getPath(),
+                                                                                                source.getPath().resolve("drools-webapp-example"),
+                                                                                                source.getPath().resolve("target").resolve(expectedBinary).toAbsolutePath(),
+                                                                                                null,
+                                                                                                null);
+        final File pom = new File(getRepositoryVisitor(mavenProject).getRoot(),
+                                  "pom.xml");
+        MavenBuildExecutor.executeMaven(pom,
+                                        out,
+                                        err,
+                                        p,
+                                        goals.toArray(new String[0]));
     }
 
-    private RepositoryVisitor getRepositoryVisitor( final Project project ) {
-        return new RepositoryVisitor( project.getPath(), project.getName() );
+    private RepositoryVisitor getRepositoryVisitor(final Project project) {
+        return new RepositoryVisitor(project.getPath(),
+                                     project.getName());
     }
 }

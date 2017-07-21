@@ -20,6 +20,5 @@ import org.guvnor.structure.repositories.Repository;
 
 public interface HasRemoveRepositoryHandlers {
 
-    void removeRepository( final Repository repository );
-
+    void removeRepository(final Repository repository);
 }

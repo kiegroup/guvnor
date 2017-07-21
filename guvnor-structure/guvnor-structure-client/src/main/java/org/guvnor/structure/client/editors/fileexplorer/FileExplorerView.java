@@ -24,11 +24,10 @@ public interface FileExplorerView
 
     void reset();
 
-    void removeRepository( final Repository repo );
+    void removeRepository(final Repository repo);
 
-    void addNewRepository( final Repository repo,
-                           final String branch );
+    void addNewRepository(final Repository repo,
+                          final String branch);
 
-    void init( final FileExplorerPresenter fileExplorerPresenter );
-
+    void init(final FileExplorerPresenter fileExplorerPresenter);
 }

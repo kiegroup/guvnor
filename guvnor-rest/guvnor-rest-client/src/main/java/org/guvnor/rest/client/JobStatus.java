@@ -23,7 +23,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * Job status
  */
 @Portable
-public enum JobStatus implements Serializable{
+public enum JobStatus implements Serializable {
 
     GONE,
     ACCEPTED,

@@ -19,10 +19,11 @@ package org.guvnor.ala.source.git;
 import java.net.URI;
 
 public enum Protocol {
-    SSH, HTTPS;
+    SSH,
+    HTTPS;
 
-    public URI toURI( final String host,
-                      final String id ) {
-        return URI.create( toString().toLowerCase() + "://" + host + "/" + id + ".git" );
+    public URI toURI(final String host,
+                     final String id) {
+        return URI.create(toString().toLowerCase() + "://" + host + "/" + id + ".git");
     }
 }
