@@ -27,9 +27,12 @@ public class DockerProviderImpl extends BaseProvider implements DockerProvider,
     public DockerProviderImpl() {
     }
 
-    public DockerProviderImpl( final String name,
-                               final String hostId, ProviderConfig config ) {
-        super( name, DockerProviderType.instance(), config );
+    public DockerProviderImpl(final String name,
+                              final String hostId,
+                              ProviderConfig config) {
+        super(name,
+              DockerProviderType.instance(),
+              config);
         this.hostId = hostId;
     }
 
@@ -37,12 +40,14 @@ public class DockerProviderImpl extends BaseProvider implements DockerProvider,
         return hostId;
     }
 
-    public void setHostId( String hostId ) {
+    public void setHostId(String hostId) {
         this.hostId = hostId;
     }
 
     @Override
-    public DockerProvider asNewClone( final DockerProvider source ) {
-        return new DockerProviderImpl( source.getId(), source.getHostId(), source.getConfig() );
+    public DockerProvider asNewClone(final DockerProvider source) {
+        return new DockerProviderImpl(source.getId(),
+                                      source.getHostId(),
+                                      source.getConfig());
     }
 }

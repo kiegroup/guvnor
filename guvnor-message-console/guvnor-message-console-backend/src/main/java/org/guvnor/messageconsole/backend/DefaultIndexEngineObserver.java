@@ -36,33 +36,32 @@ public class DefaultIndexEngineObserver implements Observer {
     @Inject
     private Event<PublishMessagesEvent> publishMessagesEvent;
 
-    public void information( final String message ) {
-        publishMessagesEvent.fire( makeEvent( message,
-                                              Level.INFO ) );
+    public void information(final String message) {
+        publishMessagesEvent.fire(makeEvent(message,
+                                            Level.INFO));
     }
 
     @Override
-    public void warning( final String message ) {
-        publishMessagesEvent.fire( makeEvent( message,
-                                              Level.WARNING ) );
+    public void warning(final String message) {
+        publishMessagesEvent.fire(makeEvent(message,
+                                            Level.WARNING));
     }
 
     @Override
-    public void error( final String message ) {
-        publishMessagesEvent.fire( makeEvent( message,
-                                              Level.ERROR ) );
+    public void error(final String message) {
+        publishMessagesEvent.fire(makeEvent(message,
+                                            Level.ERROR));
     }
 
-    private PublishMessagesEvent makeEvent( final String text,
-                                            final Level level ) {
+    private PublishMessagesEvent makeEvent(final String text,
+                                           final Level level) {
         final PublishMessagesEvent event = new PublishMessagesEvent();
         final List<SystemMessage> messages = new ArrayList<SystemMessage>();
         final SystemMessage message = new SystemMessage();
-        message.setLevel( level );
-        message.setText( text );
-        messages.add( message );
-        event.setMessagesToPublish( messages );
+        message.setLevel(level);
+        message.setText(text);
+        messages.add(message);
+        event.setMessagesToPublish(messages);
         return event;
     }
-
 }

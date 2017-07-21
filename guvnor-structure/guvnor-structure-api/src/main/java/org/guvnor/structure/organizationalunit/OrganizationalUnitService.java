@@ -23,7 +23,7 @@ import org.jboss.errai.bus.server.annotations.Remote;
 @Remote
 public interface OrganizationalUnitService {
 
-    OrganizationalUnit getOrganizationalUnit( final String name );
+    OrganizationalUnit getOrganizationalUnit(final String name);
 
     /**
      * Get all the OUs. Security checks are omitted.
@@ -35,36 +35,36 @@ public interface OrganizationalUnitService {
      */
     Collection<OrganizationalUnit> getOrganizationalUnits();
 
-    OrganizationalUnit createOrganizationalUnit( final String name,
-                                                 final String owner,
-                                                 final String defaultGroupId );
+    OrganizationalUnit createOrganizationalUnit(final String name,
+                                                final String owner,
+                                                final String defaultGroupId);
 
-    OrganizationalUnit createOrganizationalUnit( final String name,
-                                                 final String owner,
-                                                 final String defaultGroupId,
-                                                 final Collection<Repository> repositories );
+    OrganizationalUnit createOrganizationalUnit(final String name,
+                                                final String owner,
+                                                final String defaultGroupId,
+                                                final Collection<Repository> repositories);
 
-    OrganizationalUnit updateOrganizationalUnit( final String name,
-                                                 final String owner,
-                                                 final String defaultGroupId );
+    OrganizationalUnit updateOrganizationalUnit(final String name,
+                                                final String owner,
+                                                final String defaultGroupId);
 
-    void addRepository( final OrganizationalUnit organizationalUnit,
-                        final Repository repository );
+    void addRepository(final OrganizationalUnit organizationalUnit,
+                       final Repository repository);
 
-    void removeRepository( final OrganizationalUnit organizationalUnit,
-                           final Repository repository );
+    void removeRepository(final OrganizationalUnit organizationalUnit,
+                          final Repository repository);
 
-    void addGroup( final OrganizationalUnit organizationalUnit,
-                   final String group );
+    void addGroup(final OrganizationalUnit organizationalUnit,
+                  final String group);
 
-    void removeGroup( final OrganizationalUnit organizationalUnit,
-                      final String group );
+    void removeGroup(final OrganizationalUnit organizationalUnit,
+                     final String group);
 
-    void removeOrganizationalUnit( final String name );
+    void removeOrganizationalUnit(final String name);
 
-    OrganizationalUnit getParentOrganizationalUnit( final Repository repository );
+    OrganizationalUnit getParentOrganizationalUnit(final Repository repository);
 
-    String getSanitizedDefaultGroupId( final String proposedGroupId );
+    String getSanitizedDefaultGroupId(final String proposedGroupId);
 
-    Boolean isValidGroupId( final String proposedGroupId );
+    Boolean isValidGroupId(final String proposedGroupId);
 }

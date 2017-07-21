@@ -27,6 +27,5 @@ public interface LinkedFilter extends DirectoryStream.Filter<Path> {
      * Set the next Filter in the chain
      * @param filter
      */
-    void setNextFilter( final LinkedFilter filter );
-
+    void setNextFilter(final LinkedFilter filter);
 }

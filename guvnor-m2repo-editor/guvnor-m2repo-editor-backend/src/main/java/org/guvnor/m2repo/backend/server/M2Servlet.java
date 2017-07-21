@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 public class M2Servlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger( M2Servlet.class );
+    private static final Logger log = LoggerFactory.getLogger(M2Servlet.class);
 
     @Inject
     private HttpPostHelper httpPostHelper;
@@ -42,29 +42,27 @@ public class M2Servlet extends HttpServlet {
     private HttpGetHelper httpGetHelper;
 
     @Override
-    protected void doGet( final HttpServletRequest request,
-                          final HttpServletResponse response ) throws ServletException, IOException {
-        log.info( "GET request received for " + request.getPathInfo() );
-        httpGetHelper.handle( request,
-                              response,
-                              getServletContext() );
-
+    protected void doGet(final HttpServletRequest request,
+                         final HttpServletResponse response) throws ServletException, IOException {
+        log.info("GET request received for " + request.getPathInfo());
+        httpGetHelper.handle(request,
+                             response,
+                             getServletContext());
     }
 
     @Override
-    protected void doPost( final HttpServletRequest request,
-                           final HttpServletResponse response ) throws ServletException, IOException {
-        log.info( "POST request received." );
-        httpPostHelper.handle( request,
-                               response );
+    protected void doPost(final HttpServletRequest request,
+                          final HttpServletResponse response) throws ServletException, IOException {
+        log.info("POST request received.");
+        httpPostHelper.handle(request,
+                              response);
     }
 
     @Override
-    protected void doPut( final HttpServletRequest request,
-                          final HttpServletResponse response ) throws ServletException, IOException {
-        log.info( "PUT request received for " + request.getPathInfo() );
-        httpPutHelper.handle( request,
-                              response );
+    protected void doPut(final HttpServletRequest request,
+                         final HttpServletResponse response) throws ServletException, IOException {
+        log.info("PUT request received for " + request.getPathInfo());
+        httpPutHelper.handle(request,
+                             response);
     }
-
 }

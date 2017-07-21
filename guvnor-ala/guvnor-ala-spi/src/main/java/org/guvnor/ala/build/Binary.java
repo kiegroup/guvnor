@@ -17,14 +17,14 @@
 package org.guvnor.ala.build;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.uberfire.java.nio.file.Path;
 import org.guvnor.ala.config.BinaryConfig;
+import org.uberfire.java.nio.file.Path;
 
 /**
  * Store information about the generated binary. Implement this interface
- *  to support different Binary types.
+ * to support different Binary types.
  */
-@JsonTypeInfo( use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT )
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public interface Binary extends BinaryConfig {
 
     /*
@@ -52,5 +52,4 @@ public interface Binary extends BinaryConfig {
      * @return the binary name as String
      */
     String getName();
-
 }

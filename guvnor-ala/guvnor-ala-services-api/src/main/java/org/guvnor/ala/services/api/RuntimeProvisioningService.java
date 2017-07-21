@@ -31,15 +31,13 @@ import javax.ws.rs.QueryParam;
 
 import org.guvnor.ala.config.ProviderConfig;
 import org.guvnor.ala.config.RuntimeConfig;
-
-import org.guvnor.ala.services.api.itemlist.RuntimeQueryResultItemList;
-import org.guvnor.ala.services.exceptions.BusinessException;
-
-import static javax.ws.rs.core.MediaType.*;
-
 import org.guvnor.ala.services.api.itemlist.ProviderList;
 import org.guvnor.ala.services.api.itemlist.ProviderTypeList;
 import org.guvnor.ala.services.api.itemlist.RuntimeList;
+import org.guvnor.ala.services.api.itemlist.RuntimeQueryResultItemList;
+import org.guvnor.ala.services.exceptions.BusinessException;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * Runtime Provisioning Service interface. It allows us to register and interact with different Provisioning Providers and

@@ -33,8 +33,8 @@ public interface SourceRegistry {
      * @param Repository meta data
      * @see Repository
      */
-    void registerRepositorySources( final Path path,
-            final Repository repo );
+    void registerRepositorySources(final Path path,
+                                   final Repository repo);
 
     /*
      * Get the path for a given repository
@@ -43,7 +43,7 @@ public interface SourceRegistry {
      * @see Path
      * @see Repository
      */
-    Path getRepositoryPath( final Repository repo );
+    Path getRepositoryPath(final Repository repo);
 
     /*
      * Get the path for a given repository
@@ -52,7 +52,7 @@ public interface SourceRegistry {
      * @see Path
      * @see Repository
      */
-    Repository getRepositoryByPath( final Path location );
+    Repository getRepositoryByPath(final Path location);
 
     /*
      * Get All the registered repositories
@@ -67,7 +67,7 @@ public interface SourceRegistry {
      * @return Path where the repository is located
      * @see Path
      */
-    Path getRepositoryPathById( final String repoId );
+    Path getRepositoryPathById(final String repoId);
 
     /*
      * Register a Project from a repository
@@ -76,8 +76,8 @@ public interface SourceRegistry {
      * @see Repository
      * @see Project
      */
-    void registerProject( final Repository repo,
-            final Project project );
+    void registerProject(final Repository repo,
+                         final Project project);
 
     /*
      * Get All the registered project for a given repository
@@ -86,7 +86,7 @@ public interface SourceRegistry {
      * @see Repository
      * @see Project
      */
-    List<Project> getAllProjects( final Repository repo );
+    List<Project> getAllProjects(final Repository repo);
 
     /*
      * Get  registered project by  name
@@ -94,7 +94,7 @@ public interface SourceRegistry {
      * @return Project
      * @see Project
      */
-    Project getProjectByName( final String projectName );
+    Project getProjectByName(final String projectName);
 
     /*
      * Get Repository filtered by Id
@@ -102,7 +102,7 @@ public interface SourceRegistry {
      * @return Repository
      * @see Repository
      */
-    Repository getRepositoryById( final String repositoryId );
+    Repository getRepositoryById(final String repositoryId);
 
     /*
      * Register a Source code from a Repository
@@ -111,8 +111,8 @@ public interface SourceRegistry {
      * @see Source
      * @see Project
      */
-    void registerSource( final Repository repo,
-            final Source source );
+    void registerSource(final Repository repo,
+                        final Source source);
 
     /*
      * Register a Project code from a Source
@@ -121,6 +121,6 @@ public interface SourceRegistry {
      * @see Source
      * @see Project
      */
-    void registerProject( final Source source,
-            final Project project );
+    void registerProject(final Source source,
+                         final Project project);
 }

@@ -21,5 +21,4 @@ import org.guvnor.common.services.project.model.Project;
 public interface ProjectFactory<T extends Project> {
 
     T simpleProjectInstance(org.uberfire.java.nio.file.Path parent);
-
 }

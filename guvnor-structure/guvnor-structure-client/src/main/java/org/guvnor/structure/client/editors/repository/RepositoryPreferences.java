@@ -19,7 +19,7 @@ public class RepositoryPreferences {
 
     private boolean ouMandatory;
 
-    public RepositoryPreferences( boolean ouMandatory ) {
+    public RepositoryPreferences(boolean ouMandatory) {
         this.ouMandatory = ouMandatory;
     }
 

@@ -24,13 +24,10 @@ import javax.enterprise.inject.Instance;
 
 import org.guvnor.asset.management.model.ConfigureRepositoryEvent;
 import org.guvnor.asset.management.service.AssetManagementService;
-import org.guvnor.common.services.project.model.Repository;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.structure.repositories.NewBranchEvent;
-import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.server.config.ConfigurationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,8 +40,8 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssetManagementServiceImplTest {
@@ -66,23 +63,20 @@ public class AssetManagementServiceImplTest {
     private final List<Object> receivedEvents = new ArrayList<Object>();
     private final List<Object> receivedBranchEvents = new ArrayList<Object>();
 
-
     private Event<NewBranchEvent> newBranchEvent = new EventSourceMock<NewBranchEvent>() {
 
         @Override
-        public void fire( NewBranchEvent event ) {
+        public void fire(NewBranchEvent event) {
             receivedBranchEvents.add(event);
         }
-
     };
 
     private Event<ConfigureRepositoryEvent> configureRepositoryEvent = new EventSourceMock<ConfigureRepositoryEvent>() {
 
         @Override
-        public void fire( ConfigureRepositoryEvent event ) {
+        public void fire(ConfigureRepositoryEvent event) {
             receivedEvents.add(event);
         }
-
     };
 
     @Before
@@ -107,18 +101,24 @@ public class AssetManagementServiceImplTest {
     @Test
     public void testConfigureRepository() {
 
-        assetManagementService.configureRepository("test-repo", "master", "dev", "release", "1.0.0");
+        assetManagementService.configureRepository("test-repo",
+                                                   "master",
+                                                   "dev",
+                                                   "release",
+                                                   "1.0.0");
 
-        assertEquals(1, receivedEvents.size());
+        assertEquals(1,
+                     receivedEvents.size());
 
         Object event = receivedEvents.get(0);
 
-        assertTrue(event instanceof  ConfigureRepositoryEvent);
+        assertTrue(event instanceof ConfigureRepositoryEvent);
         ConfigureRepositoryEvent eventReceived = (ConfigureRepositoryEvent) event;
 
         Map<String, Object> parameters = eventReceived.getParams();
         assertNotNull(parameters);
-        assertEquals(5, parameters.size());
+        assertEquals(5,
+                     parameters.size());
 
         assertTrue(parameters.containsKey("RepositoryName"));
         assertTrue(parameters.containsKey("SourceBranchName"));
@@ -126,26 +126,34 @@ public class AssetManagementServiceImplTest {
         assertTrue(parameters.containsKey("RelBranchName"));
         assertTrue(parameters.containsKey("Version"));
 
-        assertEquals("test-repo", parameters.get("RepositoryName"));
-        assertEquals("master", parameters.get("SourceBranchName"));
-        assertEquals("dev", parameters.get("DevBranchName"));
-        assertEquals("release", parameters.get("RelBranchName"));
-        assertEquals("1.0.0", parameters.get("Version"));
+        assertEquals("test-repo",
+                     parameters.get("RepositoryName"));
+        assertEquals("master",
+                     parameters.get("SourceBranchName"));
+        assertEquals("dev",
+                     parameters.get("DevBranchName"));
+        assertEquals("release",
+                     parameters.get("RelBranchName"));
+        assertEquals("1.0.0",
+                     parameters.get("Version"));
 
-        assertEquals(2, receivedBranchEvents.size());
+        assertEquals(2,
+                     receivedBranchEvents.size());
 
         event = receivedBranchEvents.get(0);
-        assertTrue(event instanceof  NewBranchEvent);
+        assertTrue(event instanceof NewBranchEvent);
 
-        assertEquals("test-repo", ((NewBranchEvent)event).getRepositoryAlias());
-        assertEquals("dev-1.0.0", ((NewBranchEvent)event).getBranchName());
+        assertEquals("test-repo",
+                     ((NewBranchEvent) event).getRepositoryAlias());
+        assertEquals("dev-1.0.0",
+                     ((NewBranchEvent) event).getBranchName());
 
         event = receivedBranchEvents.get(1);
-        assertTrue(event instanceof  NewBranchEvent);
+        assertTrue(event instanceof NewBranchEvent);
 
-        assertEquals("test-repo", ((NewBranchEvent)event).getRepositoryAlias());
-        assertEquals("release-1.0.0", ((NewBranchEvent)event).getBranchName());
+        assertEquals("test-repo",
+                     ((NewBranchEvent) event).getRepositoryAlias());
+        assertEquals("release-1.0.0",
+                     ((NewBranchEvent) event).getBranchName());
     }
-
-
 }

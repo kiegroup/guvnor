@@ -32,8 +32,8 @@ public class RepositoryEnvironmentConfiguration {
     public RepositoryEnvironmentConfiguration() {
     }
 
-    public RepositoryEnvironmentConfiguration( final String name,
-                                               final Object value ) {
+    public RepositoryEnvironmentConfiguration(final String name,
+                                              final Object value) {
         this.name = name;
         this.value = value;
     }
@@ -47,6 +47,6 @@ public class RepositoryEnvironmentConfiguration {
     }
 
     public boolean isSecuredConfigurationItem() {
-        return name.startsWith( "crypt:" );
+        return name.startsWith("crypt:");
     }
 }

@@ -30,8 +30,10 @@ public class GAVPreferencesTest {
         assertFalse(gavPreferences.isChildGAVEditEnabled());
         assertFalse(gavPreferences.isConflictingGAVCheckDisabled());
 
-        System.setProperty(GAVPreferences.CONFLICTING_GAV_CHECK_DISABLED, "true");
-        System.setProperty(GAVPreferences.CHILD_GAV_EDIT_ENABLED, "true");
+        System.setProperty(GAVPreferences.CONFLICTING_GAV_CHECK_DISABLED,
+                           "true");
+        System.setProperty(GAVPreferences.CHILD_GAV_EDIT_ENABLED,
+                           "true");
 
         gavPreferences.defaultValue(gavPreferences);
 

@@ -32,15 +32,18 @@ import org.guvnor.ala.build.maven.model.impl.MavenBuildImpl;
 public class DockerBuildImpl extends MavenBuildImpl
         implements DockerBuild {
 
-    public DockerBuildImpl( final Project project,
-                            final List<String> goals,
-                            final Properties properties ) {
-        super( project, goals, properties );
+    public DockerBuildImpl(final Project project,
+                           final List<String> goals,
+                           final Properties properties) {
+        super(project,
+              goals,
+              properties);
     }
 
     @Override
-    public MavenBuild asNewClone( final MavenBuild source ) {
-        return new DockerBuildImpl( getProject(), getGoals(), getProperties() );
+    public MavenBuild asNewClone(final MavenBuild source) {
+        return new DockerBuildImpl(getProject(),
+                                   getGoals(),
+                                   getProperties());
     }
-
 }

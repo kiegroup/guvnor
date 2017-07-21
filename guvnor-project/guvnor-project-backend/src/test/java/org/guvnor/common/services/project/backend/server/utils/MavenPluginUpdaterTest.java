@@ -21,7 +21,8 @@ import java.util.List;
 import org.apache.maven.model.Plugin;
 import org.junit.Test;
 
-import static org.guvnor.common.services.project.backend.server.utils.TestUtils.*;
+import static org.guvnor.common.services.project.backend.server.utils.TestUtils.makeGuvnorPlugin;
+import static org.guvnor.common.services.project.backend.server.utils.TestUtils.makeMavenPlugin;
 import static org.junit.Assert.*;
 
 public class MavenPluginUpdaterTest {
@@ -31,55 +32,86 @@ public class MavenPluginUpdaterTest {
 
         List<Plugin> to = new ArrayList<Plugin>();
         ArrayList<org.guvnor.common.services.project.model.Plugin> from = new ArrayList<org.guvnor.common.services.project.model.Plugin>();
-        from.add( makeGuvnorPlugin( null, null, null ) );
-        from.add( makeGuvnorPlugin( null, null, "1.0" ) );
-        from.add( makeGuvnorPlugin( "myGroup", null, "1.0" ) );
-        from.add( makeGuvnorPlugin( null, "myArtifact", "1.0" ) );
+        from.add(makeGuvnorPlugin(null,
+                                  null,
+                                  null));
+        from.add(makeGuvnorPlugin(null,
+                                  null,
+                                  "1.0"));
+        from.add(makeGuvnorPlugin("myGroup",
+                                  null,
+                                  "1.0"));
+        from.add(makeGuvnorPlugin(null,
+                                  "myArtifact",
+                                  "1.0"));
 
-        to = new MavenPluginUpdater( to ).update( from );
+        to = new MavenPluginUpdater(to).update(from);
 
-        assertTrue( to.isEmpty() );
+        assertTrue(to.isEmpty());
     }
 
     @Test
     public void testChangeVersion() throws Exception {
         List<Plugin> to = new ArrayList<Plugin>();
-        to.add( makeMavenPlugin( "myPlugin", "myArtifact", "1.0" ) );
+        to.add(makeMavenPlugin("myPlugin",
+                               "myArtifact",
+                               "1.0"));
         ArrayList<org.guvnor.common.services.project.model.Plugin> from = new ArrayList<org.guvnor.common.services.project.model.Plugin>();
-        from.add( makeGuvnorPlugin( "myPlugin", "myArtifact", "2.0" ) );
+        from.add(makeGuvnorPlugin("myPlugin",
+                                  "myArtifact",
+                                  "2.0"));
 
-        to = new MavenPluginUpdater( to ).update( from );
+        to = new MavenPluginUpdater(to).update(from);
 
-        assertEquals( 1, to.size() );
-        assertEquals( "2.0", to.get( 0 ).getVersion() );
+        assertEquals(1,
+                     to.size());
+        assertEquals("2.0",
+                     to.get(0).getVersion());
     }
 
     @Test
     public void testAddNew() throws Exception {
         List<Plugin> to = new ArrayList<Plugin>();
-        to.add( makeMavenPlugin( "myPlugin", "myArtifact", "1.0" ) );
+        to.add(makeMavenPlugin("myPlugin",
+                               "myArtifact",
+                               "1.0"));
         ArrayList<org.guvnor.common.services.project.model.Plugin> from = new ArrayList<org.guvnor.common.services.project.model.Plugin>();
-        from.add( makeGuvnorPlugin( "myPlugin", "myArtifact", "1.0" ) );
-        from.add( makeGuvnorPlugin( "junit", "junit", "1.44" ) );
+        from.add(makeGuvnorPlugin("myPlugin",
+                                  "myArtifact",
+                                  "1.0"));
+        from.add(makeGuvnorPlugin("junit",
+                                  "junit",
+                                  "1.44"));
 
-        to = new MavenPluginUpdater( to ).update( from );
+        to = new MavenPluginUpdater(to).update(from);
 
-        assertEquals( 2, to.size() );
-        assertEquals( "1.0", to.get( 0 ).getVersion() );
-        assertEquals( "1.44", to.get( 1 ).getVersion() );
+        assertEquals(2,
+                     to.size());
+        assertEquals("1.0",
+                     to.get(0).getVersion());
+        assertEquals("1.44",
+                     to.get(1).getVersion());
     }
 
     @Test
     public void testRemove() throws Exception {
         List<Plugin> to = new ArrayList<Plugin>();
-        to.add( makeMavenPlugin( "myPlugin", "myArtifact", "1.0" ) );
-        to.add( makeMavenPlugin( "junit", "junit", "1.44" ) );
+        to.add(makeMavenPlugin("myPlugin",
+                               "myArtifact",
+                               "1.0"));
+        to.add(makeMavenPlugin("junit",
+                               "junit",
+                               "1.44"));
         ArrayList<org.guvnor.common.services.project.model.Plugin> from = new ArrayList<org.guvnor.common.services.project.model.Plugin>();
-        from.add( makeGuvnorPlugin( "myPlugin", "myArtifact", "1.0" ) );
+        from.add(makeGuvnorPlugin("myPlugin",
+                                  "myArtifact",
+                                  "1.0"));
 
-        to = new MavenPluginUpdater( to ).update( from );
+        to = new MavenPluginUpdater(to).update(from);
 
-        assertEquals( 1, to.size() );
-        assertEquals( "1.0", to.get( 0 ).getVersion() );
+        assertEquals(1,
+                     to.size());
+        assertEquals("1.0",
+                     to.get(0).getVersion());
     }
 }

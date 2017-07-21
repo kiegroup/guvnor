@@ -34,7 +34,7 @@ public class TestIdentityFactory {
 
     @PostConstruct
     public void onStartup() {
-        identity = new UserImpl( "testUser" );
+        identity = new UserImpl("testUser");
     }
 
     @Produces
@@ -51,10 +51,10 @@ public class TestIdentityFactory {
             User user;
 
             @Override
-            public User login( String username,
-                               String password ) {
+            public User login(String username,
+                              String password) {
                 isLoggedIn = true;
-                user = new UserImpl( username );
+                user = new UserImpl(username);
                 return user;
             }
 
@@ -75,5 +75,4 @@ public class TestIdentityFactory {
             }
         };
     }
-
 }

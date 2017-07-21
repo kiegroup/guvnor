@@ -27,21 +27,26 @@ public class ZipWriter {
 
     private ZipOutputStream outputStream;
 
-    public ZipWriter( final OutputStream outputStream ) {
-        this.outputStream = new ZipOutputStream( new BufferedOutputStream( outputStream ) );
+    public ZipWriter(final OutputStream outputStream) {
+        this.outputStream = new ZipOutputStream(new BufferedOutputStream(outputStream));
     }
 
-    public void addFile( final ZipEntry zipEntry,
-                         final InputStream inputStream ) throws IOException {
+    public void addFile(final ZipEntry zipEntry,
+                        final InputStream inputStream) throws IOException {
         final int BUFFER = 2048;
         byte data[] = new byte[BUFFER];
 
-        BufferedInputStream origin = new BufferedInputStream( inputStream, BUFFER );
+        BufferedInputStream origin = new BufferedInputStream(inputStream,
+                                                             BUFFER);
 
-        outputStream.putNextEntry( zipEntry );
+        outputStream.putNextEntry(zipEntry);
         int count;
-        while ((count = origin.read( data, 0, BUFFER )) != -1) {
-            outputStream.write( data, 0, count );
+        while ((count = origin.read(data,
+                                    0,
+                                    BUFFER)) != -1) {
+            outputStream.write(data,
+                               0,
+                               count);
         }
 
         outputStream.flush();
@@ -51,5 +56,4 @@ public class ZipWriter {
     public void close() throws IOException {
         outputStream.close();
     }
-
 }

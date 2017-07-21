@@ -39,7 +39,11 @@ import org.uberfire.security.client.authz.tree.PermissionTreeProvider;
 import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
 import org.uberfire.security.client.authz.tree.impl.PermissionResourceNode;
 
-import static org.guvnor.common.services.project.security.ProjectAction.*;
+import static org.guvnor.common.services.project.security.ProjectAction.BUILD;
+import static org.guvnor.common.services.project.security.ProjectAction.CREATE;
+import static org.guvnor.common.services.project.security.ProjectAction.DELETE;
+import static org.guvnor.common.services.project.security.ProjectAction.READ;
+import static org.guvnor.common.services.project.security.ProjectAction.UPDATE;
 
 /**
  * The {@link PermissionTreeProvider} plugin that brings {@link Project} permissions into the ACL editor
@@ -56,7 +60,8 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
     }
 
     @Inject
-    public ProjectTreeProvider(PermissionManager permissionManager, Caller<ProjectSearchService> searchService) {
+    public ProjectTreeProvider(PermissionManager permissionManager,
+                               Caller<ProjectSearchService> searchService) {
         this.permissionManager = permissionManager;
         this.searchService = searchService;
     }
@@ -71,7 +76,8 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
 
     @Override
     public PermissionNode buildRootNode() {
-        PermissionResourceNode rootNode = new PermissionResourceNode(i18n.ProjectResource(), this);
+        PermissionResourceNode rootNode = new PermissionResourceNode(i18n.ProjectResource(),
+                                                                     this);
         rootNode.setNodeName(i18n.ProjectsNode());
         rootNode.setNodeFullName(i18n.ProjectsHelp());
         rootNode.setPositionInTree(rootNodePosition);
@@ -82,26 +88,41 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
         Permission buildPermission = newPermission(BUILD);
         Permission createPermission = newPermission(CREATE);
 
-        rootNode.addPermission(readPermission, i18n.ProjectActionRead());
-        rootNode.addPermission(updatePermission, i18n.ProjectActionUpdate());
-        rootNode.addPermission(deletePermission, i18n.ProjectActionDelete());
-        rootNode.addPermission(buildPermission, i18n.ProjectActionBuild());
-        rootNode.addPermission(createPermission, i18n.ProjectActionCreate());
+        rootNode.addPermission(readPermission,
+                               i18n.ProjectActionRead());
+        rootNode.addPermission(updatePermission,
+                               i18n.ProjectActionUpdate());
+        rootNode.addPermission(deletePermission,
+                               i18n.ProjectActionDelete());
+        rootNode.addPermission(buildPermission,
+                               i18n.ProjectActionBuild());
+        rootNode.addPermission(createPermission,
+                               i18n.ProjectActionCreate());
 
-        rootNode.addDependencies(readPermission, updatePermission, deletePermission, buildPermission);
+        rootNode.addDependencies(readPermission,
+                                 updatePermission,
+                                 deletePermission,
+                                 buildPermission);
         return rootNode;
     }
 
     private Permission newPermission(ResourceAction action) {
-        return permissionManager.createPermission(Project.RESOURCE_TYPE, action, true);
+        return permissionManager.createPermission(Project.RESOURCE_TYPE,
+                                                  action,
+                                                  true);
     }
 
-    private Permission newPermission(Resource resource, ResourceAction action) {
-        return permissionManager.createPermission(resource, action, true);
+    private Permission newPermission(Resource resource,
+                                     ResourceAction action) {
+        return permissionManager.createPermission(resource,
+                                                  action,
+                                                  true);
     }
 
     @Override
-    public void loadChildren(PermissionNode parent, LoadOptions options, LoadCallback callback) {
+    public void loadChildren(PermissionNode parent,
+                             LoadOptions options,
+                             LoadCallback callback) {
         Collection<String> resourceIds = options.getResourceIds();
         int maxNodes = options.getMaxNodes();
 
@@ -111,13 +132,14 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
                     List<PermissionNode> children = buildPermissionNodes(projects);
                     callback.afterLoad(children);
                 }).searchById(resourceIds);
-            }
-            else {
+            } else {
                 String namePattern = options.getNodeNamePattern();
                 searchService.call((Collection<Project> projects) -> {
                     List<PermissionNode> children = buildPermissionNodes(projects);
                     callback.afterLoad(children);
-                }).searchByName(namePattern, maxNodes, false);
+                }).searchByName(namePattern,
+                                maxNodes,
+                                false);
             }
         } else {
             callback.afterLoad(Collections.emptyList());
@@ -136,17 +158,28 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
         PermissionLeafNode node = new PermissionLeafNode();
         node.setNodeName(p.getProjectName());
 
-        Permission readPermission = newPermission(p, READ);
-        Permission updatePermission = newPermission(p, UPDATE);
-        Permission deletePermission = newPermission(p, DELETE);
-        Permission buildPermission = newPermission(p, BUILD);
+        Permission readPermission = newPermission(p,
+                                                  READ);
+        Permission updatePermission = newPermission(p,
+                                                    UPDATE);
+        Permission deletePermission = newPermission(p,
+                                                    DELETE);
+        Permission buildPermission = newPermission(p,
+                                                   BUILD);
 
-        node.addPermission(readPermission, i18n.ProjectActionRead());
-        node.addPermission(updatePermission, i18n.ProjectActionUpdate());
-        node.addPermission(deletePermission, i18n.ProjectActionDelete());
-        node.addPermission(buildPermission, i18n.ProjectActionBuild());
+        node.addPermission(readPermission,
+                           i18n.ProjectActionRead());
+        node.addPermission(updatePermission,
+                           i18n.ProjectActionUpdate());
+        node.addPermission(deletePermission,
+                           i18n.ProjectActionDelete());
+        node.addPermission(buildPermission,
+                           i18n.ProjectActionBuild());
 
-        node.addDependencies(readPermission, updatePermission, deletePermission, buildPermission);
+        node.addDependencies(readPermission,
+                             updatePermission,
+                             deletePermission,
+                             buildPermission);
         return node;
     }
 }

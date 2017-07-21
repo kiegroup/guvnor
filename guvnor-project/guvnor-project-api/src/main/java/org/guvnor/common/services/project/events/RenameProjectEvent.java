@@ -30,8 +30,8 @@ public class RenameProjectEvent {
     public RenameProjectEvent() {
     }
 
-    public RenameProjectEvent( final Project oldProject,
-                               final Project newProject ) {
+    public RenameProjectEvent(final Project oldProject,
+                              final Project newProject) {
         this.oldProject = oldProject;
         this.newProject = newProject;
     }

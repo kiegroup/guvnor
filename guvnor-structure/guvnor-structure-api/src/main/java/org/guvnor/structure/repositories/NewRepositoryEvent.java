@@ -29,7 +29,7 @@ public class NewRepositoryEvent {
     public NewRepositoryEvent() {
     }
 
-    public NewRepositoryEvent( final Repository newRepository ) {
+    public NewRepositoryEvent(final Repository newRepository) {
         this.newRepository = newRepository;
     }
 
@@ -40,10 +40,10 @@ public class NewRepositoryEvent {
                               final String groupId,
                               final String artifactId,
                               final String version) {
-      this.newRepository = newRepository;
-      this.groupId = groupId;
-      this.artifactId = artifactId;
-      this.version = version;
+        this.newRepository = newRepository;
+        this.groupId = groupId;
+        this.artifactId = artifactId;
+        this.version = version;
     }
 
     public Repository getNewRepository() {
@@ -51,16 +51,14 @@ public class NewRepositoryEvent {
     }
 
     public String getGroupId() {
-      return groupId;
+        return groupId;
     }
 
     public String getArtifactId() {
-      return artifactId;
+        return artifactId;
     }
 
     public String getVersion() {
-      return version;
+        return version;
     }
-
-
 }

@@ -21,14 +21,14 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 
-import org.guvnor.asset.management.backend.social.i18n.Constants;
-import org.guvnor.asset.management.social.AssetManagementEventTypes;
-import org.guvnor.asset.management.social.RepositoryChangeEvent;
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.ext.uberfire.social.activities.model.SocialEventType;
 import org.ext.uberfire.social.activities.repository.SocialUserRepository;
 import org.ext.uberfire.social.activities.service.SocialAdapter;
 import org.ext.uberfire.social.activities.service.SocialCommandTypeFilter;
+import org.guvnor.asset.management.backend.social.i18n.Constants;
+import org.guvnor.asset.management.social.AssetManagementEventTypes;
+import org.guvnor.asset.management.social.RepositoryChangeEvent;
 
 public class RepositoryChangeEventAdapter implements SocialAdapter<RepositoryChangeEvent> {
 
@@ -49,8 +49,8 @@ public class RepositoryChangeEventAdapter implements SocialAdapter<RepositoryCha
     }
 
     @Override
-    public boolean shouldInterceptThisEvent( Object event ) {
-        if ( event.getClass().getSimpleName().equals( eventToIntercept().getSimpleName() ) ) {
+    public boolean shouldInterceptThisEvent(Object event) {
+        if (event.getClass().getSimpleName().equals(eventToIntercept().getSimpleName())) {
             return true;
         } else {
             return false;
@@ -58,17 +58,17 @@ public class RepositoryChangeEventAdapter implements SocialAdapter<RepositoryCha
     }
 
     @Override
-    public SocialActivitiesEvent toSocial( Object object ) {
-        RepositoryChangeEvent event = ( RepositoryChangeEvent ) object;
+    public SocialActivitiesEvent toSocial(Object object) {
+        RepositoryChangeEvent event = (RepositoryChangeEvent) object;
 
         return new SocialActivitiesEvent(
                 socialUserRepository.systemUser(),
                 AssetManagementEventTypes.REPOSITORY_CHANGE.name(),
-                new Date( event.getTimestamp() )
+                new Date(event.getTimestamp())
         )
-                .withLink( event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
-                        event.getRootURI() != null ? event.getRootURI() : "<unknown>" )
-                .withAdicionalInfo( "" );
+                .withLink(event.getRepositoryAlias() != null ? event.getRepositoryAlias() : "<unknown>",
+                          event.getRootURI() != null ? event.getRootURI() : "<unknown>")
+                .withAdicionalInfo("");
     }
 
     @Override
@@ -80,5 +80,4 @@ public class RepositoryChangeEventAdapter implements SocialAdapter<RepositoryCha
     public List<String> getTimelineFiltersNames() {
         return new ArrayList<String>();
     }
-
 }

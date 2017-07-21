@@ -39,7 +39,7 @@ public class RepositoryItemViewImpl
         extends Composite
         implements RepositoryItemView {
 
-    private static RepositoriesViewItemBinder uiBinder = GWT.create( RepositoriesViewItemBinder.class );
+    private static RepositoriesViewItemBinder uiBinder = GWT.create(RepositoriesViewItemBinder.class);
 
     @UiField
     public Heading repoName;
@@ -67,65 +67,64 @@ public class RepositoryItemViewImpl
 
     private RepositoryItemPresenter presenter;
 
-
     @Inject
     public RepositoryItemViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        myGitCopyButton.addDomHandler( ( e ) -> presenter.onGitUrlCopied( gitDaemonURI.getText() ),
-                                       ClickEvent.getType() );
+        myGitCopyButton.addDomHandler((e) -> presenter.onGitUrlCopied(gitDaemonURI.getText()),
+                                      ClickEvent.getType());
 
-        glueCopy( myGitCopyButton.getElement() );
+        glueCopy(myGitCopyButton.getElement());
     }
 
-    public static native void glueCopy( final com.google.gwt.user.client.Element element ) /*-{
+    public static native void glueCopy(final com.google.gwt.user.client.Element element) /*-{
         var clip = new $wnd.ZeroClipboard(element);
     }-*/;
 
     @Override
-    public void setRepositoryName( final String repositoryName ) {
-        repoName.setText( repositoryName );
+    public void setRepositoryName(final String repositoryName) {
+        repoName.setText(repositoryName);
     }
 
     @Override
-    public void setRepositoryDescription( final String description ) {
-        repoDesc.setText( description );
+    public void setRepositoryDescription(final String description) {
+        repoDesc.setText(description);
     }
 
     @Override
     public void showAvailableProtocols() {
-        linksPanel.setText( CoreConstants.INSTANCE.AvailableProtocols() );
+        linksPanel.setText(CoreConstants.INSTANCE.AvailableProtocols());
     }
 
     @Override
-    public void setDaemonURI( final String uri ) {
-        gitDaemonURI.setText( uri );
+    public void setDaemonURI(final String uri) {
+        gitDaemonURI.setText(uri);
     }
 
     @Override
-    public void addProtocol( final String protocol ) {
-        linksPanel.add( new ProtocolButton( protocol,
-                new ClickHandler() {
-                    @Override
-                    public void onClick( ClickEvent event ) {
-                        presenter.onAnchorSelected( protocol );
-                    }
-                },
-                linksPanel.getWidgetCount() != 0 ) );
+    public void addProtocol(final String protocol) {
+        linksPanel.add(new ProtocolButton(protocol,
+                                          new ClickHandler() {
+                                              @Override
+                                              public void onClick(ClickEvent event) {
+                                                  presenter.onAnchorSelected(protocol);
+                                              }
+                                          },
+                                          linksPanel.getWidgetCount() != 0));
     }
 
     @Override
-    public void setPresenter( final RepositoryItemPresenter presenter ) {
+    public void setPresenter(final RepositoryItemPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setUriId( final String uriId ) {
-        gitDaemonURI.getElement().setId( uriId );
+    public void setUriId(final String uriId) {
+        gitDaemonURI.getElement().setId(uriId);
 
-        myGitCopyButton.init( true,
-                              uriId,
-                              gitDaemonURI.getText() );
+        myGitCopyButton.init(true,
+                             uriId,
+                             gitDaemonURI.getText());
     }
 
     @Override
@@ -134,16 +133,16 @@ public class RepositoryItemViewImpl
     }
 
     @Override
-    public void addBranch( final String branch ) {
+    public void addBranch(final String branch) {
         final Option option = new Option();
-        option.setText( branch );
-        option.setValue( branch );
-        branchesDropdown.add( option );
+        option.setText(branch);
+        option.setValue(branch);
+        branchesDropdown.add(option);
     }
 
     @Override
-    public void setSelectedBranch( final String currentBranch ) {
-        branchesDropdown.setValue( currentBranch );
+    public void setSelectedBranch(final String currentBranch) {
+        branchesDropdown.setValue(currentBranch);
         branchesDropdown.refresh();
     }
 
@@ -167,14 +166,14 @@ public class RepositoryItemViewImpl
         branchesDropdown.refresh();
     }
 
-    @UiHandler( "btnRemoveRepository" )
-    public void onRemoveRepository( final ClickEvent event ) {
+    @UiHandler("btnRemoveRepository")
+    public void onRemoveRepository(final ClickEvent event) {
         presenter.onClickButtonRemoveRepository();
     }
 
-    @UiHandler( "btnChangeBranch" )
-    public void onUpdateRepository( final ClickEvent event ) {
-        presenter.onUpdateRepository( branchesDropdown.getValue() );
+    @UiHandler("btnChangeBranch")
+    public void onUpdateRepository(final ClickEvent event) {
+        presenter.onUpdateRepository(branchesDropdown.getValue());
     }
 
     interface RepositoriesViewItemBinder
@@ -182,5 +181,4 @@ public class RepositoryItemViewImpl
             UiBinder<Widget, RepositoryItemViewImpl> {
 
     }
-
 }

@@ -29,14 +29,12 @@ public interface GenericValidator {
      * Validate an asset. Validation needs to know the Project in which the resource resides to be able
      * to determine classes within the project's dependencies. The resourcePath is used to determine the
      * containing project. The resourcePath is also used to determine the destination Path in Kie VFS.
-     * @param resourcePath
-     *         The VFS Path of the resource
-     * @param content
-     *         An String containing the resource to be validated.
+     * @param resourcePath The VFS Path of the resource
+     * @param content An String containing the resource to be validated.
      * @return Validation messages or an empty Collection if none.
      */
-    List<ValidationMessage> validate( final Path resourcePath,
-                                      final String content );
+    List<ValidationMessage> validate(final Path resourcePath,
+                                     final String content);
 
     /**
      * Validate an asset. Validation needs to know the Project in which the resource resides to be able
@@ -44,10 +42,8 @@ public interface GenericValidator {
      * containing project. The resourcePath is also used to determine the destination Path in Kie VFS.
      * The content of the resource is loaded from the provided Path - which is required when validating
      * assets for which there is no transient in-memory representation; e.g. XLS decision tables.
-     * @param resourcePath
-     *         The VFS Path of the resource
+     * @param resourcePath The VFS Path of the resource
      * @return Validation messages or an empty Collection if none.
      */
-    List<ValidationMessage> validate( final Path resourcePath );
-
+    List<ValidationMessage> validate(final Path resourcePath);
 }

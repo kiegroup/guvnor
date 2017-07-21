@@ -40,18 +40,20 @@ public class GAVPreferences implements BasePreference<GAVPreferences> {
     private boolean childGAVEditEnabled;
 
     @Override
-    public GAVPreferences defaultValue( final GAVPreferences defaultValue ) {
+    public GAVPreferences defaultValue(final GAVPreferences defaultValue) {
         //GWT complains in SuperDevMode if the static constants are used; so we have to use a literal
-        final String conflictingGAVCheckDisabledSystemProperty = System.getProperty( "org.guvnor.project.gav.check.disabled", "false" );
-        final boolean conflictingGAVCheckDisabled = Boolean.parseBoolean( conflictingGAVCheckDisabledSystemProperty );
+        final String conflictingGAVCheckDisabledSystemProperty = System.getProperty("org.guvnor.project.gav.check.disabled",
+                                                                                    "false");
+        final boolean conflictingGAVCheckDisabled = Boolean.parseBoolean(conflictingGAVCheckDisabledSystemProperty);
 
-        defaultValue.setConflictingGAVCheckDisabled( conflictingGAVCheckDisabled );
+        defaultValue.setConflictingGAVCheckDisabled(conflictingGAVCheckDisabled);
 
         //GWT complains in SuperDevMode if the static constants are used; so we have to use a literal
-        final String childGAVEditEnabledSystemProperty = System.getProperty( "org.guvnor.project.gav.child.edit.enabled", "false" );
-        final boolean childGAVEditEnabled = Boolean.parseBoolean( childGAVEditEnabledSystemProperty );
+        final String childGAVEditEnabledSystemProperty = System.getProperty("org.guvnor.project.gav.child.edit.enabled",
+                                                                            "false");
+        final boolean childGAVEditEnabled = Boolean.parseBoolean(childGAVEditEnabledSystemProperty);
 
-        defaultValue.setChildGAVEditEnabled( childGAVEditEnabled );
+        defaultValue.setChildGAVEditEnabled(childGAVEditEnabled);
 
         return defaultValue;
     }
@@ -60,7 +62,7 @@ public class GAVPreferences implements BasePreference<GAVPreferences> {
         return conflictingGAVCheckDisabled;
     }
 
-    public void setConflictingGAVCheckDisabled( final boolean conflictingGAVCheckDisabled ) {
+    public void setConflictingGAVCheckDisabled(final boolean conflictingGAVCheckDisabled) {
         this.conflictingGAVCheckDisabled = conflictingGAVCheckDisabled;
     }
 
@@ -68,7 +70,7 @@ public class GAVPreferences implements BasePreference<GAVPreferences> {
         return childGAVEditEnabled;
     }
 
-    public void setChildGAVEditEnabled( final boolean childGAVEditEnabled ) {
+    public void setChildGAVEditEnabled(final boolean childGAVEditEnabled) {
         this.childGAVEditEnabled = childGAVEditEnabled;
     }
 }

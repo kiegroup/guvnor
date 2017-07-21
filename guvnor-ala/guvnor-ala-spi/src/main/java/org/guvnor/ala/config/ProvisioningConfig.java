@@ -23,7 +23,7 @@ import org.guvnor.ala.runtime.providers.ProviderId;
  * Base Provisioning Config interface. Provide different implementations for
  * supporting different provisioning mechanisms configurations.
  */
-@JsonTypeInfo( use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT )
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public interface ProvisioningConfig extends Config {
 
     /*
@@ -32,5 +32,4 @@ public interface ProvisioningConfig extends Config {
      * @see ProviderId
      */
     ProviderId getProviderId();
-
 }

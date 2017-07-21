@@ -23,14 +23,14 @@ import org.guvnor.ala.config.Config;
  *  the configuration returned by the executeFor() method.
  */
 public interface ConfigExecutor {
-    
+
     /*
      * Returns the configuration type which this executor can be executed for
      * @return a configuration type for which this ConfigExecutor can be executed.
      * @see Config
     */
     Class<? extends Config> executeFor();
-    
+
     /*
      * Returns the outputId for the execution results
      * @return the outputId
@@ -44,5 +44,4 @@ public interface ConfigExecutor {
     default String inputId() {
         return "none";
     }
-
 }

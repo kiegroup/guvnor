@@ -33,6 +33,5 @@ public interface ProviderBuilder<T extends ProviderConfig, R extends Provider> e
      * @param ProviderConfig the configuration to build the provider
      * @returns boolean 
     */
-    boolean supports( final ProviderConfig config );
-
+    boolean supports(final ProviderConfig config);
 }

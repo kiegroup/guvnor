@@ -71,7 +71,7 @@ import static org.junit.Assert.*;
 /**
  * Test that shows how to work with the Runtime Provisioning Service
  */
-@RunWith( Arquillian.class )
+@RunWith(Arquillian.class)
 public class RestRuntimeProvisioningImplTest {
 
     @Inject
@@ -79,76 +79,84 @@ public class RestRuntimeProvisioningImplTest {
 
     @Deployment()
     public static Archive createDeployment() throws Exception {
-        JavaArchive deployment = ShrinkWrap.create( JavaArchive.class );
-        deployment.addClass( DockerProviderConfigExecutor.class );
-        deployment.addClass( WildflyProviderConfigExecutor.class );
-        deployment.addClass( RestRuntimeProvisioningServiceImpl.class );
-        deployment.addClass( RuntimeRegistry.class );
-        deployment.addClass( InMemoryRuntimeRegistry.class );
-        deployment.addClass( RuntimeRegistry.class );
-        deployment.addClass( ProviderFactory.class );
-        deployment.addClass( RuntimeFactory.class );
-        deployment.addClass( RuntimeManagerFactory.class );
-        deployment.addClass( DockerProviderType.class );
-        deployment.addClass( DockerProviderConfig.class );
-        deployment.addClass( DockerProvider.class );
-        deployment.addClass( WildflyProviderType.class );
-        deployment.addClass( ProviderBuilder.class );
-        deployment.addClass( ProviderType.class );
-        deployment.addClass( FunctionConfigExecutor.class );
-        deployment.addClass( ConfigExecutor.class );
-        deployment.addClass( ProviderConfig.class );
-        deployment.addClass( Provider.class );
-        deployment.addClass(DockerRuntimeConfig.class );
-        deployment.addClass( DockerRuntime.class );
-        deployment.addClass( RuntimeBuilder.class );
-        deployment.addClass( DockerRuntimeExecExecutor.class );
-        deployment.addClass( RuntimeDestroyer.class );
-        deployment.addClass( DockerAccessInterface.class );
-        deployment.addClass( DockerAccessInterfaceImpl.class );
-        deployment.addClass( Disposable.class );
-        deployment.addClass( DockerException.class );
-        deployment.addClass( DockerRuntimeManager.class );
-        deployment.addClass( RuntimeManager.class );
-        
+        JavaArchive deployment = ShrinkWrap.create(JavaArchive.class);
+        deployment.addClass(DockerProviderConfigExecutor.class);
+        deployment.addClass(WildflyProviderConfigExecutor.class);
+        deployment.addClass(RestRuntimeProvisioningServiceImpl.class);
+        deployment.addClass(RuntimeRegistry.class);
+        deployment.addClass(InMemoryRuntimeRegistry.class);
+        deployment.addClass(RuntimeRegistry.class);
+        deployment.addClass(ProviderFactory.class);
+        deployment.addClass(RuntimeFactory.class);
+        deployment.addClass(RuntimeManagerFactory.class);
+        deployment.addClass(DockerProviderType.class);
+        deployment.addClass(DockerProviderConfig.class);
+        deployment.addClass(DockerProvider.class);
+        deployment.addClass(WildflyProviderType.class);
+        deployment.addClass(ProviderBuilder.class);
+        deployment.addClass(ProviderType.class);
+        deployment.addClass(FunctionConfigExecutor.class);
+        deployment.addClass(ConfigExecutor.class);
+        deployment.addClass(ProviderConfig.class);
+        deployment.addClass(Provider.class);
+        deployment.addClass(DockerRuntimeConfig.class);
+        deployment.addClass(DockerRuntime.class);
+        deployment.addClass(RuntimeBuilder.class);
+        deployment.addClass(DockerRuntimeExecExecutor.class);
+        deployment.addClass(RuntimeDestroyer.class);
+        deployment.addClass(DockerAccessInterface.class);
+        deployment.addClass(DockerAccessInterfaceImpl.class);
+        deployment.addClass(Disposable.class);
+        deployment.addClass(DockerException.class);
+        deployment.addClass(DockerRuntimeManager.class);
+        deployment.addClass(RuntimeManager.class);
 
-        deployment.addClass( org.guvnor.ala.config.Config.class );
-        deployment.addClass( org.guvnor.ala.config.ProviderConfig.class );
-        deployment.addClass( org.guvnor.ala.docker.config.DockerProviderConfig.class );
-        deployment.addClass( org.guvnor.ala.docker.model.DockerProvider.class );
-        deployment.addClass( org.guvnor.ala.pipeline.FunctionConfigExecutor.class );
-        deployment.addClass( org.guvnor.ala.registry.RuntimeRegistry.class );
-        deployment.addClass( org.guvnor.ala.runtime.providers.ProviderBuilder.class );
-        deployment.addClass( org.guvnor.ala.runtime.providers.ProviderDestroyer.class );
-        deployment.addClass( org.guvnor.ala.runtime.providers.ProviderId.class );
+        deployment.addClass(org.guvnor.ala.config.Config.class);
+        deployment.addClass(org.guvnor.ala.config.ProviderConfig.class);
+        deployment.addClass(org.guvnor.ala.docker.config.DockerProviderConfig.class);
+        deployment.addClass(org.guvnor.ala.docker.model.DockerProvider.class);
+        deployment.addClass(org.guvnor.ala.pipeline.FunctionConfigExecutor.class);
+        deployment.addClass(org.guvnor.ala.registry.RuntimeRegistry.class);
+        deployment.addClass(org.guvnor.ala.runtime.providers.ProviderBuilder.class);
+        deployment.addClass(org.guvnor.ala.runtime.providers.ProviderDestroyer.class);
+        deployment.addClass(org.guvnor.ala.runtime.providers.ProviderId.class);
 
         deployment.addClass(PipelineExecutorTaskManagerImpl.class);
         deployment.addClass(InMemoryPipelineExecutorRegistry.class);
 
-        deployment.addAsManifestResource( EmptyAsset.INSTANCE, "beans.xml" );
+        deployment.addAsManifestResource(EmptyAsset.INSTANCE,
+                                         "beans.xml");
         return deployment;
     }
 
     @Test
     public void testAPI() {
 
-        ProviderTypeList allProviderTypes = runtimeService.getProviderTypes(0, 10, "", true);
+        ProviderTypeList allProviderTypes = runtimeService.getProviderTypes(0,
+                                                                            10,
+                                                                            "",
+                                                                            true);
 
-        assertEquals( 2, allProviderTypes.getItems().size() );
+        assertEquals(2,
+                     allProviderTypes.getItems().size());
         DockerProviderConfig dockerProviderConfig = new DockerProviderConfig() {
         };
-        runtimeService.registerProvider( dockerProviderConfig );
+        runtimeService.registerProvider(dockerProviderConfig);
 
-        ProviderList allProviders = runtimeService.getProviders(0, 10, "", true);
+        ProviderList allProviders = runtimeService.getProviders(0,
+                                                                10,
+                                                                "",
+                                                                true);
 
-        assertEquals( 1, allProviders.getItems().size() );
+        assertEquals(1,
+                     allProviders.getItems().size());
 
-        Provider p = allProviders.getItems().get( 0 );
-        assertTrue( p instanceof DockerProvider );
+        Provider p = allProviders.getItems().get(0);
+        assertTrue(p instanceof DockerProvider);
 
-        assertNotNull( p.getId() );
-        assertNotNull( p.getProviderType() );
-        assertNotNull( p.getConfig() );
+        assertNotNull(p.getId());
+        assertNotNull(p.getProviderType());
+        assertNotNull(p.getConfig());
 
         DockerRuntimeConfig dockerRuntimeConfiguration = new DockerRuntimeConfig() {
             @Override
@@ -172,21 +180,28 @@ public class RestRuntimeProvisioningImplTest {
             }
         };
 
-        String newRuntime = runtimeService.newRuntime( dockerRuntimeConfiguration );
-        assertNotNull( newRuntime );
+        String newRuntime = runtimeService.newRuntime(dockerRuntimeConfiguration);
+        assertNotNull(newRuntime);
 
-        RuntimeList allRuntimes = runtimeService.getRuntimes(0, 10, "", true);
-        assertEquals( 1, allRuntimes.getItems().size() );
+        RuntimeList allRuntimes = runtimeService.getRuntimes(0,
+                                                             10,
+                                                             "",
+                                                             true);
+        assertEquals(1,
+                     allRuntimes.getItems().size());
 
         RuntimeQuery query = RuntimeQueryBuilder.newInstance().withProviderId(p.getId()).build();
         RuntimeQueryResultItemList queryResult = runtimeService.executeQuery(query);
-        assertEquals(1, queryResult.getItems().size());
+        assertEquals(1,
+                     queryResult.getItems().size());
 
-        runtimeService.destroyRuntime( newRuntime );
-        
-        allRuntimes = runtimeService.getRuntimes(0, 10, "", true);
-        assertEquals( 0, allRuntimes.getItems().size() );
+        runtimeService.destroyRuntime(newRuntime);
 
+        allRuntimes = runtimeService.getRuntimes(0,
+                                                 10,
+                                                 "",
+                                                 true);
+        assertEquals(0,
+                     allRuntimes.getItems().size());
     }
-
 }

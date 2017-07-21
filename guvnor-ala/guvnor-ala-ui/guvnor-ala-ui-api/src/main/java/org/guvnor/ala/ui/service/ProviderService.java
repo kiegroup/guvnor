@@ -18,13 +18,13 @@ package org.guvnor.ala.ui.service;
 
 import java.util.Collection;
 
+import org.guvnor.ala.ui.model.Provider;
+import org.guvnor.ala.ui.model.ProviderConfiguration;
+import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderType;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProvidersInfo;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.guvnor.ala.ui.model.Provider;
-import org.guvnor.ala.ui.model.ProviderConfiguration;
-import org.guvnor.ala.ui.model.ProviderKey;
 
 /**
  * Service for managing the providers related to the different provider types.

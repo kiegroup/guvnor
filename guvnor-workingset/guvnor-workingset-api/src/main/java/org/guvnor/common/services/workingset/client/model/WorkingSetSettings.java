@@ -16,12 +16,12 @@
 
 package org.guvnor.common.services.workingset.client.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.backend.vfs.Path;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.Path;
 
 /**
  *
@@ -34,7 +34,7 @@ public class WorkingSetSettings {
     public WorkingSetSettings() {
     }
 
-    public WorkingSetSettings( Map<Path, WorkingSetConfigData> configData ) {
+    public WorkingSetSettings(Map<Path, WorkingSetConfigData> configData) {
         this.configData = configData;
     }
 
@@ -46,7 +46,7 @@ public class WorkingSetSettings {
         return configData.values();
     }
 
-    public void removeWorkingSet( final Path workingSet ) {
-        configData.remove( workingSet );
+    public void removeWorkingSet(final Path workingSet) {
+        configData.remove(workingSet);
     }
 }

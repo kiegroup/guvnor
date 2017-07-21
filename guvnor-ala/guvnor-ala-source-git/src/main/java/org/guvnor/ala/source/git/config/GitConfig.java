@@ -81,5 +81,4 @@ public interface GitConfig extends SourceConfig {
     default String getOutPath() {
         return "${input." + OUT_DIR + "}";
     }
-
 }

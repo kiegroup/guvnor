@@ -47,12 +47,12 @@ public class MavenRepositorySystemSessionWrapper implements RepositorySystemSess
     private final String tempLocalRepositoryBaseDir;
     private final RepositorySystemSession delegate;
 
-    public MavenRepositorySystemSessionWrapper( final String tempLocalRepositoryBaseDir,
-                                                final RepositorySystemSession delegate ) {
-        this.tempLocalRepositoryBaseDir = PortablePreconditions.checkNotNull( "tempLocalRepositoryBaseDir",
-                                                                              tempLocalRepositoryBaseDir );
-        this.delegate = PortablePreconditions.checkNotNull( "delegate",
-                                                            delegate );
+    public MavenRepositorySystemSessionWrapper(final String tempLocalRepositoryBaseDir,
+                                               final RepositorySystemSession delegate) {
+        this.tempLocalRepositoryBaseDir = PortablePreconditions.checkNotNull("tempLocalRepositoryBaseDir",
+                                                                             tempLocalRepositoryBaseDir);
+        this.delegate = PortablePreconditions.checkNotNull("delegate",
+                                                           delegate);
     }
 
     @Override
@@ -92,8 +92,8 @@ public class MavenRepositorySystemSessionWrapper implements RepositorySystemSess
 
     @Override
     public LocalRepositoryManager getLocalRepositoryManager() {
-        return new MavenLocalRepositoryManagerWrapper( tempLocalRepositoryBaseDir,
-                                                       delegate.getLocalRepositoryManager() );
+        return new MavenLocalRepositoryManagerWrapper(tempLocalRepositoryBaseDir,
+                                                      delegate.getLocalRepositoryManager());
     }
 
     @Override

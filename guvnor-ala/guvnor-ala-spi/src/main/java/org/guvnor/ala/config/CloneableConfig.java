@@ -23,10 +23,10 @@ package org.guvnor.ala.config;
 */
 
 public interface CloneableConfig<T> {
-    
+
     /*
      * Create new clone of the configuration
      * @return the cloned type
      */
-    T asNewClone( T origin );
+    T asNewClone(T origin);
 }

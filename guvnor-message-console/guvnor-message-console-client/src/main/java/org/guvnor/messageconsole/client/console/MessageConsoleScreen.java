@@ -71,47 +71,48 @@ public class MessageConsoleScreen implements RefreshMenuBuilder.SupportsRefresh 
 
     @Override
     public void onRefresh() {
-        view.showBusyIndicator( MessageConsoleResources.CONSTANTS.Refreshing() );
-        buildService.call( new RemoteCallback<BuildResults>() {
-            @Override
-            public void callback( final BuildResults results ) {
-                PublishBatchMessagesEvent batchMessages = new PublishBatchMessagesEvent();
-                batchMessages.setCleanExisting( true );
-                batchMessages.setMessageType( MessageUtils.BUILD_SYSTEM_MESSAGE );
+        view.showBusyIndicator(MessageConsoleResources.CONSTANTS.Refreshing());
+        buildService.call(new RemoteCallback<BuildResults>() {
+                              @Override
+                              public void callback(final BuildResults results) {
+                                  PublishBatchMessagesEvent batchMessages = new PublishBatchMessagesEvent();
+                                  batchMessages.setCleanExisting(true);
+                                  batchMessages.setMessageType(MessageUtils.BUILD_SYSTEM_MESSAGE);
 
-                if ( results.getMessages() != null ) {
-                    for ( BuildMessage buildMessage : results.getMessages() ) {
-                        batchMessages.getMessagesToPublish().add( MessageUtils.convert( buildMessage ) );
-                    }
-                }
-                publishBatchMessagesEvent.fire( batchMessages );
-                view.hideBusyIndicator();
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback( view ) ).build( project );
+                                  if (results.getMessages() != null) {
+                                      for (BuildMessage buildMessage : results.getMessages()) {
+                                          batchMessages.getMessagesToPublish().add(MessageUtils.convert(buildMessage));
+                                      }
+                                  }
+                                  publishBatchMessagesEvent.fire(batchMessages);
+                                  view.hideBusyIndicator();
+                              }
+                          },
+                          new HasBusyIndicatorDefaultErrorCallback(view)).build(project);
     }
 
     private void makeMenuBar() {
         menus = MenuFactory
-                .newTopLevelMenu( MessageConsoleResources.CONSTANTS.ClearMessageConsole() )
-                .respondsWith( new Command() {
+                .newTopLevelMenu(MessageConsoleResources.CONSTANTS.ClearMessageConsole())
+                .respondsWith(new Command() {
                     @Override
                     public void execute() {
                         PublishBatchMessagesEvent batchMessages = new PublishBatchMessagesEvent();
-                        batchMessages.setCleanExisting( true );
-                        batchMessages.setMessagesToPublish( new ArrayList<SystemMessage>() );
+                        batchMessages.setCleanExisting(true);
+                        batchMessages.setMessagesToPublish(new ArrayList<SystemMessage>());
 
-                        publishBatchMessagesEvent.fire( batchMessages );
+                        publishBatchMessagesEvent.fire(batchMessages);
                     }
-                } )
+                })
                 .endMenu()
                 .newTopLevelCustomMenu(new RefreshMenuBuilder(this))
                 .endMenu()
                 .build();
     }
 
-    public void selectedProjectChanged( @Observes final ProjectContextChangeEvent event ) {
+    public void selectedProjectChanged(@Observes final ProjectContextChangeEvent event) {
         this.project = event.getProject();
-        this.menus.getItems().get( 0 ).setEnabled( project != null );
+        this.menus.getItems().get(0).setEnabled(project != null);
     }
 
     @DefaultPosition
@@ -133,5 +134,4 @@ public class MessageConsoleScreen implements RefreshMenuBuilder.SupportsRefresh 
     public Menus getMenus() {
         return menus;
     }
-
 }

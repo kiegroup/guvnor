@@ -31,12 +31,12 @@ public class TestProjectService {
     @Produces
     @Alternative
     public ProjectService<Project> projectService() {
-        return mock( ProjectService.class );
+        return mock(ProjectService.class);
     }
 
     @Produces
     @Alternative
     public ProjectFactory<Project> projectProjectFactory() {
-        return mock( ProjectFactory.class );
+        return mock(ProjectFactory.class);
     }
 }

@@ -16,9 +16,9 @@
 
 package org.guvnor.common.services.shared.config;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-
 import java.util.Map;
+
+import org.jboss.errai.bus.server.annotations.Remote;
 
 /**
  *
@@ -29,6 +29,5 @@ public interface AppConfigService {
     Map<String, String> loadPreferences();
 
     long getTimestamp();
-
 }
 

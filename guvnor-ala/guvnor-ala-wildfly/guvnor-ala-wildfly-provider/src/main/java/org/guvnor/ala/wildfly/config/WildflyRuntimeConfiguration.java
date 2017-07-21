@@ -50,8 +50,8 @@ public interface WildflyRuntimeConfiguration extends ProvisioningConfig,
 
     /**
      * Get the Redeploy Strategy for apps in wildfly
-     *  - auto: will automatically redeploy the app if it already exist
-     *  - none: will fail if you try to redeploy an app that already exist
+     * - auto: will automatically redeploy the app if it already exist
+     * - none: will fail if you try to redeploy an app that already exist
      * @return String with the strategy
      */
     default String getRedeployStrategy() {

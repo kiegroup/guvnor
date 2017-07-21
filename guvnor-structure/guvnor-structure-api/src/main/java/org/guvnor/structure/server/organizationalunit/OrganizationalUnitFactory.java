@@ -20,5 +20,5 @@ import org.guvnor.structure.server.config.ConfigGroup;
 
 public interface OrganizationalUnitFactory {
 
-    OrganizationalUnit newOrganizationalUnit( ConfigGroup groupConfig );
+    OrganizationalUnit newOrganizationalUnit(ConfigGroup groupConfig);
 }

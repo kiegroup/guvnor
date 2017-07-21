@@ -36,14 +36,19 @@ public class AssetManagementEvent {
 
     private Long timestamp;
 
-    private Map<String, String> params = new HashMap<String, String>( );
+    private Map<String, String> params = new HashMap<String, String>();
 
-    private List<String> errors = new ArrayList<String>( );
+    private List<String> errors = new ArrayList<String>();
 
     public AssetManagementEvent() {
     }
 
-    public AssetManagementEvent( String processName, String repositoryAlias, String rootURI, String user, Long timestamp, Map<String, String> params ) {
+    public AssetManagementEvent(String processName,
+                                String repositoryAlias,
+                                String rootURI,
+                                String user,
+                                Long timestamp,
+                                Map<String, String> params) {
         this.processName = processName;
         this.repositoryAlias = repositoryAlias;
         this.rootURI = rootURI;
@@ -52,7 +57,11 @@ public class AssetManagementEvent {
         this.params = params;
     }
 
-    public AssetManagementEvent( String processName, String repositoryAlias, String rootURI, String user, Long timestamp ) {
+    public AssetManagementEvent(String processName,
+                                String repositoryAlias,
+                                String rootURI,
+                                String user,
+                                Long timestamp) {
         this.processName = processName;
         this.repositoryAlias = repositoryAlias;
         this.rootURI = rootURI;
@@ -64,7 +73,7 @@ public class AssetManagementEvent {
         return processName;
     }
 
-    public void setProcessName( String processName ) {
+    public void setProcessName(String processName) {
         this.processName = processName;
     }
 
@@ -72,7 +81,7 @@ public class AssetManagementEvent {
         return user;
     }
 
-    public void setUser( String user ) {
+    public void setUser(String user) {
         this.user = user;
     }
 
@@ -80,7 +89,7 @@ public class AssetManagementEvent {
         return repositoryAlias;
     }
 
-    public void setRepositoryAlias( String repositoryAlias ) {
+    public void setRepositoryAlias(String repositoryAlias) {
         this.repositoryAlias = repositoryAlias;
     }
 
@@ -88,7 +97,7 @@ public class AssetManagementEvent {
         return rootURI;
     }
 
-    public void setRootURI( String rootURI ) {
+    public void setRootURI(String rootURI) {
         this.rootURI = rootURI;
     }
 
@@ -96,7 +105,7 @@ public class AssetManagementEvent {
         return timestamp;
     }
 
-    public void setTimestamp( Long timestamp ) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -104,19 +113,21 @@ public class AssetManagementEvent {
         return params;
     }
 
-    public void setParams( Map<String, String> params ) {
+    public void setParams(Map<String, String> params) {
         this.params = params;
     }
 
-    public void addParam( String name, String value ) {
-        params.put( name, value );
+    public void addParam(String name,
+                         String value) {
+        params.put(name,
+                   value);
     }
 
     public List<String> getErrors() {
         return errors;
     }
 
-    public void setErrors( List<String> errors ) {
+    public void setErrors(List<String> errors) {
         this.errors = errors;
     }
 
@@ -124,7 +135,7 @@ public class AssetManagementEvent {
         return errors != null && !errors.isEmpty();
     }
 
-    public void addError(String error ) {
-        errors.add( error );
+    public void addError(String error) {
+        errors.add(error);
     }
 }

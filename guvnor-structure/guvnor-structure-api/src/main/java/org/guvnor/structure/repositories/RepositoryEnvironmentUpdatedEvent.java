@@ -28,7 +28,7 @@ public class RepositoryEnvironmentUpdatedEvent {
     public RepositoryEnvironmentUpdatedEvent() {
     }
 
-    public RepositoryEnvironmentUpdatedEvent( final Repository updatedRepository ) {
+    public RepositoryEnvironmentUpdatedEvent(final Repository updatedRepository) {
         this.updatedRepository = updatedRepository;
     }
 
@@ -36,7 +36,7 @@ public class RepositoryEnvironmentUpdatedEvent {
         return updatedRepository;
     }
 
-    public void setUpdatedRepository( final Repository updatedRepository ) {
+    public void setUpdatedRepository(final Repository updatedRepository) {
         this.updatedRepository = updatedRepository;
     }
 }

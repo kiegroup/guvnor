@@ -19,23 +19,23 @@ import org.apache.maven.model.Plugin;
 
 public class TestUtils {
 
-    static Plugin makeMavenPlugin( final String groupId,
-                                   final String artifactId,
-                                   final String version ) {
+    static Plugin makeMavenPlugin(final String groupId,
+                                  final String artifactId,
+                                  final String version) {
         Plugin plugin = new Plugin();
-        plugin.setGroupId( groupId );
-        plugin.setArtifactId( artifactId );
-        plugin.setVersion( version );
+        plugin.setGroupId(groupId);
+        plugin.setArtifactId(artifactId);
+        plugin.setVersion(version);
         return plugin;
     }
 
-    static org.guvnor.common.services.project.model.Plugin makeGuvnorPlugin( final String groupId,
-                                                                             final String artifactId,
-                                                                             final String version ) {
+    static org.guvnor.common.services.project.model.Plugin makeGuvnorPlugin(final String groupId,
+                                                                            final String artifactId,
+                                                                            final String version) {
         org.guvnor.common.services.project.model.Plugin plugin = new org.guvnor.common.services.project.model.Plugin();
-        plugin.setGroupId( groupId );
-        plugin.setArtifactId( artifactId );
-        plugin.setVersion( version );
+        plugin.setGroupId(groupId);
+        plugin.setArtifactId(artifactId);
+        plugin.setVersion(version);
         return plugin;
     }
 }

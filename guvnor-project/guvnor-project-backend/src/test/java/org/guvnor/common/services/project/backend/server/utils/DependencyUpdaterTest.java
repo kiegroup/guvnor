@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.apache.maven.model.Model;
-import org.guvnor.common.services.project.backend.server.utils.DependencyUpdater;
 import org.guvnor.common.services.project.model.Dependency;
 import org.junit.Test;
 
@@ -33,16 +32,17 @@ public class DependencyUpdaterTest {
 
         Model model = new Model();
         ArrayList<Dependency> dependencies = new ArrayList<Dependency>();
-        dependencies.add( new Dependency() );
+        dependencies.add(new Dependency());
 
         assertTrue(model.getDependencies().isEmpty());
 
         new DependencyUpdater(model.getDependencies()).updateDependencies(dependencies);
 
-        assertEquals(1, model.getDependencies().size());
-        assertNull( model.getDependencies().get( 0 ).getGroupId() );
-        assertNull( model.getDependencies().get( 0 ).getArtifactId() );
-        assertNull( model.getDependencies().get( 0 ).getVersion() );
+        assertEquals(1,
+                     model.getDependencies().size());
+        assertNull(model.getDependencies().get(0).getGroupId());
+        assertNull(model.getDependencies().get(0).getArtifactId());
+        assertNull(model.getDependencies().get(0).getVersion());
     }
 
     @Test
@@ -50,16 +50,22 @@ public class DependencyUpdaterTest {
 
         Model model = new Model();
         ArrayList<Dependency> dependencies = new ArrayList<Dependency>();
-        dependencies.add( makeWorkbenchDependency( "group", "artifact-id", "1.0" ) );
+        dependencies.add(makeWorkbenchDependency("group",
+                                                 "artifact-id",
+                                                 "1.0"));
 
-        assertTrue( model.getDependencies().isEmpty() );
+        assertTrue(model.getDependencies().isEmpty());
 
-        new DependencyUpdater( model.getDependencies() ).updateDependencies( dependencies );
+        new DependencyUpdater(model.getDependencies()).updateDependencies(dependencies);
 
-        assertEquals( 1, model.getDependencies().size() );
-        assertEquals( "group", model.getDependencies().get( 0 ).getGroupId() );
-        assertEquals( "artifact-id", model.getDependencies().get( 0 ).getArtifactId() );
-        assertEquals( "1.0", model.getDependencies().get( 0 ).getVersion() );
+        assertEquals(1,
+                     model.getDependencies().size());
+        assertEquals("group",
+                     model.getDependencies().get(0).getGroupId());
+        assertEquals("artifact-id",
+                     model.getDependencies().get(0).getArtifactId());
+        assertEquals("1.0",
+                     model.getDependencies().get(0).getVersion());
     }
 
     @Test
@@ -67,7 +73,9 @@ public class DependencyUpdaterTest {
 
         Model model = new Model();
 
-        model.getDependencies().add(makeMavenDependency("group", "artifact-id", "1.0"));
+        model.getDependencies().add(makeMavenDependency("group",
+                                                        "artifact-id",
+                                                        "1.0"));
 
         assertFalse(model.getDependencies().isEmpty());
 
@@ -79,22 +87,32 @@ public class DependencyUpdaterTest {
     @Test
     public void testUpdate() throws Exception {
         Model model = new Model();
-        model.getDependencies().add(makeMavenDependency("group", "artifact-id", "1.0"));
+        model.getDependencies().add(makeMavenDependency("group",
+                                                        "artifact-id",
+                                                        "1.0"));
 
         ArrayList<Dependency> dependencies = new ArrayList<Dependency>();
-        dependencies.add(makeWorkbenchDependency("group", "artifact-id", "2.0"));
+        dependencies.add(makeWorkbenchDependency("group",
+                                                 "artifact-id",
+                                                 "2.0"));
 
         assertFalse(model.getDependencies().isEmpty());
 
         new DependencyUpdater(model.getDependencies()).updateDependencies(dependencies);
 
-        assertEquals(1, model.getDependencies().size());
-        assertEquals("group", model.getDependencies().get(0).getGroupId());
-        assertEquals("artifact-id", model.getDependencies().get(0).getArtifactId());
-        assertEquals("2.0", model.getDependencies().get(0).getVersion());
+        assertEquals(1,
+                     model.getDependencies().size());
+        assertEquals("group",
+                     model.getDependencies().get(0).getGroupId());
+        assertEquals("artifact-id",
+                     model.getDependencies().get(0).getArtifactId());
+        assertEquals("2.0",
+                     model.getDependencies().get(0).getVersion());
     }
 
-    private org.apache.maven.model.Dependency makeMavenDependency(String group, String artifactId, String version) {
+    private org.apache.maven.model.Dependency makeMavenDependency(String group,
+                                                                  String artifactId,
+                                                                  String version) {
         org.apache.maven.model.Dependency dependency = new org.apache.maven.model.Dependency();
         dependency.setGroupId(group);
         dependency.setArtifactId(artifactId);
@@ -102,7 +120,9 @@ public class DependencyUpdaterTest {
         return dependency;
     }
 
-    private Dependency makeWorkbenchDependency(String group, String artifactId, String version) {
+    private Dependency makeWorkbenchDependency(String group,
+                                               String artifactId,
+                                               String version) {
         Dependency dependency = new Dependency();
         dependency.setGroupId(group);
         dependency.setArtifactId(artifactId);

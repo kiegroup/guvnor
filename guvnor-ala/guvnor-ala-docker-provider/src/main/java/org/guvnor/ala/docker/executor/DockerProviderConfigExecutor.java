@@ -36,16 +36,17 @@ public class DockerProviderConfigExecutor implements ProviderBuilder<DockerProvi
     private RuntimeRegistry runtimeRegistry;
 
     @Inject
-    public DockerProviderConfigExecutor( final RuntimeRegistry runtimeRegistry ) {
+    public DockerProviderConfigExecutor(final RuntimeRegistry runtimeRegistry) {
         this.runtimeRegistry = runtimeRegistry;
     }
 
     @Override
-    public Optional<DockerProvider> apply( final DockerProviderConfig dockerProviderConfig ) {
-        final DockerProviderImpl provider = new DockerProviderImpl( dockerProviderConfig.getName(), 
-                dockerProviderConfig.getHostIp(), dockerProviderConfig );
-        runtimeRegistry.registerProvider( provider );
-        return Optional.of( provider );
+    public Optional<DockerProvider> apply(final DockerProviderConfig dockerProviderConfig) {
+        final DockerProviderImpl provider = new DockerProviderImpl(dockerProviderConfig.getName(),
+                                                                   dockerProviderConfig.getHostIp(),
+                                                                   dockerProviderConfig);
+        runtimeRegistry.registerProvider(provider);
+        return Optional.of(provider);
     }
 
     @Override
@@ -59,17 +60,16 @@ public class DockerProviderConfigExecutor implements ProviderBuilder<DockerProvi
     }
 
     @Override
-    public boolean supports( final ProviderConfig config ) {
+    public boolean supports(final ProviderConfig config) {
         return config instanceof DockerProviderConfig;
     }
 
     @Override
-    public boolean supports( final ProviderId providerId ) {
+    public boolean supports(final ProviderId providerId) {
         return providerId instanceof DockerProvider;
     }
 
     @Override
-    public void destroy( final ProviderId providerId ) {
+    public void destroy(final ProviderId providerId) {
     }
-
 }

@@ -21,5 +21,4 @@ package org.guvnor.common.services.builder;
 public interface IncrementalBuilderExecutorManagerFactory {
 
     IncrementalBuilderExecutorManager getExecutorManager();
-
 }

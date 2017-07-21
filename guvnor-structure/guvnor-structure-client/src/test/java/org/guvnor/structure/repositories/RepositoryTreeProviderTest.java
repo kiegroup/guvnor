@@ -21,10 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import com.sun.corba.se.impl.activation.RepositoryImpl;
 import org.guvnor.structure.client.security.RepositoryTreeProvider;
-import org.guvnor.structure.organizationalunit.OrganizationalUnitSearchService;
-import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +58,8 @@ public class RepositoryTreeProviderTest {
     @Before
     public void setup() {
         permissionManager = new DefaultPermissionManager();
-        treeProvider = new RepositoryTreeProvider(permissionManager, new CallerMock<>(searchService));
+        treeProvider = new RepositoryTreeProvider(permissionManager,
+                                                  new CallerMock<>(searchService));
         rootNode = treeProvider.buildRootNode();
         rootNode.setPermissionTree(permissionTree);
 
@@ -72,22 +70,29 @@ public class RepositoryTreeProviderTest {
         when(repo1.getResourceType()).thenReturn(Repository.RESOURCE_TYPE);
         when(repo2.getResourceType()).thenReturn(Repository.RESOURCE_TYPE);
         when(permissionTree.getChildrenResourceIds(any())).thenReturn(null);
-        when(searchService.searchByAlias(anyString(), anyInt(), anyBoolean())).thenReturn(Arrays.asList(repo1, repo2));
+        when(searchService.searchByAlias(anyString(),
+                                         anyInt(),
+                                         anyBoolean())).thenReturn(Arrays.asList(repo1,
+                                                                                 repo2));
     }
 
     @Test
     public void testRootNode() {
-        assertEquals(rootNode.getPermissionList().size(), 4);
+        assertEquals(rootNode.getPermissionList().size(),
+                     4);
         checkDependencies(rootNode);
     }
 
     @Test
     public void testChildrenNodes() {
         rootNode.expand(children -> {
-            verify(searchService).searchByAlias(anyString(), anyInt(), anyBoolean());
+            verify(searchService).searchByAlias(anyString(),
+                                                anyInt(),
+                                                anyBoolean());
             for (PermissionNode child : children) {
                 List<Permission> permissionList = child.getPermissionList();
-                assertEquals(permissionList.size(), 3);
+                assertEquals(permissionList.size(),
+                             3);
                 checkDependencies(child);
 
                 List<String> permissionNames = permissionList.stream()
@@ -98,7 +103,8 @@ public class RepositoryTreeProviderTest {
                 assertTrue(permissionNames.contains("repository.update." + child.getNodeName()));
                 assertTrue(permissionNames.contains("repository.delete." + child.getNodeName()));
 
-                assertEquals(child.getPermissionList().size(), 3);
+                assertEquals(child.getPermissionList().size(),
+                             3);
                 checkDependencies(child);
             }
         });
@@ -109,9 +115,9 @@ public class RepositoryTreeProviderTest {
             Collection<Permission> dependencies = permissionNode.getDependencies(permission);
 
             if (permission.getName().startsWith("repository.read")) {
-                assertEquals(dependencies.size(), 2);
-            }
-            else {
+                assertEquals(dependencies.size(),
+                             2);
+            } else {
                 assertNull(dependencies);
             }
         }

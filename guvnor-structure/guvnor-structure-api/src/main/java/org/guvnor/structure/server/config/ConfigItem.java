@@ -24,7 +24,7 @@ public class ConfigItem<T> {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -32,8 +32,7 @@ public class ConfigItem<T> {
         return value;
     }
 
-    public void setValue( T value ) {
+    public void setValue(T value) {
         this.value = value;
     }
-
 }

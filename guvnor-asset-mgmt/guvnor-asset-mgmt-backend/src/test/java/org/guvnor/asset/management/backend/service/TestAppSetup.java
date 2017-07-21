@@ -25,31 +25,29 @@ import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.project.ProjectFactory;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 import static org.mockito.Mockito.*;
 
 @Singleton
 @Alternative
-@Priority( 1 ) // needed in order to inject the @Alternatives outside of this bean bundle (aka maven module)
+@Priority(1) // needed in order to inject the @Alternatives outside of this bean bundle (aka maven module)
 public class TestAppSetup {
 
     @Produces
     @Alternative
     public BuildService buildService() {
-        return mock( BuildService.class );
+        return mock(BuildService.class);
     }
 
     @Produces
     @Alternative
     public ProjectService<Project> projectService() {
-        return mock( ProjectService.class );
+        return mock(ProjectService.class);
     }
 
     @Produces
     @Alternative
     public ProjectFactory<Project> projectProjectFactory() {
-        return mock( ProjectFactory.class );
+        return mock(ProjectFactory.class);
     }
 }

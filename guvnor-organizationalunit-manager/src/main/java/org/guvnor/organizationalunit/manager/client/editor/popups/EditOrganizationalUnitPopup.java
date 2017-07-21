@@ -41,7 +41,7 @@ public class EditOrganizationalUnitPopup extends BaseModal implements UberView<O
 
     }
 
-    private static EditOrganizationalUnitPopupBinder uiBinder = GWT.create( EditOrganizationalUnitPopupBinder.class );
+    private static EditOrganizationalUnitPopupBinder uiBinder = GWT.create(EditOrganizationalUnitPopupBinder.class);
 
     @UiField
     TextBox nameTextBox;
@@ -76,74 +76,75 @@ public class EditOrganizationalUnitPopup extends BaseModal implements UberView<O
         }
     };
 
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
-                                                                                      cancelCommand );
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(okCommand,
+                                                                                     cancelCommand);
 
     public EditOrganizationalUnitPopup() {
-        setTitle( OrganizationalUnitManagerConstants.INSTANCE.EditOrganizationalUnitPopupTitle() );
+        setTitle(OrganizationalUnitManagerConstants.INSTANCE.EditOrganizationalUnitPopupTitle());
 
-        setBody( uiBinder.createAndBindUi( this ) );
-        add( footer );
+        setBody(uiBinder.createAndBindUi(this));
+        add(footer);
     }
 
     @Override
-    public void init( final OrganizationalUnitManagerPresenter presenter ) {
+    public void init(final OrganizationalUnitManagerPresenter presenter) {
         this.presenter = presenter;
     }
 
     private void onOKButtonClick() {
-        if ( defaultGroupIdTextBox.getText() == null || defaultGroupIdTextBox.getText().trim().isEmpty() ) {
-            defaultGroupIdGroup.setValidationState( ValidationState.ERROR );
-            defaultGroupIdHelpInline.setText( OrganizationalUnitManagerConstants.INSTANCE.DefaultGroupIdIsMandatory() );
+        if (defaultGroupIdTextBox.getText() == null || defaultGroupIdTextBox.getText().trim().isEmpty()) {
+            defaultGroupIdGroup.setValidationState(ValidationState.ERROR);
+            defaultGroupIdHelpInline.setText(OrganizationalUnitManagerConstants.INSTANCE.DefaultGroupIdIsMandatory());
         } else {
-            presenter.checkValidGroupId( defaultGroupIdTextBox.getText(), new RemoteCallback<Boolean>() {
-                @Override
-                public void callback( Boolean valid ) {
-                    if ( !valid ) {
-                        defaultGroupIdGroup.setValidationState( ValidationState.ERROR );
-                        defaultGroupIdHelpInline.setText( OrganizationalUnitManagerConstants.INSTANCE.InvalidGroupId() );
-                    } else {
-                        presenter.saveOrganizationalUnit( nameTextBox.getText(),
-                                ownerTextBox.getText(),
-                                defaultGroupIdTextBox.getText() );
-                        hide();
-                    }
-                }
-            } );
+            presenter.checkValidGroupId(defaultGroupIdTextBox.getText(),
+                                        new RemoteCallback<Boolean>() {
+                                            @Override
+                                            public void callback(Boolean valid) {
+                                                if (!valid) {
+                                                    defaultGroupIdGroup.setValidationState(ValidationState.ERROR);
+                                                    defaultGroupIdHelpInline.setText(OrganizationalUnitManagerConstants.INSTANCE.InvalidGroupId());
+                                                } else {
+                                                    presenter.saveOrganizationalUnit(nameTextBox.getText(),
+                                                                                     ownerTextBox.getText(),
+                                                                                     defaultGroupIdTextBox.getText());
+                                                    hide();
+                                                }
+                                            }
+                                        });
         }
     }
 
-    public void setOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
+    public void setOrganizationalUnit(final OrganizationalUnit organizationalUnit) {
         this.organizationalUnit = organizationalUnit;
     }
 
     @Override
     public void show() {
-        defaultGroupIdGroup.setValidationState( ValidationState.NONE );
-        defaultGroupIdHelpInline.setText( "" );
+        defaultGroupIdGroup.setValidationState(ValidationState.NONE);
+        defaultGroupIdHelpInline.setText("");
 
-        if ( organizationalUnit == null ) {
-            nameTextBox.setText( "" );
-            defaultGroupIdTextBox.setText( "" );
-            ownerTextBox.setText( "" );
+        if (organizationalUnit == null) {
+            nameTextBox.setText("");
+            defaultGroupIdTextBox.setText("");
+            ownerTextBox.setText("");
             super.show();
         } else {
-            presenter.getSanitizedGroupId( organizationalUnit.getName(), new RemoteCallback<String>() {
-                @Override
-                public void callback( final String sanitizedGroupId ) {
-                    nameTextBox.setText( organizationalUnit.getName() );
+            presenter.getSanitizedGroupId(organizationalUnit.getName(),
+                                          new RemoteCallback<String>() {
+                                              @Override
+                                              public void callback(final String sanitizedGroupId) {
+                                                  nameTextBox.setText(organizationalUnit.getName());
 
-                    if ( organizationalUnit.getDefaultGroupId() == null || organizationalUnit.getDefaultGroupId().trim().isEmpty() ) {
-                        defaultGroupIdTextBox.setText( sanitizedGroupId );
-                    } else {
-                        defaultGroupIdTextBox.setText( organizationalUnit.getDefaultGroupId() );
-                    }
+                                                  if (organizationalUnit.getDefaultGroupId() == null || organizationalUnit.getDefaultGroupId().trim().isEmpty()) {
+                                                      defaultGroupIdTextBox.setText(sanitizedGroupId);
+                                                  } else {
+                                                      defaultGroupIdTextBox.setText(organizationalUnit.getDefaultGroupId());
+                                                  }
 
-                    ownerTextBox.setText( organizationalUnit.getOwner() );
-                    EditOrganizationalUnitPopup.super.show();
-                }
-            } );
+                                                  ownerTextBox.setText(organizationalUnit.getOwner());
+                                                  EditOrganizationalUnitPopup.super.show();
+                                              }
+                                          });
         }
     }
-
 }

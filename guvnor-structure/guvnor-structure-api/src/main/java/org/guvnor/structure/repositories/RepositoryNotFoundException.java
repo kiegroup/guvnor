@@ -25,8 +25,7 @@ public class RepositoryNotFoundException extends RuntimeException {
         super();
     }
 
-    public RepositoryNotFoundException( String message ) {
-        super( message );
+    public RepositoryNotFoundException(String message) {
+        super(message);
     }
-
 }

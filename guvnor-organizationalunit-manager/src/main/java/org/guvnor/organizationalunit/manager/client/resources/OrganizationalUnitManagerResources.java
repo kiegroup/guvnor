@@ -25,9 +25,8 @@ import org.guvnor.organizationalunit.manager.client.resources.css.Organizational
  */
 public interface OrganizationalUnitManagerResources extends ClientBundle {
 
-    public static final OrganizationalUnitManagerResources INSTANCE = GWT.create( OrganizationalUnitManagerResources.class );
+    public static final OrganizationalUnitManagerResources INSTANCE = GWT.create(OrganizationalUnitManagerResources.class);
 
     @Source("css/styles.css")
     OrganizationalUnitManagerCss CSS();
-
 }

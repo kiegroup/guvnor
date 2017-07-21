@@ -30,12 +30,11 @@ public class RepositoryRemovedEvent {
     public RepositoryRemovedEvent() {
     }
 
-    public RepositoryRemovedEvent( final Repository repository ) {
+    public RepositoryRemovedEvent(final Repository repository) {
         this.repository = repository;
     }
 
     public Repository getRepository() {
         return repository;
     }
-
 }

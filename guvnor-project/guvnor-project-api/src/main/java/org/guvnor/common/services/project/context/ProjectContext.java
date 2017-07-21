@@ -76,8 +76,8 @@ public class ProjectContext {
         }
     }
 
-    public Path getActiveRepositoryRoot(){
-        return getActiveRepository().getBranchRoot( getActiveBranch() );
+    public Path getActiveRepositoryRoot() {
+        return getActiveRepository().getBranchRoot(getActiveBranch());
     }
 
     public void setActiveOrganizationalUnit(final OrganizationalUnit activeOrganizationalUnit) {
@@ -96,7 +96,7 @@ public class ProjectContext {
         return activeBranch;
     }
 
-    public void setActiveBranch( final String activeBranch ) {
+    public void setActiveBranch(final String activeBranch) {
         this.activeBranch = activeBranch;
     }
 
@@ -116,13 +116,14 @@ public class ProjectContext {
         return this.activePackage;
     }
 
-    public void setActivePackage( final Package activePackage ) {
+    public void setActivePackage(final Package activePackage) {
         this.activePackage = activePackage;
     }
 
     public ProjectContextChangeHandle addChangeHandler(final ProjectContextChangeHandler changeHandler) {
         ProjectContextChangeHandle handle = new ProjectContextChangeHandle();
-        changeHandlers.put(handle, changeHandler);
+        changeHandlers.put(handle,
+                           changeHandler);
         return handle;
     }
 

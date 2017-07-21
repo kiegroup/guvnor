@@ -44,43 +44,42 @@ public abstract class AbstractDeleteProjectObserverBridge<T extends Project> {
         //Zero-arg constructor for CDI proxying
     }
 
-    public AbstractDeleteProjectObserverBridge( final IOService ioService,
-                                                final Event<DeleteProjectEvent> deleteProjectEvent ) {
-        this.ioService = PortablePreconditions.checkNotNull( "ioService",
-                                                             ioService );
-        this.deleteProjectEvent = PortablePreconditions.checkNotNull( "deleteProjectEvent",
-                                                                      deleteProjectEvent );
+    public AbstractDeleteProjectObserverBridge(final IOService ioService,
+                                               final Event<DeleteProjectEvent> deleteProjectEvent) {
+        this.ioService = PortablePreconditions.checkNotNull("ioService",
+                                                            ioService);
+        this.deleteProjectEvent = PortablePreconditions.checkNotNull("deleteProjectEvent",
+                                                                     deleteProjectEvent);
     }
 
-    public void onBatchResourceChanges( final ResourceDeletedEvent event ) {
-        if ( event.getPath().getFileName().equals( "pom.xml" ) ) {
-            fireDeleteEvent( event.getPath() );
+    public void onBatchResourceChanges(final ResourceDeletedEvent event) {
+        if (event.getPath().getFileName().equals("pom.xml")) {
+            fireDeleteEvent(event.getPath());
         }
     }
 
-    public void onBatchResourceChanges( final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
-        for ( final Map.Entry<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> entry : resourceBatchChangesEvent.getBatch().entrySet() ) {
-            if ( entry.getKey().getFileName().equals( "pom.xml" ) && isDelete( entry.getValue() ) ) {
-                fireDeleteEvent( entry.getKey() );
+    public void onBatchResourceChanges(final ResourceBatchChangesEvent resourceBatchChangesEvent) {
+        for (final Map.Entry<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> entry : resourceBatchChangesEvent.getBatch().entrySet()) {
+            if (entry.getKey().getFileName().equals("pom.xml") && isDelete(entry.getValue())) {
+                fireDeleteEvent(entry.getKey());
             }
         }
     }
 
-    private boolean isDelete( final Collection<ResourceChange> value ) {
-        for ( final ResourceChange resourceChange : value ) {
-            if ( resourceChange instanceof ResourceDeleted ) {
+    private boolean isDelete(final Collection<ResourceChange> value) {
+        for (final ResourceChange resourceChange : value) {
+            if (resourceChange instanceof ResourceDeleted) {
                 return true;
             }
         }
         return false;
     }
 
-    private void fireDeleteEvent( final org.uberfire.backend.vfs.Path _path ) {
-        final Path path = ioService.get( URI.create( _path.toURI() ) );
-        final T project = getProject( path.getParent() );
-        deleteProjectEvent.fire( new DeleteProjectEvent( project ) );
+    private void fireDeleteEvent(final org.uberfire.backend.vfs.Path _path) {
+        final Path path = ioService.get(URI.create(_path.toURI()));
+        final T project = getProject(path.getParent());
+        deleteProjectEvent.fire(new DeleteProjectEvent(project));
     }
 
-    protected abstract T getProject( final Path path );
-
+    protected abstract T getProject(final Path path);
 }

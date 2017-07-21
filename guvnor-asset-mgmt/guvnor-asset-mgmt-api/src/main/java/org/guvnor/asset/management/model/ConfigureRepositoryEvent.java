@@ -17,23 +17,22 @@
 package org.guvnor.asset.management.model;
 
 import java.util.Map;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class ConfigureRepositoryEvent {
-  
-  private Map<String, Object> params;
-  
-  public ConfigureRepositoryEvent() {
-  }
 
-  public ConfigureRepositoryEvent(Map<String, Object> params) {
-    this.params = params;
-  }
+    private Map<String, Object> params;
 
-  public Map<String, Object> getParams() {
-    return params;
-  }
-  
-  
+    public ConfigureRepositoryEvent() {
+    }
+
+    public ConfigureRepositoryEvent(Map<String, Object> params) {
+        this.params = params;
+    }
+
+    public Map<String, Object> getParams() {
+        return params;
+    }
 }

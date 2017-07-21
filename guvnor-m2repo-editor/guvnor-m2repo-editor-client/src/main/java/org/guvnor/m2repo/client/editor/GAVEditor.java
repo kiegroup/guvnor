@@ -27,36 +27,43 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class GAVEditor extends FormStylePopup {
 
-    public GAVEditor( final Form form ) {
-        super( "GAV Editor" );
+    public GAVEditor(final Form form) {
+        super("GAV Editor");
 
         TextBox groupIDTextBox = new TextBox();
-        addAttribute( "GroupID:", groupIDTextBox );
+        addAttribute("GroupID:",
+                     groupIDTextBox);
         TextBox artifactIDTextBox = new TextBox();
-        addAttribute( "ArtifactID:", artifactIDTextBox );
+        addAttribute("ArtifactID:",
+                     artifactIDTextBox);
         TextBox versionID = new TextBox();
-        addAttribute( "VersionID:", versionID );
-        Button ok = new Button( "upload" );
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
+        addAttribute("VersionID:",
+                     versionID);
+        Button ok = new Button("upload");
+        ok.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 form.reset();
                 HorizontalPanel fields = new HorizontalPanel();
-                fields.add( getHiddenField( HTMLFileManagerFields.GROUP_ID, "" ) );
-                fields.add( getHiddenField( HTMLFileManagerFields.ARTIFACT_ID, "" ) );
-                fields.add( getHiddenField( HTMLFileManagerFields.VERSION_ID, "" ) );
-                form.add( fields );
+                fields.add(getHiddenField(HTMLFileManagerFields.GROUP_ID,
+                                          ""));
+                fields.add(getHiddenField(HTMLFileManagerFields.ARTIFACT_ID,
+                                          ""));
+                fields.add(getHiddenField(HTMLFileManagerFields.VERSION_ID,
+                                          ""));
+                form.add(fields);
                 form.submit();
             }
-        } );
-        addAttribute( "", ok );
+        });
+        addAttribute("",
+                     ok);
     }
 
-    private TextBox getHiddenField( String name,
-                                    String value ) {
+    private TextBox getHiddenField(String name,
+                                   String value) {
         TextBox t = new TextBox();
-        t.setName( name );
-        t.setText( value );
-        t.setVisible( false );
+        t.setName(name);
+        t.setText(value);
+        t.setVisible(false);
         return t;
     }
 }

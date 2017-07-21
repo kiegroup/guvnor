@@ -30,75 +30,80 @@ import org.slf4j.LoggerFactory;
 
 public final class MavenBuildExecutor {
 
-    protected static final org.slf4j.Logger LOG = LoggerFactory.getLogger( MavenBuildExecutor.class );
+    protected static final org.slf4j.Logger LOG = LoggerFactory.getLogger(MavenBuildExecutor.class);
 
     private MavenBuildExecutor() {
     }
 
-    public static void executeMaven( final File pom,
-            final Properties properties,
-            final String... goals ) {
-        executeMaven( pom, System.out, System.err, properties, goals );
+    public static void executeMaven(final File pom,
+                                    final Properties properties,
+                                    final String... goals) {
+        executeMaven(pom,
+                     System.out,
+                     System.err,
+                     properties,
+                     goals);
     }
 
-    public static void executeMaven( final File pom,
-            final PrintStream stdout,
-            final PrintStream stderr,
-            final Properties properties,
-            final String... goals ) {
+    public static void executeMaven(final File pom,
+                                    final PrintStream stdout,
+                                    final PrintStream stderr,
+                                    final Properties properties,
+                                    final String... goals) {
 
         final PrintStream oldout = System.out;
         final PrintStream olderr = System.err;
         final Properties oldProperties = System.getProperties();
-        if ( properties != null ) {
-            properties.keySet().forEach( (o) -> {
-                if ( properties.getProperty( ( String ) o ) != null ) {
-                    System.setProperty( ( String ) o, properties.getProperty( ( String ) o ) );
+        if (properties != null) {
+            properties.keySet().forEach((o) -> {
+                if (properties.getProperty((String) o) != null) {
+                    System.setProperty((String) o,
+                                       properties.getProperty((String) o));
                 }
-            } );
+            });
         }
 
         final MavenEmbedder mavenEmbedder = newMavenEmbedder();
         try {
-            if ( stdout != null ) {
-                System.setOut( stdout );
+            if (stdout != null) {
+                System.setOut(stdout);
             }
-            if ( stderr != null ) {
-                System.setErr( stderr );
+            if (stderr != null) {
+                System.setErr(stderr);
             }
 
-            final MavenRequest mavenRequest = MavenProjectLoader.createMavenRequest( false );
-            mavenRequest.setGoals( Arrays.asList( goals ) );
-            mavenRequest.setPom( pom.getAbsolutePath() );
+            final MavenRequest mavenRequest = MavenProjectLoader.createMavenRequest(false);
+            mavenRequest.setGoals(Arrays.asList(goals));
+            mavenRequest.setPom(pom.getAbsolutePath());
 
-            final MavenExecutionResult result = mavenEmbedder.execute( mavenRequest );
+            final MavenExecutionResult result = mavenEmbedder.execute(mavenRequest);
 
-            if ( result.hasExceptions() ) {
-                for ( Throwable t : result.getExceptions() ) {
-                    LOG.error( "Error Running Maven", t );
+            if (result.hasExceptions()) {
+                for (Throwable t : result.getExceptions()) {
+                    LOG.error("Error Running Maven",
+                              t);
                 }
-                throw new BuildException( "Maven found issues trying to build the pom file: "
-                        + pom.getAbsolutePath() + ". Look at the Error Logs for more information" );
+                throw new BuildException("Maven found issues trying to build the pom file: "
+                                                 + pom.getAbsolutePath() + ". Look at the Error Logs for more information");
             }
-        } catch ( final MavenEmbedderException ex ) {
-            throw new BuildException( "Maven coudn't build the project for pom file: " + pom.getAbsolutePath(), ex );
+        } catch (final MavenEmbedderException ex) {
+            throw new BuildException("Maven coudn't build the project for pom file: " + pom.getAbsolutePath(),
+                                     ex);
         } finally {
-            System.setProperties( oldProperties );
+            System.setProperties(oldProperties);
             mavenEmbedder.dispose();
-            System.setOut( oldout );
-            System.setErr( olderr );
+            System.setOut(oldout);
+            System.setErr(olderr);
         }
-
     }
 
     private static MavenEmbedder newMavenEmbedder() {
         MavenEmbedder mavenEmbedder;
         try {
-            mavenEmbedder = new MavenEmbedder( MavenProjectLoader.createMavenRequest( false ) );
-        } catch ( MavenEmbedderException e ) {
-            throw new RuntimeException( e );
+            mavenEmbedder = new MavenEmbedder(MavenProjectLoader.createMavenRequest(false));
+        } catch (MavenEmbedderException e) {
+            throw new RuntimeException(e);
         }
         return mavenEmbedder;
     }
-
 }

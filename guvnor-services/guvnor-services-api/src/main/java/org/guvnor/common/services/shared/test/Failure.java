@@ -27,7 +27,8 @@ public class Failure {
 
     }
 
-    public Failure(String displayName, String message) {
+    public Failure(String displayName,
+                   String message) {
         this.displayName = displayName;
         this.message = message;
     }

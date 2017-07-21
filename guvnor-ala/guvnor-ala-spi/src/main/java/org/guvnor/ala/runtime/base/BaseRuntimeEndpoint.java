@@ -17,6 +17,7 @@
 package org.guvnor.ala.runtime.base;
 
 import java.util.Objects;
+
 import org.guvnor.ala.runtime.RuntimeEndpoint;
 
 /*
@@ -34,9 +35,9 @@ public class BaseRuntimeEndpoint implements RuntimeEndpoint {
     public BaseRuntimeEndpoint() {
     }
 
-    public BaseRuntimeEndpoint( String host,
-            int port,
-            String context ) {
+    public BaseRuntimeEndpoint(String host,
+                               int port,
+                               String context) {
         this.host = host;
         this.port = port;
         this.context = context;
@@ -47,7 +48,7 @@ public class BaseRuntimeEndpoint implements RuntimeEndpoint {
         return host;
     }
 
-    public void setHost( String host ) {
+    public void setHost(String host) {
         this.host = host;
     }
 
@@ -56,7 +57,7 @@ public class BaseRuntimeEndpoint implements RuntimeEndpoint {
         return port;
     }
 
-    public void setPort( int port ) {
+    public void setPort(int port) {
         this.port = port;
     }
 
@@ -65,7 +66,7 @@ public class BaseRuntimeEndpoint implements RuntimeEndpoint {
         return context;
     }
 
-    public void setContext( String context ) {
+    public void setContext(String context) {
         this.context = context;
     }
 
@@ -77,36 +78,35 @@ public class BaseRuntimeEndpoint implements RuntimeEndpoint {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + Objects.hashCode( this.host );
+        hash = 79 * hash + Objects.hashCode(this.host);
         hash = 79 * hash + this.port;
-        hash = 79 * hash + Objects.hashCode( this.context );
+        hash = 79 * hash + Objects.hashCode(this.context);
         return hash;
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj ) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( obj == null ) {
+        if (obj == null) {
             return false;
         }
-        if ( getClass() != obj.getClass() ) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        final BaseRuntimeEndpoint other = ( BaseRuntimeEndpoint ) obj;
-        if ( this.port != other.port ) {
+        final BaseRuntimeEndpoint other = (BaseRuntimeEndpoint) obj;
+        if (this.port != other.port) {
             return false;
         }
-        if ( !Objects.equals( this.host, other.host ) ) {
+        if (!Objects.equals(this.host,
+                            other.host)) {
             return false;
         }
-        if ( !Objects.equals( this.context, other.context ) ) {
+        if (!Objects.equals(this.context,
+                            other.context)) {
             return false;
         }
         return true;
     }
-    
-    
-
 }

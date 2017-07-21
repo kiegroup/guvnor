@@ -21,5 +21,4 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 public interface ConfigAttributes
         extends BasicFileAttributes {
 
-
 }

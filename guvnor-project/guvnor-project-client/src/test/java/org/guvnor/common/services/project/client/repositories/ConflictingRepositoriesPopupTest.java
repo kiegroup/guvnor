@@ -47,125 +47,123 @@ public class ConflictingRepositoriesPopupTest {
 
     @Before
     public void setup() {
-        presenter = new ConflictingRepositoriesPopup( user,
-                                                      view );
+        presenter = new ConflictingRepositoriesPopup(user,
+                                                     view);
     }
 
     @Test
     public void testInitialization() {
-        verify( view,
-                times( 1 ) ).init( eq( presenter ) );
-        verify( view,
-                never() ).addOKButton();
-        verify( view,
-                never() ).addOverrideButton( any( Command.class ) );
+        verify(view,
+               times(1)).init(eq(presenter));
+        verify(view,
+               never()).addOKButton();
+        verify(view,
+               never()).addOverrideButton(any(Command.class));
     }
 
     @Test
     public void testSetContent_Administrator() {
-        final GAV gav = mock( GAV.class );
-        final Command command = mock( Command.class );
+        final GAV gav = mock(GAV.class);
+        final Command command = mock(Command.class);
 
         final Set<MavenRepositoryMetadata> metadata = new HashSet<MavenRepositoryMetadata>();
         final Set<Role> roles = new HashSet<Role>() {{
-            add( new RoleImpl( AppRoles.ADMIN.getName() ) );
+            add(new RoleImpl(AppRoles.ADMIN.getName()));
         }};
-        when( user.getRoles() ).thenReturn( roles );
+        when(user.getRoles()).thenReturn(roles);
 
-        presenter.setContent( gav,
-                              metadata,
-                              command );
+        presenter.setContent(gav,
+                             metadata,
+                             command);
 
-        verify( view,
-                times( 1 ) ).clear();
-        verify( view,
-                times( 1 ) ).setContent( eq( gav ),
-                                         eq( metadata ) );
-        verify( view,
-                times( 1 ) ).addOKButton();
-        verify( view,
-                times( 1 ) ).addOverrideButton( any( Command.class ) );
+        verify(view,
+               times(1)).clear();
+        verify(view,
+               times(1)).setContent(eq(gav),
+                                    eq(metadata));
+        verify(view,
+               times(1)).addOKButton();
+        verify(view,
+               times(1)).addOverrideButton(any(Command.class));
     }
 
     @Test
     public void testSetContent_NotAdministrator() {
-        final GAV gav = mock( GAV.class );
-        final Command command = mock( Command.class );
+        final GAV gav = mock(GAV.class);
+        final Command command = mock(Command.class);
 
         final Set<MavenRepositoryMetadata> metadata = new HashSet<MavenRepositoryMetadata>();
         final Set<Role> roles = new HashSet<Role>();
-        when( user.getRoles() ).thenReturn( roles );
+        when(user.getRoles()).thenReturn(roles);
 
-        presenter.setContent( gav,
-                              metadata,
-                              command );
+        presenter.setContent(gav,
+                             metadata,
+                             command);
 
-        verify( view,
-                times( 1 ) ).clear();
-        verify( view,
-                times( 1 ) ).setContent( eq( gav ),
-                                         eq( metadata ) );
-        verify( view,
-                times( 1 ) ).addOKButton();
-        verify( view,
-                never() ).addOverrideButton( any( Command.class ) );
+        verify(view,
+               times(1)).clear();
+        verify(view,
+               times(1)).setContent(eq(gav),
+                                    eq(metadata));
+        verify(view,
+               times(1)).addOKButton();
+        verify(view,
+               never()).addOverrideButton(any(Command.class));
     }
 
     @Test
     public void testSetContent_Reuse() {
-        final GAV gav = mock( GAV.class );
-        final Command command = mock( Command.class );
+        final GAV gav = mock(GAV.class);
+        final Command command = mock(Command.class);
 
         final Set<MavenRepositoryMetadata> metadata = new HashSet<MavenRepositoryMetadata>();
         final Set<Role> roles = new HashSet<Role>() {{
-            add( new RoleImpl( AppRoles.ADMIN.getName() ) );
+            add(new RoleImpl(AppRoles.ADMIN.getName()));
         }};
-        when( user.getRoles() ).thenReturn( roles );
+        when(user.getRoles()).thenReturn(roles);
 
-        presenter.setContent( gav,
-                              metadata,
-                              command );
+        presenter.setContent(gav,
+                             metadata,
+                             command);
 
-        verify( view,
-                times( 1 ) ).clear();
-        verify( view,
-                times( 1 ) ).setContent( eq( gav ),
-                                         eq( metadata ) );
-        verify( view,
-                times( 1 ) ).addOKButton();
-        verify( view,
-                times( 1 ) ).addOverrideButton( any( Command.class ) );
+        verify(view,
+               times(1)).clear();
+        verify(view,
+               times(1)).setContent(eq(gav),
+                                    eq(metadata));
+        verify(view,
+               times(1)).addOKButton();
+        verify(view,
+               times(1)).addOverrideButton(any(Command.class));
 
         //Re-use
-        presenter.setContent( gav,
-                              metadata,
-                              command );
-        verify( view,
-                times( 2 ) ).clear();
-        verify( view,
-                times( 2 ) ).setContent( eq( gav ),
-                                         eq( metadata ) );
-        verify( view,
-                times( 2 ) ).addOKButton();
-        verify( view,
-                times( 2 ) ).addOverrideButton( any( Command.class ) );
-
+        presenter.setContent(gav,
+                             metadata,
+                             command);
+        verify(view,
+               times(2)).clear();
+        verify(view,
+               times(2)).setContent(eq(gav),
+                                    eq(metadata));
+        verify(view,
+               times(2)).addOKButton();
+        verify(view,
+               times(2)).addOverrideButton(any(Command.class));
     }
 
     @Test
     public void testShow() {
         presenter.show();
 
-        verify( view,
-                times( 1 ) ).show();
+        verify(view,
+               times(1)).show();
     }
 
     @Test
     public void testHide() {
         presenter.hide();
 
-        verify( view,
-                times( 1 ) ).hide();
+        verify(view,
+               times(1)).hide();
     }
-
 }

@@ -25,5 +25,4 @@ public interface ProjectResources
         ClientBundle {
 
     ProjectConstants CONSTANTS = GWT.create(ProjectConstants.class);
-
 }

@@ -30,13 +30,12 @@ public interface BuildValidationHelper {
      * @param path
      * @return
      */
-    boolean accepts( final Path path );
+    boolean accepts(final Path path);
 
     /**
      * Validate the content at the specified Path
      * @param path
      * @return
      */
-    List<ValidationMessage> validate( final Path path );
-
+    List<ValidationMessage> validate(final Path path);
 }

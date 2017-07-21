@@ -22,8 +22,8 @@ public class DeploymentConfigImpl implements DeploymentConfig {
     private String identifier;
     private Object deploymentUnit;
 
-    public DeploymentConfigImpl( String identifier,
-                                 Object deploymentUnit ) {
+    public DeploymentConfigImpl(String identifier,
+                                Object deploymentUnit) {
         this.identifier = identifier;
         this.deploymentUnit = deploymentUnit;
     }

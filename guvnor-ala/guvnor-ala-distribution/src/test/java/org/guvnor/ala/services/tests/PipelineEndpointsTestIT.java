@@ -60,72 +60,100 @@ public class PipelineEndpointsTestIT {
 
     @Before
     public void setUp() throws IOException {
-        tempPath = Files.createTempDirectory( "xxx" ).toFile();
+        tempPath = Files.createTempDirectory("xxx").toFile();
     }
 
     @After
     public void tearDown() {
-        FileUtils.deleteQuietly( tempPath );
+        FileUtils.deleteQuietly(tempPath);
     }
 
     @Ignore
     public void checkService() {
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target( APP_URL );
-        ResteasyWebTarget restEasyTarget = ( ResteasyWebTarget ) target;
-        PipelineService proxyPipeline = restEasyTarget.proxy( PipelineService.class );
+        WebTarget target = client.target(APP_URL);
+        ResteasyWebTarget restEasyTarget = (ResteasyWebTarget) target;
+        PipelineService proxyPipeline = restEasyTarget.proxy(PipelineService.class);
 
-        RuntimeProvisioningService proxyRuntime = restEasyTarget.proxy( RuntimeProvisioningService.class );
+        RuntimeProvisioningService proxyRuntime = restEasyTarget.proxy(RuntimeProvisioningService.class);
 
-        ProviderTypeList allProviderTypes = proxyRuntime.getProviderTypes( 0, 10, "", true );
+        ProviderTypeList allProviderTypes = proxyRuntime.getProviderTypes(0,
+                                                                          10,
+                                                                          "",
+                                                                          true);
 
-        assertNotNull( allProviderTypes );
-        assertEquals( 2, allProviderTypes.getItems().size() );
+        assertNotNull(allProviderTypes);
+        assertEquals(2,
+                     allProviderTypes.getItems().size());
 
         DockerProviderConfig dockerProviderConfig = new DockerProviderConfigImpl();
-        proxyRuntime.registerProvider( dockerProviderConfig );
+        proxyRuntime.registerProvider(dockerProviderConfig);
 
-        ProviderList allProviders = proxyRuntime.getProviders( 0, 10, "", true );
-        assertEquals( 1, allProviders.getItems().size() );
-        assertTrue( allProviders.getItems().get( 0 ) instanceof DockerProvider );
+        ProviderList allProviders = proxyRuntime.getProviders(0,
+                                                              10,
+                                                              "",
+                                                              true);
+        assertEquals(1,
+                     allProviders.getItems().size());
+        assertTrue(allProviders.getItems().get(0) instanceof DockerProvider);
 
-        PipelineConfigsList allPipelines = proxyPipeline.getPipelineConfigs( 0, 10, "", true );
+        PipelineConfigsList allPipelines = proxyPipeline.getPipelineConfigs(0,
+                                                                            10,
+                                                                            "",
+                                                                            true);
 
-        assertNotNull( allPipelines );
-        assertEquals( 0, allPipelines.getItems().size() );
+        assertNotNull(allPipelines);
+        assertEquals(0,
+                     allPipelines.getItems().size());
 
         List<Config> configs = new ArrayList<>();
-        configs.add( new GitConfigImpl() );
-        configs.add( new MavenProjectConfigImpl() );
-        configs.add( new MavenBuildConfigImpl() );
-        configs.add( new DockerBuildConfigImpl() );
-        configs.add( new MavenBuildExecConfigImpl() );
-        configs.add( new DockerProviderConfigImpl() );
-        configs.add( new ContextAwareDockerProvisioningConfig() );
-        configs.add( new ContextAwareDockerRuntimeExecConfig() );
+        configs.add(new GitConfigImpl());
+        configs.add(new MavenProjectConfigImpl());
+        configs.add(new MavenBuildConfigImpl());
+        configs.add(new DockerBuildConfigImpl());
+        configs.add(new MavenBuildExecConfigImpl());
+        configs.add(new DockerProviderConfigImpl());
+        configs.add(new ContextAwareDockerProvisioningConfig());
+        configs.add(new ContextAwareDockerRuntimeExecConfig());
 
-        String newPipeline = proxyPipeline.newPipeline( new PipelineConfigImpl( "mypipe", configs ) );
+        String newPipeline = proxyPipeline.newPipeline(new PipelineConfigImpl("mypipe",
+                                                                              configs));
 
         Input input = new Input();
 
-        input.put( "repo-name", "drools-workshop" );
-        input.put( "create-repo", "true" );
-        input.put( "branch", "master" );
-        input.put( "out-dir", tempPath.getAbsolutePath() );
-        input.put( "origin", "https://github.com/kiegroup/drools-workshop" );
-        input.put( "project-dir", "drools-webapp-example" );
+        input.put("repo-name",
+                  "drools-workshop");
+        input.put("create-repo",
+                  "true");
+        input.put("branch",
+                  "master");
+        input.put("out-dir",
+                  tempPath.getAbsolutePath());
+        input.put("origin",
+                  "https://github.com/kiegroup/drools-workshop");
+        input.put("project-dir",
+                  "drools-webapp-example");
 
-        proxyPipeline.runPipeline( "mypipe", input, false );
+        proxyPipeline.runPipeline("mypipe",
+                                  input,
+                                  false);
 
-        RuntimeList allRuntimes = proxyRuntime.getRuntimes( 0, 10, "", true );
+        RuntimeList allRuntimes = proxyRuntime.getRuntimes(0,
+                                                           10,
+                                                           "",
+                                                           true);
 
-        assertEquals( 1, allRuntimes.getItems().size() );
+        assertEquals(1,
+                     allRuntimes.getItems().size());
 
-        proxyRuntime.destroyRuntime( allRuntimes.getItems().get( 0 ).getId() );
+        proxyRuntime.destroyRuntime(allRuntimes.getItems().get(0).getId());
 
-        allRuntimes = proxyRuntime.getRuntimes( 0, 10, "", true );
+        allRuntimes = proxyRuntime.getRuntimes(0,
+                                               10,
+                                               "",
+                                               true);
 
-        assertEquals( 0, allRuntimes.getItems().size() );
+        assertEquals(0,
+                     allRuntimes.getItems().size());
     }
-
 }

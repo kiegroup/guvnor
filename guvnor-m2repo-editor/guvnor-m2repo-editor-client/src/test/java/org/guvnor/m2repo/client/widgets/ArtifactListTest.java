@@ -76,138 +76,147 @@ public class ArtifactListTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() {
-        when( m2service.listArtifacts( any( JarListPageRequest.class ) ) ).thenReturn( response );
-        when( m2service.getPomText( Mockito.anyString() ) ).thenReturn( POM_TEXT );
-        when( response.getTotalRowSize() ).thenReturn( RESPONSE_ROWS_COUNT );
-        when( response.isTotalRowSizeExact() ).thenReturn( RESPONSE_EXACT_ROWS );
+        when(m2service.listArtifacts(any(JarListPageRequest.class))).thenReturn(response);
+        when(m2service.getPomText(Mockito.anyString())).thenReturn(POM_TEXT);
+        when(response.getTotalRowSize()).thenReturn(RESPONSE_ROWS_COUNT);
+        when(response.isTotalRowSizeExact()).thenReturn(RESPONSE_EXACT_ROWS);
 
-        when( view.getDisplay() ).thenReturn( table );
-        when( table.getVisibleRange() ).thenReturn( range );
-        when( range.getStart() ).thenReturn( REQUEST_RANGE_START );
-        when( range.getLength() ).thenReturn( REQUEST_RANGE_LENGTH );
+        when(view.getDisplay()).thenReturn(table);
+        when(table.getVisibleRange()).thenReturn(range);
+        when(range.getStart()).thenReturn(REQUEST_RANGE_START);
+        when(range.getLength()).thenReturn(REQUEST_RANGE_LENGTH);
 
-        when( view.getColumnSortList() ).thenReturn( sortList );
-        when( sortList.size() ).thenReturn( 1 );
-        when( sortList.get( 0 ) ).thenReturn( sortInfo );
-        when( sortInfo.isAscending() ).thenReturn( REQUEST_SORT_ORDER );
-        when( sortInfo.getColumn() ).thenReturn( column ); // unchecked
-        when( column.getDataStoreName() ).thenReturn( REQUEST_SORT_COLUMN );
+        when(view.getColumnSortList()).thenReturn(sortList);
+        when(sortList.size()).thenReturn(1);
+        when(sortList.get(0)).thenReturn(sortInfo);
+        when(sortInfo.isAscending()).thenReturn(REQUEST_SORT_ORDER);
+        when(sortInfo.getColumn()).thenReturn(column); // unchecked
+        when(column.getDataStoreName()).thenReturn(REQUEST_SORT_COLUMN);
     }
 
     @Test
     public void testSearch() {
-        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl( view,
-                                                                             new CallerMock<M2RepoService>( m2service ),
-                                                                             event );
+        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl(view,
+                                                                            new CallerMock<M2RepoService>(m2service),
+                                                                            event);
         // Disable sort info for this test
-        when( view.getColumnSortList() ).thenReturn( null );
+        when(view.getColumnSortList()).thenReturn(null);
         presenter.init();
-        ArtifactListPresenterImpl.RefreshableAsyncDataProvider dataProvider = spy( presenter.dataProvider );
+        ArtifactListPresenterImpl.RefreshableAsyncDataProvider dataProvider = spy(presenter.dataProvider);
         presenter.dataProvider = dataProvider;
 
         // Search request with filter
-        presenter.search( "filters" );
-        verify( event ).fire( any( NotificationEvent.class ) );
-        verify( dataProvider ).addDataDisplay( Matchers.<HasData<JarListPageRow>>any() );
-        verify( dataProvider, never() ).goToFirstPage();
-        verify( m2service ).listArtifacts( request.capture() );
+        presenter.search("filters");
+        verify(event).fire(any(NotificationEvent.class));
+        verify(dataProvider).addDataDisplay(Matchers.<HasData<JarListPageRow>>any());
+        verify(dataProvider,
+               never()).goToFirstPage();
+        verify(m2service).listArtifacts(request.capture());
         JarListPageRequest searchRequest = request.getValue();
-        verifyRequest( searchRequest,
-                       null,
-                       "filters",
-                       REQUEST_RANGE_LENGTH,
-                       REQUEST_RANGE_START,
-                       ArtifactListPresenterImpl.DEFAULT_ORDER_ASCENDING );
+        verifyRequest(searchRequest,
+                      null,
+                      "filters",
+                      REQUEST_RANGE_LENGTH,
+                      REQUEST_RANGE_START,
+                      ArtifactListPresenterImpl.DEFAULT_ORDER_ASCENDING);
 
         // Row data updated
-        verify( table ).setRowCount( RESPONSE_ROWS_COUNT,
-                                     RESPONSE_EXACT_ROWS );
+        verify(table).setRowCount(RESPONSE_ROWS_COUNT,
+                                  RESPONSE_EXACT_ROWS);
 
         // Second search does not add the display again
-        reset( event );
-        reset( dataProvider );
-        presenter.search( "other filters" );
-        verify( event ).fire( any( NotificationEvent.class ) );
-        verify( dataProvider, never() ).addDataDisplay( Matchers.<HasData<JarListPageRow>>any() );
-        verify( dataProvider ).goToFirstPage();
+        reset(event);
+        reset(dataProvider);
+        presenter.search("other filters");
+        verify(event).fire(any(NotificationEvent.class));
+        verify(dataProvider,
+               never()).addDataDisplay(Matchers.<HasData<JarListPageRow>>any());
+        verify(dataProvider).goToFirstPage();
     }
 
     @Test
     public void testNoEvent() {
-        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl( view,
-                                                                             new CallerMock<M2RepoService>( m2service ),
-                                                                             event );
+        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl(view,
+                                                                            new CallerMock<M2RepoService>(m2service),
+                                                                            event);
         // Disable sort info for this test
-        when( view.getColumnSortList() ).thenReturn( null );
+        when(view.getColumnSortList()).thenReturn(null);
         presenter.init();
-        ArtifactListPresenterImpl.RefreshableAsyncDataProvider dataProvider = spy( presenter.dataProvider );
+        ArtifactListPresenterImpl.RefreshableAsyncDataProvider dataProvider = spy(presenter.dataProvider);
         presenter.dataProvider = dataProvider;
 
         // Search request with filter
-        presenter.notifyOnRefresh( false );
-        presenter.search( "filters" );
+        presenter.notifyOnRefresh(false);
+        presenter.search("filters");
         presenter.refresh();
-        verify( event, never() ).fire( any( NotificationEvent.class ) );
+        verify(event,
+               never()).fire(any(NotificationEvent.class));
     }
 
     @Test
     public void testDefaultColumns() {
-        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl( view,
-                                                                             new CallerMock<M2RepoService>( m2service ),
-                                                                             event );
+        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl(view,
+                                                                            new CallerMock<M2RepoService>(m2service),
+                                                                            event);
         presenter.init();
-        presenter.setup( ColumnType.GAV );
-        verify( view ).setup( ColumnType.GAV );
+        presenter.setup(ColumnType.GAV);
+        verify(view).setup(ColumnType.GAV);
         presenter.getView();
-        verify( view, never() ).setup();
+        verify(view,
+               never()).setup();
     }
 
     @Test
     public void testColumnSortList() {
-        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl( view,
-                                                                             new CallerMock<M2RepoService>( m2service ),
-                                                                             event );
+        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl(view,
+                                                                            new CallerMock<M2RepoService>(m2service),
+                                                                            event);
         presenter.init();
 
         // Change sort parameters and refresh
-        when( sortInfo.isAscending() ).thenReturn( !REQUEST_SORT_ORDER );
-        when( column.getDataStoreName() ).thenReturn( "X" );
-        presenter.search( "" );
+        when(sortInfo.isAscending()).thenReturn(!REQUEST_SORT_ORDER);
+        when(column.getDataStoreName()).thenReturn("X");
+        presenter.search("");
 
         // Verify request
-        verify( m2service ).listArtifacts( request.capture() );
-        verifyRequest( request.getValue(),
-                       "X",
-                       "",
-                       REQUEST_RANGE_LENGTH,
-                       REQUEST_RANGE_START,
-                       !REQUEST_SORT_ORDER );
+        verify(m2service).listArtifacts(request.capture());
+        verifyRequest(request.getValue(),
+                      "X",
+                      "",
+                      REQUEST_RANGE_LENGTH,
+                      REQUEST_RANGE_START,
+                      !REQUEST_SORT_ORDER);
 
         // Row data updated
-        verify( table ).setRowCount( RESPONSE_ROWS_COUNT,
-                                     RESPONSE_EXACT_ROWS );
+        verify(table).setRowCount(RESPONSE_ROWS_COUNT,
+                                  RESPONSE_EXACT_ROWS);
     }
 
     @Test
     public void testShowPom() {
-        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl( view,
-                                                                             new CallerMock<M2RepoService>( m2service ),
-                                                                             event );
+        ArtifactListPresenterImpl presenter = new ArtifactListPresenterImpl(view,
+                                                                            new CallerMock<M2RepoService>(m2service),
+                                                                            event);
         presenter.init();
-        presenter.onOpenPom( "" );
-        verify( view ).showPom( POM_TEXT );
+        presenter.onOpenPom("");
+        verify(view).showPom(POM_TEXT);
     }
 
-    private static void verifyRequest( final JarListPageRequest request,
-                                       final String dataSourceName,
-                                       final String filters,
-                                       final Integer pageSize,
-                                       final int startRowIndex,
-                                       final boolean isAscending ) {
-        assertEquals( dataSourceName, request.getDataSourceName() );
-        assertEquals( filters, request.getFilters() );
-        assertEquals( pageSize, request.getPageSize() );
-        assertEquals( startRowIndex, request.getStartRowIndex() );
-        assertEquals( isAscending, request.isAscending() );
+    private static void verifyRequest(final JarListPageRequest request,
+                                      final String dataSourceName,
+                                      final String filters,
+                                      final Integer pageSize,
+                                      final int startRowIndex,
+                                      final boolean isAscending) {
+        assertEquals(dataSourceName,
+                     request.getDataSourceName());
+        assertEquals(filters,
+                     request.getFilters());
+        assertEquals(pageSize,
+                     request.getPageSize());
+        assertEquals(startRowIndex,
+                     request.getStartRowIndex());
+        assertEquals(isAscending,
+                     request.isAscending());
     }
 }

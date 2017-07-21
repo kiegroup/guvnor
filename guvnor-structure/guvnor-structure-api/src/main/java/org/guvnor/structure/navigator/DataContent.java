@@ -31,12 +31,12 @@ public class DataContent {
     public DataContent() {
     }
 
-    public DataContent( boolean isDirectory,
-                        String lastMessage,
-                        String lastCommiter,
-                        String lastCommiterEmail,
-                        String age,
-                        Path path ) {
+    public DataContent(boolean isDirectory,
+                       String lastMessage,
+                       String lastCommiter,
+                       String lastCommiterEmail,
+                       String age,
+                       Path path) {
         this.isDirectory = isDirectory;
         this.lastMessage = lastMessage;
         this.lastCommiter = lastCommiter;

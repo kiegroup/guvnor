@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class RepositoryStructureDataPresenterTest {
 
     @GwtMock
@@ -41,85 +41,90 @@ public class RepositoryStructureDataPresenterTest {
 
     @Before
     public void setUp() throws Exception {
-        presenter = new RepositoryStructureDataPresenter( view );
+        presenter = new RepositoryStructureDataPresenter(view);
     }
 
     @Test
     public void testSetGav() throws Exception {
-        presenter.setGav( new GAV( "groupId",
-                                   "artifactId",
-                                   "1.0.0" ) );
+        presenter.setGav(new GAV("groupId",
+                                 "artifactId",
+                                 "1.0.0"));
 
-        verify( view ).setGroupId( "groupId" );
-        verify( view ).setArtifactId( "artifactId" );
-        verify( view ).setVersion( "1.0.0" );
+        verify(view).setGroupId("groupId");
+        verify(view).setArtifactId("artifactId");
+        verify(view).setVersion("1.0.0");
     }
 
     @Test
     public void testGetGav() throws Exception {
-        when( view.getGroupId() ).thenReturn( "groupId" );
-        when( view.getArtifactId() ).thenReturn( "artifactId" );
-        when( view.getVersion() ).thenReturn( "1.0.0" );
+        when(view.getGroupId()).thenReturn("groupId");
+        when(view.getArtifactId()).thenReturn("artifactId");
+        when(view.getVersion()).thenReturn("1.0.0");
 
         final GAV gav = presenter.getGav();
 
-        assertEquals( "groupId", gav.getGroupId() );
-        assertEquals( "artifactId", gav.getArtifactId() );
-        assertEquals( "1.0.0", gav.getVersion() );
+        assertEquals("groupId",
+                     gav.getGroupId());
+        assertEquals("artifactId",
+                     gav.getArtifactId());
+        assertEquals("1.0.0",
+                     gav.getVersion());
     }
 
     @Test
     public void testConstructor() throws Exception {
-        verify( view ).clear();
-        verify( view ).setCreateStructureText();
-        verify( view, never() ).setEditModuleVisibility( anyBoolean() );
+        verify(view).clear();
+        verify(view).setCreateStructureText();
+        verify(view,
+               never()).setEditModuleVisibility(anyBoolean());
     }
 
     @Test
     public void testMode_CREATE_STRUCTURE() throws Exception {
-        reset( view );
+        reset(view);
 
-        presenter.setMode( RepositoryStructureDataView.ViewMode.CREATE_STRUCTURE );
-        verify( view ).setCreateStructureText();
-        verify( view, never() ).setEditModuleVisibility( anyBoolean() );
+        presenter.setMode(RepositoryStructureDataView.ViewMode.CREATE_STRUCTURE);
+        verify(view).setCreateStructureText();
+        verify(view,
+               never()).setEditModuleVisibility(anyBoolean());
     }
 
     @Test
     public void testMode_EDIT_SINGLE_MODULE_PROJECT() throws Exception {
-        presenter.setMode( RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT );
-        verify( view ).setEditSingleModuleProjectText();
-        verify( view ).setEditModuleVisibility( true );
+        presenter.setMode(RepositoryStructureDataView.ViewMode.EDIT_SINGLE_MODULE_PROJECT);
+        verify(view).setEditSingleModuleProjectText();
+        verify(view).setEditModuleVisibility(true);
     }
 
     @Test
     public void testMode_EDIT_MULTI_MODULE_PROJECT() throws Exception {
-        presenter.setMode( RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT );
-        verify( view ).setEditMultiModuleProjectText();
+        presenter.setMode(RepositoryStructureDataView.ViewMode.EDIT_MULTI_MODULE_PROJECT);
+        verify(view).setEditMultiModuleProjectText();
 
-        verify( view ).setEditModuleVisibility( true );
+        verify(view).setEditModuleVisibility(true);
     }
 
     @Test
     public void testMode_EDIT_UNMANAGED_REPOSITORY() throws Exception {
-        presenter.setMode( RepositoryStructureDataView.ViewMode.EDIT_UNMANAGED_REPOSITORY );
-        verify( view ).setEditUnmanagedRepositoryText();
+        presenter.setMode(RepositoryStructureDataView.ViewMode.EDIT_UNMANAGED_REPOSITORY);
+        verify(view).setEditUnmanagedRepositoryText();
 
-        verify( view ).setEditModuleVisibility( false );
+        verify(view).setEditModuleVisibility(false);
     }
 
     @Test
     public void testClear() throws Exception {
-        reset( view );
+        reset(view);
 
         presenter.clear();
-        verify( view ).clear();
+        verify(view).clear();
     }
 
     @Test
     public void testAsWidget() throws Exception {
-        when( view.asWidget() ).thenReturn( widget );
+        when(view.asWidget()).thenReturn(widget);
 
-        assertEquals( widget, presenter.asWidget() );
-
+        assertEquals(widget,
+                     presenter.asWidget());
     }
 }

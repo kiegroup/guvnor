@@ -29,7 +29,9 @@ public class CreateOrCloneRepositoryCmd extends AbstractJobCommand {
     public CreateOrCloneRepositoryCmd(final JobRequestHelper jobRequestHelper,
                                       final JobResultManager jobResultManager,
                                       final Map<String, Object> context) {
-        super(jobRequestHelper, jobResultManager, context);
+        super(jobRequestHelper,
+              jobResultManager,
+              context);
     }
 
     @Override
@@ -38,12 +40,14 @@ public class CreateOrCloneRepositoryCmd extends AbstractJobCommand {
         CreateOrCloneRepositoryRequest jobRequest = (CreateOrCloneRepositoryRequest) request;
 
         JobResult result = null;
-        try { 
-        result =  helper.createOrCloneRepository( jobRequest.getJobId(), jobRequest.getRepository() );
-        } finally { 
+        try {
+            result = helper.createOrCloneRepository(jobRequest.getJobId(),
+                                                    jobRequest.getRepository());
+        } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug( "----createOrCloneRepository--- , repository name: {} [{}]", 
-                    jobRequest.getRepository().getName(), status);
+            logger.debug("----createOrCloneRepository--- , repository name: {} [{}]",
+                         jobRequest.getRepository().getName(),
+                         status);
         }
         return result;
     }

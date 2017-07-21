@@ -38,33 +38,46 @@ public class RepositoryController {
     private User user;
 
     @Inject
-    public RepositoryController(AuthorizationManager authorizationManager, User user) {
+    public RepositoryController(AuthorizationManager authorizationManager,
+                                User user) {
         this.authorizationManager = authorizationManager;
         this.user = user;
     }
 
-
     public boolean canCreateRepositories() {
-        return authorizationManager.authorize(Repository.RESOURCE_TYPE, RepositoryAction.CREATE, user);
+        return authorizationManager.authorize(Repository.RESOURCE_TYPE,
+                                              RepositoryAction.CREATE,
+                                              user);
     }
 
     public boolean canReadRepositories() {
-        return authorizationManager.authorize(Repository.RESOURCE_TYPE, RepositoryAction.READ, user);
+        return authorizationManager.authorize(Repository.RESOURCE_TYPE,
+                                              RepositoryAction.READ,
+                                              user);
     }
 
     public boolean canReadRepository(Repository repository) {
-        return authorizationManager.authorize(repository, RepositoryAction.READ, user);
+        return authorizationManager.authorize(repository,
+                                              RepositoryAction.READ,
+                                              user);
     }
 
     public boolean canUpdateRepository(String repoId) {
-        return authorizationManager.authorize(new ResourceRef(repoId, Repository.RESOURCE_TYPE), RepositoryAction.UPDATE, user);
+        return authorizationManager.authorize(new ResourceRef(repoId,
+                                                              Repository.RESOURCE_TYPE),
+                                              RepositoryAction.UPDATE,
+                                              user);
     }
 
     public boolean canUpdateRepository(Repository repository) {
-        return authorizationManager.authorize(repository, RepositoryAction.UPDATE, user);
+        return authorizationManager.authorize(repository,
+                                              RepositoryAction.UPDATE,
+                                              user);
     }
 
     public boolean canDeleteRepository(Repository repository) {
-        return authorizationManager.authorize(repository, RepositoryAction.DELETE, user);
+        return authorizationManager.authorize(repository,
+                                              RepositoryAction.DELETE,
+                                              user);
     }
 }

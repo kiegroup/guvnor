@@ -36,38 +36,38 @@ public interface PullRequestService {
      * @param targetBranch the branch where you want impact your changes
      * @return The object that represents the pull request.
      */
-    PullRequest createPullRequest( String sourceRepository,
-                                   String sourceBranch,
-                                   String targetRepository,
-                                   String targetBranch );
+    PullRequest createPullRequest(String sourceRepository,
+                                  String sourceBranch,
+                                  String targetRepository,
+                                  String targetBranch);
 
     /**
      * Accepts the provided pull request and merges branches into target.
      * @param pullRequest the pull request you want to accept
      * @return the final state of the pull request as MERGED
      */
-    PullRequest acceptPullRequest( PullRequest pullRequest );
+    PullRequest acceptPullRequest(PullRequest pullRequest);
 
     /**
      * Rejects the provided pull request and changes its status to REJECTED
      * @param pullRequest the pull request you want to reject.
      * @return the final state of the pull request as REJECTED.
      */
-    PullRequest rejectPullRequest( PullRequest pullRequest );
+    PullRequest rejectPullRequest(PullRequest pullRequest);
 
     /**
      * Closes the provided pull request and changes its status to CLOSED
      * @param pullRequest the pull request you want to close.
      * @return the final state of the pull request as CLOSED.
      */
-    PullRequest closePullRequest( PullRequest pullRequest );
+    PullRequest closePullRequest(PullRequest pullRequest);
 
     /**
      * Deletes the pull request. This method removes the pull request
      * from tracking repository. The pull request cannot be recovered.
      * @param pullRequest the pull request you want to delete.
      */
-    void deletePullRequest( PullRequest pullRequest );
+    void deletePullRequest(PullRequest pullRequest);
 
     /**
      * Retrieves pull requests filtered by repository and branch
@@ -77,10 +77,10 @@ public interface PullRequestService {
      * @param branch the branch used as filter
      * @return the page of pull requests filtered by repository
      */
-    List<PullRequest> getPullRequestsByBranch( Integer page,
-                                               Integer pageSize,
-                                               String repository,
-                                               String branch );
+    List<PullRequest> getPullRequestsByBranch(Integer page,
+                                              Integer pageSize,
+                                              String repository,
+                                              String branch);
 
     /**
      * Retrieves pull requests filtered by repository
@@ -89,9 +89,9 @@ public interface PullRequestService {
      * @param repository the repository used as filter
      * @return the page of pull requests filtered by repository
      */
-    List<PullRequest> getPullRequestsByRepository( Integer page,
-                                                   Integer pageSize,
-                                                   String repository );
+    List<PullRequest> getPullRequestsByRepository(Integer page,
+                                                  Integer pageSize,
+                                                  String repository);
 
     /**
      * Retrieves pull requests filtered by repository and branch
@@ -101,16 +101,15 @@ public interface PullRequestService {
      * @param status the status used as filter
      * @return the page of pull requests filtered by repository
      */
-    List<PullRequest> getPullRequestsByStatus( Integer page,
-                                               Integer pageSize,
-                                               String repository,
-                                               PullRequestStatus status );
+    List<PullRequest> getPullRequestsByStatus(Integer page,
+                                              Integer pageSize,
+                                              String repository,
+                                              PullRequestStatus status);
 
     /**
      * Obtains differences between all files involved in the pull request.
      * @param pullRequest the pull request to diff.
      * @return The list of segment differences from files.
      */
-    List<FileDiff> diff( PullRequest pullRequest );
-
+    List<FileDiff> diff(PullRequest pullRequest);
 }

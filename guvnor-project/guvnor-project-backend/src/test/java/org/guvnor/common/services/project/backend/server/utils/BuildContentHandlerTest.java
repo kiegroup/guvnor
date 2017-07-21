@@ -19,7 +19,8 @@ import org.apache.maven.model.Build;
 import org.apache.maven.model.Plugin;
 import org.junit.Test;
 
-import static org.guvnor.common.services.project.backend.server.utils.TestUtils.*;
+import static org.guvnor.common.services.project.backend.server.utils.TestUtils.makeGuvnorPlugin;
+import static org.guvnor.common.services.project.backend.server.utils.TestUtils.makeMavenPlugin;
 import static org.junit.Assert.*;
 
 public class BuildContentHandlerTest {
@@ -27,36 +28,52 @@ public class BuildContentHandlerTest {
     @Test
     public void testBuildPluginUpdateExisting() throws Exception {
         org.guvnor.common.services.project.model.Build from = new org.guvnor.common.services.project.model.Build();
-        from.getPlugins().add( makeGuvnorPlugin( "myGroup", "myArtifact", "1.0" ) );
+        from.getPlugins().add(makeGuvnorPlugin("myGroup",
+                                               "myArtifact",
+                                               "1.0"));
 
         Build to = new Build();
-        Plugin toPlugin = makeMavenPlugin( "myGroup", "myArtifact", "0.11.11.12" );
-        to.getPlugins().add( toPlugin );
-        toPlugin.setGoals( "someGoal" );
-        to.setSourceDirectory( "someDirectory" );
+        Plugin toPlugin = makeMavenPlugin("myGroup",
+                                          "myArtifact",
+                                          "0.11.11.12");
+        to.getPlugins().add(toPlugin);
+        toPlugin.setGoals("someGoal");
+        to.setSourceDirectory("someDirectory");
 
-        to = new BuildContentHandler().update( from,
-                                               to );
+        to = new BuildContentHandler().update(from,
+                                              to);
 
-        assertEquals( 1, to.getPlugins().size() );
-        assertEquals( "1.0", to.getPlugins().get( 0 ).getVersion() );
-        assertEquals( "someGoal", to.getPlugins().get( 0 ).getGoals() );
-        assertEquals( "someDirectory", to.getSourceDirectory() );
+        assertEquals(1,
+                     to.getPlugins().size());
+        assertEquals("1.0",
+                     to.getPlugins().get(0).getVersion());
+        assertEquals("someGoal",
+                     to.getPlugins().get(0).getGoals());
+        assertEquals("someDirectory",
+                     to.getSourceDirectory());
     }
 
     @Test
     public void testBuildPluginDeletePlugin() throws Exception {
         org.guvnor.common.services.project.model.Build from = new org.guvnor.common.services.project.model.Build();
-        from.getPlugins().add( makeGuvnorPlugin( "myGroup", "myArtifact", "1.0" ) );
+        from.getPlugins().add(makeGuvnorPlugin("myGroup",
+                                               "myArtifact",
+                                               "1.0"));
 
         Build to = new Build();
-        to.getPlugins().add( makeMavenPlugin( "myGroup", "myArtifact", "1.0" ) );
-        to.getPlugins().add( makeMavenPlugin( "junit", "junit", "1.44" ) );
+        to.getPlugins().add(makeMavenPlugin("myGroup",
+                                            "myArtifact",
+                                            "1.0"));
+        to.getPlugins().add(makeMavenPlugin("junit",
+                                            "junit",
+                                            "1.44"));
 
-        to = new BuildContentHandler().update( from,
-                                               to );
+        to = new BuildContentHandler().update(from,
+                                              to);
 
-        assertEquals( 1, to.getPlugins().size() );
-        assertEquals( "1.0", to.getPlugins().get( 0 ).getVersion() );
+        assertEquals(1,
+                     to.getPlugins().size());
+        assertEquals("1.0",
+                     to.getPlugins().get(0).getVersion());
     }
 }

@@ -20,21 +20,21 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface RepositoryItemView
         extends IsWidget {
 
-    void setRepositoryName( final String repositoryName );
+    void setRepositoryName(final String repositoryName);
 
-    void setRepositoryDescription( final String description );
+    void setRepositoryDescription(final String description);
 
     void showAvailableProtocols();
 
-    void setDaemonURI( final String uri );
+    void setDaemonURI(final String uri);
 
-    void addProtocol( final String protocol );
+    void addProtocol(final String protocol);
 
-    void setPresenter( final RepositoryItemPresenter presenter );
+    void setPresenter(final RepositoryItemPresenter presenter);
 
-    void setUriId( final String uriID );
+    void setUriId(final String uriID);
 
-    void addBranch( final String branch );
+    void addBranch(final String branch);
 
     void clearBranches();
 
@@ -44,7 +44,7 @@ public interface RepositoryItemView
 
     void refresh();
 
-    void setSelectedBranch( final String currentBranch );
+    void setSelectedBranch(final String currentBranch);
 
     String getSelectedBranch();
 }

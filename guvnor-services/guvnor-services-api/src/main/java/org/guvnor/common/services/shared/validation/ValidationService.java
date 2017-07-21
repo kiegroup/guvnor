@@ -31,7 +31,6 @@ public interface ValidationService<T> {
      * @param content
      * @return
      */
-    List<ValidationMessage> validate( final Path path,
-                                      final T content );
-
+    List<ValidationMessage> validate(final Path path,
+                                     final T content);
 }

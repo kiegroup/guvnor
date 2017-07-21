@@ -19,13 +19,11 @@ import org.guvnor.ala.build.maven.model.MavenBuild;
 
 /**
  * Interface that represent the Docker Build information
- * to be used build a Docker Image. This interface extends on 
+ * to be used build a Docker Image. This interface extends on
  * the MavenBuild because we are using the Maven Plugin to build Docker Images.
- * 
  * @see MavenBuild
  * @see BuildConfig
  */
 public interface DockerBuild extends MavenBuild {
 
-   
 }

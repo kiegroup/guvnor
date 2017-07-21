@@ -36,8 +36,8 @@ import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.file.FileSystem;
 
-import static org.guvnor.structure.server.config.ConfigType.*;
-import static org.uberfire.backend.server.util.Paths.*;
+import static org.guvnor.structure.server.config.ConfigType.REPOSITORY;
+import static org.uberfire.backend.server.util.Paths.convert;
 
 /**
  * Cache for configured repositories.
@@ -46,48 +46,46 @@ import static org.uberfire.backend.server.util.Paths.*;
 public class ConfiguredRepositories {
 
     private ConfigurationService configurationService;
-    private RepositoryFactory    repositoryFactory;
-    private Repository           systemRepository;
+    private RepositoryFactory repositoryFactory;
+    private Repository systemRepository;
 
-    private Map<String, Repository> repositoriesByAlias      = new HashMap<>();
-    private Map<Path, Repository>   repositoriesByBranchRoot = new HashMap<>();
+    private Map<String, Repository> repositoriesByAlias = new HashMap<>();
+    private Map<Path, Repository> repositoriesByBranchRoot = new HashMap<>();
 
     public ConfiguredRepositories() {
     }
 
     @Inject
-    public ConfiguredRepositories( final ConfigurationService configurationService,
-                                   final RepositoryFactory repositoryFactory,
-                                   final @Named( "system" ) Repository systemRepository ) {
+    public ConfiguredRepositories(final ConfigurationService configurationService,
+                                  final RepositoryFactory repositoryFactory,
+                                  final @Named("system") Repository systemRepository) {
         this.configurationService = configurationService;
         this.repositoryFactory = repositoryFactory;
         this.systemRepository = systemRepository;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     @PostConstruct
     public void loadRepositories() {
         repositoriesByAlias.clear();
         repositoriesByBranchRoot.clear();
 
-        final List<ConfigGroup> repoConfigs = configurationService.getConfiguration( REPOSITORY );
-        if ( !(repoConfigs == null || repoConfigs.isEmpty()) ) {
-            for ( final ConfigGroup configGroup : repoConfigs ) {
-                final Repository repository = repositoryFactory.newRepository( configGroup );
+        final List<ConfigGroup> repoConfigs = configurationService.getConfiguration(REPOSITORY);
+        if (!(repoConfigs == null || repoConfigs.isEmpty())) {
+            for (final ConfigGroup configGroup : repoConfigs) {
+                final Repository repository = repositoryFactory.newRepository(configGroup);
 
-                add( repository );
-
+                add(repository);
             }
         }
     }
 
     /**
-     *
      * @param alias Name of the repository.
      * @return Repository that has a random branch as a root, usually master if master exists.
      */
-    public Repository getRepositoryByRepositoryAlias( final String alias ) {
-        return repositoriesByAlias.get( alias );
+    public Repository getRepositoryByRepositoryAlias(final String alias) {
+        return repositoriesByAlias.get(alias);
     }
 
     /**
@@ -95,17 +93,17 @@ public class ConfiguredRepositories {
      * @param fs
      * @return
      */
-    public Repository getRepositoryByRepositoryFileSystem( final FileSystem fs ) {
-        if ( fs == null ) {
+    public Repository getRepositoryByRepositoryFileSystem(final FileSystem fs) {
+        if (fs == null) {
             return null;
         }
 
-        if ( convert( systemRepository.getRoot() ).getFileSystem().equals( fs ) ) {
+        if (convert(systemRepository.getRoot()).getFileSystem().equals(fs)) {
             return systemRepository;
         }
 
-        for ( final Repository repository : repositoriesByAlias.values() ) {
-            if ( convert( repository.getRoot() ).getFileSystem().equals( fs ) ) {
+        for (final Repository repository : repositoriesByAlias.values()) {
+            if (convert(repository.getRoot()).getFileSystem().equals(fs)) {
                 return repository;
             }
         }
@@ -117,80 +115,81 @@ public class ConfiguredRepositories {
      * @param root Path to the repository root in any branch.
      * @return Repository root branch is still the default, usually master.
      */
-    public Repository getRepositoryByRootPath( final Path root ) {
-        return repositoriesByBranchRoot.get( root );
+    public Repository getRepositoryByRootPath(final Path root) {
+        return repositoriesByBranchRoot.get(root);
     }
 
     /**
      * @return Does not include system repository.
      */
     public List<Repository> getAllConfiguredRepositories() {
-        return new ArrayList<>( repositoriesByAlias.values() );
+        return new ArrayList<>(repositoriesByAlias.values());
     }
 
-    public boolean containsAlias( final String alias ) {
-        return repositoriesByAlias.containsKey( alias ) || SystemRepository.SYSTEM_REPO.getAlias().equals( alias );
+    public boolean containsAlias(final String alias) {
+        return repositoriesByAlias.containsKey(alias) || SystemRepository.SYSTEM_REPO.getAlias().equals(alias);
     }
 
-    public void add( final Repository repository ) {
-        repositoriesByAlias.put( repository.getAlias(),
-                                 repository );
+    public void add(final Repository repository) {
+        repositoriesByAlias.put(repository.getAlias(),
+                                repository);
 
-        if ( repository instanceof GitRepository &&
-                repository.getBranches() != null ) {
-            for ( String branch : repository.getBranches() ) {
-                repositoriesByBranchRoot.put( repository.getBranchRoot( branch ),
-                                              repository );
+        if (repository instanceof GitRepository &&
+                repository.getBranches() != null) {
+            for (String branch : repository.getBranches()) {
+                repositoriesByBranchRoot.put(repository.getBranchRoot(branch),
+                                             repository);
             }
         } else {
-            repositoriesByBranchRoot.put( repository.getRoot(),
-                                          repository );
+            repositoriesByBranchRoot.put(repository.getRoot(),
+                                         repository);
         }
     }
 
-    public void update( final Repository updatedRepo ) {
-        add( updatedRepo );
+    public void update(final Repository updatedRepo) {
+        add(updatedRepo);
     }
 
-    public Repository remove( final String alias ) {
+    public Repository remove(final String alias) {
 
-        final Repository removed = repositoriesByAlias.remove( alias );
+        final Repository removed = repositoriesByAlias.remove(alias);
 
-        removeFromRootByAlias( alias );
+        removeFromRootByAlias(alias);
 
         return removed;
     }
 
-    private void removeFromRootByAlias( final String alias ) {
-        for ( Path path : findFromRootMapByAlias( alias ) ) {
-            repositoriesByBranchRoot.remove( path );
+    private void removeFromRootByAlias(final String alias) {
+        for (Path path : findFromRootMapByAlias(alias)) {
+            repositoriesByBranchRoot.remove(path);
         }
     }
 
-    private List<Path> findFromRootMapByAlias( final String alias ) {
+    private List<Path> findFromRootMapByAlias(final String alias) {
         List<Path> result = new ArrayList<>();
-        for ( Path path : repositoriesByBranchRoot.keySet() ) {
-            if ( repositoriesByBranchRoot.get( path ).getAlias().equals( alias ) ) {
-                result.add( path );
+        for (Path path : repositoriesByBranchRoot.keySet()) {
+            if (repositoriesByBranchRoot.get(path).getAlias().equals(alias)) {
+                result.add(path);
             }
         }
         return result;
     }
 
-    public void onNewBranch( final @Observes NewBranchEvent changedEvent ) {
+    public void onNewBranch(final @Observes NewBranchEvent changedEvent) {
 
-        if ( repositoriesByAlias.containsKey( changedEvent.getRepositoryAlias() ) ) {
+        if (repositoriesByAlias.containsKey(changedEvent.getRepositoryAlias())) {
 
-            final Repository repository = getRepositoryByRepositoryAlias( changedEvent.getRepositoryAlias() );
-            if ( repository instanceof GitRepository ) {
-                (( GitRepository ) repository).addBranch( changedEvent.getBranchName(),
-                                                          changedEvent.getBranchPath() );
-                repositoriesByBranchRoot.put( changedEvent.getBranchPath(), repository );
+            final Repository repository = getRepositoryByRepositoryAlias(changedEvent.getRepositoryAlias());
+            if (repository instanceof GitRepository) {
+                ((GitRepository) repository).addBranch(changedEvent.getBranchName(),
+                                                       changedEvent.getBranchPath());
+                repositoriesByBranchRoot.put(changedEvent.getBranchPath(),
+                                             repository);
             }
         }
     }
 
-    public void flush( final @Observes @org.guvnor.structure.backend.config.Repository SystemRepositoryChangedEvent changedEvent ) {
+    public void flush(final @Observes @org.guvnor.structure.backend.config.Repository SystemRepositoryChangedEvent changedEvent) {
         loadRepositories();
     }
 }

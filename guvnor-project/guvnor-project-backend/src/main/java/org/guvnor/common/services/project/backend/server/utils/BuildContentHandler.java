@@ -20,13 +20,13 @@ import org.apache.maven.model.Plugin;
 
 class BuildContentHandler {
 
-    org.guvnor.common.services.project.model.Build fromPomModelToClientModel( final Build from ) {
+    org.guvnor.common.services.project.model.Build fromPomModelToClientModel(final Build from) {
 
-        if ( from != null ) {
+        if (from != null) {
             org.guvnor.common.services.project.model.Build build = new org.guvnor.common.services.project.model.Build();
-            if ( from.getPlugins() != null ) {
+            if (from.getPlugins() != null) {
                 for (Plugin plugin : from.getPlugins()) {
-                    build.getPlugins().add( fromPomModelToClientModel( plugin ) );
+                    build.getPlugins().add(fromPomModelToClientModel(plugin));
                 }
             }
             return build;
@@ -35,34 +35,33 @@ class BuildContentHandler {
         }
     }
 
-    public Build update( final org.guvnor.common.services.project.model.Build from,
-                         Build to ) {
-        if ( from == null ) {
+    public Build update(final org.guvnor.common.services.project.model.Build from,
+                        Build to) {
+        if (from == null) {
             return null;
         } else {
-            if ( to == null ) {
+            if (to == null) {
                 to = new Build();
             }
 
-            if ( from.getPlugins() != null ) {
-                to.setPlugins( new MavenPluginUpdater( to.getPlugins() ).update( from.getPlugins() ) );
+            if (from.getPlugins() != null) {
+                to.setPlugins(new MavenPluginUpdater(to.getPlugins()).update(from.getPlugins()));
             }
 
             return to;
         }
     }
 
-    private org.guvnor.common.services.project.model.Plugin fromPomModelToClientModel( final Plugin from ) {
+    private org.guvnor.common.services.project.model.Plugin fromPomModelToClientModel(final Plugin from) {
         org.guvnor.common.services.project.model.Plugin plugin = new org.guvnor.common.services.project.model.Plugin();
 
-        plugin.setGroupId( from.getGroupId() );
-        plugin.setArtifactId( from.getArtifactId() );
-        plugin.setVersion( from.getVersion() );
-        plugin.setExtensions( from.isExtensions() );
+        plugin.setGroupId(from.getGroupId());
+        plugin.setArtifactId(from.getArtifactId());
+        plugin.setVersion(from.getVersion());
+        plugin.setExtensions(from.isExtensions());
 
-        plugin.setDependencies( new DependencyContentHandler().fromPomModelToClientModel( from.getDependencies() ) );
+        plugin.setDependencies(new DependencyContentHandler().fromPomModelToClientModel(from.getDependencies()));
 
         return plugin;
     }
-
 }

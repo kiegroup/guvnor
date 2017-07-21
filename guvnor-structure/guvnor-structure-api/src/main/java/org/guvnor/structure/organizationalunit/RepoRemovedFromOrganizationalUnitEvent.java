@@ -26,8 +26,11 @@ public class RepoRemovedFromOrganizationalUnitEvent extends OrganizationalUnitEv
     public RepoRemovedFromOrganizationalUnitEvent() {
     }
 
-    public RepoRemovedFromOrganizationalUnitEvent(final OrganizationalUnit organizationalUnit, final Repository repository, final String userName) {
-        super( organizationalUnit, userName );
+    public RepoRemovedFromOrganizationalUnitEvent(final OrganizationalUnit organizationalUnit,
+                                                  final Repository repository,
+                                                  final String userName) {
+        super(organizationalUnit,
+              userName);
         this.repository = repository;
     }
 

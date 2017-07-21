@@ -29,12 +29,11 @@ public class NewPackageEvent {
     public NewPackageEvent() {
     }
 
-    public NewPackageEvent( final Package pkg ) {
+    public NewPackageEvent(final Package pkg) {
         this.pkg = pkg;
     }
 
     public Package getPackage() {
         return pkg;
     }
-
 }

@@ -29,9 +29,9 @@ public class MessageConsoleServiceRow extends AbstractPageRow {
 
     SystemMessage message;
 
-    public MessageConsoleServiceRow( String sessionId,
-                                     String userId,
-                                     SystemMessage message ) {
+    public MessageConsoleServiceRow(String sessionId,
+                                    String userId,
+                                    SystemMessage message) {
         this.sessionId = sessionId;
         this.userId = userId;
         this.message = message;
@@ -41,7 +41,7 @@ public class MessageConsoleServiceRow extends AbstractPageRow {
         return sessionId;
     }
 
-    public void setSessionId( String sessionId ) {
+    public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
 
@@ -49,7 +49,7 @@ public class MessageConsoleServiceRow extends AbstractPageRow {
         return userId;
     }
 
-    public void setUserId( String userId ) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -57,7 +57,7 @@ public class MessageConsoleServiceRow extends AbstractPageRow {
         return message;
     }
 
-    public void setMessage( SystemMessage message ) {
+    public void setMessage(SystemMessage message) {
         this.message = message;
     }
 
@@ -92,5 +92,4 @@ public class MessageConsoleServiceRow extends AbstractPageRow {
     public String getMessageText() {
         return getMessage() != null ? getMessage().getText() : null;
     }
-
 }

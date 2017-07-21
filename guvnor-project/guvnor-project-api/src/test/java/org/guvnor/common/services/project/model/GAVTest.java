@@ -23,10 +23,13 @@ public class GAVTest {
 
     @Test
     public void testGAVFromString() throws Exception {
-        GAV gav = new GAV( "myGroupID:myArtifactID:version" );
+        GAV gav = new GAV("myGroupID:myArtifactID:version");
 
-        assertEquals( "myGroupID", gav.getGroupId() );
-        assertEquals( "myArtifactID", gav.getArtifactId() );
-        assertEquals( "version", gav.getVersion() );
+        assertEquals("myGroupID",
+                     gav.getGroupId());
+        assertEquals("myArtifactID",
+                     gav.getArtifactId());
+        assertEquals("version",
+                     gav.getVersion());
     }
 }

@@ -32,7 +32,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.guvnor.m2repo.model.HTMLFileManagerFields.*;
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_MISSING_POM;
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_OK;
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_UNABLE_TO_PARSE_POM;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -60,100 +62,105 @@ public class UploadFormTest {
 
     @Before
     public void before() {
-        uploadFormPresenter = new UploadFormPresenter( view, searchEvent, iocManager );
+        uploadFormPresenter = new UploadFormPresenter(view,
+                                                      searchEvent,
+                                                      iocManager);
 
-        verify( view ).addHideHandler( captor.capture() );
+        verify(view).addHideHandler(captor.capture());
     }
 
     @Test
     public void emptyFilenameTest() {
-        when( view.getFileName() ).thenReturn( null );
-        uploadFormPresenter.handleSubmit( new FormPanel.SubmitEvent() );
+        when(view.getFileName()).thenReturn(null);
+        uploadFormPresenter.handleSubmit(new FormPanel.SubmitEvent());
 
-        verify( view ).showSelectFileUploadWarning();
-        verify( view, never() ).showUploadingBusy();
+        verify(view).showSelectFileUploadWarning();
+        verify(view,
+               never()).showUploadingBusy();
     }
 
     @Test
     public void nullFilenameTest() {
-        when( view.getFileName() ).thenReturn( "" );
-        uploadFormPresenter.handleSubmit( new FormPanel.SubmitEvent() );
+        when(view.getFileName()).thenReturn("");
+        uploadFormPresenter.handleSubmit(new FormPanel.SubmitEvent());
 
-        verify( view ).showSelectFileUploadWarning();
-        verify( view, never() ).showUploadingBusy();
+        verify(view).showSelectFileUploadWarning();
+        verify(view,
+               never()).showUploadingBusy();
     }
 
     @Test
     public void unsupportedFilenameTest() {
-        when( view.getFileName() ).thenReturn( "//!#@%^&*()\\23\\(0" );
-        uploadFormPresenter.handleSubmit( new FormPanel.SubmitEvent() );
+        when(view.getFileName()).thenReturn("//!#@%^&*()\\23\\(0");
+        uploadFormPresenter.handleSubmit(new FormPanel.SubmitEvent());
 
-        verify( view ).showUnsupportedFileTypeWarning();
-        verify( view, never() ).showUploadingBusy();
+        verify(view).showUnsupportedFileTypeWarning();
+        verify(view,
+               never()).showUploadingBusy();
     }
 
     @Test
     public void correctFilenameTest() {
-        when( view.getFileName() ).thenReturn( "/home/user/something/pom.xml" );
-        uploadFormPresenter.handleSubmit( new FormPanel.SubmitEvent() );
+        when(view.getFileName()).thenReturn("/home/user/something/pom.xml");
+        uploadFormPresenter.handleSubmit(new FormPanel.SubmitEvent());
 
-        verify( view ).showUploadingBusy();
+        verify(view).showUploadingBusy();
     }
 
     @Test
     public void uploadOkSubmitHandlerTest() {
-        when( submitCompleteEvent.getResults() ).thenReturn( UPLOAD_OK );
-        uploadFormPresenter.handleSubmitComplete( submitCompleteEvent );
+        when(submitCompleteEvent.getResults()).thenReturn(UPLOAD_OK);
+        uploadFormPresenter.handleSubmitComplete(submitCompleteEvent);
 
-        verify( view ).hideUploadingBusy();
-        verify( view ).hideUploadingBusy();
-        verify( view ).hideGAVInputs();
+        verify(view).hideUploadingBusy();
+        verify(view).hideUploadingBusy();
+        verify(view).hideGAVInputs();
 
-        verify( view ).showUploadedSuccessfullyMessage();
+        verify(view).showUploadedSuccessfullyMessage();
     }
 
     @Test
     public void uploadMissingPomSubmitHandlerTest() {
-        when( submitCompleteEvent.getResults() ).thenReturn( UPLOAD_MISSING_POM );
-        uploadFormPresenter.handleSubmitComplete( submitCompleteEvent );
+        when(submitCompleteEvent.getResults()).thenReturn(UPLOAD_MISSING_POM);
+        uploadFormPresenter.handleSubmitComplete(submitCompleteEvent);
 
-        verify( view ).hideUploadingBusy();
-        verify( view ).showGAVInputs();
+        verify(view).hideUploadingBusy();
+        verify(view).showGAVInputs();
 
-        verify( view ).showInvalidJarNoPomWarning();
+        verify(view).showInvalidJarNoPomWarning();
     }
 
     @Test
     public void uploadUnableToParsePomSubmitHandlerTest() {
-        when( submitCompleteEvent.getResults() ).thenReturn( UPLOAD_UNABLE_TO_PARSE_POM );
-        uploadFormPresenter.handleSubmitComplete( submitCompleteEvent );
+        when(submitCompleteEvent.getResults()).thenReturn(UPLOAD_UNABLE_TO_PARSE_POM);
+        uploadFormPresenter.handleSubmitComplete(submitCompleteEvent);
 
-        verify( view ).hideUploadingBusy();
-        verify( view ).hide();
+        verify(view).hideUploadingBusy();
+        verify(view).hide();
 
-        verify( view ).showInvalidPomWarning();
+        verify(view).showInvalidPomWarning();
     }
 
     @Test
     public void uploadUnknownErrorTest() {
         String errorText = "Some unknown error text.";
 
-        when( submitCompleteEvent.getResults() ).thenReturn( errorText );
-        uploadFormPresenter.handleSubmitComplete( submitCompleteEvent );
+        when(submitCompleteEvent.getResults()).thenReturn(errorText);
+        uploadFormPresenter.handleSubmitComplete(submitCompleteEvent);
 
-        verify( view ).hideUploadingBusy();
+        verify(view).hideUploadingBusy();
         view.hideGAVInputs();
         view.hide();
 
-        view.showUploadFailedError( errorText );
+        view.showUploadFailedError(errorText);
     }
 
     @Test
     public void isViewDestroyedDuringHidingTest() {
         ModalHideHandler hideHandler = captor.getValue();
 
-        hideHandler.onHide( hideEvent );
+        hideHandler.onHide(hideEvent);
 
-        verify( iocManager ).destroyBean( uploadFormPresenter );
+        verify(iocManager).destroyBean(uploadFormPresenter);
     }
 }

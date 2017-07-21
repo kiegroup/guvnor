@@ -21,16 +21,16 @@ public interface ArtifactListPresenter {
 
     ArtifactListView getView();
 
-    void setup( final ColumnType... columns );
+    void setup(final ColumnType... columns);
 
-    void notifyOnRefresh( boolean notify );
+    void notifyOnRefresh(boolean notify);
 
-    void search( String filter );
+    void search(String filter);
 
-    void search( String filter,
-                 List<String> fileFormats );
+    void search(String filter,
+                List<String> fileFormats);
 
     void refresh();
 
-    void onOpenPom( String path );
+    void onOpenPom(String path);
 }

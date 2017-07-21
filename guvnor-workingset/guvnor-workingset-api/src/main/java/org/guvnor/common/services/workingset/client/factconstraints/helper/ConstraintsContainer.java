@@ -16,12 +16,6 @@
 
 package org.guvnor.common.services.workingset.client.factconstraints.helper;
 
-import org.guvnor.common.services.workingset.client.factconstraints.ConstraintConfiguration;
-import org.guvnor.common.services.workingset.client.factconstraints.config.SimpleConstraintConfigurationImpl;
-import org.guvnor.common.services.workingset.client.factconstraints.config.SimpleConstraintConfigurationImpl;
-import org.guvnor.common.services.workingset.client.factconstraints.ConstraintConfiguration;
-import org.guvnor.common.services.workingset.client.factconstraints.config.SimpleConstraintConfigurationImpl;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,54 +24,68 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.guvnor.common.services.workingset.client.factconstraints.ConstraintConfiguration;
+import org.guvnor.common.services.workingset.client.factconstraints.config.SimpleConstraintConfigurationImpl;
+
 public class ConstraintsContainer {
 
     private static final Map<String, ConstraintConfiguration> constraintConfigs = new HashMap<String, ConstraintConfiguration>();
 
     static {
         ConstraintConfiguration config = new SimpleConstraintConfigurationImpl();
-        config.setConstraintName( "NotNull" );
-        constraintConfigs.put( config.getConstraintName(), config );
+        config.setConstraintName("NotNull");
+        constraintConfigs.put(config.getConstraintName(),
+                              config);
 
         config = new SimpleConstraintConfigurationImpl();
-        config.setConstraintName( "IntegerConstraint" );
-        constraintConfigs.put( config.getConstraintName(), config );
+        config.setConstraintName("IntegerConstraint");
+        constraintConfigs.put(config.getConstraintName(),
+                              config);
 
         config = new SimpleConstraintConfigurationImpl();
-        config.setConstraintName( "RangeConstraint" );
-        config.setArgumentValue( "Min.value", "0" );
-        config.setArgumentValue( "Max.value", "0" );
-        constraintConfigs.put( config.getConstraintName(), config );
+        config.setConstraintName("RangeConstraint");
+        config.setArgumentValue("Min.value",
+                                "0");
+        config.setArgumentValue("Max.value",
+                                "0");
+        constraintConfigs.put(config.getConstraintName(),
+                              config);
 
         config = new SimpleConstraintConfigurationImpl();
-        config.setConstraintName( "NotMatches" );
-        config.setArgumentValue( "matches", "" );
-        constraintConfigs.put( config.getConstraintName(), config );
+        config.setConstraintName("NotMatches");
+        config.setArgumentValue("matches",
+                                "");
+        constraintConfigs.put(config.getConstraintName(),
+                              config);
 
         config = new SimpleConstraintConfigurationImpl();
-        config.setConstraintName( "Matches" );
-        config.setArgumentValue( "matches", "" );
-        constraintConfigs.put( config.getConstraintName(), config );
+        config.setConstraintName("Matches");
+        config.setArgumentValue("matches",
+                                "");
+        constraintConfigs.put(config.getConstraintName(),
+                              config);
 
         config = new SimpleConstraintConfigurationImpl();
-        config.setConstraintName( "IvalidFieldConstraint" );
-        constraintConfigs.put( config.getConstraintName(), config );
+        config.setConstraintName("IvalidFieldConstraint");
+        constraintConfigs.put(config.getConstraintName(),
+                              config);
 
         config = new SimpleConstraintConfigurationImpl();
-        config.setConstraintName( "MandatoryFieldConstraint" );
-        constraintConfigs.put( config.getConstraintName(), config );
+        config.setConstraintName("MandatoryFieldConstraint");
+        constraintConfigs.put(config.getConstraintName(),
+                              config);
     }
 
     private Map<String, List<ConstraintConfiguration>> constraints = new HashMap<String, List<ConstraintConfiguration>>();
 
-    public ConstraintsContainer( ConstraintConfiguration[] constraints ) {
-        this( Arrays.asList( constraints ) );
+    public ConstraintsContainer(ConstraintConfiguration[] constraints) {
+        this(Arrays.asList(constraints));
     }
 
-    public ConstraintsContainer( Collection<ConstraintConfiguration> constraints ) {
-        if ( constraints != null && !constraints.isEmpty() ) {
-            for ( ConstraintConfiguration c : constraints ) {
-                addConstraint( c );
+    public ConstraintsContainer(Collection<ConstraintConfiguration> constraints) {
+        if (constraints != null && !constraints.isEmpty()) {
+            for (ConstraintConfiguration c : constraints) {
+                addConstraint(c);
             }
         }
     }
@@ -86,56 +94,57 @@ public class ConstraintsContainer {
 
     }
 
-    public List<ConstraintConfiguration> removeConstraint( ConstraintConfiguration c ) {
-        List<ConstraintConfiguration> list = constraints.get( c.getFactType() );
-        if ( list != null ) {
-            list.remove( c );
+    public List<ConstraintConfiguration> removeConstraint(ConstraintConfiguration c) {
+        List<ConstraintConfiguration> list = constraints.get(c.getFactType());
+        if (list != null) {
+            list.remove(c);
         }
         return list;
     }
 
-    public void addConstraint( ConstraintConfiguration c ) {
-        List<ConstraintConfiguration> list = constraints.get( c.getFactType() );
-        if ( list == null ) {
+    public void addConstraint(ConstraintConfiguration c) {
+        List<ConstraintConfiguration> list = constraints.get(c.getFactType());
+        if (list == null) {
             list = new LinkedList<ConstraintConfiguration>();
-            constraints.put( c.getFactType(), list );
+            constraints.put(c.getFactType(),
+                            list);
         }
-        list.add( c );
+        list.add(c);
     }
 
-    public List<ConstraintConfiguration> getConstraints( String factType ) {
-        return Collections.unmodifiableList( constraints.get( factType ) );
+    public List<ConstraintConfiguration> getConstraints(String factType) {
+        return Collections.unmodifiableList(constraints.get(factType));
     }
 
-    public List<ConstraintConfiguration> getConstraints( String factType,
-                                                         String fieldName ) {
+    public List<ConstraintConfiguration> getConstraints(String factType,
+                                                        String fieldName) {
 
-        List<ConstraintConfiguration> list = constraints.get( factType );
-        if ( list == null || list.isEmpty() ) {
+        List<ConstraintConfiguration> list = constraints.get(factType);
+        if (list == null || list.isEmpty()) {
             return Collections.emptyList();
         }
         List<ConstraintConfiguration> res = new LinkedList<ConstraintConfiguration>();
-        for ( ConstraintConfiguration c : list ) {
-            if ( fieldName.equals( c.getFieldName() ) ) {
-                res.add( c );
+        for (ConstraintConfiguration c : list) {
+            if (fieldName.equals(c.getFieldName())) {
+                res.add(c);
             }
         }
         return res;
     }
 
-    public boolean hasConstraints( String FactType ) {
-        return constraints.containsKey( FactType );
+    public boolean hasConstraints(String FactType) {
+        return constraints.containsKey(FactType);
     }
 
     public static Map<String, ConstraintConfiguration> getAllConfigurations() {
         return constraintConfigs;
     }
 
-    public static ConstraintConfiguration getEmptyConfiguration( String constraintName ) {
-        return copyConfig( getAllConfigurations().get( constraintName ) );
+    public static ConstraintConfiguration getEmptyConfiguration(String constraintName) {
+        return copyConfig(getAllConfigurations().get(constraintName));
     }
 
-    private static ConstraintConfiguration copyConfig( ConstraintConfiguration constraintConfiguration ) {
-        return new SimpleConstraintConfigurationImpl( constraintConfiguration );
+    private static ConstraintConfiguration copyConfig(ConstraintConfiguration constraintConfiguration) {
+        return new SimpleConstraintConfigurationImpl(constraintConfiguration);
     }
 }

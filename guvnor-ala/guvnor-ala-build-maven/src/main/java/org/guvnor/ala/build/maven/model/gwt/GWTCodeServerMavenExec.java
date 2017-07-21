@@ -24,7 +24,6 @@ import org.guvnor.ala.config.BuildConfig;
 /**
  * Interface that represent the Maven Build information
  * to be used build a Maven Project
- *
  * @see BuildConfig
  */
 public interface GWTCodeServerMavenExec extends BuildConfig {

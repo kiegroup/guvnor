@@ -18,7 +18,7 @@ package org.guvnor.common.services.project.model;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * An item representing a Package within a Project
@@ -39,23 +39,26 @@ public class Package {
         //For Errai-marshalling
     }
 
-    public Package( final Path projectRootPath,
-                    final Path packageMainSrcPath,
-                    final Path packageTestSrcPath,
-                    final Path packageMainResourcesPath,
-                    final Path packageTestResourcesPath,
-                    final String packageName,
-                    final String caption,
-                    final String relativeCaption ) {
-        this.projectRootPath = checkNotNull( "projectRootPath",
-                                             projectRootPath );
+    public Package(final Path projectRootPath,
+                   final Path packageMainSrcPath,
+                   final Path packageTestSrcPath,
+                   final Path packageMainResourcesPath,
+                   final Path packageTestResourcesPath,
+                   final String packageName,
+                   final String caption,
+                   final String relativeCaption) {
+        this.projectRootPath = checkNotNull("projectRootPath",
+                                            projectRootPath);
         this.packageMainSrcPath = packageMainSrcPath;
         this.packageTestSrcPath = packageTestSrcPath;
         this.packageMainResourcesPath = packageMainResourcesPath;
         this.packageTestResourcesPath = packageTestResourcesPath;
-        this.packageName = checkNotNull( "packageName", packageName );
-        this.caption = checkNotNull( "caption", caption );
-        this.relativeCaption = checkNotNull( "relativeCaption", relativeCaption );
+        this.packageName = checkNotNull("packageName",
+                                        packageName);
+        this.caption = checkNotNull("caption",
+                                    caption);
+        this.relativeCaption = checkNotNull("relativeCaption",
+                                            relativeCaption);
     }
 
     public Path getProjectRootPath() {
@@ -91,35 +94,35 @@ public class Package {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof Package ) ) {
+        if (!(o instanceof Package)) {
             return false;
         }
 
         Package aPackage = (Package) o;
 
-        if ( !caption.equals( aPackage.caption ) ) {
+        if (!caption.equals(aPackage.caption)) {
             return false;
         }
-        if ( !packageName.equals( aPackage.packageName ) ) {
+        if (!packageName.equals(aPackage.packageName)) {
             return false;
         }
-        if ( !projectRootPath.equals( aPackage.projectRootPath ) ) {
+        if (!projectRootPath.equals(aPackage.projectRootPath)) {
             return false;
         }
-        if ( packageMainSrcPath != null ? !packageMainSrcPath.equals( aPackage.packageMainSrcPath ) : aPackage.packageMainSrcPath != null ) {
+        if (packageMainSrcPath != null ? !packageMainSrcPath.equals(aPackage.packageMainSrcPath) : aPackage.packageMainSrcPath != null) {
             return false;
         }
-        if ( packageTestSrcPath != null ? !packageTestSrcPath.equals( aPackage.packageTestSrcPath ) : aPackage.packageTestSrcPath != null ) {
+        if (packageTestSrcPath != null ? !packageTestSrcPath.equals(aPackage.packageTestSrcPath) : aPackage.packageTestSrcPath != null) {
             return false;
         }
-        if ( packageMainResourcesPath != null ? !packageMainResourcesPath.equals( aPackage.packageMainResourcesPath ) : aPackage.packageMainResourcesPath != null ) {
+        if (packageMainResourcesPath != null ? !packageMainResourcesPath.equals(aPackage.packageMainResourcesPath) : aPackage.packageMainResourcesPath != null) {
             return false;
         }
-        if ( packageTestResourcesPath != null ? !packageTestResourcesPath.equals( aPackage.packageTestResourcesPath ) : aPackage.packageTestResourcesPath != null ) {
+        if (packageTestResourcesPath != null ? !packageTestResourcesPath.equals(aPackage.packageTestResourcesPath) : aPackage.packageTestResourcesPath != null) {
             return false;
         }
 
@@ -130,13 +133,13 @@ public class Package {
     public int hashCode() {
         int result = projectRootPath.hashCode();
         result = ~~result;
-        result = 31 * result + ( packageMainSrcPath != null ? packageMainSrcPath.hashCode() : 0 );
+        result = 31 * result + (packageMainSrcPath != null ? packageMainSrcPath.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( packageTestSrcPath != null ? packageTestSrcPath.hashCode() : 0 );
+        result = 31 * result + (packageTestSrcPath != null ? packageTestSrcPath.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( packageMainResourcesPath != null ? packageMainResourcesPath.hashCode() : 0 );
+        result = 31 * result + (packageMainResourcesPath != null ? packageMainResourcesPath.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( packageTestResourcesPath != null ? packageTestResourcesPath.hashCode() : 0 );
+        result = 31 * result + (packageTestResourcesPath != null ? packageTestResourcesPath.hashCode() : 0);
         result = ~~result;
         result = 31 * result + packageName.hashCode();
         result = ~~result;

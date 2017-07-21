@@ -20,8 +20,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.guvnor.ala.config.ProjectConfig;
 import org.uberfire.java.nio.file.Path;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.*;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 
 /**
  * Represent one logical project Project. Implement this interface
@@ -76,5 +76,4 @@ public interface Project extends ProjectConfig {
     Path getBinaryPath();
 
     String getTempDir();
-
 }

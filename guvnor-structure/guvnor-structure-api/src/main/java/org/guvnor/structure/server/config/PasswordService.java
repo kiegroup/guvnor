@@ -17,7 +17,7 @@ package org.guvnor.structure.server.config;
 
 public interface PasswordService {
 
-    String encrypt( String plainText );
+    String encrypt(String plainText);
 
-    String decrypt( String encryptedText );
+    String decrypt(String encryptedText);
 }

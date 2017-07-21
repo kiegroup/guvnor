@@ -19,6 +19,7 @@ package org.guvnor.ala.services.rest.tests;
 import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+
 import org.guvnor.ala.pipeline.events.AfterPipelineExecutionEvent;
 import org.guvnor.ala.pipeline.events.AfterStageExecutionEvent;
 import org.guvnor.ala.pipeline.events.BeforePipelineExecutionEvent;
@@ -28,44 +29,42 @@ import org.guvnor.ala.pipeline.events.OnErrorStageExecutionEvent;
 import org.guvnor.ala.pipeline.events.PipelineEvent;
 import org.guvnor.ala.pipeline.events.PipelineEventListener;
 
-
 @ApplicationScoped
 public class MockPipelineEventListener implements PipelineEventListener {
 
     private List<PipelineEvent> events = new ArrayList<PipelineEvent>();
 
     @Override
-    public void beforePipelineExecution( BeforePipelineExecutionEvent bpee ) {
-        events.add( bpee );
+    public void beforePipelineExecution(BeforePipelineExecutionEvent bpee) {
+        events.add(bpee);
     }
 
     @Override
-    public void afterPipelineExecution( AfterPipelineExecutionEvent apee ) {
-        events.add( apee );
+    public void afterPipelineExecution(AfterPipelineExecutionEvent apee) {
+        events.add(apee);
     }
 
     @Override
-    public void beforeStageExecution( BeforeStageExecutionEvent bsee ) {
-        events.add( bsee );
+    public void beforeStageExecution(BeforeStageExecutionEvent bsee) {
+        events.add(bsee);
     }
 
     @Override
-    public void onStageError( OnErrorStageExecutionEvent oesee ) {
-        events.add( oesee );
+    public void onStageError(OnErrorStageExecutionEvent oesee) {
+        events.add(oesee);
     }
 
     @Override
-    public void afterStageExecution( AfterStageExecutionEvent asee ) {
-        events.add( asee );
+    public void afterStageExecution(AfterStageExecutionEvent asee) {
+        events.add(asee);
     }
 
     @Override
-    public void onPipelineError( OnErrorPipelineExecutionEvent oepee ) {
-        events.add( oepee );
+    public void onPipelineError(OnErrorPipelineExecutionEvent oepee) {
+        events.add(oepee);
     }
 
     public List<PipelineEvent> getEvents() {
         return events;
     }
-
 }

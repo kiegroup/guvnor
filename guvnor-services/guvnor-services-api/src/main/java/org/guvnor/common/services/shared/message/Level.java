@@ -4,5 +4,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public enum Level {
-    ERROR, WARNING, INFO
+    ERROR,
+    WARNING,
+    INFO
 }

@@ -15,8 +15,8 @@
 
 package org.guvnor.structure.repositories.impl;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.guvnor.structure.repositories.PublicURI;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class DefaultPublicURI implements PublicURI {
@@ -27,12 +27,13 @@ public class DefaultPublicURI implements PublicURI {
     public DefaultPublicURI() {
     }
 
-    public DefaultPublicURI( final String uri ) {
-        this( "", uri );
+    public DefaultPublicURI(final String uri) {
+        this("",
+             uri);
     }
 
-    public DefaultPublicURI( final String protocol,
-                             final String uri ) {
+    public DefaultPublicURI(final String protocol,
+                            final String uri) {
         this.protocol = protocol;
         this.uri = uri;
     }
@@ -42,7 +43,7 @@ public class DefaultPublicURI implements PublicURI {
         return protocol;
     }
 
-    public void setProtocol( String protocol ) {
+    public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
 
@@ -51,25 +52,25 @@ public class DefaultPublicURI implements PublicURI {
         return uri;
     }
 
-    public void setURI( final String uri ) {
+    public void setURI(final String uri) {
         this.uri = uri;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof DefaultPublicURI ) ) {
+        if (!(o instanceof DefaultPublicURI)) {
             return false;
         }
 
         DefaultPublicURI publicURI = (DefaultPublicURI) o;
 
-        if ( uri != null ? !uri.equals( publicURI.uri ) : publicURI.uri != null ) {
+        if (uri != null ? !uri.equals(publicURI.uri) : publicURI.uri != null) {
             return false;
         }
-        if ( protocol != null ? !protocol.equals( publicURI.protocol ) : publicURI.protocol != null ) {
+        if (protocol != null ? !protocol.equals(publicURI.protocol) : publicURI.protocol != null) {
             return false;
         }
 
@@ -80,7 +81,7 @@ public class DefaultPublicURI implements PublicURI {
     public int hashCode() {
         int result = protocol != null ? protocol.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( uri != null ? uri.hashCode() : 0 );
+        result = 31 * result + (uri != null ? uri.hashCode() : 0);
         result = ~~result;
         return result;
     }

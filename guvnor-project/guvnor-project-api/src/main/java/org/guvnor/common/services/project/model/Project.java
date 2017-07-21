@@ -52,22 +52,24 @@ public class Project implements RuntimeContentResource,
         //For Errai-marshalling
     }
 
-    public Project( final Path rootPath,
-                    final Path pomXMLPath,
-                    final String projectName ) {
-        this.rootPath = PortablePreconditions.checkNotNull( "rootPath",
-                                                            rootPath );
-        this.pomXMLPath = PortablePreconditions.checkNotNull( "pomXMLPath",
-                                                              pomXMLPath );
-        this.projectName = PortablePreconditions.checkNotNull( "projectName",
-                                                               projectName );
+    public Project(final Path rootPath,
+                   final Path pomXMLPath,
+                   final String projectName) {
+        this.rootPath = PortablePreconditions.checkNotNull("rootPath",
+                                                           rootPath);
+        this.pomXMLPath = PortablePreconditions.checkNotNull("pomXMLPath",
+                                                             pomXMLPath);
+        this.projectName = PortablePreconditions.checkNotNull("projectName",
+                                                              projectName);
     }
 
-    public Project( final Path rootPath,
-                    final Path pomXMLPath,
-                    final String projectName,
-                    final Collection<String> modules ) {
-        this( rootPath, pomXMLPath, projectName );
+    public Project(final Path rootPath,
+                   final Path pomXMLPath,
+                   final String projectName,
+                   final Collection<String> modules) {
+        this(rootPath,
+             pomXMLPath,
+             projectName);
         this.modules = modules;
     }
 
@@ -89,7 +91,7 @@ public class Project implements RuntimeContentResource,
     }
 
     public String getEncodedIdentifier() {
-        return URIUtil.encodeQueryString( getIdentifier() );
+        return URIUtil.encodeQueryString(getIdentifier());
     }
 
     @Override
@@ -119,51 +121,50 @@ public class Project implements RuntimeContentResource,
         return pom;
     }
 
-    public void setPom( POM pom ) {
+    public void setPom(POM pom) {
         this.pom = pom;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 17 * hash + ( this.rootPath != null ? this.rootPath.hashCode() : 0 );
+        hash = 17 * hash + (this.rootPath != null ? this.rootPath.hashCode() : 0);
         hash = ~~hash;
-        hash = 17 * hash + ( this.pomXMLPath != null ? this.pomXMLPath.hashCode() : 0 );
+        hash = 17 * hash + (this.pomXMLPath != null ? this.pomXMLPath.hashCode() : 0);
         hash = ~~hash;
-        hash = 17 * hash + ( this.projectName != null ? this.projectName.hashCode() : 0 );
+        hash = 17 * hash + (this.projectName != null ? this.projectName.hashCode() : 0);
         hash = ~~hash;
-        hash = 17 * hash + ( this.modules != null ? this.modules.hashCode() : 0 );
+        hash = 17 * hash + (this.modules != null ? this.modules.hashCode() : 0);
         hash = ~~hash;
-        hash = 17 * hash + ( this.groups != null ? this.groups.hashCode() : 0 );
+        hash = 17 * hash + (this.groups != null ? this.groups.hashCode() : 0);
         hash = ~~hash;
         return hash;
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( obj == null ) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        if ( getClass() != obj.getClass() ) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final Project other = (Project) obj;
-        if ( this.rootPath != other.rootPath && ( this.rootPath == null || !this.rootPath.equals( other.rootPath ) ) ) {
+        if (this.rootPath != other.rootPath && (this.rootPath == null || !this.rootPath.equals(other.rootPath))) {
             return false;
         }
-        if ( this.pomXMLPath != other.pomXMLPath && ( this.pomXMLPath == null || !this.pomXMLPath.equals( other.pomXMLPath ) ) ) {
+        if (this.pomXMLPath != other.pomXMLPath && (this.pomXMLPath == null || !this.pomXMLPath.equals(other.pomXMLPath))) {
             return false;
         }
-        if ( ( this.projectName == null ) ? ( other.projectName != null ) : !this.projectName.equals( other.projectName ) ) {
+        if ((this.projectName == null) ? (other.projectName != null) : !this.projectName.equals(other.projectName)) {
             return false;
         }
-        if ( this.modules != other.modules && ( this.modules == null || !this.modules.equals( other.modules ) ) ) {
+        if (this.modules != other.modules && (this.modules == null || !this.modules.equals(other.modules))) {
             return false;
         }
-        if ( this.groups != other.groups && ( this.groups == null || !this.groups.equals( other.groups ) ) ) {
+        if (this.groups != other.groups && (this.groups == null || !this.groups.equals(other.groups))) {
             return false;
         }
         return true;
     }
-
 }

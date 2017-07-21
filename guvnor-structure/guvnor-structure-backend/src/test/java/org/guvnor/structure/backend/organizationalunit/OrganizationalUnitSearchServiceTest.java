@@ -50,38 +50,53 @@ public class OrganizationalUnitSearchServiceTest {
         when(itemB.getIdentifier()).thenReturn("itemB");
         when(itemA.getName()).thenReturn("Item A");
         when(itemB.getName()).thenReturn("Item B");
-        when(resourceService.getAllOrganizationalUnits()).thenReturn(Arrays.asList(itemA, itemB));
+        when(resourceService.getAllOrganizationalUnits()).thenReturn(Arrays.asList(itemA,
+                                                                                   itemB));
         searchService = new OrganizationalUnitSearchServiceImpl(resourceService);
     }
 
     @Test
     public void testSearchById() throws Exception {
         Collection<OrganizationalUnit> result = searchService.searchById(Arrays.asList("itemA"));
-        assertEquals(result.size(), 1);
-        assertEquals(result.iterator().next().getName(), "Item A");
+        assertEquals(result.size(),
+                     1);
+        assertEquals(result.iterator().next().getName(),
+                     "Item A");
     }
 
     @Test
     public void testSearchByAlias() throws Exception {
-        Collection<OrganizationalUnit> result = searchService.searchByName("Item", 10, true);
-        assertEquals(result.size(), 2);
+        Collection<OrganizationalUnit> result = searchService.searchByName("Item",
+                                                                           10,
+                                                                           true);
+        assertEquals(result.size(),
+                     2);
     }
 
     @Test
     public void testSearchCaseSensitiveEmpty() throws Exception {
-        Collection<OrganizationalUnit> result = searchService.searchByName("item", 10, true);
-        assertEquals(result.size(), 0);
+        Collection<OrganizationalUnit> result = searchService.searchByName("item",
+                                                                           10,
+                                                                           true);
+        assertEquals(result.size(),
+                     0);
     }
 
     @Test
     public void testSearchCaseUnsensitive() throws Exception {
-        Collection<OrganizationalUnit> result = searchService.searchByName("item", 10, false);
-        assertEquals(result.size(), 2);
+        Collection<OrganizationalUnit> result = searchService.searchByName("item",
+                                                                           10,
+                                                                           false);
+        assertEquals(result.size(),
+                     2);
     }
 
     @Test
     public void testSearchMaxItems() throws Exception {
-        Collection<OrganizationalUnit> result = searchService.searchByName("item", 1, false);
-        assertEquals(result.size(), 1);
+        Collection<OrganizationalUnit> result = searchService.searchByName("item",
+                                                                           1,
+                                                                           false);
+        assertEquals(result.size(),
+                     1);
     }
 }

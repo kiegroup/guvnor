@@ -15,6 +15,14 @@
  */
 package org.guvnor.common.services.backend.archive;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import org.guvnor.common.services.backend.MockIOService;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -26,20 +34,11 @@ import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.HashSet;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.spy;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @Ignore
 public class ArchiverTest {
-
 
     private Archiver archiver;
     private MockIOService ioService;
@@ -57,7 +56,8 @@ public class ArchiverTest {
             }
 
             @Override
-            public InputStream newInputStream(Path path, OpenOption... openOptions) throws IllegalArgumentException, NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
+            public InputStream newInputStream(Path path,
+                                              OpenOption... openOptions) throws IllegalArgumentException, NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
                 return getClass().getResourceAsStream(
                         path.toString().substring(path.toString().indexOf("test-classes") + "test-classes".length()));
             }
@@ -70,21 +70,27 @@ public class ArchiverTest {
     public void testZipRepository() throws Exception {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        archiver.archive(outputStream, this.getClass().getResource("testRepository").toURI().toString());
+        archiver.archive(outputStream,
+                         this.getClass().getResource("testRepository").toURI().toString());
 
-        assertZipContains(outputStream, "project1/file1.txt", "project2/file2.txt");
+        assertZipContains(outputStream,
+                          "project1/file1.txt",
+                          "project2/file2.txt");
     }
 
     @Test
     public void testZipProject() throws Exception {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        archiver.archive(outputStream, this.getClass().getResource("testRepository/project1").toURI().toString());
+        archiver.archive(outputStream,
+                         this.getClass().getResource("testRepository/project1").toURI().toString());
 
-        assertZipContains(outputStream, "file1.txt");
+        assertZipContains(outputStream,
+                          "file1.txt");
     }
 
-    private void assertZipContains(ByteArrayOutputStream outputStream, String... fileNames) throws java.io.IOException {
+    private void assertZipContains(ByteArrayOutputStream outputStream,
+                                   String... fileNames) throws java.io.IOException {
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
 
         ZipEntry nextEntry = zipInputStream.getNextEntry();
@@ -99,8 +105,8 @@ public class ArchiverTest {
         }
 
         for (String fileName : fileNames) {
-            assertTrue("Zip did not contain " + fileName, files.contains(fileName));
+            assertTrue("Zip did not contain " + fileName,
+                       files.contains(fileName));
         }
     }
-
 }

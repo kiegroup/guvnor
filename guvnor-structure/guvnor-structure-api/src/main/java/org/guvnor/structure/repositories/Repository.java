@@ -41,8 +41,8 @@ public interface Repository
 
     Map<String, Object> getEnvironment();
 
-    void addEnvironmentParameter( final String key,
-                                  final Object value );
+    void addEnvironmentParameter(final String key,
+                                 final Object value);
 
     boolean isValid();
 
@@ -52,9 +52,9 @@ public interface Repository
 
     Path getRoot();
 
-    Path getBranchRoot( final String branch );
+    Path getBranchRoot(final String branch);
 
-    void setRoot( final Path root );
+    void setRoot(final Path root);
 
     Collection<String> getGroups();
 

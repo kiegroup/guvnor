@@ -16,9 +16,9 @@
 
 package org.guvnor.common.services.backend.metadata.attribute;
 
-import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
-
 import java.util.List;
+
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
 /**
  *

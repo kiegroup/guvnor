@@ -19,5 +19,4 @@ package org.guvnor.messageconsole.whitelist;
 public interface MessageConsoleWhiteList {
 
     boolean contains(String currentPerspective);
-
 }

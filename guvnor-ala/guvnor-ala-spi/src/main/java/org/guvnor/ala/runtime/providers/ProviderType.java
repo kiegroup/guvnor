@@ -17,12 +17,12 @@ package org.guvnor.ala.runtime.providers;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.*;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 
 /**
- *  This interface provides the definition for a ProviderType.
- *   Different provider types can be implemented and discovered at runtime.
+ * This interface provides the definition for a ProviderType.
+ * Different provider types can be implemented and discovered at runtime.
  */
 @JsonTypeInfo(use = CLASS, include = WRAPPER_OBJECT)
 public interface ProviderType {
@@ -38,6 +38,4 @@ public interface ProviderType {
      * @return the provider type version 
      */
     String getVersion();
-
-
 }

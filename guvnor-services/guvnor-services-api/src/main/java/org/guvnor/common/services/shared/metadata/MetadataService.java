@@ -29,14 +29,13 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface MetadataService {
 
-    Metadata getMetadata( final Path resource );
+    Metadata getMetadata(final Path resource);
 
-    List<String> getTags( final Path resource );
+    List<String> getTags(final Path resource);
 
-    Map<String, Object> configAttrs( final Map<String, Object> attrs,
-                                     final Metadata metadata );
+    Map<String, Object> configAttrs(final Map<String, Object> attrs,
+                                    final Metadata metadata);
 
-    Map<String, Object> setUpAttributes( final Path path,
-                                         final Metadata metadata );
-
+    Map<String, Object> setUpAttributes(final Path path,
+                                        final Metadata metadata);
 }

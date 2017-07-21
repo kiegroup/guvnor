@@ -22,22 +22,22 @@ public interface ConstraintConfiguration {
 
     public String getFactType();
 
-    public void setFactType( String factType );
+    public void setFactType(String factType);
 
     public String getFieldName();
 
-    public void setFieldName( String fieldName );
+    public void setFieldName(String fieldName);
 
     public Set<String> getArgumentKeys();
 
-    public Object getArgumentValue( String key );
+    public Object getArgumentValue(String key);
 
-    public void setArgumentValue( String key,
-                                  String value );
+    public void setArgumentValue(String key,
+                                 String value);
 
-    public boolean containsArgument( String key );
+    public boolean containsArgument(String key);
 
     public String getConstraintName();
 
-    public void setConstraintName( String name );
+    public void setConstraintName(String name);
 }

@@ -21,13 +21,13 @@ package org.guvnor.ala.wildfly.access.exceptions;
 */
 public class WildflyClientException extends RuntimeException {
 
-    public WildflyClientException( String message ) {
-        super( message );
+    public WildflyClientException(String message) {
+        super(message);
     }
 
-    public WildflyClientException( String message, Throwable cause ) {
-        super( message, cause );
+    public WildflyClientException(String message,
+                                  Throwable cause) {
+        super(message,
+              cause);
     }
-
-    
 }

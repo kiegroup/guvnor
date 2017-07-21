@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class PipelineExecutorTaskManagerImplTestBase {
@@ -131,7 +131,7 @@ public class PipelineExecutorTaskManagerImplTestBase {
     }
 
     protected void assertHasSameInfo(PipelineExecutorTask expectedTask,
-                                   PipelineExecutorTask task) {
+                                     PipelineExecutorTask task) {
         assertEquals(expectedTask.getId(),
                      task.getId());
         assertEquals(expectedTask.getPipelineStatus(),
@@ -153,7 +153,7 @@ public class PipelineExecutorTaskManagerImplTestBase {
     }
 
     protected void assertHasSameInfo(PipelineExecutorTaskDef expectedTaskDef,
-                                   PipelineExecutorTaskDef taskDef) {
+                                     PipelineExecutorTaskDef taskDef) {
         assertEquals(expectedTaskDef.getInput(),
                      taskDef.getInput());
         assertEquals(expectedTaskDef.getPipeline(),

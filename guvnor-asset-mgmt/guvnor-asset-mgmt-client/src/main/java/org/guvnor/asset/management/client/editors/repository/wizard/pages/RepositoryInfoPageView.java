@@ -34,29 +34,27 @@ public interface RepositoryInfoPageView
         void onOUChange();
 
         void onManagedRepositoryChange();
-
     }
 
     String getName();
 
-    void setName( String name );
+    void setName(String name);
 
-    void setNameErrorMessage( String message );
+    void setNameErrorMessage(String message);
 
-    void clearNameErrorMessage( );
+    void clearNameErrorMessage();
 
-    void initOrganizationalUnits( List<Pair<String, String>> organizationalUnits );
+    void initOrganizationalUnits(List<Pair<String, String>> organizationalUnits);
 
     String getOrganizationalUnitName();
 
-    void setVisibleOU( boolean visible );
+    void setVisibleOU(boolean visible);
 
-    void setValidOU( boolean ouValid );
+    void setValidOU(boolean ouValid);
 
     boolean isManagedRepository();
 
-    void enabledManagedRepositoryCreation( boolean enabled );
+    void enabledManagedRepositoryCreation(boolean enabled);
 
-    void alert( String message );
-
+    void alert(String message);
 }

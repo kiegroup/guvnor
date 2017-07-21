@@ -20,7 +20,7 @@ public interface HasListFormComboPanelProperties {
 
     String getName();
 
-    void setName( String name );
+    void setName(String name);
 
     public boolean isDefault();
 

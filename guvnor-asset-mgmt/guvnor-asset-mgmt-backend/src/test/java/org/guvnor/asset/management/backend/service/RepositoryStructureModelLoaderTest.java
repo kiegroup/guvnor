@@ -70,14 +70,14 @@ public class RepositoryStructureModelLoaderTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks( this );
+        MockitoAnnotations.initMocks(this);
 
-        repository = mock( Repository.class );
-        when( repository.getEnvironment() ).thenReturn( null );
-        myProjectMasterBranchRoot = testFileSystem.createTempDirectory( "/myproject" );
+        repository = mock(Repository.class);
+        when(repository.getEnvironment()).thenReturn(null);
+        myProjectMasterBranchRoot = testFileSystem.createTempDirectory("/myproject");
 
-        myProjectPom = testFileSystem.createTempFile( "myproject/pom.xml" );
-        when( repository.getBranchRoot( "master" ) ).thenReturn( myProjectMasterBranchRoot );
+        myProjectPom = testFileSystem.createTempFile("myproject/pom.xml");
+        when(repository.getBranchRoot("master")).thenReturn(myProjectMasterBranchRoot);
     }
 
     @After
@@ -87,11 +87,11 @@ public class RepositoryStructureModelLoaderTest {
 
     @Test
     public void testNullRepo() throws Exception {
-        final RepositoryStructureModel structureModel = loader.load( null,
-                                                                     "master",
-                                                                     true );
+        final RepositoryStructureModel structureModel = loader.load(null,
+                                                                    "master",
+                                                                    true);
 
-        assertNull( structureModel );
+        assertNull(structureModel);
     }
 
     @Test
@@ -99,130 +99,135 @@ public class RepositoryStructureModelLoaderTest {
 
         final POM pom = new POM();
         final Metadata metadata = new Metadata();
-        addMyProjectToRepositoryRoot( pom,
-                                      metadata );
+        addMyProjectToRepositoryRoot(pom,
+                                     metadata);
 
-        makeManaged( repository );
+        makeManaged(repository);
 
-        final RepositoryStructureModel model = loader.load( repository,
-                                                            "master",
-                                                            false );
+        final RepositoryStructureModel model = loader.load(repository,
+                                                           "master",
+                                                           false);
 
-        assertTrue( model.isManaged() );
-        assertEquals( pom, model.getPOM() );
-        assertEquals( metadata, model.getPOMMetaData() );
-        assertEquals( myProjectPom, model.getPathToPOM() );
-        assertTrue( model.getModulesProject().isEmpty() );
+        assertTrue(model.isManaged());
+        assertEquals(pom,
+                     model.getPOM());
+        assertEquals(metadata,
+                     model.getPOMMetaData());
+        assertEquals(myProjectPom,
+                     model.getPathToPOM());
+        assertTrue(model.getModulesProject().isEmpty());
     }
 
     @Test
     public void testNoModules() throws Exception {
 
-        addMyProjectToRepositoryRoot( new POM(),
-                                      new Metadata() );
+        addMyProjectToRepositoryRoot(new POM(),
+                                     new Metadata());
 
-        final RepositoryStructureModel model = loader.load( repository,
-                                                            "master",
-                                                            true );
+        final RepositoryStructureModel model = loader.load(repository,
+                                                           "master",
+                                                           true);
 
-        assertTrue( model.getModulesProject().isEmpty() );
+        assertTrue(model.getModulesProject().isEmpty());
     }
 
     @Test
     public void testModulesExist() throws Exception {
 
-        addMyProjectToRepositoryRoot( new POM(),
-                                      new Metadata(),
-                                      "module1",
-                                      "module2" );
+        addMyProjectToRepositoryRoot(new POM(),
+                                     new Metadata(),
+                                     "module1",
+                                     "module2");
 
-        final RepositoryStructureModel model = loader.load( repository,
-                                                            "master",
-                                                            true );
+        final RepositoryStructureModel model = loader.load(repository,
+                                                           "master",
+                                                           true);
 
-        assertEquals( 2, model.getModulesProject().size() );
+        assertEquals(2,
+                     model.getModulesProject().size());
     }
 
     @Test
     public void testLoadManaged() throws Exception {
 
-        makeManaged( repository );
+        makeManaged(repository);
 
-        addMyProjectToRepositoryRoot( new POM(),
-                                      new Metadata() );
+        addMyProjectToRepositoryRoot(new POM(),
+                                     new Metadata());
 
-        loader.load( repository,
-                     "master",
-                     false );
+        loader.load(repository,
+                    "master",
+                    false);
 
-        verify( managedStatusUpdater, never() ).updateManagedStatus( repository,
-                                                                     true );
+        verify(managedStatusUpdater,
+               never()).updateManagedStatus(repository,
+                                            true);
     }
 
     @Test
     public void testUpdateToManaged() throws Exception {
 
-        addMyProjectToRepositoryRoot( new POM(),
-                                      new Metadata() );
+        addMyProjectToRepositoryRoot(new POM(),
+                                     new Metadata());
 
-        loader.load( repository,
-                     "master",
-                     false );
+        loader.load(repository,
+                    "master",
+                    false);
 
-        verify( managedStatusUpdater ).updateManagedStatus( repository,
-                                                            true );
+        verify(managedStatusUpdater).updateManagedStatus(repository,
+                                                         true);
     }
 
     @Test
     public void testLoadRepositoryStructureModelWithNoEnvironmentEntries() throws Exception {
-        final RepositoryStructureModel model = loader.load( repository,
-                                                            "master",
-                                                            false );
+        final RepositoryStructureModel model = loader.load(repository,
+                                                           "master",
+                                                           false);
 
-        assertNull( model );
+        assertNull(model);
     }
 
     @Test
     public void testLoadRepositoryStructureModelWithRepositoryManagedStatusNotSet() throws Exception {
         final HashMap<String, Object> map = new HashMap<>();
-        when( repository.getEnvironment() ).thenReturn( map );
+        when(repository.getEnvironment()).thenReturn(map);
 
-        final RepositoryStructureModel model = loader.load( repository,
-                                                            "master",
-                                                            false );
+        final RepositoryStructureModel model = loader.load(repository,
+                                                           "master",
+                                                           false);
 
-        assertNull( model.getPOM() );
-        assertNull( model.getPOMMetaData() );
-        assertNull( model.getPathToPOM() );
-        assertTrue( model.getModules().isEmpty() );
-        assertTrue( model.getModulesProject().isEmpty() );
-        assertTrue( model.getOrphanProjects().isEmpty() );
-        assertTrue( model.getOrphanProjectsPOM().isEmpty() );
-        assertFalse( model.isManaged() );
+        assertNull(model.getPOM());
+        assertNull(model.getPOMMetaData());
+        assertNull(model.getPathToPOM());
+        assertTrue(model.getModules().isEmpty());
+        assertTrue(model.getModulesProject().isEmpty());
+        assertTrue(model.getOrphanProjects().isEmpty());
+        assertTrue(model.getOrphanProjectsPOM().isEmpty());
+        assertFalse(model.isManaged());
     }
 
-    private void addMyProjectToRepositoryRoot( final POM pom,
-                                               final Metadata metadata,
-                                               final String... moduleNames ) {
+    private void addMyProjectToRepositoryRoot(final POM pom,
+                                              final Metadata metadata,
+                                              final String... moduleNames) {
         final ArrayList<String> modules = new ArrayList<>();
-        for ( final String moduleName : moduleNames ) {
-            modules.add( moduleName );
+        for (final String moduleName : moduleNames) {
+            modules.add(moduleName);
         }
 
-        final Project project = new Project( myProjectMasterBranchRoot,
-                                             myProjectPom,
-                                             "myproject",
-                                             modules );
-        when( projectService.resolveToParentProject( myProjectMasterBranchRoot ) ).thenReturn( project );
+        final Project project = new Project(myProjectMasterBranchRoot,
+                                            myProjectPom,
+                                            "myproject",
+                                            modules);
+        when(projectService.resolveToParentProject(myProjectMasterBranchRoot)).thenReturn(project);
 
-        when( pomService.load( myProjectPom ) ).thenReturn( pom );
-        when( metadataService.getMetadata( myProjectPom ) ).thenReturn( metadata );
-
+        when(pomService.load(myProjectPom)).thenReturn(pom);
+        when(metadataService.getMetadata(myProjectPom)).thenReturn(metadata);
     }
 
-    private void makeManaged( final Repository repository ) {
+    private void makeManaged(final Repository repository) {
         final HashMap<String, Object> map = new HashMap<>();
-        map.put( EnvironmentParameters.MANAGED, Boolean.TRUE );
-        when( repository.getEnvironment() ).thenReturn( map );
+        map.put(EnvironmentParameters.MANAGED,
+                Boolean.TRUE);
+        when(repository.getEnvironment()).thenReturn(map);
     }
 }

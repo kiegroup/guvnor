@@ -29,7 +29,7 @@ public class JobRequest implements Serializable {
         return jobId;
     }
 
-    public void setJobId( String jobId ) {
+    public void setJobId(String jobId) {
         this.jobId = jobId;
     }
 
@@ -37,8 +37,7 @@ public class JobRequest implements Serializable {
         return status;
     }
 
-    public void setStatus( JobStatus status ) {
+    public void setStatus(JobStatus status) {
         this.status = status;
     }
-
 }

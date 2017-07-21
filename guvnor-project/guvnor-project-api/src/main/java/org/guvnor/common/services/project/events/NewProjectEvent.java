@@ -17,7 +17,6 @@ package org.guvnor.common.services.project.events;
 
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.rpc.SessionInfo;
 
 /**
  * An event representing creation of a new Project
@@ -32,9 +31,9 @@ public class NewProjectEvent {
     public NewProjectEvent() {
     }
 
-    public NewProjectEvent( final Project project,
-                            final String sessionId, 
-                            final String identity ) {
+    public NewProjectEvent(final Project project,
+                           final String sessionId,
+                           final String identity) {
         this.project = project;
         this.sessionId = sessionId;
         this.identity = identity;
@@ -47,8 +46,8 @@ public class NewProjectEvent {
     public String getSessionId() {
         return sessionId;
     }
-    
-    public String getIdentity() { 
-       return identity; 
+
+    public String getIdentity() {
+        return identity;
     }
 }

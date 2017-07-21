@@ -41,15 +41,15 @@ public class MavenProjectImpl implements MavenProject,
     public MavenProjectImpl() {
     }
 
-    public MavenProjectImpl( final String id,
-                             final String type,
-                             final String name,
-                             final String expectedBinary,
-                             final Path rootPath,
-                             final Path path,
-                             final Path binaryPath,
-                             final String tempDir,
-                             final Collection<PlugIn> buildPlugins ) {
+    public MavenProjectImpl(final String id,
+                            final String type,
+                            final String name,
+                            final String expectedBinary,
+                            final Path rootPath,
+                            final Path path,
+                            final Path binaryPath,
+                            final String tempDir,
+                            final Collection<PlugIn> buildPlugins) {
         this.id = id;
         this.type = type;
         this.name = name;
@@ -58,8 +58,8 @@ public class MavenProjectImpl implements MavenProject,
         this.path = path;
         this.binaryPath = binaryPath;
         this.tempDir = tempDir;
-        if ( buildPlugins != null ) {
-            this.buildPlugins = new ArrayList<>( buildPlugins );
+        if (buildPlugins != null) {
+            this.buildPlugins = new ArrayList<>(buildPlugins);
         }
     }
 
@@ -109,16 +109,15 @@ public class MavenProjectImpl implements MavenProject,
     }
 
     @Override
-    public MavenProject asNewClone( final MavenProject origin ) {
-        return new MavenProjectImpl( origin.getId(),
-                                     origin.getType(),
-                                     origin.getName(),
-                                     origin.getExpectedBinary(),
-                                     origin.getRootPath(),
-                                     origin.getPath(),
-                                     origin.getBinaryPath(),
-                                     origin.getTempDir(),
-                                     origin.getBuildPlugins() );
+    public MavenProject asNewClone(final MavenProject origin) {
+        return new MavenProjectImpl(origin.getId(),
+                                    origin.getType(),
+                                    origin.getName(),
+                                    origin.getExpectedBinary(),
+                                    origin.getRootPath(),
+                                    origin.getPath(),
+                                    origin.getBinaryPath(),
+                                    origin.getTempDir(),
+                                    origin.getBuildPlugins());
     }
-
 }

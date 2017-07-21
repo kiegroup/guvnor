@@ -27,9 +27,11 @@ import org.guvnor.rest.client.JobStatus;
 public class InstallProjectCmd extends AbstractJobCommand {
 
     public InstallProjectCmd(final JobRequestHelper jobRequestHelper,
-                                     final JobResultManager jobResultManager,
-                                     final Map<String, Object> context) {
-        super(jobRequestHelper, jobResultManager, context);
+                             final JobResultManager jobResultManager,
+                             final Map<String, Object> context) {
+        super(jobRequestHelper,
+              jobResultManager,
+              context);
     }
 
     @Override
@@ -38,12 +40,16 @@ public class InstallProjectCmd extends AbstractJobCommand {
         InstallProjectRequest jobRequest = (InstallProjectRequest) request;
 
         JobResult result = null;
-        try { 
-            result = helper.installProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
-        } finally { 
+        try {
+            result = helper.installProject(jobRequest.getJobId(),
+                                           jobRequest.getRepositoryName(),
+                                           jobRequest.getProjectName());
+        } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug( "-----installProject--- , repositoryName: {}, project name: {} [{}]",
-                    jobRequest.getRepositoryName(), jobRequest.getProjectName(), status);
+            logger.debug("-----installProject--- , repositoryName: {}, project name: {} [{}]",
+                         jobRequest.getRepositoryName(),
+                         jobRequest.getProjectName(),
+                         status);
         }
         return result;
     }

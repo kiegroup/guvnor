@@ -45,146 +45,145 @@ public class AbstractDeleteProjectObserverBridgeTest {
     private IOService ioService;
     private ProjectFactory<Project> projectFactory;
     private Event<DeleteProjectEvent> deleteProjectEvent;
-    private SessionInfo sessionInfo = mock( SessionInfo.class );
+    private SessionInfo sessionInfo = mock(SessionInfo.class);
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        ioService = mock( IOService.class );
-        projectFactory = mock( ProjectFactory.class );
-        deleteProjectEvent = mock( Event.class );
+        ioService = mock(IOService.class);
+        projectFactory = mock(ProjectFactory.class);
+        deleteProjectEvent = mock(Event.class);
 
-        bridge = new AbstractDeleteProjectObserverBridge<Project>( ioService,
-                                                                   deleteProjectEvent ) {
+        bridge = new AbstractDeleteProjectObserverBridge<Project>(ioService,
+                                                                  deleteProjectEvent) {
             @Override
-            protected Project getProject( final org.uberfire.java.nio.file.Path path ) {
-                return projectFactory.simpleProjectInstance( path );
+            protected Project getProject(final org.uberfire.java.nio.file.Path path) {
+                return projectFactory.simpleProjectInstance(path);
             }
         };
     }
 
     @Test
     public void testResourceDeletedEventPomFile() {
-        final Path path = mock( Path.class );
-        final org.uberfire.java.nio.file.Path nioPath = mock( org.uberfire.java.nio.file.Path.class );
-        when( path.getFileName() ).thenReturn( "pom.xml" );
-        when( path.toURI() ).thenReturn( "file://project1/pom.xml" );
-        when( ioService.get( any( URI.class ) ) ).thenReturn( nioPath );
+        final Path path = mock(Path.class);
+        final org.uberfire.java.nio.file.Path nioPath = mock(org.uberfire.java.nio.file.Path.class);
+        when(path.getFileName()).thenReturn("pom.xml");
+        when(path.toURI()).thenReturn("file://project1/pom.xml");
+        when(ioService.get(any(URI.class))).thenReturn(nioPath);
 
-        bridge.onBatchResourceChanges( new ResourceDeletedEvent( path,
-                                                                 "message",
-                                                                 sessionInfo ) );
+        bridge.onBatchResourceChanges(new ResourceDeletedEvent(path,
+                                                               "message",
+                                                               sessionInfo));
 
-        verify( deleteProjectEvent,
-                times( 1 ) ).fire( any( DeleteProjectEvent.class ) );
+        verify(deleteProjectEvent,
+               times(1)).fire(any(DeleteProjectEvent.class));
     }
 
     @Test
     public void testResourceDeletedEventNonPomFile() {
-        final Path path = mock( Path.class );
-        final org.uberfire.java.nio.file.Path nioPath = mock( org.uberfire.java.nio.file.Path.class );
-        when( path.getFileName() ).thenReturn( "cheese.drl" );
-        when( path.toURI() ).thenReturn( "file://project1/cheese.drl" );
-        when( ioService.get( any( URI.class ) ) ).thenReturn( nioPath );
+        final Path path = mock(Path.class);
+        final org.uberfire.java.nio.file.Path nioPath = mock(org.uberfire.java.nio.file.Path.class);
+        when(path.getFileName()).thenReturn("cheese.drl");
+        when(path.toURI()).thenReturn("file://project1/cheese.drl");
+        when(ioService.get(any(URI.class))).thenReturn(nioPath);
 
-        bridge.onBatchResourceChanges( new ResourceDeletedEvent( path,
-                                                                 "message",
-                                                                 sessionInfo ) );
+        bridge.onBatchResourceChanges(new ResourceDeletedEvent(path,
+                                                               "message",
+                                                               sessionInfo));
 
-        verify( deleteProjectEvent,
-                times( 0 ) ).fire( any( DeleteProjectEvent.class ) );
+        verify(deleteProjectEvent,
+               times(0)).fire(any(DeleteProjectEvent.class));
     }
 
     @Test
     public void testResourceBatchChangesEventUpdatePomFile() {
-        final Path path = mock( Path.class );
-        final org.uberfire.java.nio.file.Path nioPath = mock( org.uberfire.java.nio.file.Path.class );
-        when( path.getFileName() ).thenReturn( "pom.xml" );
-        when( path.toURI() ).thenReturn( "file://project1/pom.xml" );
-        when( ioService.get( any( URI.class ) ) ).thenReturn( nioPath );
+        final Path path = mock(Path.class);
+        final org.uberfire.java.nio.file.Path nioPath = mock(org.uberfire.java.nio.file.Path.class);
+        when(path.getFileName()).thenReturn("pom.xml");
+        when(path.toURI()).thenReturn("file://project1/pom.xml");
+        when(ioService.get(any(URI.class))).thenReturn(nioPath);
 
         final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>() {{
-            put( path,
-                 new ArrayList<ResourceChange>() {{
-                     add( new ResourceUpdated( "" ) );
-                 }} );
+            put(path,
+                new ArrayList<ResourceChange>() {{
+                    add(new ResourceUpdated(""));
+                }});
         }};
 
-        bridge.onBatchResourceChanges( new ResourceBatchChangesEvent( batch,
-                                                                      "message",
-                                                                      sessionInfo ) );
+        bridge.onBatchResourceChanges(new ResourceBatchChangesEvent(batch,
+                                                                    "message",
+                                                                    sessionInfo));
 
-        verify( deleteProjectEvent,
-                times( 0 ) ).fire( any( DeleteProjectEvent.class ) );
+        verify(deleteProjectEvent,
+               times(0)).fire(any(DeleteProjectEvent.class));
     }
 
     @Test
     public void testResourceBatchChangesEventUpdateNonPomFile() {
-        final Path path = mock( Path.class );
-        final org.uberfire.java.nio.file.Path nioPath = mock( org.uberfire.java.nio.file.Path.class );
-        when( path.getFileName() ).thenReturn( "cheese.drl" );
-        when( path.toURI() ).thenReturn( "file://project1/cheese.drl" );
-        when( ioService.get( any( URI.class ) ) ).thenReturn( nioPath );
+        final Path path = mock(Path.class);
+        final org.uberfire.java.nio.file.Path nioPath = mock(org.uberfire.java.nio.file.Path.class);
+        when(path.getFileName()).thenReturn("cheese.drl");
+        when(path.toURI()).thenReturn("file://project1/cheese.drl");
+        when(ioService.get(any(URI.class))).thenReturn(nioPath);
 
         final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>() {{
-            put( path,
-                 new ArrayList<ResourceChange>() {{
-                     add( new ResourceUpdated( "" ) );
-                 }} );
+            put(path,
+                new ArrayList<ResourceChange>() {{
+                    add(new ResourceUpdated(""));
+                }});
         }};
 
-        bridge.onBatchResourceChanges( new ResourceBatchChangesEvent( batch,
-                                                                      "message",
-                                                                      sessionInfo ) );
+        bridge.onBatchResourceChanges(new ResourceBatchChangesEvent(batch,
+                                                                    "message",
+                                                                    sessionInfo));
 
-        verify( deleteProjectEvent,
-                times( 0 ) ).fire( any( DeleteProjectEvent.class ) );
+        verify(deleteProjectEvent,
+               times(0)).fire(any(DeleteProjectEvent.class));
     }
 
     @Test
     public void testResourceBatchChangesEventDeletePomFile() {
-        final Path path = mock( Path.class );
-        final org.uberfire.java.nio.file.Path nioPath = mock( org.uberfire.java.nio.file.Path.class );
-        when( path.getFileName() ).thenReturn( "pom.xml" );
-        when( path.toURI() ).thenReturn( "file://project1/pom.xml" );
-        when( ioService.get( any( URI.class ) ) ).thenReturn( nioPath );
+        final Path path = mock(Path.class);
+        final org.uberfire.java.nio.file.Path nioPath = mock(org.uberfire.java.nio.file.Path.class);
+        when(path.getFileName()).thenReturn("pom.xml");
+        when(path.toURI()).thenReturn("file://project1/pom.xml");
+        when(ioService.get(any(URI.class))).thenReturn(nioPath);
 
         final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>() {{
-            put( path,
-                 new ArrayList<ResourceChange>() {{
-                     add( new ResourceDeleted( "" ) );
-                 }} );
+            put(path,
+                new ArrayList<ResourceChange>() {{
+                    add(new ResourceDeleted(""));
+                }});
         }};
 
-        bridge.onBatchResourceChanges( new ResourceBatchChangesEvent( batch,
-                                                                      "message",
-                                                                      sessionInfo ) );
+        bridge.onBatchResourceChanges(new ResourceBatchChangesEvent(batch,
+                                                                    "message",
+                                                                    sessionInfo));
 
-        verify( deleteProjectEvent,
-                times( 1 ) ).fire( any( DeleteProjectEvent.class ) );
+        verify(deleteProjectEvent,
+               times(1)).fire(any(DeleteProjectEvent.class));
     }
 
     @Test
     public void testResourceBatchChangesEventDeleteNonPomFile() {
-        final Path path = mock( Path.class );
-        final org.uberfire.java.nio.file.Path nioPath = mock( org.uberfire.java.nio.file.Path.class );
-        when( path.getFileName() ).thenReturn( "cheese.drl" );
-        when( path.toURI() ).thenReturn( "file://project1/cheese.drl" );
-        when( ioService.get( any( URI.class ) ) ).thenReturn( nioPath );
+        final Path path = mock(Path.class);
+        final org.uberfire.java.nio.file.Path nioPath = mock(org.uberfire.java.nio.file.Path.class);
+        when(path.getFileName()).thenReturn("cheese.drl");
+        when(path.toURI()).thenReturn("file://project1/cheese.drl");
+        when(ioService.get(any(URI.class))).thenReturn(nioPath);
 
         final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>() {{
-            put( path,
-                 new ArrayList<ResourceChange>() {{
-                     add( new ResourceDeleted( "" ) );
-                 }} );
+            put(path,
+                new ArrayList<ResourceChange>() {{
+                    add(new ResourceDeleted(""));
+                }});
         }};
 
-        bridge.onBatchResourceChanges( new ResourceBatchChangesEvent( batch,
-                                                                      "message",
-                                                                      sessionInfo ) );
+        bridge.onBatchResourceChanges(new ResourceBatchChangesEvent(batch,
+                                                                    "message",
+                                                                    sessionInfo));
 
-        verify( deleteProjectEvent,
-                times( 0 ) ).fire( any( DeleteProjectEvent.class ) );
+        verify(deleteProjectEvent,
+               times(0)).fire(any(DeleteProjectEvent.class));
     }
-
 }

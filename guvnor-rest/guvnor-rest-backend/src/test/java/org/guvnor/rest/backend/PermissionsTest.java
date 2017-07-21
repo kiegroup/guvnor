@@ -14,12 +14,8 @@
 */
 package org.guvnor.rest.backend;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.lang.reflect.Method;
 import java.util.Set;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -35,36 +31,38 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 
+import static org.junit.Assert.*;
+
 public class PermissionsTest {
 
-    
     private static Reflections reflections = new Reflections(
             ClasspathHelper.forPackage("org.kie.remote.services.rest"),
-            new TypeAnnotationsScanner(), new MethodAnnotationsScanner(), new SubTypesScanner());
+            new TypeAnnotationsScanner(),
+            new MethodAnnotationsScanner(),
+            new SubTypesScanner());
 
     @Test
-    public void allRestMethodsHaveRolesAssigned() { 
-       Set<Method> restMethods = reflections.getMethodsAnnotatedWith(Path.class);
-       restMethods.addAll(reflections.getMethodsAnnotatedWith(GET.class));
-       restMethods.addAll(reflections.getMethodsAnnotatedWith(POST.class));
-       restMethods.addAll(reflections.getMethodsAnnotatedWith(DELETE.class));
-       restMethods.addAll(reflections.getMethodsAnnotatedWith(PUT.class));
-       
-       for( Method pathMethod : restMethods ) { 
-          RolesAllowed rolesAllowedAnno = pathMethod.getAnnotation(RolesAllowed.class);
-          assertNotNull( pathMethod.getDeclaringClass() + "." +  pathMethod.getName() + "(...) is missing a @RolesAllowed annotation!", 
-                  rolesAllowedAnno);
-          
-          boolean basicRestRoleFound = false;
-          for( String role : rolesAllowedAnno.value() ) { 
-            if( PermissionConstants.REST_ROLE.equals(role) ) { 
-                basicRestRoleFound = true;
-                break;
+    public void allRestMethodsHaveRolesAssigned() {
+        Set<Method> restMethods = reflections.getMethodsAnnotatedWith(Path.class);
+        restMethods.addAll(reflections.getMethodsAnnotatedWith(GET.class));
+        restMethods.addAll(reflections.getMethodsAnnotatedWith(POST.class));
+        restMethods.addAll(reflections.getMethodsAnnotatedWith(DELETE.class));
+        restMethods.addAll(reflections.getMethodsAnnotatedWith(PUT.class));
+
+        for (Method pathMethod : restMethods) {
+            RolesAllowed rolesAllowedAnno = pathMethod.getAnnotation(RolesAllowed.class);
+            assertNotNull(pathMethod.getDeclaringClass() + "." + pathMethod.getName() + "(...) is missing a @RolesAllowed annotation!",
+                          rolesAllowedAnno);
+
+            boolean basicRestRoleFound = false;
+            for (String role : rolesAllowedAnno.value()) {
+                if (PermissionConstants.REST_ROLE.equals(role)) {
+                    basicRestRoleFound = true;
+                    break;
+                }
             }
-          }
-          assertTrue( pathMethod.getDeclaringClass() + "." +  pathMethod.getName() + "(...) is does not have the " + PermissionConstants.REST_ROLE + " role",
-                  basicRestRoleFound);
-       }
+            assertTrue(pathMethod.getDeclaringClass() + "." + pathMethod.getName() + "(...) is does not have the " + PermissionConstants.REST_ROLE + " role",
+                       basicRestRoleFound);
+        }
     }
-    
 }

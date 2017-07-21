@@ -25,13 +25,12 @@ public class AfterDeleteOrganizationalUnitEvent {
 
     private final OrganizationalUnit organizationalUnit;
 
-    public AfterDeleteOrganizationalUnitEvent( final OrganizationalUnit organizationalUnit ) {
-        this.organizationalUnit = PortablePreconditions.checkNotNull( "organizationalUnit",
-                                                                      organizationalUnit );
+    public AfterDeleteOrganizationalUnitEvent(final OrganizationalUnit organizationalUnit) {
+        this.organizationalUnit = PortablePreconditions.checkNotNull("organizationalUnit",
+                                                                     organizationalUnit);
     }
 
     public OrganizationalUnit getOrganizationalUnit() {
         return organizationalUnit;
     }
-
 }

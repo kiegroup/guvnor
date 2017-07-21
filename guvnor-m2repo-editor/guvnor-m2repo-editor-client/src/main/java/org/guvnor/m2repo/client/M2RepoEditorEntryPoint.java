@@ -22,12 +22,11 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
 @EntryPoint
-@Bundle( "resources/i18n/M2Constants.properties" )
+@Bundle("resources/i18n/M2Constants.properties")
 public class M2RepoEditorEntryPoint {
 
     @PostConstruct
     public void startApp() {
         M2RepoEditorResources.INSTANCE.CSS().ensureInjected();
     }
-
 }

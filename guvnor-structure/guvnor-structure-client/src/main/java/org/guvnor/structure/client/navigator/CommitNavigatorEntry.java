@@ -43,9 +43,9 @@ public class CommitNavigatorEntry extends Composite {
 
     }
 
-    private static final DateTimeFormat fmt = DateTimeFormat.getFormat( "yyyy-MM-dd h:mm a" );
+    private static final DateTimeFormat fmt = DateTimeFormat.getFormat("yyyy-MM-dd h:mm a");
 
-    private static CommitNavigatorEntryViewBinder uiBinder = GWT.create( CommitNavigatorEntryViewBinder.class );
+    private static CommitNavigatorEntryViewBinder uiBinder = GWT.create(CommitNavigatorEntryViewBinder.class);
 
     @UiField
     Label message;
@@ -59,49 +59,50 @@ public class CommitNavigatorEntry extends Composite {
     @UiField
     SimplePanel revertButtonContainer;
 
-    public CommitNavigatorEntry( final boolean readOnly,
-                                 final VersionRecord versionRecord,
-                                 final ParameterizedCommand<VersionRecord> onRevertCommand ) {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        initWidget( readOnly, versionRecord, onRevertCommand );
+    public CommitNavigatorEntry(final boolean readOnly,
+                                final VersionRecord versionRecord,
+                                final ParameterizedCommand<VersionRecord> onRevertCommand) {
+        initWidget(uiBinder.createAndBindUi(this));
+        initWidget(readOnly,
+                   versionRecord,
+                   onRevertCommand);
     }
 
-    private void initWidget( final boolean readOnly,
-                             final VersionRecord versionRecord,
-                             final ParameterizedCommand<VersionRecord> onRevertCommand ) {
-        message.setText( versionRecord.comment() );
-        author.setText( versionRecord.author() + " - " );
-        date.setText( fmt.format( versionRecord.date() ) );
+    private void initWidget(final boolean readOnly,
+                            final VersionRecord versionRecord,
+                            final ParameterizedCommand<VersionRecord> onRevertCommand) {
+        message.setText(versionRecord.comment());
+        author.setText(versionRecord.author() + " - ");
+        date.setText(fmt.format(versionRecord.date()));
 
-        if ( onRevertCommand != null ) {
-            revertButtonContainer.setWidget( new Button( CoreConstants.INSTANCE.RevertToThis() ) {{
-                setEnabled( !readOnly );
-                setBlock( true );
-                setType( ButtonType.DANGER );
-                addClickHandler( new ClickHandler() {
+        if (onRevertCommand != null) {
+            revertButtonContainer.setWidget(new Button(CoreConstants.INSTANCE.RevertToThis()) {{
+                setEnabled(!readOnly);
+                setBlock(true);
+                setType(ButtonType.DANGER);
+                addClickHandler(new ClickHandler() {
                     @Override
-                    public void onClick( final ClickEvent event ) {
-                        final YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Warning(),
-                                                                                                        CoreConstants.INSTANCE.ConfirmStateRevert(),
-                                                                                                        new Command() {
-                                                                                                            @Override
-                                                                                                            public void execute() {
-                                                                                                                onRevertCommand.execute( versionRecord );
-                                                                                                            }
-                                                                                                        },
-                                                                                                        new Command() {
-                                                                                                            @Override
-                                                                                                            public void execute() {
-                                                                                                            }
-                                                                                                        },
-                                                                                                        null
-                                                                                                      );
-                        yesNoCancelPopup.setClosable( false );
+                    public void onClick(final ClickEvent event) {
+                        final YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Warning(),
+                                                                                                       CoreConstants.INSTANCE.ConfirmStateRevert(),
+                                                                                                       new Command() {
+                                                                                                           @Override
+                                                                                                           public void execute() {
+                                                                                                               onRevertCommand.execute(versionRecord);
+                                                                                                           }
+                                                                                                       },
+                                                                                                       new Command() {
+                                                                                                           @Override
+                                                                                                           public void execute() {
+                                                                                                           }
+                                                                                                       },
+                                                                                                       null
+                        );
+                        yesNoCancelPopup.setClosable(false);
                         yesNoCancelPopup.show();
                     }
-                } );
-            }} );
+                });
+            }});
         }
     }
-
 }

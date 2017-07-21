@@ -44,5 +44,4 @@ public interface Pipeline {
      * @see PipelineConfig
      */
     PipelineConfig getConfig();
-
 }

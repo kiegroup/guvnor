@@ -24,8 +24,7 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface FileNavigatorService {
 
-    NavigatorContent listContent( final Path path );
+    NavigatorContent listContent(final Path path);
 
     List<Repository> listRepositories();
-
 }

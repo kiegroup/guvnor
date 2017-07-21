@@ -27,7 +27,7 @@ public class AddRepositoryToOrganizationalUnitRequest extends JobRequest {
         return organizationalUnitName;
     }
 
-    public void setOrganizationalUnitName( String organizationalUnitName ) {
+    public void setOrganizationalUnitName(String organizationalUnitName) {
         this.organizationalUnitName = organizationalUnitName;
     }
 
@@ -35,8 +35,7 @@ public class AddRepositoryToOrganizationalUnitRequest extends JobRequest {
         return repositoryName;
     }
 
-    public void setRepositoryName( String repositoryName ) {
+    public void setRepositoryName(String repositoryName) {
         this.repositoryName = repositoryName;
     }
-
 }

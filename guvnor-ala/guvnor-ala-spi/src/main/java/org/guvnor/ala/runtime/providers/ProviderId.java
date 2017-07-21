@@ -16,6 +16,7 @@
 package org.guvnor.ala.runtime.providers;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 
@@ -39,5 +40,4 @@ public interface ProviderId {
      * @see ProviderType
      */
     ProviderType getProviderType();
-
 }

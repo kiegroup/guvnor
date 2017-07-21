@@ -30,17 +30,16 @@ public interface ProjectModulesView extends IsWidget {
 
         void onAddModule();
 
-        void addDataDisplay( final HasData<ProjectModuleRow> display );
+        void addDataDisplay(final HasData<ProjectModuleRow> display);
 
-        void onDeleteModule( final ProjectModuleRow moduleRow );
+        void onDeleteModule(final ProjectModuleRow moduleRow);
 
-        void onEditModule( final ProjectModuleRow moduleRow );
+        void onEditModule(final ProjectModuleRow moduleRow);
     }
 
-    void setPresenter( final Presenter presenter );
+    void setPresenter(final Presenter presenter);
 
-    void setMode( final ViewMode mode );
+    void setMode(final ViewMode mode);
 
-    void enableActions( final boolean value );
-
+    void enableActions(final boolean value);
 }

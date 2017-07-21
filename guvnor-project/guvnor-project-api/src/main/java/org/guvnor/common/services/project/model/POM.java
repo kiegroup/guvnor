@@ -44,28 +44,30 @@ public class POM {
     }
 
     // Kept this for backwards compatibility
-    public POM( final GAV gav ) {
-        this(null, null, gav);
+    public POM(final GAV gav) {
+        this(null,
+             null,
+             gav);
     }
 
-    public POM( final String name,
-                final String description,
-                final GAV gav ) {
+    public POM(final String name,
+               final String description,
+               final GAV gav) {
         super();
         this.name = name;
         this.description = description;
         this.gav = gav;
     }
 
-    public POM( final String name,
-                final String description,
-                final GAV gav,
-                final boolean multiModule ) {
+    public POM(final String name,
+               final String description,
+               final GAV gav,
+               final boolean multiModule) {
         super();
         this.name = name;
         this.description = description;
         this.gav = gav;
-        if ( multiModule ) {
+        if (multiModule) {
             packaging = "pom";
         }
     }
@@ -75,10 +77,10 @@ public class POM {
     }
 
     public Dependencies getDependencies() {
-        return new Dependencies( dependencies );
+        return new Dependencies(dependencies);
     }
 
-    public void setDependencies( List<Dependency> dependencies ) {
+    public void setDependencies(List<Dependency> dependencies) {
         this.dependencies = dependencies;
     }
 
@@ -98,7 +100,7 @@ public class POM {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -106,39 +108,39 @@ public class POM {
         return description;
     }
 
-    public void setDescription( String description ) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     public GAV getParent() {
-      return parent;
+        return parent;
     }
 
     public void setParent(GAV parent) {
-      this.parent = parent;
+        this.parent = parent;
     }
 
     public List<String> getModules() {
-      return modules;
+        return modules;
     }
 
     public Build getBuild() {
         return build;
     }
 
-    public void setBuild( Build build ) {
+    public void setBuild(Build build) {
         this.build = build;
     }
 
     public void setModules(List<String> modules) {
-      this.modules = modules;
+        this.modules = modules;
     }
 
     public boolean isMultiModule() {
-        return packaging.equals( "pom" );
+        return packaging.equals("pom");
     }
 
-    public void setPackaging( String packaging ) {
+    public void setPackaging(String packaging) {
         this.packaging = packaging;
     }
 
@@ -151,38 +153,38 @@ public class POM {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        POM pom = ( POM ) o;
+        POM pom = (POM) o;
 
-        if ( packaging != null ? !packaging.equals( pom.packaging ) : pom.packaging != null ) {
+        if (packaging != null ? !packaging.equals(pom.packaging) : pom.packaging != null) {
             return false;
         }
-        if ( dependencies != null ? !dependencies.equals( pom.dependencies ) : pom.dependencies != null ) {
+        if (dependencies != null ? !dependencies.equals(pom.dependencies) : pom.dependencies != null) {
             return false;
         }
-        if ( description != null ? !description.equals( pom.description ) : pom.description != null ) {
+        if (description != null ? !description.equals(pom.description) : pom.description != null) {
             return false;
         }
-        if ( gav != null ? !gav.equals( pom.gav ) : pom.gav != null ) {
+        if (gav != null ? !gav.equals(pom.gav) : pom.gav != null) {
             return false;
         }
-        if ( modules != null ? !modules.equals( pom.modules ) : pom.modules != null ) {
+        if (modules != null ? !modules.equals(pom.modules) : pom.modules != null) {
             return false;
         }
-        if ( name != null ? !name.equals( pom.name ) : pom.name != null ) {
+        if (name != null ? !name.equals(pom.name) : pom.name != null) {
             return false;
         }
-        if ( parent != null ? !parent.equals( pom.parent ) : pom.parent != null ) {
+        if (parent != null ? !parent.equals(pom.parent) : pom.parent != null) {
             return false;
         }
-        if ( repositories != null ? !repositories.equals( pom.repositories ) : pom.repositories != null ) {
+        if (repositories != null ? !repositories.equals(pom.repositories) : pom.repositories != null) {
             return false;
         }
 
@@ -193,19 +195,19 @@ public class POM {
     public int hashCode() {
         int result = parent != null ? parent.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( gav != null ? gav.hashCode() : 0 );
+        result = 31 * result + (gav != null ? gav.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( description != null ? description.hashCode() : 0 );
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (packaging != null ? packaging.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( dependencies != null ? dependencies.hashCode() : 0 );
+        result = 31 * result + (dependencies != null ? dependencies.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( repositories != null ? repositories.hashCode() : 0 );
+        result = 31 * result + (repositories != null ? repositories.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( modules != null ? modules.hashCode() : 0 );
+        result = 31 * result + (modules != null ? modules.hashCode() : 0);
         result = ~~result;
         return result;
     }

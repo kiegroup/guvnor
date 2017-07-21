@@ -22,24 +22,23 @@ import org.apache.maven.model.Dependency;
 
 public class DependencyContentHandler {
 
-    public org.guvnor.common.services.project.model.Dependency fromPomModelToClientModel( final Dependency from ) {
+    public org.guvnor.common.services.project.model.Dependency fromPomModelToClientModel(final Dependency from) {
         org.guvnor.common.services.project.model.Dependency dependency = new org.guvnor.common.services.project.model.Dependency();
 
-        dependency.setArtifactId( from.getArtifactId() );
-        dependency.setGroupId( from.getGroupId() );
-        dependency.setVersion( from.getVersion() );
+        dependency.setArtifactId(from.getArtifactId());
+        dependency.setGroupId(from.getGroupId());
+        dependency.setVersion(from.getVersion());
 
-        dependency.setScope( from.getScope() );
+        dependency.setScope(from.getScope());
 
         return dependency;
     }
 
-    public List<org.guvnor.common.services.project.model.Dependency> fromPomModelToClientModel( List<Dependency> dependencies ) {
+    public List<org.guvnor.common.services.project.model.Dependency> fromPomModelToClientModel(List<Dependency> dependencies) {
         List<org.guvnor.common.services.project.model.Dependency> result = new ArrayList<org.guvnor.common.services.project.model.Dependency>();
         for (Dependency dependency : dependencies) {
-            result.add( fromPomModelToClientModel( dependency ) );
+            result.add(fromPomModelToClientModel(dependency));
         }
         return result;
     }
-
 }

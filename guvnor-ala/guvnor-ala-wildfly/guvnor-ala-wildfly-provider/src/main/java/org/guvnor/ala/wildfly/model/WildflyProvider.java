@@ -15,7 +15,7 @@ import org.guvnor.ala.runtime.providers.Provider;
  * @see Provider
  */
 public interface WildflyProvider extends ProviderConfig,
-        Provider {
+                                         Provider {
 
     /*
      * Get the Host Id where a Wildfly Instance is configured
@@ -46,5 +46,4 @@ public interface WildflyProvider extends ProviderConfig,
      * @return String with the password
      */
     String getPassword();
-
 }

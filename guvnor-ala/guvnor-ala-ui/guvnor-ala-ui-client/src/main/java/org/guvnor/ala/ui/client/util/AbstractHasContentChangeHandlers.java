@@ -34,7 +34,7 @@ public abstract class AbstractHasContentChangeHandlers
     @Override
     public boolean removeContentChangeHandler(ContentChangeHandler changeHandler) {
         return changeHandlers.remove(checkNotNull("changeHandler",
-                                           changeHandler));
+                                                  changeHandler));
     }
 
     public void fireChangeHandlers() {

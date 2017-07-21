@@ -26,57 +26,53 @@ import org.guvnor.common.services.project.context.ProjectContext;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.drools.workbench.models.datamodel.util.PortablePreconditions.*;
+import static org.drools.workbench.models.datamodel.util.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class RepositoryStructureTitle {
 
-    private final ProjectContext                workbenchContext;
+    private final ProjectContext workbenchContext;
     private final Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
     private PlaceRequest placeRequest;
 
     @Inject
-    public RepositoryStructureTitle( final ProjectContext workbenchContext,
-                                     final Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent ) {
+    public RepositoryStructureTitle(final ProjectContext workbenchContext,
+                                    final Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent) {
         this.workbenchContext = workbenchContext;
         this.changeTitleWidgetEvent = changeTitleWidgetEvent;
     }
 
-    public void init( final PlaceRequest placeRequest ) {
-        checkNotNull( "placeRequest.",
-                      placeRequest );
+    public void init(final PlaceRequest placeRequest) {
+        checkNotNull("placeRequest.",
+                     placeRequest);
         this.placeRequest = placeRequest;
     }
 
-    public void updateEditorTitle( final RepositoryStructureModel model,
-                                   final boolean initialized ) {
+    public void updateEditorTitle(final RepositoryStructureModel model,
+                                  final boolean initialized) {
 
-        checkNotNull( "Please set placeRequest.",
-                      placeRequest );
+        checkNotNull("Please set placeRequest.",
+                     placeRequest);
 
-        if ( workbenchContext.getActiveRepository() == null ) {
-            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                                     Constants.INSTANCE.RepositoryNotSelected() ) );
-
-        } else if ( !initialized ) {
-            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                                     Constants.INSTANCE.UnInitializedStructure( getRepositoryLabel() ) ) );
-
-        } else if ( model.isMultiModule() ) {
-            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                                     Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel() + "→ "
-                                                                                                                             + model.getPOM().getGav().getArtifactId() + ":"
-                                                                                                                             + model.getPOM().getGav().getGroupId() + ":"
-                                                                                                                             + model.getPOM().getGav().getVersion() ) ) );
-
-        } else if ( model.isSingleProject() ) {
-            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                                     Constants.INSTANCE.RepositoryStructureWithName( getRepositoryLabel() + "→ " + model.getOrphanProjects().get( 0 ).getProjectName() ) ) );
-
+        if (workbenchContext.getActiveRepository() == null) {
+            changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                                   Constants.INSTANCE.RepositoryNotSelected()));
+        } else if (!initialized) {
+            changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                                   Constants.INSTANCE.UnInitializedStructure(getRepositoryLabel())));
+        } else if (model.isMultiModule()) {
+            changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                                   Constants.INSTANCE.RepositoryStructureWithName(getRepositoryLabel() + "→ "
+                                                                                                                          + model.getPOM().getGav().getArtifactId() + ":"
+                                                                                                                          + model.getPOM().getGav().getGroupId() + ":"
+                                                                                                                          + model.getPOM().getGav().getVersion())));
+        } else if (model.isSingleProject()) {
+            changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                                   Constants.INSTANCE.RepositoryStructureWithName(getRepositoryLabel() + "→ " + model.getOrphanProjects().get(0).getProjectName())));
         } else {
-            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                                     Constants.INSTANCE.UnmanagedRepository( getRepositoryLabel() ) ) );
+            changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                                   Constants.INSTANCE.UnmanagedRepository(getRepositoryLabel())));
         }
     }
 

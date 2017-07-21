@@ -18,21 +18,19 @@ package org.guvnor.common.services.workingset.client.model;
 
 import java.util.List;
 
-import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
+import org.guvnor.common.services.workingset.client.factconstraints.ConstraintConfiguration;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
-import org.guvnor.common.services.workingset.client.factconstraints.ConstraintConfiguration;
 
 @Portable
 public class WorkingSetConfigData {
 
-    private String                        name;
-    private String                        description;
+    private String name;
+    private String description;
     private List<ConstraintConfiguration> constraints;
     private List<CustomFormConfiguration> customForms;
-    private String[]                      validFacts;
-    private WorkingSetConfigData[]        workingSets;
+    private String[] validFacts;
+    private WorkingSetConfigData[] workingSets;
 
     public WorkingSetConfigData() {
 

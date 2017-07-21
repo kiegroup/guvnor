@@ -46,96 +46,96 @@ public class RepositoryItemPresenter
     }
 
     @Inject
-    public RepositoryItemPresenter( final RepositoryItemView repositoryItemView,
-                                    final GuvnorStructureContext guvnorStructureContext,
-                                    final RepositoryController repositoryController,
-                                    final Event<NotificationEvent> notification ) {
+    public RepositoryItemPresenter(final RepositoryItemView repositoryItemView,
+                                   final GuvnorStructureContext guvnorStructureContext,
+                                   final RepositoryController repositoryController,
+                                   final Event<NotificationEvent> notification) {
         this.view = repositoryItemView;
         this.guvnorStructureContext = guvnorStructureContext;
         this.repositoryController = repositoryController;
         this.notification = notification;
     }
 
-    public void setRepository( final Repository repository,
-                               final String branch ) {
+    public void setRepository(final Repository repository,
+                              final String branch) {
         this.repository = repository;
 
-        view.setPresenter( this );
+        view.setPresenter(this);
 
-        view.setRepositoryName( repository.getAlias() );
+        view.setRepositoryName(repository.getAlias());
 
-        view.setRepositoryDescription( CoreConstants.INSTANCE.Empty() );
+        view.setRepositoryDescription(CoreConstants.INSTANCE.Empty());
 
-        if ( repository.getPublicURIs().size() > 0 ) {
+        if (repository.getPublicURIs().size() > 0) {
             view.showAvailableProtocols();
         }
 
         setPublicURIs();
 
-        view.setUriId( "view-uri-for-" + repository.getAlias() );
+        view.setUriId("view-uri-for-" + repository.getAlias());
 
-        populateBranches( branch );
+        populateBranches(branch);
 
-        boolean canUpdate = repositoryController.canUpdateRepository( repository );
-        boolean canDelete = repositoryController.canDeleteRepository( repository );
-        view.setUpdateEnabled( canUpdate );
-        view.setDeleteEnabled( canDelete );
+        boolean canUpdate = repositoryController.canUpdateRepository(repository);
+        boolean canDelete = repositoryController.canDeleteRepository(repository);
+        view.setUpdateEnabled(canUpdate);
+        view.setDeleteEnabled(canDelete);
 
         view.refresh();
     }
 
     public void refreshBranches() {
-        populateBranches( view.getSelectedBranch() );
+        populateBranches(view.getSelectedBranch());
         view.refresh();
     }
 
     private void setPublicURIs() {
         int count = 0;
-        for ( final PublicURI publicURI : repository.getPublicURIs() ) {
-            if ( count == 0 ) {
-                view.setDaemonURI( publicURI.getURI() );
+        for (final PublicURI publicURI : repository.getPublicURIs()) {
+            if (count == 0) {
+                view.setDaemonURI(publicURI.getURI());
             }
-            final String protocol = getProtocol( publicURI );
+            final String protocol = getProtocol(publicURI);
 
-            view.addProtocol( protocol );
+            view.addProtocol(protocol);
             count++;
         }
     }
 
-    private void populateBranches( final String currentBranch ) {
-        final ArrayList<String> branches = new ArrayList<String>( repository.getBranches() );
+    private void populateBranches(final String currentBranch) {
+        final ArrayList<String> branches = new ArrayList<String>(repository.getBranches());
 
-        Collections.reverse( branches );
+        Collections.reverse(branches);
 
         view.clearBranches();
-        for ( String branch : branches ) {
-            view.addBranch( branch );
+        for (String branch : branches) {
+            view.addBranch(branch);
         }
-        view.setSelectedBranch( currentBranch );
+        view.setSelectedBranch(currentBranch);
     }
 
-    public void onAnchorSelected( final String protocol ) {
-        for ( PublicURI publicURI : repository.getPublicURIs() ) {
-            if ( protocol.equals( getProtocol( publicURI ) ) ) {
-                view.setDaemonURI( publicURI.getURI() );
+    public void onAnchorSelected(final String protocol) {
+        for (PublicURI publicURI : repository.getPublicURIs()) {
+            if (protocol.equals(getProtocol(publicURI))) {
+                view.setDaemonURI(publicURI.getURI());
                 break;
             }
         }
     }
 
-    private String getProtocol( final PublicURI publicURI ) {
+    private String getProtocol(final PublicURI publicURI) {
         return publicURI.getProtocol() == null ? "default" : publicURI.getProtocol();
     }
 
     public void onClickButtonRemoveRepository() {
-        if ( removeRepositoryHandler != null ) {
-            removeRepositoryHandler.removeRepository( repository );
+        if (removeRepositoryHandler != null) {
+            removeRepositoryHandler.removeRepository(repository);
         }
     }
 
-    public void onUpdateRepository( final String branch ) {
-        guvnorStructureContext.changeBranch( repository.getAlias(),
-                                             branch );
+    public void onUpdateRepository(final String branch) {
+        guvnorStructureContext.changeBranch(repository.getAlias(),
+                                            branch);
     }
 
     @Override
@@ -143,12 +143,11 @@ public class RepositoryItemPresenter
         return view.asWidget();
     }
 
-    public void addRemoveRepositoryCommand( final HasRemoveRepositoryHandlers removeRepositoryHandlers ) {
+    public void addRemoveRepositoryCommand(final HasRemoveRepositoryHandlers removeRepositoryHandlers) {
         this.removeRepositoryHandler = removeRepositoryHandlers;
     }
 
-    void onGitUrlCopied( final String uri ) {
-        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.GitUriCopied( uri ) ) );
+    void onGitUrlCopied(final String uri) {
+        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.GitUriCopied(uri)));
     }
-
 }

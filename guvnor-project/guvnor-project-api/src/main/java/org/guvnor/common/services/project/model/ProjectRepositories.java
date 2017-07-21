@@ -31,7 +31,7 @@ public class ProjectRepositories {
         this.repositories = new HashSet<ProjectRepository>();
     }
 
-    public ProjectRepositories( final @MapsTo("repositories") Set<ProjectRepository> repositories ) {
+    public ProjectRepositories(final @MapsTo("repositories") Set<ProjectRepository> repositories) {
         this.repositories = repositories;
     }
 
@@ -41,13 +41,13 @@ public class ProjectRepositories {
 
     public MavenRepositoryMetadata[] filterByIncluded() {
         final Set<MavenRepositoryMetadata> filter = new HashSet<MavenRepositoryMetadata>();
-        for ( ProjectRepositories.ProjectRepository pr : repositories ) {
-            if ( pr.isIncluded() ) {
-                filter.add( pr.getMetadata() );
+        for (ProjectRepositories.ProjectRepository pr : repositories) {
+            if (pr.isIncluded()) {
+                filter.add(pr.getMetadata());
             }
         }
-        final MavenRepositoryMetadata[] aFilter = new MavenRepositoryMetadata[ filter.size() ];
-        filter.toArray( aFilter );
+        final MavenRepositoryMetadata[] aFilter = new MavenRepositoryMetadata[filter.size()];
+        filter.toArray(aFilter);
         return aFilter;
     }
 
@@ -57,18 +57,18 @@ public class ProjectRepositories {
         private boolean include;
         private MavenRepositoryMetadata metadata;
 
-        public ProjectRepository( final @MapsTo("include") boolean include,
-                                  final @MapsTo("metadata") MavenRepositoryMetadata metadata ) {
+        public ProjectRepository(final @MapsTo("include") boolean include,
+                                 final @MapsTo("metadata") MavenRepositoryMetadata metadata) {
             this.include = include;
-            this.metadata = PortablePreconditions.checkNotNull( "metadata",
-                                                                metadata );
+            this.metadata = PortablePreconditions.checkNotNull("metadata",
+                                                               metadata);
         }
 
         public boolean isIncluded() {
             return include;
         }
 
-        public void setIncluded( final boolean include ) {
+        public void setIncluded(final boolean include) {
             this.include = include;
         }
 
@@ -77,31 +77,28 @@ public class ProjectRepositories {
         }
 
         @Override
-        public boolean equals( Object o ) {
-            if ( this == o ) {
+        public boolean equals(Object o) {
+            if (this == o) {
                 return true;
             }
-            if ( !( o instanceof ProjectRepository ) ) {
+            if (!(o instanceof ProjectRepository)) {
                 return false;
             }
 
             ProjectRepository that = (ProjectRepository) o;
 
-            if ( include != that.include ) {
+            if (include != that.include) {
                 return false;
             }
-            return metadata.equals( that.metadata );
-
+            return metadata.equals(that.metadata);
         }
 
         @Override
         public int hashCode() {
-            int result = ( include ? 1 : 0 );
+            int result = (include ? 1 : 0);
             result = 31 * result + metadata.hashCode();
             result = ~~result;
             return result;
         }
-
     }
-
 }

@@ -29,45 +29,44 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface RepositoryStructureService {
 
-    Path initRepositoryStructure( final GAV gav,
-                                  final Repository repo,
-                                  final DeploymentMode mode );
+    Path initRepositoryStructure(final GAV gav,
+                                 final Repository repo,
+                                 final DeploymentMode mode);
 
-    Path initRepositoryStructure( final POM pom,
-                                  final String baseUrl,
-                                  final Repository repo,
-                                  final boolean multiProject,
-                                  final DeploymentMode mode );
+    Path initRepositoryStructure(final POM pom,
+                                 final String baseUrl,
+                                 final Repository repo,
+                                 final boolean multiProject,
+                                 final DeploymentMode mode);
 
-    Repository updateManagedStatus( final Repository repo,
-                                    final boolean managed );
+    Repository updateManagedStatus(final Repository repo,
+                                   final boolean managed);
 
-    Path convertToMultiProjectStructure( final List<Project> projects,
-                                         final GAV parentGav,
-                                         final Repository repo,
-                                         final boolean updateChildrenGav,
-                                         final String comment );
+    Path convertToMultiProjectStructure(final List<Project> projects,
+                                        final GAV parentGav,
+                                        final Repository repo,
+                                        final boolean updateChildrenGav,
+                                        final String comment);
 
-    RepositoryStructureModel load( final Repository repository,
-                                   final String branch );
+    RepositoryStructureModel load(final Repository repository,
+                                  final String branch);
 
-    RepositoryStructureModel load( final Repository repository,
-                                   final String branch,
-                                   final boolean includeModules );
+    RepositoryStructureModel load(final Repository repository,
+                                  final String branch,
+                                  final boolean includeModules);
 
-    void save( final Path pathToPomXML,
-               final RepositoryStructureModel model,
-               final String comment );
+    void save(final Path pathToPomXML,
+              final RepositoryStructureModel model,
+              final String comment);
 
-    boolean isValidProjectName( final String name );
+    boolean isValidProjectName(final String name);
 
-    boolean isValidGroupId( final String groupId );
+    boolean isValidGroupId(final String groupId);
 
-    boolean isValidArtifactId( final String artifactId );
+    boolean isValidArtifactId(final String artifactId);
 
-    boolean isValidVersion( final String version );
+    boolean isValidVersion(final String version);
 
-    void delete( final Path pathToPomXML,
-                 final String comment );
-
+    void delete(final Path pathToPomXML,
+                final String comment);
 }

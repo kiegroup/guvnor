@@ -44,8 +44,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
-import static org.guvnor.common.services.project.backend.server.MavenLocalRepositoryUtils.*;
-import static org.guvnor.common.services.project.backend.server.RepositoryResolverTestUtils.*;
+import static org.guvnor.common.services.project.backend.server.MavenLocalRepositoryUtils.tearDownMavenRepository;
+import static org.guvnor.common.services.project.backend.server.RepositoryResolverTestUtils.deployArtifact;
+import static org.guvnor.common.services.project.backend.server.RepositoryResolverTestUtils.generateSettingsXml;
+import static org.guvnor.common.services.project.backend.server.RepositoryResolverTestUtils.installArtifact;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -75,42 +77,43 @@ public class ProjectRepositoryResolverImplTest {
     @BeforeClass
     public static void setupSystemProperties() {
         //These are not needed for the tests
-        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
-                            "true" );
+        System.setProperty("org.uberfire.nio.git.daemon.enabled",
+                           "false");
+        System.setProperty("org.uberfire.nio.git.ssh.enabled",
+                           "false");
+        System.setProperty("org.uberfire.sys.repo.monitor.disabled",
+                           "true");
     }
 
     @BeforeClass
     public static void setupMavenRepository() {
         try {
-            m2Folder = Files.createTempDirectory( "temp-m2" );
+            m2Folder = Files.createTempDirectory("temp-m2");
 
-            settingsXmlPath = generateSettingsXml( m2Folder );
-
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
+            settingsXmlPath = generateSettingsXml(m2Folder);
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         }
     }
 
     @Before
     public void setup() {
-        service = new ProjectRepositoryResolverImpl( ioService, gavPreferencesProvider, scopeResolutionStrategies );
-        doReturn( gavPreferences ).when( gavPreferencesProvider ).get();
+        service = new ProjectRepositoryResolverImpl(ioService,
+                                                    gavPreferencesProvider,
+                                                    scopeResolutionStrategies);
+        doReturn(gavPreferences).when(gavPreferencesProvider).get();
     }
 
     @AfterClass
     public static void teardownMavenRepository() {
-        tearDownMavenRepository( m2Folder );
+        tearDownMavenRepository(m2Folder);
         MavenSettings.reinitSettings();
     }
 
     @Test
     public void testGetRemoteRepositoriesMetaData_WithoutExplicitProjectRepository() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path pomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path pomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
 
         final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -120,56 +123,55 @@ public class ProjectRepositoryResolverImplTest {
                 "  <artifactId>test</artifactId>\n" +
                 "  <version>0.0.1</version>\n" +
                 "</project>";
-        when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
-        when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-        when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+        when(project.getPomXMLPath()).thenReturn(pomXmlPath);
+        when(pomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+        when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
-            assertNotNull( metadata );
-            assertEquals( 6,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData(project);
+            assertNotNull(metadata);
+            assertEquals(6,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-            assertContainsRepository( "jboss-developer-repository-group",
-                                      "https://repository.jboss.org/nexus/content/groups/developer/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-public-repository-group",
-                                      "http://repository.jboss.org/nexus/content/groups/public/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-origin-repository-group",
-                                      "https://origin-repository.jboss.org/nexus/content/groups/ea/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-public-repository-group",
-                                      "https://repository.jboss.org/nexus/content/repositories/snapshots/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "central",
-                                      "https://repo.maven.apache.org/maven2",
-                                      MavenRepositorySource.PROJECT,
-                                      metadata );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
+            assertContainsRepository("jboss-developer-repository-group",
+                                     "https://repository.jboss.org/nexus/content/groups/developer/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-public-repository-group",
+                                     "http://repository.jboss.org/nexus/content/groups/public/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-origin-repository-group",
+                                     "https://origin-repository.jboss.org/nexus/content/groups/ea/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-public-repository-group",
+                                     "https://repository.jboss.org/nexus/content/repositories/snapshots/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("central",
+                                     "https://repo.maven.apache.org/maven2",
+                                     MavenRepositorySource.PROJECT,
+                                     metadata);
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRemoteRepositoriesMetaData_WithExplicitProjectRepository() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path pomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path pomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
 
         final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -186,60 +188,59 @@ public class ProjectRepositoryResolverImplTest {
                 "    </repository>\n" +
                 "  </repositories>\n" +
                 "</project>";
-        when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
-        when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-        when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+        when(project.getPomXMLPath()).thenReturn(pomXmlPath);
+        when(pomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+        when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
-            assertNotNull( metadata );
-            assertEquals( 7,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData(project);
+            assertNotNull(metadata);
+            assertEquals(7,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-            assertContainsRepository( "jboss-developer-repository-group",
-                                      "https://repository.jboss.org/nexus/content/groups/developer/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-public-repository-group",
-                                      "http://repository.jboss.org/nexus/content/groups/public/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-origin-repository-group",
-                                      "https://origin-repository.jboss.org/nexus/content/groups/ea/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-public-repository-group",
-                                      "https://repository.jboss.org/nexus/content/repositories/snapshots/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "central",
-                                      "https://repo.maven.apache.org/maven2",
-                                      MavenRepositorySource.PROJECT,
-                                      metadata );
-            assertContainsRepository( "explicit-repo",
-                                      "http://localhost/maven2/",
-                                      MavenRepositorySource.PROJECT,
-                                      metadata );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
+            assertContainsRepository("jboss-developer-repository-group",
+                                     "https://repository.jboss.org/nexus/content/groups/developer/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-public-repository-group",
+                                     "http://repository.jboss.org/nexus/content/groups/public/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-origin-repository-group",
+                                     "https://origin-repository.jboss.org/nexus/content/groups/ea/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-public-repository-group",
+                                     "https://repository.jboss.org/nexus/content/repositories/snapshots/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("central",
+                                     "https://repo.maven.apache.org/maven2",
+                                     MavenRepositorySource.PROJECT,
+                                     metadata);
+            assertContainsRepository("explicit-repo",
+                                     "http://localhost/maven2/",
+                                     MavenRepositorySource.PROJECT,
+                                     metadata);
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRemoteRepositoriesMetaData_WithDistributionManagementRepository() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path pomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path pomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
 
         final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -256,60 +257,59 @@ public class ProjectRepositoryResolverImplTest {
                 "    </repository>\n" +
                 "  </distributionManagement>\n" +
                 "</project>";
-        when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
-        when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-        when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+        when(project.getPomXMLPath()).thenReturn(pomXmlPath);
+        when(pomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+        when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
-            assertNotNull( metadata );
-            assertEquals( 7,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData(project);
+            assertNotNull(metadata);
+            assertEquals(7,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-            assertContainsRepository( "jboss-developer-repository-group",
-                                      "https://repository.jboss.org/nexus/content/groups/developer/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-public-repository-group",
-                                      "http://repository.jboss.org/nexus/content/groups/public/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-origin-repository-group",
-                                      "https://origin-repository.jboss.org/nexus/content/groups/ea/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-public-repository-group",
-                                      "https://repository.jboss.org/nexus/content/repositories/snapshots/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "central",
-                                      "https://repo.maven.apache.org/maven2",
-                                      MavenRepositorySource.PROJECT,
-                                      metadata );
-            assertContainsRepository( "distribution-repo",
-                                      "http://distribution-host/maven2/",
-                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                                      metadata );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
+            assertContainsRepository("jboss-developer-repository-group",
+                                     "https://repository.jboss.org/nexus/content/groups/developer/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-public-repository-group",
+                                     "http://repository.jboss.org/nexus/content/groups/public/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-origin-repository-group",
+                                     "https://origin-repository.jboss.org/nexus/content/groups/ea/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-public-repository-group",
+                                     "https://repository.jboss.org/nexus/content/repositories/snapshots/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("central",
+                                     "https://repo.maven.apache.org/maven2",
+                                     MavenRepositorySource.PROJECT,
+                                     metadata);
+            assertContainsRepository("distribution-repo",
+                                     "http://distribution-host/maven2/",
+                                     MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
+                                     metadata);
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRemoteRepositoriesMetaData_WithDistributionManagementSnapshotRepository_NonSnapshotVersion() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path pomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path pomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
 
         final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -326,56 +326,55 @@ public class ProjectRepositoryResolverImplTest {
                 "    </snapshotRepository>\n" +
                 "  </distributionManagement>\n" +
                 "</project>";
-        when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
-        when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-        when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+        when(project.getPomXMLPath()).thenReturn(pomXmlPath);
+        when(pomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+        when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
-            assertNotNull( metadata );
-            assertEquals( 6,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData(project);
+            assertNotNull(metadata);
+            assertEquals(6,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-            assertContainsRepository( "jboss-developer-repository-group",
-                                      "https://repository.jboss.org/nexus/content/groups/developer/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-public-repository-group",
-                                      "http://repository.jboss.org/nexus/content/groups/public/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-origin-repository-group",
-                                      "https://origin-repository.jboss.org/nexus/content/groups/ea/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-public-repository-group",
-                                      "https://repository.jboss.org/nexus/content/repositories/snapshots/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "central",
-                                      "https://repo.maven.apache.org/maven2",
-                                      MavenRepositorySource.PROJECT,
-                                      metadata );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
+            assertContainsRepository("jboss-developer-repository-group",
+                                     "https://repository.jboss.org/nexus/content/groups/developer/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-public-repository-group",
+                                     "http://repository.jboss.org/nexus/content/groups/public/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-origin-repository-group",
+                                     "https://origin-repository.jboss.org/nexus/content/groups/ea/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-public-repository-group",
+                                     "https://repository.jboss.org/nexus/content/repositories/snapshots/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("central",
+                                     "https://repo.maven.apache.org/maven2",
+                                     MavenRepositorySource.PROJECT,
+                                     metadata);
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRemoteRepositoriesMetaData_WithDistributionManagementSnapshotRepository_SnapshotVersion() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path pomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path pomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
 
         final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -392,82 +391,80 @@ public class ProjectRepositoryResolverImplTest {
                 "    </snapshotRepository>\n" +
                 "  </distributionManagement>\n" +
                 "</project>";
-        when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
-        when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-        when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+        when(project.getPomXMLPath()).thenReturn(pomXmlPath);
+        when(pomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+        when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData( project );
-            assertNotNull( metadata );
-            assertEquals( 7,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRemoteRepositoriesMetaData(project);
+            assertNotNull(metadata);
+            assertEquals(7,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-            assertContainsRepository( "jboss-developer-repository-group",
-                                      "https://repository.jboss.org/nexus/content/groups/developer/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-public-repository-group",
-                                      "http://repository.jboss.org/nexus/content/groups/public/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-origin-repository-group",
-                                      "https://origin-repository.jboss.org/nexus/content/groups/ea/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "jboss-public-repository-group",
-                                      "https://repository.jboss.org/nexus/content/repositories/snapshots/",
-                                      MavenRepositorySource.SETTINGS,
-                                      metadata );
-            assertContainsRepository( "central",
-                                      "https://repo.maven.apache.org/maven2",
-                                      MavenRepositorySource.PROJECT,
-                                      metadata );
-            assertContainsRepository( "distribution-repo",
-                                      "http://distribution-host/maven2/",
-                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                                      metadata );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
+            assertContainsRepository("jboss-developer-repository-group",
+                                     "https://repository.jboss.org/nexus/content/groups/developer/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-public-repository-group",
+                                     "http://repository.jboss.org/nexus/content/groups/public/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-origin-repository-group",
+                                     "https://origin-repository.jboss.org/nexus/content/groups/ea/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("jboss-public-repository-group",
+                                     "https://repository.jboss.org/nexus/content/repositories/snapshots/",
+                                     MavenRepositorySource.SETTINGS,
+                                     metadata);
+            assertContainsRepository("central",
+                                     "https://repo.maven.apache.org/maven2",
+                                     MavenRepositorySource.PROJECT,
+                                     metadata);
+            assertContainsRepository("distribution-repo",
+                                     "http://distribution-host/maven2/",
+                                     MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
+                                     metadata);
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_NewGAV_NotInstalledNotDeployed() {
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
-            final GAV gav = new GAV( "org.guvnor",
-                                     "test",
-                                     "0.0.5" );
+            final GAV gav = new GAV("org.guvnor",
+                                    "test",
+                                    "0.0.5");
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav );
-            assertNotNull( metadata );
-            assertEquals( 0,
-                          metadata.size() );
-
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav);
+            assertNotNull(metadata);
+            assertEquals(0,
+                         metadata.size());
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_NewGAV_IsInstalledNotDeployed() {
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -479,42 +476,41 @@ public class ProjectRepositoryResolverImplTest {
                     "  <version>0.0.6</version>\n" +
                     "</project>";
 
-            final GAV gav = new GAV( "org.guvnor",
-                                     "test",
-                                     "0.0.6" );
+            final GAV gav = new GAV("org.guvnor",
+                                    "test",
+                                    "0.0.6");
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav );
-            assertNotNull( metadata );
-            assertEquals( 1,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav);
+            assertNotNull(metadata);
+            assertEquals(1,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_NewGAV_IsInstalledIsDeployed() {
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
         try {
-            remoteRepositoryFolder = Files.createTempDirectory( "distribution-repo" );
+            remoteRepositoryFolder = Files.createTempDirectory("distribution-repo");
 
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -532,48 +528,46 @@ public class ProjectRepositoryResolverImplTest {
                     "  </distributionManagement>\n" +
                     "</project>";
 
-            final GAV gav = new GAV( "org.guvnor",
-                                     "test",
-                                     "0.0.7" );
+            final GAV gav = new GAV("org.guvnor",
+                                    "test",
+                                    "0.0.7");
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
-            deployArtifact( mavenProject,
-                            pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
+            deployArtifact(mavenProject,
+                           pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav );
-            assertNotNull( metadata );
-            assertEquals( 1,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav);
+            assertNotNull(metadata);
+            assertEquals(1,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         } finally {
-            tearDownMavenRepository( remoteRepositoryFolder );
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            tearDownMavenRepository(remoteRepositoryFolder);
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_NewGAV_NotInstalledIsDeployed() {
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
         try {
-            remoteRepositoryFolder = Files.createTempDirectory( "distribution-repo" );
+            remoteRepositoryFolder = Files.createTempDirectory("distribution-repo");
 
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -591,41 +585,39 @@ public class ProjectRepositoryResolverImplTest {
                     "  </distributionManagement>\n" +
                     "</project>";
 
-            final GAV gav = new GAV( "org.guvnor",
-                                     "test",
-                                     "0.0.8" );
+            final GAV gav = new GAV("org.guvnor",
+                                    "test",
+                                    "0.0.8");
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            deployArtifact( mavenProject,
-                            pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            deployArtifact(mavenProject,
+                           pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav );
-            assertNotNull( metadata );
-            assertEquals( 0,
-                          metadata.size() );
-
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
-
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav);
+            assertNotNull(metadata);
+            assertEquals(0,
+                         metadata.size());
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         } finally {
-            tearDownMavenRepository( remoteRepositoryFolder );
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            tearDownMavenRepository(remoteRepositoryFolder);
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_NewGAV_IsInstalledIsDeployed_Filtered() {
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
         try {
-            remoteRepositoryFolder = Files.createTempDirectory( "distribution-repo" );
+            remoteRepositoryFolder = Files.createTempDirectory("distribution-repo");
 
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -643,47 +635,45 @@ public class ProjectRepositoryResolverImplTest {
                     "  </distributionManagement>\n" +
                     "</project>";
 
-            final GAV gav = new GAV( "org.guvnor",
-                                     "test",
-                                     "0.0.9" );
+            final GAV gav = new GAV("org.guvnor",
+                                    "test",
+                                    "0.0.9");
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
-            deployArtifact( mavenProject,
-                            pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
+            deployArtifact(mavenProject,
+                           pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav,
-                                                                                                    new MavenRepositoryMetadata( "local",
-                                                                                                                                 m2Folder.toString(),
-                                                                                                                                 MavenRepositorySource.LOCAL ) );
-            assertNotNull( metadata );
-            assertEquals( 1,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav,
+                                                                                                   new MavenRepositoryMetadata("local",
+                                                                                                                               m2Folder.toString(),
+                                                                                                                               MavenRepositorySource.LOCAL));
+            assertNotNull(metadata);
+            assertEquals(1,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         } finally {
-            tearDownMavenRepository( remoteRepositoryFolder );
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            tearDownMavenRepository(remoteRepositoryFolder);
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_ExplicitGAV_NotInstalledNotDeployed() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path pomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path pomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
 
         final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -693,37 +683,36 @@ public class ProjectRepositoryResolverImplTest {
                 "  <artifactId>test</artifactId>\n" +
                 "  <version>0.0.10</version>\n" +
                 "</project>";
-        final GAV gav = new GAV( "org.guvnor",
-                                 "test",
-                                 "0.0.10" );
+        final GAV gav = new GAV("org.guvnor",
+                                "test",
+                                "0.0.10");
 
-        when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
-        when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-        when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+        when(project.getPomXMLPath()).thenReturn(pomXmlPath);
+        when(pomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+        when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav,
-                                                                                                    project );
-            assertNotNull( metadata );
-            assertEquals( 0,
-                          metadata.size() );
-
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav,
+                                                                                                   project);
+            assertNotNull(metadata);
+            assertEquals(0,
+                         metadata.size());
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_ExplicitGAV_IsInstalledNotDeployed() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -735,49 +724,48 @@ public class ProjectRepositoryResolverImplTest {
                     "  <version>0.0.11</version>\n" +
                     "</project>";
 
-            final GAV gav = new GAV( "org.guvnor",
-                                     "test",
-                                     "0.0.11" );
+            final GAV gav = new GAV("org.guvnor",
+                                    "test",
+                                    "0.0.11");
 
-            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
-            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+            when(project.getPomXMLPath()).thenReturn(vfsPomXmlPath);
+            when(vfsPomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav,
-                                                                                                    project );
-            assertNotNull( metadata );
-            assertEquals( 1,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav,
+                                                                                                   project);
+            assertNotNull(metadata);
+            assertEquals(1,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_ExplicitGAV_IsInstalledIsDeployed() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
         try {
-            remoteRepositoryFolder = Files.createTempDirectory( "distribution-repo" );
+            remoteRepositoryFolder = Files.createTempDirectory("distribution-repo");
 
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -795,59 +783,57 @@ public class ProjectRepositoryResolverImplTest {
                     "  </distributionManagement>\n" +
                     "</project>";
 
-            final GAV gav = new GAV( "org.guvnor",
-                                     "test",
-                                     "0.0.12" );
+            final GAV gav = new GAV("org.guvnor",
+                                    "test",
+                                    "0.0.12");
 
-            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
-            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+            when(project.getPomXMLPath()).thenReturn(vfsPomXmlPath);
+            when(vfsPomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
-            deployArtifact( mavenProject,
-                            pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
+            deployArtifact(mavenProject,
+                           pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav,
-                                                                                                    project );
-            assertNotNull( metadata );
-            assertEquals( 2,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav,
+                                                                                                   project);
+            assertNotNull(metadata);
+            assertEquals(2,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-            assertContainsRepository( "distribution-repo",
-                                      "file://" + remoteRepositoryFolder.toString(),
-                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                                      metadata );
-
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
+            assertContainsRepository("distribution-repo",
+                                     "file://" + remoteRepositoryFolder.toString(),
+                                     MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
+                                     metadata);
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         } finally {
-            tearDownMavenRepository( remoteRepositoryFolder );
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            tearDownMavenRepository(remoteRepositoryFolder);
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_ExplicitGAV_NotInstalledIsDeployed() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
         try {
-            remoteRepositoryFolder = Files.createTempDirectory( "distribution-repo" );
+            remoteRepositoryFolder = Files.createTempDirectory("distribution-repo");
 
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -865,64 +851,62 @@ public class ProjectRepositoryResolverImplTest {
                     "  </distributionManagement>\n" +
                     "</project>";
 
-            final GAV gav = new GAV( "org.guvnor",
-                                     "test",
-                                     "0.0.13" );
+            final GAV gav = new GAV("org.guvnor",
+                                    "test",
+                                    "0.0.13");
 
-            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
-            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+            when(project.getPomXMLPath()).thenReturn(vfsPomXmlPath);
+            when(vfsPomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            deployArtifact( mavenProject,
-                            pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            deployArtifact(mavenProject,
+                           pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav,
-                                                                                                    project );
-            assertNotNull( metadata );
-            assertEquals( 1,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav,
+                                                                                                   project);
+            assertNotNull(metadata);
+            assertEquals(1,
+                         metadata.size());
 
-            assertContainsRepository( "distribution-repo",
-                                      "file://" + remoteRepositoryFolder.toString(),
-                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                                      metadata );
+            assertContainsRepository("distribution-repo",
+                                     "file://" + remoteRepositoryFolder.toString(),
+                                     MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
+                                     metadata);
 
-            final Set<MavenRepositoryMetadata> metadata2 = service.getRepositoriesResolvingArtifact( gav,
-                                                                                                     project );
-            assertNotNull( metadata2 );
-            assertEquals( 1,
-                          metadata2.size() );
+            final Set<MavenRepositoryMetadata> metadata2 = service.getRepositoriesResolvingArtifact(gav,
+                                                                                                    project);
+            assertNotNull(metadata2);
+            assertEquals(1,
+                         metadata2.size());
 
-            assertContainsRepository( "distribution-repo",
-                                      "file://" + remoteRepositoryFolder.toString(),
-                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                                      metadata2 );
-
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
-
+            assertContainsRepository("distribution-repo",
+                                     "file://" + remoteRepositoryFolder.toString(),
+                                     MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
+                                     metadata2);
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         } finally {
-            tearDownMavenRepository( remoteRepositoryFolder );
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            tearDownMavenRepository(remoteRepositoryFolder);
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_ExplicitGAV_IsInstalledIsDeployed_Filtered() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
         try {
-            remoteRepositoryFolder = Files.createTempDirectory( "distribution-repo" );
+            remoteRepositoryFolder = Files.createTempDirectory("distribution-repo");
 
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -940,52 +924,50 @@ public class ProjectRepositoryResolverImplTest {
                     "  </distributionManagement>\n" +
                     "</project>";
 
-            final GAV gav = new GAV( "org.guvnor",
-                                     "test",
-                                     "0.0.14" );
+            final GAV gav = new GAV("org.guvnor",
+                                    "test",
+                                    "0.0.14");
 
-            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
-            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+            when(project.getPomXMLPath()).thenReturn(vfsPomXmlPath);
+            when(vfsPomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
-            deployArtifact( mavenProject,
-                            pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
+            deployArtifact(mavenProject,
+                           pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav,
-                                                                                                    project,
-                                                                                                    new MavenRepositoryMetadata( "distribution-repo",
-                                                                                                                                 "file://" + remoteRepositoryFolder.toString(),
-                                                                                                                                 MavenRepositorySource.DISTRIBUTION_MANAGEMENT ) );
-            assertNotNull( metadata );
-            assertEquals( 1,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav,
+                                                                                                   project,
+                                                                                                   new MavenRepositoryMetadata("distribution-repo",
+                                                                                                                               "file://" + remoteRepositoryFolder.toString(),
+                                                                                                                               MavenRepositorySource.DISTRIBUTION_MANAGEMENT));
+            assertNotNull(metadata);
+            assertEquals(1,
+                         metadata.size());
 
-            assertContainsRepository( "distribution-repo",
-                                      "file://" + remoteRepositoryFolder.toString(),
-                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                                      metadata );
-
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
-
+            assertContainsRepository("distribution-repo",
+                                     "file://" + remoteRepositoryFolder.toString(),
+                                     MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
+                                     metadata);
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         } finally {
-            tearDownMavenRepository( remoteRepositoryFolder );
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            tearDownMavenRepository(remoteRepositoryFolder);
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_ImplicitGAV_NotInstalledNotDeployed() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path pomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path pomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
 
         final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -996,32 +978,31 @@ public class ProjectRepositoryResolverImplTest {
                 "  <version>0.0.15</version>\n" +
                 "</project>";
 
-        when( project.getPomXMLPath() ).thenReturn( pomXmlPath );
-        when( pomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-        when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+        when(project.getPomXMLPath()).thenReturn(pomXmlPath);
+        when(pomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+        when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( pomXml );
-            assertNotNull( metadata );
-            assertEquals( 0,
-                          metadata.size() );
-
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(pomXml);
+            assertNotNull(metadata);
+            assertEquals(0,
+                         metadata.size());
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_ImplicitGAV_IsInstalledNotDeployed() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1033,44 +1014,43 @@ public class ProjectRepositoryResolverImplTest {
                     "  <version>0.0.16</version>\n" +
                     "</project>";
 
-            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
-            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+            when(project.getPomXMLPath()).thenReturn(vfsPomXmlPath);
+            when(vfsPomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( pomXml );
-            assertNotNull( metadata );
-            assertEquals( 1,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(pomXml);
+            assertNotNull(metadata);
+            assertEquals(1,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_ImplicitGAV_IsInstalledIsDeployed() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
         try {
-            remoteRepositoryFolder = Files.createTempDirectory( "distribution-repo" );
+            remoteRepositoryFolder = Files.createTempDirectory("distribution-repo");
 
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -1088,54 +1068,52 @@ public class ProjectRepositoryResolverImplTest {
                     "  </distributionManagement>\n" +
                     "</project>";
 
-            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
-            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+            when(project.getPomXMLPath()).thenReturn(vfsPomXmlPath);
+            when(vfsPomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
-            deployArtifact( mavenProject,
-                            pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
+            deployArtifact(mavenProject,
+                           pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( pomXml );
-            assertNotNull( metadata );
-            assertEquals( 2,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(pomXml);
+            assertNotNull(metadata);
+            assertEquals(2,
+                         metadata.size());
 
-            assertContainsRepository( "local",
-                                      m2Folder.toString(),
-                                      MavenRepositorySource.LOCAL,
-                                      metadata );
-            assertContainsRepository( "distribution-repo",
-                                      "file://" + remoteRepositoryFolder.toString(),
-                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                                      metadata );
-
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
-
+            assertContainsRepository("local",
+                                     m2Folder.toString(),
+                                     MavenRepositorySource.LOCAL,
+                                     metadata);
+            assertContainsRepository("distribution-repo",
+                                     "file://" + remoteRepositoryFolder.toString(),
+                                     MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
+                                     metadata);
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         } finally {
-            tearDownMavenRepository( remoteRepositoryFolder );
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            tearDownMavenRepository(remoteRepositoryFolder);
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_ImplicitGAV_NotInstalledIsDeployed() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
         try {
-            remoteRepositoryFolder = Files.createTempDirectory( "distribution-repo" );
+            remoteRepositoryFolder = Files.createTempDirectory("distribution-repo");
 
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -1153,58 +1131,56 @@ public class ProjectRepositoryResolverImplTest {
                     "  </distributionManagement>\n" +
                     "</project>";
 
-            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
-            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+            when(project.getPomXMLPath()).thenReturn(vfsPomXmlPath);
+            when(vfsPomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            deployArtifact( mavenProject,
-                            pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            deployArtifact(mavenProject,
+                           pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( pomXml );
-            assertNotNull( metadata );
-            assertEquals( 1,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(pomXml);
+            assertNotNull(metadata);
+            assertEquals(1,
+                         metadata.size());
 
-            assertContainsRepository( "distribution-repo",
-                                      "file://" + remoteRepositoryFolder.toString(),
-                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                                      metadata );
+            assertContainsRepository("distribution-repo",
+                                     "file://" + remoteRepositoryFolder.toString(),
+                                     MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
+                                     metadata);
 
-            final Set<MavenRepositoryMetadata> metadata2 = service.getRepositoriesResolvingArtifact( pomXml );
-            assertNotNull( metadata2 );
-            assertEquals( 1,
-                          metadata2.size() );
+            final Set<MavenRepositoryMetadata> metadata2 = service.getRepositoriesResolvingArtifact(pomXml);
+            assertNotNull(metadata2);
+            assertEquals(1,
+                         metadata2.size());
 
-            assertContainsRepository( "distribution-repo",
-                                      "file://" + remoteRepositoryFolder.toString(),
-                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                                      metadata2 );
-
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
-
+            assertContainsRepository("distribution-repo",
+                                     "file://" + remoteRepositoryFolder.toString(),
+                                     MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
+                                     metadata2);
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         } finally {
-            tearDownMavenRepository( remoteRepositoryFolder );
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            tearDownMavenRepository(remoteRepositoryFolder);
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_ImplicitGAV_IsInstalledIsDeployed_Filtered() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         java.nio.file.Path remoteRepositoryFolder = null;
 
         try {
-            remoteRepositoryFolder = Files.createTempDirectory( "distribution-repo" );
+            remoteRepositoryFolder = Files.createTempDirectory("distribution-repo");
 
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -1222,46 +1198,44 @@ public class ProjectRepositoryResolverImplTest {
                     "  </distributionManagement>\n" +
                     "</project>";
 
-            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
-            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+            when(project.getPomXMLPath()).thenReturn(vfsPomXmlPath);
+            when(vfsPomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
-            deployArtifact( mavenProject,
-                            pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
+            deployArtifact(mavenProject,
+                           pomXml);
 
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( pomXml,
-                                                                                                    new MavenRepositoryMetadata( "distribution-repo",
-                                                                                                                                 "file://" + remoteRepositoryFolder.toString(),
-                                                                                                                                 MavenRepositorySource.DISTRIBUTION_MANAGEMENT ) );
-            assertNotNull( metadata );
-            assertEquals( 1,
-                          metadata.size() );
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(pomXml,
+                                                                                                   new MavenRepositoryMetadata("distribution-repo",
+                                                                                                                               "file://" + remoteRepositoryFolder.toString(),
+                                                                                                                               MavenRepositorySource.DISTRIBUTION_MANAGEMENT));
+            assertNotNull(metadata);
+            assertEquals(1,
+                         metadata.size());
 
-            assertContainsRepository( "distribution-repo",
-                                      "file://" + remoteRepositoryFolder.toString(),
-                                      MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
-                                      metadata );
-
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
-
+            assertContainsRepository("distribution-repo",
+                                     "file://" + remoteRepositoryFolder.toString(),
+                                     MavenRepositorySource.DISTRIBUTION_MANAGEMENT,
+                                     metadata);
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         } finally {
-            tearDownMavenRepository( remoteRepositoryFolder );
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            tearDownMavenRepository(remoteRepositoryFolder);
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_Disabled1() {
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1273,41 +1247,42 @@ public class ProjectRepositoryResolverImplTest {
                     "  <version>0.0.20</version>\n" +
                     "</project>";
 
-            final GAV gav = new GAV( "org.guvnor",
-                                     "test",
-                                     "0.0.20" );
+            final GAV gav = new GAV("org.guvnor",
+                                    "test",
+                                    "0.0.20");
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
-            doReturn( true ).when( gavPreferences ).isConflictingGAVCheckDisabled();
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
+            doReturn(true).when(gavPreferences).isConflictingGAVCheckDisabled();
 
             //Re-instantiate service to pick-up System Property
-            service = new ProjectRepositoryResolverImpl( ioService, gavPreferencesProvider, scopeResolutionStrategies );
+            service = new ProjectRepositoryResolverImpl(ioService,
+                                                        gavPreferencesProvider,
+                                                        scopeResolutionStrategies);
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
 
             //Without being disabled this would return one resolved (LOCAL) Repository
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav );
-            assertNotNull( metadata );
-            assertEquals( 0,
-                          metadata.size() );
-
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav);
+            assertNotNull(metadata);
+            assertEquals(0,
+                         metadata.size());
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_Disabled2() {
-        final Project project = mock( Project.class );
-        doReturn( "default://master@a/a%20b" ).when( project ).getIdentifier();
-        doCallRealMethod().when( project ).getEncodedIdentifier();
-        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final Project project = mock(Project.class);
+        doReturn("default://master@a/a%20b").when(project).getIdentifier();
+        doCallRealMethod().when(project).getEncodedIdentifier();
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1319,44 +1294,45 @@ public class ProjectRepositoryResolverImplTest {
                     "  <version>0.0.21</version>\n" +
                     "</project>";
 
-            final GAV gav = new GAV( "org.guvnor",
-                                     "test",
-                                     "0.0.21" );
+            final GAV gav = new GAV("org.guvnor",
+                                    "test",
+                                    "0.0.21");
 
-            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
-            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+            when(project.getPomXMLPath()).thenReturn(vfsPomXmlPath);
+            when(vfsPomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
-            doReturn( true ).when( gavPreferences ).isConflictingGAVCheckDisabled();
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
+            doReturn(true).when(gavPreferences).isConflictingGAVCheckDisabled();
 
             //Re-instantiate service to pick-up System Property
-            service = new ProjectRepositoryResolverImpl( ioService, gavPreferencesProvider, scopeResolutionStrategies );
+            service = new ProjectRepositoryResolverImpl(ioService,
+                                                        gavPreferencesProvider,
+                                                        scopeResolutionStrategies);
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
 
             //Without being disabled this would return one resolved (LOCAL) Repository
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( gav,
-                                                                                                    project );
-            assertNotNull( metadata );
-            assertEquals( 0,
-                          metadata.size() );
-
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(gav,
+                                                                                                   project);
+            assertNotNull(metadata);
+            assertEquals(0,
+                         metadata.size());
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
     @Test
     public void testGetRepositoriesResolvingArtifact_Disabled3() {
-        final Project project = mock( Project.class );
-        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock( org.uberfire.backend.vfs.Path.class );
-        final String oldSettingsXmlPath = System.getProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY );
+        final Project project = mock(Project.class);
+        final org.uberfire.backend.vfs.Path vfsPomXmlPath = mock(org.uberfire.backend.vfs.Path.class);
+        final String oldSettingsXmlPath = System.getProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY);
 
         try {
             final String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1368,54 +1344,54 @@ public class ProjectRepositoryResolverImplTest {
                     "  <version>0.0.22</version>\n" +
                     "</project>";
 
-            when( project.getPomXMLPath() ).thenReturn( vfsPomXmlPath );
-            when( vfsPomXmlPath.toURI() ).thenReturn( "default://p0/pom.xml" );
-            when( ioService.readAllString( any( Path.class ) ) ).thenReturn( pomXml );
+            when(project.getPomXMLPath()).thenReturn(vfsPomXmlPath);
+            when(vfsPomXmlPath.toURI()).thenReturn("default://p0/pom.xml");
+            when(ioService.readAllString(any(Path.class))).thenReturn(pomXml);
 
-            System.setProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                settingsXmlPath.toString() );
-            doReturn( true ).when( gavPreferences ).isConflictingGAVCheckDisabled();
+            System.setProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
+            doReturn(true).when(gavPreferences).isConflictingGAVCheckDisabled();
 
             //Re-instantiate service to pick-up System Property
-            service = new ProjectRepositoryResolverImpl( ioService, gavPreferencesProvider, scopeResolutionStrategies );
+            service = new ProjectRepositoryResolverImpl(ioService,
+                                                        gavPreferencesProvider,
+                                                        scopeResolutionStrategies);
 
-            final InputStream pomStream = new ByteArrayInputStream( pomXml.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-            installArtifact( mavenProject,
-                             pomXml );
+            final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
+            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
+            installArtifact(mavenProject,
+                            pomXml);
 
             //Without being disabled this would return one resolved (LOCAL) Repository
-            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact( pomXml );
-            assertNotNull( metadata );
-            assertEquals( 0,
-                          metadata.size() );
-
+            final Set<MavenRepositoryMetadata> metadata = service.getRepositoriesResolvingArtifact(pomXml);
+            assertNotNull(metadata);
+            assertEquals(0,
+                         metadata.size());
         } finally {
-            resetSystemProperty( MavenSettings.CUSTOM_SETTINGS_PROPERTY,
-                                 oldSettingsXmlPath );
+            resetSystemProperty(MavenSettings.CUSTOM_SETTINGS_PROPERTY,
+                                oldSettingsXmlPath);
         }
     }
 
-    private void assertContainsRepository( final String id,
-                                           final String url,
-                                           final MavenRepositorySource source,
-                                           final Collection<MavenRepositoryMetadata> metadata ) {
-        for ( MavenRepositoryMetadata md : metadata ) {
-            if ( md.getId().equals( id ) && md.getUrl().equals( url ) && md.getSource().equals( source ) ) {
+    private void assertContainsRepository(final String id,
+                                          final String url,
+                                          final MavenRepositorySource source,
+                                          final Collection<MavenRepositoryMetadata> metadata) {
+        for (MavenRepositoryMetadata md : metadata) {
+            if (md.getId().equals(id) && md.getUrl().equals(url) && md.getSource().equals(source)) {
                 return;
             }
         }
-        fail( "Repository Id '" + id + "' not found." );
+        fail("Repository Id '" + id + "' not found.");
     }
 
-    private void resetSystemProperty( final String systemPropertyName,
-                                      final String oldSystemPropertyValue ) {
-        if ( oldSystemPropertyValue != null ) {
-            System.setProperty( systemPropertyName,
-                                oldSystemPropertyValue );
+    private void resetSystemProperty(final String systemPropertyName,
+                                     final String oldSystemPropertyValue) {
+        if (oldSystemPropertyValue != null) {
+            System.setProperty(systemPropertyName,
+                               oldSystemPropertyValue);
         } else {
-            System.clearProperty( systemPropertyName );
+            System.clearProperty(systemPropertyName);
         }
     }
-
 }

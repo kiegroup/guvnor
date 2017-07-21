@@ -43,10 +43,11 @@ import org.uberfire.java.nio.base.FileDiff;
 import org.uberfire.java.nio.base.options.MergeCopyOption;
 import org.uberfire.java.nio.file.Path;
 
-import static java.lang.Integer.*;
-import static java.util.stream.Collectors.*;
-import static org.uberfire.backend.server.util.Paths.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static java.lang.Integer.min;
+import static java.util.stream.Collectors.toMap;
+import static org.uberfire.backend.server.util.Paths.convert;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class PullRequestServiceImpl implements PullRequestService {
 
@@ -54,282 +55,348 @@ public class PullRequestServiceImpl implements PullRequestService {
     private final IOService ioService;
     private final ConfiguredRepositories configuredRepositories;
 
-    private Logger logger = LoggerFactory.getLogger( PullRequestServiceImpl.class );
+    private Logger logger = LoggerFactory.getLogger(PullRequestServiceImpl.class);
 
     @Inject
-    public PullRequestServiceImpl( GitMetadataStore metadataStore,
-                                   @Named("ioStrategy") IOService ioService,
-                                   ConfiguredRepositories configuredRepositories ) {
+    public PullRequestServiceImpl(GitMetadataStore metadataStore,
+                                  @Named("ioStrategy") IOService ioService,
+                                  ConfiguredRepositories configuredRepositories) {
         this.metadataStore = metadataStore;
         this.ioService = ioService;
         this.configuredRepositories = configuredRepositories;
     }
 
     @Override
-    public PullRequest createPullRequest( String sourceRepository,
-                                          String sourceBranch,
-                                          String targetRepository,
-                                          String targetBranch ) {
+    public PullRequest createPullRequest(String sourceRepository,
+                                         String sourceBranch,
+                                         String targetRepository,
+                                         String targetBranch) {
 
-        checkNotEmpty( "sourceRepository", sourceRepository );
-        checkNotEmpty( "sourceBranch", sourceBranch );
-        checkNotEmpty( "targetRepository", targetRepository );
-        checkNotEmpty( "targetBranch", targetBranch );
+        checkNotEmpty("sourceRepository",
+                      sourceRepository);
+        checkNotEmpty("sourceBranch",
+                      sourceBranch);
+        checkNotEmpty("targetRepository",
+                      targetRepository);
+        checkNotEmpty("targetBranch",
+                      targetBranch);
 
-        final Optional<GitMetadata> targetRepositoryMetadata = this.metadataStore.read( targetRepository );
+        final Optional<GitMetadata> targetRepositoryMetadata = this.metadataStore.read(targetRepository);
 
         PullRequestImpl storablePullRequest;
-        if ( targetRepositoryMetadata.isPresent() ) {
+        if (targetRepositoryMetadata.isPresent()) {
 
             GitMetadata metadata = targetRepositoryMetadata.get();
 
-            long generatedId = this.generatePullRequestId( metadata );
+            long generatedId = this.generatePullRequestId(metadata);
 
             List<PullRequest> pullRequests = metadata.getPullRequests();
 
-            if ( pullRequests == null ) {
+            if (pullRequests == null) {
                 pullRequests = new ArrayList<>();
             }
 
-            storablePullRequest = new PullRequestImpl( generatedId,
-                                                       sourceRepository,
-                                                       sourceBranch,
-                                                       targetRepository,
-                                                       targetBranch, PullRequestStatus.OPEN );
+            storablePullRequest = new PullRequestImpl(generatedId,
+                                                      sourceRepository,
+                                                      sourceBranch,
+                                                      targetRepository,
+                                                      targetBranch,
+                                                      PullRequestStatus.OPEN);
 
-            if ( metadata.exists( storablePullRequest ) ) {
-                throw new PullRequestAlreadyExistsException( storablePullRequest );
+            if (metadata.exists(storablePullRequest)) {
+                throw new PullRequestAlreadyExistsException(storablePullRequest);
             }
 
-            pullRequests.add( storablePullRequest );
+            pullRequests.add(storablePullRequest);
 
-            GitMetadata newMetadata = new GitMetadataImpl( metadata.getName(), metadata.getOrigin(), metadata.getForks(), pullRequests );
+            GitMetadata newMetadata = new GitMetadataImpl(metadata.getName(),
+                                                          metadata.getOrigin(),
+                                                          metadata.getForks(),
+                                                          pullRequests);
 
-            this.metadataStore.write( metadata.getName(), newMetadata );
+            this.metadataStore.write(metadata.getName(),
+                                     newMetadata);
 
-            if ( logger.isDebugEnabled() ) {
-                logger.debug( "Pull request PR-{} created. Target repository: {} / {}", storablePullRequest.getId(), storablePullRequest.getTargetRepository(), storablePullRequest.getTargetBranch() );
+            if (logger.isDebugEnabled()) {
+                logger.debug("Pull request PR-{} created. Target repository: {} / {}",
+                             storablePullRequest.getId(),
+                             storablePullRequest.getTargetRepository(),
+                             storablePullRequest.getTargetBranch());
             }
-
         } else {
             throw new RepositoryNotFoundException(
-                    String.format( "The repository or branch does not exists %s/%s",
-                                   targetRepository,
-                                   targetBranch ) );
+                    String.format("The repository or branch does not exists %s/%s",
+                                  targetRepository,
+                                  targetBranch));
         }
 
         return storablePullRequest;
     }
 
     @Override
-    public PullRequest acceptPullRequest( final PullRequest pullRequest ) {
-        checkNotNull( "pullRequest", pullRequest );
-        checkNotNull( "id", pullRequest.getId() );
-        checkNotEmpty( "targetRepository", pullRequest.getTargetRepository() );
+    public PullRequest acceptPullRequest(final PullRequest pullRequest) {
+        checkNotNull("pullRequest",
+                     pullRequest);
+        checkNotNull("id",
+                     pullRequest.getId());
+        checkNotEmpty("targetRepository",
+                      pullRequest.getTargetRepository());
 
         String repository = pullRequest.getTargetRepository();
         long id = pullRequest.getId();
-        final GitMetadata metadata = this.getRepositoryMetadata( repository );
-        final PullRequest acceptPullRequest = metadata.getPullRequest( id );
-        this.createHiddenBranch( acceptPullRequest );
-        this.mergePullRequest( acceptPullRequest );
-        this.changePullRequestStatus( repository, id, PullRequestStatus.MERGED );
-        return this.getRepositoryMetadata( repository ).getPullRequest( id );
+        final GitMetadata metadata = this.getRepositoryMetadata(repository);
+        final PullRequest acceptPullRequest = metadata.getPullRequest(id);
+        this.createHiddenBranch(acceptPullRequest);
+        this.mergePullRequest(acceptPullRequest);
+        this.changePullRequestStatus(repository,
+                                     id,
+                                     PullRequestStatus.MERGED);
+        return this.getRepositoryMetadata(repository).getPullRequest(id);
     }
 
     @Override
-    public PullRequest rejectPullRequest( final PullRequest pullRequest ) {
-        checkNotNull( "pullRequest", pullRequest );
-        checkNotNull( "id", pullRequest.getId() );
-        checkNotEmpty( "targetRepository", pullRequest.getTargetRepository() );
-
-        String repository = pullRequest.getTargetRepository();
-        long id = pullRequest.getId();
-
-        this.changePullRequestStatus( repository, id, PullRequestStatus.REJECTED );
-        return this.getRepositoryMetadata( repository ).getPullRequest( id );
-    }
-
-    @Override
-    public PullRequest closePullRequest( final PullRequest pullRequest ) {
-        checkNotNull( "pullRequest", pullRequest );
-        checkNotNull( "id", pullRequest.getId() );
-        checkNotEmpty( "targetRepository", pullRequest.getTargetRepository() );
+    public PullRequest rejectPullRequest(final PullRequest pullRequest) {
+        checkNotNull("pullRequest",
+                     pullRequest);
+        checkNotNull("id",
+                     pullRequest.getId());
+        checkNotEmpty("targetRepository",
+                      pullRequest.getTargetRepository());
 
         String repository = pullRequest.getTargetRepository();
         long id = pullRequest.getId();
 
-        this.changePullRequestStatus( repository, id, PullRequestStatus.CLOSED );
-        return this.getRepositoryMetadata( repository ).getPullRequest( id );
-    }
-
-    public List<PullRequest> getPullRequestsByBranch( Integer page,
-                                                      Integer pageSize,
-                                                      final String repository,
-                                                      final String branch ) {
-        GitMetadata metadata = getRepositoryMetadata( repository );
-        List<PullRequest> pullRequests = metadata.getPullRequests( elem -> elem.getTargetBranch().equals( branch ) );
-        return this.paginate( page, pageSize, pullRequests );
+        this.changePullRequestStatus(repository,
+                                     id,
+                                     PullRequestStatus.REJECTED);
+        return this.getRepositoryMetadata(repository).getPullRequest(id);
     }
 
     @Override
-    public List<PullRequest> getPullRequestsByRepository( Integer page,
-                                                          Integer pageSize,
-                                                          final String repository ) {
+    public PullRequest closePullRequest(final PullRequest pullRequest) {
+        checkNotNull("pullRequest",
+                     pullRequest);
+        checkNotNull("id",
+                     pullRequest.getId());
+        checkNotEmpty("targetRepository",
+                      pullRequest.getTargetRepository());
 
-        GitMetadata metadata = getRepositoryMetadata( repository );
+        String repository = pullRequest.getTargetRepository();
+        long id = pullRequest.getId();
+
+        this.changePullRequestStatus(repository,
+                                     id,
+                                     PullRequestStatus.CLOSED);
+        return this.getRepositoryMetadata(repository).getPullRequest(id);
+    }
+
+    public List<PullRequest> getPullRequestsByBranch(Integer page,
+                                                     Integer pageSize,
+                                                     final String repository,
+                                                     final String branch) {
+        GitMetadata metadata = getRepositoryMetadata(repository);
+        List<PullRequest> pullRequests = metadata.getPullRequests(elem -> elem.getTargetBranch().equals(branch));
+        return this.paginate(page,
+                             pageSize,
+                             pullRequests);
+    }
+
+    @Override
+    public List<PullRequest> getPullRequestsByRepository(Integer page,
+                                                         Integer pageSize,
+                                                         final String repository) {
+
+        GitMetadata metadata = getRepositoryMetadata(repository);
         List<PullRequest> pullRequests = metadata.getPullRequests();
-        return this.paginate( page, pageSize, pullRequests );
-
+        return this.paginate(page,
+                             pageSize,
+                             pullRequests);
     }
 
-    public List<PullRequest> getPullRequestsByStatus( Integer page,
-                                                      Integer pageSize,
-                                                      final String repository,
-                                                      final PullRequestStatus status ) {
+    public List<PullRequest> getPullRequestsByStatus(Integer page,
+                                                     Integer pageSize,
+                                                     final String repository,
+                                                     final PullRequestStatus status) {
 
-        final List<PullRequest> pullRequests = this.getPullRequestsByRepository( page, pageSize, repository );
-        final List<PullRequest> finalPullRequests = pullRequests.stream().filter( elem -> elem.getStatus().equals( status ) ).collect( Collectors.toList() );
-        return this.paginate( page, pageSize, finalPullRequests );
-
+        final List<PullRequest> pullRequests = this.getPullRequestsByRepository(page,
+                                                                                pageSize,
+                                                                                repository);
+        final List<PullRequest> finalPullRequests = pullRequests.stream().filter(elem -> elem.getStatus().equals(status)).collect(Collectors.toList());
+        return this.paginate(page,
+                             pageSize,
+                             finalPullRequests);
     }
 
     @Override
-    public void deletePullRequest( final PullRequest pullRequest ) {
+    public void deletePullRequest(final PullRequest pullRequest) {
 
-        checkNotNull( "pullRequest", pullRequest );
-        checkNotNull( "id", pullRequest.getId() );
-        checkNotEmpty( "targetRepository", pullRequest.getTargetRepository() );
+        checkNotNull("pullRequest",
+                     pullRequest);
+        checkNotNull("id",
+                     pullRequest.getId());
+        checkNotEmpty("targetRepository",
+                      pullRequest.getTargetRepository());
 
         String repository = pullRequest.getTargetRepository();
         long id = pullRequest.getId();
 
-        GitMetadata metadata = getRepositoryMetadata( repository );
-        PullRequest removablePullRequest = metadata.getPullRequest( id );
+        GitMetadata metadata = getRepositoryMetadata(repository);
+        PullRequest removablePullRequest = metadata.getPullRequest(id);
 
         List<PullRequest> finalPullRequests = metadata.getPullRequests();
-        finalPullRequests.remove( removablePullRequest );
+        finalPullRequests.remove(removablePullRequest);
 
-        GitMetadata storableMetadata = new GitMetadataImpl( metadata.getName(), metadata.getOrigin(), metadata.getForks(), finalPullRequests );
-        this.metadataStore.write( storableMetadata.getName(), storableMetadata );
+        GitMetadata storableMetadata = new GitMetadataImpl(metadata.getName(),
+                                                           metadata.getOrigin(),
+                                                           metadata.getForks(),
+                                                           finalPullRequests);
+        this.metadataStore.write(storableMetadata.getName(),
+                                 storableMetadata);
 
-        this.deleteHiddenBranch( removablePullRequest );
-
+        this.deleteHiddenBranch(removablePullRequest);
     }
 
-    protected List<PullRequest> paginate( Integer page,
-                                          Integer pageSize,
-                                          List<PullRequest> pullRequests ) {
+    protected List<PullRequest> paginate(Integer page,
+                                         Integer pageSize,
+                                         List<PullRequest> pullRequests) {
 
-        if ( page == 0 && pageSize == 0 ) {
+        if (page == 0 && pageSize == 0) {
             return pullRequests;
         }
 
         Integer finalPageSize = pageSize == 0 ? 10 : pageSize;
 
-        final Map<Integer, List<PullRequest>> map = IntStream.iterate( 0, i -> i + finalPageSize )
-                .limit( ( pullRequests.size() + finalPageSize - 1 ) / finalPageSize )
+        final Map<Integer, List<PullRequest>> map = IntStream.iterate(0,
+                                                                      i -> i + finalPageSize)
+                .limit((pullRequests.size() + finalPageSize - 1) / finalPageSize)
                 .boxed()
-                .collect( toMap( i -> i / finalPageSize,
-                                 i -> pullRequests.subList( i, min( i + finalPageSize, pullRequests.size() ) ) ) );
+                .collect(toMap(i -> i / finalPageSize,
+                               i -> pullRequests.subList(i,
+                                                         min(i + finalPageSize,
+                                                             pullRequests.size()))));
 
-        return map.getOrDefault( page, new ArrayList<>() );
-
+        return map.getOrDefault(page,
+                                new ArrayList<>());
     }
 
     @Override
-    public List<FileDiff> diff( final PullRequest pullRequest ) {
+    public List<FileDiff> diff(final PullRequest pullRequest) {
 
-        final Repository repository = configuredRepositories.getRepositoryByRepositoryAlias( pullRequest.getTargetRepository() );
-        this.createHiddenBranch( pullRequest );
-        String diff = String.format( "diff:%s,%s", pullRequest.getTargetBranch(), this.buildHiddenBranchName( pullRequest ) );
-        final List<FileDiff> diffs = (List<FileDiff>) this.ioService.readAttributes( convert( repository.getRoot() ), diff );
-        this.deleteHiddenBranch( pullRequest );
+        final Repository repository = configuredRepositories.getRepositoryByRepositoryAlias(pullRequest.getTargetRepository());
+        this.createHiddenBranch(pullRequest);
+        String diff = String.format("diff:%s,%s",
+                                    pullRequest.getTargetBranch(),
+                                    this.buildHiddenBranchName(pullRequest));
+        final List<FileDiff> diffs = (List<FileDiff>) this.ioService.readAttributes(convert(repository.getRoot()),
+                                                                                    diff);
+        this.deleteHiddenBranch(pullRequest);
         return diffs;
     }
 
-    protected void changePullRequestStatus( final String repository,
-                                            final long id,
-                                            final PullRequestStatus status ) {
+    protected void changePullRequestStatus(final String repository,
+                                           final long id,
+                                           final PullRequestStatus status) {
 
-        checkNotEmpty( "repository", repository );
-        checkNotNull( "status", status );
+        checkNotEmpty("repository",
+                      repository);
+        checkNotNull("status",
+                     status);
 
-        GitMetadata metadata = getRepositoryMetadata( repository );
-        PullRequest pullRequest = metadata.getPullRequest( id );
-        PullRequestImpl finalPullRequest = new PullRequestImpl( pullRequest.getId(),
-                                                                pullRequest.getSourceRepository(),
-                                                                pullRequest.getSourceBranch(),
-                                                                pullRequest.getTargetRepository(),
-                                                                pullRequest.getTargetBranch(),
-                                                                status );
+        GitMetadata metadata = getRepositoryMetadata(repository);
+        PullRequest pullRequest = metadata.getPullRequest(id);
+        PullRequestImpl finalPullRequest = new PullRequestImpl(pullRequest.getId(),
+                                                               pullRequest.getSourceRepository(),
+                                                               pullRequest.getSourceBranch(),
+                                                               pullRequest.getTargetRepository(),
+                                                               pullRequest.getTargetBranch(),
+                                                               status);
 
-        List<PullRequest> finalPullRequests = metadata.getPullRequests( elem -> elem.getId() != id );
-        finalPullRequests.add( finalPullRequest );
+        List<PullRequest> finalPullRequests = metadata.getPullRequests(elem -> elem.getId() != id);
+        finalPullRequests.add(finalPullRequest);
 
-        GitMetadata storableMetadata = new GitMetadataImpl( metadata.getName(), metadata.getOrigin(), metadata.getForks(), finalPullRequests );
-        this.metadataStore.write( storableMetadata.getName(), storableMetadata );
-
+        GitMetadata storableMetadata = new GitMetadataImpl(metadata.getName(),
+                                                           metadata.getOrigin(),
+                                                           metadata.getForks(),
+                                                           finalPullRequests);
+        this.metadataStore.write(storableMetadata.getName(),
+                                 storableMetadata);
     }
 
-    private GitMetadata getRepositoryMetadata( final String repository ) {
-        final Optional<GitMetadata> optional = this.metadataStore.read( repository );
+    private GitMetadata getRepositoryMetadata(final String repository) {
+        final Optional<GitMetadata> optional = this.metadataStore.read(repository);
 
-        if ( !optional.isPresent() ) {
+        if (!optional.isPresent()) {
             throw new RepositoryNotFoundException(
-                    String.format( "The repository does not exists <<%s>>", repository ) );
+                    String.format("The repository does not exists <<%s>>",
+                                  repository));
         }
 
         return optional.get();
     }
 
-    private synchronized long generatePullRequestId( final GitMetadata metadata ) {
+    private synchronized long generatePullRequestId(final GitMetadata metadata) {
 
         List<PullRequest> pullRequests = metadata.getPullRequests();
-        final Optional<PullRequest> last = pullRequests.stream().max( ( first, second ) -> Long.compare( first.getId(), second.getId() ) );
-        return last.map( pr -> pr.getId() + 1 ).orElse( 1l );
+        final Optional<PullRequest> last = pullRequests.stream().max((first, second) -> Long.compare(first.getId(),
+                                                                                                     second.getId()));
+        return last.map(pr -> pr.getId() + 1).orElse(1l);
     }
 
-    protected void createHiddenBranch( final PullRequest pullRequest ) {
-        final Path source = this.buildPath( pullRequest.getSourceRepository(), pullRequest.getSourceBranch() );
-        final Path target = this.buildHiddenPath( pullRequest );
-        ioService.copy( source, target );
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "Hidden branch {} created.", target.toString() );
+    protected void createHiddenBranch(final PullRequest pullRequest) {
+        final Path source = this.buildPath(pullRequest.getSourceRepository(),
+                                           pullRequest.getSourceBranch());
+        final Path target = this.buildHiddenPath(pullRequest);
+        ioService.copy(source,
+                       target);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Hidden branch {} created.",
+                         target.toString());
         }
     }
 
-    private void mergePullRequest( final PullRequest pullRequest ) {
-        final Path source = this.buildHiddenPath( pullRequest );
-        final Path target = this.buildPath( pullRequest.getTargetRepository(), pullRequest.getTargetBranch() );
-        ioService.copy( source, target, new MergeCopyOption() );
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "Merged from <{}> to <{}>", source.toString(), target.toString() );
+    private void mergePullRequest(final PullRequest pullRequest) {
+        final Path source = this.buildHiddenPath(pullRequest);
+        final Path target = this.buildPath(pullRequest.getTargetRepository(),
+                                           pullRequest.getTargetBranch());
+        ioService.copy(source,
+                       target,
+                       new MergeCopyOption());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Merged from <{}> to <{}>",
+                         source.toString(),
+                         target.toString());
         }
     }
 
-    private void deleteHiddenBranch( final PullRequest pullRequest ) {
+    private void deleteHiddenBranch(final PullRequest pullRequest) {
 
-        final Path path = this.buildHiddenPath( pullRequest );
-        ioService.delete( path );
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "Hidden branch {} deleted", pullRequest.toString() );
+        final Path path = this.buildHiddenPath(pullRequest);
+        ioService.delete(path);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Hidden branch {} deleted",
+                         pullRequest.toString());
         }
     }
 
-    protected Path buildHiddenPath( PullRequest pullRequest ) {
-        String branchName = buildHiddenBranchName( pullRequest );
-        return this.buildPath( pullRequest.getTargetRepository(), branchName );
+    protected Path buildHiddenPath(PullRequest pullRequest) {
+        String branchName = buildHiddenBranchName(pullRequest);
+        return this.buildPath(pullRequest.getTargetRepository(),
+                              branchName);
     }
 
-    private String buildHiddenBranchName( PullRequest pullRequest ) {
-        return String.format( "PR-%s-%s/%s-%s", pullRequest.getId(), pullRequest.getSourceRepository(), pullRequest.getSourceBranch(), pullRequest.getTargetBranch() );
+    private String buildHiddenBranchName(PullRequest pullRequest) {
+        return String.format("PR-%s-%s/%s-%s",
+                             pullRequest.getId(),
+                             pullRequest.getSourceRepository(),
+                             pullRequest.getSourceBranch(),
+                             pullRequest.getTargetBranch());
     }
 
-    protected Path buildPath( final String repository,
-                              final String branch ) {
+    protected Path buildPath(final String repository,
+                             final String branch) {
 
-        return ioService.get( URI.create( String.format( "git://%s@%s", branch, repository ) ) );
+        return ioService.get(URI.create(String.format("git://%s@%s",
+                                                      branch,
+                                                      repository)));
     }
-
 }

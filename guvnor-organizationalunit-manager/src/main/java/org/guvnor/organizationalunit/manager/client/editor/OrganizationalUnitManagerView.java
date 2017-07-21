@@ -27,14 +27,14 @@ public interface OrganizationalUnitManagerView extends UberView<OrganizationalUn
 
     void reset();
 
-    void setOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits );
+    void setOrganizationalUnits(final Collection<OrganizationalUnit> organizationalUnits);
 
-    void setOrganizationalUnitRepositories( final Collection<Repository> repositories,
-                                            final Collection<Repository> availableRepositories );
+    void setOrganizationalUnitRepositories(final Collection<Repository> repositories,
+                                           final Collection<Repository> availableRepositories);
 
-    void addOrganizationalUnit( final OrganizationalUnit organizationalUnit );
+    void addOrganizationalUnit(final OrganizationalUnit organizationalUnit);
 
-    void deleteOrganizationalUnit( final OrganizationalUnit organizationalUnit );
+    void deleteOrganizationalUnit(final OrganizationalUnit organizationalUnit);
 
     void setAddOrganizationalUnitEnabled(boolean enabled);
 

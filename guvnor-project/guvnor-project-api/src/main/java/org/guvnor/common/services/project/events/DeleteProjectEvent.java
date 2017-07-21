@@ -29,7 +29,7 @@ public class DeleteProjectEvent {
     public DeleteProjectEvent() {
     }
 
-    public DeleteProjectEvent( Project project ) {
+    public DeleteProjectEvent(Project project) {
         this.project = project;
     }
 

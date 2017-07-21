@@ -24,11 +24,12 @@ public class GitCredentials implements Credentials {
     private final String passw;
 
     public GitCredentials() {
-        this( null, null );
+        this(null,
+             null);
     }
 
-    public GitCredentials( final String user,
-                           final String passw ) {
+    public GitCredentials(final String user,
+                          final String passw) {
         this.user = user;
         this.passw = passw;
     }

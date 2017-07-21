@@ -27,9 +27,11 @@ import org.guvnor.rest.client.RemoveRepositoryRequest;
 public class RemoveRepositoryCmd extends AbstractJobCommand {
 
     public RemoveRepositoryCmd(final JobRequestHelper jobRequestHelper,
-                                     final JobResultManager jobResultManager,
-                                     final Map<String, Object> context) {
-        super(jobRequestHelper, jobResultManager, context);
+                               final JobResultManager jobResultManager,
+                               final Map<String, Object> context) {
+        super(jobRequestHelper,
+              jobResultManager,
+              context);
     }
 
     @Override
@@ -38,12 +40,14 @@ public class RemoveRepositoryCmd extends AbstractJobCommand {
         RemoveRepositoryRequest jobRequest = (RemoveRepositoryRequest) request;
 
         JobResult result = null;
-        try { 
-            result = helper.removeRepository( jobRequest.getJobId(), jobRequest.getRepositoryName() );
-        } finally { 
+        try {
+            result = helper.removeRepository(jobRequest.getJobId(),
+                                             jobRequest.getRepositoryName());
+        } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.info( "-----removeRepository--- , repository name: {} [{}]", 
-                    jobRequest.getRepositoryName(), status);
+            logger.info("-----removeRepository--- , repository name: {} [{}]",
+                        jobRequest.getRepositoryName(),
+                        status);
         }
         return result;
     }

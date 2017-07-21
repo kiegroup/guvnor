@@ -16,8 +16,8 @@
 
 package org.guvnor.asset.management.social;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.ext.uberfire.social.activities.model.SocialEventType;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public enum AssetManagementEventTypes implements SocialEventType {

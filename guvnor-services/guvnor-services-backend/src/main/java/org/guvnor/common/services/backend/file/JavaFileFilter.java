@@ -24,9 +24,8 @@ import org.uberfire.java.nio.file.Path;
 public class JavaFileFilter implements DirectoryStream.Filter<Path> {
 
     @Override
-    public boolean accept( final Path path ) {
+    public boolean accept(final Path path) {
         final String fileName = path.getFileName().toString();
-        return fileName.toLowerCase().endsWith( ".java" );
+        return fileName.toLowerCase().endsWith(".java");
     }
-
 }

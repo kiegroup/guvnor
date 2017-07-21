@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
+
 import org.apache.mina.util.ConcurrentHashSet;
 import org.guvnor.ala.config.gwt.CodeServerPortHandle;
 
@@ -41,8 +42,10 @@ public class GWTCodeServerPortLeaserImpl implements GWTCodeServerPortLeaser {
     }
 
     @Override
-    public void setCodeServerForProject(String projectName, Integer portNumber) {
-        codeServerByProject.put(projectName, portNumber);
+    public void setCodeServerForProject(String projectName,
+                                        Integer portNumber) {
+        codeServerByProject.put(projectName,
+                                portNumber);
     }
 
     @Override

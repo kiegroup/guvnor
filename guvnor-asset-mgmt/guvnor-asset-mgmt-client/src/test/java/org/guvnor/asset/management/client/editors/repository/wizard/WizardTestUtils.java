@@ -31,86 +31,89 @@ import static org.junit.Assert.*;
 
 public class WizardTestUtils {
 
-    public static void assertPageComplete( final boolean expectedResult, WizardPage page ) {
-        page.isComplete( new Callback<Boolean>() {
-            @Override public void callback( Boolean result ) {
-                assertEquals( expectedResult, result );
+    public static void assertPageComplete(final boolean expectedResult,
+                                          WizardPage page) {
+        page.isComplete(new Callback<Boolean>() {
+            @Override
+            public void callback(Boolean result) {
+                assertEquals(expectedResult,
+                             result);
             }
-        } );
+        });
     }
 
-    public static void assertWizardComplete( final boolean expectedResult, Wizard wizard ) {
-        wizard.isComplete( new Callback<Boolean>() {
-            @Override public void callback( Boolean result ) {
-                assertEquals( expectedResult, result );
+    public static void assertWizardComplete(final boolean expectedResult,
+                                            Wizard wizard) {
+        wizard.isComplete(new Callback<Boolean>() {
+            @Override
+            public void callback(Boolean result) {
+                assertEquals(expectedResult,
+                             result);
             }
-        } );
+        });
     }
 
     public static class WizardPageStatusChangeEventMock implements Event<WizardPageStatusChangeEvent> {
 
-        protected List<WizardPageStatusChangeHandler> eventHandlers = new ArrayList<WizardPageStatusChangeHandler>(  );
+        protected List<WizardPageStatusChangeHandler> eventHandlers = new ArrayList<WizardPageStatusChangeHandler>();
 
         @Override
-        public void fire( WizardPageStatusChangeEvent wizardPageStatusChangeEvent ) {
-            for ( WizardPageStatusChangeHandler eventHandler : eventHandlers ) {
-                eventHandler.handleEvent( wizardPageStatusChangeEvent );
+        public void fire(WizardPageStatusChangeEvent wizardPageStatusChangeEvent) {
+            for (WizardPageStatusChangeHandler eventHandler : eventHandlers) {
+                eventHandler.handleEvent(wizardPageStatusChangeEvent);
             }
         }
 
         @Override
-        public Event<WizardPageStatusChangeEvent> select( Annotation... annotations ) {
+        public Event<WizardPageStatusChangeEvent> select(Annotation... annotations) {
             return null;
         }
 
         @Override
-        public <U extends WizardPageStatusChangeEvent> Event<U> select( Class<U> aClass, Annotation... annotations ) {
+        public <U extends WizardPageStatusChangeEvent> Event<U> select(Class<U> aClass,
+                                                                       Annotation... annotations) {
             return null;
         }
 
-        public void addEventHandler( WizardPageStatusChangeHandler eventHandler ) {
-            eventHandlers.add( eventHandler );
+        public void addEventHandler(WizardPageStatusChangeHandler eventHandler) {
+            eventHandlers.add(eventHandler);
         }
-
     }
 
     public interface WizardPageStatusChangeHandler {
 
-        void handleEvent( WizardPageStatusChangeEvent event );
-
+        void handleEvent(WizardPageStatusChangeEvent event);
     }
 
     public static class NotificationEventMock implements Event<NotificationEvent> {
 
-        protected List<NotificationEventHandler> eventHandlers = new ArrayList<NotificationEventHandler>(  );
+        protected List<NotificationEventHandler> eventHandlers = new ArrayList<NotificationEventHandler>();
 
         @Override
-        public void fire( NotificationEvent notificationEvent ) {
-            for ( NotificationEventHandler eventHandler : eventHandlers ) {
-                eventHandler.handleEvent( notificationEvent );
+        public void fire(NotificationEvent notificationEvent) {
+            for (NotificationEventHandler eventHandler : eventHandlers) {
+                eventHandler.handleEvent(notificationEvent);
             }
         }
 
         @Override
-        public Event<NotificationEvent> select( Annotation... annotations ) {
+        public Event<NotificationEvent> select(Annotation... annotations) {
             return null;
         }
 
         @Override
-        public <U extends NotificationEvent> Event<U> select( Class<U> aClass, Annotation... annotations ) {
+        public <U extends NotificationEvent> Event<U> select(Class<U> aClass,
+                                                             Annotation... annotations) {
             return null;
         }
 
-        public void addEventHandler( NotificationEventHandler eventHandler ) {
-            eventHandlers.add( eventHandler );
+        public void addEventHandler(NotificationEventHandler eventHandler) {
+            eventHandlers.add(eventHandler);
         }
-
     }
 
     public interface NotificationEventHandler {
 
-        void handleEvent( NotificationEvent notificationEvent );
-
+        void handleEvent(NotificationEvent notificationEvent);
     }
-
 }

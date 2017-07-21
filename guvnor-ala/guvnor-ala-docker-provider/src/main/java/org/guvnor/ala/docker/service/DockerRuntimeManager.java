@@ -16,10 +16,11 @@
 
 package org.guvnor.ala.docker.service;
 
+import javax.inject.Inject;
+
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.ContainerState;
-import javax.inject.Inject;
 import org.guvnor.ala.docker.access.DockerAccessInterface;
 import org.guvnor.ala.docker.model.DockerRuntime;
 import org.guvnor.ala.docker.model.DockerRuntimeState;
@@ -34,96 +35,111 @@ public class DockerRuntimeManager implements RuntimeManager {
 
     private final RuntimeRegistry runtimeRegistry;
     private final DockerAccessInterface docker;
-    protected static final Logger LOG = LoggerFactory.getLogger( DockerRuntimeManager.class );
+    protected static final Logger LOG = LoggerFactory.getLogger(DockerRuntimeManager.class);
 
     @Inject
-    public DockerRuntimeManager( final RuntimeRegistry runtimeRegistry,
-            final DockerAccessInterface docker ) {
+    public DockerRuntimeManager(final RuntimeRegistry runtimeRegistry,
+                                final DockerAccessInterface docker) {
         this.runtimeRegistry = runtimeRegistry;
         this.docker = docker;
     }
 
     @Override
-    public boolean supports( final RuntimeId runtimeId ) {
+    public boolean supports(final RuntimeId runtimeId) {
         return runtimeId instanceof DockerRuntime
-                || runtimeRegistry.getRuntimeById( runtimeId.getId() ) instanceof DockerRuntime;
+                || runtimeRegistry.getRuntimeById(runtimeId.getId()) instanceof DockerRuntime;
     }
 
     @Override
-    public void start( RuntimeId runtimeId ) throws RuntimeOperationException {
-        DockerRuntime runtime = ( DockerRuntime ) runtimeRegistry.getRuntimeById( runtimeId.getId() );
+    public void start(RuntimeId runtimeId) throws RuntimeOperationException {
+        DockerRuntime runtime = (DockerRuntime) runtimeRegistry.getRuntimeById(runtimeId.getId());
         try {
-            LOG.info( "Starting container: " + runtimeId.getId() );
-            docker.getDockerClient( runtime.getProviderId() ).startContainer( runtime.getId() );
-            refresh( runtimeId );
-        } catch ( DockerException | InterruptedException ex ) {
-            LOG.error( "Error Starting container: " + runtimeId.getId(), ex );
-            throw new RuntimeOperationException( "Error Starting container: " + runtimeId.getId(), ex );
+            LOG.info("Starting container: " + runtimeId.getId());
+            docker.getDockerClient(runtime.getProviderId()).startContainer(runtime.getId());
+            refresh(runtimeId);
+        } catch (DockerException | InterruptedException ex) {
+            LOG.error("Error Starting container: " + runtimeId.getId(),
+                      ex);
+            throw new RuntimeOperationException("Error Starting container: " + runtimeId.getId(),
+                                                ex);
         }
     }
 
     @Override
-    public void stop( RuntimeId runtimeId ) throws RuntimeOperationException {
-        DockerRuntime runtime = ( DockerRuntime ) runtimeRegistry.getRuntimeById( runtimeId.getId() );
+    public void stop(RuntimeId runtimeId) throws RuntimeOperationException {
+        DockerRuntime runtime = (DockerRuntime) runtimeRegistry.getRuntimeById(runtimeId.getId());
         try {
-            LOG.info( "Stopping container: " + runtimeId.getId() );
-            docker.getDockerClient( runtime.getProviderId() ).stopContainer( runtime.getId(), 1 );
-            refresh( runtimeId );
-        } catch ( DockerException | InterruptedException ex ) {
-            LOG.error( "Error Stopping container: " + runtimeId.getId(), ex );
-            throw new RuntimeOperationException( "Error Stopping container: " + runtimeId.getId(), ex );
+            LOG.info("Stopping container: " + runtimeId.getId());
+            docker.getDockerClient(runtime.getProviderId()).stopContainer(runtime.getId(),
+                                                                          1);
+            refresh(runtimeId);
+        } catch (DockerException | InterruptedException ex) {
+            LOG.error("Error Stopping container: " + runtimeId.getId(),
+                      ex);
+            throw new RuntimeOperationException("Error Stopping container: " + runtimeId.getId(),
+                                                ex);
         }
     }
 
     @Override
-    public void restart( RuntimeId runtimeId ) throws RuntimeOperationException {
-        DockerRuntime runtime = ( DockerRuntime ) runtimeRegistry.getRuntimeById( runtimeId.getId() );
+    public void restart(RuntimeId runtimeId) throws RuntimeOperationException {
+        DockerRuntime runtime = (DockerRuntime) runtimeRegistry.getRuntimeById(runtimeId.getId());
         try {
-            docker.getDockerClient( runtime.getProviderId() ).restartContainer( runtime.getId() );
-            refresh( runtimeId );
-        } catch ( DockerException | InterruptedException ex ) {
-            LOG.error( "Error Restarting container: " + runtimeId.getId(), ex );
-            throw new RuntimeOperationException( "Error Restarting container: " + runtimeId.getId(), ex );
+            docker.getDockerClient(runtime.getProviderId()).restartContainer(runtime.getId());
+            refresh(runtimeId);
+        } catch (DockerException | InterruptedException ex) {
+            LOG.error("Error Restarting container: " + runtimeId.getId(),
+                      ex);
+            throw new RuntimeOperationException("Error Restarting container: " + runtimeId.getId(),
+                                                ex);
         }
     }
 
     @Override
-    public void refresh( RuntimeId runtimeId ) throws RuntimeOperationException {
-        DockerRuntime runtime = ( DockerRuntime ) runtimeRegistry.getRuntimeById( runtimeId.getId() );
+    public void refresh(RuntimeId runtimeId) throws RuntimeOperationException {
+        DockerRuntime runtime = (DockerRuntime) runtimeRegistry.getRuntimeById(runtimeId.getId());
         try {
-            ContainerInfo containerInfo = docker.getDockerClient( runtime.getProviderId() ).inspectContainer( runtime.getId() );
+            ContainerInfo containerInfo = docker.getDockerClient(runtime.getProviderId()).inspectContainer(runtime.getId());
             ContainerState state = containerInfo.state();
             String stateString = "Stopped";
-            if ( state.running() && !state.paused() ) {
+            if (state.running() && !state.paused()) {
                 stateString = "Running";
-            } else if ( state.paused() ) {
+            } else if (state.paused()) {
                 stateString = "Paused";
-            } else if ( state.restarting() ) {
+            } else if (state.restarting()) {
                 stateString = "Restarting";
-            } else if ( state.oomKilled() ) {
+            } else if (state.oomKilled()) {
                 stateString = "Killed";
             }
 
-            DockerRuntime newRuntime = new DockerRuntime( runtime.getId(), runtime.getName(), runtime.getConfig(), runtime.getProviderId(), runtime.getEndpoint(),
-                    runtime.getInfo(), new DockerRuntimeState( stateString, state.startedAt().toString() ) );
-            runtimeRegistry.registerRuntime( newRuntime );
-
-        } catch ( DockerException | InterruptedException ex ) {
-            LOG.error( "Error Refreshing container: " + runtimeId.getId(), ex );
-            throw new RuntimeOperationException( "Error Refreshing container: " + runtimeId.getId(), ex );
+            DockerRuntime newRuntime = new DockerRuntime(runtime.getId(),
+                                                         runtime.getName(),
+                                                         runtime.getConfig(),
+                                                         runtime.getProviderId(),
+                                                         runtime.getEndpoint(),
+                                                         runtime.getInfo(),
+                                                         new DockerRuntimeState(stateString,
+                                                                                state.startedAt().toString()));
+            runtimeRegistry.registerRuntime(newRuntime);
+        } catch (DockerException | InterruptedException ex) {
+            LOG.error("Error Refreshing container: " + runtimeId.getId(),
+                      ex);
+            throw new RuntimeOperationException("Error Refreshing container: " + runtimeId.getId(),
+                                                ex);
         }
     }
 
     @Override
-    public void pause( RuntimeId runtimeId ) throws RuntimeOperationException {
-        DockerRuntime runtime = ( DockerRuntime ) runtimeRegistry.getRuntimeById( runtimeId.getId() );
+    public void pause(RuntimeId runtimeId) throws RuntimeOperationException {
+        DockerRuntime runtime = (DockerRuntime) runtimeRegistry.getRuntimeById(runtimeId.getId());
         try {
-            docker.getDockerClient( runtime.getProviderId() ).pauseContainer( runtime.getId() );
-            refresh( runtimeId );
-        } catch ( DockerException | InterruptedException ex ) {
-            LOG.error( "Error Pausing container: " + runtimeId.getId(), ex );
-            throw new RuntimeOperationException( "Error Pausing container: " + runtimeId.getId(), ex );
+            docker.getDockerClient(runtime.getProviderId()).pauseContainer(runtime.getId());
+            refresh(runtimeId);
+        } catch (DockerException | InterruptedException ex) {
+            LOG.error("Error Pausing container: " + runtimeId.getId(),
+                      ex);
+            throw new RuntimeOperationException("Error Pausing container: " + runtimeId.getId(),
+                                                ex);
         }
     }
-
 }

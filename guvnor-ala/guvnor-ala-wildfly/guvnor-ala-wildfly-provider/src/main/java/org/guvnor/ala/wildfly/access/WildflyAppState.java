@@ -19,23 +19,25 @@ package org.guvnor.ala.wildfly.access;
 import java.util.Date;
 
 public class WildflyAppState {
+
     private String state = "NA";
     private Date startedAt = new Date();
 
-    public WildflyAppState( String state, Date startedAt ) {
+    public WildflyAppState(String state,
+                           Date startedAt) {
         this.state = state;
         this.startedAt = startedAt;
     }
 
     public WildflyAppState() {
-        
+
     }
 
     public String getState() {
         return state;
     }
 
-    public void setState( String state ) {
+    public void setState(String state) {
         this.state = state;
     }
 
@@ -43,10 +45,7 @@ public class WildflyAppState {
         return startedAt;
     }
 
-    public void setStartedAt( Date startedAt ) {
+    public void setStartedAt(Date startedAt) {
         this.startedAt = startedAt;
     }
-    
-    
-    
 }

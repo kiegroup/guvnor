@@ -24,25 +24,25 @@ public interface RepositoryStructurePageView
 
     interface Presenter {
 
-        void setProjectName( String projectName );
+        void setProjectName(String projectName);
 
         void onProjectNameChange();
 
-        void setProjectDescription( String projectDescription );
+        void setProjectDescription(String projectDescription);
 
         void onProjectDescriptionChange();
 
-        void setGroupId( String groupId );
+        void setGroupId(String groupId);
 
         void onGroupIdChange();
 
-        void setArtifactId( String artifactId );
+        void setArtifactId(String artifactId);
 
         void onArtifactIdChange();
 
-        void setConfigureRepository( boolean configureRepository );
+        void setConfigureRepository(boolean configureRepository);
 
-        void setVersion( String version );
+        void setVersion(String version);
 
         void onVersionChange();
 
@@ -51,42 +51,41 @@ public interface RepositoryStructurePageView
         void onMultiModuleChange();
 
         void onConfigureRepositoryChange();
-
     }
 
     String getProjectName();
 
-    void setProjectName( String projectName );
+    void setProjectName(String projectName);
 
-    void setProjectNameErrorMessage( String errorMessage );
+    void setProjectNameErrorMessage(String errorMessage);
 
-    void clearProjectNameErrorMessage( );
+    void clearProjectNameErrorMessage();
 
     String getProjectDescription();
 
-    void setProjectDescription( String projectDescription );
+    void setProjectDescription(String projectDescription);
 
     String getGroupId();
 
-    void setGroupId( String groupId );
+    void setGroupId(String groupId);
 
-    void setGroupIdErrorMessage( String errorMessage );
+    void setGroupIdErrorMessage(String errorMessage);
 
     void clearGroupIdErrorMessage();
 
     String getArtifactId();
 
-    void setArtifactId( String artifactId );
+    void setArtifactId(String artifactId);
 
-    void setArtifactIdErrorMessage( String errorMessage );
+    void setArtifactIdErrorMessage(String errorMessage);
 
     void clearArtifactIdErrorMessage();
 
     String getVersion();
 
-    void setVersion( String version );
+    void setVersion(String version);
 
-    void setVersionErrorMessage( String errorMessage );
+    void setVersionErrorMessage(String errorMessage);
 
     void clearVersionErrorMessage();
 
@@ -96,6 +95,5 @@ public interface RepositoryStructurePageView
 
     boolean isConfigureRepository();
 
-    void setConfigureRepository( boolean configureRepository );
-
+    void setConfigureRepository(boolean configureRepository);
 }

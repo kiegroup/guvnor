@@ -27,13 +27,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Simple JUnit test runner which automatically takes care of starting Weld container before the test runs and stopping
  * the Weld after the test finishes.
- *
+ * <p>
  * The test class can also use all CDI constructs (like @Inject). For example the test can inject BeanManager:
- *   ...
- *   @Inject
- *   private BeanManager beanManager;
- *   ...
- *
+ * ...
+ * @Inject private BeanManager beanManager;
+ * ...
+ * <p>
  * Use @RunWith annotation to specify the runner for the test class: {@code @RunWith(WeldJUnitRunner.class)
  */
 public class WeldJUnitRunner extends BlockJUnit4ClassRunner {
@@ -46,7 +45,6 @@ public class WeldJUnitRunner extends BlockJUnit4ClassRunner {
 
     /**
      * Creates a WeldJUnitRunner to run {@code testClass}
-     *
      * @param testClass
      * @throws InitializationError if the test class is malformed.
      */
@@ -61,10 +59,12 @@ public class WeldJUnitRunner extends BlockJUnit4ClassRunner {
     }
 
     @Override
-    public void runChild(final FrameworkMethod method, RunNotifier notifier) {
+    public void runChild(final FrameworkMethod method,
+                         RunNotifier notifier) {
         startWeld();
         try {
-            super.runChild(method, notifier);
+            super.runChild(method,
+                           notifier);
         } finally {
             stopWeld();
         }
@@ -82,5 +82,4 @@ public class WeldJUnitRunner extends BlockJUnit4ClassRunner {
             weld.shutdown();
         }
     }
-
 }

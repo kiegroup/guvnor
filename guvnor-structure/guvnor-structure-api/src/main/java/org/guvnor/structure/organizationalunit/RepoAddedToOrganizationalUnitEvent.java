@@ -26,8 +26,11 @@ public class RepoAddedToOrganizationalUnitEvent extends OrganizationalUnitEventB
     public RepoAddedToOrganizationalUnitEvent() {
     }
 
-    public RepoAddedToOrganizationalUnitEvent( final OrganizationalUnit organizationalUnit, final Repository repository, final String userName ) {
-        super( organizationalUnit, userName );
+    public RepoAddedToOrganizationalUnitEvent(final OrganizationalUnit organizationalUnit,
+                                              final Repository repository,
+                                              final String userName) {
+        super(organizationalUnit,
+              userName);
         this.repository = repository;
     }
 

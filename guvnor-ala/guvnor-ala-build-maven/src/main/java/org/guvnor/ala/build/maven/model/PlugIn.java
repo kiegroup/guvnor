@@ -33,5 +33,4 @@ public interface PlugIn {
      * @return Map<String, ?> with the configuration used by the plugin
     */
     Map<String, ?> getConfiguration();
-
 }

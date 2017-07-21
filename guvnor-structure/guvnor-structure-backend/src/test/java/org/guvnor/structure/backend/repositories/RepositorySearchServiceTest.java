@@ -50,38 +50,53 @@ public class RepositorySearchServiceTest {
         when(itemB.getIdentifier()).thenReturn("itemB");
         when(itemA.getAlias()).thenReturn("Item A");
         when(itemB.getAlias()).thenReturn("Item B");
-        when(resourceService.getAllRepositories()).thenReturn(Arrays.asList(itemA, itemB));
+        when(resourceService.getAllRepositories()).thenReturn(Arrays.asList(itemA,
+                                                                            itemB));
         searchService = new RepositorySearchServiceImpl(resourceService);
     }
 
     @Test
     public void testSearchById() throws Exception {
         Collection<Repository> result = searchService.searchById(Arrays.asList("itemA"));
-        assertEquals(result.size(), 1);
-        assertEquals(result.iterator().next().getAlias(), "Item A");
+        assertEquals(result.size(),
+                     1);
+        assertEquals(result.iterator().next().getAlias(),
+                     "Item A");
     }
 
     @Test
     public void testSearchByAlias() throws Exception {
-        Collection<Repository> result = searchService.searchByAlias("Item", 10, true);
-        assertEquals(result.size(), 2);
+        Collection<Repository> result = searchService.searchByAlias("Item",
+                                                                    10,
+                                                                    true);
+        assertEquals(result.size(),
+                     2);
     }
 
     @Test
     public void testSearchCaseSensitiveEmpty() throws Exception {
-        Collection<Repository> result = searchService.searchByAlias("item", 10, true);
-        assertEquals(result.size(), 0);
+        Collection<Repository> result = searchService.searchByAlias("item",
+                                                                    10,
+                                                                    true);
+        assertEquals(result.size(),
+                     0);
     }
 
     @Test
     public void testSearchCaseUnsensitive() throws Exception {
-        Collection<Repository> result = searchService.searchByAlias("item", 10, false);
-        assertEquals(result.size(), 2);
+        Collection<Repository> result = searchService.searchByAlias("item",
+                                                                    10,
+                                                                    false);
+        assertEquals(result.size(),
+                     2);
     }
 
     @Test
     public void testSearchMaxItems() throws Exception {
-        Collection<Repository> result = searchService.searchByAlias("item", 1, false);
-        assertEquals(result.size(), 1);
+        Collection<Repository> result = searchService.searchByAlias("item",
+                                                                    1,
+                                                                    false);
+        assertEquals(result.size(),
+                     1);
     }
 }

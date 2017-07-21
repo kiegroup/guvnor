@@ -24,15 +24,15 @@ import static org.mockito.Mockito.*;
 
 public class TestUtil {
 
-    public static Repository makeRepository( final String alias,
-                                             final String... branches ) {
-        final Repository repository = mock( Repository.class );
+    public static Repository makeRepository(final String alias,
+                                            final String... branches) {
+        final Repository repository = mock(Repository.class);
 
-        when( repository.getAlias() ).thenReturn( alias );
+        when(repository.getAlias()).thenReturn(alias);
 
-        when( repository.getBranches() ).thenReturn( Arrays.asList( branches ) );
+        when(repository.getBranches()).thenReturn(Arrays.asList(branches));
 
-        when( repository.getDefaultBranch() ).thenReturn( "master" );
+        when(repository.getDefaultBranch()).thenReturn("master");
 
         return repository;
     }

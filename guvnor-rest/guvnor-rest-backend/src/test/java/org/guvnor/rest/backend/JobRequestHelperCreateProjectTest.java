@@ -45,7 +45,7 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class JobRequestHelperCreateProjectTest {
 
     public SimpleFileSystemProvider fileSystemProvider;
@@ -63,187 +63,201 @@ public class JobRequestHelperCreateProjectTest {
     public void setUp() throws Exception {
         fileSystemProvider = new SimpleFileSystemProvider();
 
-        final Repository repository = mock( Repository.class );
-        when( repositoryService.getRepository( "myRepository" ) ).thenReturn( repository );
-        when( repository.getDefaultBranch() ).thenReturn( "master" );
-        final Path root = fileSystemProvider.getPath( URI.create( "default://master@myRepository/" ) );
-        when( repository.getBranchRoot( "master" ) ).thenReturn( Paths.convert( root ) );
+        final Repository repository = mock(Repository.class);
+        when(repositoryService.getRepository("myRepository")).thenReturn(repository);
+        when(repository.getDefaultBranch()).thenReturn("master");
+        final Path root = fileSystemProvider.getPath(URI.create("default://master@myRepository/"));
+        when(repository.getBranchRoot("master")).thenReturn(Paths.convert(root));
     }
 
     @Test
     public void testRepositoryDoesNotExist() throws Exception {
-        final JobResult jobResult = jobRequestHelper.createProject( "jobId",
-                                                                    "repositoryAlias",
-                                                                    "projectName",
-                                                                    "projectGroupId",
-                                                                    "projectVersion",
-                                                                    "projectDescription" );
+        final JobResult jobResult = jobRequestHelper.createProject("jobId",
+                                                                   "repositoryAlias",
+                                                                   "projectName",
+                                                                   "projectGroupId",
+                                                                   "projectVersion",
+                                                                   "projectDescription");
 
-        assertEquals( "jobId", jobResult.getJobId() );
-        assertEquals( JobStatus.RESOURCE_NOT_EXIST, jobResult.getStatus() );
-        assertEquals( "Repository [repositoryAlias] does not exist", jobResult.getResult() );
+        assertEquals("jobId",
+                     jobResult.getJobId());
+        assertEquals(JobStatus.RESOURCE_NOT_EXIST,
+                     jobResult.getStatus());
+        assertEquals("Repository [repositoryAlias] does not exist",
+                     jobResult.getResult());
     }
 
     @Test
     public void testRepositoryDoesExist() throws Exception {
-        final JobResult jobResult = jobRequestHelper.createProject( "jobId",
-                                                                    "myRepository",
-                                                                    "projectName",
-                                                                    "projectGroupId",
-                                                                    "projectVersion",
-                                                                    "projectDescription" );
+        final JobResult jobResult = jobRequestHelper.createProject("jobId",
+                                                                   "myRepository",
+                                                                   "projectName",
+                                                                   "projectGroupId",
+                                                                   "projectVersion",
+                                                                   "projectDescription");
 
-        assertEquals( "jobId", jobResult.getJobId() );
-        assertEquals( JobStatus.SUCCESS, jobResult.getStatus() );
-        assertNull( jobResult.getResult() );
+        assertEquals("jobId",
+                     jobResult.getJobId());
+        assertEquals(JobStatus.SUCCESS,
+                     jobResult.getStatus());
+        assertNull(jobResult.getResult());
     }
 
     @Test
     public void testNewProjectWhenGAVAlreadyExists() throws Exception {
 
         final HashSet<MavenRepositoryMetadata> repositories = new HashSet<>();
-        repositories.add( new MavenRepositoryMetadata( "id",
-                                                       "url",
-                                                       MavenRepositorySource.LOCAL ) );
+        repositories.add(new MavenRepositoryMetadata("id",
+                                                     "url",
+                                                     MavenRepositorySource.LOCAL));
 
-        doThrow( new GAVAlreadyExistsException( new GAV( "projectGroupId:projectName:projectVersion" ),
-                                                repositories ) )
-                .when( projectService ).newProject( any( org.uberfire.backend.vfs.Path.class ),
-                                                    any( POM.class ),
-                                                    eq( JobRequestHelper.GUVNOR_BASE_URL ) );
+        doThrow(new GAVAlreadyExistsException(new GAV("projectGroupId:projectName:projectVersion"),
+                                              repositories))
+                .when(projectService).newProject(any(org.uberfire.backend.vfs.Path.class),
+                                                 any(POM.class),
+                                                 eq(JobRequestHelper.GUVNOR_BASE_URL));
 
+        final JobResult jobResult = jobRequestHelper.createProject("jobId",
+                                                                   "myRepository",
+                                                                   "projectName",
+                                                                   "projectGroupId",
+                                                                   "projectVersion",
+                                                                   "projectDescription");
 
-        final JobResult jobResult = jobRequestHelper.createProject( "jobId",
-                                                                    "myRepository",
-                                                                    "projectName",
-                                                                    "projectGroupId",
-                                                                    "projectVersion",
-                                                                    "projectDescription" );
-
-        assertEquals( "jobId", jobResult.getJobId() );
-        assertEquals( JobStatus.DUPLICATE_RESOURCE, jobResult.getStatus() );
-        assertEquals( "Project's GAV [projectGroupId:projectName:projectVersion] already exists at [id : url : LOCAL ]", jobResult.getResult() );
+        assertEquals("jobId",
+                     jobResult.getJobId());
+        assertEquals(JobStatus.DUPLICATE_RESOURCE,
+                     jobResult.getStatus());
+        assertEquals("Project's GAV [projectGroupId:projectName:projectVersion] already exists at [id : url : LOCAL ]",
+                     jobResult.getResult());
     }
 
     @Test
     public void testNewProjectWhenFileAlreadyExists() throws Exception {
 
-        doThrow( new FileAlreadyExistsException( "myProject" ) )
-                .when( projectService ).newProject( any( org.uberfire.backend.vfs.Path.class ),
-                                                    any( POM.class ),
-                                                    eq( JobRequestHelper.GUVNOR_BASE_URL ) );
+        doThrow(new FileAlreadyExistsException("myProject"))
+                .when(projectService).newProject(any(org.uberfire.backend.vfs.Path.class),
+                                                 any(POM.class),
+                                                 eq(JobRequestHelper.GUVNOR_BASE_URL));
 
+        final JobResult jobResult = jobRequestHelper.createProject("jobId",
+                                                                   "myRepository",
+                                                                   "myProject",
+                                                                   "projectGroupId",
+                                                                   "projectVersion",
+                                                                   "projectDescription");
 
-        final JobResult jobResult = jobRequestHelper.createProject( "jobId",
-                                                                    "myRepository",
-                                                                    "myProject",
-                                                                    "projectGroupId",
-                                                                    "projectVersion",
-                                                                    "projectDescription" );
-
-        assertEquals( "jobId", jobResult.getJobId() );
-        assertEquals( JobStatus.DUPLICATE_RESOURCE, jobResult.getStatus() );
-        assertEquals( "Project [myProject] already exists", jobResult.getResult() );
+        assertEquals("jobId",
+                     jobResult.getJobId());
+        assertEquals(JobStatus.DUPLICATE_RESOURCE,
+                     jobResult.getStatus());
+        assertEquals("Project [myProject] already exists",
+                     jobResult.getResult());
     }
 
     @Test
     public void testWeAreUsingCorrectGAV() throws Exception {
 
+        jobRequestHelper.createProject("jobId",
+                                       "myRepository",
+                                       "myProject",
+                                       "projectGroupId",
+                                       "projectVersion",
+                                       "projectDescription");
 
-        jobRequestHelper.createProject( "jobId",
-                                        "myRepository",
-                                        "myProject",
-                                        "projectGroupId",
-                                        "projectVersion",
-                                        "projectDescription" );
-
-        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-        verify( projectService ).newProject( any( org.uberfire.backend.vfs.Path.class ),
-                                             pomArgumentCaptor.capture(),
-                                             eq( JobRequestHelper.GUVNOR_BASE_URL ) );
+        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+        verify(projectService).newProject(any(org.uberfire.backend.vfs.Path.class),
+                                          pomArgumentCaptor.capture(),
+                                          eq(JobRequestHelper.GUVNOR_BASE_URL));
 
         final POM pom = pomArgumentCaptor.getValue();
-        assertEquals( "projectGroupId", pom.getGav().getGroupId() );
-        assertEquals( "myProject", pom.getGav().getArtifactId() );
-        assertEquals( "projectVersion", pom.getGav().getVersion() );
-        assertEquals( "myProject", pom.getName() );
-        assertEquals( "projectDescription", pom.getDescription() );
+        assertEquals("projectGroupId",
+                     pom.getGav().getGroupId());
+        assertEquals("myProject",
+                     pom.getGav().getArtifactId());
+        assertEquals("projectVersion",
+                     pom.getGav().getVersion());
+        assertEquals("myProject",
+                     pom.getName());
+        assertEquals("projectDescription",
+                     pom.getDescription());
     }
 
     @Test
     public void testProjectGroupNull() throws Exception {
-        jobRequestHelper.createProject( "jobId",
-                                        "myRepository",
-                                        "myProject",
-                                        null,
-                                        "projectVersion",
-                                        "projectDescription" );
+        jobRequestHelper.createProject("jobId",
+                                       "myRepository",
+                                       "myProject",
+                                       null,
+                                       "projectVersion",
+                                       "projectDescription");
 
-        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-        verify( projectService ).newProject( any( org.uberfire.backend.vfs.Path.class ),
-                                             pomArgumentCaptor.capture(),
-                                             eq( JobRequestHelper.GUVNOR_BASE_URL ) );
+        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+        verify(projectService).newProject(any(org.uberfire.backend.vfs.Path.class),
+                                          pomArgumentCaptor.capture(),
+                                          eq(JobRequestHelper.GUVNOR_BASE_URL));
 
         final POM pom = pomArgumentCaptor.getValue();
-        assertEquals( "myProject", pom.getGav().getGroupId() );
+        assertEquals("myProject",
+                     pom.getGav().getGroupId());
     }
 
     @Test
     public void testProjectGroupEmpty() throws Exception {
-        jobRequestHelper.createProject( "jobId",
-                                        "myRepository",
-                                        "myProject",
-                                        "             ",
-                                        "projectVersion",
-                                        "projectDescription" );
+        jobRequestHelper.createProject("jobId",
+                                       "myRepository",
+                                       "myProject",
+                                       "             ",
+                                       "projectVersion",
+                                       "projectDescription");
 
-        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-        verify( projectService ).newProject( any( org.uberfire.backend.vfs.Path.class ),
-                                             pomArgumentCaptor.capture(),
-                                             eq( JobRequestHelper.GUVNOR_BASE_URL ) );
+        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+        verify(projectService).newProject(any(org.uberfire.backend.vfs.Path.class),
+                                          pomArgumentCaptor.capture(),
+                                          eq(JobRequestHelper.GUVNOR_BASE_URL));
 
         final POM pom = pomArgumentCaptor.getValue();
-        assertEquals( "myProject", pom.getGav().getGroupId() );
+        assertEquals("myProject",
+                     pom.getGav().getGroupId());
     }
 
     @Test
     public void testProjectVersionNull() throws Exception {
 
+        jobRequestHelper.createProject("jobId",
+                                       "myRepository",
+                                       "myProject",
+                                       "projectGroupId",
+                                       null,
+                                       "projectDescription");
 
-        jobRequestHelper.createProject( "jobId",
-                                        "myRepository",
-                                        "myProject",
-                                        "projectGroupId",
-                                        null,
-                                        "projectDescription" );
-
-        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-        verify( projectService ).newProject( any( org.uberfire.backend.vfs.Path.class ),
-                                             pomArgumentCaptor.capture(),
-                                             eq( JobRequestHelper.GUVNOR_BASE_URL ) );
+        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+        verify(projectService).newProject(any(org.uberfire.backend.vfs.Path.class),
+                                          pomArgumentCaptor.capture(),
+                                          eq(JobRequestHelper.GUVNOR_BASE_URL));
 
         final POM pom = pomArgumentCaptor.getValue();
-        assertEquals( "1.0", pom.getGav().getVersion() );
+        assertEquals("1.0",
+                     pom.getGav().getVersion());
     }
 
     @Test
     public void testProjectVersionEmpty() throws Exception {
 
+        jobRequestHelper.createProject("jobId",
+                                       "myRepository",
+                                       "myProject",
+                                       "projectGroupId",
+                                       "               ",
+                                       "projectDescription");
 
-        jobRequestHelper.createProject( "jobId",
-                                        "myRepository",
-                                        "myProject",
-                                        "projectGroupId",
-                                        "               ",
-                                        "projectDescription" );
-
-        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-        verify( projectService ).newProject( any( org.uberfire.backend.vfs.Path.class ),
-                                             pomArgumentCaptor.capture(),
-                                             eq( JobRequestHelper.GUVNOR_BASE_URL ) );
+        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+        verify(projectService).newProject(any(org.uberfire.backend.vfs.Path.class),
+                                          pomArgumentCaptor.capture(),
+                                          eq(JobRequestHelper.GUVNOR_BASE_URL));
 
         final POM pom = pomArgumentCaptor.getValue();
-        assertEquals( "1.0", pom.getGav().getVersion() );
+        assertEquals("1.0",
+                     pom.getGav().getVersion());
     }
-
 }

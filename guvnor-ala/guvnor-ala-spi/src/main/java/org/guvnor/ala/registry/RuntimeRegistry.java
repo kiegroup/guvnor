@@ -35,13 +35,16 @@ public interface RuntimeRegistry {
     * @param ProviderType to be registered
     * @see ProviderType
      */
-    void registerProviderType( final ProviderType pt );
+    void registerProviderType(final ProviderType pt);
 
     /*
     * Return the list of registered Provider Types
     * @return List<ProviderType> with all the Provider Types registered
      */
-    List<ProviderType> getProviderTypes( Integer page, Integer pageSize, String sort, boolean sortOrder );
+    List<ProviderType> getProviderTypes(Integer page,
+                                        Integer pageSize,
+                                        String sort,
+                                        boolean sortOrder);
 
     /*
     * Return a Provider Type by Name
@@ -49,21 +52,21 @@ public interface RuntimeRegistry {
     * @return the selected ProviderType
     * @see ProviderType
      */
-    ProviderType getProviderType( final String providerTypeName );
+    ProviderType getProviderType(final String providerTypeName);
 
     /*
     * Unregister the provider type
     * @param ProviderType to be unregistered
     * @see ProviderType
      */
-    void unregisterProviderType( final ProviderType providerType );
+    void unregisterProviderType(final ProviderType providerType);
 
     /*
     * Register a new Provider
     * @param Provider to be registered
     * @see Provider
      */
-    void registerProvider( final Provider provider );
+    void registerProvider(final Provider provider);
 
     /*
     * Return a Provider Type by Name
@@ -71,14 +74,17 @@ public interface RuntimeRegistry {
     * @return the selected Provider
     * @see Provider
      */
-    Provider getProvider( final String providerName );
+    Provider getProvider(final String providerName);
 
     /*
     * Return the list of registered Provider
     * @return List<Provider> with all the Providers registered
     * @see Provider
      */
-    List<Provider> getProviders( Integer page, Integer pageSize, String sort, boolean sortOrder );
+    List<Provider> getProviders(Integer page,
+                                Integer pageSize,
+                                String sort,
+                                boolean sortOrder);
 
     /*
     * Return the list of registered Provider filtering by type
@@ -87,35 +93,38 @@ public interface RuntimeRegistry {
     * @see Provider
     * @see ProviderType
      */
-    List<Provider> getProvidersByType( final ProviderType type );
+    List<Provider> getProvidersByType(final ProviderType type);
 
     /*
     * Unregister the provider
     * @param Provider to be unregistered
     * @see Provider
      */
-    void unregisterProvider( final Provider provider );
+    void unregisterProvider(final Provider provider);
 
     /*
     * Unregister the provider by provider name
     * @param String the provider name to be unregistered
     * @see Provider
      */
-    void unregisterProvider( final String providerName );
+    void unregisterProvider(final String providerName);
 
     /*
     * Register a new Runtime
     * @param Runtime to be registered
     * @see Runtime
      */
-    void registerRuntime( final Runtime runtime );
+    void registerRuntime(final Runtime runtime);
 
     /*
     * Return the list of registered Runtimes
     * @return List<Runtime> with all the Runtimes registered in the system
     * @see Runtime
      */
-    List<Runtime> getRuntimes( Integer page, Integer pageSize, String sort, boolean sortOrder );
+    List<Runtime> getRuntimes(Integer page,
+                              Integer pageSize,
+                              String sort,
+                              boolean sortOrder);
 
     /*
     * Return the list of registered Runtimes filtering by provider type
@@ -124,7 +133,7 @@ public interface RuntimeRegistry {
     * @see ProviderType
     * @see Runtime
      */
-    List<Runtime> getRuntimesByProvider( final ProviderType provider );
+    List<Runtime> getRuntimesByProvider(final ProviderType provider);
 
     /*
     * Return the Runtime based on the Runtime id
@@ -132,14 +141,14 @@ public interface RuntimeRegistry {
     * @return Runtime matching the provided id
     * @see Runtime
      */
-    Runtime getRuntimeById( final String id );
+    Runtime getRuntimeById(final String id);
 
     /*
     * Unregister the provider
     * @param RuntimeId to be unregistered
     * @see RuntimeId
      */
-    void unregisterRuntime( final RuntimeId runtime );
+    void unregisterRuntime(final RuntimeId runtime);
 
     /*
     * Get provider based on ProviderId and Class type
@@ -148,6 +157,6 @@ public interface RuntimeRegistry {
     * @return Provider 
     * @see RuntimeId
      */
-    <T extends Provider> Optional<T> getProvider( final ProviderId providerId,
-            final Class<T> clazz );
+    <T extends Provider> Optional<T> getProvider(final ProviderId providerId,
+                                                 final Class<T> clazz);
 }

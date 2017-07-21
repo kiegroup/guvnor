@@ -33,12 +33,12 @@ public class ValidationMessage {
     public ValidationMessage() {
     }
 
-    public ValidationMessage( final long id,
-                              final Level level,
-                              final Path path,
-                              final int line,
-                              final int column,
-                              final String text ) {
+    public ValidationMessage(final long id,
+                             final Level level,
+                             final Path path,
+                             final int line,
+                             final int column,
+                             final String text) {
         this.id = id;
         this.level = level;
         this.path = path;
@@ -47,11 +47,11 @@ public class ValidationMessage {
         this.text = text;
     }
 
-    public ValidationMessage( final long id,
-                              final Level level,
-                              final int line,
-                              final int column,
-                              final String text ) {
+    public ValidationMessage(final long id,
+                             final Level level,
+                             final int line,
+                             final int column,
+                             final String text) {
         this.id = id;
         this.level = level;
         this.line = line;
@@ -59,13 +59,13 @@ public class ValidationMessage {
         this.text = text;
     }
 
-    public ValidationMessage( final Level level,
-                              final String text ) {
+    public ValidationMessage(final Level level,
+                             final String text) {
         this.level = level;
         this.text = text;
     }
 
-    public ValidationMessage( ValidationMessage other ) {
+    public ValidationMessage(ValidationMessage other) {
         this.id = other.getId();
         this.level = other.getLevel();
         this.path = other.getPath();
@@ -74,27 +74,27 @@ public class ValidationMessage {
         this.text = other.getText();
     }
 
-    public void setId( long id ) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public void setLevel( final Level level ) {
+    public void setLevel(final Level level) {
         this.level = level;
     }
 
-    public void setPath( final Path path ) {
+    public void setPath(final Path path) {
         this.path = path;
     }
 
-    public void setLine( final int line ) {
+    public void setLine(final int line) {
         this.line = line;
     }
 
-    public void setColumn( final int column ) {
+    public void setColumn(final int column) {
         this.column = column;
     }
 
-    public void setText( final String text ) {
+    public void setText(final String text) {
         this.text = text;
     }
 
@@ -128,29 +128,29 @@ public class ValidationMessage {
      * validation by the underlying KieBuilder.
      */
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ValidationMessage ) ) {
+        if (!(o instanceof ValidationMessage)) {
             return false;
         }
 
         ValidationMessage that = (ValidationMessage) o;
 
-        if ( column != that.column ) {
+        if (column != that.column) {
             return false;
         }
-        if ( line != that.line ) {
+        if (line != that.line) {
             return false;
         }
-        if ( level != that.level ) {
+        if (level != that.level) {
             return false;
         }
-        if ( path != null ? !path.equals( that.path ) : that.path != null ) {
+        if (path != null ? !path.equals(that.path) : that.path != null) {
             return false;
         }
-        if ( text != null ? !text.equals( that.text ) : that.text != null ) {
+        if (text != null ? !text.equals(that.text) : that.text != null) {
             return false;
         }
 
@@ -166,13 +166,13 @@ public class ValidationMessage {
     public int hashCode() {
         int result = level != null ? level.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( path != null ? path.hashCode() : 0 );
+        result = 31 * result + (path != null ? path.hashCode() : 0);
         result = ~~result;
         result = 31 * result + line;
         result = ~~result;
         result = 31 * result + column;
         result = ~~result;
-        result = 31 * result + ( text != null ? text.hashCode() : 0 );
+        result = 31 * result + (text != null ? text.hashCode() : 0);
         result = ~~result;
         return result;
     }

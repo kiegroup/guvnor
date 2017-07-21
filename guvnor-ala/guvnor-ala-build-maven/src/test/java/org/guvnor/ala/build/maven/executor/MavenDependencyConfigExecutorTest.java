@@ -46,9 +46,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static java.util.Collections.*;
-import static org.appformer.maven.integration.embedder.MavenSettings.*;
-import static org.guvnor.ala.pipeline.StageUtil.*;
+import static java.util.Collections.singletonList;
+import static org.appformer.maven.integration.embedder.MavenSettings.CUSTOM_SETTINGS_PROPERTY;
+import static org.guvnor.ala.pipeline.StageUtil.config;
 import static org.junit.Assert.*;
 
 public class MavenDependencyConfigExecutorTest {
@@ -74,49 +74,71 @@ public class MavenDependencyConfigExecutorTest {
         final String oldSettingsXmlPath = System.getProperty(CUSTOM_SETTINGS_PROPERTY);
         try {
             final Path settingsXmlPath = generateSettingsXml();
-            System.setProperty(CUSTOM_SETTINGS_PROPERTY, settingsXmlPath.toString());
+            System.setProperty(CUSTOM_SETTINGS_PROPERTY,
+                               settingsXmlPath.toString());
             MavenSettings.reinitSettings();
 
-            installArtifactLocally(groupId, artifactId, version);
+            installArtifactLocally(groupId,
+                                   artifactId,
+                                   version);
 
             final BuildRegistry buildRegistry = new InMemoryBuildRegistry();
 
-            final Stage<Input, BinaryConfig> sourceConfig = config("Maven Artifact", (s) -> new MavenDependencyConfigImpl());
+            final Stage<Input, BinaryConfig> sourceConfig = config("Maven Artifact",
+                                                                   (s) -> new MavenDependencyConfigImpl());
 
             final Pipeline pipe = PipelineFactory.startFrom(sourceConfig).buildAs("my pipe");
 
             final PipelineExecutor executor = new PipelineExecutor(singletonList(new MavenDependencyConfigExecutor(buildRegistry)));
 
             executor.execute(new Input() {
-                {
-                    put("artifact", groupId + ":" + artifactId + ":pom:" + version);
-                }
-            }, pipe, System.out::println);
+                                 {
+                                     put("artifact",
+                                         groupId + ":" + artifactId + ":pom:" + version);
+                                 }
+                             },
+                             pipe,
+                             System.out::println);
 
             final List<Binary> allBinaries = buildRegistry.getAllBinaries();
             assertNotNull(allBinaries);
-            assertEquals(1, allBinaries.size());
+            assertEquals(1,
+                         allBinaries.size());
             assertTrue(allBinaries.get(0) instanceof MavenBinary);
             final MavenBinary binary = (MavenBinary) allBinaries.get(0);
-            assertEquals("Maven", binary.getType());
-            assertEquals(artifactId, binary.getName());
-            assertEquals(groupId, binary.getGroupId());
-            assertEquals(artifactId, binary.getArtifactId());
-            assertEquals(version, binary.getVersion());
-            assertEquals(m2Folder + "/org/guvnor/ala/maven-ala-artifact-test/1/maven-ala-artifact-test-1.pom", binary.getPath().toString());
+            assertEquals("Maven",
+                         binary.getType());
+            assertEquals(artifactId,
+                         binary.getName());
+            assertEquals(groupId,
+                         binary.getGroupId());
+            assertEquals(artifactId,
+                         binary.getArtifactId());
+            assertEquals(version,
+                         binary.getVersion());
+            assertEquals(m2Folder + "/org/guvnor/ala/maven-ala-artifact-test/1/maven-ala-artifact-test-1.pom",
+                         binary.getPath().toString());
         } finally {
             if (oldSettingsXmlPath == null) {
                 System.clearProperty(CUSTOM_SETTINGS_PROPERTY);
             } else {
-                System.setProperty(CUSTOM_SETTINGS_PROPERTY, oldSettingsXmlPath);
+                System.setProperty(CUSTOM_SETTINGS_PROPERTY,
+                                   oldSettingsXmlPath);
             }
             MavenSettings.reinitSettings();
         }
     }
 
-    private void installArtifactLocally(final String groupId, final String artifactId, final String version) throws Exception {
-        Artifact pomArtifact = new DefaultArtifact(groupId, artifactId, "pom", version);
-        final Path pom = getPom(groupId, artifactId, version);
+    private void installArtifactLocally(final String groupId,
+                                        final String artifactId,
+                                        final String version) throws Exception {
+        Artifact pomArtifact = new DefaultArtifact(groupId,
+                                                   artifactId,
+                                                   "pom",
+                                                   version);
+        final Path pom = getPom(groupId,
+                                artifactId,
+                                version);
         pomArtifact = pomArtifact.setFile(pom.toFile());
 
         final InstallRequest installRequest = new InstallRequest();
@@ -128,9 +150,11 @@ public class MavenDependencyConfigExecutorTest {
         final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
 
         final LocalRepository localRepo = new LocalRepository(m2Folder);
-        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepo));
+        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session,
+                                                                           localRepo));
 
-        system.install(session, installRequest);
+        system.install(session,
+                       installRequest);
     }
 
     private Path generateSettingsXml() throws IOException {
@@ -144,12 +168,17 @@ public class MavenDependencyConfigExecutorTest {
                         "  <offline>true</offline>\n" +
                         "</settings>\n";
 
-        final Path settingsXmlPath = Files.createTempFile(m2Folder.toPath(), "settings", ".xml");
-        Files.write(settingsXmlPath, settingsXml.getBytes());
+        final Path settingsXmlPath = Files.createTempFile(m2Folder.toPath(),
+                                                          "settings",
+                                                          ".xml");
+        Files.write(settingsXmlPath,
+                    settingsXml.getBytes());
         return settingsXmlPath;
     }
 
-    protected Path getPom(final String groupId, final String artifactId, final String version) throws IOException {
+    protected Path getPom(final String groupId,
+                          final String artifactId,
+                          final String version) throws IOException {
         String pom =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
@@ -160,12 +189,14 @@ public class MavenDependencyConfigExecutorTest {
                         "  <artifactId>" + artifactId + "</artifactId>\n" +
                         "  <version>" + version + "</version>\n" +
                         "  <packaging>pom</packaging>\n" +
-                "\n";
+                        "\n";
         pom += "</project>";
 
-        final Path pomXmlPath = Files.createTempFile(m2Folder.toPath(), "pom", ".xml");
-        Files.write(pomXmlPath, pom.getBytes());
+        final Path pomXmlPath = Files.createTempFile(m2Folder.toPath(),
+                                                     "pom",
+                                                     ".xml");
+        Files.write(pomXmlPath,
+                    pom.getBytes());
         return pomXmlPath;
     }
-
 }

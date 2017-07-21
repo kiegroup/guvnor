@@ -23,19 +23,19 @@ import org.gwtbootstrap3.client.ui.Button;
 public class ProtocolButton
         extends Button {
 
-    public ProtocolButton( final String protocol,
-                           final ClickHandler clickHandler,
-                           final boolean isNotFirst ) {
-        super( protocol );
+    public ProtocolButton(final String protocol,
+                          final ClickHandler clickHandler,
+                          final boolean isNotFirst) {
+        super(protocol);
 
-        getElement().getStyle().setMarginLeft( 5,
-                                               Style.Unit.PX );
+        getElement().getStyle().setMarginLeft(5,
+                                              Style.Unit.PX);
 
-        addClickHandler( clickHandler );
+        addClickHandler(clickHandler);
 
-        if ( isNotFirst ) {
-            getElement().getStyle().setPaddingLeft( 5,
-                                                    Style.Unit.PX );
+        if (isNotFirst) {
+            getElement().getStyle().setPaddingLeft(5,
+                                                   Style.Unit.PX);
         }
     }
 }

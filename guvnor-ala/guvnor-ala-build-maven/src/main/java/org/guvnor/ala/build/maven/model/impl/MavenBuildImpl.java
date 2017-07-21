@@ -33,9 +33,9 @@ public class MavenBuildImpl implements MavenBuild,
     public final List<String> goals;
     private final Properties properties;
 
-    public MavenBuildImpl( final Project project,
-                           final List<String> goals,
-                           final Properties properties ) {
+    public MavenBuildImpl(final Project project,
+                          final List<String> goals,
+                          final Properties properties) {
         this.project = project;
         this.goals = goals;
         this.properties = properties;
@@ -57,7 +57,9 @@ public class MavenBuildImpl implements MavenBuild,
     }
 
     @Override
-    public MavenBuild asNewClone( final MavenBuild source ) {
-        return new MavenBuildImpl( source.getProject(), source.getGoals(), source.getProperties() );
+    public MavenBuild asNewClone(final MavenBuild source) {
+        return new MavenBuildImpl(source.getProject(),
+                                  source.getGoals(),
+                                  source.getProperties());
     }
 }

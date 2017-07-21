@@ -22,7 +22,8 @@ import org.guvnor.structure.server.deployment.DeploymentConfigFactory;
 public class DeploymentConfigFactoryImpl implements DeploymentConfigFactory {
 
     @Override
-    public DeploymentConfig newDeployment( ConfigGroup groupConfig ) {
-        return new DeploymentConfigImpl( groupConfig.getName(), groupConfig.getConfigItem( "unit" ).getValue() );
+    public DeploymentConfig newDeployment(ConfigGroup groupConfig) {
+        return new DeploymentConfigImpl(groupConfig.getName(),
+                                        groupConfig.getConfigItem("unit").getValue());
     }
 }

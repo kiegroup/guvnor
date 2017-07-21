@@ -19,7 +19,8 @@ package org.guvnor.ala.build.maven.config.impl;
 import org.guvnor.ala.build.maven.config.MavenDependencyConfig;
 import org.guvnor.ala.config.CloneableConfig;
 
-public class MavenDependencyConfigImpl implements MavenDependencyConfig, CloneableConfig<MavenDependencyConfig> {
+public class MavenDependencyConfigImpl implements MavenDependencyConfig,
+                                                  CloneableConfig<MavenDependencyConfig> {
 
     private String artifact;
 

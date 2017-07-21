@@ -16,6 +16,7 @@
 package org.guvnor.ala.runtime.providers.base;
 
 import java.util.Objects;
+
 import org.guvnor.ala.runtime.providers.ProviderType;
 
 /*
@@ -26,8 +27,8 @@ public abstract class BaseProviderType implements ProviderType {
     private final String providerTypeName;
     private final String version;
 
-    public BaseProviderType( String providerName,
-            String version ) {
+    public BaseProviderType(String providerName,
+                            String version) {
         this.providerTypeName = providerName;
         this.version = version;
     }
@@ -50,30 +51,31 @@ public abstract class BaseProviderType implements ProviderType {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 43 * hash + Objects.hashCode( this.providerTypeName );
-        hash = 43 * hash + Objects.hashCode( this.version );
+        hash = 43 * hash + Objects.hashCode(this.providerTypeName);
+        hash = 43 * hash + Objects.hashCode(this.version);
         return hash;
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj ) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( obj == null ) {
+        if (obj == null) {
             return false;
         }
-        if ( getClass() != obj.getClass() ) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        final BaseProviderType other = ( BaseProviderType ) obj;
-        if ( !Objects.equals( this.providerTypeName, other.providerTypeName ) ) {
+        final BaseProviderType other = (BaseProviderType) obj;
+        if (!Objects.equals(this.providerTypeName,
+                            other.providerTypeName)) {
             return false;
         }
-        if ( !Objects.equals( this.version, other.version ) ) {
+        if (!Objects.equals(this.version,
+                            other.version)) {
             return false;
         }
         return true;
     }
-
 }

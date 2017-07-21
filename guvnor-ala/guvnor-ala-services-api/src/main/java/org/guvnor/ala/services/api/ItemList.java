@@ -16,14 +16,15 @@
 
 package org.guvnor.ala.services.api;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /*
  * Interface representing a List Generic of Items
  * @param <T> type of the items contained in the List
  */
-@JsonTypeInfo( use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT )
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public interface ItemList<T> {
 
     /*

@@ -38,7 +38,7 @@ public class GuvnorTestAppSetup {
     public static IOService ioService = DEFAULT_IO_SERVICE;
 
     @Produces
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     public IOService ioService() {
         return ioService;
     }
@@ -46,17 +46,16 @@ public class GuvnorTestAppSetup {
     @Produces
     @Alternative
     public SessionInfo sessionInfo() {
-        return mock( SessionInfo.class );
+        return mock(SessionInfo.class);
     }
 
     @Produces
-    @Named( "luceneConfig" )
+    @Named("luceneConfig")
     public LuceneConfig luceneConfig() {
-        return mock( LuceneConfig.class );
+        return mock(LuceneConfig.class);
     }
 
     public static void reset() {
         ioService = DEFAULT_IO_SERVICE;
     }
-
 }

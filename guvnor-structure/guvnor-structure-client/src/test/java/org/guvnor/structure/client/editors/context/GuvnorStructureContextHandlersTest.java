@@ -30,7 +30,7 @@ import org.uberfire.mocks.CallerMock;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class GuvnorStructureContextHandlersTest {
 
     @Mock
@@ -40,75 +40,77 @@ public class GuvnorStructureContextHandlersTest {
 
     @Before
     public void setUp() throws Exception {
-        context = new GuvnorStructureContext( new CallerMock<>( repositoryService ) );
+        context = new GuvnorStructureContext(new CallerMock<>(repositoryService));
     }
 
     @Test
     public void testHandler() throws Exception {
-        final GuvnorStructureContextChangeHandler handler1 = mock( GuvnorStructureContextChangeHandler.class );
-        final GuvnorStructureContextChangeHandler handler2 = mock( GuvnorStructureContextChangeHandler.class );
+        final GuvnorStructureContextChangeHandler handler1 = mock(GuvnorStructureContextChangeHandler.class);
+        final GuvnorStructureContextChangeHandler handler2 = mock(GuvnorStructureContextChangeHandler.class);
 
-        final GuvnorStructureContextChangeHandler.HandlerRegistration handlerRegistration1 = context.addGuvnorStructureContextChangeHandler( handler1 );
-        final GuvnorStructureContextChangeHandler.HandlerRegistration handlerRegistration2 = context.addGuvnorStructureContextChangeHandler( handler2 );
+        final GuvnorStructureContextChangeHandler.HandlerRegistration handlerRegistration1 = context.addGuvnorStructureContextChangeHandler(handler1);
+        final GuvnorStructureContextChangeHandler.HandlerRegistration handlerRegistration2 = context.addGuvnorStructureContextChangeHandler(handler2);
 
-        assertNotNull( handlerRegistration1 );
-        assertNotNull( handlerRegistration2 );
+        assertNotNull(handlerRegistration1);
+        assertNotNull(handlerRegistration2);
 
-        context.removeHandler( handlerRegistration2 );
+        context.removeHandler(handlerRegistration2);
 
         final GitRepository newRepository = new GitRepository();
 
-        context.onRepositoryRemoved( new RepositoryRemovedEvent( newRepository ) );
+        context.onRepositoryRemoved(new RepositoryRemovedEvent(newRepository));
 
-        verify( handler1 ).onRepositoryDeleted( newRepository );
-        verify( handler2, never() ).onRepositoryDeleted( newRepository );
+        verify(handler1).onRepositoryDeleted(newRepository);
+        verify(handler2,
+               never()).onRepositoryDeleted(newRepository);
     }
 
     @Test
     public void testNewRepository() throws Exception {
-        final GuvnorStructureContextChangeHandler handler = mock( GuvnorStructureContextChangeHandler.class );
+        final GuvnorStructureContextChangeHandler handler = mock(GuvnorStructureContextChangeHandler.class);
 
-        context.addGuvnorStructureContextChangeHandler( handler );
+        context.addGuvnorStructureContextChangeHandler(handler);
 
         final GitRepository newRepository = new GitRepository();
 
-        context.onNewRepository( new NewRepositoryEvent( newRepository ) );
+        context.onNewRepository(new NewRepositoryEvent(newRepository));
 
-        verify( handler ).onNewRepositoryAdded( newRepository );
+        verify(handler).onNewRepositoryAdded(newRepository);
     }
 
     @Test
     public void testBranchChange() throws Exception {
-        final GuvnorStructureContextBranchChangeHandler handler = mock( GuvnorStructureContextBranchChangeHandler.class );
+        final GuvnorStructureContextBranchChangeHandler handler = mock(GuvnorStructureContextBranchChangeHandler.class);
 
-        context.addGuvnorStructureContextBranchChangeHandler( handler );
+        context.addGuvnorStructureContextBranchChangeHandler(handler);
 
-        context.changeBranch( "your-repo",
-                              "hello" );
+        context.changeBranch("your-repo",
+                             "hello");
 
-        verify( handler ).onBranchChange( "your-repo",
-                                          "hello" );
+        verify(handler).onBranchChange("your-repo",
+                                       "hello");
     }
 
     @Test
     public void testRemoveBranchChangeHandler() throws Exception {
-        final GuvnorStructureContextBranchChangeHandler handler1 = mock( GuvnorStructureContextBranchChangeHandler.class );
-        final GuvnorStructureContextBranchChangeHandler handler2 = mock( GuvnorStructureContextBranchChangeHandler.class );
+        final GuvnorStructureContextBranchChangeHandler handler1 = mock(GuvnorStructureContextBranchChangeHandler.class);
+        final GuvnorStructureContextBranchChangeHandler handler2 = mock(GuvnorStructureContextBranchChangeHandler.class);
 
-        final GuvnorStructureContextBranchChangeHandler.HandlerRegistration handlerRegistration1 = context.addGuvnorStructureContextBranchChangeHandler( handler1 );
-        final GuvnorStructureContextBranchChangeHandler.HandlerRegistration handlerRegistration2 = context.addGuvnorStructureContextBranchChangeHandler( handler2 );
+        final GuvnorStructureContextBranchChangeHandler.HandlerRegistration handlerRegistration1 = context.addGuvnorStructureContextBranchChangeHandler(handler1);
+        final GuvnorStructureContextBranchChangeHandler.HandlerRegistration handlerRegistration2 = context.addGuvnorStructureContextBranchChangeHandler(handler2);
 
-        assertNotNull( handlerRegistration1 );
-        assertNotNull( handlerRegistration2 );
+        assertNotNull(handlerRegistration1);
+        assertNotNull(handlerRegistration2);
 
-        context.removeHandler( handlerRegistration1 );
+        context.removeHandler(handlerRegistration1);
 
-        context.changeBranch( "my-repo",
-                              "master" );
+        context.changeBranch("my-repo",
+                             "master");
 
-        verify( handler1, never() ).onBranchChange( "my-repo",
-                                                    "master" );
-        verify( handler2 ).onBranchChange( "my-repo",
-                                           "master" );
+        verify(handler1,
+               never()).onBranchChange("my-repo",
+                                       "master");
+        verify(handler2).onBranchChange("my-repo",
+                                        "master");
     }
 }

@@ -26,7 +26,7 @@ import org.uberfire.backend.vfs.Path;
 
 public interface ProjectServiceCore<T> {
 
-    WorkingSetSettings loadWorkingSetConfig( final Path project );
+    WorkingSetSettings loadWorkingSetConfig(final Path project);
 
     /**
      * Gets all the project from a given repository. Security checks are omitted.
@@ -34,8 +34,8 @@ public interface ProjectServiceCore<T> {
      * @param branch the branch where we are looking for the projects
      * @return
      */
-    Set<Project> getAllProjects( final Repository repository,
-                              final String branch );
+    Set<Project> getAllProjects(final Repository repository,
+                                final String branch);
 
     /**
      * Gets a list of the projects in a particular repository. Security checks are applied.
@@ -43,8 +43,8 @@ public interface ProjectServiceCore<T> {
      * @param branch the branch where we are looking for the projects
      * @return
      */
-    Set<Project> getProjects( final Repository repository,
-                              final String branch );
+    Set<Project> getProjects(final Repository repository,
+                             final String branch);
 
     /**
      * Creates a new project to the given path.
@@ -53,9 +53,9 @@ public interface ProjectServiceCore<T> {
      * @param baseURL the base URL where the Guvnor is hosted in web container
      * @return
      */
-    T newProject( final Path repositoryRoot,
-                  final POM pom,
-                  final String baseURL );
+    T newProject(final Path repositoryRoot,
+                 final POM pom,
+                 final String baseURL);
 
     /**
      * Creates a new project to the given path.
@@ -65,10 +65,10 @@ public interface ProjectServiceCore<T> {
      * @param mode Should creation check for the existence of other Artifacts with the same GAV
      * @return
      */
-    T newProject( final Path repositoryRoot,
-                  final POM pom,
-                  final String baseURL,
-                  final DeploymentMode mode );
+    T newProject(final Path repositoryRoot,
+                 final POM pom,
+                 final String baseURL,
+                 final DeploymentMode mode);
 
     /**
      * Creates a new package as a child of the provide package.
@@ -76,35 +76,35 @@ public interface ProjectServiceCore<T> {
      * @param packageName
      * @return
      */
-    org.guvnor.common.services.project.model.Package newPackage( final Package pkg,
-                                                                 final String packageName );
+    org.guvnor.common.services.project.model.Package newPackage(final Package pkg,
+                                                                final String packageName);
 
     /**
      * Add a group to a project; limiting access to users with the group
      * @param project The Project
      * @param group The required group
      */
-    void addGroup( final Project project,
-                   final String group );
+    void addGroup(final Project project,
+                  final String group);
 
     /**
      * Remove a group from a project
      * @param project The Project
      * @param group The group
      */
-    void removeGroup( final Project project,
-                      final String group );
+    void removeGroup(final Project project,
+                     final String group);
 
-    Path rename( final Path pathToPomXML,
-                 final String newName,
-                 final String comment );
+    Path rename(final Path pathToPomXML,
+                final String newName,
+                final String comment);
 
-    void delete( final Path pathToPomXML,
-                 final String comment );
+    void delete(final Path pathToPomXML,
+                final String comment);
 
-    void copy( final Path pathToPomXML,
-               final String newName,
-               final String comment );
+    void copy(final Path pathToPomXML,
+              final String newName,
+              final String comment);
 
-    void reImport( final Path pathToPomXML );
+    void reImport(final Path pathToPomXML);
 }

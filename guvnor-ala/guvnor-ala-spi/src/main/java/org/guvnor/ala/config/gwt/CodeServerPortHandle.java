@@ -20,5 +20,4 @@ public interface CodeServerPortHandle {
     Integer getPortNumber();
 
     void relinquishPort();
-
 }

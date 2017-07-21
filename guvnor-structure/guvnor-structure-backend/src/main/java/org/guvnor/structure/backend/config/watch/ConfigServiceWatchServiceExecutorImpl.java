@@ -30,7 +30,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchKey;
 
-import static javax.ejb.TransactionAttributeType.*;
+import static javax.ejb.TransactionAttributeType.NOT_SUPPORTED;
 
 @Singleton
 @Startup
@@ -55,11 +55,11 @@ public class ConfigServiceWatchServiceExecutorImpl implements ConfigServiceWatch
     @Inject
     private Event<SystemRepositoryChangedEvent> changedEvent;
 
-    public void setConfig( final org.guvnor.structure.repositories.Repository systemRepository,
-                           final IOService ioService,
-                           final Event<SystemRepositoryChangedEvent> repoChangedEvent,
-                           final Event<SystemRepositoryChangedEvent> orgUnitChangedEvent,
-                           final Event<SystemRepositoryChangedEvent> changedEvent ) {
+    public void setConfig(final org.guvnor.structure.repositories.Repository systemRepository,
+                          final IOService ioService,
+                          final Event<SystemRepositoryChangedEvent> repoChangedEvent,
+                          final Event<SystemRepositoryChangedEvent> orgUnitChangedEvent,
+                          final Event<SystemRepositoryChangedEvent> changedEvent) {
         this.systemRepository = systemRepository;
         this.ioService = ioService;
         this.repoChangedEvent = repoChangedEvent;
@@ -68,25 +68,24 @@ public class ConfigServiceWatchServiceExecutorImpl implements ConfigServiceWatch
     }
 
     @Override
-    public void execute( final WatchKey watchKey,
-                         final long localLastModifiedValue,
-                         final AsyncWatchServiceCallback callback ) {
+    public void execute(final WatchKey watchKey,
+                        final long localLastModifiedValue,
+                        final AsyncWatchServiceCallback callback) {
         final long currentValue = getLastModified();
-        if ( currentValue > localLastModifiedValue ) {
-            callback.callback( currentValue );
+        if (currentValue > localLastModifiedValue) {
+            callback.callback(currentValue);
             // notify first repository
-            repoChangedEvent.fire( new SystemRepositoryChangedEvent() );
+            repoChangedEvent.fire(new SystemRepositoryChangedEvent());
             // then org unit
-            orgUnitChangedEvent.fire( new SystemRepositoryChangedEvent() );
+            orgUnitChangedEvent.fire(new SystemRepositoryChangedEvent());
             // lastly all others
-            changedEvent.fire( new SystemRepositoryChangedEvent() );
+            changedEvent.fire(new SystemRepositoryChangedEvent());
         }
     }
 
     private long getLastModified() {
-        final Path lastModifiedPath = ioService.get( systemRepository.getUri() ).resolve( ConfigurationServiceImpl.LAST_MODIFIED_MARKER_FILE );
+        final Path lastModifiedPath = ioService.get(systemRepository.getUri()).resolve(ConfigurationServiceImpl.LAST_MODIFIED_MARKER_FILE);
 
-        return ioService.getLastModifiedTime( lastModifiedPath ).toMillis();
+        return ioService.getLastModifiedTime(lastModifiedPath).toMillis();
     }
-
 }

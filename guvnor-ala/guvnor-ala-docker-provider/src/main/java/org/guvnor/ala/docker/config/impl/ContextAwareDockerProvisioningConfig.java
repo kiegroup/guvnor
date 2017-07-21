@@ -39,7 +39,7 @@ public class ContextAwareDockerProvisioningConfig implements
     private String portNumber = "${input.port-number}";
     private ProviderId providerId;
     private String dockerPullValue = "${input.docker-pull}";
-    protected static final Logger LOG = LoggerFactory.getLogger( ContextAwareDockerProvisioningConfig.class );
+    protected static final Logger LOG = LoggerFactory.getLogger(ContextAwareDockerProvisioningConfig.class);
 
     public ContextAwareDockerProvisioningConfig() {
         this.imageName = DockerProvisioningConfig.super.getImageName();
@@ -47,10 +47,10 @@ public class ContextAwareDockerProvisioningConfig implements
         this.dockerPullValue = DockerProvisioningConfig.super.getDockerPullValue();
     }
 
-    public ContextAwareDockerProvisioningConfig( final String imageName,
-                                                 final String portNumber,
-                                                 final ProviderId providerId,
-                                                 final String dockerPullValue ) {
+    public ContextAwareDockerProvisioningConfig(final String imageName,
+                                                final String portNumber,
+                                                final ProviderId providerId,
+                                                final String dockerPullValue) {
         this.imageName = imageName;
         this.portNumber = portNumber;
         this.providerId = providerId;
@@ -59,30 +59,35 @@ public class ContextAwareDockerProvisioningConfig implements
 
     @Override
     @JsonIgnore
-    public void setContext( final Map<String, ?> context ) {
+    public void setContext(final Map<String, ?> context) {
         this.context = context;
-        this.providerId = (ProviderId) this.context.get( "docker-provider" );
+        this.providerId = (ProviderId) this.context.get("docker-provider");
         try {
-            final Object _project = context.get( "project" );
-            if ( _project != null && _project instanceof MavenProject ) {
-                final Collection<PlugIn> plugIns = ( (MavenProject) _project ).getBuildPlugins();
-                for ( final PlugIn plugIn : plugIns ) {
-                    if ( plugIn.getId().equals( "io.fabric8:docker-maven-plugin" ) ) {
-                        final Map<String, Object> _config = (Map<String, Object>) plugIn.getConfiguration().get( "images" );
-                        imageName = getValue( _config, "image" ).get( "name" ).toString();
-                        portNumber = getValue( getValue( getValue( _config, "image" ), "build" ), "ports" ).get( "port" ).toString();
+            final Object _project = context.get("project");
+            if (_project != null && _project instanceof MavenProject) {
+                final Collection<PlugIn> plugIns = ((MavenProject) _project).getBuildPlugins();
+                for (final PlugIn plugIn : plugIns) {
+                    if (plugIn.getId().equals("io.fabric8:docker-maven-plugin")) {
+                        final Map<String, Object> _config = (Map<String, Object>) plugIn.getConfiguration().get("images");
+                        imageName = getValue(_config,
+                                             "image").get("name").toString();
+                        portNumber = getValue(getValue(getValue(_config,
+                                                                "image"),
+                                                       "build"),
+                                              "ports").get("port").toString();
                         break;
                     }
                 }
             }
-        } catch ( final Exception ex ) {
-            LOG.warn( "Error failing to parse Maven configuration for Docker Plugin: " + ex.getMessage(), ex);
+        } catch (final Exception ex) {
+            LOG.warn("Error failing to parse Maven configuration for Docker Plugin: " + ex.getMessage(),
+                     ex);
         }
     }
 
-    private Map<String, Object> getValue( final Map<String, Object> _config,
-                                          final String key ) {
-        return (Map<String, Object>) _config.get( key );
+    private Map<String, Object> getValue(final Map<String, Object> _config,
+                                         final String key) {
+        return (Map<String, Object>) _config.get(key);
     }
 
     @Override
@@ -100,11 +105,11 @@ public class ContextAwareDockerProvisioningConfig implements
         return providerId;
     }
 
-    public void setImageName( String imageName ) {
+    public void setImageName(String imageName) {
         this.imageName = imageName;
     }
 
-    public void setPortNumber( String portNumber ) {
+    public void setPortNumber(String portNumber) {
         this.portNumber = portNumber;
     }
 
@@ -113,11 +118,11 @@ public class ContextAwareDockerProvisioningConfig implements
         return dockerPullValue;
     }
 
-    public void setProviderId( ProviderId providerId ) {
+    public void setProviderId(ProviderId providerId) {
         this.providerId = providerId;
     }
 
-    public void setDockerPullValue( String dockerPullValue ) {
+    public void setDockerPullValue(String dockerPullValue) {
         this.dockerPullValue = dockerPullValue;
     }
 
@@ -127,10 +132,10 @@ public class ContextAwareDockerProvisioningConfig implements
     }
 
     @Override
-    public DockerProvisioningConfig asNewClone( final DockerProvisioningConfig origin ) {
-        return new ContextAwareDockerProvisioningConfig( origin.getImageName(),
-                                                         origin.getPortNumber(),
-                                                         origin.getProviderId(),
-                                                         origin.getDockerPullValue() );
+    public DockerProvisioningConfig asNewClone(final DockerProvisioningConfig origin) {
+        return new ContextAwareDockerProvisioningConfig(origin.getImageName(),
+                                                        origin.getPortNumber(),
+                                                        origin.getProviderId(),
+                                                        origin.getDockerPullValue());
     }
 }

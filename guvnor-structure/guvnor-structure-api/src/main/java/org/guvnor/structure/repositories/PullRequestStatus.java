@@ -26,5 +26,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  */
 @Portable
 public enum PullRequestStatus {
-    MERGED, CLOSED, REJECTED, OPEN
+    MERGED,
+    CLOSED,
+    REJECTED,
+    OPEN
 }

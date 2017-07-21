@@ -66,432 +66,425 @@ public class RepositoryStructureServiceImplTest {
     @BeforeClass
     public static void setupSystemProperties() {
         //These are not needed for the tests
-        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
-                            "true" );
+        System.setProperty("org.uberfire.nio.git.daemon.enabled",
+                           "false");
+        System.setProperty("org.uberfire.nio.git.ssh.enabled",
+                           "false");
+        System.setProperty("org.uberfire.sys.repo.monitor.disabled",
+                           "true");
     }
 
     @Before
     public void setup() {
-        service = new RepositoryStructureServiceImpl( mock( IOService.class ),
-                                                      pomService,
-                                                      projectService,
-                                                      m2service,
-                                                      mock( CommentedOptionFactory.class ),
-                                                      repositoryResolver,
-                                                      mock( RepositoryStructureModelLoader.class ),
-                                                      mock( ManagedStatusUpdater.class ) );
+        service = new RepositoryStructureServiceImpl(mock(IOService.class),
+                                                     pomService,
+                                                     projectService,
+                                                     m2service,
+                                                     mock(CommentedOptionFactory.class),
+                                                     repositoryResolver,
+                                                     mock(RepositoryStructureModelLoader.class),
+                                                     mock(ManagedStatusUpdater.class));
     }
 
     @Test
     public void testInitRepositoryStructure1() {
-        final GAV gav = new GAV( "groupId",
-                                 "artifactId",
-                                 "version" );
-        final Repository repository = mock( Repository.class );
-        final Path repositoryRootPath = mock( Path.class );
-        when( repository.getAlias() ).thenReturn( "alias" );
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        final GAV gav = new GAV("groupId",
+                                "artifactId",
+                                "version");
+        final Repository repository = mock(Repository.class);
+        final Path repositoryRootPath = mock(Path.class);
+        when(repository.getAlias()).thenReturn("alias");
+        when(repository.getRoot()).thenReturn(repositoryRootPath);
 
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( Collections.<MavenRepositoryMetadata>emptySet() );
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav))).thenReturn(Collections.<MavenRepositoryMetadata>emptySet());
 
-        service.initRepositoryStructure( gav,
-                                         repository,
-                                         DeploymentMode.VALIDATED );
+        service.initRepositoryStructure(gav,
+                                        repository,
+                                        DeploymentMode.VALIDATED);
 
-        verify( repositoryResolver,
-                times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ) );
+        verify(repositoryResolver,
+               times(1)).getRepositoriesResolvingArtifact(eq(gav));
 
-        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-        verify( pomService,
-                times( 1 ) ).create( eq( repositoryRootPath ),
-                                     eq( "" ),
-                                     pomArgumentCaptor.capture() );
+        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+        verify(pomService,
+               times(1)).create(eq(repositoryRootPath),
+                                eq(""),
+                                pomArgumentCaptor.capture());
 
-        assertNotNull( pomArgumentCaptor.getValue() );
-        assertEquals( "groupId",
-                      pomArgumentCaptor.getValue().getGav().getGroupId() );
-        assertEquals( "artifactId",
-                      pomArgumentCaptor.getValue().getGav().getArtifactId() );
-        assertEquals( "version",
-                      pomArgumentCaptor.getValue().getGav().getVersion() );
+        assertNotNull(pomArgumentCaptor.getValue());
+        assertEquals("groupId",
+                     pomArgumentCaptor.getValue().getGav().getGroupId());
+        assertEquals("artifactId",
+                     pomArgumentCaptor.getValue().getGav().getArtifactId());
+        assertEquals("version",
+                     pomArgumentCaptor.getValue().getGav().getVersion());
 
-        verify( m2service,
-                times( 1 ) ).deployParentPom( eq( gav ) );
+        verify(m2service,
+               times(1)).deployParentPom(eq(gav));
     }
 
     @Test
     public void testInitRepositoryStructure1ClashingGAV() {
-        final GAV gav = new GAV( "groupId",
-                                 "artifactId",
-                                 "version" );
-        final Repository repository = mock( Repository.class );
-        final Path repositoryRootPath = mock( Path.class );
-        when( repository.getAlias() ).thenReturn( "alias" );
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        final GAV gav = new GAV("groupId",
+                                "artifactId",
+                                "version");
+        final Repository repository = mock(Repository.class);
+        final Path repositoryRootPath = mock(Path.class);
+        when(repository.getAlias()).thenReturn("alias");
+        when(repository.getRoot()).thenReturn(repositoryRootPath);
 
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() {
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav))).thenReturn(new HashSet<MavenRepositoryMetadata>() {
             {
-                add( new MavenRepositoryMetadata( "local-id",
-                                                  "local-url",
-                                                  MavenRepositorySource.LOCAL ) );
+                add(new MavenRepositoryMetadata("local-id",
+                                                "local-url",
+                                                MavenRepositorySource.LOCAL));
             }
-        } );
+        });
 
         try {
-            service.initRepositoryStructure( gav,
-                                             repository,
-                                             DeploymentMode.VALIDATED );
-
-        } catch ( GAVAlreadyExistsException expected ) {
+            service.initRepositoryStructure(gav,
+                                            repository,
+                                            DeploymentMode.VALIDATED);
+        } catch (GAVAlreadyExistsException expected) {
             //This is expected, but we want to verify the other services are not called
         }
 
-        verify( repositoryResolver,
-                times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ) );
+        verify(repositoryResolver,
+               times(1)).getRepositoriesResolvingArtifact(eq(gav));
 
-        verify( pomService,
-                never() ).create( eq( repositoryRootPath ),
-                                  eq( "" ),
-                                  any( POM.class ) );
-        verify( m2service,
-                never() ).deployParentPom( eq( gav ) );
+        verify(pomService,
+               never()).create(eq(repositoryRootPath),
+                               eq(""),
+                               any(POM.class));
+        verify(m2service,
+               never()).deployParentPom(eq(gav));
     }
 
     @Test
     public void testInitRepositoryStructure1ClashingGAVForced() {
-        final GAV gav = new GAV( "groupId",
-                                 "artifactId",
-                                 "version" );
-        final Repository repository = mock( Repository.class );
-        final Path repositoryRootPath = mock( Path.class );
-        when( repository.getAlias() ).thenReturn( "alias" );
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        final GAV gav = new GAV("groupId",
+                                "artifactId",
+                                "version");
+        final Repository repository = mock(Repository.class);
+        final Path repositoryRootPath = mock(Path.class);
+        when(repository.getAlias()).thenReturn("alias");
+        when(repository.getRoot()).thenReturn(repositoryRootPath);
 
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() {
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav))).thenReturn(new HashSet<MavenRepositoryMetadata>() {
             {
-                add( new MavenRepositoryMetadata( "local-id",
-                                                  "local-url",
-                                                  MavenRepositorySource.LOCAL ) );
+                add(new MavenRepositoryMetadata("local-id",
+                                                "local-url",
+                                                MavenRepositorySource.LOCAL));
             }
-        } );
+        });
 
         try {
-            service.initRepositoryStructure( gav,
-                                             repository,
-                                             DeploymentMode.FORCED );
-
-        } catch ( GAVAlreadyExistsException expected ) {
+            service.initRepositoryStructure(gav,
+                                            repository,
+                                            DeploymentMode.FORCED);
+        } catch (GAVAlreadyExistsException expected) {
             //This is expected, but we want to verify the other services are not called
         }
 
-        verify( repositoryResolver,
-                never() ).getRepositoriesResolvingArtifact( eq( gav ) );
+        verify(repositoryResolver,
+               never()).getRepositoriesResolvingArtifact(eq(gav));
 
-        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-        verify( pomService,
-                times( 1 ) ).create( eq( repositoryRootPath ),
-                                     eq( "" ),
-                                     pomArgumentCaptor.capture() );
+        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+        verify(pomService,
+               times(1)).create(eq(repositoryRootPath),
+                                eq(""),
+                                pomArgumentCaptor.capture());
 
-        assertNotNull( pomArgumentCaptor.getValue() );
-        assertEquals( "groupId",
-                      pomArgumentCaptor.getValue().getGav().getGroupId() );
-        assertEquals( "artifactId",
-                      pomArgumentCaptor.getValue().getGav().getArtifactId() );
-        assertEquals( "version",
-                      pomArgumentCaptor.getValue().getGav().getVersion() );
+        assertNotNull(pomArgumentCaptor.getValue());
+        assertEquals("groupId",
+                     pomArgumentCaptor.getValue().getGav().getGroupId());
+        assertEquals("artifactId",
+                     pomArgumentCaptor.getValue().getGav().getArtifactId());
+        assertEquals("version",
+                     pomArgumentCaptor.getValue().getGav().getVersion());
 
-        verify( m2service,
-                times( 1 ) ).deployParentPom( eq( gav ) );
+        verify(m2service,
+               times(1)).deployParentPom(eq(gav));
     }
 
     @Test
     public void testInitRepositoryStructure2SingleModule() {
-        final GAV gav = new GAV( "groupId",
-                                 "artifactId",
-                                 "version" );
-        final POM pom = new POM( gav );
-        final Repository repository = mock( Repository.class );
-        final Path repositoryRootPath = mock( Path.class );
-        when( repository.getAlias() ).thenReturn( "alias" );
-        when(repository.getDefaultBranch()).thenReturn( "master" );
-        when( repository.getBranchRoot( "master" ) ).thenReturn( repositoryRootPath );
+        final GAV gav = new GAV("groupId",
+                                "artifactId",
+                                "version");
+        final POM pom = new POM(gav);
+        final Repository repository = mock(Repository.class);
+        final Path repositoryRootPath = mock(Path.class);
+        when(repository.getAlias()).thenReturn("alias");
+        when(repository.getDefaultBranch()).thenReturn("master");
+        when(repository.getBranchRoot("master")).thenReturn(repositoryRootPath);
 
-        final Project project = mock( Project.class );
-        final Path pomPath = mock( Path.class );
-        when( project.getPomXMLPath() ).thenReturn( pomPath );
+        final Project project = mock(Project.class);
+        final Path pomPath = mock(Path.class);
+        when(project.getPomXMLPath()).thenReturn(pomPath);
 
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( Collections.<MavenRepositoryMetadata>emptySet() );
-        when( projectService.newProject( eq( repositoryRootPath ),
-                                         eq( pom ),
-                                         eq( "baseUrl" ),
-                                         eq( DeploymentMode.VALIDATED ) ) ).thenReturn( project );
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav))).thenReturn(Collections.<MavenRepositoryMetadata>emptySet());
+        when(projectService.newProject(eq(repositoryRootPath),
+                                       eq(pom),
+                                       eq("baseUrl"),
+                                       eq(DeploymentMode.VALIDATED))).thenReturn(project);
 
-        service.initRepositoryStructure( pom,
-                                         "baseUrl",
-                                         repository,
-                                         false,
-                                         DeploymentMode.VALIDATED );
+        service.initRepositoryStructure(pom,
+                                        "baseUrl",
+                                        repository,
+                                        false,
+                                        DeploymentMode.VALIDATED);
 
-        verify( repositoryResolver,
-                times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ) );
+        verify(repositoryResolver,
+               times(1)).getRepositoriesResolvingArtifact(eq(gav));
 
-        verify( projectService,
-                times( 1 ) ).newProject( eq( repositoryRootPath ),
-                                         eq( pom ),
-                                         eq( "baseUrl" ),
-                                         eq( DeploymentMode.VALIDATED ) );
+        verify(projectService,
+               times(1)).newProject(eq(repositoryRootPath),
+                                    eq(pom),
+                                    eq("baseUrl"),
+                                    eq(DeploymentMode.VALIDATED));
     }
 
     @Test
     public void testInitRepositoryStructure2SingleModuleClashingGAV() {
-        final GAV gav = new GAV( "groupId",
-                                 "artifactId",
-                                 "version" );
-        final POM pom = new POM( gav );
-        final Repository repository = mock( Repository.class );
-        final Path repositoryRootPath = mock( Path.class );
-        when( repository.getAlias() ).thenReturn( "alias" );
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        final GAV gav = new GAV("groupId",
+                                "artifactId",
+                                "version");
+        final POM pom = new POM(gav);
+        final Repository repository = mock(Repository.class);
+        final Path repositoryRootPath = mock(Path.class);
+        when(repository.getAlias()).thenReturn("alias");
+        when(repository.getRoot()).thenReturn(repositoryRootPath);
 
-        final Project project = mock( Project.class );
-        final Path pomPath = mock( Path.class );
-        when( project.getPomXMLPath() ).thenReturn( pomPath );
+        final Project project = mock(Project.class);
+        final Path pomPath = mock(Path.class);
+        when(project.getPomXMLPath()).thenReturn(pomPath);
 
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() {
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav))).thenReturn(new HashSet<MavenRepositoryMetadata>() {
             {
-                add( new MavenRepositoryMetadata( "local-id",
-                                                  "local-url",
-                                                  MavenRepositorySource.LOCAL ) );
+                add(new MavenRepositoryMetadata("local-id",
+                                                "local-url",
+                                                MavenRepositorySource.LOCAL));
             }
-        } );
+        });
 
-        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException( pom.getGav(),
-                                                                             new HashSet<MavenRepositoryMetadata>() {{
-                                                                                 add( new MavenRepositoryMetadata( "local-id",
-                                                                                                                   "local-url",
-                                                                                                                   MavenRepositorySource.LOCAL ) );
-                                                                             }} );
-        doThrow( gae ).when( projectService ).newProject( eq( repositoryRootPath ),
-                                                          eq( pom ),
-                                                          eq( "baseUrl" ),
-                                                          eq( DeploymentMode.VALIDATED ) );
+        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException(pom.getGav(),
+                                                                            new HashSet<MavenRepositoryMetadata>() {{
+                                                                                add(new MavenRepositoryMetadata("local-id",
+                                                                                                                "local-url",
+                                                                                                                MavenRepositorySource.LOCAL));
+                                                                            }});
+        doThrow(gae).when(projectService).newProject(eq(repositoryRootPath),
+                                                     eq(pom),
+                                                     eq("baseUrl"),
+                                                     eq(DeploymentMode.VALIDATED));
 
         try {
-            service.initRepositoryStructure( pom,
-                                             "baseUrl",
-                                             repository,
-                                             false,
-                                             DeploymentMode.VALIDATED );
-
-        } catch ( GAVAlreadyExistsException expected ) {
+            service.initRepositoryStructure(pom,
+                                            "baseUrl",
+                                            repository,
+                                            false,
+                                            DeploymentMode.VALIDATED);
+        } catch (GAVAlreadyExistsException expected) {
             //This is expected, but we want to verify the other services are not called
         }
 
-        verify( repositoryResolver,
-                times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ) );
+        verify(repositoryResolver,
+               times(1)).getRepositoriesResolvingArtifact(eq(gav));
 
-        verify( projectService,
-                never() ).newProject( eq( repositoryRootPath ),
-                                      eq( pom ),
-                                      eq( "baseUrl" ),
-                                      any( DeploymentMode.class ) );
+        verify(projectService,
+               never()).newProject(eq(repositoryRootPath),
+                                   eq(pom),
+                                   eq("baseUrl"),
+                                   any(DeploymentMode.class));
     }
 
     @Test
     public void testInitRepositoryStructure2SingleModuleClashingGAVForced() {
-        final GAV gav = new GAV( "groupId",
-                                 "artifactId",
-                                 "version" );
-        final POM pom = new POM( gav );
-        final Repository repository = mock( Repository.class );
-        final Path repositoryRootPath = mock( Path.class );
-        when( repository.getAlias() ).thenReturn( "alias" );
-        when(repository.getDefaultBranch()).thenReturn( "master" );
-        when( repository.getBranchRoot( "master" ) ).thenReturn( repositoryRootPath );
+        final GAV gav = new GAV("groupId",
+                                "artifactId",
+                                "version");
+        final POM pom = new POM(gav);
+        final Repository repository = mock(Repository.class);
+        final Path repositoryRootPath = mock(Path.class);
+        when(repository.getAlias()).thenReturn("alias");
+        when(repository.getDefaultBranch()).thenReturn("master");
+        when(repository.getBranchRoot("master")).thenReturn(repositoryRootPath);
 
-        final Project project = mock( Project.class );
-        final Path pomPath = mock( Path.class );
-        when( project.getPomXMLPath() ).thenReturn( pomPath );
+        final Project project = mock(Project.class);
+        final Path pomPath = mock(Path.class);
+        when(project.getPomXMLPath()).thenReturn(pomPath);
 
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() {
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav))).thenReturn(new HashSet<MavenRepositoryMetadata>() {
             {
-                add( new MavenRepositoryMetadata( "local-id",
-                                                  "local-url",
-                                                  MavenRepositorySource.LOCAL ) );
+                add(new MavenRepositoryMetadata("local-id",
+                                                "local-url",
+                                                MavenRepositorySource.LOCAL));
             }
-        } );
+        });
 
-        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException( pom.getGav(),
-                                                                             new HashSet<MavenRepositoryMetadata>() {{
-                                                                                 add( new MavenRepositoryMetadata( "local-id",
-                                                                                                                   "local-url",
-                                                                                                                   MavenRepositorySource.LOCAL ) );
-                                                                             }} );
-        doThrow( gae ).when( projectService ).newProject( eq( repositoryRootPath ),
-                                                          eq( pom ),
-                                                          eq( "baseUrl" ),
-                                                          eq( DeploymentMode.VALIDATED ) );
-        when( projectService.newProject( eq( repositoryRootPath ),
-                                         eq( pom ),
-                                         eq( "baseUrl" ),
-                                         eq( DeploymentMode.FORCED ) ) ).thenReturn( project );
+        final GAVAlreadyExistsException gae = new GAVAlreadyExistsException(pom.getGav(),
+                                                                            new HashSet<MavenRepositoryMetadata>() {{
+                                                                                add(new MavenRepositoryMetadata("local-id",
+                                                                                                                "local-url",
+                                                                                                                MavenRepositorySource.LOCAL));
+                                                                            }});
+        doThrow(gae).when(projectService).newProject(eq(repositoryRootPath),
+                                                     eq(pom),
+                                                     eq("baseUrl"),
+                                                     eq(DeploymentMode.VALIDATED));
+        when(projectService.newProject(eq(repositoryRootPath),
+                                       eq(pom),
+                                       eq("baseUrl"),
+                                       eq(DeploymentMode.FORCED))).thenReturn(project);
 
         try {
-            service.initRepositoryStructure( pom,
-                                             "baseUrl",
-                                             repository,
-                                             false,
-                                             DeploymentMode.FORCED );
-
-        } catch ( GAVAlreadyExistsException expected ) {
+            service.initRepositoryStructure(pom,
+                                            "baseUrl",
+                                            repository,
+                                            false,
+                                            DeploymentMode.FORCED);
+        } catch (GAVAlreadyExistsException expected) {
             //This is expected, but we want to verify the other services are not called
         }
 
-        verify( repositoryResolver,
-                never() ).getRepositoriesResolvingArtifact( eq( gav ) );
+        verify(repositoryResolver,
+               never()).getRepositoriesResolvingArtifact(eq(gav));
 
-        verify( projectService,
-                times( 1 ) ).newProject( eq( repositoryRootPath ),
-                                         eq( pom ),
-                                         eq( "baseUrl" ),
-                                         eq( DeploymentMode.FORCED ) );
+        verify(projectService,
+               times(1)).newProject(eq(repositoryRootPath),
+                                    eq(pom),
+                                    eq("baseUrl"),
+                                    eq(DeploymentMode.FORCED));
     }
 
     @Test
     public void testInitRepositoryStructure2MultiModule() {
-        final GAV gav = new GAV( "groupId",
-                                 "artifactId",
-                                 "version" );
-        final POM pom = new POM( gav );
-        final Repository repository = mock( Repository.class );
-        final Path repositoryRootPath = mock( Path.class );
-        when( repository.getAlias() ).thenReturn( "alias" );
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        final GAV gav = new GAV("groupId",
+                                "artifactId",
+                                "version");
+        final POM pom = new POM(gav);
+        final Repository repository = mock(Repository.class);
+        final Path repositoryRootPath = mock(Path.class);
+        when(repository.getAlias()).thenReturn("alias");
+        when(repository.getRoot()).thenReturn(repositoryRootPath);
 
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( Collections.<MavenRepositoryMetadata>emptySet() );
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav))).thenReturn(Collections.<MavenRepositoryMetadata>emptySet());
 
-        service.initRepositoryStructure( pom,
-                                         "baseUrl",
-                                         repository,
-                                         true,
-                                         DeploymentMode.VALIDATED );
+        service.initRepositoryStructure(pom,
+                                        "baseUrl",
+                                        repository,
+                                        true,
+                                        DeploymentMode.VALIDATED);
 
-        verify( repositoryResolver,
-                times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ) );
+        verify(repositoryResolver,
+               times(1)).getRepositoriesResolvingArtifact(eq(gav));
 
-        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-        verify( pomService,
-                times( 1 ) ).create( eq( repositoryRootPath ),
-                                     eq( "baseUrl" ),
-                                     pomArgumentCaptor.capture() );
+        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+        verify(pomService,
+               times(1)).create(eq(repositoryRootPath),
+                                eq("baseUrl"),
+                                pomArgumentCaptor.capture());
 
-        assertNotNull( pomArgumentCaptor.getValue() );
-        assertEquals( "groupId",
-                      pomArgumentCaptor.getValue().getGav().getGroupId() );
-        assertEquals( "artifactId",
-                      pomArgumentCaptor.getValue().getGav().getArtifactId() );
-        assertEquals( "version",
-                      pomArgumentCaptor.getValue().getGav().getVersion() );
+        assertNotNull(pomArgumentCaptor.getValue());
+        assertEquals("groupId",
+                     pomArgumentCaptor.getValue().getGav().getGroupId());
+        assertEquals("artifactId",
+                     pomArgumentCaptor.getValue().getGav().getArtifactId());
+        assertEquals("version",
+                     pomArgumentCaptor.getValue().getGav().getVersion());
 
-        verify( m2service,
-                times( 1 ) ).deployParentPom( eq( gav ) );
+        verify(m2service,
+               times(1)).deployParentPom(eq(gav));
     }
 
     @Test
     public void testInitRepositoryStructure2MultiModuleClashingGAV() {
-        final GAV gav = new GAV( "groupId",
-                                 "artifactId",
-                                 "version" );
-        final POM pom = new POM( gav );
-        final Repository repository = mock( Repository.class );
-        final Path repositoryRootPath = mock( Path.class );
-        when( repository.getAlias() ).thenReturn( "alias" );
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        final GAV gav = new GAV("groupId",
+                                "artifactId",
+                                "version");
+        final POM pom = new POM(gav);
+        final Repository repository = mock(Repository.class);
+        final Path repositoryRootPath = mock(Path.class);
+        when(repository.getAlias()).thenReturn("alias");
+        when(repository.getRoot()).thenReturn(repositoryRootPath);
 
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() {
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav))).thenReturn(new HashSet<MavenRepositoryMetadata>() {
             {
-                add( new MavenRepositoryMetadata( "local-id",
-                                                  "local-url",
-                                                  MavenRepositorySource.LOCAL ) );
+                add(new MavenRepositoryMetadata("local-id",
+                                                "local-url",
+                                                MavenRepositorySource.LOCAL));
             }
-        } );
+        });
 
         try {
-            service.initRepositoryStructure( pom,
-                                             "baseUrl",
-                                             repository,
-                                             true,
-                                             DeploymentMode.VALIDATED );
-
-        } catch ( GAVAlreadyExistsException expected ) {
+            service.initRepositoryStructure(pom,
+                                            "baseUrl",
+                                            repository,
+                                            true,
+                                            DeploymentMode.VALIDATED);
+        } catch (GAVAlreadyExistsException expected) {
             //This is expected, but we want to verify the other services are not called
         }
 
-        verify( repositoryResolver,
-                times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ) );
+        verify(repositoryResolver,
+               times(1)).getRepositoriesResolvingArtifact(eq(gav));
 
-        verify( pomService,
-                never() ).create( eq( repositoryRootPath ),
-                                  eq( "" ),
-                                  any( POM.class ) );
-        verify( m2service,
-                never() ).deployParentPom( eq( gav ) );
+        verify(pomService,
+               never()).create(eq(repositoryRootPath),
+                               eq(""),
+                               any(POM.class));
+        verify(m2service,
+               never()).deployParentPom(eq(gav));
     }
 
     @Test
     public void testInitRepositoryStructure2MultiModuleClashingGAVForced() {
-        final GAV gav = new GAV( "groupId",
-                                 "artifactId",
-                                 "version" );
-        final POM pom = new POM( gav );
-        final Repository repository = mock( Repository.class );
-        final Path repositoryRootPath = mock( Path.class );
-        when( repository.getAlias() ).thenReturn( "alias" );
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        final GAV gav = new GAV("groupId",
+                                "artifactId",
+                                "version");
+        final POM pom = new POM(gav);
+        final Repository repository = mock(Repository.class);
+        final Path repositoryRootPath = mock(Path.class);
+        when(repository.getAlias()).thenReturn("alias");
+        when(repository.getRoot()).thenReturn(repositoryRootPath);
 
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() {
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav))).thenReturn(new HashSet<MavenRepositoryMetadata>() {
             {
-                add( new MavenRepositoryMetadata( "local-id",
-                                                  "local-url",
-                                                  MavenRepositorySource.LOCAL ) );
+                add(new MavenRepositoryMetadata("local-id",
+                                                "local-url",
+                                                MavenRepositorySource.LOCAL));
             }
-        } );
+        });
 
         try {
-            service.initRepositoryStructure( pom,
-                                             "baseUrl",
-                                             repository,
-                                             true,
-                                             DeploymentMode.FORCED );
-
-        } catch ( GAVAlreadyExistsException expected ) {
+            service.initRepositoryStructure(pom,
+                                            "baseUrl",
+                                            repository,
+                                            true,
+                                            DeploymentMode.FORCED);
+        } catch (GAVAlreadyExistsException expected) {
             //This is expected, but we want to verify the other services are not called
         }
 
-        verify( repositoryResolver,
-                never() ).getRepositoriesResolvingArtifact( eq( gav ) );
+        verify(repositoryResolver,
+               never()).getRepositoriesResolvingArtifact(eq(gav));
 
-        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-        verify( pomService,
-                times( 1 ) ).create( eq( repositoryRootPath ),
-                                     eq( "baseUrl" ),
-                                     pomArgumentCaptor.capture() );
+        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+        verify(pomService,
+               times(1)).create(eq(repositoryRootPath),
+                                eq("baseUrl"),
+                                pomArgumentCaptor.capture());
 
-        assertNotNull( pomArgumentCaptor.getValue() );
-        assertEquals( "groupId",
-                      pomArgumentCaptor.getValue().getGav().getGroupId() );
-        assertEquals( "artifactId",
-                      pomArgumentCaptor.getValue().getGav().getArtifactId() );
-        assertEquals( "version",
-                      pomArgumentCaptor.getValue().getGav().getVersion() );
+        assertNotNull(pomArgumentCaptor.getValue());
+        assertEquals("groupId",
+                     pomArgumentCaptor.getValue().getGav().getGroupId());
+        assertEquals("artifactId",
+                     pomArgumentCaptor.getValue().getGav().getArtifactId());
+        assertEquals("version",
+                     pomArgumentCaptor.getValue().getGav().getVersion());
 
-        verify( m2service,
-                times( 1 ) ).deployParentPom( eq( gav ) );
+        verify(m2service,
+               times(1)).deployParentPom(eq(gav));
     }
-
 }

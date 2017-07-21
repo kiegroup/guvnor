@@ -26,6 +26,5 @@ public interface ContextAware {
     /*
      * Set the context data to be used by this entity. 
      */
-    void setContext( final Map<String, ?> context );
-
+    void setContext(final Map<String, ?> context);
 }

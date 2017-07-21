@@ -19,24 +19,23 @@ package org.guvnor.ala.runtime;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.guvnor.ala.config.RuntimeConfig;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.*;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 
 /**
  * Implementations of this interface represent a Runtime (Docker Image running
  * or a WAR deployed into a
  * server)
  */
-@JsonTypeInfo( use = CLASS, include = WRAPPER_OBJECT )
+@JsonTypeInfo(use = CLASS, include = WRAPPER_OBJECT)
 public interface Runtime extends RuntimeId {
-   
+
     /*
      * Get the runtime endpoint
      * @return RuntimeEndpoint
      * @see RuntimeEndpoint
      */
     RuntimeEndpoint getEndpoint();
-
 
     /*
      * Get the runtime config
@@ -58,5 +57,4 @@ public interface Runtime extends RuntimeId {
      * @see RuntimeInfo
      */
     RuntimeInfo getInfo();
-
 }

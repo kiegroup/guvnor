@@ -72,5 +72,4 @@ public interface PipelineExecutorTask {
      * @return An optional object with the pipeline output.
      */
     Optional<?> getOutput();
-
 }

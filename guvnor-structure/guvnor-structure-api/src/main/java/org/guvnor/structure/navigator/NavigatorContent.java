@@ -32,10 +32,10 @@ public class NavigatorContent {
     public NavigatorContent() {
     }
 
-    public NavigatorContent( final String repoName,
-                             final Path root,
-                             final List<Path> breadcrumbs,
-                             final List<DataContent> content ) {
+    public NavigatorContent(final String repoName,
+                            final Path root,
+                            final List<Path> breadcrumbs,
+                            final List<DataContent> content) {
         this.repoName = repoName;
         this.root = root;
         this.breadcrumbs = breadcrumbs;

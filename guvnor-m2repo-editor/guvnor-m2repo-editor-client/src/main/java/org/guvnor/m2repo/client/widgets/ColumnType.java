@@ -16,6 +16,8 @@
 
 package org.guvnor.m2repo.client.widgets;
 
-public enum  ColumnType {
-    NAME, GAV, LAST_MODIFIED
+public enum ColumnType {
+    NAME,
+    GAV,
+    LAST_MODIFIED
 }

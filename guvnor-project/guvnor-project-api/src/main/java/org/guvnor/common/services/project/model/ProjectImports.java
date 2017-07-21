@@ -30,20 +30,20 @@ public class ProjectImports {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        ProjectImports that = ( ProjectImports ) o;
+        ProjectImports that = (ProjectImports) o;
 
-        if ( imports != null ? !imports.equals( that.imports ) : that.imports != null ) {
+        if (imports != null ? !imports.equals(that.imports) : that.imports != null) {
             return false;
         }
-        if ( version != null ? !version.equals( that.version ) : that.version != null ) {
+        if (version != null ? !version.equals(that.version) : that.version != null) {
             return false;
         }
 
@@ -54,7 +54,7 @@ public class ProjectImports {
     public int hashCode() {
         int result = imports != null ? imports.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( version != null ? version.hashCode() : 0 );
+        result = 31 * result + (version != null ? version.hashCode() : 0);
         result = ~~result;
         return result;
     }

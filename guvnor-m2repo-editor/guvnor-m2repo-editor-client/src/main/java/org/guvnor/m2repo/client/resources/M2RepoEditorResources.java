@@ -24,11 +24,10 @@ public interface M2RepoEditorResources
         extends
         ClientBundle {
 
-    public static final M2RepoEditorResources INSTANCE = GWT.create( M2RepoEditorResources.class );
+    public static final M2RepoEditorResources INSTANCE = GWT.create(M2RepoEditorResources.class);
 
     @Source("css/Styles.css")
     StylesCss CSS();
 
     M2RepoEditorImageResources images();
-
 }

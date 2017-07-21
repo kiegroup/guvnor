@@ -41,37 +41,37 @@ public class ProjectContextChangeEvent {
         branch = null;
     }
 
-    public ProjectContextChangeEvent( final OrganizationalUnit ou ) {
-        this( ou,
-              null,
-              null );
+    public ProjectContextChangeEvent(final OrganizationalUnit ou) {
+        this(ou,
+             null,
+             null);
     }
 
-    public ProjectContextChangeEvent( final OrganizationalUnit ou,
-                                      final Repository repository,
-                                      final String branch ) {
-        this( ou,
-              repository,
-              branch,
-              null );
+    public ProjectContextChangeEvent(final OrganizationalUnit ou,
+                                     final Repository repository,
+                                     final String branch) {
+        this(ou,
+             repository,
+             branch,
+             null);
     }
 
-    public ProjectContextChangeEvent( final OrganizationalUnit ou,
-                                      final Repository repository,
-                                      final String branch,
-                                      final Project project ) {
-        this( ou,
-              repository,
-              branch,
-              project,
-              null );
+    public ProjectContextChangeEvent(final OrganizationalUnit ou,
+                                     final Repository repository,
+                                     final String branch,
+                                     final Project project) {
+        this(ou,
+             repository,
+             branch,
+             project,
+             null);
     }
 
-    public ProjectContextChangeEvent( final OrganizationalUnit ou,
-                                      final Repository repository,
-                                      final String branch,
-                                      final Project project,
-                                      final Package pkg ) {
+    public ProjectContextChangeEvent(final OrganizationalUnit ou,
+                                     final Repository repository,
+                                     final String branch,
+                                     final Project project,
+                                     final Package pkg) {
         this.ou = ou;
         this.repository = repository;
         this.branch = branch;
@@ -98,5 +98,4 @@ public class ProjectContextChangeEvent {
     public String getBranch() {
         return this.branch;
     }
-
 }

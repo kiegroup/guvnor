@@ -18,15 +18,14 @@ package org.guvnor.ala.registry.local;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.uberfire.java.nio.file.Path;
 import org.guvnor.ala.build.Project;
 import org.guvnor.ala.registry.SourceRegistry;
 import org.guvnor.ala.source.Repository;
 import org.guvnor.ala.source.Source;
+import org.uberfire.java.nio.file.Path;
 
 /**
  * @TODO: This is an implementation for local testing. A more robust and
@@ -53,9 +52,11 @@ public class InMemorySourceRegistry implements SourceRegistry {
 
     @Override
     public void registerRepositorySources(final Path path,
-            final Repository repo) {
-        repositorySourcesPath.put(path, repo);
-        pathByRepositoryId.put(repo.getId(), path);
+                                          final Repository repo) {
+        repositorySourcesPath.put(path,
+                                  repo);
+        pathByRepositoryId.put(repo.getId(),
+                               path);
     }
 
     @Override
@@ -80,10 +81,10 @@ public class InMemorySourceRegistry implements SourceRegistry {
 
     @Override
     public void registerProject(Repository repo,
-            Project project) {
-        projectsByRepo.putIfAbsent(repo, new ArrayList<>());
+                                Project project) {
+        projectsByRepo.putIfAbsent(repo,
+                                   new ArrayList<>());
         projectsByRepo.get(repo).add(project);
-
     }
 
     @Override
@@ -115,15 +116,16 @@ public class InMemorySourceRegistry implements SourceRegistry {
 
     @Override
     public void registerSource(final Repository repo,
-            final Source source) {
-        sourceByRepo.putIfAbsent(repo, new ArrayList<>());
+                               final Source source) {
+        sourceByRepo.putIfAbsent(repo,
+                                 new ArrayList<>());
         sourceByRepo.get(repo).add(source);
     }
 
     @Override
     public void registerProject(final Source source,
-            final Project project) {
-        projectBySource.put(source, project);
+                                final Project project) {
+        projectBySource.put(source,
+                            project);
     }
-
 }

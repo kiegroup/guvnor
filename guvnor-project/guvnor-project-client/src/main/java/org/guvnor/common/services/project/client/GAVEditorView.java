@@ -23,29 +23,29 @@ public interface GAVEditorView
 
     interface Presenter {
 
-        void setGAV( final GAV gav );
+        void setGAV(final GAV gav);
 
-        void setArtifactID( final String artifactID );
+        void setArtifactID(final String artifactID);
 
-        void onGroupIdChange( final String groupId );
+        void onGroupIdChange(final String groupId);
 
-        void onArtifactIdChange( final String artifactId );
+        void onArtifactIdChange(final String artifactId);
 
-        void onVersionChange( final String version );
+        void onVersionChange(final String version);
 
-        void addGroupIdChangeHandler( final GroupIdChangeHandler changeHandler );
+        void addGroupIdChangeHandler(final GroupIdChangeHandler changeHandler);
 
-        void addArtifactIdChangeHandler( final ArtifactIdChangeHandler changeHandler );
+        void addArtifactIdChangeHandler(final ArtifactIdChangeHandler changeHandler);
 
-        void addVersionChangeHandler( final VersionChangeHandler changeHandler );
+        void addVersionChangeHandler(final VersionChangeHandler changeHandler);
 
         void setReadOnly();
 
-        void disableGroupID( final String reason );
+        void disableGroupID(final String reason);
 
-        void disableVersion( final String reason );
+        void disableVersion(final String reason);
 
-        void disableArtifactID( final String reason );
+        void disableArtifactID(final String reason);
 
         void enableGroupID();
 
@@ -53,29 +53,28 @@ public interface GAVEditorView
 
         void enableVersion();
 
-        void setValidGroupID( final boolean isValid );
+        void setValidGroupID(final boolean isValid);
 
-        void setValidArtifactID( final boolean isValid );
+        void setValidArtifactID(final boolean isValid);
 
-        void setValidVersion( final boolean isValid );
-
+        void setValidVersion(final boolean isValid);
     }
 
-    void setPresenter( final Presenter presenter );
+    void setPresenter(final Presenter presenter);
 
-    void setGroupId( final String id );
+    void setGroupId(final String id);
 
-    void setArtifactId( final String id );
+    void setArtifactId(final String id);
 
     void setReadOnly();
 
-    void setVersion( final String version );
+    void setVersion(final String version);
 
-    void disableGroupID( final String reason );
+    void disableGroupID(final String reason);
 
-    void disableArtifactID( final String reason );
+    void disableArtifactID(final String reason);
 
-    void disableVersion( final String reason );
+    void disableVersion(final String reason);
 
     void enableGroupID();
 
@@ -83,10 +82,9 @@ public interface GAVEditorView
 
     void enableVersion();
 
-    void setValidGroupID( final boolean isValid );
+    void setValidGroupID(final boolean isValid);
 
-    void setValidArtifactID( final boolean isValid );
+    void setValidArtifactID(final boolean isValid);
 
-    void setValidVersion( final boolean isValid );
-
+    void setValidVersion(final boolean isValid);
 }

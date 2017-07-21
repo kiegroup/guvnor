@@ -17,6 +17,7 @@
 package org.guvnor.ala.services.api.backend;
 
 import java.util.List;
+
 import org.guvnor.ala.config.Config;
 import org.guvnor.ala.pipeline.PipelineConfig;
 
@@ -28,7 +29,8 @@ public class PipelineConfigImpl implements PipelineConfig {
     public PipelineConfigImpl() {
     }
 
-    public PipelineConfigImpl( String name, List<Config> configStages ) {
+    public PipelineConfigImpl(String name,
+                              List<Config> configStages) {
         this.name = name;
         this.configStages = configStages;
     }
@@ -43,11 +45,11 @@ public class PipelineConfigImpl implements PipelineConfig {
         return configStages;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setConfigStages( List<Config> configStages ) {
+    public void setConfigStages(List<Config> configStages) {
         this.configStages = configStages;
     }
 
@@ -55,5 +57,4 @@ public class PipelineConfigImpl implements PipelineConfig {
     public String toString() {
         return "PipelineConfigImpl{" + "configs=" + configStages + '}';
     }
-
 }

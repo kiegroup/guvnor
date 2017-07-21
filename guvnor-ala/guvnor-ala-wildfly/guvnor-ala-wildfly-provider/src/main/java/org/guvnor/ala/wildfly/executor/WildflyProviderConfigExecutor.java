@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2016 JBoss, by Red Hat, Inc
  *
@@ -40,7 +39,7 @@ public class WildflyProviderConfigExecutor implements ProviderBuilder<WildflyPro
     private RuntimeRegistry runtimeRegistry;
 
     @Inject
-    public WildflyProviderConfigExecutor( final RuntimeRegistry runtimeRegistry ) {
+    public WildflyProviderConfigExecutor(final RuntimeRegistry runtimeRegistry) {
         this.runtimeRegistry = runtimeRegistry;
     }
 
@@ -84,17 +83,16 @@ public class WildflyProviderConfigExecutor implements ProviderBuilder<WildflyPro
     }
 
     @Override
-    public boolean supports( final ProviderConfig config ) {
+    public boolean supports(final ProviderConfig config) {
         return config instanceof WildflyProviderConfig;
     }
 
     @Override
-    public boolean supports( final ProviderId providerId ) {
+    public boolean supports(final ProviderId providerId) {
         return providerId instanceof WildflyProvider;
     }
 
     @Override
-    public void destroy( final ProviderId providerId ) {
+    public void destroy(final ProviderId providerId) {
     }
-
 }

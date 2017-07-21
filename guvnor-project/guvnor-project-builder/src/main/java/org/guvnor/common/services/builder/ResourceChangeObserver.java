@@ -49,7 +49,7 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 @ApplicationScoped
 public class ResourceChangeObserver {
 
-    private static final Logger logger = LoggerFactory.getLogger( ResourceChangeObserver.class );
+    private static final Logger logger = LoggerFactory.getLogger(ResourceChangeObserver.class);
 
     @Inject
     private ProjectService<? extends Project> projectService;
@@ -67,125 +67,124 @@ public class ResourceChangeObserver {
     @Inject
     private ObservablePOMFile observablePomFile;
 
-    public void processResourceAdd( @Observes final ResourceAddedEvent resourceAddedEvent ) {
-        processResourceChange( resourceAddedEvent.getSessionInfo(),
-                               resourceAddedEvent.getPath(),
-                               ResourceChangeType.ADD );
-        incrementalBuilder.addResource( resourceAddedEvent.getPath() );
+    public void processResourceAdd(@Observes final ResourceAddedEvent resourceAddedEvent) {
+        processResourceChange(resourceAddedEvent.getSessionInfo(),
+                              resourceAddedEvent.getPath(),
+                              ResourceChangeType.ADD);
+        incrementalBuilder.addResource(resourceAddedEvent.getPath());
     }
 
-    public void processResourceDelete( @Observes final ResourceDeletedEvent resourceDeletedEvent ) {
-        processResourceChange( resourceDeletedEvent.getSessionInfo(),
-                               resourceDeletedEvent.getPath(),
-                               ResourceChangeType.DELETE );
-        incrementalBuilder.deleteResource( resourceDeletedEvent.getPath() );
+    public void processResourceDelete(@Observes final ResourceDeletedEvent resourceDeletedEvent) {
+        processResourceChange(resourceDeletedEvent.getSessionInfo(),
+                              resourceDeletedEvent.getPath(),
+                              ResourceChangeType.DELETE);
+        incrementalBuilder.deleteResource(resourceDeletedEvent.getPath());
     }
 
-    public void processResourceUpdate( @Observes final ResourceUpdatedEvent resourceUpdatedEvent ) {
-        processResourceChange( resourceUpdatedEvent.getSessionInfo(),
-                               resourceUpdatedEvent.getPath(),
-                               ResourceChangeType.UPDATE );
-        incrementalBuilder.updateResource( resourceUpdatedEvent.getPath() );
+    public void processResourceUpdate(@Observes final ResourceUpdatedEvent resourceUpdatedEvent) {
+        processResourceChange(resourceUpdatedEvent.getSessionInfo(),
+                              resourceUpdatedEvent.getPath(),
+                              ResourceChangeType.UPDATE);
+        incrementalBuilder.updateResource(resourceUpdatedEvent.getPath());
     }
 
-    public void processResourceCopied( @Observes final ResourceCopiedEvent resourceCopiedEvent ) {
-        processResourceChange( resourceCopiedEvent.getSessionInfo(),
-                               resourceCopiedEvent.getPath(),
-                               ResourceChangeType.COPY );
-        incrementalBuilder.addResource( resourceCopiedEvent.getPath() ); //¿?
+    public void processResourceCopied(@Observes final ResourceCopiedEvent resourceCopiedEvent) {
+        processResourceChange(resourceCopiedEvent.getSessionInfo(),
+                              resourceCopiedEvent.getPath(),
+                              ResourceChangeType.COPY);
+        incrementalBuilder.addResource(resourceCopiedEvent.getPath()); //¿?
     }
 
-    public void processResourceRenamed( @Observes final ResourceRenamedEvent resourceRenamedEvent ) {
-        processResourceChange( resourceRenamedEvent.getSessionInfo(),
-                               resourceRenamedEvent.getPath(),
-                               ResourceChangeType.RENAME );
-        incrementalBuilder.deleteResource( resourceRenamedEvent.getPath() );
-        incrementalBuilder.addResource( resourceRenamedEvent.getDestinationPath() );
+    public void processResourceRenamed(@Observes final ResourceRenamedEvent resourceRenamedEvent) {
+        processResourceChange(resourceRenamedEvent.getSessionInfo(),
+                              resourceRenamedEvent.getPath(),
+                              ResourceChangeType.RENAME);
+        incrementalBuilder.deleteResource(resourceRenamedEvent.getPath());
+        incrementalBuilder.addResource(resourceRenamedEvent.getDestinationPath());
     }
 
-    public void processBatchChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
+    public void processBatchChanges(@Observes final ResourceBatchChangesEvent resourceBatchChangesEvent) {
         final Map<Path, Collection<ResourceChange>> batchChanges = resourceBatchChangesEvent.getBatch();
-        if ( batchChanges == null ) {
+        if (batchChanges == null) {
             //un expected case
-            logger.warn( "No batchChanges was present for the given resourceBatchChangesEvent: " + resourceBatchChangesEvent );
+            logger.warn("No batchChanges was present for the given resourceBatchChangesEvent: " + resourceBatchChangesEvent);
         } else {
-            processBatchResourceChanges( resourceBatchChangesEvent.getSessionInfo(), batchChanges );
-            incrementalBuilder.batchResourceChanges( resourceBatchChangesEvent.getBatch() );
+            processBatchResourceChanges(resourceBatchChangesEvent.getSessionInfo(),
+                                        batchChanges);
+            incrementalBuilder.batchResourceChanges(resourceBatchChangesEvent.getBatch());
         }
     }
 
-    private void processResourceChange( final SessionInfo sessionInfo,
-                                        final Path path,
-                                        final ResourceChangeType changeType ) {
+    private void processResourceChange(final SessionInfo sessionInfo,
+                                       final Path path,
+                                       final ResourceChangeType changeType) {
         //Only process Project resources
-        final Project project = projectService.resolveProject( path );
-        if ( project == null ) {
+        final Project project = projectService.resolveProject(path);
+        if (project == null) {
             return;
         }
 
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "Processing resource change for sessionInfo: " + sessionInfo
-                                  + ", project: " + project
-                                  + ", path: " + path
-                                  + ", changeType: " + changeType );
+        if (logger.isDebugEnabled()) {
+            logger.debug("Processing resource change for sessionInfo: " + sessionInfo
+                                 + ", project: " + project
+                                 + ", path: " + path
+                                 + ", changeType: " + changeType);
         }
 
-        if ( isObservableResource( path ) ) {
-            invalidateDMOProjectCacheEvent.fire( new InvalidateDMOProjectCacheEvent( sessionInfo,
-                                                                                     project,
-                                                                                     path ) );
+        if (isObservableResource(path)) {
+            invalidateDMOProjectCacheEvent.fire(new InvalidateDMOProjectCacheEvent(sessionInfo,
+                                                                                   project,
+                                                                                   path));
         }
     }
 
-    private void processBatchResourceChanges( final SessionInfo sessionInfo,
-                                              final Map<Path, Collection<ResourceChange>> resourceChanges ) {
+    private void processBatchResourceChanges(final SessionInfo sessionInfo,
+                                             final Map<Path, Collection<ResourceChange>> resourceChanges) {
 
         Project project;
         final Map<Project, Path> pendingNotifications = new HashMap<Project, Path>();
-        for ( final Map.Entry<Path, Collection<ResourceChange>> pathCollectionEntry : resourceChanges.entrySet() ) {
+        for (final Map.Entry<Path, Collection<ResourceChange>> pathCollectionEntry : resourceChanges.entrySet()) {
 
             //Only process Project resources
-            project = projectService.resolveProject( pathCollectionEntry.getKey() );
-            if ( project == null ) {
+            project = projectService.resolveProject(pathCollectionEntry.getKey());
+            if (project == null) {
                 continue;
             }
 
-            if ( !pendingNotifications.containsKey( project ) && isObservableResource( pathCollectionEntry.getKey() ) ) {
-                pendingNotifications.put( project,
-                                          pathCollectionEntry.getKey() );
-            } else if ( isPomFile( pathCollectionEntry.getKey() ) ) {
+            if (!pendingNotifications.containsKey(project) && isObservableResource(pathCollectionEntry.getKey())) {
+                pendingNotifications.put(project,
+                                         pathCollectionEntry.getKey());
+            } else if (isPomFile(pathCollectionEntry.getKey())) {
                 //if the pom.xml comes in the batch events set then use the pom.xml path for the cache invalidation event
-                pendingNotifications.put( project,
-                                          pathCollectionEntry.getKey() );
+                pendingNotifications.put(project,
+                                         pathCollectionEntry.getKey());
             }
         }
 
-        for ( final Map.Entry<Project, Path> pendingNotification : pendingNotifications.entrySet() ) {
-            invalidateDMOProjectCacheEvent.fire( new InvalidateDMOProjectCacheEvent( sessionInfo,
-                                                                                     pendingNotification.getKey(),
-                                                                                     pendingNotification.getValue() ) );
-
+        for (final Map.Entry<Project, Path> pendingNotification : pendingNotifications.entrySet()) {
+            invalidateDMOProjectCacheEvent.fire(new InvalidateDMOProjectCacheEvent(sessionInfo,
+                                                                                   pendingNotification.getKey(),
+                                                                                   pendingNotification.getValue()));
         }
     }
 
     //Check if the changed file should invalidate the DMO cache
-    private boolean isObservableResource( final Path path ) {
-        if ( path == null ) {
+    private boolean isObservableResource(final Path path) {
+        if (path == null) {
             return false;
         }
-        for ( ResourceChangeObservableFile observableFile : observableFiles ) {
-            if ( observableFile.accept( path.getFileName() ) ) {
+        for (ResourceChangeObservableFile observableFile : observableFiles) {
+            if (observableFile.accept(path.getFileName())) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isPomFile( final Path path ) {
-        if ( path == null ) {
+    private boolean isPomFile(final Path path) {
+        if (path == null) {
             return false;
         }
-        return observablePomFile.accept( path.getFileName() );
+        return observablePomFile.accept(path.getFileName());
     }
-
 }

@@ -34,16 +34,16 @@ public class ProviderFactory {
     }
 
     @Inject
-    public ProviderFactory( final Instance<ProviderBuilder<?, ?>> builders ) {
-        builders.forEach( this.builders::add );
+    public ProviderFactory(final Instance<ProviderBuilder<?, ?>> builders) {
+        builders.forEach(this.builders::add);
     }
 
-    public Optional<Provider> newProvider( ProviderConfig config ) {
+    public Optional<Provider> newProvider(ProviderConfig config) {
         Optional<Provider> provider = builders.stream()
-                .filter( pb -> pb.supports( config ) )
-                .findFirst().flatMap( pb -> {
-                    return ( Optional<Provider> ) pb.apply( config );
-                } );
+                .filter(pb -> pb.supports(config))
+                .findFirst().flatMap(pb -> {
+                    return (Optional<Provider>) pb.apply(config);
+                });
         return provider;
     }
 }

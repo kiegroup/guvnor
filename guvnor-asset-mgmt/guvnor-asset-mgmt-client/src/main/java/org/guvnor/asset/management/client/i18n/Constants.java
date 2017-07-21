@@ -31,7 +31,6 @@ public interface Constants extends Messages {
 
     Constants INSTANCE = GWT.create(Constants.class);
 
-
     String Release_Branch();
 
     String Dev_Branch();
@@ -71,9 +70,9 @@ public interface Constants extends Messages {
     String ReleaseVersion();
 
     String ABuildIsAlreadyRunning();
-    
+
     String Loading();
-    
+
     String RepositoryStructureWithName(String string);
 
     String UnmanagedRepository(String repository);
@@ -87,23 +86,23 @@ public interface Constants extends Messages {
     String Deleting();
 
     String RepositoryStructure();
-    
+
     String VersionHolder();
-    
+
     String ArtifactIdHolder();
-    
+
     String GroupIdHolder();
 
     String CreatingRepositoryStructure();
 
     String ConvertingToMultiModuleProject();
-    
+
     String AddModule();
 
     String DeleteModule();
 
     String EditModule();
-    
+
     String Modules();
 
     String Module();
@@ -124,7 +123,6 @@ public interface Constants extends Messages {
 
     String ConfirmConvertToMultiModuleStructure();
 
-
     //Repository structure data widget constants
 
     String InitRepositoryStructure();
@@ -137,37 +135,60 @@ public interface Constants extends Messages {
 
     //create
     String Repository_structure_view_create_projectTypeLabel();
+
     String Repository_structure_view_create_isSingleModuleRadioButton();
+
     String Repository_structure_view_create_isSingleModuleRadioButtonHelpInline();
+
     String Repository_structure_view_create_isMultiModuleRadioButton();
+
     String Repository_structure_view_create_isMultiModuleRadioButtonHelpInline();
+
     String Repository_structure_view_create_groupIdTextBoxHelpInline();
+
     String Repository_structure_view_create_artifactIdTextBoxHelpInline();
+
     String Repository_structure_view_create_versionTextBoxHelpInline();
+
     String Repository_structure_view_create_isUnmanagedRepositoryRadioButton();
+
     String Repository_structure_view_create_isUnmanagedRepositoryButtonHelpInline();
 
     //single module
     String Repository_structure_view_edit_single_projectTypeLabel();
+
     String Repository_structure_view_edit_single_isSingleModuleRadioButton();
+
     String Repository_structure_view_edit_single_isSingleModuleRadioButtonHelpInline();
+
     String Repository_structure_view_edit_single_isMultiModuleRadioButton();
+
     String Repository_structure_view_edit_single_isMultiModuleRadioButtonHelpInline();
+
     String Repository_structure_view_edit_single_groupIdTextBoxHelpInline();
+
     String Repository_structure_view_edit_single_artifactIdTextBoxHelpInline();
+
     String Repository_structure_view_edit_single_versionTextBoxHelpInline();
 
     //multi module
     String Repository_structure_view_edit_multi_projectTypeLabel();
+
     String Repository_structure_view_edit_multi_isMultiModuleRadioButton();
+
     String Repository_structure_view_edit_multi_isMultiModuleRadioButtonHelpInline();
+
     String Repository_structure_view_edit_multi_groupIdTextBoxHelpInline();
+
     String Repository_structure_view_edit_multi_artifactIdTextBoxHelpInline();
+
     String Repository_structure_view_edit_multi_versionTextBoxHelpInline();
 
     //unmanaged repo
     String Repository_structure_view_edit_unmanaged_projectTypeLabel();
+
     String Repository_structure_view_edit_unmanaged_isUnmanagedRepositoryRadioButton();
+
     String Repository_structure_view_edit_unmanaged_isUnmanagedRepositoryButtonHelpInline();
 
     //End of Project structure data widget constants
@@ -175,7 +196,7 @@ public interface Constants extends Messages {
     String Current_Version();
 
     String Select_Repository();
-    
+
     String No_Project_Structure_Available();
 
     String Select_A_Branch();
@@ -185,19 +206,19 @@ public interface Constants extends Messages {
     String Requires_Review();
 
     String Source_Branch();
-    
+
     String Target_Branch();
 
     String Files_In_The_Branch();
 
     String Files_To_Promote();
-    
+
     String Promote_All();
-    
+
     String Promote_Selected();
-    
+
     String Release_Project();
-    
+
     String Release_Configuration();
 
     String AssetManagementLog();
@@ -221,10 +242,10 @@ public interface Constants extends Messages {
     String RequiresRework();
 
     String Release();
-    
-    String FieldMandatory0( final String fieldName );
 
-    String SnapshotNotAvailableForRelease( final String version );
+    String FieldMandatory0(final String fieldName);
+
+    String SnapshotNotAvailableForRelease(final String version);
 
     String Configure();
 
@@ -317,6 +338,4 @@ public interface Constants extends Messages {
     String InvalidVersion();
 
     //end of create repository wizard.
-
-
 }

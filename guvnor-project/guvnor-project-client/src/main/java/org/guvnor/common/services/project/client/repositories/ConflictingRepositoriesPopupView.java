@@ -28,27 +28,25 @@ public interface ConflictingRepositoriesPopupView
 
     interface Presenter {
 
-        void setContent( final GAV gav,
-                         final Set<MavenRepositoryMetadata> repositories,
-                         final Command command );
+        void setContent(final GAV gav,
+                        final Set<MavenRepositoryMetadata> repositories,
+                        final Command command);
 
         void show();
 
         void hide();
-
     }
 
     void clear();
 
-    void setContent( final GAV gav,
-                     final Set<MavenRepositoryMetadata> repositories );
+    void setContent(final GAV gav,
+                    final Set<MavenRepositoryMetadata> repositories);
 
     void addOKButton();
 
-    void addOverrideButton( final Command command );
+    void addOverrideButton(final Command command);
 
     void show();
 
     void hide();
-
 }

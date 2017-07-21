@@ -17,13 +17,11 @@
 package org.guvnor.common.services.workingset.client.factconstraints.customform.predefined;
 
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
-import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
-import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 
 public class DefaultCustomFormImplementation
         implements CustomFormConfiguration {
 
-    private int width  = 200;
+    private int width = 200;
     private int height = 200;
     private String factType;
     private String fieldName;
@@ -33,7 +31,7 @@ public class DefaultCustomFormImplementation
         return this.factType;
     }
 
-    public void setFactType( String factType ) {
+    public void setFactType(String factType) {
         this.factType = factType;
     }
 
@@ -41,7 +39,7 @@ public class DefaultCustomFormImplementation
         return this.fieldName;
     }
 
-    public void setFieldName( String fieldName ) {
+    public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
@@ -49,7 +47,7 @@ public class DefaultCustomFormImplementation
         return this.url;
     }
 
-    public void setCustomFormURL( String url ) {
+    public void setCustomFormURL(String url) {
         this.url = url;
     }
 
@@ -57,7 +55,7 @@ public class DefaultCustomFormImplementation
         return height;
     }
 
-    public void setCustomFormHeight( int height ) {
+    public void setCustomFormHeight(int height) {
         this.height = height;
     }
 
@@ -65,8 +63,7 @@ public class DefaultCustomFormImplementation
         return width;
     }
 
-    public void setCustomFormWidth( int width ) {
+    public void setCustomFormWidth(int width) {
         this.width = width;
     }
-
 }

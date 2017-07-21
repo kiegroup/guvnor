@@ -34,7 +34,7 @@ public class BuildResults {
         //Marshalling
     }
 
-    public BuildResults( final GAV gav ) {
+    public BuildResults(final GAV gav) {
         this.gav = gav;
     }
 
@@ -43,41 +43,42 @@ public class BuildResults {
     }
 
     public List<BuildMessage> getMessages() {
-        return Collections.unmodifiableList( messages );
+        return Collections.unmodifiableList(messages);
     }
 
     public List<BuildMessage> getErrorMessages() {
-        return Collections.unmodifiableList( filterMessages( Level.ERROR ) );
+        return Collections.unmodifiableList(filterMessages(Level.ERROR));
     }
 
     public List<BuildMessage> getWarningMessages() {
-        return Collections.unmodifiableList( filterMessages( Level.WARNING ) );
+        return Collections.unmodifiableList(filterMessages(Level.WARNING));
     }
 
     public List<BuildMessage> getInformationMessages() {
-        return Collections.unmodifiableList( filterMessages( Level.INFO ) );
+        return Collections.unmodifiableList(filterMessages(Level.INFO));
     }
 
-    private List<BuildMessage> filterMessages( final Level level ) {
+    private List<BuildMessage> filterMessages(final Level level) {
         final List<BuildMessage> filteredMessages = new ArrayList<BuildMessage>();
-        for ( BuildMessage msg : messages ) {
-            if ( msg.getLevel() == level ) {
-                filteredMessages.add( msg );
+        for (BuildMessage msg : messages) {
+            if (msg.getLevel() == level) {
+                filteredMessages.add(msg);
             }
         }
         return filteredMessages;
     }
 
-    public void addBuildMessage( final BuildMessage message ) {
-        this.messages.add( message );
+    public void addBuildMessage(final BuildMessage message) {
+        this.messages.add(message);
     }
 
-    public void addBuildMessage( final int index,
-                                 final BuildMessage message ) {
-        this.messages.add( index, message );
+    public void addBuildMessage(final int index,
+                                final BuildMessage message) {
+        this.messages.add(index,
+                          message);
     }
 
-    public void addAllBuildMessages( List<BuildMessage> buildMessages ) {
-        messages.addAll( buildMessages );
+    public void addAllBuildMessages(List<BuildMessage> buildMessages) {
+        messages.addAll(buildMessages);
     }
 }

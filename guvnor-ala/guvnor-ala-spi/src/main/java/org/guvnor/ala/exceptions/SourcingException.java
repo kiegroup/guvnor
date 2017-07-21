@@ -22,13 +22,13 @@ package org.guvnor.ala.exceptions;
  */
 public class SourcingException extends RuntimeException {
 
-    public SourcingException( String message ) {
-        super( message );
+    public SourcingException(String message) {
+        super(message);
     }
 
-    public SourcingException( String message,
-                              Throwable cause ) {
-        super( message, cause );
+    public SourcingException(String message,
+                             Throwable cause) {
+        super(message,
+              cause);
     }
-
 }

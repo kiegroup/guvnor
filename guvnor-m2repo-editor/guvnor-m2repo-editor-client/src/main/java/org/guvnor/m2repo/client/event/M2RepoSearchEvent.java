@@ -19,7 +19,7 @@ public class M2RepoSearchEvent {
 
     private String filter;
 
-    public M2RepoSearchEvent( String filter ) {
+    public M2RepoSearchEvent(String filter) {
         this.filter = filter;
     }
 
@@ -31,8 +31,7 @@ public class M2RepoSearchEvent {
         return filter;
     }
 
-    public void setFilter( String filter ) {
+    public void setFilter(String filter) {
         this.filter = filter;
     }
-
 }

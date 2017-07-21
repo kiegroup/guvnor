@@ -32,161 +32,181 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.mocks.CallerMock;
 
-import static org.guvnor.structure.client.editors.TestUtil.*;
+import static org.guvnor.structure.client.editors.TestUtil.makeRepository;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class GuvnorStructureContextTest {
 
     @Mock
     private RepositoryService repositoryService;
 
-    private GuvnorStructureContext           context;
-    private ArrayList<Repository>            repositories;
-    private Collection<Repository>           result;
+    private GuvnorStructureContext context;
+    private ArrayList<Repository> repositories;
+    private Collection<Repository> result;
     private Callback<Collection<Repository>> callback;
 
     @Before
     public void setUp() throws Exception {
-        callback = spy( new Callback<Collection<Repository>>() {
+        callback = spy(new Callback<Collection<Repository>>() {
             @Override
-            public void callback( final Collection<Repository> result ) {
+            public void callback(final Collection<Repository> result) {
                 GuvnorStructureContextTest.this.result = result;
             }
-        } );
+        });
 
         repositories = new ArrayList<>();
 
-        repositories.add( makeRepository( "my-repo",
-                                          "master", "dev" ) );
-        repositories.add( makeRepository( "your-repo",
-                                          "master", "release" ) );
+        repositories.add(makeRepository("my-repo",
+                                        "master",
+                                        "dev"));
+        repositories.add(makeRepository("your-repo",
+                                        "master",
+                                        "release"));
 
-        when( repositoryService.getRepositories() ).thenReturn( repositories );
+        when(repositoryService.getRepositories()).thenReturn(repositories);
 
-        context = new GuvnorStructureContext( new CallerMock<>( repositoryService ) );
+        context = new GuvnorStructureContext(new CallerMock<>(repositoryService));
 
         getRepositories();
     }
 
     @Test
     public void testLoad() throws Exception {
-        assertEquals( 2, result.size() );
+        assertEquals(2,
+                     result.size());
 
         Collection<String> repositoryAliases = getRepositoryAliases();
 
-        assertTrue( repositoryAliases.contains( "my-repo" ) );
-        assertTrue( repositoryAliases.contains( "your-repo" ) );
+        assertTrue(repositoryAliases.contains("my-repo"));
+        assertTrue(repositoryAliases.contains("your-repo"));
     }
 
     @Test
     public void testReLoadRemembersBranches() throws Exception {
 
-        context.changeBranch( "your-repo", "release" );
+        context.changeBranch("your-repo",
+                             "release");
 
-        context.getRepositories( callback );
+        context.getRepositories(callback);
 
-        assertEquals( 2, result.size() );
+        assertEquals(2,
+                     result.size());
 
-        assertEquals( "master", context.getCurrentBranch( "my-repo" ) );
-        assertEquals( "release", context.getCurrentBranch( "your-repo" ) );
+        assertEquals("master",
+                     context.getCurrentBranch("my-repo"));
+        assertEquals("release",
+                     context.getCurrentBranch("your-repo"));
 
-        verify( callback, times( 2 ) ).callback( anyCollection() );
+        verify(callback,
+               times(2)).callback(anyCollection());
     }
 
     @Test
     public void testReLoadPicksUpNewRepositories() throws Exception {
 
-        repositories.add( makeRepository( "my-new-repo", "master" ) );
+        repositories.add(makeRepository("my-new-repo",
+                                        "master"));
 
-        context.getRepositories( callback );
+        context.getRepositories(callback);
 
-        assertEquals( 3, result.size() );
+        assertEquals(3,
+                     result.size());
 
-        assertEquals( "master", context.getCurrentBranch( "my-repo" ) );
-        assertEquals( "master", context.getCurrentBranch( "your-repo" ) );
-        assertEquals( "master", context.getCurrentBranch( "my-new-repo" ) );
+        assertEquals("master",
+                     context.getCurrentBranch("my-repo"));
+        assertEquals("master",
+                     context.getCurrentBranch("your-repo"));
+        assertEquals("master",
+                     context.getCurrentBranch("my-new-repo"));
 
-        verify( callback, times( 2 ) ).callback( anyCollection() );
+        verify(callback,
+               times(2)).callback(anyCollection());
     }
 
     @Test
     public void testReLoadPicksUpRemovedRepositories() throws Exception {
 
-        repositories.remove( 1 );
+        repositories.remove(1);
 
-        context.getRepositories( callback );
+        context.getRepositories(callback);
 
-        assertEquals( 1, result.size() );
+        assertEquals(1,
+                     result.size());
 
-        assertEquals( "master", context.getCurrentBranch( "my-repo" ) );
-        assertNull( context.getCurrentBranch( "your-repo" ) );
+        assertEquals("master",
+                     context.getCurrentBranch("my-repo"));
+        assertNull(context.getCurrentBranch("your-repo"));
     }
 
     @Test
     public void testReLoadPicksUpRemovedBranch() throws Exception {
 
         // This deletes master branch
-        when( repositories.get( 0 ).getBranches() ).thenReturn( Arrays.asList( "dev" ) );
-        when( repositories.get( 0 ).getDefaultBranch() ).thenReturn( "dev" );
+        when(repositories.get(0).getBranches()).thenReturn(Arrays.asList("dev"));
+        when(repositories.get(0).getDefaultBranch()).thenReturn("dev");
 
-        context.getRepositories( callback );
+        context.getRepositories(callback);
 
-        assertEquals( "dev", context.getCurrentBranch( "my-repo" ) );
-        assertEquals( "master", context.getCurrentBranch( "your-repo" ) );
+        assertEquals("dev",
+                     context.getCurrentBranch("my-repo"));
+        assertEquals("master",
+                     context.getCurrentBranch("your-repo"));
     }
 
     @Test
     public void testNewRepository() throws Exception {
-        context.onNewRepository( new NewRepositoryEvent( makeRepository( "new-repo",
-                                                                         "master" ) ) );
+        context.onNewRepository(new NewRepositoryEvent(makeRepository("new-repo",
+                                                                      "master")));
 
-        assertEquals( "master", context.getCurrentBranch( "new-repo" ) );
+        assertEquals("master",
+                     context.getCurrentBranch("new-repo"));
     }
 
     @Test
     public void testRemoveRepository() throws Exception {
-        context.onRepositoryRemoved( new RepositoryRemovedEvent( makeRepository( "your-repo" ) ) );
+        context.onRepositoryRemoved(new RepositoryRemovedEvent(makeRepository("your-repo")));
 
-        assertNull( context.getCurrentBranch( "your-repo" ) );
+        assertNull(context.getCurrentBranch("your-repo"));
     }
 
     private Collection<String> getRepositoryAliases() {
         Collection<String> repositoryAliases = new ArrayList<>();
-        for ( Repository repository : result ) {
-            repositoryAliases.add( repository.getAlias() );
+        for (Repository repository : result) {
+            repositoryAliases.add(repository.getAlias());
         }
         return repositoryAliases;
     }
 
     @Test
     public void testLoadDefaultBranches() throws Exception {
-        for ( Repository repository : result ) {
-            assertEquals( "master",
-                          context.getCurrentBranch( repository.getAlias() ) );
+        for (Repository repository : result) {
+            assertEquals("master",
+                         context.getCurrentBranch(repository.getAlias()));
         }
     }
 
     @Test
     public void testChangeBranch() throws Exception {
 
-        context.changeBranch( "my-repo", "dev" );
+        context.changeBranch("my-repo",
+                             "dev");
 
-        for ( final Repository repository : result ) {
-            if ( repository.getAlias().equals( "my-repo" ) ) {
-                assertEquals( "dev",
-                              context.getCurrentBranch( repository.getAlias() ) );
+        for (final Repository repository : result) {
+            if (repository.getAlias().equals("my-repo")) {
+                assertEquals("dev",
+                             context.getCurrentBranch(repository.getAlias()));
             } else {
-                assertEquals( "master",
-                              context.getCurrentBranch( repository.getAlias() ) );
+                assertEquals("master",
+                             context.getCurrentBranch(repository.getAlias()));
             }
         }
     }
 
     private void getRepositories() {
-        context.getRepositories( callback );
+        context.getRepositories(callback);
 
-        verify( callback ).callback( anyCollection() );
+        verify(callback).callback(anyCollection());
     }
 }

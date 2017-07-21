@@ -32,27 +32,26 @@ public class TempFilesTest {
 
     @Test
     public void testDirectory() throws Exception {
-        final File tempDirectory = tempFiles.createTempDirectory( "mydir" );
+        final File tempDirectory = tempFiles.createTempDirectory("mydir");
 
-        assertTrue( tempDirectory.exists() );
+        assertTrue(tempDirectory.exists());
 
         tempFiles.deleteFiles();
 
-        assertFalse( tempDirectory.exists() );
+        assertFalse(tempDirectory.exists());
     }
 
     @Test
     public void testFiles() throws Exception {
-        final File pomFile = tempFiles.createTempFile( "mydir/pom.xml" );
-        final File javaClass = tempFiles.createTempFile( "mydir/org/test/Person.java" );
+        final File pomFile = tempFiles.createTempFile("mydir/pom.xml");
+        final File javaClass = tempFiles.createTempFile("mydir/org/test/Person.java");
 
-        assertTrue( pomFile.exists() );
-        assertTrue( javaClass.exists() );
+        assertTrue(pomFile.exists());
+        assertTrue(javaClass.exists());
 
         tempFiles.deleteFiles();
 
-        assertFalse( pomFile.exists() );
-        assertFalse( javaClass.exists() );
-
+        assertFalse(pomFile.exists());
+        assertFalse(javaClass.exists());
     }
 }

@@ -133,8 +133,10 @@ public class PipelineExecutorTaskImpl
                                                                       executionId);
 
         clone.setPipelineStatus(this.getPipelineStatus());
-        stageStatus.entrySet().forEach(entry -> clone.setStageStatus(entry.getKey(), entry.getValue()));
-        stageError.entrySet().forEach(entry -> clone.setStageError(entry.getKey(), entry.getValue()));
+        stageStatus.entrySet().forEach(entry -> clone.setStageStatus(entry.getKey(),
+                                                                     entry.getValue()));
+        stageError.entrySet().forEach(entry -> clone.setStageError(entry.getKey(),
+                                                                   entry.getValue()));
         clone.setPipelineError(pipelineError);
         clone.setOutput(output.orElse(null));
         return clone;

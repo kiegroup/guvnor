@@ -22,18 +22,17 @@ public class MessageUtils {
 
     public static final String BUILD_SYSTEM_MESSAGE = "BuildSystem";
 
-    public static SystemMessage convert( BuildMessage buildMessage ) {
+    public static SystemMessage convert(BuildMessage buildMessage) {
 
         SystemMessage systemMessage = new SystemMessage();
 
-        systemMessage.setMessageType( BUILD_SYSTEM_MESSAGE );
-        systemMessage.setId( buildMessage.getId() );
-        systemMessage.setLevel( buildMessage.getLevel() );
-        systemMessage.setColumn( buildMessage.getColumn() );
-        systemMessage.setLine( buildMessage.getLine() );
-        systemMessage.setText( buildMessage.getText() );
-        systemMessage.setPath( buildMessage.getPath() );
+        systemMessage.setMessageType(BUILD_SYSTEM_MESSAGE);
+        systemMessage.setId(buildMessage.getId());
+        systemMessage.setLevel(buildMessage.getLevel());
+        systemMessage.setColumn(buildMessage.getColumn());
+        systemMessage.setLine(buildMessage.getLine());
+        systemMessage.setText(buildMessage.getText());
+        systemMessage.setPath(buildMessage.getPath());
         return systemMessage;
     }
-
 }

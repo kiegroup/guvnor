@@ -24,7 +24,7 @@ import org.uberfire.java.nio.file.Path;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class MavenProjectBinaryImpl implements MavenBinary,
-                                        CloneableConfig<MavenBinary> {
+                                               CloneableConfig<MavenBinary> {
 
     private final Path path;
 
@@ -36,12 +36,21 @@ public class MavenProjectBinaryImpl implements MavenBinary,
 
     private final String groupId;
 
-    public MavenProjectBinaryImpl(final Path path, final Project sourceProject, final String groupId, final String artifactId, final String version) {
-        this.path = checkNotNull("path", path);
-        this.sourceProject = checkNotNull("sourceProject", sourceProject);
-        this.artifactId = checkNotNull("artifactId", artifactId);
-        this.version = checkNotNull("version", version);
-        this.groupId = checkNotNull("groupId", groupId);
+    public MavenProjectBinaryImpl(final Path path,
+                                  final Project sourceProject,
+                                  final String groupId,
+                                  final String artifactId,
+                                  final String version) {
+        this.path = checkNotNull("path",
+                                 path);
+        this.sourceProject = checkNotNull("sourceProject",
+                                          sourceProject);
+        this.artifactId = checkNotNull("artifactId",
+                                       artifactId);
+        this.version = checkNotNull("version",
+                                    version);
+        this.groupId = checkNotNull("groupId",
+                                    groupId);
     }
 
     @Override
@@ -75,8 +84,12 @@ public class MavenProjectBinaryImpl implements MavenBinary,
     }
 
     @Override
-    public MavenBinary asNewClone( final MavenBinary source ) {
-        return new MavenProjectBinaryImpl( path, source.getProject(), groupId, artifactId, version );
+    public MavenBinary asNewClone(final MavenBinary source) {
+        return new MavenProjectBinaryImpl(path,
+                                          source.getProject(),
+                                          groupId,
+                                          artifactId,
+                                          version);
     }
 
     @Override

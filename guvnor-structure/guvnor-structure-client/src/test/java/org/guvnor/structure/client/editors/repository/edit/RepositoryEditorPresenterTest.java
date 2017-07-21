@@ -79,113 +79,112 @@ public class RepositoryEditorPresenterTest {
 
     @Before
     public void before() {
-        repositoryServiceCaller = new CallerMock<RepositoryService>( repositoryService );
-        repositoryServiceEditorCaller = new CallerMock<RepositoryServiceEditor>( repositoryServiceEditor );
-        presenter = new RepositoryEditorPresenter( view,
-                                                   repositoryServiceCaller,
-                                                   repositoryServiceEditorCaller,
-                                                   notification,
-                                                   placeManager,
-                                                   repositoryController );
+        repositoryServiceCaller = new CallerMock<RepositoryService>(repositoryService);
+        repositoryServiceEditorCaller = new CallerMock<RepositoryServiceEditor>(repositoryServiceEditor);
+        presenter = new RepositoryEditorPresenter(view,
+                                                  repositoryServiceCaller,
+                                                  repositoryServiceEditorCaller,
+                                                  notification,
+                                                  placeManager,
+                                                  repositoryController);
 
-        repositoryInfo = new RepositoryInfo( "repository",
-                                             "repository",
-                                             "owner",
-                                             root,
-                                             new ArrayList<PublicURI>(),
-                                             new ArrayList<VersionRecord>() );
+        repositoryInfo = new RepositoryInfo("repository",
+                                            "repository",
+                                            "owner",
+                                            root,
+                                            new ArrayList<PublicURI>(),
+                                            new ArrayList<VersionRecord>());
         repositoryHistory = Collections.EMPTY_LIST;
 
-        when( repositoryService.getRepositoryInfo( any( String.class ) ) ).thenReturn( repositoryInfo );
-        when( repositoryService.getRepositoryHistory( any( String.class ),
-                                                      any( Integer.class ) ) ).thenReturn( repositoryHistory );
-        when( repositoryServiceEditor.revertHistory( any( String.class ),
-                                                     eq( root ),
-                                                     any( String.class ),
-                                                     any( VersionRecord.class ) ) ).thenReturn( repositoryHistory );
+        when(repositoryService.getRepositoryInfo(any(String.class))).thenReturn(repositoryInfo);
+        when(repositoryService.getRepositoryHistory(any(String.class),
+                                                    any(Integer.class))).thenReturn(repositoryHistory);
+        when(repositoryServiceEditor.revertHistory(any(String.class),
+                                                   eq(root),
+                                                   any(String.class),
+                                                   any(VersionRecord.class))).thenReturn(repositoryHistory);
 
         //Each test needs the Presenter to be initialised
-        place.addParameter( "alias",
-                            "repository" );
-        presenter.onStartup( place );
+        place.addParameter("alias",
+                           "repository");
+        presenter.onStartup(place);
     }
 
     @Test
     public void testOnStartup() {
-        verify( repositoryService,
-                times( 1 ) ).getRepositoryInfo( eq( "repository" ) );
+        verify(repositoryService,
+               times(1)).getRepositoryInfo(eq("repository"));
 
-        verify( view,
-                times( 1 ) ).setRepositoryInfo( eq( repositoryInfo.getAlias() ),
-                                                eq( repositoryInfo.getOwner() ),
-                                                eq( true ),
-                                                eq( repositoryInfo.getPublicURIs() ),
-                                                eq( CoreConstants.INSTANCE.Empty() ),
-                                                eq( repositoryInfo.getInitialVersionList() ) );
+        verify(view,
+               times(1)).setRepositoryInfo(eq(repositoryInfo.getAlias()),
+                                           eq(repositoryInfo.getOwner()),
+                                           eq(true),
+                                           eq(repositoryInfo.getPublicURIs()),
+                                           eq(CoreConstants.INSTANCE.Empty()),
+                                           eq(repositoryInfo.getInitialVersionList()));
     }
 
     @Test
     public void testLoadMoreHistory() {
-        presenter.onLoadMoreHistory( 0 );
+        presenter.onLoadMoreHistory(0);
 
-        verify( repositoryService,
-                times( 1 ) ).getRepositoryHistory( eq( "repository" ),
-                                                   eq( 0 ) );
+        verify(repositoryService,
+               times(1)).getRepositoryHistory(eq("repository"),
+                                              eq(0));
 
-        verify( view,
-                times( 1 ) ).addHistory( eq( repositoryHistory ) );
+        verify(view,
+               times(1)).addHistory(eq(repositoryHistory));
     }
 
     @Test
     public void testRevertNoCommitMessage() {
-        final VersionRecord vr = mock( VersionRecord.class );
-        presenter.onRevert( vr );
+        final VersionRecord vr = mock(VersionRecord.class);
+        presenter.onRevert(vr);
 
-        verify( repositoryServiceEditor,
-                times( 1 ) ).revertHistory( eq( "repository" ),
-                                            eq( root ),
-                                            isNull( String.class ),
-                                            eq( vr ) );
+        verify(repositoryServiceEditor,
+               times(1)).revertHistory(eq("repository"),
+                                       eq(root),
+                                       isNull(String.class),
+                                       eq(vr));
 
-        verify( view,
-                times( 1 ) ).reloadHistory( eq( repositoryHistory ) );
+        verify(view,
+               times(1)).reloadHistory(eq(repositoryHistory));
     }
 
     @Test
     public void testRevertWithCommitMessage() {
-        final VersionRecord vr = mock( VersionRecord.class );
-        presenter.onRevert( vr,
-                            "comment" );
+        final VersionRecord vr = mock(VersionRecord.class);
+        presenter.onRevert(vr,
+                           "comment");
 
-        verify( repositoryServiceEditor,
-                times( 1 ) ).revertHistory( eq( "repository" ),
-                                            eq( root ),
-                                            eq( "comment" ),
-                                            eq( vr ) );
+        verify(repositoryServiceEditor,
+               times(1)).revertHistory(eq("repository"),
+                                       eq(root),
+                                       eq("comment"),
+                                       eq(vr));
 
-        verify( view,
-                times( 1 ) ).reloadHistory( eq( repositoryHistory ) );
+        verify(view,
+               times(1)).reloadHistory(eq(repositoryHistory));
     }
 
     @Test
     public void testRepositoryRemovedEvent() {
-        final RepositoryRemovedEvent event = mock( RepositoryRemovedEvent.class );
-        final Repository repository = mock( Repository.class );
-        when( repository.getAlias() ).thenReturn( "repository" );
-        when( event.getRepository() ).thenReturn( repository );
+        final RepositoryRemovedEvent event = mock(RepositoryRemovedEvent.class);
+        final Repository repository = mock(Repository.class);
+        when(repository.getAlias()).thenReturn("repository");
+        when(event.getRepository()).thenReturn(repository);
 
-        presenter.onRepositoryRemovedEvent( event );
+        presenter.onRepositoryRemovedEvent(event);
 
-        verify( placeManager,
-                times( 1 ) ).closePlace( eq( place ) );
+        verify(placeManager,
+               times(1)).closePlace(eq(place));
     }
 
     @Test
     public void testNotificationFiredWhenGitUriCopied() {
-        presenter.onGitUrlCopied( "uri" );
+        presenter.onGitUrlCopied("uri");
 
-        verify( notification,
-                times( 1 ) ).fire( any( NotificationEvent.class ) );
+        verify(notification,
+               times(1)).fire(any(NotificationEvent.class));
     }
-
 }

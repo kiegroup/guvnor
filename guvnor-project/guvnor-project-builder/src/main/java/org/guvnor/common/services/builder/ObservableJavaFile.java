@@ -20,8 +20,7 @@ package org.guvnor.common.services.builder;
  */
 public class ObservableJavaFile implements ResourceChangeObservableFile {
 
-    public boolean accept( final String fileName ) {
-        return fileName.endsWith( ".java" );
+    public boolean accept(final String fileName) {
+        return fileName.endsWith(".java");
     }
-
 }

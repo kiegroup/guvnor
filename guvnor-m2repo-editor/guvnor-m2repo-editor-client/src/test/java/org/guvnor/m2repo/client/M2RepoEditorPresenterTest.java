@@ -86,5 +86,4 @@ public class M2RepoEditorPresenterTest {
 
         verify(refreshEvents).fire(any(M2RepoRefreshEvent.class));
     }
-
 }

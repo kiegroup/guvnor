@@ -16,13 +16,13 @@
 
 package org.guvnor.ala.services.api.itemlist;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.guvnor.ala.runtime.Runtime;
 import org.guvnor.ala.services.api.ItemList;
-
 
 public class RuntimeList implements ItemList<Runtime> {
 
@@ -34,11 +34,11 @@ public class RuntimeList implements ItemList<Runtime> {
     public RuntimeList() {
     }
 
-    public RuntimeList( List<Runtime> runtimes ) {
-        this.runtimes = runtimes.toArray( new Runtime[runtimes.size()] );
+    public RuntimeList(List<Runtime> runtimes) {
+        this.runtimes = runtimes.toArray(new Runtime[runtimes.size()]);
     }
 
-    public RuntimeList( Runtime[] runtimes ) {
+    public RuntimeList(Runtime[] runtimes) {
         this.runtimes = runtimes;
     }
 
@@ -46,17 +46,16 @@ public class RuntimeList implements ItemList<Runtime> {
         return runtimes;
     }
 
-    public void setRuntime( Runtime[] runtime ) {
+    public void setRuntime(Runtime[] runtime) {
         this.runtimes = runtime;
     }
 
     @Override
     @JsonIgnore
     public List<Runtime> getItems() {
-        if ( runtimes == null ) {
+        if (runtimes == null) {
             return Collections.emptyList();
         }
-        return Arrays.asList( runtimes );
+        return Arrays.asList(runtimes);
     }
-
 }

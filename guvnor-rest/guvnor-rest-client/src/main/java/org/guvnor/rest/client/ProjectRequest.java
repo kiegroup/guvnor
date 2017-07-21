@@ -20,21 +20,23 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class ProjectRequest extends Entity {
-    
+
     String groupId;
     String version;
-    
+
     public String getGroupId() {
         return groupId;
     }
-    public void setGroupId( String groupId ) {
+
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
+
     public String getVersion() {
         return version;
     }
-    public void setVersion( String version ) {
+
+    public void setVersion(String version) {
         this.version = version;
     }
-    
 }

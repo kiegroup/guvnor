@@ -18,7 +18,6 @@ package org.guvnor.ala.util;
 
 import java.util.HashMap;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -29,47 +28,62 @@ public class VariableInterpolationTest {
     public void basicTest() {
         final Test1 object = new Test1() {
         };
-        final Test1 newObject = VariableInterpolation.interpolate( new HashMap<String, Object>() {{
-            put( "input", new HashMap<String, String>() {{
-                put( "value1", "myvalue1" );
-                put( "value2", "myvalue2" );
-            }} );
-        }}, object );
+        final Test1 newObject = VariableInterpolation.interpolate(new HashMap<String, Object>() {{
+                                                                      put("input",
+                                                                          new HashMap<String, String>() {{
+                                                                              put("value1",
+                                                                                  "myvalue1");
+                                                                              put("value2",
+                                                                                  "myvalue2");
+                                                                          }});
+                                                                  }},
+                                                                  object);
 
-        assertEquals( "myvalue1", newObject.getValue1() );
-        assertEquals( "myvalue2", newObject.getValue2() );
-        assertEquals( "myvalue1", newObject.getValue3() );
+        assertEquals("myvalue1",
+                     newObject.getValue1());
+        assertEquals("myvalue2",
+                     newObject.getValue2());
+        assertEquals("myvalue1",
+                     newObject.getValue3());
     }
-
 
     @Test
     public void missingContentTest() {
         final Test1 object = new Test1() {
         };
-        final Test1 newObject = VariableInterpolation.interpolate( new HashMap<String, Object>() {{
-            put( "input", new HashMap<String, String>() {{
-                put( "value2", "myvalue2" );
-            }} );
-        }}, object );
+        final Test1 newObject = VariableInterpolation.interpolate(new HashMap<String, Object>() {{
+                                                                      put("input",
+                                                                          new HashMap<String, String>() {{
+                                                                              put("value2",
+                                                                                  "myvalue2");
+                                                                          }});
+                                                                  }},
+                                                                  object);
 
-        assertEquals( "", newObject.getValue1() );
-        assertEquals( "myvalue2", newObject.getValue2() );
-        assertEquals( "", newObject.getValue3() );
+        assertEquals("",
+                     newObject.getValue1());
+        assertEquals("myvalue2",
+                     newObject.getValue2());
+        assertEquals("",
+                     newObject.getValue3());
     }
 
     @Test
     public void testPreserveImplementedInterfaces() {
         Object object = new Test1Class();
-        Object newObject = VariableInterpolation.interpolate( new HashMap<>(), object );
-        assertTrue( newObject instanceof Test1 );
+        Object newObject = VariableInterpolation.interpolate(new HashMap<>(),
+                                                             object);
+        assertTrue(newObject instanceof Test1);
 
         object = new Test2Class();
-        newObject = VariableInterpolation.interpolate( new HashMap<>(), object );
-        assertTrue( newObject instanceof Test1 );
+        newObject = VariableInterpolation.interpolate(new HashMap<>(),
+                                                      object);
+        assertTrue(newObject instanceof Test1);
 
         object = new Test3Class();
-        newObject = VariableInterpolation.interpolate( new HashMap<>(), object );
-        assertTrue( newObject instanceof Test1 );
+        newObject = VariableInterpolation.interpolate(new HashMap<>(),
+                                                      object);
+        assertTrue(newObject instanceof Test1);
     }
 
     public interface Test1 {
@@ -98,5 +112,4 @@ public class VariableInterpolationTest {
     public class Test3Class extends Test2Class {
 
     }
-
 }

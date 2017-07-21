@@ -49,7 +49,7 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
 
     }
 
-    private ArtifactListViewImplWidgetBinder uiBinder = GWT.create( ArtifactListViewImplWidgetBinder.class );
+    private ArtifactListViewImplWidgetBinder uiBinder = GWT.create(ArtifactListViewImplWidgetBinder.class);
 
     @UiField(provided = true)
     final PagedTable<JarListPageRow> dataGrid = new PagedTable<JarListPageRow>();
@@ -57,112 +57,112 @@ public class ArtifactListViewImpl extends Composite implements ArtifactListView 
     protected ArtifactListPresenter presenter;
 
     public ArtifactListViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void setup( final ColumnType... _columns ) {
-        final Set<ColumnType> columns = new HashSet<ColumnType>( Arrays.asList( _columns ) );
-        dataGrid.setEmptyTableCaption( M2RepoEditorConstants.INSTANCE.NoArtifactAvailable() );
+    public void setup(final ColumnType... _columns) {
+        final Set<ColumnType> columns = new HashSet<ColumnType>(Arrays.asList(_columns));
+        dataGrid.setEmptyTableCaption(M2RepoEditorConstants.INSTANCE.NoArtifactAvailable());
 
-        if ( columns.contains( ColumnType.NAME ) ) {
-            final Column<JarListPageRow, String> nameColumn = new Column<JarListPageRow, String>( new TextCell() ) {
+        if (columns.contains(ColumnType.NAME)) {
+            final Column<JarListPageRow, String> nameColumn = new Column<JarListPageRow, String>(new TextCell()) {
                 @Override
-                public String getValue( JarListPageRow row ) {
+                public String getValue(JarListPageRow row) {
                     return row.getName();
                 }
             };
-            nameColumn.setSortable( true );
-            nameColumn.setDataStoreName( JarListPageRequest.COLUMN_NAME );
-            addColumn( nameColumn,
-                       M2RepoEditorConstants.INSTANCE.Name() );
+            nameColumn.setSortable(true);
+            nameColumn.setDataStoreName(JarListPageRequest.COLUMN_NAME);
+            addColumn(nameColumn,
+                      M2RepoEditorConstants.INSTANCE.Name());
         }
 
-        if ( columns.contains( ColumnType.GAV ) ) {
-            final Column<JarListPageRow, String> gavColumn = new Column<JarListPageRow, String>( new TextCell() ) {
+        if (columns.contains(ColumnType.GAV)) {
+            final Column<JarListPageRow, String> gavColumn = new Column<JarListPageRow, String>(new TextCell()) {
                 @Override
-                public String getValue( JarListPageRow row ) {
+                public String getValue(JarListPageRow row) {
                     return row.getGav().toString();
                 }
             };
-            gavColumn.setSortable( true );
-            gavColumn.setDataStoreName( JarListPageRequest.COLUMN_GAV );
-            addColumn( gavColumn,
-                       M2RepoEditorConstants.INSTANCE.GAV() );
+            gavColumn.setSortable(true);
+            gavColumn.setDataStoreName(JarListPageRequest.COLUMN_GAV);
+            addColumn(gavColumn,
+                      M2RepoEditorConstants.INSTANCE.GAV());
         }
 
-        if ( columns.contains( ColumnType.LAST_MODIFIED ) ) {
-            final Column<JarListPageRow, Date> lastModifiedColumn = new Column<JarListPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
+        if (columns.contains(ColumnType.LAST_MODIFIED)) {
+            final Column<JarListPageRow, Date> lastModifiedColumn = new Column<JarListPageRow, Date>(new DateCell(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM))) {
                 @Override
-                public Date getValue( JarListPageRow row ) {
+                public Date getValue(JarListPageRow row) {
                     return row.getLastModified();
                 }
             };
-            lastModifiedColumn.setSortable( true );
-            lastModifiedColumn.setDataStoreName( JarListPageRequest.COLUMN_LAST_MODIFIED );
-            addColumn( lastModifiedColumn,
-                       M2RepoEditorConstants.INSTANCE.LastModified(),
-                       false );
+            lastModifiedColumn.setSortable(true);
+            lastModifiedColumn.setDataStoreName(JarListPageRequest.COLUMN_LAST_MODIFIED);
+            addColumn(lastModifiedColumn,
+                      M2RepoEditorConstants.INSTANCE.LastModified(),
+                      false);
         }
 
-        dataGrid.addColumnSortHandler( new ColumnSortEvent.AsyncHandler( dataGrid ) );
+        dataGrid.addColumnSortHandler(new ColumnSortEvent.AsyncHandler(dataGrid));
     }
 
     @Override
-    public void setContentHeight( String s ) {
-        dataGrid.setHeight( s );
+    public void setContentHeight(String s) {
+        dataGrid.setHeight(s);
     }
 
     @Override
-    public void init( final ArtifactListPresenter presenter ) {
+    public void init(final ArtifactListPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void addColumn( final Column<JarListPageRow, ?> column,
-                           final String caption ) {
-        dataGrid.addColumn( column,
-                            caption );
+    public void addColumn(final Column<JarListPageRow, ?> column,
+                          final String caption) {
+        dataGrid.addColumn(column,
+                           caption);
     }
 
     @Override
-    public void addColumn( final Column<JarListPageRow, ?> column,
-                           final String caption,
-                           final boolean visible ) {
-        dataGrid.addColumn( column,
-                            caption,
-                            visible );
+    public void addColumn(final Column<JarListPageRow, ?> column,
+                          final String caption,
+                          final boolean visible) {
+        dataGrid.addColumn(column,
+                           caption,
+                           visible);
     }
 
     @Override
-    public void addColumn( final Column<JarListPageRow, ?> column,
-                           final String caption,
-                           final double width,
-                           final Style.Unit unit ) {
-        dataGrid.addColumn( column,
-                            caption );
-        dataGrid.setColumnWidth( column,
-                                 width,
-                                 unit );
+    public void addColumn(final Column<JarListPageRow, ?> column,
+                          final String caption,
+                          final double width,
+                          final Style.Unit unit) {
+        dataGrid.addColumn(column,
+                           caption);
+        dataGrid.setColumnWidth(column,
+                                width,
+                                unit);
     }
 
     @Override
-    public void addColumn( final Column<JarListPageRow, ?> column,
-                           final String caption,
-                           final boolean visible,
-                           final double width,
-                           final Style.Unit unit ) {
-        dataGrid.addColumn( column,
-                            caption,
-                            visible );
-        dataGrid.setColumnWidth( column,
-                                 width,
-                                 unit );
+    public void addColumn(final Column<JarListPageRow, ?> column,
+                          final String caption,
+                          final boolean visible,
+                          final double width,
+                          final Style.Unit unit) {
+        dataGrid.addColumn(column,
+                           caption,
+                           visible);
+        dataGrid.setColumnWidth(column,
+                                width,
+                                unit);
     }
 
     @Override
-    public void showPom( String pomText ) {
-        JarDetailPopup popup = new JarDetailPopup( pomText );
+    public void showPom(String pomText) {
+        JarDetailPopup popup = new JarDetailPopup(pomText);
         popup.show();
     }
 

@@ -37,13 +37,13 @@ public class GAVAlreadyExistsException extends RuntimeException {
         super();
     }
 
-    public GAVAlreadyExistsException( final GAV gav,
-                                      final Set<MavenRepositoryMetadata> repositories ) {
+    public GAVAlreadyExistsException(final GAV gav,
+                                     final Set<MavenRepositoryMetadata> repositories) {
         super("Requested GAV (" + gav + ") already exists. Please check 'repositories' collection.");
-        this.gav = PortablePreconditions.checkNotNull( "gav",
-                                                       gav);
-        this.repositories.addAll( PortablePreconditions.checkNotNull( "repositories",
-                                                                      repositories ) );
+        this.gav = PortablePreconditions.checkNotNull("gav",
+                                                      gav);
+        this.repositories.addAll(PortablePreconditions.checkNotNull("repositories",
+                                                                    repositories));
     }
 
     public GAV getGAV() {
@@ -53,5 +53,4 @@ public class GAVAlreadyExistsException extends RuntimeException {
     public Set<MavenRepositoryMetadata> getRepositories() {
         return repositories;
     }
-
 }

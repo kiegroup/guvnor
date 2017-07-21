@@ -29,6 +29,6 @@ public interface WorkbenchPreferenceScopeResolutionStrategies {
      * @param scopeKey The first scope key in the resolution order (e.g. my-project-name).
      * @return The scope resolution strategy info based on the passed parameters.
      */
-    PreferenceScopeResolutionStrategyInfo getUserInfoFor( String scopeType,
-                                                          String scopeKey );
+    PreferenceScopeResolutionStrategyInfo getUserInfoFor(String scopeType,
+                                                         String scopeKey);
 }

@@ -22,13 +22,13 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
-import org.guvnor.structure.social.OrganizationalUnitEventType;
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.ext.uberfire.social.activities.model.SocialEventType;
 import org.ext.uberfire.social.activities.repository.SocialUserRepository;
 import org.ext.uberfire.social.activities.service.SocialAdapter;
 import org.ext.uberfire.social.activities.service.SocialCommandTypeFilter;
+import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
+import org.guvnor.structure.social.OrganizationalUnitEventType;
 
 @ApplicationScoped
 public class NewOrganizationalUnitEventAdapter
@@ -48,23 +48,26 @@ public class NewOrganizationalUnitEventAdapter
     }
 
     @Override
-    public boolean shouldInterceptThisEvent( Object event ) {
-        return event.getClass().getSimpleName().equals( eventToIntercept().getSimpleName() );
+    public boolean shouldInterceptThisEvent(Object event) {
+        return event.getClass().getSimpleName().equals(eventToIntercept().getSimpleName());
     }
 
     @Override
-    public SocialActivitiesEvent toSocial( Object object ) {
-        NewOrganizationalUnitEvent event = ( NewOrganizationalUnitEvent ) object;
+    public SocialActivitiesEvent toSocial(Object object) {
+        NewOrganizationalUnitEvent event = (NewOrganizationalUnitEvent) object;
 
         return new SocialActivitiesEvent(
-                socialUserRepository.findSocialUser( event.getUserName() ),
+                socialUserRepository.findSocialUser(event.getUserName()),
                 socialEventType().name(),
                 new Date()
         )
-        .withDescription( event.getOrganizationalUnit().getName() )
-        .withLink( event.getOrganizationalUnit().getName(), event.getOrganizationalUnit().getName(), SocialActivitiesEvent.LINK_TYPE.CUSTOM )
-        .withAdicionalInfo( getAdditionalInfo( event ) )
-        .withParam( "ouName", event.getOrganizationalUnit().getName() );
+                .withDescription(event.getOrganizationalUnit().getName())
+                .withLink(event.getOrganizationalUnit().getName(),
+                          event.getOrganizationalUnit().getName(),
+                          SocialActivitiesEvent.LINK_TYPE.CUSTOM)
+                .withAdicionalInfo(getAdditionalInfo(event))
+                .withParam("ouName",
+                           event.getOrganizationalUnit().getName());
     }
 
     @Override
@@ -77,8 +80,7 @@ public class NewOrganizationalUnitEventAdapter
         return new ArrayList<String>();
     }
 
-    private String getAdditionalInfo( NewOrganizationalUnitEvent event ) {
+    private String getAdditionalInfo(NewOrganizationalUnitEvent event) {
         return "added";
     }
-
 }

@@ -23,12 +23,13 @@ public class ProviderTypeSelectedEvent {
     private final ProviderTypeKey providerTypeKey;
     private final String providerId;
 
-    public ProviderTypeSelectedEvent(final ProviderTypeKey providerTypeKey ) {
-        this( providerTypeKey, null );
+    public ProviderTypeSelectedEvent(final ProviderTypeKey providerTypeKey) {
+        this(providerTypeKey,
+             null);
     }
 
     public ProviderTypeSelectedEvent(final ProviderTypeKey providerTypeKey,
-                                     final String providerId ) {
+                                     final String providerId) {
         this.providerTypeKey = providerTypeKey;
         this.providerId = providerId;
     }

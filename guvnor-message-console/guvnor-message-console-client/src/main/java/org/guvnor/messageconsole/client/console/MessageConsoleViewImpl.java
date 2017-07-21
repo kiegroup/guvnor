@@ -38,7 +38,8 @@ import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 public class MessageConsoleViewImpl extends Composite implements MessageConsoleView {
 
     interface MessageConsoleViewImplWidgetBinder extends
-            UiBinder<Widget, MessageConsoleViewImpl> {
+                                                 UiBinder<Widget, MessageConsoleViewImpl> {
+
     }
 
     private MessageConsoleViewImplWidgetBinder uiBinder = GWT.create(MessageConsoleViewImplWidgetBinder.class);
@@ -53,95 +54,96 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
     protected final MessageTableWidget<MessageConsoleServiceRow> dataGrid = new MessageTableWidget<MessageConsoleServiceRow>();
 
     public MessageConsoleViewImpl() {
-        dataGrid.addLevelColumn( 75, new MessageTableWidget.ColumnExtractor<Level>() {
-            @Override
-            public Level getValue( final Object row ) {
-                return ( (MessageConsoleServiceRow) row ).getMessageLevel();
-            }
-        } );
-        dataGrid.addTextColumn( 100, new MessageTableWidget.ColumnExtractor<String>() {
-            @Override
-            public String getValue( final Object row ) {
-                return ( (MessageConsoleServiceRow) row ).getMessageText();
-            }
-        } );
+        dataGrid.addLevelColumn(75,
+                                new MessageTableWidget.ColumnExtractor<Level>() {
+                                    @Override
+                                    public Level getValue(final Object row) {
+                                        return ((MessageConsoleServiceRow) row).getMessageLevel();
+                                    }
+                                });
+        dataGrid.addTextColumn(100,
+                               new MessageTableWidget.ColumnExtractor<String>() {
+                                   @Override
+                                   public String getValue(final Object row) {
+                                       return ((MessageConsoleServiceRow) row).getMessageText();
+                                   }
+                               });
 
         addFileNameColumn();
         addColumnColumn();
         addLineColumn();
 
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @PostConstruct
     public void setupDataDisplay() {
-        consoleService.addDataDisplay( dataGrid );
+        consoleService.addDataDisplay(dataGrid);
     }
 
     private void addLineColumn() {
-        final Column<MessageConsoleServiceRow, ?> lineColumn = new Column<MessageConsoleServiceRow, String>( new TextCell() ) {
+        final Column<MessageConsoleServiceRow, ?> lineColumn = new Column<MessageConsoleServiceRow, String>(new TextCell()) {
             @Override
-            public String getValue( MessageConsoleServiceRow row ) {
-                return row != null ? Integer.toString( row.getMessageLine() ) : null;
+            public String getValue(MessageConsoleServiceRow row) {
+                return row != null ? Integer.toString(row.getMessageLine()) : null;
             }
         };
-        dataGrid.addColumn( lineColumn,
-                            MessageConsoleResources.CONSTANTS.Line() );
-        dataGrid.setColumnWidth( lineColumn,
-                                 75,
-                                 Style.Unit.PX );
+        dataGrid.addColumn(lineColumn,
+                           MessageConsoleResources.CONSTANTS.Line());
+        dataGrid.setColumnWidth(lineColumn,
+                                75,
+                                Style.Unit.PX);
     }
 
     private void addColumnColumn() {
-        Column<MessageConsoleServiceRow, ?> column = new Column<MessageConsoleServiceRow, String>( new TextCell() ) {
+        Column<MessageConsoleServiceRow, ?> column = new Column<MessageConsoleServiceRow, String>(new TextCell()) {
             @Override
-            public String getValue( MessageConsoleServiceRow row ) {
-                return Integer.toString( row.getMessageColumn() );
+            public String getValue(MessageConsoleServiceRow row) {
+                return Integer.toString(row.getMessageColumn());
             }
         };
-        dataGrid.addColumn( column,
-                            MessageConsoleResources.CONSTANTS.Column() );
-        dataGrid.setColumnWidth( column,
-                                 75,
-                                 Style.Unit.PX );
+        dataGrid.addColumn(column,
+                           MessageConsoleResources.CONSTANTS.Column());
+        dataGrid.setColumnWidth(column,
+                                75,
+                                Style.Unit.PX);
     }
 
     private void addFileNameColumn() {
-        final Column<MessageConsoleServiceRow, HyperLinkCell.HyperLink> column = new Column<MessageConsoleServiceRow, HyperLinkCell.HyperLink>( new HyperLinkCell() ) {
+        final Column<MessageConsoleServiceRow, HyperLinkCell.HyperLink> column = new Column<MessageConsoleServiceRow, HyperLinkCell.HyperLink>(new HyperLinkCell()) {
             @Override
-            public HyperLinkCell.HyperLink getValue( MessageConsoleServiceRow row ) {
-                if ( row.getMessagePath() != null ) {
-                    return HyperLinkCell.HyperLink.newLink( row.getMessagePath().getFileName() );
+            public HyperLinkCell.HyperLink getValue(MessageConsoleServiceRow row) {
+                if (row.getMessagePath() != null) {
+                    return HyperLinkCell.HyperLink.newLink(row.getMessagePath().getFileName());
                 } else {
-                    return HyperLinkCell.HyperLink.newText( "-" );
+                    return HyperLinkCell.HyperLink.newText("-");
                 }
             }
         };
-        column.setFieldUpdater( new FieldUpdater<MessageConsoleServiceRow, HyperLinkCell.HyperLink>() {
+        column.setFieldUpdater(new FieldUpdater<MessageConsoleServiceRow, HyperLinkCell.HyperLink>() {
             @Override
-            public void update( final int index,
-                                final MessageConsoleServiceRow row,
-                                final HyperLinkCell.HyperLink value ) {
-                if ( row.getMessagePath() != null ) {
-                    placeManager.goTo( row.getMessagePath() );
+            public void update(final int index,
+                               final MessageConsoleServiceRow row,
+                               final HyperLinkCell.HyperLink value) {
+                if (row.getMessagePath() != null) {
+                    placeManager.goTo(row.getMessagePath());
                 }
             }
-        } );
-        dataGrid.addColumn( column,
-                            MessageConsoleResources.CONSTANTS.FileName() );
-        dataGrid.setColumnWidth( column,
-                                 180,
-                                 Style.Unit.PX );
+        });
+        dataGrid.addColumn(column,
+                           MessageConsoleResources.CONSTANTS.FileName());
+        dataGrid.setColumnWidth(column,
+                                180,
+                                Style.Unit.PX);
     }
 
     @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override
     public void hideBusyIndicator() {
         BusyPopup.close();
     }
-
 }

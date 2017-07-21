@@ -36,89 +36,95 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
     SimpleTable<T> dataGrid;
 
     public enum Mode {
-        SIMPLE, PAGED
+        SIMPLE,
+        PAGED
     }
 
     public interface ColumnExtractor<V> {
 
-        V getValue( Object row );
+        V getValue(Object row);
     }
 
     public MessageTableWidget() {
         dataGrid = new SimpleTable<T>();
-        initWidget( dataGrid );
+        initWidget(dataGrid);
     }
 
-    public MessageTableWidget( final Mode mode ) {
-        if ( mode == Mode.SIMPLE ) {
+    public MessageTableWidget(final Mode mode) {
+        if (mode == Mode.SIMPLE) {
             dataGrid = new SimpleTable<T>();
-        } else if ( mode == Mode.PAGED ) {
-            dataGrid = new PagedTable<T>( DEFAULT_PAGE_SIZE );
-            dataGrid.setHeight( "165px" );
-            dataGrid.setAlwaysShowScrollBars( false );
+        } else if (mode == Mode.PAGED) {
+            dataGrid = new PagedTable<T>(DEFAULT_PAGE_SIZE);
+            dataGrid.setHeight("165px");
+            dataGrid.setAlwaysShowScrollBars(false);
         }
-        initWidget( dataGrid );
+        initWidget(dataGrid);
     }
 
-    public MessageTableWidget( final SimpleTable dataGrid ) {
+    public MessageTableWidget(final SimpleTable dataGrid) {
         this.dataGrid = dataGrid;
-        initWidget( dataGrid );
+        initWidget(dataGrid);
     }
 
-    public void addLevelColumn( final int px,
-                                final ColumnExtractor<Level> extractor ) {
-        final Column<T, ?> column = new Column<T, Level>( new IconCell() ) {
+    public void addLevelColumn(final int px,
+                               final ColumnExtractor<Level> extractor) {
+        final Column<T, ?> column = new Column<T, Level>(new IconCell()) {
 
             @Override
-            public Level getValue( final T row ) {
-                return extractor.getValue( row );
+            public Level getValue(final T row) {
+                return extractor.getValue(row);
             }
 
             @Override
-            public void render( Cell.Context context,
-                                T row,
-                                SafeHtmlBuilder sb ) {
-                String title = getLevelTitle( extractor.getValue( row ) );
-                sb.append( createDivStart( title, "", "text-center" ) );
-                super.render( context, row, sb );
-                sb.append( createDivEnd() );
+            public void render(Cell.Context context,
+                               T row,
+                               SafeHtmlBuilder sb) {
+                String title = getLevelTitle(extractor.getValue(row));
+                sb.append(createDivStart(title,
+                                         "",
+                                         "text-center"));
+                super.render(context,
+                             row,
+                             sb);
+                sb.append(createDivEnd());
             }
         };
-        dataGrid.addColumn( column,
-                            MessageConsoleResources.CONSTANTS.Level() );
-        dataGrid.setColumnWidth( column,
-                                 px,
-                                 Style.Unit.PX );
+        dataGrid.addColumn(column,
+                           MessageConsoleResources.CONSTANTS.Level());
+        dataGrid.setColumnWidth(column,
+                                px,
+                                Style.Unit.PX);
     }
 
-    public void addTextColumn( final int pct,
-                               final ColumnExtractor<String> extractor ) {
-        Column<T, ?> column = new Column<T, String>( new TextCell() ) {
+    public void addTextColumn(final int pct,
+                              final ColumnExtractor<String> extractor) {
+        Column<T, ?> column = new Column<T, String>(new TextCell()) {
             @Override
-            public String getValue( T row ) {
-                return extractor.getValue( row );
+            public String getValue(T row) {
+                return extractor.getValue(row);
             }
 
             @Override
-            public void render( Cell.Context context,
-                                T row,
-                                SafeHtmlBuilder sb ) {
-                String title = extractor.getValue( row );
-                sb.append( createDivStart( title ) );
-                super.render( context, row, sb );
-                sb.append( createDivEnd() );
+            public void render(Cell.Context context,
+                               T row,
+                               SafeHtmlBuilder sb) {
+                String title = extractor.getValue(row);
+                sb.append(createDivStart(title));
+                super.render(context,
+                             row,
+                             sb);
+                sb.append(createDivEnd());
             }
-
         };
-        dataGrid.addColumn( column,
-                            MessageConsoleResources.CONSTANTS.Text() );
-        dataGrid.setColumnWidth( column,
-                                 pct,
-                                 Style.Unit.PCT );
+        dataGrid.addColumn(column,
+                           MessageConsoleResources.CONSTANTS.Text());
+        dataGrid.setColumnWidth(column,
+                                pct,
+                                Style.Unit.PCT);
     }
 
-    private String getLevelTitle( Level level ) {
-        switch ( level ) {
+    private String getLevelTitle(Level level) {
+        switch (level) {
             case ERROR:
                 return MessageConsoleResources.CONSTANTS.ErrorLevelTitle();
             case WARNING:
@@ -129,44 +135,47 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
         }
     }
 
-    public SafeHtml createDivStart( String title ) {
-        return createDivStart( title, "" );
+    public SafeHtml createDivStart(String title) {
+        return createDivStart(title,
+                              "");
     }
 
-    public SafeHtml createDivStart( String title,
-                                    String defaultValue ) {
-        return createDivStart(title, defaultValue, null );
+    public SafeHtml createDivStart(String title,
+                                   String defaultValue) {
+        return createDivStart(title,
+                              defaultValue,
+                              null);
     }
 
-    public SafeHtml createDivStart( String title,
-                                    String defaultValue,
-                                    String cssClasses ) {
-        if ( title == null || "".equals( title ) ) {
+    public SafeHtml createDivStart(String title,
+                                   String defaultValue,
+                                   String cssClasses) {
+        if (title == null || "".equals(title)) {
             title = defaultValue;
         }
 
         final String css = cssClasses == null ? "" : "class=\"" + cssClasses + "\"";
-        return SafeHtmlUtils.fromTrustedString( "<div title=\"" + SafeHtmlUtils.htmlEscape( title.trim() ) + "\" "+ css + " >" );
+        return SafeHtmlUtils.fromTrustedString("<div title=\"" + SafeHtmlUtils.htmlEscape(title.trim()) + "\" " + css + " >");
     }
 
     public SafeHtml createDivEnd() {
-        return SafeHtmlUtils.fromTrustedString( "</div>" );
+        return SafeHtmlUtils.fromTrustedString("</div>");
     }
 
     private class IconCell extends AbstractCell<Level> {
 
         @Override
-        public void render( Context context,
-                            Level level,
-                            SafeHtmlBuilder sb ) {
-            final Span icon = GWT.create( Span.class );
-            icon.addStyleName( "glyphicon" );
-            icon.addStyleName( getIconClass( level ) );
-            sb.appendHtmlConstant( icon.getElement().getString() );
+        public void render(Context context,
+                           Level level,
+                           SafeHtmlBuilder sb) {
+            final Span icon = GWT.create(Span.class);
+            icon.addStyleName("glyphicon");
+            icon.addStyleName(getIconClass(level));
+            sb.appendHtmlConstant(icon.getElement().getString());
         }
 
-        private String getIconClass( final Level level ) {
-            switch ( level ) {
+        private String getIconClass(final Level level) {
+            switch (level) {
                 case ERROR:
                     return PatternFlyIconType.ERROR_CIRCLE_O.getCssName();
                 case WARNING:
@@ -178,21 +187,21 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
         }
     }
 
-    public void setDataProvider( final AbstractDataProvider<T> dataProvider ) {
-        if ( dataGrid instanceof PagedTable ) {
-            ( (PagedTable<T>) dataGrid ).setDataProvider( dataProvider );
+    public void setDataProvider(final AbstractDataProvider<T> dataProvider) {
+        if (dataGrid instanceof PagedTable) {
+            ((PagedTable<T>) dataGrid).setDataProvider(dataProvider);
         }
     }
 
     public final AbstractDataProvider<T> getDataProvider() {
-        if ( dataGrid instanceof PagedTable ) {
-            return ( (PagedTable<T>) dataGrid ).getDataProvider();
+        if (dataGrid instanceof PagedTable) {
+            return ((PagedTable<T>) dataGrid).getDataProvider();
         }
         return null;
     }
 
-    public void setToolBarVisible( final boolean visible ) {
-        dataGrid.setToolBarVisible( visible );
+    public void setToolBarVisible(final boolean visible) {
+        dataGrid.setToolBarVisible(visible);
     }
 
     public ColumnSortList getColumnSortList() {
@@ -219,47 +228,50 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
         return dataGrid.getCenterToolbar();
     }
 
-    public void setRowStyles( final RowStyles<T> styles ) {
-        dataGrid.setRowStyles( styles );
+    public void setRowStyles(final RowStyles<T> styles) {
+        dataGrid.setRowStyles(styles);
     }
 
-    public void setColumnPickerButtonVisible( final boolean show ) {
-        dataGrid.setColumnPickerButtonVisible( show );
+    public void setColumnPickerButtonVisible(final boolean show) {
+        dataGrid.setColumnPickerButtonVisible(show);
     }
 
-    public void addColumn( final Column<T, ?> lineColumn,
-                           final String line ) {
-        dataGrid.addColumn( lineColumn, line );
+    public void addColumn(final Column<T, ?> lineColumn,
+                          final String line) {
+        dataGrid.addColumn(lineColumn,
+                           line);
     }
 
-    public void setColumnWidth( final Column<T, ?> lineColumn,
-                                final int i,
-                                final Style.Unit pct ) {
-        dataGrid.setColumnWidth( lineColumn, i, pct );
-    }
-
-    @Override
-    public void setHeight( final String height ) {
-        dataGrid.setHeight( height );
-    }
-
-    @Override
-    public void setPixelSize( final int width,
-                              final int height ) {
-        dataGrid.setPixelSize( width,
-                               height );
+    public void setColumnWidth(final Column<T, ?> lineColumn,
+                               final int i,
+                               final Style.Unit pct) {
+        dataGrid.setColumnWidth(lineColumn,
+                                i,
+                                pct);
     }
 
     @Override
-    public void setSize( final String width,
-                         final String height ) {
-        dataGrid.setSize( width,
-                          height );
+    public void setHeight(final String height) {
+        dataGrid.setHeight(height);
     }
 
     @Override
-    public void setWidth( final String width ) {
-        dataGrid.setWidth( width );
+    public void setPixelSize(final int width,
+                             final int height) {
+        dataGrid.setPixelSize(width,
+                              height);
+    }
+
+    @Override
+    public void setSize(final String width,
+                        final String height) {
+        dataGrid.setSize(width,
+                         height);
+    }
+
+    @Override
+    public void setWidth(final String width) {
+        dataGrid.setWidth(width);
     }
 
     @Override
@@ -268,8 +280,8 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
     }
 
     @Override
-    public T getVisibleItem( final int indexOnPage ) {
-        return dataGrid.getVisibleItem( indexOnPage );
+    public T getVisibleItem(final int indexOnPage) {
+        return dataGrid.getVisibleItem(indexOnPage);
     }
 
     @Override
@@ -283,13 +295,14 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
     }
 
     @Override
-    public void setRowData( final int start,
-                            final List<? extends T> values ) {
-        dataGrid.setRowData( start, values );
+    public void setRowData(final int start,
+                           final List<? extends T> values) {
+        dataGrid.setRowData(start,
+                            values);
     }
 
-    public void setRowData( final List<? extends T> values ) {
-        dataGrid.setRowData( values );
+    public void setRowData(final List<? extends T> values) {
+        dataGrid.setRowData(values);
     }
 
     public void redraw() {
@@ -297,29 +310,30 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
     }
 
     @Override
-    public void setSelectionModel( final SelectionModel<? super T> selectionModel ) {
-        dataGrid.setSelectionModel( selectionModel );
+    public void setSelectionModel(final SelectionModel<? super T> selectionModel) {
+        dataGrid.setSelectionModel(selectionModel);
     }
 
     @Override
-    public void setVisibleRangeAndClearData( final Range range,
-                                             final boolean forceRangeChangeEvent ) {
-        dataGrid.setVisibleRangeAndClearData( range, forceRangeChangeEvent );
+    public void setVisibleRangeAndClearData(final Range range,
+                                            final boolean forceRangeChangeEvent) {
+        dataGrid.setVisibleRangeAndClearData(range,
+                                             forceRangeChangeEvent);
     }
 
     @Override
-    public HandlerRegistration addCellPreviewHandler( final CellPreviewEvent.Handler<T> handler ) {
-        return dataGrid.addCellPreviewHandler( handler );
+    public HandlerRegistration addCellPreviewHandler(final CellPreviewEvent.Handler<T> handler) {
+        return dataGrid.addCellPreviewHandler(handler);
     }
 
     @Override
-    public HandlerRegistration addRangeChangeHandler( final RangeChangeEvent.Handler handler ) {
-        return dataGrid.addRangeChangeHandler( handler );
+    public HandlerRegistration addRangeChangeHandler(final RangeChangeEvent.Handler handler) {
+        return dataGrid.addRangeChangeHandler(handler);
     }
 
     @Override
-    public HandlerRegistration addRowCountChangeHandler( final RowCountChangeEvent.Handler handler ) {
-        return dataGrid.addRowCountChangeHandler( handler );
+    public HandlerRegistration addRowCountChangeHandler(final RowCountChangeEvent.Handler handler) {
+        return dataGrid.addRowCountChangeHandler(handler);
     }
 
     @Override
@@ -338,26 +352,27 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
     }
 
     @Override
-    public void setRowCount( final int count ) {
-        dataGrid.setRowCount( count );
+    public void setRowCount(final int count) {
+        dataGrid.setRowCount(count);
     }
 
     @Override
-    public void setRowCount( final int count,
-                             final boolean isExact ) {
-        dataGrid.setRowCount( count, isExact );
+    public void setRowCount(final int count,
+                            final boolean isExact) {
+        dataGrid.setRowCount(count,
+                             isExact);
     }
 
     @Override
-    public void setVisibleRange( final int start,
-                                 final int length ) {
-        dataGrid.setVisibleRange( length, length );
+    public void setVisibleRange(final int start,
+                                final int length) {
+        dataGrid.setVisibleRange(length,
+                                 length);
     }
 
     @Override
-    public void setVisibleRange( final Range range ) {
-        dataGrid.setVisibleRange( range );
+    public void setVisibleRange(final Range range) {
+        dataGrid.setVisibleRange(range);
     }
-
 }
 

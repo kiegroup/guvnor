@@ -28,19 +28,21 @@ public class GAV implements Serializable {
     private String version;
 
     public GAV() {
-        this( null, null, null );
+        this(null,
+             null,
+             null);
     }
 
-    public GAV( final String gavString ) {
-        String[] split = gavString.split( ":" );
-        this.groupId = split[ 0 ];
-        this.artifactId = split[ 1 ];
-        this.version = split[ 2 ];
+    public GAV(final String gavString) {
+        String[] split = gavString.split(":");
+        this.groupId = split[0];
+        this.artifactId = split[1];
+        this.version = split[2];
     }
 
-    public GAV( final String groupId,
-                final String artifactId,
-                final String version ) {
+    public GAV(final String groupId,
+               final String artifactId,
+               final String version) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
@@ -58,15 +60,15 @@ public class GAV implements Serializable {
         return version;
     }
 
-    public void setGroupId( String groupId ) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
-    public void setArtifactId( String artifactId ) {
+    public void setArtifactId(String artifactId) {
         this.artifactId = artifactId;
     }
 
-    public void setVersion( String version ) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -75,32 +77,32 @@ public class GAV implements Serializable {
         return groupId + ":" + artifactId + ":" + version;
     }
 
-    public boolean isGAVEqual( Object o ) {
-        return equals( o );
+    public boolean isGAVEqual(Object o) {
+        return equals(o);
     }
 
     public boolean isSnapshot() {
-        return this.version.endsWith( "-SNAPSHOT" );
+        return this.version.endsWith("-SNAPSHOT");
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof GAV ) ) {
+        if (!(o instanceof GAV)) {
             return false;
         }
 
         GAV gav = (GAV) o;
 
-        if ( artifactId != null ? !artifactId.equals( gav.artifactId ) : gav.artifactId != null ) {
+        if (artifactId != null ? !artifactId.equals(gav.artifactId) : gav.artifactId != null) {
             return false;
         }
-        if ( groupId != null ? !groupId.equals( gav.groupId ) : gav.groupId != null ) {
+        if (groupId != null ? !groupId.equals(gav.groupId) : gav.groupId != null) {
             return false;
         }
-        if ( version != null ? !version.equals( gav.version ) : gav.version != null ) {
+        if (version != null ? !version.equals(gav.version) : gav.version != null) {
             return false;
         }
 
@@ -111,9 +113,9 @@ public class GAV implements Serializable {
     public int hashCode() {
         int result = groupId != null ? groupId.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( artifactId != null ? artifactId.hashCode() : 0 );
+        result = 31 * result + (artifactId != null ? artifactId.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( version != null ? version.hashCode() : 0 );
+        result = 31 * result + (version != null ? version.hashCode() : 0);
         result = ~~result;
         return result;
     }

@@ -28,6 +28,6 @@ import java.util.function.BiFunction;
  *  @see BiFunction
  */
 public interface BiFunctionConfigExecutor<T, U, R> extends ConfigExecutor,
-        BiFunction<T, U, Optional<R>> {
+                                                           BiFunction<T, U, Optional<R>> {
 
 }

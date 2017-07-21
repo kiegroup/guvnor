@@ -16,16 +16,12 @@
 
 package org.guvnor.structure.client.editors.context;
 
-
-import org.guvnor.structure.repositories.Repository;
-
 public interface GuvnorStructureContextBranchChangeHandler {
 
-    void onBranchChange( final String alias,
-                         final String branch );
+    void onBranchChange(final String alias,
+                        final String branch);
 
     class HandlerRegistration {
 
     }
-
 }

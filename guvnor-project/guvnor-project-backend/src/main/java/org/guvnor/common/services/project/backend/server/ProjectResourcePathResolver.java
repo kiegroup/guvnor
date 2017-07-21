@@ -35,16 +35,14 @@ public interface ProjectResourcePathResolver {
      * @param resourceType a file extension.
      * @return true if current resolver resolves the given resourceType, false in any other case.
      */
-    boolean accept( String resourceType );
+    boolean accept(String resourceType);
 
     /**
      * Given a package resolves where the currently accepted resourceType should be placed by default.
      * e.g. for a package org.kie and a drl extension, the by default target path will be src/main/resources/org/kie,
      * and for a java extension with the same package the by default target path will be src/main/java/org/kie
-     *
      * @param pkg A package within a project.
      * @return the expected by default path for the given extension.
      */
-    Path resolveDefaultPath( final Package pkg );
-
+    Path resolveDefaultPath(final Package pkg);
 }

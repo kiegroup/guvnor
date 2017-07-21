@@ -43,7 +43,7 @@ public interface ProjectRepositoryResolver {
      * @param project The Project to retrieve Repository information.
      * @return
      */
-    Set<MavenRepositoryMetadata> getRemoteRepositoriesMetaData( final Project project );
+    Set<MavenRepositoryMetadata> getRemoteRepositoriesMetaData(final Project project);
 
     /**
      * Get a collection of Repositories that a given GAV resolve against.
@@ -51,8 +51,8 @@ public interface ProjectRepositoryResolver {
      * @param filter An optional Set of MavenRepositoryMetadata to filter the results. Those in the filter are included. If a filter is not provided all results are returned.
      * @return A collection of RemoteRepositories that resolve the provided GAV; i.e. an Artifact already exists for the GAV
      */
-    Set<MavenRepositoryMetadata> getRepositoriesResolvingArtifact( final GAV gav,
-                                                                   final MavenRepositoryMetadata... filter );
+    Set<MavenRepositoryMetadata> getRepositoriesResolvingArtifact(final GAV gav,
+                                                                  final MavenRepositoryMetadata... filter);
 
     /**
      * Get a collection of Repositories that a given GAV resolve against.
@@ -61,9 +61,9 @@ public interface ProjectRepositoryResolver {
      * @param filter An optional Set of MavenRepositoryMetadata to filter the results. Those in the filter are included. If a filter is not provided all results are returned.
      * @return A collection of RemoteRepositories that resolve the provided GAV; i.e. an Artifact already exists for the GAV
      */
-    Set<MavenRepositoryMetadata> getRepositoriesResolvingArtifact( final GAV gav,
-                                                                   final Project project,
-                                                                   final MavenRepositoryMetadata... filter );
+    Set<MavenRepositoryMetadata> getRepositoriesResolvingArtifact(final GAV gav,
+                                                                  final Project project,
+                                                                  final MavenRepositoryMetadata... filter);
 
     /**
      * Get a collection of Repositories that a given GAV resolve against.
@@ -71,7 +71,6 @@ public interface ProjectRepositoryResolver {
      * @param filter An optional Set of MavenRepositoryMetadata to filter the results. Those in the filter are included. If a filter is not provided all results are returned.
      * @return A collection of RemoteRepositories that resolve the provided GAV; i.e. an Artifact already exists for the GAV
      */
-    Set<MavenRepositoryMetadata> getRepositoriesResolvingArtifact( final String pom,
-                                                                   final MavenRepositoryMetadata... filter );
-
+    Set<MavenRepositoryMetadata> getRepositoriesResolvingArtifact(final String pom,
+                                                                  final MavenRepositoryMetadata... filter);
 }

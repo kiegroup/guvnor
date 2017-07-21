@@ -19,27 +19,32 @@ package org.guvnor.structure.client.editors.repository.common;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.gwtbootstrap3.client.ui.InputGroupAddon;
 
-
 public class CopyRepositoryUrlBtn extends InputGroupAddon {
 
-    public void init(boolean isViewButton, String uri, String text) {
+    public void init(boolean isViewButton,
+                     String uri,
+                     String text) {
         setDataClipboardTargetAttribute(uri);
         setDataClipboardTextAttribute(text);
-        setButtonAttribute(isViewButton, uri);
+        setButtonAttribute(isViewButton,
+                           uri);
         setCopyRepositoryUrlTitle();
     }
 
     protected void setDataClipboardTargetAttribute(String value) {
-        getElement().setAttribute("data-clipboard-target", value);
+        getElement().setAttribute("data-clipboard-target",
+                                  value);
     }
 
     protected void setDataClipboardTextAttribute(String value) {
-        getElement().setAttribute("data-clipboard-text", value);
+        getElement().setAttribute("data-clipboard-text",
+                                  value);
     }
 
-    protected void setButtonAttribute(boolean isViewButton, String value) {
+    protected void setButtonAttribute(boolean isViewButton,
+                                      String value) {
         String idBase = isViewButton ? "view-button-" : "button-";
-        getElement().setId( idBase + value );
+        getElement().setId(idBase + value);
     }
 
     protected void setCopyRepositoryUrlTitle() {

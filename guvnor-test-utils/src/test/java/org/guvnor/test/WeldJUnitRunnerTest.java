@@ -16,4 +16,5 @@
 package org.guvnor.test;
 
 public class WeldJUnitRunnerTest {
+
 }

@@ -15,15 +15,15 @@
 
 package org.guvnor.structure.client.editors.repository.common;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwtmockito.GwtMockito;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 import static org.mockito.Mockito.*;
 
@@ -48,16 +48,25 @@ public class CopyRepositoryUrlBtnTest {
         GwtMockito.initMocks(this);
         btn = GWT.create(CopyRepositoryUrlBtn.class);
 
-        doCallRealMethod().when(btn).init(anyBoolean(), anyString(), anyString());
+        doCallRealMethod().when(btn).init(anyBoolean(),
+                                          anyString(),
+                                          anyString());
     }
 
     @Test
     public void testButtonInit() {
-        btn.init(isViewButton, "abc", "xyz");
+        btn.init(isViewButton,
+                 "abc",
+                 "xyz");
 
-        verify(btn, times(1)).setDataClipboardTargetAttribute("abc");
-        verify(btn, times(1)).setDataClipboardTextAttribute("xyz");
-        verify(btn, times(1)).setButtonAttribute(isViewButton, "abc");
-        verify(btn, times(1)).setCopyRepositoryUrlTitle();
+        verify(btn,
+               times(1)).setDataClipboardTargetAttribute("abc");
+        verify(btn,
+               times(1)).setDataClipboardTextAttribute("xyz");
+        verify(btn,
+               times(1)).setButtonAttribute(isViewButton,
+                                            "abc");
+        verify(btn,
+               times(1)).setCopyRepositoryUrlTitle();
     }
 }

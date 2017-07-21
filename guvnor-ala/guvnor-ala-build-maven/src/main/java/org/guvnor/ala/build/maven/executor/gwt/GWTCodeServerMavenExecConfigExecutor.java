@@ -35,13 +35,13 @@ import org.guvnor.ala.build.maven.model.MavenBuild;
 import org.guvnor.ala.config.Config;
 import org.guvnor.ala.exceptions.BuildException;
 import org.guvnor.ala.pipeline.BiFunctionConfigExecutor;
-
-import static org.guvnor.ala.build.maven.util.MavenBuildExecutor.*;
 import org.slf4j.LoggerFactory;
+
+import static org.guvnor.ala.build.maven.util.MavenBuildExecutor.executeMaven;
 
 public class GWTCodeServerMavenExecConfigExecutor implements BiFunctionConfigExecutor<MavenBuild, GWTCodeServerMavenExecConfig, MavenBuild> {
 
-    protected static final org.slf4j.Logger LOG = LoggerFactory.getLogger( GWTCodeServerMavenExecConfigExecutor.class );
+    protected static final org.slf4j.Logger LOG = LoggerFactory.getLogger(GWTCodeServerMavenExecConfigExecutor.class);
     private static final String GWT_CODE_SERVER_PORT = "gwt.codeServerPort";
     private static final String GWT_CODE_SERVER_LAUNCHER_DIR = "gwt.codeServer.launcherDir";
     private static final String GWT_CODE_SERVER_BIND_ADDRESS = "gwt.bindAddress";
@@ -52,29 +52,36 @@ public class GWTCodeServerMavenExecConfigExecutor implements BiFunctionConfigExe
     @Inject
     public GWTCodeServerMavenExecConfigExecutor(GWTCodeServerPortLeaser leaser) {
         this.leaser = leaser;
-
     }
 
     @Override
     public Optional<MavenBuild> apply(final MavenBuild buildConfig,
-            final GWTCodeServerMavenExecConfig config) {
+                                      final GWTCodeServerMavenExecConfig config) {
 
         final File projectFolder = new File(buildConfig.getProject().getTempDir());
-        final File webappFolder = new File(projectFolder.getAbsolutePath(), "src/main/webapp");
+        final File webappFolder = new File(projectFolder.getAbsolutePath(),
+                                           "src/main/webapp");
 
         if ((!leaser.isCodeServerRunning(buildConfig.getProject().getName()))) {
             LOG.info("> Starting GWT Code Server ... ");
-            final File pom = new File(projectFolder, "pom.xml");
+            final File pom = new File(projectFolder,
+                                      "pom.xml");
 
             List<String> goals = new ArrayList<>();
             goals.add("gwt:run-codeserver");
             final Properties properties = new Properties(buildConfig.getProperties());
-            properties.put(GWT_CODE_SERVER_LAUNCHER_DIR, webappFolder.getAbsolutePath());
+            properties.put(GWT_CODE_SERVER_LAUNCHER_DIR,
+                           webappFolder.getAbsolutePath());
             Integer portNumber = leaser.getAvailableCodeServerPort().getPortNumber();
-            leaser.setCodeServerForProject(buildConfig.getProject().getName(), portNumber);
-            properties.put(GWT_CODE_SERVER_PORT, String.valueOf(portNumber));
-            properties.put(GWT_CODE_SERVER_BIND_ADDRESS, config.getBindAddress());
-            build(pom, properties, goals);
+            leaser.setCodeServerForProject(buildConfig.getProject().getName(),
+                                           portNumber);
+            properties.put(GWT_CODE_SERVER_PORT,
+                           String.valueOf(portNumber));
+            properties.put(GWT_CODE_SERVER_BIND_ADDRESS,
+                           config.getBindAddress());
+            build(pom,
+                  properties,
+                  goals);
         } else {
             LOG.info("> No need to start GWT Code Server.");
         }
@@ -98,8 +105,8 @@ public class GWTCodeServerMavenExecConfigExecutor implements BiFunctionConfigExe
     }
 
     public void build(final File pom,
-            final Properties properties,
-            final List<String> goals) throws BuildException {
+                      final Properties properties,
+                      final List<String> goals) throws BuildException {
         BufferedReader bufferedReader = null;
         try {
 
@@ -107,10 +114,16 @@ public class GWTCodeServerMavenExecConfigExecutor implements BiFunctionConfigExe
             final PipedOutputStream baosOut = new PipedOutputStream();
             final PipedOutputStream baosErr = new PipedOutputStream();
 
-            final PrintStream out = new PrintStream(baosOut, true);
-            final PrintStream err = new PrintStream(baosErr, true);
+            final PrintStream out = new PrintStream(baosOut,
+                                                    true);
+            final PrintStream err = new PrintStream(baosErr,
+                                                    true);
 
-            new Thread(() -> executeMaven(pom, out, err, properties, goals.toArray(new String[]{}))).start();
+            new Thread(() -> executeMaven(pom,
+                                          out,
+                                          err,
+                                          properties,
+                                          goals.toArray(new String[]{}))).start();
 
             String line;
             while (!(isCodeServerReady || error != null)) {
@@ -130,15 +143,17 @@ public class GWTCodeServerMavenExecConfigExecutor implements BiFunctionConfigExe
 
             //@TODO: send line to client
         } catch (IOException ex) {
-            Logger.getLogger(GWTCodeServerMavenExecConfigExecutor.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GWTCodeServerMavenExecConfigExecutor.class.getName()).log(Level.SEVERE,
+                                                                                       null,
+                                                                                       ex);
         } finally {
             try {
                 bufferedReader.close();
             } catch (IOException ex) {
-                Logger.getLogger(GWTCodeServerMavenExecConfigExecutor.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(GWTCodeServerMavenExecConfigExecutor.class.getName()).log(Level.SEVERE,
+                                                                                           null,
+                                                                                           ex);
             }
         }
-
     }
-
 }

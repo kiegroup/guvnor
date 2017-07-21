@@ -18,12 +18,25 @@ package org.guvnor.asset.management.social;
 
 public class RepositoryChangeEvent extends AssetManagementEvent {
 
-    public enum ChangeType { VERSION_CHANGED };
+    public enum ChangeType {
+        VERSION_CHANGED
+    }
+
+    ;
 
     private ChangeType changeType;
 
-    public RepositoryChangeEvent( String processName, String repositoryAlias, String rootURI, String user, Long timestamp, ChangeType changeType ) {
-        super( processName, repositoryAlias, rootURI, user, timestamp );
+    public RepositoryChangeEvent(String processName,
+                                 String repositoryAlias,
+                                 String rootURI,
+                                 String user,
+                                 Long timestamp,
+                                 ChangeType changeType) {
+        super(processName,
+              repositoryAlias,
+              rootURI,
+              user,
+              timestamp);
         this.changeType = changeType;
     }
 
@@ -31,7 +44,7 @@ public class RepositoryChangeEvent extends AssetManagementEvent {
         return changeType;
     }
 
-    public void setChangeType( ChangeType changeType ) {
+    public void setChangeType(ChangeType changeType) {
         this.changeType = changeType;
     }
 }

@@ -30,26 +30,26 @@ public interface M2RepoService {
      * @param path The path to the file
      * @return The pom.xml text
      */
-    String getPomText( String path );
+    String getPomText(String path);
 
     /**
      * Retrieve the GAV details from a JAR or KJAR
      * @param path The path to the artifact
      * @return The GAV within the artifact
      */
-    GAV loadGAVFromJar( String path );
+    GAV loadGAVFromJar(String path);
 
     /**
      * Query the repository for a list of artifacts
      * @param pageRequest Request for required artifacts
      * @return Response containing artifacts
      */
-    PageResponse<JarListPageRow> listArtifacts( JarListPageRequest pageRequest );
+    PageResponse<JarListPageRow> listArtifacts(JarListPageRequest pageRequest);
 
     /**
      * Get the repository's URL
      * @param context The web-context of the webapp
      * @return A String representing the repository's URL relative to the container's root
      */
-    String getRepositoryURL( String context );
+    String getRepositoryURL(String context);
 }

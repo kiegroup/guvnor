@@ -32,7 +32,7 @@ public class CreateOrganizationalUnitRequest extends JobRequest {
         return organizationalUnitName;
     }
 
-    public void setOrganizationalUnitName( String organizationalUnitName ) {
+    public void setOrganizationalUnitName(String organizationalUnitName) {
         this.organizationalUnitName = organizationalUnitName;
     }
 
@@ -40,7 +40,7 @@ public class CreateOrganizationalUnitRequest extends JobRequest {
         return owner;
     }
 
-    public void setOwner( String owner ) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
@@ -48,7 +48,7 @@ public class CreateOrganizationalUnitRequest extends JobRequest {
         return defaultGroupId;
     }
 
-    public void setDefaultGroupId( String defaultGroupId ) {
+    public void setDefaultGroupId(String defaultGroupId) {
         this.defaultGroupId = defaultGroupId;
     }
 
@@ -56,7 +56,7 @@ public class CreateOrganizationalUnitRequest extends JobRequest {
         return description;
     }
 
-    public void setDescription( String description ) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -64,7 +64,7 @@ public class CreateOrganizationalUnitRequest extends JobRequest {
         return repositories;
     }
 
-    public void setRepositories( List<String> repositories ) {
+    public void setRepositories(List<String> repositories) {
         this.repositories = repositories;
     }
 }

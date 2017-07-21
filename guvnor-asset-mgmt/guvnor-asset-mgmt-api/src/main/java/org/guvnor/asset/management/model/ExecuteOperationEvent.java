@@ -23,18 +23,16 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class ExecuteOperationEvent {
 
-  private Map<String, Object> params;
+    private Map<String, Object> params;
 
-  public ExecuteOperationEvent() {
-  }
+    public ExecuteOperationEvent() {
+    }
 
-  public ExecuteOperationEvent(Map<String, Object> params) {
-    this.params = params;
-  }
+    public ExecuteOperationEvent(Map<String, Object> params) {
+        this.params = params;
+    }
 
-  public Map<String, Object> getParams() {
-    return params;
-  }
-  
-  
+    public Map<String, Object> getParams() {
+        return params;
+    }
 }

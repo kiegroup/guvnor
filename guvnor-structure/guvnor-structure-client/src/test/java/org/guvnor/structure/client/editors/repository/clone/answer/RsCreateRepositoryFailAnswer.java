@@ -35,10 +35,10 @@ public class RsCreateRepositoryFailAnswer implements Answer<RepositoryService> {
     private Repository repository;
     private RepositoryService repoService;
 
-    public RsCreateRepositoryFailAnswer( Message message,
-                                         Throwable cause,
-                                         Repository repository,
-                                         RepositoryService repoService ) {
+    public RsCreateRepositoryFailAnswer(Message message,
+                                        Throwable cause,
+                                        Repository repository,
+                                        RepositoryService repoService) {
         this.message = message;
         this.cause = cause;
         this.repository = repository;
@@ -46,20 +46,23 @@ public class RsCreateRepositoryFailAnswer implements Answer<RepositoryService> {
     }
 
     @Override
-    public RepositoryService answer( InvocationOnMock invocation ) throws Throwable {
+    public RepositoryService answer(InvocationOnMock invocation) throws Throwable {
 
-        when( repoService.createRepository( any( OrganizationalUnit.class ), any( String.class ), any( String.class ),
-                                            any( RepositoryEnvironmentConfigurations.class ) ) ).then( new Answer<Repository>() {
+        when(repoService.createRepository(any(OrganizationalUnit.class),
+                                          any(String.class),
+                                          any(String.class),
+                                          any(RepositoryEnvironmentConfigurations.class))).then(new Answer<Repository>() {
 
             @Override
-            public Repository answer( InvocationOnMock invocation ) throws Throwable {
+            public Repository answer(InvocationOnMock invocation) throws Throwable {
                 return repository;
             }
-        } );
+        });
 
         @SuppressWarnings("unchecked")
-        final ErrorCallback<Message> callback = (ErrorCallback<Message>) invocation.getArguments()[ 1 ];
-        callback.error( message, cause );
+        final ErrorCallback<Message> callback = (ErrorCallback<Message>) invocation.getArguments()[1];
+        callback.error(message,
+                       cause);
 
         return repoService;
     }

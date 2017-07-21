@@ -40,31 +40,30 @@ public abstract class BaseAssetPerspective {
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
-        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( "Asset Management" );
-    
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "Repository Configuration" ) ) );
-    
+        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        perspective.setName("Asset Management");
+
+        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("Repository Configuration")));
+
         return perspective;
     }
 
     @WorkbenchMenu
     public Menus getMenus() {
         return MenuFactory
-                .newTopLevelMenu( "Screens" )
+                .newTopLevelMenu("Screens")
                 .menus()
-                .menu( "Repository Configuration" )
+                .menu("Repository Configuration")
                 .respondsWith(
                         new Command() {
                             @Override
                             public void execute() {
-                                placeManager.goTo( "Repository Configuration" );
+                                placeManager.goTo("Repository Configuration");
                             }
-                        } )
+                        })
                 .endMenu()
                 .endMenus()
                 .endMenu()
                 .build();
     }
-
 }

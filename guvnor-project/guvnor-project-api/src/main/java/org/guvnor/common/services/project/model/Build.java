@@ -28,7 +28,7 @@ public class Build {
         return plugins;
     }
 
-    public void setPlugins( ArrayList<Plugin> plugins ) {
+    public void setPlugins(ArrayList<Plugin> plugins) {
         this.plugins = plugins;
     }
 }

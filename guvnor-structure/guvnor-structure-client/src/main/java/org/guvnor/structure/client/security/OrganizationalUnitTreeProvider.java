@@ -38,7 +38,10 @@ import org.uberfire.security.client.authz.tree.PermissionTreeProvider;
 import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
 import org.uberfire.security.client.authz.tree.impl.PermissionResourceNode;
 
-import static org.guvnor.structure.security.OrganizationalUnitAction.*;
+import static org.guvnor.structure.security.OrganizationalUnitAction.CREATE;
+import static org.guvnor.structure.security.OrganizationalUnitAction.DELETE;
+import static org.guvnor.structure.security.OrganizationalUnitAction.READ;
+import static org.guvnor.structure.security.OrganizationalUnitAction.UPDATE;
 
 /**
  * The {@link PermissionTreeProvider} plugin that brings {@link OrganizationalUnit} permissions into the ACL editor
@@ -55,7 +58,8 @@ public class OrganizationalUnitTreeProvider implements PermissionTreeProvider {
     }
 
     @Inject
-    public OrganizationalUnitTreeProvider(PermissionManager permissionManager, Caller<OrganizationalUnitSearchService> searchService) {
+    public OrganizationalUnitTreeProvider(PermissionManager permissionManager,
+                                          Caller<OrganizationalUnitSearchService> searchService) {
         this.permissionManager = permissionManager;
         this.searchService = searchService;
     }
@@ -70,7 +74,8 @@ public class OrganizationalUnitTreeProvider implements PermissionTreeProvider {
 
     @Override
     public PermissionNode buildRootNode() {
-        PermissionResourceNode rootNode = new PermissionResourceNode(i18n.OrganizationalUnitResource(), this);
+        PermissionResourceNode rootNode = new PermissionResourceNode(i18n.OrganizationalUnitResource(),
+                                                                     this);
         rootNode.setNodeName(i18n.OrganizationalUnitsNode());
         rootNode.setNodeFullName(i18n.OrganizationalUnitsHelp());
         rootNode.setPositionInTree(rootNodePosition);
@@ -80,25 +85,38 @@ public class OrganizationalUnitTreeProvider implements PermissionTreeProvider {
         Permission deletePermission = newPermission(DELETE);
         Permission createPermission = newPermission(CREATE);
 
-        rootNode.addPermission(readPermission, i18n.OrganizationalUnitActionRead());
-        rootNode.addPermission(updatePermission, i18n.OrganizationalUnitActionUpdate());
-        rootNode.addPermission(deletePermission, i18n.OrganizationalUnitActionDelete());
-        rootNode.addPermission(createPermission, i18n.OrganizationalUnitActionCreate());
+        rootNode.addPermission(readPermission,
+                               i18n.OrganizationalUnitActionRead());
+        rootNode.addPermission(updatePermission,
+                               i18n.OrganizationalUnitActionUpdate());
+        rootNode.addPermission(deletePermission,
+                               i18n.OrganizationalUnitActionDelete());
+        rootNode.addPermission(createPermission,
+                               i18n.OrganizationalUnitActionCreate());
 
-        rootNode.addDependencies(readPermission, updatePermission, deletePermission);
+        rootNode.addDependencies(readPermission,
+                                 updatePermission,
+                                 deletePermission);
         return rootNode;
     }
 
     private Permission newPermission(ResourceAction action) {
-        return permissionManager.createPermission(OrganizationalUnit.RESOURCE_TYPE, action, true);
+        return permissionManager.createPermission(OrganizationalUnit.RESOURCE_TYPE,
+                                                  action,
+                                                  true);
     }
 
-    private Permission newPermission(Resource resource, ResourceAction action) {
-        return permissionManager.createPermission(resource, action, true);
+    private Permission newPermission(Resource resource,
+                                     ResourceAction action) {
+        return permissionManager.createPermission(resource,
+                                                  action,
+                                                  true);
     }
 
     @Override
-    public void loadChildren(PermissionNode parent, LoadOptions options, LoadCallback callback) {
+    public void loadChildren(PermissionNode parent,
+                             LoadOptions options,
+                             LoadCallback callback) {
         Collection<String> resourceIds = options.getResourceIds();
         int maxNodes = options.getMaxNodes();
 
@@ -113,7 +131,9 @@ public class OrganizationalUnitTreeProvider implements PermissionTreeProvider {
                 searchService.call((Collection<OrganizationalUnit> orgUnits) -> {
                     List<PermissionNode> children = buildPermissionNodes(orgUnits);
                     callback.afterLoad(children);
-                }).searchByName(namePattern, maxNodes, false);
+                }).searchByName(namePattern,
+                                maxNodes,
+                                false);
             }
         } else {
             callback.afterLoad(Collections.emptyList());
@@ -132,15 +152,23 @@ public class OrganizationalUnitTreeProvider implements PermissionTreeProvider {
         PermissionLeafNode node = new PermissionLeafNode();
         node.setNodeName(ou.getName());
 
-        Permission readPermission = newPermission(ou, READ);
-        Permission updatePermission = newPermission(ou, UPDATE);
-        Permission deletePermission = newPermission(ou, DELETE);
+        Permission readPermission = newPermission(ou,
+                                                  READ);
+        Permission updatePermission = newPermission(ou,
+                                                    UPDATE);
+        Permission deletePermission = newPermission(ou,
+                                                    DELETE);
 
-        node.addPermission(readPermission, i18n.OrganizationalUnitActionRead());
-        node.addPermission(updatePermission, i18n.OrganizationalUnitActionUpdate());
-        node.addPermission(deletePermission, i18n.OrganizationalUnitActionDelete());
+        node.addPermission(readPermission,
+                           i18n.OrganizationalUnitActionRead());
+        node.addPermission(updatePermission,
+                           i18n.OrganizationalUnitActionUpdate());
+        node.addPermission(deletePermission,
+                           i18n.OrganizationalUnitActionDelete());
 
-        node.addDependencies(readPermission, updatePermission, deletePermission);
+        node.addDependencies(readPermission,
+                             updatePermission,
+                             deletePermission);
         return node;
     }
 }

@@ -48,8 +48,8 @@ import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.rpc.SessionInfo;
 
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static java.util.Collections.emptyList;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped
@@ -64,51 +64,55 @@ public class MetadataServiceImpl
     }
 
     @Inject
-    public MetadataServiceImpl( @Named("ioStrategy") IOService ioService,
-                                @Named("configIO") IOService configIOService,
-                                SessionInfo sessionInfo ) {
+    public MetadataServiceImpl(@Named("ioStrategy") IOService ioService,
+                               @Named("configIO") IOService configIOService,
+                               SessionInfo sessionInfo) {
         this.ioService = ioService;
         this.configIOService = configIOService;
         this.sessionInfo = sessionInfo;
     }
 
     @Override
-    public Metadata getMetadata( final Path pathToResource ) {
-        return getMetadata( Paths.convert( pathToResource ) );
+    public Metadata getMetadata(final Path pathToResource) {
+        return getMetadata(Paths.convert(pathToResource));
     }
 
     @Override
-    public Metadata getMetadata( org.uberfire.java.nio.file.Path path ) {
+    public Metadata getMetadata(org.uberfire.java.nio.file.Path path) {
 
         try {
-            return new MetadataCreator( path,
-                                        configIOService,
-                                        sessionInfo,
-                                        ioService.getFileAttributeView( path, DublinCoreView.class ),
-                                        ioService.getFileAttributeView( path, DiscussionView.class ),
-                                        ioService.getFileAttributeView( path, OtherMetaView.class ),
-                                        ioService.getFileAttributeView( path, VersionAttributeView.class ),
-                                        ioService.getFileAttributeView( path, GeneratedAttributesView.class ) ).create();
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return new MetadataCreator(path,
+                                       configIOService,
+                                       sessionInfo,
+                                       ioService.getFileAttributeView(path,
+                                                                      DublinCoreView.class),
+                                       ioService.getFileAttributeView(path,
+                                                                      DiscussionView.class),
+                                       ioService.getFileAttributeView(path,
+                                                                      OtherMetaView.class),
+                                       ioService.getFileAttributeView(path,
+                                                                      VersionAttributeView.class),
+                                       ioService.getFileAttributeView(path,
+                                                                      GeneratedAttributesView.class)).create();
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public List<String> getTags( final Path resource ) {
-        checkNotNull( "resource",
-                      resource );
-        return getTags( Paths.convert( resource ) );
+    public List<String> getTags(final Path resource) {
+        checkNotNull("resource",
+                     resource);
+        return getTags(Paths.convert(resource));
     }
 
     @Override
-    public List<String> getTags( final org.uberfire.java.nio.file.Path resource ) {
-        checkNotNull( "resource",
-                      resource );
-        final OtherMetaView otherMetaView = ioService.getFileAttributeView( resource,
-                                                                            OtherMetaView.class );
-        if ( otherMetaView != null ) {
+    public List<String> getTags(final org.uberfire.java.nio.file.Path resource) {
+        checkNotNull("resource",
+                     resource);
+        final OtherMetaView otherMetaView = ioService.getFileAttributeView(resource,
+                                                                           OtherMetaView.class);
+        if (otherMetaView != null) {
             return otherMetaView.readAttributes().tags();
         } else {
             return Collections.emptyList();
@@ -116,18 +120,20 @@ public class MetadataServiceImpl
     }
 
     @Override
-    public Map<String, Object> configAttrs( final Map<String, Object> _attrs,
-                                            final Metadata metadata ) {
+    public Map<String, Object> configAttrs(final Map<String, Object> _attrs,
+                                           final Metadata metadata) {
         try {
-            checkNotNull( "_attrs", _attrs );
-            checkNotNull( "metadata", metadata );
+            checkNotNull("_attrs",
+                         _attrs);
+            checkNotNull("metadata",
+                         metadata);
 
-            Map<String, Object> attrs = BasicFileAttributesUtil.cleanup( _attrs );
-            attrs = DublinCoreAttributesUtil.cleanup( attrs );
-            attrs = DiscussionAttributesUtil.cleanup( attrs );
-            attrs = OtherMetaAttributesUtil.cleanup( attrs );
+            Map<String, Object> attrs = BasicFileAttributesUtil.cleanup(_attrs);
+            attrs = DublinCoreAttributesUtil.cleanup(attrs);
+            attrs = DiscussionAttributesUtil.cleanup(attrs);
+            attrs = OtherMetaAttributesUtil.cleanup(attrs);
 
-            attrs.putAll( DiscussionAttributesUtil.toMap(
+            attrs.putAll(DiscussionAttributesUtil.toMap(
                     new DiscussionAttributes() {
                         @Override
                         public List<DiscussionRecord> discussion() {
@@ -178,9 +184,10 @@ public class MetadataServiceImpl
                         public Object fileKey() {
                             return null;
                         }
-                    }, "*" ) );
+                    },
+                    "*"));
 
-            attrs.putAll( OtherMetaAttributesUtil.toMap(
+            attrs.putAll(OtherMetaAttributesUtil.toMap(
                     new OtherMetaAttributes() {
                         @Override
                         public List<String> tags() {
@@ -231,9 +238,10 @@ public class MetadataServiceImpl
                         public Object fileKey() {
                             return null;
                         }
-                    }, "*" ) );
+                    },
+                    "*"));
 
-            attrs.putAll( DublinCoreAttributesUtil.toMap(
+            attrs.putAll(DublinCoreAttributesUtil.toMap(
                     new DublinCoreAttributes() {
 
                         @Override
@@ -248,15 +256,15 @@ public class MetadataServiceImpl
 
                         @Override
                         public List<String> subjects() {
-                            return new ArrayList<String>( 1 ) {{
-                                add( metadata.getSubject() );
+                            return new ArrayList<String>(1) {{
+                                add(metadata.getSubject());
                             }};
                         }
 
                         @Override
                         public List<String> descriptions() {
-                            return new ArrayList<String>( 1 ) {{
-                                add( metadata.getDescription() );
+                            return new ArrayList<String>(1) {{
+                                add(metadata.getDescription());
                             }};
                         }
 
@@ -272,8 +280,8 @@ public class MetadataServiceImpl
 
                         @Override
                         public List<String> types() {
-                            return new ArrayList<String>( 1 ) {{
-                                add( metadata.getType() );
+                            return new ArrayList<String>(1) {{
+                                add(metadata.getType());
                             }};
                         }
 
@@ -289,8 +297,8 @@ public class MetadataServiceImpl
 
                         @Override
                         public List<String> sources() {
-                            return new ArrayList<String>( 1 ) {{
-                                add( metadata.getExternalSource() );
+                            return new ArrayList<String>(1) {{
+                                add(metadata.getExternalSource());
                             }};
                         }
 
@@ -301,8 +309,8 @@ public class MetadataServiceImpl
 
                         @Override
                         public List<String> relations() {
-                            return new ArrayList<String>( 1 ) {{
-                                add( metadata.getExternalRelation() );
+                            return new ArrayList<String>(1) {{
+                                add(metadata.getExternalRelation());
                             }};
                         }
 
@@ -360,35 +368,36 @@ public class MetadataServiceImpl
                         public Object fileKey() {
                             return null;
                         }
-                    }, "*" ) );
+                    },
+                    "*"));
 
-            attrs.put( GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME, metadata.isGenerated() );
+            attrs.put(GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME,
+                      metadata.isGenerated());
 
             return attrs;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Map<String, Object> setUpAttributes( final Path path,
-                                                final Metadata metadata ) {
+    public Map<String, Object> setUpAttributes(final Path path,
+                                               final Metadata metadata) {
         try {
             Map<String, Object> attributes;
             try {
-                attributes = ioService.readAttributes( Paths.convert( path ) );
-            } catch ( final NoSuchFileException ex ) {
+                attributes = ioService.readAttributes(Paths.convert(path));
+            } catch (final NoSuchFileException ex) {
                 attributes = new HashMap<String, Object>();
             }
-            if ( metadata != null ) {
-                attributes = configAttrs( attributes, metadata );
+            if (metadata != null) {
+                attributes = configAttrs(attributes,
+                                         metadata);
             }
 
-            return BasicFileAttributesUtil.cleanup( attributes );
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return BasicFileAttributesUtil.cleanup(attributes);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
-
 }

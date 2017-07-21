@@ -27,5 +27,4 @@ public interface ApplicationPreferencesLoader {
      * @return
      */
     public Map<String, String> load();
-
 }

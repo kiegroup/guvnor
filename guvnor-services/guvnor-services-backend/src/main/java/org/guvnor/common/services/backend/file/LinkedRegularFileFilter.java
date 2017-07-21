@@ -33,25 +33,24 @@ public class LinkedRegularFileFilter implements LinkedFilter {
      * Constructor that automatically chains the next filter
      * @param filter
      */
-    public LinkedRegularFileFilter( final LinkedFilter filter ) {
-        setNextFilter( PortablePreconditions.checkNotNull( "filter",
-                                                           filter ) );
+    public LinkedRegularFileFilter(final LinkedFilter filter) {
+        setNextFilter(PortablePreconditions.checkNotNull("filter",
+                                                         filter));
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        if ( !Files.isRegularFile( path ) ) {
+    public boolean accept(final Path path) {
+        if (!Files.isRegularFile(path)) {
             return false;
         }
-        if ( next != null ) {
-            return next.accept( path );
+        if (next != null) {
+            return next.accept(path);
         }
         return true;
     }
 
     @Override
-    public void setNextFilter( final LinkedFilter filter ) {
+    public void setNextFilter(final LinkedFilter filter) {
         this.next = filter;
     }
-
 }

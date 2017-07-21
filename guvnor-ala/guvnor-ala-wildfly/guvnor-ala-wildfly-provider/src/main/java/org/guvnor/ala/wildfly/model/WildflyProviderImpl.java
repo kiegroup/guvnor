@@ -34,20 +34,25 @@ public class WildflyProviderImpl extends BaseProvider implements WildflyProvider
     private final String user;
     private final String password;
 
-    public WildflyProviderImpl( final String name,
-                                final String hostId,
-                                String port,
-                                String managementPort,
-                                String user,
-                                String password ) {
-        super( name, WildflyProviderType.instance(), 
-                new WildflyProviderConfigImpl(name, hostId, port, managementPort, user, password ) );
+    public WildflyProviderImpl(final String name,
+                               final String hostId,
+                               String port,
+                               String managementPort,
+                               String user,
+                               String password) {
+        super(name,
+              WildflyProviderType.instance(),
+              new WildflyProviderConfigImpl(name,
+                                            hostId,
+                                            port,
+                                            managementPort,
+                                            user,
+                                            password));
         this.hostId = hostId;
         this.port = port;
         this.managementPort = managementPort;
         this.user = user;
         this.password = password;
-
     }
 
     @Override
@@ -76,12 +81,12 @@ public class WildflyProviderImpl extends BaseProvider implements WildflyProvider
     }
 
     @Override
-    public WildflyProvider asNewClone( final WildflyProvider origin ) {
-        return new WildflyProviderImpl( origin.getId(),
-                                        origin.getHostId(),
-                                        origin.getPort(),
-                                        origin.getManagementPort(),
-                                        origin.getUser(),
-                                        origin.getPassword() );
+    public WildflyProvider asNewClone(final WildflyProvider origin) {
+        return new WildflyProviderImpl(origin.getId(),
+                                       origin.getHostId(),
+                                       origin.getPort(),
+                                       origin.getManagementPort(),
+                                       origin.getUser(),
+                                       origin.getPassword());
     }
 }

@@ -16,8 +16,6 @@
 
 package org.uberfire.provisioning.source.git;
 
-import org.guvnor.ala.source.git.GitRepository;
-import org.guvnor.ala.source.git.UFLocal;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -26,12 +24,14 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
+import org.guvnor.ala.source.Source;
+import org.guvnor.ala.source.git.GitRepository;
+import org.guvnor.ala.source.git.UFLocal;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystems;
-import org.guvnor.ala.source.Source;
 
 import static org.junit.Assert.*;
 
@@ -42,30 +42,36 @@ public class UFLocalTestJUnitTest {
     @Before
     public void setUp() {
         try {
-            tempPath = Files.createTempDirectory( "xxx" ).toFile();
-        } catch ( IOException e ) {
+            tempPath = Files.createTempDirectory("xxx").toFile();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @After
     public void tearDown() {
-        FileUtils.deleteQuietly( tempPath );
+        FileUtils.deleteQuietly(tempPath);
     }
 
     @Test
     public void sourceCloneTest() throws Exception {
-        final URI uri = URI.create( "git://tempx" );
-        final FileSystem fs = FileSystems.newFileSystem( uri, new HashMap<String, Object>() {{
-            put( "init", Boolean.TRUE );
-            put( "internal", Boolean.TRUE );
-            put( "out-dir", tempPath.getAbsolutePath() );
-        }} );
+        final URI uri = URI.create("git://tempx");
+        final FileSystem fs = FileSystems.newFileSystem(uri,
+                                                        new HashMap<String, Object>() {{
+                                                            put("init",
+                                                                Boolean.TRUE);
+                                                            put("internal",
+                                                                Boolean.TRUE);
+                                                            put("out-dir",
+                                                                tempPath.getAbsolutePath());
+                                                        }});
 
         final UFLocal local = new UFLocal();
-        final GitRepository repository = (GitRepository) local.getRepository( "tempx", Collections.emptyMap() );
-        final Source source = repository.getSource( "master" );
-        assertNotNull( source );
-        assertEquals( source.getPath().getFileSystem(), fs );
+        final GitRepository repository = (GitRepository) local.getRepository("tempx",
+                                                                             Collections.emptyMap());
+        final Source source = repository.getSource("master");
+        assertNotNull(source);
+        assertEquals(source.getPath().getFileSystem(),
+                     fs);
     }
 }

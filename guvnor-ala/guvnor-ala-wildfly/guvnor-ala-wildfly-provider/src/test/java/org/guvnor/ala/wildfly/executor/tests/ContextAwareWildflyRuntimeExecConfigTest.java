@@ -27,10 +27,9 @@ import org.junit.Test;
 import org.uberfire.java.nio.file.Path;
 
 import static java.util.Collections.singletonMap;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.guvnor.ala.util.VariableInterpolation.interpolate;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ContextAwareWildflyRuntimeExecConfigTest {
 

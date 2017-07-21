@@ -39,7 +39,9 @@ public class OrganizationalUnitSearchServiceImpl implements OrganizationalUnitSe
     }
 
     @Override
-    public Collection<OrganizationalUnit> searchByName(String pattern, int maxItems, boolean caseSensitive) {
+    public Collection<OrganizationalUnit> searchByName(String pattern,
+                                                       int maxItems,
+                                                       boolean caseSensitive) {
         List<OrganizationalUnit> results = new ArrayList<>();
         for (OrganizationalUnit unit : organizationalUnitService.getAllOrganizationalUnits()) {
             String name = unit.getName();

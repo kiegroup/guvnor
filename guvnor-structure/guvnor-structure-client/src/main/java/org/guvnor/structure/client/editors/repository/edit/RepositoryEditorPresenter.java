@@ -61,28 +61,28 @@ public class RepositoryEditorPresenter {
     public interface View
             extends UberView<RepositoryEditorPresenter> {
 
-        void setRepositoryInfo( final String repositoryName,
-                                final String owner,
-                                final boolean readOnly,
-                                final List<PublicURI> publicURIs,
-                                final String description,
-                                final List<VersionRecord> initialVersionList );
+        void setRepositoryInfo(final String repositoryName,
+                               final String owner,
+                               final boolean readOnly,
+                               final List<PublicURI> publicURIs,
+                               final String description,
+                               final List<VersionRecord> initialVersionList);
 
-        void reloadHistory( final List<VersionRecord> versionList );
+        void reloadHistory(final List<VersionRecord> versionList);
 
-        void addHistory( final List<VersionRecord> versionList );
+        void addHistory(final List<VersionRecord> versionList);
     }
 
     public RepositoryEditorPresenter() {
     }
 
     @Inject
-    public RepositoryEditorPresenter( final View view,
-                                      final Caller<RepositoryService> repositoryService,
-                                      final Caller<RepositoryServiceEditor> repositoryServiceEditor,
-                                      final Event<NotificationEvent> notification,
-                                      final PlaceManager placeManager,
-                                      final RepositoryController repositoryController ) {
+    public RepositoryEditorPresenter(final View view,
+                                     final Caller<RepositoryService> repositoryService,
+                                     final Caller<RepositoryServiceEditor> repositoryServiceEditor,
+                                     final Event<NotificationEvent> notification,
+                                     final PlaceManager placeManager,
+                                     final RepositoryController repositoryController) {
         this.view = view;
         this.repositoryService = repositoryService;
         this.repositoryServiceEditor = repositoryServiceEditor;
@@ -92,22 +92,22 @@ public class RepositoryEditorPresenter {
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest place ) {
+    public void onStartup(final PlaceRequest place) {
         this.place = place;
-        this.alias = place.getParameters().get( "alias" );
+        this.alias = place.getParameters().get("alias");
 
-        repositoryService.call( new RemoteCallback<RepositoryInfo>() {
+        repositoryService.call(new RemoteCallback<RepositoryInfo>() {
             @Override
-            public void callback( final RepositoryInfo repo ) {
+            public void callback(final RepositoryInfo repo) {
                 root = repo.getRoot();
-                view.setRepositoryInfo( repo.getAlias(),
-                                        repo.getOwner(),
-                                        !repositoryController.canUpdateRepository( repo.getId() ),
-                                        repo.getPublicURIs(),
-                                        CoreConstants.INSTANCE.Empty(),
-                                        repo.getInitialVersionList() );
+                view.setRepositoryInfo(repo.getAlias(),
+                                       repo.getOwner(),
+                                       !repositoryController.canUpdateRepository(repo.getId()),
+                                       repo.getPublicURIs(),
+                                       CoreConstants.INSTANCE.Empty(),
+                                       repo.getInitialVersionList());
             }
-        } ).getRepositoryInfo( alias );
+        }).getRepositoryInfo(alias);
     }
 
     @WorkbenchPartTitle
@@ -120,41 +120,41 @@ public class RepositoryEditorPresenter {
         return view;
     }
 
-    void onLoadMoreHistory( final int lastIndex ) {
-        repositoryService.call( new RemoteCallback<List<VersionRecord>>() {
+    void onLoadMoreHistory(final int lastIndex) {
+        repositoryService.call(new RemoteCallback<List<VersionRecord>>() {
             @Override
-            public void callback( final List<VersionRecord> versionList ) {
-                view.addHistory( versionList );
+            public void callback(final List<VersionRecord> versionList) {
+                view.addHistory(versionList);
             }
-        } ).getRepositoryHistory( alias,
-                                  lastIndex );
+        }).getRepositoryHistory(alias,
+                                lastIndex);
     }
 
-    void onRevert( final VersionRecord record ) {
-        onRevert( record,
-                  null );
+    void onRevert(final VersionRecord record) {
+        onRevert(record,
+                 null);
     }
 
-    void onRevert( final VersionRecord record,
-                   final String comment ) {
-        repositoryServiceEditor.call( new RemoteCallback<List<VersionRecord>>() {
+    void onRevert(final VersionRecord record,
+                  final String comment) {
+        repositoryServiceEditor.call(new RemoteCallback<List<VersionRecord>>() {
             @Override
-            public void callback( final List<VersionRecord> content ) {
-                view.reloadHistory( content );
+            public void callback(final List<VersionRecord> content) {
+                view.reloadHistory(content);
             }
-        } ).revertHistory( alias,
-                           root,
-                           comment,
-                           record );
+        }).revertHistory(alias,
+                         root,
+                         comment,
+                         record);
     }
 
-    void onGitUrlCopied( final String uri ) {
-        notification.fire( new NotificationEvent( CommonConstants.INSTANCE.GitUriCopied( uri ) ) );
+    void onGitUrlCopied(final String uri) {
+        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.GitUriCopied(uri)));
     }
 
-    public void onRepositoryRemovedEvent( @Observes RepositoryRemovedEvent event ) {
-        if ( alias.equals( event.getRepository().getAlias() ) ) {
-            placeManager.closePlace( place );
+    public void onRepositoryRemovedEvent(@Observes RepositoryRemovedEvent event) {
+        if (alias.equals(event.getRepository().getAlias())) {
+            placeManager.closePlace(place);
         }
     }
 }

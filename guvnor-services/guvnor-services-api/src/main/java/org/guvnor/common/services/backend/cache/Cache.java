@@ -25,15 +25,15 @@ public interface Cache<K, V> {
      * @param key The cache entry key
      * @return V The cache entry
      */
-    V getEntry( final K key );
+    V getEntry(final K key);
 
     /**
      * Set the cache entry for the specified path.
      * @param key The cache entry key
      * @param value The cache entry
      */
-    void setEntry( final K key,
-                   final V value );
+    void setEntry(final K key,
+                  final V value);
 
     /**
      * Invalidate the entire cache
@@ -44,5 +44,5 @@ public interface Cache<K, V> {
      * Invalidate the cache for a specific key.
      * @param key The cache entry key
      */
-    void invalidateCache( final K key );
+    void invalidateCache(final K key);
 }

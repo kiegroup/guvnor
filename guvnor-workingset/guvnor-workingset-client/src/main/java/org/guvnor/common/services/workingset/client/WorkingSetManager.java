@@ -55,7 +55,7 @@ public class WorkingSetManager {
      */
     private boolean autoVerifierEnabled = false;
 
-    public void onWorkingSetApplied( @Observes final OnWorkingSetApplied event ) {
+    public void onWorkingSetApplied(@Observes final OnWorkingSetApplied event) {
 //        final Pair<Path, WorkingSetSettings> projectReference = getProjectConfig( event.getResource() );
 //        if ( projectReference != null && projectReference.getK2() == null ) {
 //            projectService.call( new RemoteCallback<WorkingSetSettings>() {
@@ -67,10 +67,10 @@ public class WorkingSetManager {
 //        }
     }
 
-    public void onWorkingSetDisabled( @Observes final OnWorkingSetDisabled event ) {
-        final WorkingSetSettings settings = getActiveSettings( event.getResource() );
-        if ( settings != null ) {
-            settings.removeWorkingSet( event.getWorkingSet() );
+    public void onWorkingSetDisabled(@Observes final OnWorkingSetDisabled event) {
+        final WorkingSetSettings settings = getActiveSettings(event.getResource());
+        if (settings != null) {
+            settings.removeWorkingSet(event.getWorkingSet());
         }
     }
 
@@ -79,9 +79,9 @@ public class WorkingSetManager {
      * @param resource the resource - part of a project
      * @return the active WorkingSets for a package, or null if any.
      */
-    public Collection<WorkingSetConfigData> getActiveWorkingSets( final Path resource ) {
-        final WorkingSetSettings result = getActiveSettings( resource );
-        if ( result == null ) {
+    public Collection<WorkingSetConfigData> getActiveWorkingSets(final Path resource) {
+        final WorkingSetSettings result = getActiveSettings(resource);
+        if (result == null) {
             return null;
         }
         return result.getConfigData();
@@ -95,7 +95,7 @@ public class WorkingSetManager {
 //        return new Pair<Path, WorkingSetSettings>( project, projectSettings.get( project ) );
 //    }
 
-    public WorkingSetSettings getActiveSettings( final Path resource ) {
+    public WorkingSetSettings getActiveSettings(final Path resource) {
 //        final Path projectReference = projectResources.getProject( resource );
 //        if ( projectReference == null ) {
 //            return null;
@@ -104,7 +104,7 @@ public class WorkingSetManager {
         return null;
     }
 
-    public void removeWorkingSets( final Path resource ) {
+    public void removeWorkingSets(final Path resource) {
 //        final Path projectReference = projectResources.getProject( resource );
 //        if ( projectReference != null ) {
 //            projectSettings.remove( projectReference );
@@ -117,14 +117,14 @@ public class WorkingSetManager {
      * @param workingSet the (WorkingSet) RuleSet
      * @return whether the given (WorkingSet) RuleSet is active in a project or not.
      */
-    public boolean isWorkingSetActive( final Path resource,
-                                       final Path workingSet ) {
-        final WorkingSetSettings result = getActiveSettings( resource );
-        if ( result == null ) {
+    public boolean isWorkingSetActive(final Path resource,
+                                      final Path workingSet) {
+        final WorkingSetSettings result = getActiveSettings(resource);
+        if (result == null) {
             return false;
         }
 
-        return result.getResources().contains( workingSet );
+        return result.getResources().contains(workingSet);
     }
 
     /**
@@ -135,21 +135,21 @@ public class WorkingSetManager {
      * @param fieldName the field name
      * @return a Set of Constraints for a Fact Type's field.
      */
-    public Set<ConstraintConfiguration> getFieldContraints( final Path resource,
-                                                            final String factType,
-                                                            final String fieldName ) {
+    public Set<ConstraintConfiguration> getFieldContraints(final Path resource,
+                                                           final String factType,
+                                                           final String fieldName) {
 
         final Set<ConstraintConfiguration> result = new HashSet<ConstraintConfiguration>();
 
         //TODO: Change this with a centralized way of Constraint Administration.
-        final Collection<WorkingSetConfigData> activeConfig = this.getActiveWorkingSets( resource );
-        if ( activeConfig != null ) {
-            for ( final WorkingSetConfigData configData : activeConfig ) {
+        final Collection<WorkingSetConfigData> activeConfig = this.getActiveWorkingSets(resource);
+        if (activeConfig != null) {
+            for (final WorkingSetConfigData configData : activeConfig) {
                 final List<ConstraintConfiguration> constraints = configData.getConstraints();
-                if ( constraints != null ) {
-                    for ( final ConstraintConfiguration constraint : constraints ) {
-                        if ( constraint.getFactType().equals( factType ) && constraint.getFieldName().equals( fieldName ) ) {
-                            result.add( constraint );
+                if (constraints != null) {
+                    for (final ConstraintConfiguration constraint : constraints) {
+                        if (constraint.getFactType().equals(factType) && constraint.getFieldName().equals(fieldName)) {
+                            result.add(constraint);
                         }
                     }
                 }
@@ -170,7 +170,7 @@ public class WorkingSetManager {
     /**
      * TODO: We need to store/retrieve this value from repository
      */
-    public void setAutoVerifierEnabled( boolean autoVerifierEnabled ) {
+    public void setAutoVerifierEnabled(boolean autoVerifierEnabled) {
         this.autoVerifierEnabled = autoVerifierEnabled;
     }
 
@@ -186,23 +186,25 @@ public class WorkingSetManager {
      * @param factType The short class name of the Fact Type
      * @param fieldName The field name
      * @return the associated CustomFormConfiguration for the given FactType and
-     *         FieldName in the active working sets or null if any.
+     * FieldName in the active working sets or null if any.
      */
-    public CustomFormConfiguration getCustomFormConfiguration( final Path resource,
-                                                               final String factType,
-                                                               final String fieldName ) {
-        final Collection<WorkingSetConfigData> packageWorkingSets = this.getActiveWorkingSets( resource );
-        if ( packageWorkingSets != null ) {
+    public CustomFormConfiguration getCustomFormConfiguration(final Path resource,
+                                                              final String factType,
+                                                              final String fieldName) {
+        final Collection<WorkingSetConfigData> packageWorkingSets = this.getActiveWorkingSets(resource);
+        if (packageWorkingSets != null) {
             final List<CustomFormConfiguration> configs = new ArrayList<CustomFormConfiguration>();
-            for ( final WorkingSetConfigData workingSetConfigData : packageWorkingSets ) {
-                if ( workingSetConfigData.getCustomForms() != null && !workingSetConfigData.getCustomForms().isEmpty() ) {
-                    configs.addAll( workingSetConfigData.getCustomForms() );
+            for (final WorkingSetConfigData workingSetConfigData : packageWorkingSets) {
+                if (workingSetConfigData.getCustomForms() != null && !workingSetConfigData.getCustomForms().isEmpty()) {
+                    configs.addAll(workingSetConfigData.getCustomForms());
                 }
             }
-            final CustomFormsContainer cfc = new CustomFormsContainer( configs );
+            final CustomFormsContainer cfc = new CustomFormsContainer(configs);
 
-            if ( cfc.containsCustomFormFor( factType, fieldName ) ) {
-                return cfc.getCustomForm( factType, fieldName );
+            if (cfc.containsCustomFormFor(factType,
+                                          fieldName)) {
+                return cfc.getCustomForm(factType,
+                                         fieldName);
             }
         }
 

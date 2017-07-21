@@ -16,13 +16,13 @@
 
 package org.guvnor.ala.services.api.itemlist;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.guvnor.ala.runtime.providers.Provider;
 import org.guvnor.ala.services.api.ItemList;
-
 
 public class ProviderList implements ItemList<Provider> {
 
@@ -34,11 +34,11 @@ public class ProviderList implements ItemList<Provider> {
     public ProviderList() {
     }
 
-    public ProviderList( List<Provider> providers ) {
-        this.provider = providers.toArray( new Provider[providers.size()] );
+    public ProviderList(List<Provider> providers) {
+        this.provider = providers.toArray(new Provider[providers.size()]);
     }
 
-    public ProviderList( Provider[] providers ) {
+    public ProviderList(Provider[] providers) {
         this.provider = providers;
     }
 
@@ -46,17 +46,16 @@ public class ProviderList implements ItemList<Provider> {
         return provider;
     }
 
-    public void setProviderTypes( Provider[] providers ) {
+    public void setProviderTypes(Provider[] providers) {
         this.provider = providers;
     }
 
     @Override
     @JsonIgnore
     public List<Provider> getItems() {
-        if ( provider == null ) {
+        if (provider == null) {
             return Collections.emptyList();
         }
-        return Arrays.asList( provider );
+        return Arrays.asList(provider);
     }
-
 }

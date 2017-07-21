@@ -79,20 +79,20 @@ public class RepositoryResolverTestUtils {
      * @param mavenProject
      * @param pomXml
      */
-    public static void installArtifact( final MavenProject mavenProject,
-                                        final String pomXml ) {
-        final AFReleaseId releaseId = new AFReleaseIdImpl( mavenProject.getGroupId(),
-                                                       mavenProject.getArtifactId(),
-                                                       mavenProject.getVersion() );
+    public static void installArtifact(final MavenProject mavenProject,
+                                       final String pomXml) {
+        final AFReleaseId releaseId = new AFReleaseIdImpl(mavenProject.getGroupId(),
+                                                          mavenProject.getArtifactId(),
+                                                          mavenProject.getVersion());
 
-        final Aether aether = new Aether( mavenProject );
-        final MavenRepository mavenRepository = new MavenRepository( aether ) {
+        final Aether aether = new Aether(mavenProject);
+        final MavenRepository mavenRepository = new MavenRepository(aether) {
             //Nothing to override, just a sub-class to expose Constructor
         };
 
-        mavenRepository.installArtifact( releaseId,
-                                         "content".getBytes(),
-                                         pomXml.getBytes() );
+        mavenRepository.installArtifact(releaseId,
+                                        "content".getBytes(),
+                                        pomXml.getBytes());
     }
 
     /**
@@ -100,90 +100,90 @@ public class RepositoryResolverTestUtils {
      * @param mavenProject
      * @param pomXml
      */
-    public static void deployArtifact( final MavenProject mavenProject,
-                                       final String pomXml ) {
-        final AFReleaseId releaseId = new AFReleaseIdImpl( mavenProject.getGroupId(),
-                                                       mavenProject.getArtifactId(),
-                                                       mavenProject.getVersion() );
+    public static void deployArtifact(final MavenProject mavenProject,
+                                      final String pomXml) {
+        final AFReleaseId releaseId = new AFReleaseIdImpl(mavenProject.getGroupId(),
+                                                          mavenProject.getArtifactId(),
+                                                          mavenProject.getVersion());
 
         //Create temporary files for the JAR and POM
-        final Aether aether = new Aether( mavenProject );
-        final File jarFile = new File( System.getProperty( "java.io.tmpdir" ),
-                                       toFileName( releaseId,
-                                                   null ) + ".jar" );
+        final Aether aether = new Aether(mavenProject);
+        final File jarFile = new File(System.getProperty("java.io.tmpdir"),
+                                      toFileName(releaseId,
+                                                 null) + ".jar");
         try {
-            FileOutputStream fos = new FileOutputStream( jarFile );
-            fos.write( "content".getBytes() );
+            FileOutputStream fos = new FileOutputStream(jarFile);
+            fos.write("content".getBytes());
             fos.flush();
             fos.close();
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        final File pomFile = new File( System.getProperty( "java.io.tmpdir" ),
-                                       toFileName( releaseId,
-                                                   null ) + ".pom" );
+        final File pomFile = new File(System.getProperty("java.io.tmpdir"),
+                                      toFileName(releaseId,
+                                                 null) + ".pom");
         try {
-            FileOutputStream fos = new FileOutputStream( pomFile );
-            fos.write( pomXml.getBytes() );
+            FileOutputStream fos = new FileOutputStream(pomFile);
+            fos.write(pomXml.getBytes());
             fos.flush();
             fos.close();
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         //Artifact representing the JAR
-        Artifact jarArtifact = new DefaultArtifact( releaseId.getGroupId(),
-                                                    releaseId.getArtifactId(),
-                                                    "jar",
-                                                    releaseId.getVersion() );
-        jarArtifact = jarArtifact.setFile( jarFile );
+        Artifact jarArtifact = new DefaultArtifact(releaseId.getGroupId(),
+                                                   releaseId.getArtifactId(),
+                                                   "jar",
+                                                   releaseId.getVersion());
+        jarArtifact = jarArtifact.setFile(jarFile);
 
         //Artifact representing the POM
-        Artifact pomArtifact = new SubArtifact( jarArtifact,
-                                                "",
-                                                "pom" );
-        pomArtifact = pomArtifact.setFile( pomFile );
+        Artifact pomArtifact = new SubArtifact(jarArtifact,
+                                               "",
+                                               "pom");
+        pomArtifact = pomArtifact.setFile(pomFile);
 
         //Read <distributionManagement> section
         final DistributionManagement distributionManagement = mavenProject.getDistributionManagement();
-        if ( distributionManagement != null ) {
+        if (distributionManagement != null) {
             final DeployRequest deployRequest = new DeployRequest();
             deployRequest
-                    .addArtifact( jarArtifact )
-                    .addArtifact( pomArtifact )
-                    .setRepository( getRemoteRepoFromDeployment( distributionManagement.getRepository(),
-                                                                 aether.getSession() ) );
+                    .addArtifact(jarArtifact)
+                    .addArtifact(pomArtifact)
+                    .setRepository(getRemoteRepoFromDeployment(distributionManagement.getRepository(),
+                                                               aether.getSession()));
 
             try {
-                aether.getSystem().deploy( aether.getSession(),
-                                           deployRequest );
-            } catch ( DeploymentException e ) {
-                throw new RuntimeException( e );
+                aether.getSystem().deploy(aether.getSession(),
+                                          deployRequest);
+            } catch (DeploymentException e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
     //Convert a DeploymentRepository to a RemoteRepository
-    private static RemoteRepository getRemoteRepoFromDeployment( final DeploymentRepository deploymentRepository,
-                                                                 final RepositorySystemSession mavenSession ) {
-        final RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder( deploymentRepository.getId(),
-                                                                                         deploymentRepository.getLayout(),
-                                                                                         deploymentRepository.getUrl() )
-                .setSnapshotPolicy( new RepositoryPolicy( true,
-                                                          RepositoryPolicy.UPDATE_POLICY_DAILY,
-                                                          RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
-                .setReleasePolicy( new RepositoryPolicy( true,
-                                                         RepositoryPolicy.UPDATE_POLICY_DAILY,
-                                                         RepositoryPolicy.CHECKSUM_POLICY_WARN ) );
+    private static RemoteRepository getRemoteRepoFromDeployment(final DeploymentRepository deploymentRepository,
+                                                                final RepositorySystemSession mavenSession) {
+        final RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder(deploymentRepository.getId(),
+                                                                                        deploymentRepository.getLayout(),
+                                                                                        deploymentRepository.getUrl())
+                .setSnapshotPolicy(new RepositoryPolicy(true,
+                                                        RepositoryPolicy.UPDATE_POLICY_DAILY,
+                                                        RepositoryPolicy.CHECKSUM_POLICY_WARN))
+                .setReleasePolicy(new RepositoryPolicy(true,
+                                                       RepositoryPolicy.UPDATE_POLICY_DAILY,
+                                                       RepositoryPolicy.CHECKSUM_POLICY_WARN));
 
         final Settings settings = MavenSettings.getSettings();
-        final Server server = settings.getServer( deploymentRepository.getId() );
+        final Server server = settings.getServer(deploymentRepository.getId());
 
-        if ( server != null ) {
+        if (server != null) {
             final Authentication authentication = mavenSession
                     .getAuthenticationSelector()
-                    .getAuthentication( remoteRepoBuilder.build() );
-            remoteRepoBuilder.setAuthentication( authentication );
+                    .getAuthentication(remoteRepoBuilder.build());
+            remoteRepoBuilder.setAuthentication(authentication);
         }
 
         return remoteRepoBuilder.build();
@@ -195,43 +195,42 @@ public class RepositoryResolverTestUtils {
      * @return
      * @throws IOException
      */
-    public static java.nio.file.Path generateSettingsXml( final java.nio.file.Path m2Folder ) throws IOException {
-        final java.nio.file.Path settingsXmlPath = Files.createTempFile( m2Folder,
-                                                                         "settings",
-                                                                         ".xml" );
+    public static java.nio.file.Path generateSettingsXml(final java.nio.file.Path m2Folder) throws IOException {
+        final java.nio.file.Path settingsXmlPath = Files.createTempFile(m2Folder,
+                                                                        "settings",
+                                                                        ".xml");
 
         final List<String> settingsXmlLines = new ArrayList<String>();
         final List<String> additionalRepositories = new ArrayList<String>() {{
-            add( REPO_1 );
-            add( REPO_2 );
-            add( REPO_3 );
+            add(REPO_1);
+            add(REPO_2);
+            add(REPO_3);
         }};
-        settingsXmlLines.add( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
-        settingsXmlLines.add( "<settings>\n" );
-        settingsXmlLines.add( "  <localRepository>" + m2Folder.toString() + "</localRepository>\n" );
-        if ( additionalRepositories.size() > 0 ) {
-            settingsXmlLines.add( "  <profiles>\n" );
-            settingsXmlLines.add( "    <profile>\n" );
-            settingsXmlLines.add( "      <id>standard-extra-repos</id>\n" );
-            settingsXmlLines.add( "      <activation>\n" );
-            settingsXmlLines.add( "        <activeByDefault>true</activeByDefault>\n" );
-            settingsXmlLines.add( "      </activation>\n" );
-            settingsXmlLines.add( "      <repositories>\n" );
-            settingsXmlLines.addAll( additionalRepositories );
-            settingsXmlLines.add( "      </repositories>\n" );
-            settingsXmlLines.add( "      <pluginRepositories>\n" );
-            settingsXmlLines.add( PLUGIN_REPO_1 );
-            settingsXmlLines.add( "        </pluginRepositories>\n" );
-            settingsXmlLines.add( "    </profile>\n" );
-            settingsXmlLines.add( "  </profiles>\n" );
+        settingsXmlLines.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        settingsXmlLines.add("<settings>\n");
+        settingsXmlLines.add("  <localRepository>" + m2Folder.toString() + "</localRepository>\n");
+        if (additionalRepositories.size() > 0) {
+            settingsXmlLines.add("  <profiles>\n");
+            settingsXmlLines.add("    <profile>\n");
+            settingsXmlLines.add("      <id>standard-extra-repos</id>\n");
+            settingsXmlLines.add("      <activation>\n");
+            settingsXmlLines.add("        <activeByDefault>true</activeByDefault>\n");
+            settingsXmlLines.add("      </activation>\n");
+            settingsXmlLines.add("      <repositories>\n");
+            settingsXmlLines.addAll(additionalRepositories);
+            settingsXmlLines.add("      </repositories>\n");
+            settingsXmlLines.add("      <pluginRepositories>\n");
+            settingsXmlLines.add(PLUGIN_REPO_1);
+            settingsXmlLines.add("        </pluginRepositories>\n");
+            settingsXmlLines.add("    </profile>\n");
+            settingsXmlLines.add("  </profiles>\n");
         }
-        settingsXmlLines.add( "</settings>" );
+        settingsXmlLines.add("</settings>");
 
-        Files.write( settingsXmlPath,
-                     settingsXmlLines,
-                     StandardCharsets.UTF_8 );
+        Files.write(settingsXmlPath,
+                    settingsXmlLines,
+                    StandardCharsets.UTF_8);
 
         return settingsXmlPath;
     }
-
 }

@@ -45,14 +45,14 @@ import org.uberfire.security.authz.PermissionManager;
  * In previous versions (before the 7 release), the only way to grant access to resources like
  * {@link OrganizationalUnit}, {@link Repository} and {@link Project} was to indicate which groups were able to
  * access a given instance. Those groups were stored as part of the instance persistent status.
- *
+ * <p>
  * <p>As of 7 version, the authorization policy is based on permissions. That means is no longer required
  * to keep a list of groups per resource instance. What is required is to define proper permission entries into the
  * active {@link AuthorizationPolicy}</p>
- *
+ * <p>
  * <p>This is a utility class which takes care of reading the groups declared for any of the above resource types and
  * creating the necessary permissions so that those resources are protected from user access.</p>
- *
+ * <p>
  * <p>The migration procedure is carried out when an {@link AuthorizationPolicyDeployedEvent} is received, which means
  * the application is starting up and deploying the authorization policy for the first time.</p>
  */
@@ -64,7 +64,7 @@ public class ACLMigrationTool {
     private Instance<ProjectService<?>> projectServices;
     private PermissionManager permissionManager;
     private AuthorizationPolicyStorage authorizationPolicyStorage;
-    private Map<String,Group> groupMap = new HashMap<>();
+    private Map<String, Group> groupMap = new HashMap<>();
 
     @Inject
     public ACLMigrationTool(OrganizationalUnitService organizationalUnitService,
@@ -90,7 +90,8 @@ public class ACLMigrationTool {
         Group group = groupMap.get(groupName);
         if (group == null) {
             group = new GroupImpl(groupName);
-            groupMap.put(groupName, group);
+            groupMap.put(groupName,
+                         group);
         }
         return group;
     }
@@ -98,7 +99,9 @@ public class ACLMigrationTool {
     public void migrateOrgUnits(AuthorizationPolicy policy) {
         Collection<OrganizationalUnit> itemList = organizationalUnitService.getAllOrganizationalUnits();
         for (OrganizationalUnit item : itemList) {
-            Permission p = permissionManager.createPermission(item, OrganizationalUnitAction.READ, true);
+            Permission p = permissionManager.createPermission(item,
+                                                              OrganizationalUnitAction.READ,
+                                                              true);
             for (String groupName : item.getGroups()) {
                 Group group = getGroup(groupName);
                 PermissionCollection pc = policy.getPermissions(group);
@@ -110,22 +113,29 @@ public class ACLMigrationTool {
     public void migrateRepositories(AuthorizationPolicy policy) {
         Collection<Repository> itemList = repositoryService.getAllRepositories();
         for (Repository item : itemList) {
-            Permission p = permissionManager.createPermission(item, RepositoryAction.READ, true);
+            Permission p = permissionManager.createPermission(item,
+                                                              RepositoryAction.READ,
+                                                              true);
             for (String groupName : item.getGroups()) {
                 Group group = getGroup(groupName);
                 PermissionCollection pc = policy.getPermissions(group);
                 pc.add(p);
             }
-            migrateProjects(policy, item);
+            migrateProjects(policy,
+                            item);
         }
     }
 
-    public void migrateProjects(AuthorizationPolicy policy, Repository repository) {
+    public void migrateProjects(AuthorizationPolicy policy,
+                                Repository repository) {
         ProjectService projectService = getProjectService();
         if (projectService != null) {
-            Collection<Project> itemList = projectService.getAllProjects(repository, "master");
+            Collection<Project> itemList = projectService.getAllProjects(repository,
+                                                                         "master");
             for (Project item : itemList) {
-                Permission p = permissionManager.createPermission(item, ProjectAction.READ, true);
+                Permission p = permissionManager.createPermission(item,
+                                                                  ProjectAction.READ,
+                                                                  true);
                 for (String groupName : item.getGroups()) {
                     Group group = getGroup(groupName);
                     PermissionCollection pc = policy.getPermissions(group);

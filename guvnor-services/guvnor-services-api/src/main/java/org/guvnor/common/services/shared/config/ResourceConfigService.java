@@ -16,9 +16,9 @@
 
 package org.guvnor.common.services.shared.config;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-
 import java.util.Map;
+
+import org.jboss.errai.bus.server.annotations.Remote;
 
 /**
  *
@@ -26,5 +26,5 @@ import java.util.Map;
 @Remote
 public interface ResourceConfigService {
 
-    Map<String, Object> configAttrs( final Map<String, Object> attrs);
+    Map<String, Object> configAttrs(final Map<String, Object> attrs);
 }

@@ -17,7 +17,6 @@
 package org.guvnor.structure.client.editors.repository.edit;
 
 import java.util.List;
-import javax.annotation.PostConstruct;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -51,7 +50,7 @@ public class RepositoryEditorView extends Composite
 
     }
 
-    private static RepositoryEditorViewBinder uiBinder = GWT.create( RepositoryEditorViewBinder.class );
+    private static RepositoryEditorViewBinder uiBinder = GWT.create(RepositoryEditorViewBinder.class);
 
     @UiField
     public Heading repoName;
@@ -78,108 +77,110 @@ public class RepositoryEditorView extends Composite
     private boolean readOnly;
 
     public RepositoryEditorView() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        myGitCopyButton.addDomHandler( ( e ) -> presenter.onGitUrlCopied( gitDaemonURI.getText() ),
-                                       ClickEvent.getType() );
+        myGitCopyButton.addDomHandler((e) -> presenter.onGitUrlCopied(gitDaemonURI.getText()),
+                                      ClickEvent.getType());
     }
 
     @Override
-    public void init( final RepositoryEditorPresenter presenter ) {
+    public void init(final RepositoryEditorPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setRepositoryInfo( final String repositoryName,
-                                   final String owner,
-                                   final boolean readOnly,
-                                   final List<PublicURI> publicURIs,
-                                   final String description,
-                                   final List<VersionRecord> initialVersionList ) {
+    public void setRepositoryInfo(final String repositoryName,
+                                  final String owner,
+                                  final boolean readOnly,
+                                  final List<PublicURI> publicURIs,
+                                  final String description,
+                                  final List<VersionRecord> initialVersionList) {
         this.readOnly = readOnly;
-        if ( owner != null && !owner.isEmpty() ) {
-            repoName.setText( owner + " / " + repositoryName );
+        if (owner != null && !owner.isEmpty()) {
+            repoName.setText(owner + " / " + repositoryName);
         } else {
-            repoName.setText( repositoryName );
+            repoName.setText(repositoryName);
         }
-        repoDesc.setText( description );
+        repoDesc.setText(description);
         int count = 0;
-        if ( publicURIs.size() > 0 ) {
-            linksPanel.setText( CoreConstants.INSTANCE.AvailableProtocols() );
+        if (publicURIs.size() > 0) {
+            linksPanel.setText(CoreConstants.INSTANCE.AvailableProtocols());
         }
-        for ( final PublicURI publicURI : publicURIs ) {
-            if ( count == 0 ) {
-                gitDaemonURI.setText( publicURI.getURI() );
+        for (final PublicURI publicURI : publicURIs) {
+            if (count == 0) {
+                gitDaemonURI.setText(publicURI.getURI());
             }
             final String protocol = publicURI.getProtocol() == null ? "default" : publicURI.getProtocol();
-            final Button anchor = new Button( protocol );
-            anchor.getElement().getStyle().setMarginLeft( 5, Style.Unit.PX );
-            anchor.addClickHandler( new ClickHandler() {
+            final Button anchor = new Button(protocol);
+            anchor.getElement().getStyle().setMarginLeft(5,
+                                                         Style.Unit.PX);
+            anchor.addClickHandler(new ClickHandler() {
                 @Override
-                public void onClick( ClickEvent event ) {
-                    gitDaemonURI.setText( publicURI.getURI() );
+                public void onClick(ClickEvent event) {
+                    gitDaemonURI.setText(publicURI.getURI());
                 }
-            } );
-            if ( count != 0 ) {
-                anchor.getElement().getStyle().setPaddingLeft( 5, Style.Unit.PX );
+            });
+            if (count != 0) {
+                anchor.getElement().getStyle().setPaddingLeft(5,
+                                                              Style.Unit.PX);
             }
-            linksPanel.add( anchor );
+            linksPanel.add(anchor);
             count++;
         }
 
-        if ( initialVersionList != null && !initialVersionList.isEmpty() ) {
-            loadContent( initialVersionList );
-
+        if (initialVersionList != null && !initialVersionList.isEmpty()) {
+            loadContent(initialVersionList);
         } else {
-            history.setVisible( false );
+            history.setVisible(false);
         }
 
-        loadMore.addClickHandler( new ClickHandler() {
+        loadMore.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                presenter.onLoadMoreHistory( history.getWidgetCount() );
+            public void onClick(ClickEvent event) {
+                presenter.onLoadMoreHistory(history.getWidgetCount());
             }
-        } );
+        });
 
         final String uriId = "uri-for-" + repositoryName;
-        gitDaemonURI.getElement().setId( uriId );
+        gitDaemonURI.getElement().setId(uriId);
 
-        myGitCopyButton.init( false, uriId, gitDaemonURI.getText() );
+        myGitCopyButton.init(false,
+                             uriId,
+                             gitDaemonURI.getText());
 
-        glueCopy( myGitCopyButton.getElement() );
+        glueCopy(myGitCopyButton.getElement());
     }
 
     @Override
-    public void reloadHistory( final List<VersionRecord> versionList ) {
-        loadContent( versionList );
+    public void reloadHistory(final List<VersionRecord> versionList) {
+        loadContent(versionList);
         BusyPopup.close();
     }
 
     @Override
-    public void addHistory( List<VersionRecord> versionList ) {
-        if ( !versionList.isEmpty() ) {
-            loadContent( versionList );
+    public void addHistory(List<VersionRecord> versionList) {
+        if (!versionList.isEmpty()) {
+            loadContent(versionList);
         } else {
-            loadMore.setEnabled( false );
+            loadMore.setEnabled(false);
         }
     }
 
-    private void loadContent( final List<VersionRecord> versionRecordList ) {
-        for ( VersionRecord vr : versionRecordList ) {
-            history.add( new CommitNavigatorEntry( readOnly, vr,
-                                                   new ParameterizedCommand<VersionRecord>() {
-                                                       @Override
-                                                       public void execute( final VersionRecord record ) {
-                                                           BusyPopup.showMessage( CoreConstants.INSTANCE.Reverting() );
-                                                           presenter.onRevert( record );
-                                                       }
-                                                   } ) );
+    private void loadContent(final List<VersionRecord> versionRecordList) {
+        for (VersionRecord vr : versionRecordList) {
+            history.add(new CommitNavigatorEntry(readOnly,
+                                                 vr,
+                                                 new ParameterizedCommand<VersionRecord>() {
+                                                     @Override
+                                                     public void execute(final VersionRecord record) {
+                                                         BusyPopup.showMessage(CoreConstants.INSTANCE.Reverting());
+                                                         presenter.onRevert(record);
+                                                     }
+                                                 }));
         }
-
     }
 
-    public static native void glueCopy( final Element element ) /*-{
+    public static native void glueCopy(final Element element) /*-{
         var clip = new $wnd.ZeroClipboard(element);
     }-*/;
-
 }

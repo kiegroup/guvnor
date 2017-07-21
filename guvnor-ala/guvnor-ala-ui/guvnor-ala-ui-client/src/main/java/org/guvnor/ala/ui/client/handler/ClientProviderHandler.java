@@ -24,5 +24,4 @@ public interface ClientProviderHandler
     FormResolver getFormResolver();
 
     String getProviderTypeImageURL();
-
 }

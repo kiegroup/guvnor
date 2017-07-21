@@ -22,8 +22,7 @@ import org.guvnor.messageconsole.client.console.resources.i18n.MessageConsoleCon
 
 public interface MessageConsoleResources extends ClientBundle {
 
-    MessageConsoleResources INSTANCE = GWT.create( MessageConsoleResources.class );
+    MessageConsoleResources INSTANCE = GWT.create(MessageConsoleResources.class);
 
-    MessageConsoleConstants CONSTANTS = GWT.create( MessageConsoleConstants.class );
-
+    MessageConsoleConstants CONSTANTS = GWT.create(MessageConsoleConstants.class);
 }

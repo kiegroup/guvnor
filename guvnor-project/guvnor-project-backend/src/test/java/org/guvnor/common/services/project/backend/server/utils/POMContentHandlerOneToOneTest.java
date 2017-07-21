@@ -37,45 +37,47 @@ public class POMContentHandlerOneToOneTest {
     @Test
     public void testNoChanges() throws Exception {
 
-        String pomxml = fromStream( POMContentHandlerOneToOneTest.class.getResourceAsStream( fileName ) );
+        String pomxml = fromStream(POMContentHandlerOneToOneTest.class.getResourceAsStream(fileName));
 
-        POM model = new POMContentHandler().toModel( pomxml );
+        POM model = new POMContentHandler().toModel(pomxml);
 
-        assertContainsIgnoreWhitespace( pomxml,
-                                        new POMContentHandler().toString( model,
-                                                                          pomxml ) );
+        assertContainsIgnoreWhitespace(pomxml,
+                                       new POMContentHandler().toString(model,
+                                                                        pomxml));
     }
 
-    public POMContentHandlerOneToOneTest( String fileName ) {
+    public POMContentHandlerOneToOneTest(String fileName) {
         this.fileName = fileName;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> getData() {
-        return Arrays.asList( new Object[][]{
+        return Arrays.asList(new Object[][]{
                 {"pom1.xml"},
                 {"pom2.xml"},
                 {"pom3.xml"}
-        } );
+        });
     }
 
-    public static String fromStream( InputStream in ) throws IOException {
-        BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
+    public static String fromStream(InputStream in) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         StringBuilder out = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
-            out.append( line ).append( "\n" );
+            out.append(line).append("\n");
         }
         return out.toString();
     }
 
-    private void assertContainsIgnoreWhitespace( final String expected,
-                                                 final String xml ) {
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" );
-        final String cleanActual = xml.replaceAll( "\\s+",
-                                                   "" );
+    private void assertContainsIgnoreWhitespace(final String expected,
+                                                final String xml) {
+        final String cleanExpected = expected.replaceAll("\\s+",
+                                                         "");
+        final String cleanActual = xml.replaceAll("\\s+",
+                                                  "");
 
-        assertEquals( "Failure with pom file: " + fileName, cleanExpected, cleanActual );
+        assertEquals("Failure with pom file: " + fileName,
+                     cleanExpected,
+                     cleanActual);
     }
 }

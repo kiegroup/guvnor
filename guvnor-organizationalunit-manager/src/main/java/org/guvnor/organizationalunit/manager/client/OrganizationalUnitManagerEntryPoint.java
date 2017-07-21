@@ -31,5 +31,4 @@ public class OrganizationalUnitManagerEntryPoint {
     public void startApp() {
         OrganizationalUnitManagerResources.INSTANCE.CSS().ensureInjected();
     }
-
 }

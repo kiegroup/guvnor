@@ -56,7 +56,7 @@ public class UnpublishMessagesEvent {
         return sessionId;
     }
 
-    public void setSessionId( String sessionId ) {
+    public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
 
@@ -64,7 +64,7 @@ public class UnpublishMessagesEvent {
         return userId;
     }
 
-    public void setUserId( String userId ) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -76,11 +76,11 @@ public class UnpublishMessagesEvent {
         return showSystemConsole;
     }
 
-    public void setShowSystemConsole( boolean showSystemConsole ) {
+    public void setShowSystemConsole(boolean showSystemConsole) {
         this.showSystemConsole = showSystemConsole;
     }
 
-    public void setMessageType( String messageType ) {
+    public void setMessageType(String messageType) {
         this.messageType = messageType;
     }
 
@@ -88,7 +88,7 @@ public class UnpublishMessagesEvent {
         return messagesToUnpublish;
     }
 
-    public void setMessagesToUnpublish( List<SystemMessage> messagesToUnpublish ) {
+    public void setMessagesToUnpublish(List<SystemMessage> messagesToUnpublish) {
         this.messagesToUnpublish = messagesToUnpublish;
     }
 }

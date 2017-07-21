@@ -24,7 +24,9 @@ public class UpdatedOrganizationalUnitEvent extends OrganizationalUnitEventBase 
     public UpdatedOrganizationalUnitEvent() {
     }
 
-    public UpdatedOrganizationalUnitEvent( OrganizationalUnit organizationalUnit, String userName ) {
-        super( organizationalUnit, userName );
+    public UpdatedOrganizationalUnitEvent(OrganizationalUnit organizationalUnit,
+                                          String userName) {
+        super(organizationalUnit,
+              userName);
     }
 }

@@ -40,7 +40,7 @@ public class ConfigureScreenPopupViewImpl extends BaseModal {
 
     }
 
-    private ConfigureScreenPopupWidgetBinder uiBinder = GWT.create( ConfigureScreenPopupWidgetBinder.class );
+    private ConfigureScreenPopupWidgetBinder uiBinder = GWT.create(ConfigureScreenPopupWidgetBinder.class);
 
     @Inject
     private User identity;
@@ -96,35 +96,35 @@ public class ConfigureScreenPopupViewImpl extends BaseModal {
         @Override
         public void execute() {
 
-            if ( isEmpty( devBranchText.getText() ) ) {
-                devBranchTextGroup.setValidationState( ValidationState.ERROR );
-                devBranchTextHelpBlock.setText( Constants.INSTANCE.FieldMandatory0( "Dev Branch" ) );
+            if (isEmpty(devBranchText.getText())) {
+                devBranchTextGroup.setValidationState(ValidationState.ERROR);
+                devBranchTextHelpBlock.setText(Constants.INSTANCE.FieldMandatory0("Dev Branch"));
 
                 return;
             }
 
-            if ( isEmpty( releaseBranchText.getText() ) ) {
-                releaseBranchTextGroup.setValidationState( ValidationState.ERROR );
-                releaseBranchTextHelpBlock.setText( Constants.INSTANCE.FieldMandatory0( "Release Branch" ) );
+            if (isEmpty(releaseBranchText.getText())) {
+                releaseBranchTextGroup.setValidationState(ValidationState.ERROR);
+                releaseBranchTextHelpBlock.setText(Constants.INSTANCE.FieldMandatory0("Release Branch"));
 
                 return;
             }
 
-            if ( isEmpty( versionText.getText() ) ) {
-                versionTextGroup.setValidationState( ValidationState.ERROR );
-                versionTextHelpBlock.setText( Constants.INSTANCE.FieldMandatory0( "Version" ) );
+            if (isEmpty(versionText.getText())) {
+                versionTextGroup.setValidationState(ValidationState.ERROR);
+                versionTextHelpBlock.setText(Constants.INSTANCE.FieldMandatory0("Version"));
 
                 return;
             }
 
-            if ( callbackCommand != null ) {
+            if (callbackCommand != null) {
                 callbackCommand.execute();
             }
             hide();
         }
 
-        private boolean isEmpty( String value ) {
-            if ( value == null || value.isEmpty() ) {
+        private boolean isEmpty(String value) {
+            if (value == null || value.isEmpty()) {
                 return true;
             }
 
@@ -140,34 +140,35 @@ public class ConfigureScreenPopupViewImpl extends BaseModal {
         }
     };
 
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand, cancelCommand );
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(okCommand,
+                                                                                     cancelCommand);
 
     public ConfigureScreenPopupViewImpl() {
-        setTitle( Constants.INSTANCE.Configure_Repository() );
-        setDataBackdrop( ModalBackdrop.STATIC );
-        setDataKeyboard( true );
-        setFade( true );
-        setRemoveOnHide( true );
+        setTitle(Constants.INSTANCE.Configure_Repository());
+        setDataBackdrop(ModalBackdrop.STATIC);
+        setDataKeyboard(true);
+        setFade(true);
+        setRemoveOnHide(true);
 
-        setBody( uiBinder.createAndBindUi( this ) );
-        add( footer );
+        setBody(uiBinder.createAndBindUi(this));
+        add(footer);
     }
 
-    public void configure( String repositoryAlias,
-                           String branch,
-                           String repositoryVersion,
-                           Command command ) {
+    public void configure(String repositoryAlias,
+                          String branch,
+                          String repositoryVersion,
+                          Command command) {
         this.callbackCommand = command;
-        this.devBranchText.setText( "dev" );
-        this.devBranchTextHelpBlock.setText( "The branch will be called (dev)-" + repositoryVersion );
-        this.releaseBranchText.setText( "release" );
-        this.releaseBranchTextHelpBlock.setText( "The branch will be called (release)-" + repositoryVersion );
-        this.sourceBranchText.setText( branch );
-        this.repositoryText.setText( repositoryAlias );
-        this.sourceBranchText.setReadOnly( true );
-        this.repositoryText.setReadOnly( true );
-        this.versionTextHelpBlock.setText( "The current repository version is: " + repositoryVersion );
-        this.versionText.setText( repositoryVersion );
+        this.devBranchText.setText("dev");
+        this.devBranchTextHelpBlock.setText("The branch will be called (dev)-" + repositoryVersion);
+        this.releaseBranchText.setText("release");
+        this.releaseBranchTextHelpBlock.setText("The branch will be called (release)-" + repositoryVersion);
+        this.sourceBranchText.setText(branch);
+        this.repositoryText.setText(repositoryAlias);
+        this.sourceBranchText.setReadOnly(true);
+        this.repositoryText.setReadOnly(true);
+        this.versionTextHelpBlock.setText("The current repository version is: " + repositoryVersion);
+        this.versionText.setText(repositoryVersion);
     }
 
     public String getDevBranch() {
@@ -181,5 +182,4 @@ public class ConfigureScreenPopupViewImpl extends BaseModal {
     public String getVersion() {
         return this.versionText.getText();
     }
-
 }

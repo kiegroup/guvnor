@@ -17,6 +17,7 @@
 package org.guvnor.ala.services.rest.listeners;
 
 import javax.enterprise.context.ApplicationScoped;
+
 import org.guvnor.ala.pipeline.events.AfterPipelineExecutionEvent;
 import org.guvnor.ala.pipeline.events.AfterStageExecutionEvent;
 import org.guvnor.ala.pipeline.events.BeforePipelineExecutionEvent;
@@ -29,33 +30,32 @@ import org.guvnor.ala.pipeline.events.PipelineEventListener;
 public class DefaultPipelineEventListener implements PipelineEventListener {
 
     @Override
-    public void beforePipelineExecution( BeforePipelineExecutionEvent bpee ) {
+    public void beforePipelineExecution(BeforePipelineExecutionEvent bpee) {
 
     }
 
     @Override
-    public void afterPipelineExecution( AfterPipelineExecutionEvent apee ) {
+    public void afterPipelineExecution(AfterPipelineExecutionEvent apee) {
 
     }
 
     @Override
-    public void beforeStageExecution( BeforeStageExecutionEvent bsee ) {
+    public void beforeStageExecution(BeforeStageExecutionEvent bsee) {
 
     }
 
     @Override
-    public void onStageError( OnErrorStageExecutionEvent bsee ) {
+    public void onStageError(OnErrorStageExecutionEvent bsee) {
 
     }
 
     @Override
-    public void afterStageExecution( AfterStageExecutionEvent asee ) {
+    public void afterStageExecution(AfterStageExecutionEvent asee) {
 
     }
 
     @Override
-    public void onPipelineError( OnErrorPipelineExecutionEvent apee ) {
+    public void onPipelineError(OnErrorPipelineExecutionEvent apee) {
 
     }
-
 }

@@ -16,27 +16,27 @@
 
 package org.guvnor.m2repo.backend.server.helpers;
 
+import java.io.InputStream;
+
 import org.apache.maven.project.ProjectBuildingException;
 import org.junit.Test;
 
-import java.io.InputStream;
-
 public class UploadInvalidPomTest {
 
-    @Test( expected = ProjectBuildingException.class )
+    @Test(expected = ProjectBuildingException.class)
     public void testBrokenPom() throws Exception {
-        resolvePom( "org/guvnor/m2repo/backend/server/helpers/broken-pom.xml" );
+        resolvePom("org/guvnor/m2repo/backend/server/helpers/broken-pom.xml");
     }
 
-    @Test( expected = ProjectBuildingException.class )
+    @Test(expected = ProjectBuildingException.class)
     public void testNonExistingParentGavInPom() throws Exception {
-        resolvePom( "org/guvnor/m2repo/backend/server/helpers/non-existing-parent-gav-pom.xml" );
+        resolvePom("org/guvnor/m2repo/backend/server/helpers/non-existing-parent-gav-pom.xml");
     }
 
-    private void resolvePom( String path ) throws Exception {
-        try ( InputStream pomInputStream = this.getClass().getClassLoader().getResourceAsStream( path ) ) {
-            PomModelResolver.resolveFromPom( pomInputStream );
-        } catch ( Exception e ) {
+    private void resolvePom(String path) throws Exception {
+        try (InputStream pomInputStream = this.getClass().getClassLoader().getResourceAsStream(path)) {
+            PomModelResolver.resolveFromPom(pomInputStream);
+        } catch (Exception e) {
             throw e;
         }
     }

@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 
-import static java.util.Collections.*;
+import static java.util.Collections.unmodifiableCollection;
 
 /**
  * Definition of the bootstrap repository
@@ -31,17 +31,18 @@ public class SystemRepository extends GitRepository {
 
     private static final String ALIAS = "system";
 
-    private static final Collection<String> groups = new ArrayList<String>( 1 ) {{
-        add( "admin" );
+    private static final Collection<String> groups = new ArrayList<String>(1) {{
+        add("admin");
     }};
 
-    public static final SystemRepository SYSTEM_REPO = new SystemRepository( ALIAS );
+    public static final SystemRepository SYSTEM_REPO = new SystemRepository(ALIAS);
 
     private final Map<String, Object> environment = new HashMap<String, Object>();
 
-    private SystemRepository( final String alias ) {
-        super( alias );
-        environment.put( "init", Boolean.TRUE );
+    private SystemRepository(final String alias) {
+        super(alias);
+        environment.put("init",
+                        Boolean.TRUE);
     }
 
     @Override
@@ -50,8 +51,8 @@ public class SystemRepository extends GitRepository {
     }
 
     @Override
-    public void addEnvironmentParameter( final String key,
-                                         final Object value ) {
+    public void addEnvironmentParameter(final String key,
+                                        final Object value) {
         throw new UnsupportedOperationException();
     }
 
@@ -67,6 +68,6 @@ public class SystemRepository extends GitRepository {
 
     @Override
     public Collection<String> getGroups() {
-        return unmodifiableCollection( groups );
+        return unmodifiableCollection(groups);
     }
 }

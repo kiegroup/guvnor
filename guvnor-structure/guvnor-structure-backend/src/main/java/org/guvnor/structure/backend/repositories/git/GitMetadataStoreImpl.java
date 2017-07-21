@@ -31,121 +31,134 @@ import org.uberfire.backend.server.io.object.ObjectStorage;
 
 public class GitMetadataStoreImpl implements GitMetadataStore {
 
-    private Logger logger = LoggerFactory.getLogger( GitMetadataStoreImpl.class );
+    private Logger logger = LoggerFactory.getLogger(GitMetadataStoreImpl.class);
     public static final String SEPARATOR = "/";
     public static final String METADATA = "default://system/metadata";
 
     private ObjectStorage storage;
 
     @Inject
-    public GitMetadataStoreImpl( ObjectStorage storage ) {
+    public GitMetadataStoreImpl(ObjectStorage storage) {
         this.storage = storage;
     }
 
     @PostConstruct
     public void init() {
 
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "Initializing GitMetadataStoreImpl {}", METADATA );
+        if (logger.isDebugEnabled()) {
+            logger.debug("Initializing GitMetadataStoreImpl {}",
+                         METADATA);
         }
-        this.storage.init( METADATA );
+        this.storage.init(METADATA);
     }
 
     @Override
-    public void write( String name ) {
-        this.write( name, "" );
+    public void write(String name) {
+        this.write(name,
+                   "");
     }
 
     @Override
-    public void write( String name,
-                       String origin ) {
+    public void write(String name,
+                      String origin) {
 
-        GitMetadataImpl repositoryMetadata = (GitMetadataImpl) this.read( name ).orElse( new GitMetadataImpl( name ) );
-        this.removeForkFromOrigin( repositoryMetadata );
-        GitMetadataImpl newRepositoryMetadata = new GitMetadataImpl( name, repositoryMetadata.getForks() );
+        GitMetadataImpl repositoryMetadata = (GitMetadataImpl) this.read(name).orElse(new GitMetadataImpl(name));
+        this.removeForkFromOrigin(repositoryMetadata);
+        GitMetadataImpl newRepositoryMetadata = new GitMetadataImpl(name,
+                                                                    repositoryMetadata.getForks());
 
-        if ( isStorableOrigin( origin ) ) {
-            newRepositoryMetadata = new GitMetadataImpl( name, origin, repositoryMetadata.getForks() );
+        if (isStorableOrigin(origin)) {
+            newRepositoryMetadata = new GitMetadataImpl(name,
+                                                        origin,
+                                                        repositoryMetadata.getForks());
 
-            GitMetadataImpl originMetadata = (GitMetadataImpl) this.read( origin ).orElse( new GitMetadataImpl( origin ) );
+            GitMetadataImpl originMetadata = (GitMetadataImpl) this.read(origin).orElse(new GitMetadataImpl(origin));
             List<String> forks = originMetadata.getForks();
-            forks.add( name );
-            this.write( origin, new GitMetadataImpl( origin, originMetadata.getOrigin(), forks ) );
+            forks.add(name);
+            this.write(origin,
+                       new GitMetadataImpl(origin,
+                                           originMetadata.getOrigin(),
+                                           forks));
         }
 
-        this.write( name, newRepositoryMetadata );
-
+        this.write(name,
+                   newRepositoryMetadata);
     }
 
     @Override
-    public void write( String name,
-                       GitMetadata metadata ) {
-        this.storage.write( buildPath( name ), metadata );
+    public void write(String name,
+                      GitMetadata metadata) {
+        this.storage.write(buildPath(name),
+                           metadata);
     }
 
     @Override
-    public Optional<GitMetadata> read( String name ) {
+    public Optional<GitMetadata> read(String name) {
         try {
-            final GitMetadataImpl metadata = this.storage.read( buildPath( name ) );
-            return Optional.ofNullable( metadata );
-        } catch ( RuntimeException e ) {
+            final GitMetadataImpl metadata = this.storage.read(buildPath(name));
+            return Optional.ofNullable(metadata);
+        } catch (RuntimeException e) {
             return Optional.empty();
         }
     }
 
     @Override
-    public void delete( String name ) {
-        String path = buildPath( name );
-        Optional<GitMetadata> optionalMetadata = this.read( name );
+    public void delete(String name) {
+        String path = buildPath(name);
+        Optional<GitMetadata> optionalMetadata = this.read(name);
 
-        optionalMetadata.ifPresent( metadata -> {
-            this.removeForkFromOrigin( metadata );
-            this.removeOriginFromForks( metadata );
-            this.storage.delete( path );
-        } );
-
+        optionalMetadata.ifPresent(metadata -> {
+            this.removeForkFromOrigin(metadata);
+            this.removeOriginFromForks(metadata);
+            this.storage.delete(path);
+        });
     }
 
-    private void removeOriginFromForks( final GitMetadata metadata ) {
-        List<GitMetadata> forks = this.getForks( metadata );
-        forks.forEach( fork -> {
-            GitMetadata newForkImpl = new GitMetadataImpl( fork.getName(), fork.getForks() );
-            this.storage.write( buildPath( fork.getName() ), newForkImpl );
-        } );
+    private void removeOriginFromForks(final GitMetadata metadata) {
+        List<GitMetadata> forks = this.getForks(metadata);
+        forks.forEach(fork -> {
+            GitMetadata newForkImpl = new GitMetadataImpl(fork.getName(),
+                                                          fork.getForks());
+            this.storage.write(buildPath(fork.getName()),
+                               newForkImpl);
+        });
     }
 
-    private void removeForkFromOrigin( final GitMetadata metadata ) {
-        this.getOrigin( metadata ).ifPresent( origin -> {
-            if ( origin.getForks().contains( metadata.getName() ) ) {
+    private void removeForkFromOrigin(final GitMetadata metadata) {
+        this.getOrigin(metadata).ifPresent(origin -> {
+            if (origin.getForks().contains(metadata.getName())) {
                 List<String> forks = origin.getForks();
-                forks.remove( metadata.getName() );
-                GitMetadataImpl newOrigin = new GitMetadataImpl( origin.getName(), origin.getOrigin(), forks );
-                this.storage.write( buildPath( origin.getName() ), newOrigin );
+                forks.remove(metadata.getName());
+                GitMetadataImpl newOrigin = new GitMetadataImpl(origin.getName(),
+                                                                origin.getOrigin(),
+                                                                forks);
+                this.storage.write(buildPath(origin.getName()),
+                                   newOrigin);
             }
-        } );
+        });
     }
 
-    private Optional<GitMetadata> getOrigin( final GitMetadata metadata ) {
-        return this.read( metadata.getOrigin() );
+    private Optional<GitMetadata> getOrigin(final GitMetadata metadata) {
+        return this.read(metadata.getOrigin());
     }
 
-    private List<GitMetadata> getForks( final GitMetadata metadata ) {
-        return metadata.getForks().stream().map( path -> this.read( path ).get() ).collect( Collectors.toList() );
+    private List<GitMetadata> getForks(final GitMetadata metadata) {
+        return metadata.getForks().stream().map(path -> this.read(path).get()).collect(Collectors.toList());
     }
 
-    private boolean isStorableOrigin( final String origin ) {
-        return origin != null && origin.matches( "(^\\w+\\/\\w+$)" );
+    private boolean isStorableOrigin(final String origin) {
+        return origin != null && origin.matches("(^\\w+\\/\\w+$)");
     }
 
-    private String buildPath( String name ) {
+    private String buildPath(String name) {
         String path = SEPARATOR + name;
-        if ( name.indexOf( SEPARATOR ) == 0 ) {
+        if (name.indexOf(SEPARATOR) == 0) {
             path = name;
         }
-        if ( path.lastIndexOf( SEPARATOR ) == path.length() - 1 ) {
-            path = path.substring( 0, path.length() );
+        if (path.lastIndexOf(SEPARATOR) == path.length() - 1) {
+            path = path.substring(0,
+                                  path.length());
         }
         return path + ".metadata";
     }
-
 }

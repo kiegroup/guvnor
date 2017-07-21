@@ -25,52 +25,57 @@ class DependencyUpdater {
 
     private final List<org.apache.maven.model.Dependency> dependencies;
 
-    DependencyUpdater( final List<org.apache.maven.model.Dependency> dependencies ) {
+    DependencyUpdater(final List<org.apache.maven.model.Dependency> dependencies) {
         this.dependencies = dependencies;
     }
 
-    void updateDependencies( final List<Dependency> dependencies ) {
+    void updateDependencies(final List<Dependency> dependencies) {
         removeAllThatDoNotExist(dependencies);
         addTheOnesThatDoNotExist(dependencies);
         updateTheRest(dependencies);
     }
 
-    private void updateTheRest( final List<Dependency> dependencies ) {
+    private void updateTheRest(final List<Dependency> dependencies) {
         for (Dependency dependency : dependencies) {
             for (org.apache.maven.model.Dependency modelDep : this.dependencies) {
-                if (hasSameID(dependency, modelDep)) {
-                    updateDependency(dependency, modelDep);
+                if (hasSameID(dependency,
+                              modelDep)) {
+                    updateDependency(dependency,
+                                     modelDep);
                 }
             }
         }
     }
 
-    private void addTheOnesThatDoNotExist( final List<Dependency> dependencies ) {
+    private void addTheOnesThatDoNotExist(final List<Dependency> dependencies) {
         for (Dependency dependency : dependencies) {
-            if ( !depsContains( this.dependencies, dependency ) ) {
-                this.dependencies.add( fromClientModelToPom( dependency ) );
+            if (!depsContains(this.dependencies,
+                              dependency)) {
+                this.dependencies.add(fromClientModelToPom(dependency));
             }
         }
     }
 
-    private void removeAllThatDoNotExist( final List<Dependency> dependencies ) {
+    private void removeAllThatDoNotExist(final List<Dependency> dependencies) {
         Iterator<org.apache.maven.model.Dependency> iterator = this.dependencies.iterator();
         while (iterator.hasNext()) {
             org.apache.maven.model.Dependency dependency = iterator.next();
-            if (!depsContains(dependencies, dependency)) {
+            if (!depsContains(dependencies,
+                              dependency)) {
                 iterator.remove();
             }
         }
     }
 
-    private org.apache.maven.model.Dependency fromClientModelToPom( final org.guvnor.common.services.project.model.Dependency from ) {
-        org.apache.maven.model.Dependency dependency = updateDependency(from, new org.apache.maven.model.Dependency());
+    private org.apache.maven.model.Dependency fromClientModelToPom(final org.guvnor.common.services.project.model.Dependency from) {
+        org.apache.maven.model.Dependency dependency = updateDependency(from,
+                                                                        new org.apache.maven.model.Dependency());
 
         return dependency;
     }
 
-    private org.apache.maven.model.Dependency updateDependency( final org.guvnor.common.services.project.model.Dependency from,
-                                                                final org.apache.maven.model.Dependency dependency ) {
+    private org.apache.maven.model.Dependency updateDependency(final org.guvnor.common.services.project.model.Dependency from,
+                                                               final org.apache.maven.model.Dependency dependency) {
 
         dependency.setArtifactId(from.getArtifactId());
         dependency.setGroupId(from.getGroupId());
@@ -79,33 +84,34 @@ class DependencyUpdater {
         return dependency;
     }
 
-    private boolean depsContains( final List<org.guvnor.common.services.project.model.Dependency> dependencies,
-                                  final org.apache.maven.model.Dependency dependency ) {
+    private boolean depsContains(final List<org.guvnor.common.services.project.model.Dependency> dependencies,
+                                 final org.apache.maven.model.Dependency dependency) {
         for (org.guvnor.common.services.project.model.Dependency modelDep : dependencies) {
-            if (hasSameID(modelDep, dependency)) {
+            if (hasSameID(modelDep,
+                          dependency)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean depsContains( final List<org.apache.maven.model.Dependency> dependencies,
-                                  final org.guvnor.common.services.project.model.Dependency dependency ) {
+    private boolean depsContains(final List<org.apache.maven.model.Dependency> dependencies,
+                                 final org.guvnor.common.services.project.model.Dependency dependency) {
         for (org.apache.maven.model.Dependency modelDep : dependencies) {
-            if (hasSameID(dependency, modelDep)) {
+            if (hasSameID(dependency,
+                          modelDep)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean hasSameID( final org.guvnor.common.services.project.model.Dependency dependency,
-                               final org.apache.maven.model.Dependency modelDep ) {
-        if ( dependency.getArtifactId() == null || dependency.getGroupId() == null ) {
+    private boolean hasSameID(final org.guvnor.common.services.project.model.Dependency dependency,
+                              final org.apache.maven.model.Dependency modelDep) {
+        if (dependency.getArtifactId() == null || dependency.getGroupId() == null) {
             return false;
         } else {
-            return dependency.getArtifactId().equals( modelDep.getArtifactId() ) && dependency.getGroupId().equals( modelDep.getGroupId() );
+            return dependency.getArtifactId().equals(modelDep.getArtifactId()) && dependency.getGroupId().equals(modelDep.getGroupId());
         }
     }
-
 }

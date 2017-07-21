@@ -28,29 +28,30 @@ public class ProjectRepositoriesContentHandler {
         // Weld needs this for proxying.
     }
 
-    public String toString( final ProjectRepositories repositories ) {
-        if ( repositories == null ) {
+    public String toString(final ProjectRepositories repositories) {
+        if (repositories == null) {
             return "";
         }
-        return createXStream().toXML( repositories );
+        return createXStream().toXML(repositories);
     }
 
-    public ProjectRepositories toModel( final String text ) {
+    public ProjectRepositories toModel(final String text) {
         try {
-            if ( text == null || text.isEmpty() ) {
+            if (text == null || text.isEmpty()) {
                 return new ProjectRepositories();
             }
-            return (ProjectRepositories) createXStream().fromXML( text );
-
-        } catch ( Exception e ) {
+            return (ProjectRepositories) createXStream().fromXML(text);
+        } catch (Exception e) {
             return new ProjectRepositories();
         }
     }
 
     private XStream createXStream() {
         XStream xStream = new XStream();
-        xStream.alias( "project-repositories", ProjectRepositories.class );
-        xStream.alias( "repository", ProjectRepositories.ProjectRepository.class );
+        xStream.alias("project-repositories",
+                      ProjectRepositories.class);
+        xStream.alias("repository",
+                      ProjectRepositories.ProjectRepository.class);
         return xStream;
     }
 }

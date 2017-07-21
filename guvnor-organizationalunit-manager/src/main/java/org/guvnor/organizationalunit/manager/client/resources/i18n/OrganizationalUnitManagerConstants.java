@@ -25,7 +25,7 @@ public interface OrganizationalUnitManagerConstants
         extends
         Messages {
 
-    OrganizationalUnitManagerConstants INSTANCE = GWT.create( OrganizationalUnitManagerConstants.class );
+    OrganizationalUnitManagerConstants INSTANCE = GWT.create(OrganizationalUnitManagerConstants.class);
 
     String OrganizationalUnits();
 
@@ -61,7 +61,7 @@ public interface OrganizationalUnitManagerConstants
 
     String DeleteOrganizationalUnit();
 
-    String ConfirmOrganizationalUnitDeletion0( String organizationalUnitName );
+    String ConfirmOrganizationalUnitDeletion0(String organizationalUnitName);
 
     String OrganizationalUnitAlreadyExists();
 

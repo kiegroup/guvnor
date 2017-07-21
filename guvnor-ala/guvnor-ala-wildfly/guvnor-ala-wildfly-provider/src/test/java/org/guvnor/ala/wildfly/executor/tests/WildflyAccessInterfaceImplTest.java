@@ -31,11 +31,18 @@ public class WildflyAccessInterfaceImplTest {
 
     @Test
     public void testWildflyClientNull() {
-        final WildflyClient client = accessInterface.getWildflyClient(new WildflyProviderImpl(PROVIDER, null, null, null, null, null));
+        final WildflyClient client = accessInterface.getWildflyClient(new WildflyProviderImpl(PROVIDER,
+                                                                                              null,
+                                                                                              null,
+                                                                                              null,
+                                                                                              null,
+                                                                                              null));
 
         assertNotNull(client);
-        assertEquals(client.getPort(), 8080);
-        assertEquals(client.getManagementPort(), 9990);
+        assertEquals(client.getPort(),
+                     8080);
+        assertEquals(client.getManagementPort(),
+                     9990);
     }
 
     @Test
@@ -46,15 +53,25 @@ public class WildflyAccessInterfaceImplTest {
         final String user = "admin";
         final String password = "pass";
 
-        final WildflyClient client = accessInterface.getWildflyClient(new WildflyProviderImpl(PROVIDER, hostId, port, managementPort, user, password));
+        final WildflyClient client = accessInterface.getWildflyClient(new WildflyProviderImpl(PROVIDER,
+                                                                                              hostId,
+                                                                                              port,
+                                                                                              managementPort,
+                                                                                              user,
+                                                                                              password));
 
         assertNotNull(client);
-        assertEquals(client.getPort(), 8081);
-        assertEquals(client.getManagementPort(), 9991);
-        assertEquals(client.getHost(), hostId);
-        assertEquals(client.getProviderName(), PROVIDER);
-        assertEquals(client.getUser(), user);
-        assertEquals(client.getPassword(), password);
+        assertEquals(client.getPort(),
+                     8081);
+        assertEquals(client.getManagementPort(),
+                     9991);
+        assertEquals(client.getHost(),
+                     hostId);
+        assertEquals(client.getProviderName(),
+                     PROVIDER);
+        assertEquals(client.getUser(),
+                     user);
+        assertEquals(client.getPassword(),
+                     password);
     }
-
 }

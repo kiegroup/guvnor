@@ -16,9 +16,9 @@
 
 package org.guvnor.common.services.shared.metadata.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.Date;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * This is a discussion record item.
@@ -33,15 +33,15 @@ public class DiscussionRecord {
     public DiscussionRecord() {
     }
 
-    public DiscussionRecord( final String author,
-                             final String note ) {
+    public DiscussionRecord(final String author,
+                            final String note) {
         this.author = author;
         this.note = note;
     }
 
-    public DiscussionRecord( final long timestamp,
-                             final String author,
-                             final String note ) {
+    public DiscussionRecord(final long timestamp,
+                            final String author,
+                            final String note) {
         this.timestamp = timestamp;
         this.author = author;
         this.note = note;
@@ -60,23 +60,23 @@ public class DiscussionRecord {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        DiscussionRecord that = ( DiscussionRecord ) o;
+        DiscussionRecord that = (DiscussionRecord) o;
 
-        if ( author != null ? !author.equals( that.author ) : that.author != null ) {
+        if (author != null ? !author.equals(that.author) : that.author != null) {
             return false;
         }
-        if ( note != null ? !note.equals( that.note ) : that.note != null ) {
+        if (note != null ? !note.equals(that.note) : that.note != null) {
             return false;
         }
-        if ( timestamp != null ? !timestamp.equals( that.timestamp ) : that.timestamp != null ) {
+        if (timestamp != null ? !timestamp.equals(that.timestamp) : that.timestamp != null) {
             return false;
         }
 
@@ -87,9 +87,9 @@ public class DiscussionRecord {
     public int hashCode() {
         int result = timestamp != null ? timestamp.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( note != null ? note.hashCode() : 0 );
+        result = 31 * result + (note != null ? note.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( author != null ? author.hashCode() : 0 );
+        result = 31 * result + (author != null ? author.hashCode() : 0);
         result = ~~result;
         return result;
     }

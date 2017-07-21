@@ -21,11 +21,13 @@ import org.uberfire.backend.vfs.Path;
 
 public interface GuvnorStructureContextChangeHandler {
 
-    void onNewRepositoryAdded( final Repository repository );
+    void onNewRepositoryAdded(final Repository repository);
 
-    void onRepositoryDeleted( final Repository repository );
+    void onRepositoryDeleted(final Repository repository);
 
-    void onNewBranchAdded( final String repositoryAlias, String branchName, Path branchPath );
+    void onNewBranchAdded(final String repositoryAlias,
+                          String branchName,
+                          Path branchPath);
 
     class HandlerRegistration {
 

@@ -25,7 +25,7 @@ import org.guvnor.ala.ui.client.events.RefreshRuntimeEvent;
 import org.guvnor.ala.ui.model.ProviderKey;
 import org.uberfire.client.mvp.UberElement;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class ProviderStatusEmptyPresenter {

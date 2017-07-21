@@ -28,7 +28,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Window;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 
 @JsType(isNative = true, name = "HTMLAnchorElement", namespace = JsPackage.GLOBAL)
 public abstract class CustomGroupItem implements Anchor {

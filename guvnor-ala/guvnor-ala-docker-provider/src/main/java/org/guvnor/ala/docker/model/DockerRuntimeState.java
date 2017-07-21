@@ -23,9 +23,9 @@ public class DockerRuntimeState extends BaseRuntimeState {
     public DockerRuntimeState() {
     }
 
-    public DockerRuntimeState( String state,
-                               String startedAt ) {
-        super( state, startedAt );
+    public DockerRuntimeState(String state,
+                              String startedAt) {
+        super(state,
+              startedAt);
     }
-
 }

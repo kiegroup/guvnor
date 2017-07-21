@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import org.guvnor.ala.config.ProviderConfig;
 import org.guvnor.ala.config.RuntimeConfig;
+import org.guvnor.ala.runtime.Runtime;
 import org.guvnor.ala.runtime.providers.Provider;
 import org.guvnor.ala.runtime.providers.ProviderType;
 import org.guvnor.ala.services.api.RuntimeProvisioningService;
@@ -29,7 +30,6 @@ import org.guvnor.ala.services.api.RuntimeQuery;
 import org.guvnor.ala.services.api.RuntimeQueryResultItem;
 import org.guvnor.ala.services.api.backend.RuntimeProvisioningServiceBackend;
 import org.guvnor.ala.services.exceptions.BusinessException;
-import org.guvnor.ala.runtime.Runtime;
 import org.jboss.errai.bus.server.annotations.Service;
 
 @Service

@@ -20,22 +20,21 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class Module {
-  private String name;
 
-  public Module() {
-  }
+    private String name;
 
-  public Module(String name) {
-    this.name = name;
-  }
-  
-  public String getName() {
-    return name;
-  }
+    public Module() {
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-  
-  
+    public Module(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

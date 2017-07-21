@@ -55,14 +55,14 @@ public interface GitMetadata {
      * @param filter the filter expression
      * @return the filtered pull request list.
      */
-    List<PullRequest> getPullRequests( Predicate<? super PullRequest> filter );
+    List<PullRequest> getPullRequests(Predicate<? super PullRequest> filter);
 
     /**
      * Return a single pull request by id
      * @param id the pull request id
      * @return the pull request found
      */
-    PullRequest getPullRequest( long id );
+    PullRequest getPullRequest(long id);
 
     /**
      * Return if pull request already exists comparing
@@ -71,5 +71,5 @@ public interface GitMetadata {
      * @param pullRequest the pull request to check
      * @return if pull request is present in metadata, returns true.
      */
-    boolean exists( PullRequest pullRequest );
+    boolean exists(PullRequest pullRequest);
 }

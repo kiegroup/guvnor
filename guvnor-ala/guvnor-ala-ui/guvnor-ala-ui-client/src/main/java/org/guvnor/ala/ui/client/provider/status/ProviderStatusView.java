@@ -24,8 +24,8 @@ import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-import static org.jboss.errai.common.client.dom.DOMUtil.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 @Templated

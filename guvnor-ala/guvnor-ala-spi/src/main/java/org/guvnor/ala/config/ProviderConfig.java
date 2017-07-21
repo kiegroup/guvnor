@@ -19,8 +19,8 @@ package org.guvnor.ala.config;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
- * Base Provider configuration interface. Provide different implementations for different 
- *  Provider Configuration types.
+ * Base Provider configuration interface. Provide different implementations for different
+ * Provider Configuration types.
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public interface ProviderConfig extends Config {
@@ -31,5 +31,4 @@ public interface ProviderConfig extends Config {
      * holding the provider name.
      */
     String PROVIDER_NAME = "provider-name";
-
 }

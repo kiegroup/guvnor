@@ -20,58 +20,60 @@ import java.util.List;
 
 import org.apache.maven.model.Plugin;
 
-import static org.guvnor.common.services.project.backend.server.utils.NullSafeEquals.*;
+import static org.guvnor.common.services.project.backend.server.utils.NullSafeEquals.areValuesEqual;
 
 public class MavenPluginUpdater {
 
     private final List<Plugin> pluginsDeclaredInPOM;
 
-    public MavenPluginUpdater( List<Plugin> pluginsDeclaredInPOM ) {
+    public MavenPluginUpdater(List<Plugin> pluginsDeclaredInPOM) {
         this.pluginsDeclaredInPOM = pluginsDeclaredInPOM;
     }
 
-    public List<Plugin> update( final ArrayList<org.guvnor.common.services.project.model.Plugin> from ) {
+    public List<Plugin> update(final ArrayList<org.guvnor.common.services.project.model.Plugin> from) {
 
         ArrayList<Plugin> result = new ArrayList<Plugin>();
 
         for (org.guvnor.common.services.project.model.Plugin plugin : from) {
-            if ( plugin.getArtifactId() != null && plugin.getGroupId() != null ) {
-                result.add( update( plugin,
-                                    findPlugin( plugin.getGroupId(), plugin.getArtifactId() ) ) );
+            if (plugin.getArtifactId() != null && plugin.getGroupId() != null) {
+                result.add(update(plugin,
+                                  findPlugin(plugin.getGroupId(),
+                                             plugin.getArtifactId())));
             }
         }
 
         return result;
     }
 
-    private Plugin findPlugin( final String groupId,
-                               final String artifactId ) {
+    private Plugin findPlugin(final String groupId,
+                              final String artifactId) {
         for (final Plugin plugin : pluginsDeclaredInPOM) {
-            if ( areValuesEqual( groupId, plugin.getGroupId() )
-                    && areValuesEqual( artifactId, plugin.getArtifactId() ) ) {
+            if (areValuesEqual(groupId,
+                               plugin.getGroupId())
+                    && areValuesEqual(artifactId,
+                                      plugin.getArtifactId())) {
                 return plugin;
             }
         }
         return new Plugin();
     }
 
-    private Plugin update( final org.guvnor.common.services.project.model.Plugin from,
-                           final Plugin to ) {
+    private Plugin update(final org.guvnor.common.services.project.model.Plugin from,
+                          final Plugin to) {
 
-        to.setGroupId( from.getGroupId() );
-        to.setArtifactId( from.getArtifactId() );
-        to.setVersion( from.getVersion() );
+        to.setGroupId(from.getGroupId());
+        to.setArtifactId(from.getArtifactId());
+        to.setVersion(from.getVersion());
 
         // false is the default value, so we only set it if value is true
-        if ( from.isExtensions() ) {
-            to.setExtensions( from.isExtensions() );
+        if (from.isExtensions()) {
+            to.setExtensions(from.isExtensions());
         } else {
-            to.setExtensions( null );
+            to.setExtensions(null);
         }
 
-        new DependencyUpdater( to.getDependencies() ).updateDependencies( from.getDependencies() );
+        new DependencyUpdater(to.getDependencies()).updateDependencies(from.getDependencies());
 
         return to;
     }
-
 }

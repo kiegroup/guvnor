@@ -27,6 +27,6 @@ public interface GWTCodeServerPortLeaser {
 
     boolean isCodeServerRunning(String projectName);
 
-    void setCodeServerForProject(String projectName, Integer portNumber);
-    
+    void setCodeServerForProject(String projectName,
+                                 Integer portNumber);
 }

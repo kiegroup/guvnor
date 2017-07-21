@@ -26,6 +26,5 @@ public interface SystemPropertiesInitializer {
      * Set System Properties from preferences
      * @param preferences
      */
-    public void setSystemProperties( final Map<String, String> preferences );
-
+    public void setSystemProperties(final Map<String, String> preferences);
 }

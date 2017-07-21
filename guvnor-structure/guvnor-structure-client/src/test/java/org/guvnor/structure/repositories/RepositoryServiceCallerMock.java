@@ -37,8 +37,8 @@ public class RepositoryServiceCallerMock
 
     protected RemoteCallback remoteCallback;
 
-    public RepositoryServiceCallerMock( RepositoryService repositoryService ) {
-        repositoryServiceWrapper = new RepositoryServiceWrapper( repositoryService );
+    public RepositoryServiceCallerMock(RepositoryService repositoryService) {
+        repositoryServiceWrapper = new RepositoryServiceWrapper(repositoryService);
     }
 
     @Override
@@ -47,12 +47,14 @@ public class RepositoryServiceCallerMock
     }
 
     @Override
-    public RepositoryService call( RemoteCallback<?> remoteCallback ) {
-        return call( remoteCallback, null );
+    public RepositoryService call(RemoteCallback<?> remoteCallback) {
+        return call(remoteCallback,
+                    null);
     }
 
     @Override
-    public RepositoryService call( RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback ) {
+    public RepositoryService call(RemoteCallback<?> remoteCallback,
+                                  ErrorCallback<?> errorCallback) {
         this.remoteCallback = remoteCallback;
         return repositoryServiceWrapper;
     }
@@ -62,119 +64,135 @@ public class RepositoryServiceCallerMock
 
         RepositoryService repositoryService;
 
-        public RepositoryServiceWrapper( RepositoryService repositoryService ) {
+        public RepositoryServiceWrapper(RepositoryService repositoryService) {
             this.repositoryService = repositoryService;
         }
 
         @Override
-        public RepositoryInfo getRepositoryInfo( String alias ) {
-            RepositoryInfo result = repositoryService.getRepositoryInfo( alias );
-            remoteCallback.callback( result );
+        public RepositoryInfo getRepositoryInfo(String alias) {
+            RepositoryInfo result = repositoryService.getRepositoryInfo(alias);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public List<VersionRecord> getRepositoryHistory( String alias, int startIndex ) {
-            List<VersionRecord> result = repositoryService.getRepositoryHistory( alias, startIndex );
-            remoteCallback.callback( result );
+        public List<VersionRecord> getRepositoryHistory(String alias,
+                                                        int startIndex) {
+            List<VersionRecord> result = repositoryService.getRepositoryHistory(alias,
+                                                                                startIndex);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public List<VersionRecord> getRepositoryHistory( String alias, int startIndex, int endIndex ) {
-            List<VersionRecord> result = repositoryService.getRepositoryHistory( alias, startIndex, endIndex );
-            remoteCallback.callback( result );
+        public List<VersionRecord> getRepositoryHistory(String alias,
+                                                        int startIndex,
+                                                        int endIndex) {
+            List<VersionRecord> result = repositoryService.getRepositoryHistory(alias,
+                                                                                startIndex,
+                                                                                endIndex);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public List<VersionRecord> getRepositoryHistoryAll( String alias ) {
-            List<VersionRecord> result = repositoryService.getRepositoryHistoryAll( alias );
-            remoteCallback.callback( result );
+        public List<VersionRecord> getRepositoryHistoryAll(String alias) {
+            List<VersionRecord> result = repositoryService.getRepositoryHistoryAll(alias);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public Repository getRepository( String alias ) {
-            Repository result = repositoryService.getRepository( alias );
-            remoteCallback.callback( result );
+        public Repository getRepository(String alias) {
+            Repository result = repositoryService.getRepository(alias);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public Repository getRepository( Path root ) {
-            Repository result = repositoryService.getRepository( root );
-            remoteCallback.callback( result );
+        public Repository getRepository(Path root) {
+            Repository result = repositoryService.getRepository(root);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
         public Collection<Repository> getAllRepositories() {
             Collection<Repository> result = repositoryService.getAllRepositories();
-            remoteCallback.callback( result );
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
         public Collection<Repository> getRepositories() {
             Collection<Repository> result = repositoryService.getRepositories();
-            remoteCallback.callback( result );
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public Repository createRepository( final OrganizationalUnit organizationalUnit,
-                                            final String scheme,
-                                            final String alias,
-                                            final RepositoryEnvironmentConfigurations configuration ) throws RepositoryAlreadyExistsException {
-            Repository result = repositoryService.createRepository( organizationalUnit, scheme, alias, configuration );
-            remoteCallback.callback( result );
+        public Repository createRepository(final OrganizationalUnit organizationalUnit,
+                                           final String scheme,
+                                           final String alias,
+                                           final RepositoryEnvironmentConfigurations configuration) throws RepositoryAlreadyExistsException {
+            Repository result = repositoryService.createRepository(organizationalUnit,
+                                                                   scheme,
+                                                                   alias,
+                                                                   configuration);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public Repository createRepository( final String scheme,
-                                            final String alias,
-                                            final RepositoryEnvironmentConfigurations configuration ) throws RepositoryAlreadyExistsException {
-            Repository result = repositoryService.createRepository( scheme, alias, configuration );
-            remoteCallback.callback( result );
+        public Repository createRepository(final String scheme,
+                                           final String alias,
+                                           final RepositoryEnvironmentConfigurations configuration) throws RepositoryAlreadyExistsException {
+            Repository result = repositoryService.createRepository(scheme,
+                                                                   alias,
+                                                                   configuration);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public String normalizeRepositoryName( String name ) {
-            String result = repositoryService.normalizeRepositoryName( name );
-            remoteCallback.callback( result );
+        public String normalizeRepositoryName(String name) {
+            String result = repositoryService.normalizeRepositoryName(name);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public boolean validateRepositoryName( String name ) {
-            boolean result = repositoryService.validateRepositoryName( name );
-            remoteCallback.callback( result );
+        public boolean validateRepositoryName(String name) {
+            boolean result = repositoryService.validateRepositoryName(name);
+            remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public void addGroup( Repository repository, String group ) {
-            repositoryService.addGroup( repository, group );
+        public void addGroup(Repository repository,
+                             String group) {
+            repositoryService.addGroup(repository,
+                                       group);
         }
 
         @Override
-        public void removeGroup( Repository repository, String group ) {
-            repositoryService.removeGroup( repository, group );
+        public void removeGroup(Repository repository,
+                                String group) {
+            repositoryService.removeGroup(repository,
+                                          group);
         }
 
         @Override
-        public void removeRepository( String alias ) {
-            repositoryService.removeRepository( alias );
+        public void removeRepository(String alias) {
+            repositoryService.removeRepository(alias);
         }
 
         @Override
-        public Repository updateRepositoryConfiguration( final Repository repository,
-                                                         final RepositoryEnvironmentConfigurations config ) {
-            Repository result = repositoryService.updateRepositoryConfiguration( repository, config );
-            remoteCallback.callback( result );
+        public Repository updateRepositoryConfiguration(final Repository repository,
+                                                        final RepositoryEnvironmentConfigurations config) {
+            Repository result = repositoryService.updateRepositoryConfiguration(repository,
+                                                                                config);
+            remoteCallback.callback(result);
             return result;
         }
     }

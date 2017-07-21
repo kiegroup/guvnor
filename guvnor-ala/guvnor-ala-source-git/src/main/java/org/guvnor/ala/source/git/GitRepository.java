@@ -31,7 +31,8 @@ import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class GitRepository implements Repository {
 
@@ -44,24 +45,32 @@ public class GitRepository implements Repository {
     private final Map<String, String> env = new HashMap<>();
     private FileSystem fileSystem = null;
 
-    public GitRepository( final Host host,
-                          final String id,
-                          final String name,
-                          final URI uri,
-                          final GitCredentials credentials,
-                          final Map<String, String> env,
-                          final ConfigProperties config ) {
-        this.host = checkNotNull( "host", host );
-        this.id = checkNotEmpty( "id", id );
-        this.name = checkNotEmpty( "name", name );
-        this.uri = checkNotNull( "uri", uri );
-        this.credentials = checkNotNull( "credentials", credentials );
-        if ( env != null && !env.isEmpty() ) {
-            this.env.putAll( env );
+    public GitRepository(final Host host,
+                         final String id,
+                         final String name,
+                         final URI uri,
+                         final GitCredentials credentials,
+                         final Map<String, String> env,
+                         final ConfigProperties config) {
+        this.host = checkNotNull("host",
+                                 host);
+        this.id = checkNotEmpty("id",
+                                id);
+        this.name = checkNotEmpty("name",
+                                  name);
+        this.uri = checkNotNull("uri",
+                                uri);
+        this.credentials = checkNotNull("credentials",
+                                        credentials);
+        if (env != null && !env.isEmpty()) {
+            this.env.putAll(env);
         }
-        checkNotNull( "config", config );
-        final ConfigProperties.ConfigProperty currentDirectory = config.get( "user.dir", null );
-        this.bareRepoDir = config.get( "org.uberfire.provisioning.git.dir", currentDirectory.getValue() ).getValue();
+        checkNotNull("config",
+                     config);
+        final ConfigProperties.ConfigProperty currentDirectory = config.get("user.dir",
+                                                                            null);
+        this.bareRepoDir = config.get("org.uberfire.provisioning.git.dir",
+                                      currentDirectory.getValue()).getValue();
     }
 
     @Override
@@ -76,49 +85,57 @@ public class GitRepository implements Repository {
 
     @Override
     public Source getSource() {
-        return getSource( "master" );
+        return getSource("master");
     }
 
     @Override
-    public Source getSource( final String _root,
-                             final String... _path ) throws SourcingException {
-        if ( fileSystem == null ) {
-            final URI fsURI = URI.create( "git://" + name );
+    public Source getSource(final String _root,
+                            final String... _path) throws SourcingException {
+        if (fileSystem == null) {
+            final URI fsURI = URI.create("git://" + name);
             try {
-                fileSystem = FileSystems.newFileSystem( fsURI, new HashMap<String, Object>( env ) {
-                    {
-                        putIfAbsent( "origin", uri.toString() );
-                        putIfAbsent( "out-dir", bareRepoDir );
-                        if ( credentials.getUser() != null ) {
-                            putIfAbsent( "username", credentials.getUser() );
-                            putIfAbsent( "password", credentials.getPassw() );
-                        }
-                    }
-                } );
-            } catch ( FileSystemAlreadyExistsException fsae ) {
+                fileSystem = FileSystems.newFileSystem(fsURI,
+                                                       new HashMap<String, Object>(env) {
+                                                           {
+                                                               putIfAbsent("origin",
+                                                                           uri.toString());
+                                                               putIfAbsent("out-dir",
+                                                                           bareRepoDir);
+                                                               if (credentials.getUser() != null) {
+                                                                   putIfAbsent("username",
+                                                                               credentials.getUser());
+                                                                   putIfAbsent("password",
+                                                                               credentials.getPassw());
+                                                               }
+                                                           }
+                                                       });
+            } catch (FileSystemAlreadyExistsException fsae) {
                 try {
-                    fileSystem = FileSystems.getFileSystem( fsURI );
-                } catch ( final Exception ex ) {
-                    throw new SourcingException( "Error Getting Source", ex );
+                    fileSystem = FileSystems.getFileSystem(fsURI);
+                } catch (final Exception ex) {
+                    throw new SourcingException("Error Getting Source",
+                                                ex);
                 }
             }
         }
 
         final String root;
-        if ( _root == null || _root.isEmpty() ) {
+        if (_root == null || _root.isEmpty()) {
             root = "master";
         } else {
             root = _root;
         }
         final String[] path;
-        if ( _path == null || _path.length == 0 ) {
-            path = new String[]{ "/" };
+        if (_path == null || _path.length == 0) {
+            path = new String[]{"/"};
         } else {
             path = _path;
         }
 
-        final Path result = fileSystem.getPath( root, path );
+        final Path result = fileSystem.getPath(root,
+                                               path);
 
-        return new GitSource( this, result );
+        return new GitSource(this,
+                             result);
     }
 }

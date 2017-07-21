@@ -20,4 +20,5 @@ package org.guvnor.ala.ui.model;
  * Base interface for different source types.
  */
 public interface Source {
+
 }

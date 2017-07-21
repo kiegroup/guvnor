@@ -30,19 +30,23 @@ import org.guvnor.ala.pipeline.BiFunctionConfigExecutor;
 public class DockerBuildConfigExecutor implements BiFunctionConfigExecutor<MavenBuild, DockerBuildConfig, BuildConfig> {
 
     @Override
-    public Optional<BuildConfig> apply( final MavenBuild buildConfig,
-                                        final DockerBuildConfig dockerBuildConfig ) {
-        final List<String> goals = new ArrayList<>( buildConfig.getGoals() );
-        final Properties properties = new Properties( buildConfig.getProperties() );
-        if ( dockerBuildConfig.push() ) {
-            properties.put( "docker.username", dockerBuildConfig.getUsername() );
-            properties.put( "docker.password", dockerBuildConfig.getPassword() );
+    public Optional<BuildConfig> apply(final MavenBuild buildConfig,
+                                       final DockerBuildConfig dockerBuildConfig) {
+        final List<String> goals = new ArrayList<>(buildConfig.getGoals());
+        final Properties properties = new Properties(buildConfig.getProperties());
+        if (dockerBuildConfig.push()) {
+            properties.put("docker.username",
+                           dockerBuildConfig.getUsername());
+            properties.put("docker.password",
+                           dockerBuildConfig.getPassword());
         }
-        goals.add( "docker:build" );
-        if ( dockerBuildConfig.push() ) {
-            goals.add( "docker:push" );
+        goals.add("docker:build");
+        if (dockerBuildConfig.push()) {
+            goals.add("docker:push");
         }
-        return Optional.of( new DockerBuildImpl( buildConfig.getProject(), goals, properties ) );
+        return Optional.of(new DockerBuildImpl(buildConfig.getProject(),
+                                               goals,
+                                               properties));
     }
 
     @Override
@@ -59,5 +63,4 @@ public class DockerBuildConfigExecutor implements BiFunctionConfigExecutor<Maven
     public String inputId() {
         return "maven-config";
     }
-
 }

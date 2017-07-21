@@ -53,5 +53,4 @@ public interface DockerProvisioningConfig extends ProvisioningConfig {
     default String getDockerPullValue() {
         return "${input.docker-pull}";
     }
-
 }

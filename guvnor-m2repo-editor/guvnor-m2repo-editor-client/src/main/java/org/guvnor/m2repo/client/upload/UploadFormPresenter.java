@@ -27,8 +27,10 @@ import org.gwtbootstrap3.client.ui.base.form.AbstractForm;
 import org.gwtbootstrap3.client.ui.gwt.FormPanel;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
-import static org.guvnor.m2repo.model.HTMLFileManagerFields.*;
-import static org.guvnor.m2repo.utils.FileNameUtilities.*;
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_MISSING_POM;
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_OK;
+import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_UNABLE_TO_PARSE_POM;
+import static org.guvnor.m2repo.utils.FileNameUtilities.isValid;
 
 @Dependent
 public class UploadFormPresenter implements UploadFormView.Presenter {
@@ -38,44 +40,41 @@ public class UploadFormPresenter implements UploadFormView.Presenter {
     private UploadFormView view;
 
     @Inject
-    public UploadFormPresenter( final UploadFormView view,
-                                final Event<M2RepoSearchEvent> searchEvent,
-                                final SyncBeanManager iocManager ) {
+    public UploadFormPresenter(final UploadFormView view,
+                               final Event<M2RepoSearchEvent> searchEvent,
+                               final SyncBeanManager iocManager) {
         this.view = view;
         //When pop-up is closed destroy bean to avoid memory leak
-        view.addHideHandler( new ModalHideHandler() {
+        view.addHideHandler(new ModalHideHandler() {
             @Override
-            public void onHide( ModalHideEvent hideEvent ) {
-                iocManager.destroyBean( UploadFormPresenter.this );
+            public void onHide(ModalHideEvent hideEvent) {
+                iocManager.destroyBean(UploadFormPresenter.this);
             }
-        } );
+        });
         this.searchEvent = searchEvent;
     }
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
-    public void handleSubmitComplete( final AbstractForm.SubmitCompleteEvent event ) {
+    public void handleSubmitComplete(final AbstractForm.SubmitCompleteEvent event) {
         view.hideUploadingBusy();
-        if ( UPLOAD_OK.equalsIgnoreCase( event.getResults() ) ) {
+        if (UPLOAD_OK.equalsIgnoreCase(event.getResults())) {
             view.showUploadedSuccessfullyMessage();
             view.hideGAVInputs();
             fireSearchEvent();
             view.hide();
-
-        } else if ( UPLOAD_MISSING_POM.equalsIgnoreCase( event.getResults() ) ) {
+        } else if (UPLOAD_MISSING_POM.equalsIgnoreCase(event.getResults())) {
             view.showInvalidJarNoPomWarning();
             view.showGAVInputs();
-
-        } else if ( UPLOAD_UNABLE_TO_PARSE_POM.equalsIgnoreCase( event.getResults() ) ) {
+        } else if (UPLOAD_UNABLE_TO_PARSE_POM.equalsIgnoreCase(event.getResults())) {
             view.showInvalidPomWarning();
             view.hide();
-
         } else {
-            view.showUploadFailedError( event.getResults() );
+            view.showUploadFailedError(event.getResults());
             view.hideGAVInputs();
             view.hide();
         }
@@ -86,12 +85,12 @@ public class UploadFormPresenter implements UploadFormView.Presenter {
      * org.gwtbootstrap3.client.ui.Form.SubmitEvent
      */
     @Override
-    public void handleSubmit( final FormPanel.SubmitEvent event ) {
+    public void handleSubmit(final FormPanel.SubmitEvent event) {
         String fileName = view.getFileName();
-        if ( fileName == null || "".equals( fileName ) ) {
+        if (fileName == null || "".equals(fileName)) {
             view.showSelectFileUploadWarning();
             event.cancel();
-        } else if ( !( isValid( fileName ) ) ) {
+        } else if (!(isValid(fileName))) {
             view.showUnsupportedFileTypeWarning();
             event.cancel();
         } else {
@@ -104,6 +103,6 @@ public class UploadFormPresenter implements UploadFormView.Presenter {
     }
 
     public void fireSearchEvent() {
-        searchEvent.fire( new M2RepoSearchEvent() );
+        searchEvent.fire(new M2RepoSearchEvent());
     }
 }

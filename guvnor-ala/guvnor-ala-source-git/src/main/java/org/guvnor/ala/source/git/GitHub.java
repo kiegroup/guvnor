@@ -21,11 +21,13 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
 
-import org.uberfire.commons.config.ConfigProperties;
 import org.guvnor.ala.source.Host;
 import org.guvnor.ala.source.Repository;
+import org.uberfire.commons.config.ConfigProperties;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkCondition;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class GitHub implements Host<GitCredentials> {
 
@@ -35,16 +37,17 @@ public class GitHub implements Host<GitCredentials> {
     private final ConfigProperties configProperties;
 
     public GitHub() {
-        this( new GitCredentials() );
+        this(new GitCredentials());
     }
 
-    public GitHub( final GitCredentials credentials ) {
-        this( credentials, new ConfigProperties( System.getProperties() ) );
+    public GitHub(final GitCredentials credentials) {
+        this(credentials,
+             new ConfigProperties(System.getProperties()));
     }
 
-    public GitHub( final GitCredentials credentials,
-                   final ConfigProperties configProperties ) {
-        this.id = toHex( "GitHub" );
+    public GitHub(final GitCredentials credentials,
+                  final ConfigProperties configProperties) {
+        this.id = toHex("GitHub");
         this.name = "GitHub";
         this.credentials = credentials;
         this.configProperties = configProperties;
@@ -61,31 +64,38 @@ public class GitHub implements Host<GitCredentials> {
     }
 
     @Override
-    public Repository getRepository( final String id ) {
-        return getRepository( id, Collections.emptyMap() );
+    public Repository getRepository(final String id) {
+        return getRepository(id,
+                             Collections.emptyMap());
     }
 
     @Override
-    public Repository getRepository( final String id,
-                                     final Map<String, String> env ) {
-        return getRepository( credentials, id, env );
+    public Repository getRepository(final String id,
+                                    final Map<String, String> env) {
+        return getRepository(credentials,
+                             id,
+                             env);
     }
 
     @Override
-    public Repository getRepository( final GitCredentials credential,
-                                     final String repositoryId,
-                                     final Map<String, String> env ) {
-        checkNotNull( "credential", credential );
-        checkNotEmpty( "id", repositoryId );
-        checkCondition( "id must have a slash", repositoryId.contains( "/" ) );
-        String ids[] = repositoryId.split( "/" );
+    public Repository getRepository(final GitCredentials credential,
+                                    final String repositoryId,
+                                    final Map<String, String> env) {
+        checkNotNull("credential",
+                     credential);
+        checkNotEmpty("id",
+                      repositoryId);
+        checkCondition("id must have a slash",
+                       repositoryId.contains("/"));
+        String ids[] = repositoryId.split("/");
         final Protocol protocol;
-        if ( env != null && !env.isEmpty() ) {
-            final String _protocol = env.getOrDefault( "protocol", Protocol.HTTPS.toString() );
+        if (env != null && !env.isEmpty()) {
+            final String _protocol = env.getOrDefault("protocol",
+                                                      Protocol.HTTPS.toString());
             Protocol tempProtocol;
             try {
-                tempProtocol = Protocol.valueOf( _protocol );
-            } catch ( Exception ex ) {
+                tempProtocol = Protocol.valueOf(_protocol);
+            } catch (Exception ex) {
                 tempProtocol = Protocol.HTTPS;
             }
             protocol = tempProtocol;
@@ -93,21 +103,29 @@ public class GitHub implements Host<GitCredentials> {
             protocol = Protocol.HTTPS;
         }
 
-        return new GitHubRepository( this, repositoryId, ids[ 0 ], ids[ 1 ], protocol.toURI( "github.com", repositoryId ), credential, env, configProperties );
+        return new GitHubRepository(this,
+                                    repositoryId,
+                                    ids[0],
+                                    ids[1],
+                                    protocol.toURI("github.com",
+                                                   repositoryId),
+                                    credential,
+                                    env,
+                                    configProperties);
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof GitHub ) ) {
+        if (!(o instanceof GitHub)) {
             return false;
         }
 
         final GitHub gitHub = (GitHub) o;
 
-        return id.equals( gitHub.id ) && name.equals( gitHub.name );
+        return id.equals(gitHub.id) && name.equals(gitHub.name);
     }
 
     @Override
@@ -115,8 +133,9 @@ public class GitHub implements Host<GitCredentials> {
         return 31 * id.hashCode() + name.hashCode();
     }
 
-    private String toHex( String arg ) {
-        return String.format( "%040x", new BigInteger( 1, arg.getBytes( Charset.forName( "UTF-8" ) ) ) );
+    private String toHex(String arg) {
+        return String.format("%040x",
+                             new BigInteger(1,
+                                            arg.getBytes(Charset.forName("UTF-8"))));
     }
-
 }

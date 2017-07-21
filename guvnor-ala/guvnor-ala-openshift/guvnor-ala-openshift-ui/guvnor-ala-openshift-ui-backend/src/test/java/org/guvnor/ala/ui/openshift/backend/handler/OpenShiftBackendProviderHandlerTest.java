@@ -21,7 +21,7 @@ import org.guvnor.ala.ui.backend.service.converter.ProviderConfigConverter;
 import org.guvnor.ala.ui.backend.service.handler.BaseBackendProviderHandlerTest;
 import org.junit.Before;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class OpenShiftBackendProviderHandlerTest
         extends BaseBackendProviderHandlerTest<OpenShiftBackendProviderHandler> {
