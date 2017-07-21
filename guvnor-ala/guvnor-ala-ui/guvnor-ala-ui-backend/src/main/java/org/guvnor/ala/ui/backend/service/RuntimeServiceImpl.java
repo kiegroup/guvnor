@@ -18,6 +18,7 @@ package org.guvnor.ala.ui.backend.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -41,7 +42,6 @@ import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.RuntimeKey;
 import org.guvnor.ala.ui.model.RuntimeListItem;
-import org.guvnor.ala.ui.model.Source;
 import org.guvnor.ala.ui.service.ProviderService;
 import org.guvnor.ala.ui.service.RuntimeService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
@@ -155,14 +155,12 @@ public class RuntimeServiceImpl
     @Override
     public PipelineExecutionTraceKey createRuntime(final ProviderKey providerKey,
                                                    final String runtimeName,
-                                                   final Source source,
-                                                   final PipelineKey pipelineKey) {
+                                                   final PipelineKey pipelineKey,
+                                                   final Map<String, String> params) {
         checkNotNull("providerKey",
                      providerKey);
         checkNotNull("runtimeName",
                      runtimeName);
-        checkNotNull("source",
-                     source);
         checkNotNull("pipelineKey",
                      pipelineKey);
 
@@ -172,7 +170,7 @@ public class RuntimeServiceImpl
             final Input input = PipelineInputBuilder.newInstance()
                     .withRuntimeName(runtimeName)
                     .withProvider(providerKey)
-                    .withSource(source)
+                    .withParams(params)
                     .build();
             return new PipelineExecutionTraceKey(pipelineService.runPipeline(pipelineKey.getId(),
                                                                              input,

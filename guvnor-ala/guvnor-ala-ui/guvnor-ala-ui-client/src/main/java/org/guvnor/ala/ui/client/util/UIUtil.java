@@ -22,6 +22,8 @@ import org.guvnor.ala.ui.model.ProviderType;
 
 public class UIUtil {
 
+    public static final String EMPTY_STRING = "";
+
     public static final String getStringValue(Map map,
                                               String key) {
         return map.get(key) != null ? map.get(key).toString() : null;
@@ -34,5 +36,9 @@ public class UIUtil {
      */
     public static String getDisplayableProviderTypeName(ProviderType providerType) {
         return providerType.getName() + " " + providerType.getKey().getVersion();
+    }
+
+    public static String trimOrGetEmpty(String value) {
+        return value != null ? value.trim() : EMPTY_STRING;
     }
 }

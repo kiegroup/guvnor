@@ -18,14 +18,14 @@ package org.guvnor.ala.ui.openshift.client.handler;
 
 import org.guvnor.ala.ui.client.handler.BaseFormResolverTest;
 import org.guvnor.ala.ui.client.handler.FormResolver;
-import org.guvnor.ala.ui.openshift.client.provider.OSEProviderConfigPresenter;
+import org.guvnor.ala.ui.openshift.client.provider.OpenShiftProviderConfigPresenter;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 
 public class OpenShiftFormResolverTest
-        extends BaseFormResolverTest<OSEProviderConfigPresenter> {
+        extends BaseFormResolverTest<OpenShiftProviderConfigPresenter> {
 
     @Override
-    protected FormResolver<OSEProviderConfigPresenter> createFormResolver(ManagedInstance<OSEProviderConfigPresenter> managedInstance) {
+    protected FormResolver<OpenShiftProviderConfigPresenter> createFormResolver(ManagedInstance<OpenShiftProviderConfigPresenter> managedInstance) {
         return new OpenShiftFormResolver(managedInstance);
     }
 }

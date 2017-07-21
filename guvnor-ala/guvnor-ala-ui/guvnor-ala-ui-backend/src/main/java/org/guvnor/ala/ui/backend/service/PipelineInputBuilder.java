@@ -16,14 +16,12 @@
 
 package org.guvnor.ala.ui.backend.service;
 
-import org.guvnor.ala.build.maven.config.MavenProjectConfig;
+import java.util.Map;
+
 import org.guvnor.ala.config.ProviderConfig;
 import org.guvnor.ala.config.RuntimeConfig;
 import org.guvnor.ala.pipeline.Input;
-import org.guvnor.ala.source.git.config.GitConfig;
-import org.guvnor.ala.ui.model.InternalGitSource;
 import org.guvnor.ala.ui.model.ProviderKey;
-import org.guvnor.ala.ui.model.Source;
 
 /**
  * Helper class for building the pipeline input parameters given a runtime name, a provider and the sources.
@@ -34,7 +32,7 @@ public class PipelineInputBuilder {
 
     private ProviderKey providerKey;
 
-    private Source source;
+    private Map<String, String> params;
 
     public static PipelineInputBuilder newInstance() {
         return new PipelineInputBuilder();
@@ -53,8 +51,8 @@ public class PipelineInputBuilder {
         return this;
     }
 
-    public PipelineInputBuilder withSource(final Source source) {
-        this.source = source;
+    public PipelineInputBuilder withParams(final Map<String, String> params) {
+        this.params = params;
         return this;
     }
 
@@ -69,16 +67,10 @@ public class PipelineInputBuilder {
             input.put(ProviderConfig.PROVIDER_NAME,
                       providerKey.getId());
         }
-        if (source instanceof InternalGitSource) {
-            input.put(GitConfig.REPO_NAME,
-                      ((InternalGitSource) source).getRepository());
-            input.put(GitConfig.BRANCH,
-                      ((InternalGitSource) source).getBranch());
-            if (((InternalGitSource) source).getProject() != null) {
-                input.put(MavenProjectConfig.PROJECT_DIR,
-                          ((InternalGitSource) source).getProject().getProjectName());
-            }
+        if (params != null) {
+            input.putAll(params);
         }
+
         return input;
     }
 }

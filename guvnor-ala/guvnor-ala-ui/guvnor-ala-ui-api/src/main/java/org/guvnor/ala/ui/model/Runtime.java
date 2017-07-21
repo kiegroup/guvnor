@@ -28,7 +28,6 @@ public class Runtime
 
     private String name;
     private PipelineExecutionTrace pipelineTrace;
-    private Source source;
     private String status;
     private String endpoint;
     private String createdDate;
@@ -36,14 +35,12 @@ public class Runtime
     public Runtime(@MapsTo("key") final RuntimeKey key,
                    @MapsTo("name") final String name,
                    @MapsTo("pipelineTrace") final PipelineExecutionTrace pipelineTrace,
-                   @MapsTo("source") final Source source,
                    @MapsTo("status") final String status,
                    @MapsTo("endpoint") final String endpoint,
                    @MapsTo("createdDate") final String createdDate) {
         super(key);
         this.name = name;
         this.pipelineTrace = pipelineTrace;
-        this.source = source;
         this.status = status;
         this.endpoint = endpoint;
         this.createdDate = createdDate;
@@ -99,10 +96,6 @@ public class Runtime
         this.status = status;
     }
 
-    public Source getSource() {
-        return source;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -123,9 +116,6 @@ public class Runtime
         if (pipelineTrace != null ? !pipelineTrace.equals(runtime.pipelineTrace) : runtime.pipelineTrace != null) {
             return false;
         }
-        if (source != null ? !source.equals(runtime.source) : runtime.source != null) {
-            return false;
-        }
         if (status != null ? !status.equals(runtime.status) : runtime.status != null) {
             return false;
         }
@@ -142,8 +132,6 @@ public class Runtime
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (pipelineTrace != null ? pipelineTrace.hashCode() : 0);
-        result = ~~result;
-        result = 31 * result + (source != null ? source.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = ~~result;

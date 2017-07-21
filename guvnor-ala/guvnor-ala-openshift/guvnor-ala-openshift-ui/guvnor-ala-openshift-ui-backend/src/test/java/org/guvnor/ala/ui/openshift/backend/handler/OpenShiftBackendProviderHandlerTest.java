@@ -21,36 +21,23 @@ import org.guvnor.ala.ui.backend.service.converter.ProviderConfigConverter;
 import org.guvnor.ala.ui.backend.service.handler.BaseBackendProviderHandlerTest;
 import org.junit.Before;
 
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class OpenShiftBackendProviderHandlerTest
         extends BaseBackendProviderHandlerTest<OpenShiftBackendProviderHandler> {
 
+    private OpenShiftProviderConfigConverter configConverter;
+
     @Override
     @Before
     public void setUp() {
+        configConverter = mock(OpenShiftProviderConfigConverter.class);
         super.setUp();
     }
 
     @Override
-    public void testGetProviderConfigConverter() {
-        Exception exception = null;
-        try {
-            super.testGetProviderConfigConverter();
-        } catch (Exception e) {
-            exception = e;
-        }
-        //this test will fail as soon the Openshift provider implementation starts moving forward.
-        //It's what we wants right no, no more elaborated treatment is needed. Just keep something simple.
-        if (exception == null) {
-            fail("Seems like the openshift provider implementation has been completed, PLEASE review this test.");
-        }
-    }
-
-    @Override
     protected ProviderConfigConverter expectedProviderConfigConverter() {
-        //TODO return the correct value when the openshift provider implementation is completed.
-        return null;
+        return configConverter;
     }
 
     @Override
@@ -60,7 +47,7 @@ public class OpenShiftBackendProviderHandlerTest
 
     @Override
     protected OpenShiftBackendProviderHandler createProviderHandler() {
-        return new OpenShiftBackendProviderHandler();
+        return new OpenShiftBackendProviderHandler(configConverter);
     }
 
     @Override

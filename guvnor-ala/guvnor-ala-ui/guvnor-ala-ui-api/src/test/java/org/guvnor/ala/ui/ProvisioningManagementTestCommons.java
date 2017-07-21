@@ -26,6 +26,7 @@ import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderType;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProviderTypeStatus;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -111,7 +112,7 @@ public class ProvisioningManagementTestCommons {
         doAnswer(new Answer<T>() {
             public T answer(InvocationOnMock invocation) {
                 ErrorCallback callback = (ErrorCallback) invocation.getArguments()[1];
-                callback.error(SERVICE_CALLER_ERROR_MESSAGE,
+                callback.error(mock(Message.class),
                                new Throwable(SERVICE_CALLER_EXCEPTION_MESSAGE));
                 return service;
             }
