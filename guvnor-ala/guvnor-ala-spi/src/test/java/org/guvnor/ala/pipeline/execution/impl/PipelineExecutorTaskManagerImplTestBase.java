@@ -15,6 +15,7 @@ import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskDef;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTrace;
 import org.guvnor.ala.registry.PipelineExecutorRegistry;
+import org.guvnor.ala.registry.PipelineRegistry;
 import org.junit.Before;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -33,6 +34,8 @@ public class PipelineExecutorTaskManagerImplTestBase {
     protected static final String PIPELINE_ID = "PIPELINE_ID";
 
     protected static final String TASK_ID = "TASK_ID";
+
+    protected static final String ERROR_MESSAGE = "ERROR_MESSAGE";
 
     @Mock
     protected Instance<ConfigExecutor> configExecutorsInstance;
@@ -65,6 +68,9 @@ public class PipelineExecutorTaskManagerImplTestBase {
 
     protected Pipeline pipeline;
 
+    @Mock
+    protected PipelineRegistry pipelineRegistry;
+
     protected List<Stage> stages;
 
     protected PipelineExecutorTaskDef taskDef;
@@ -88,7 +94,8 @@ public class PipelineExecutorTaskManagerImplTestBase {
         doReturn(executorService).when(taskManagerHelper).createExecutorService();
         doReturn(pipelineExecutor).when(taskManagerHelper).createPipelineExecutor();
 
-        taskManager = spy(new PipelineExecutorTaskManagerImpl(configExecutorsInstance,
+        taskManager = spy(new PipelineExecutorTaskManagerImpl(pipelineRegistry,
+                                                              configExecutorsInstance,
                                                               eventListenersInstance,
                                                               pipelineExecutorRegistry) {
             {
@@ -144,7 +151,7 @@ public class PipelineExecutorTaskManagerImplTestBase {
         assertHasSameInfo(expectedTask.getTaskDef(),
                           task.getTaskDef());
 
-        expectedTask.getTaskDef().getPipeline().getStages().forEach(stage -> {
+        expectedTask.getTaskDef().getStages().forEach(stage -> {
             assertEquals(expectedTask.getStageStatus(stage),
                          task.getStageStatus(stage));
             assertEquals(expectedTask.getStageError(stage),

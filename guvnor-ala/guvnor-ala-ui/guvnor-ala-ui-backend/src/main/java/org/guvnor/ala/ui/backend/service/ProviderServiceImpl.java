@@ -38,6 +38,7 @@ import org.guvnor.ala.ui.service.ProviderTypeService;
 import org.jboss.errai.bus.server.annotations.Service;
 
 import static java.util.stream.Collectors.toList;
+import static org.guvnor.ala.registry.RuntimeRegistry.PROVIDER_TYPE_NAME_SORT;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -73,7 +74,7 @@ public class ProviderServiceImpl
         List<org.guvnor.ala.runtime.providers.Provider> providers =
                 runtimeProvisioningService.getProviders(0,
                                                         1000,
-                                                        "providerTypeName",
+                                                        PROVIDER_TYPE_NAME_SORT,
                                                         true);
         if (providers != null) {
             result = providers.stream()
@@ -126,7 +127,7 @@ public class ProviderServiceImpl
         List<org.guvnor.ala.runtime.providers.Provider> providers =
                 runtimeProvisioningService.getProviders(0,
                                                         1000,
-                                                        "providerTypeName",
+                                                        PROVIDER_TYPE_NAME_SORT,
                                                         true);
         Optional<Provider> result = Optional.empty();
         if (providers != null) {

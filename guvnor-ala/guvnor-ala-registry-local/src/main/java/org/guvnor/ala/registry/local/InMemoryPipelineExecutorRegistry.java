@@ -16,56 +16,15 @@
 
 package org.guvnor.ala.registry.local;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.guvnor.ala.pipeline.execution.PipelineExecutorTrace;
-import org.guvnor.ala.registry.PipelineExecutorRegistry;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.guvnor.ala.registry.impl.BasePipelineExecutorRegistry;
 
 @ApplicationScoped
 public class InMemoryPipelineExecutorRegistry
-        implements PipelineExecutorRegistry {
-
-    private Map<String, PipelineExecutorTrace> recordsMap = new ConcurrentHashMap<>();
+        extends BasePipelineExecutorRegistry {
 
     public InMemoryPipelineExecutorRegistry() {
         //Empty constructor for Weld proxying
-    }
-
-    @Override
-    public void register(final PipelineExecutorTrace trace) {
-        PortablePreconditions.checkNotNull("trace",
-                                           trace);
-        recordsMap.put(trace.getTaskId(),
-                       trace);
-    }
-
-    public void deregister(final String taskId) {
-        if (taskId != null) {
-            recordsMap.remove(taskId);
-        }
-    }
-
-    @Override
-    public PipelineExecutorTrace getExecutorTrace(final String pipelineExecutionId) {
-        return recordsMap.get(pipelineExecutionId);
-    }
-
-    @Override
-    public Collection<PipelineExecutorTrace> getExecutorTraces() {
-        return recordsMap.values();
-    }
-
-    @Override
-    public Collection<PipelineExecutorTrace> getExecutorTraces(final String pipelineId) {
-        PortablePreconditions.checkNotNull("pipelineId",
-                                           pipelineId);
-        return getExecutorTraces().stream()
-                .filter(trace -> pipelineId.equals(trace.getPipelineId()))
-                .collect(Collectors.toList());
     }
 }

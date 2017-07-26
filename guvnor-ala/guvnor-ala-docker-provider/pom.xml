@@ -72,7 +72,7 @@
              The shaded jar should be replaced by the standard one, but the issue is that docker-client depends
              on jersey and our modules on resteasy which is causing conflicts. -->
         <exclusion>
-          <groupId> org.glassfish.jersey.connectors</groupId>
+          <groupId>org.glassfish.jersey.connectors</groupId>
           <artifactId>jersey-apache-connector</artifactId>
         </exclusion>
         <exclusion>
@@ -186,6 +186,12 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-ala-spi</artifactId>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
   </dependencies>

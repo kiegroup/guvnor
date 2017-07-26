@@ -16,15 +16,16 @@
 package org.guvnor.ala.docker.model;
 
 import org.guvnor.ala.config.ProviderConfig;
+import org.guvnor.ala.docker.config.DockerProviderConfig;
 import org.guvnor.ala.runtime.providers.Provider;
 
-/*
- * This interface represent the specifics for the DockerProvider
- * @see ProviderConfig
+/**
+ * A provider for configure and provision applications with Docker
+ * @see DockerProviderConfig
  * @see Provider
  */
-public interface DockerProvider extends ProviderConfig,
-                                        Provider {
+public interface DockerProvider
+        extends Provider<DockerProviderConfig>,
+                ProviderConfig {
 
-    String getHostId();
 }
