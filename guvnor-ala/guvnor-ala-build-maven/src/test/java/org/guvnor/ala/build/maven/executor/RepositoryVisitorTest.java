@@ -16,10 +16,8 @@
 package org.guvnor.ala.build.maven.executor;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -38,12 +36,11 @@ import org.guvnor.ala.source.git.GitRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.java.nio.file.api.FileSystemProviders;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
+import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystems;
 
 import static org.junit.Assert.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.commit;
 
 public class RepositoryVisitorTest {
 
@@ -61,6 +58,7 @@ public class RepositoryVisitorTest {
 
     @Test
     public void repositoryVisitorDiffDeletedTest() throws IOException {
+        final IOServiceNio2WrapperImpl ioService = new IOServiceNio2WrapperImpl();
         final GitHub gitHub = new GitHub();
         final GitRepository repository = (GitRepository) gitHub.getRepository("mbarkley/appformer-playground",
                                                                               new HashMap<String, String>() {
@@ -72,7 +70,7 @@ public class RepositoryVisitorTest {
         final Source source = repository.getSource("master");
 
         final InputStream pomStream = org.uberfire.java.nio.file.Files.newInputStream(source.getPath().resolve("users-new").resolve("pom.xml"));
-        MavenProject project = MavenProjectLoader.parseMavenPom(pomStream);
+        final MavenProject project = MavenProjectLoader.parseMavenPom(pomStream);
 
         RepositoryVisitor repositoryVisitor = new RepositoryVisitor(source.getPath().resolve("users-new"),
                                                                     project.getName());
@@ -82,28 +80,16 @@ public class RepositoryVisitorTest {
         Map<String, String> identityHash = repositoryVisitor.getIdentityHash();
 
         final URI originRepo = URI.create("git://" + repository.getName());
-        final JGitFileSystemProvider provider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider(originRepo);
 
-        final JGitFileSystem origin = (JGitFileSystem) provider.getFileSystem(originRepo);
+        final FileSystem fs = FileSystems.getFileSystem(originRepo);
 
-        commit(origin.gitRepo(),
-               "master",
-               "user1",
-               "user1@example.com",
-               "commitx",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {
-                   {
-                       put("/users-new/file.txt",
-                           tempFile("temp"));
-                       put("/users-new/pom.xml",
-                           tempFile("hi there" + UUID.randomUUID().toString()));
-                   }
-               });
-
-        provider.delete(source.getPath().resolve("users-new").resolve("demo.iml"));
+        ioService.startBatch(fs);
+        ioService.write(fs.getPath("/users-new/file.txt"),
+                        "temp");
+        ioService.write(fs.getPath("/users-new/pom.xml"),
+                        "hi there" + UUID.randomUUID().toString());
+        ioService.endBatch();
+        ioService.delete(source.getPath().resolve("users-new").resolve("demo.iml"));
 
         RepositoryVisitor newRepositoryVisitor = new RepositoryVisitor(source.getPath().resolve("users-new"),
                                                                        repositoryVisitor.getRoot().getAbsolutePath().trim(),
@@ -140,19 +126,5 @@ public class RepositoryVisitorTest {
         assertEquals(1,
                      addedFiles.size());
         assertNotNull(addedFiles.get("/users-new/file.txt"));
-    }
-
-    public File tempFile(final String content) throws IOException {
-        final File file = File.createTempFile("bar",
-                                              "foo");
-        final OutputStream out = new FileOutputStream(file);
-
-        if (content != null && !content.isEmpty()) {
-            out.write(content.getBytes());
-            out.flush();
-        }
-
-        out.close();
-        return file;
     }
 }
