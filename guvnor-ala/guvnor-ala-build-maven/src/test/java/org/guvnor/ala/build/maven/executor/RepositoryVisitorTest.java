@@ -39,11 +39,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
 
 import static org.junit.Assert.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.commit;
 
 public class RepositoryVisitorTest {
 
@@ -84,24 +84,24 @@ public class RepositoryVisitorTest {
         final URI originRepo = URI.create("git://" + repository.getName());
         final JGitFileSystemProvider provider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider(originRepo);
 
-        final JGitFileSystem origin = (JGitFileSystem) provider.getFileSystem(originRepo);
+        final Git git = Git.createRepository(tempPath);
 
-        commit(origin.gitRepo(),
-               "master",
-               "user1",
-               "user1@example.com",
-               "commitx",
-               null,
-               null,
-               false,
-               new HashMap<String, File>() {
-                   {
-                       put("/users-new/file.txt",
-                           tempFile("temp"));
-                       put("/users-new/pom.xml",
-                           tempFile("hi there" + UUID.randomUUID().toString()));
-                   }
-               });
+        new Commit(git,
+                   "master",
+                   "user1",
+                   "user1@example.com",
+                   "commitx",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {
+                       {
+                           put("/users-new/file.txt",
+                               tempFile("temp"));
+                           put("/users-new/pom.xml",
+                               tempFile("hi there" + UUID.randomUUID().toString()));
+                       }
+                   }).execute();
 
         provider.delete(source.getPath().resolve("users-new").resolve("demo.iml"));
 
