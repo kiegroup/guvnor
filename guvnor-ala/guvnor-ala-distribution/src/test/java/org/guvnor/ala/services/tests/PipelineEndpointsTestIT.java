@@ -16,11 +16,16 @@
 
 package org.guvnor.ala.services.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -49,8 +54,6 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
-
-import static org.junit.Assert.*;
 
 public class PipelineEndpointsTestIT {
 
@@ -83,7 +86,7 @@ public class PipelineEndpointsTestIT {
                                                                           true);
 
         assertNotNull(allProviderTypes);
-        assertEquals(2,
+        assertEquals(3,
                      allProviderTypes.getItems().size());
 
         DockerProviderConfig dockerProviderConfig = new DockerProviderConfigImpl();
