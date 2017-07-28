@@ -30,17 +30,21 @@ public class ConfigGroupMarshaller {
     private final XStream xstream = new XStream();
 
     public ConfigGroupMarshaller() {
+
+        String[] voidDeny = {"void.class", "Void.class"};
+
         backwardCompatibleXstream.alias("group",
-                                        ConfigGroup.class);
+                                     ConfigGroup.class );
         backwardCompatibleXstream.alias("item",
-                                        ConfigItem.class);
+                                        ConfigItem.class );
         backwardCompatibleXstream.alias("type",
-                                        ConfigType.class);
+                                        ConfigType.class );
         backwardCompatibleXstream.alias("secureitem",
                                         SecureConfigItem.class);
         // for backward compatibility only
         backwardCompatibleXstream.alias("org.uberfire.backend.server.config.SecureConfigItem",
                                         SecureConfigItem.class);
+        backwardCompatibleXstream.denyTypes(voidDeny);
 
         xstream.alias("group",
                       ConfigGroup.class);
@@ -50,6 +54,9 @@ public class ConfigGroupMarshaller {
                       ConfigType.class);
         xstream.alias("secureitem",
                       SecureConfigItem.class);
+        xstream.denyTypes(voidDeny);
+
+
     }
 
     public String marshall(final ConfigGroup configGroup) {
