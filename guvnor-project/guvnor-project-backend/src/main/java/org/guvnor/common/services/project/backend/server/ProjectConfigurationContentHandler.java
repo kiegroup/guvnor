@@ -44,6 +44,8 @@ public class ProjectConfigurationContentHandler {
 
     private XStream createXStream() {
         XStream xStream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xStream.denyTypes(voidDeny);
         xStream.alias( "configuration", ProjectImports.class );
         xStream.alias( "import", Import.class );
         return xStream;

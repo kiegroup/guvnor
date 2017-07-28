@@ -279,6 +279,8 @@ public class InboxBackendImpl implements InboxBackend {
 
     private XStream getXStream() {
         XStream xs = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xs.denyTypes(voidDeny);
         xs.alias("inbox-entries",
                  List.class);
         xs.alias("entry",
