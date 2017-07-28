@@ -48,6 +48,8 @@ public class ProjectRepositoriesContentHandler {
 
     private XStream createXStream() {
         XStream xStream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xStream.denyTypes(voidDeny);
         xStream.alias("project-repositories",
                       ProjectRepositories.class);
         xStream.alias("repository",
