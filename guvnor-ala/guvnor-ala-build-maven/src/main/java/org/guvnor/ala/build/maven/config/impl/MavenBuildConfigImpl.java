@@ -23,15 +23,17 @@ import java.util.Properties;
 import org.guvnor.ala.build.maven.config.MavenBuildConfig;
 import org.guvnor.ala.config.CloneableConfig;
 
-public class MavenBuildConfigImpl implements MavenBuildConfig,
-                                             CloneableConfig<MavenBuildConfig> {
+public class MavenBuildConfigImpl
+        implements MavenBuildConfig,
+                   CloneableConfig<MavenBuildConfig> {
 
     private List<String> goals;
     private Properties properties;
 
     public MavenBuildConfigImpl() {
         goals = new ArrayList<>(MavenBuildConfig.super.getGoals());
-        properties = new Properties(MavenBuildConfig.super.getProperties());
+        properties = new Properties();
+        properties.putAll(MavenBuildConfig.super.getProperties());
     }
 
     public MavenBuildConfigImpl(final List<String> goals,

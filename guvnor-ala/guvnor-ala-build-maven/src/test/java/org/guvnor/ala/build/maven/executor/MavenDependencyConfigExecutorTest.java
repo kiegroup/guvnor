@@ -41,7 +41,7 @@ import org.guvnor.ala.pipeline.PipelineFactory;
 import org.guvnor.ala.pipeline.Stage;
 import org.guvnor.ala.pipeline.execution.PipelineExecutor;
 import org.guvnor.ala.registry.BuildRegistry;
-import org.guvnor.ala.registry.local.InMemoryBuildRegistry;
+import org.guvnor.ala.registry.inmemory.InMemoryBuildRegistry;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

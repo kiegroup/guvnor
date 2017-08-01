@@ -16,8 +16,17 @@
 
 package org.guvnor.ala.docker.model;
 
+import org.guvnor.ala.config.RuntimeConfig;
 import org.guvnor.ala.runtime.base.BaseRuntimeInfo;
 
-public class DockerRuntimeInfo extends BaseRuntimeInfo {
+public class DockerRuntimeInfo
+        extends BaseRuntimeInfo {
 
+    public DockerRuntimeInfo() {
+        //No-args constructor for enabling marshalling to work, please do not remove.
+    }
+
+    public DockerRuntimeInfo(final RuntimeConfig config) {
+        super(config);
+    }
 }

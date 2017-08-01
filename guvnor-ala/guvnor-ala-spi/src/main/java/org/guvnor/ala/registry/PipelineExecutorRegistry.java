@@ -25,13 +25,28 @@ import org.guvnor.ala.pipeline.execution.PipelineExecutorTrace;
  */
 public interface PipelineExecutorRegistry {
 
+    /**
+     * Registers a pipeline executor trace.
+     * @param trace a pipeline executor trace for registering.
+     */
     void register(final PipelineExecutorTrace trace);
 
-    void deregister(final String taskId);
+    /**
+     * Deregisters a pipeline executor trace.
+     * @param pipelineExecutionId the identifier of the trace to deregister.
+     */
+    void deregister(final String pipelineExecutionId);
 
-    PipelineExecutorTrace getExecutorTrace(String pipelineExecutionId);
+    /**
+     * Gets a registered pipeline executor trace.
+     * @param pipelineExecutionId the identifier of trace.
+     * @return the registered pipeline executor trace, when exists, or null in any other case.
+     */
+    PipelineExecutorTrace getExecutorTrace(final String pipelineExecutionId);
 
+    /**
+     * Get the currently registered pipeline executor traces.
+     * @return a list of pipeline executor traces.
+     */
     Collection<PipelineExecutorTrace> getExecutorTraces();
-
-    Collection<PipelineExecutorTrace> getExecutorTraces(final String pipelineId);
 }

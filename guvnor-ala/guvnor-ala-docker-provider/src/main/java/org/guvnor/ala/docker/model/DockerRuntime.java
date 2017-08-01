@@ -23,7 +23,8 @@ import org.guvnor.ala.runtime.RuntimeState;
 import org.guvnor.ala.runtime.base.BaseRuntime;
 import org.guvnor.ala.runtime.providers.ProviderId;
 
-public class DockerRuntime extends BaseRuntime {
+public class DockerRuntime
+        extends BaseRuntime {
 
     /*
      * No-args constructor for enabling marshalling to work, please do not remove. 
@@ -31,13 +32,13 @@ public class DockerRuntime extends BaseRuntime {
     public DockerRuntime() {
     }
 
-    public DockerRuntime(String id,
-                         String name,
-                         RuntimeConfig config,
-                         ProviderId providerId,
-                         RuntimeEndpoint endpoint,
-                         RuntimeInfo info,
-                         RuntimeState state) {
+    public DockerRuntime(final String id,
+                         final String name,
+                         final RuntimeConfig config,
+                         final ProviderId providerId,
+                         final RuntimeEndpoint endpoint,
+                         final RuntimeInfo info,
+                         final RuntimeState state) {
         super(id,
               name,
               config,

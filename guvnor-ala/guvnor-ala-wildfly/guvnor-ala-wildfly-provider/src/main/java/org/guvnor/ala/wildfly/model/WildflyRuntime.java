@@ -23,21 +23,22 @@ import org.guvnor.ala.runtime.RuntimeState;
 import org.guvnor.ala.runtime.base.BaseRuntime;
 import org.guvnor.ala.runtime.providers.ProviderId;
 
-public class WildflyRuntime extends BaseRuntime {
+public class WildflyRuntime
+        extends BaseRuntime {
 
-    /*
-     * No-args constructor for enabling marshalling to work, please do not remove. 
+    /**
+     * No-args constructor for enabling marshalling to work, please do not remove.
      */
     public WildflyRuntime() {
     }
 
-    public WildflyRuntime(String id,
-                          String name,
-                          RuntimeConfig config,
-                          ProviderId providerId,
-                          RuntimeEndpoint endpoint,
-                          RuntimeInfo info,
-                          RuntimeState state) {
+    public WildflyRuntime(final String id,
+                          final String name,
+                          final RuntimeConfig config,
+                          final ProviderId providerId,
+                          final RuntimeEndpoint endpoint,
+                          final RuntimeInfo info,
+                          final RuntimeState state) {
         super(id,
               name,
               config,

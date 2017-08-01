@@ -17,7 +17,16 @@
 package org.guvnor.ala.wildfly.model;
 
 import org.guvnor.ala.runtime.base.BaseRuntimeInfo;
+import org.guvnor.ala.wildfly.config.WildflyRuntimeConfiguration;
 
-public class WildflyRuntimeInfo extends BaseRuntimeInfo {
+public class WildflyRuntimeInfo
+        extends BaseRuntimeInfo {
 
+    public WildflyRuntimeInfo() {
+        //no args constructor for marshalling purposes.
+    }
+
+    public WildflyRuntimeInfo(WildflyRuntimeConfiguration config) {
+        super(config);
+    }
 }
