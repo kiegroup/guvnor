@@ -57,7 +57,7 @@ import org.guvnor.ala.pipeline.PipelineFactory;
 import org.guvnor.ala.pipeline.Stage;
 import org.guvnor.ala.pipeline.execution.PipelineExecutor;
 import org.guvnor.ala.registry.RuntimeRegistry;
-import org.guvnor.ala.registry.local.InMemoryRuntimeRegistry;
+import org.guvnor.ala.registry.inmemory.InMemoryRuntimeRegistry;
 import org.guvnor.ala.runtime.Runtime;
 import org.junit.Test;
 

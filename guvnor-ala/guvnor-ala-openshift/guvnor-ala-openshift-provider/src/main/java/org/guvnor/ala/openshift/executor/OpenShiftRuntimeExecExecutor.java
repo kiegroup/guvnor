@@ -15,10 +15,7 @@
  */
 package org.guvnor.ala.openshift.executor;
 
-import static org.guvnor.ala.util.RuntimeConfigHelper.buildRuntimeName;
-
 import java.util.Optional;
-
 import javax.inject.Inject;
 
 import org.guvnor.ala.config.Config;
@@ -42,18 +39,23 @@ import org.guvnor.ala.runtime.RuntimeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.guvnor.ala.util.RuntimeConfigHelper.buildRuntimeName;
+
 /**
  * Responsible for the "create" and "destroy" lifecycle aspects of the openshift runtime.
  * @param <T> OpenShiftRuntimeConfig
  */
-public class OpenShiftRuntimeExecExecutor<T extends OpenShiftRuntimeConfig> implements RuntimeBuilder<T, OpenShiftRuntime>, RuntimeDestroyer, FunctionConfigExecutor<T, OpenShiftRuntime> {
+public class OpenShiftRuntimeExecExecutor<T extends OpenShiftRuntimeConfig> implements RuntimeBuilder<T, OpenShiftRuntime>,
+                                                                                       RuntimeDestroyer,
+                                                                                       FunctionConfigExecutor<T, OpenShiftRuntime> {
 
     private final RuntimeRegistry runtimeRegistry;
     private final OpenShiftAccessInterface openshift;
     private static final Logger LOG = LoggerFactory.getLogger(OpenShiftRuntimeExecExecutor.class);
 
     @Inject
-    public OpenShiftRuntimeExecExecutor(final RuntimeRegistry runtimeRegistry, final OpenShiftAccessInterface openshift) {
+    public OpenShiftRuntimeExecExecutor(final RuntimeRegistry runtimeRegistry,
+                                        final OpenShiftAccessInterface openshift) {
         this.runtimeRegistry = runtimeRegistry;
         this.openshift = openshift;
     }
@@ -69,7 +71,8 @@ public class OpenShiftRuntimeExecExecutor<T extends OpenShiftRuntimeConfig> impl
 
     private Optional<OpenShiftRuntime> create(final OpenShiftRuntimeConfig runtimeConfig) throws ProvisioningException {
 
-        final Optional<OpenShiftProvider> _openshiftProvider = runtimeRegistry.getProvider(runtimeConfig.getProviderId(), OpenShiftProvider.class);
+        final Optional<OpenShiftProvider> _openshiftProvider = runtimeRegistry.getProvider(runtimeConfig.getProviderId(),
+                                                                                           OpenShiftProvider.class);
         if (!_openshiftProvider.isPresent()) {
             return Optional.empty();
         }
@@ -81,7 +84,8 @@ public class OpenShiftRuntimeExecExecutor<T extends OpenShiftRuntimeConfig> impl
         try {
             runtimeState = openshiftClient.create(runtimeConfig);
         } catch (OpenShiftClientException ex) {
-            throw new ProvisioningException(ex.getMessage(), ex);
+            throw new ProvisioningException(ex.getMessage(),
+                                            ex);
         }
 
         final String id = runtimeConfig.getRuntimeId().toString();
@@ -89,7 +93,14 @@ public class OpenShiftRuntimeExecExecutor<T extends OpenShiftRuntimeConfig> impl
 
         OpenShiftRuntimeEndpoint endpoint = openshiftClient.getRuntimeEndpoint(id);
 
-        return Optional.of(new OpenShiftRuntime(id, buildRuntimeName(runtimeConfig, id), runtimeConfig, openshiftProvider, endpoint, new OpenShiftRuntimeInfo(runtimeConfig), runtimeState));
+        return Optional.of(new OpenShiftRuntime(id,
+                                                buildRuntimeName(runtimeConfig,
+                                                                 id),
+                                                runtimeConfig,
+                                                openshiftProvider,
+                                                endpoint,
+                                                new OpenShiftRuntimeInfo(runtimeConfig),
+                                                runtimeState));
     }
 
     @Override
@@ -114,7 +125,8 @@ public class OpenShiftRuntimeExecExecutor<T extends OpenShiftRuntimeConfig> impl
 
     @Override
     public void destroy(final RuntimeId runtimeId) {
-        final Optional<OpenShiftProvider> _openshiftProvider = runtimeRegistry.getProvider(runtimeId.getProviderId(), OpenShiftProvider.class);
+        final Optional<OpenShiftProvider> _openshiftProvider = runtimeRegistry.getProvider(runtimeId.getProviderId(),
+                                                                                           OpenShiftProvider.class);
         if (!_openshiftProvider.isPresent()) {
             return;
         }
@@ -124,9 +136,9 @@ public class OpenShiftRuntimeExecExecutor<T extends OpenShiftRuntimeConfig> impl
             openshift.getOpenShiftClient(openshiftProvider).destroy(runtimeId.getId());
             LOG.info("Destroyed runtime: " + runtimeId.getId());
         } catch (OpenShiftClientException ex) {
-            throw new RuntimeOperationException("Error Destroying runtime: " + runtimeId.getId(), ex);
+            throw new RuntimeOperationException("Error Destroying runtime: " + runtimeId.getId(),
+                                                ex);
         }
-        runtimeRegistry.unregisterRuntime(runtimeId);
-
+        runtimeRegistry.deregisterRuntime(runtimeId);
     }
 }

@@ -134,10 +134,6 @@
     </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-ala-registry-local</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-ala-docker-provider</artifactId>
     </dependency>
     <dependency>

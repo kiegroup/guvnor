@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 JBoss, by Red Hat, Inc
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,38 +16,28 @@
 package org.guvnor.ala.docker.model;
 
 import org.guvnor.ala.config.CloneableConfig;
-import org.guvnor.ala.config.ProviderConfig;
+import org.guvnor.ala.docker.config.DockerProviderConfig;
+import org.guvnor.ala.docker.config.impl.DockerProviderConfigImpl;
 import org.guvnor.ala.runtime.providers.base.BaseProvider;
 
-public class DockerProviderImpl extends BaseProvider implements DockerProvider,
-                                                                CloneableConfig<DockerProvider> {
-
-    private String hostId;
+public class DockerProviderImpl
+        extends BaseProvider<DockerProviderConfig>
+        implements DockerProvider,
+                   CloneableConfig<DockerProvider> {
 
     public DockerProviderImpl() {
+        //No-args constructor for enabling marshalling to work, please do not remove.
     }
 
-    public DockerProviderImpl(final String name,
-                              final String hostId,
-                              ProviderConfig config) {
-        super(name,
+    public DockerProviderImpl(final DockerProviderConfigImpl config) {
+        super(config.getName(),
               DockerProviderType.instance(),
               config);
-        this.hostId = hostId;
-    }
-
-    public String getHostId() {
-        return hostId;
-    }
-
-    public void setHostId(String hostId) {
-        this.hostId = hostId;
     }
 
     @Override
     public DockerProvider asNewClone(final DockerProvider source) {
-        return new DockerProviderImpl(source.getId(),
-                                      source.getHostId(),
-                                      source.getConfig());
+        return new DockerProviderImpl(new DockerProviderConfigImpl(source.getConfig().getName(),
+                                                                   source.getConfig().getHostIp()));
     }
 }

@@ -20,21 +20,19 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 
-/*
- * Base interface for identifing providers. You need to provide an implementation of this
- *  interface for each of your providers.
-*/
+/**
+ * Base interface for identifying providers.
+ */
 @JsonTypeInfo(use = CLASS, include = WRAPPER_OBJECT)
 public interface ProviderId {
 
-    /*
+    /**
      * Get the provider unique identifier
      * @return the provider unique identifier
-     * @see ProviderId
      */
     String getId();
 
-    /*
+    /**
      * Get the provider type
      * @return the provider type
      * @see ProviderType

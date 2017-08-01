@@ -46,12 +46,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-ala-registry-local</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!--     Build Local Aether Implementation -->
     <dependency>
       <groupId>org.guvnor</groupId>

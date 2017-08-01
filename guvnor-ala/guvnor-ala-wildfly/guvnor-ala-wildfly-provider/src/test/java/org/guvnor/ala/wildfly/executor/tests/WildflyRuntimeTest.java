@@ -35,7 +35,7 @@ import org.arquillian.cube.requirement.ArquillianConditionalRunner;
 import org.guvnor.ala.build.maven.model.impl.MavenProjectImpl;
 import org.guvnor.ala.build.maven.util.MavenBuildExecutor;
 import org.guvnor.ala.build.maven.util.RepositoryVisitor;
-import org.guvnor.ala.registry.local.InMemorySourceRegistry;
+import org.guvnor.ala.registry.inmemory.InMemorySourceRegistry;
 import org.guvnor.ala.source.Source;
 import org.guvnor.ala.source.git.GitHub;
 import org.guvnor.ala.source.git.GitRepository;

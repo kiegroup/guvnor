@@ -16,6 +16,7 @@
 
 package org.guvnor.ala.pipeline.execution.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTrace;
 
@@ -30,6 +31,10 @@ public class PipelineExecutorTraceImpl
      */
     private PipelineExecutorTask task;
 
+    public PipelineExecutorTraceImpl() {
+        //no args constructor for marshalling/unmarshalling.
+    }
+
     public PipelineExecutorTraceImpl(PipelineExecutorTask task) {
         this.task = task;
     }
@@ -38,13 +43,15 @@ public class PipelineExecutorTraceImpl
      * Shortcut to the task id.
      * @return returns the id of the internal task.
      */
+    @JsonIgnore
     public String getTaskId() {
         return getTask().getId();
     }
 
+    @JsonIgnore
     @Override
     public String getPipelineId() {
-        return getTask().getTaskDef().getPipeline().getName();
+        return getTask().getTaskDef().getPipeline();
     }
 
     public PipelineExecutorTask getTask() {

@@ -20,22 +20,23 @@ import java.util.Objects;
 
 import org.guvnor.ala.runtime.RuntimeState;
 
-/*
+/**
  * BaseRuntimeState implementation to be extended by each Runtime Provider
-*/
-public class BaseRuntimeState implements RuntimeState {
+ */
+public class BaseRuntimeState
+        implements RuntimeState {
 
     private String state = "NA";
     private String startedAt;
 
-    /*
-     * No-args constructor for enabling marshalling to work, please do not remove. 
-    */
+    /**
+     * No-args constructor for enabling marshalling to work, please do not remove.
+     */
     public BaseRuntimeState() {
     }
 
-    public BaseRuntimeState(String status,
-                            String startedAt) {
+    public BaseRuntimeState(final String status,
+                            final String startedAt) {
         this.state = status;
         this.startedAt = startedAt;
     }
@@ -52,7 +53,10 @@ public class BaseRuntimeState implements RuntimeState {
 
     @Override
     public String toString() {
-        return "RuntimeState{" + "state=" + state + ", startedAt=" + startedAt + '}';
+        return "BaseRuntimeState{" +
+                "state='" + state + '\'' +
+                ", startedAt='" + startedAt + '\'' +
+                '}';
     }
 
     @Override

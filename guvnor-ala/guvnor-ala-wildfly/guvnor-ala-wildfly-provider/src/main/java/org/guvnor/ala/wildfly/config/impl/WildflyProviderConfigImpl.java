@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 JBoss, by Red Hat, Inc
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,11 +19,12 @@ package org.guvnor.ala.wildfly.config.impl;
 import org.guvnor.ala.config.CloneableConfig;
 import org.guvnor.ala.wildfly.config.WildflyProviderConfig;
 
-public class WildflyProviderConfigImpl implements WildflyProviderConfig,
-                                                  CloneableConfig<WildflyProviderConfig> {
+public class WildflyProviderConfigImpl
+        implements WildflyProviderConfig,
+                   CloneableConfig<WildflyProviderConfig> {
 
     private String name;
-    private String hostIp;
+    private String host;
     private String port;
     private String managementPort;
     private String user;
@@ -31,7 +32,7 @@ public class WildflyProviderConfigImpl implements WildflyProviderConfig,
 
     public WildflyProviderConfigImpl() {
         this.name = WildflyProviderConfig.super.getName();
-        this.hostIp = WildflyProviderConfig.super.getHostIp();
+        this.host = WildflyProviderConfig.super.getHost();
         this.port = WildflyProviderConfig.super.getPort();
         this.managementPort = WildflyProviderConfig.super.getManagementPort();
         this.user = WildflyProviderConfig.super.getUser();
@@ -39,13 +40,13 @@ public class WildflyProviderConfigImpl implements WildflyProviderConfig,
     }
 
     public WildflyProviderConfigImpl(final String name,
-                                     final String hostIp,
+                                     final String host,
                                      final String port,
                                      final String managementPort,
                                      final String user,
                                      final String password) {
         this.name = name;
-        this.hostIp = hostIp;
+        this.host = host;
         this.port = port;
         this.managementPort = managementPort;
         this.user = user;
@@ -58,8 +59,8 @@ public class WildflyProviderConfigImpl implements WildflyProviderConfig,
     }
 
     @Override
-    public String getHostIp() {
-        return hostIp;
+    public String getHost() {
+        return host;
     }
 
     @Override
@@ -85,10 +86,50 @@ public class WildflyProviderConfigImpl implements WildflyProviderConfig,
     @Override
     public WildflyProviderConfig asNewClone(final WildflyProviderConfig origin) {
         return new WildflyProviderConfigImpl(origin.getName(),
-                                             origin.getHostIp(),
+                                             origin.getHost(),
                                              origin.getPort(),
                                              origin.getManagementPort(),
                                              origin.getUser(),
                                              origin.getPassword());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        WildflyProviderConfigImpl that = (WildflyProviderConfigImpl) o;
+
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (host != null ? !host.equals(that.host) : that.host != null) {
+            return false;
+        }
+        if (port != null ? !port.equals(that.port) : that.port != null) {
+            return false;
+        }
+        if (managementPort != null ? !managementPort.equals(that.managementPort) : that.managementPort != null) {
+            return false;
+        }
+        if (user != null ? !user.equals(that.user) : that.user != null) {
+            return false;
+        }
+        return password != null ? password.equals(that.password) : that.password == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (host != null ? host.hashCode() : 0);
+        result = 31 * result + (port != null ? port.hashCode() : 0);
+        result = 31 * result + (managementPort != null ? managementPort.hashCode() : 0);
+        result = 31 * result + (user != null ? user.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        return result;
     }
 }
