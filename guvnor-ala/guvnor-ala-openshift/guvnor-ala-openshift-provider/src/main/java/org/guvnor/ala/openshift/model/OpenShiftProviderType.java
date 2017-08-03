@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.guvnor.ala.openshift.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,8 +21,7 @@ import org.guvnor.ala.runtime.providers.base.BaseProviderType;
 /**
  * OpenShift provider type definition.
  */
-public final class OpenShiftProviderType
-        extends BaseProviderType {
+public final class OpenShiftProviderType extends BaseProviderType {
 
     @JsonIgnore
     private static OpenShiftProviderType instance;
@@ -32,8 +30,7 @@ public final class OpenShiftProviderType
      * No-args constructor for enabling marshalling to work, please do not remove. 
     */
     public OpenShiftProviderType() {
-        super("openshift",
-              "3.5");
+        super("openshift", "3.5");
     }
 
     @JsonIgnore

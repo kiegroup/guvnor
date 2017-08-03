@@ -68,7 +68,6 @@
     </dependency>
 
     <!--Providers-->
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-ala-docker-provider</artifactId>
@@ -80,12 +79,29 @@
       </exclusions>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-ala-openshift-provider</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>javax.ws.rs-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-ala-wildfly-provider</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>javax.ws.rs-api</artifactId>
+        </exclusion>
+      </exclusions>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-model</artifactId>
