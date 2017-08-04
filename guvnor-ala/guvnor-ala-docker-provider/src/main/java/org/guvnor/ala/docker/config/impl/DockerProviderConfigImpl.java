@@ -19,8 +19,9 @@ package org.guvnor.ala.docker.config.impl;
 import org.guvnor.ala.config.CloneableConfig;
 import org.guvnor.ala.docker.config.DockerProviderConfig;
 
-public class DockerProviderConfigImpl implements DockerProviderConfig,
-                                                 CloneableConfig<DockerProviderConfig> {
+public class DockerProviderConfigImpl
+        implements DockerProviderConfig,
+                   CloneableConfig<DockerProviderConfig> {
 
     private String name;
     private String hostIp;
@@ -46,22 +47,41 @@ public class DockerProviderConfigImpl implements DockerProviderConfig,
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setHostIp(String hostIp) {
-        this.hostIp = hostIp;
-    }
-
     @Override
     public String toString() {
-        return "DockerProviderConfigImpl{" + "name=" + name + ", hostIp=" + hostIp + '}';
+        return "DockerProviderConfigImpl{" +
+                "name='" + name + '\'' +
+                ", hostIp='" + hostIp + '\'' +
+                '}';
     }
 
     @Override
     public DockerProviderConfig asNewClone(final DockerProviderConfig origin) {
         return new DockerProviderConfigImpl(origin.getName(),
                                             origin.getHostIp());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DockerProviderConfigImpl that = (DockerProviderConfigImpl) o;
+
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        return hostIp != null ? hostIp.equals(that.hostIp) : that.hostIp == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (hostIp != null ? hostIp.hashCode() : 0);
+        return result;
     }
 }

@@ -18,14 +18,17 @@ package org.guvnor.ala.pipeline.execution.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import org.guvnor.ala.pipeline.Stage;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.guvnor.ala.pipeline.execution.PipelineExecutorException;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskDef;
+import org.guvnor.ala.pipeline.execution.RegistrableOutput;
 
 import static org.guvnor.ala.pipeline.execution.PipelineExecutor.PIPELINE_EXECUTION_ID;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class PipelineExecutorTaskImpl
         implements PipelineExecutorTask,
                    Cloneable {
@@ -39,26 +42,32 @@ public class PipelineExecutorTaskImpl
     /**
      * Holds the execution status for the pipeline stages. The state status can change during the pipeline execution.
      */
-    private Map<Stage, Status> stageStatus = new HashMap<>();
+    @JsonInclude
+    private Map<String, Status> stageStatus = new HashMap<>();
 
     /**
      * Holds the execution error for the stages in case there were errors.
      */
-    private Map<Stage, Throwable> stageError = new HashMap<>();
+    @JsonInclude
+    private Map<String, PipelineExecutorException> stageError = new HashMap<>();
 
     /**
      * Holds the pipeline error in case the pipeline failed.
      */
-    private Throwable pipelineError;
+    private PipelineExecutorException pipelineError;
 
-    private Optional<?> output = Optional.empty();
+    private RegistrableOutput output;
 
-    public PipelineExecutorTaskImpl(PipelineExecutorTaskDef taskDef,
-                                    String executionId) {
+    public PipelineExecutorTaskImpl() {
+        //no args constructor for marshalling/unmarshalling.
+    }
+
+    public PipelineExecutorTaskImpl(final PipelineExecutorTaskDef taskDef,
+                                    final String executionId) {
         this.taskDef = taskDef;
         setId(executionId);
-        taskDef.getPipeline().getStages().forEach(stage -> setStageStatus(stage,
-                                                                          Status.SCHEDULED));
+        taskDef.getStages().forEach(stage -> setStageStatus(stage,
+                                                            Status.SCHEDULED));
     }
 
     @Override
@@ -71,7 +80,7 @@ public class PipelineExecutorTaskImpl
         return executionId;
     }
 
-    private void setId(String executionId) {
+    private void setId(final String executionId) {
         this.executionId = executionId;
         getTaskDef().getInput().put(PIPELINE_EXECUTION_ID,
                                     executionId);
@@ -81,45 +90,45 @@ public class PipelineExecutorTaskImpl
         return pipelineStatus;
     }
 
-    public void setPipelineStatus(Status pipelineStatus) {
+    public void setPipelineStatus(final Status pipelineStatus) {
         this.pipelineStatus = pipelineStatus;
     }
 
-    public void setStageStatus(Stage stage,
-                               Status status) {
+    public void setStageStatus(final String stage,
+                               final Status status) {
         stageStatus.put(stage,
                         status);
     }
 
-    public Status getStageStatus(Stage stage) {
+    public Status getStageStatus(final String stage) {
         return stageStatus.get(stage);
     }
 
-    public void setStageError(Stage stage,
-                              Throwable error) {
+    public void setStageError(final String stage,
+                              final PipelineExecutorException error) {
         stageError.put(stage,
                        error);
     }
 
-    public Throwable getStageError(Stage stage) {
+    public PipelineExecutorException getStageError(final String stage) {
         return stageError.get(stage);
     }
 
-    public void setPipelineError(Throwable error) {
+    public void setPipelineError(final PipelineExecutorException error) {
         this.pipelineError = error;
     }
 
-    public Throwable getPipelineError() {
+    public PipelineExecutorException getPipelineError() {
         return pipelineError;
     }
 
     @Override
-    public Optional<?> getOutput() {
+    public RegistrableOutput getOutput() {
         return output;
     }
 
-    public void setOutput(Object obj) {
-        this.output = Optional.ofNullable(obj);
+    public void setOutput(final RegistrableOutput output) {
+        this.output = output;
     }
 
     public void clearErrors() {
@@ -133,12 +142,10 @@ public class PipelineExecutorTaskImpl
                                                                       executionId);
 
         clone.setPipelineStatus(this.getPipelineStatus());
-        stageStatus.entrySet().forEach(entry -> clone.setStageStatus(entry.getKey(),
-                                                                     entry.getValue()));
-        stageError.entrySet().forEach(entry -> clone.setStageError(entry.getKey(),
-                                                                   entry.getValue()));
+        stageStatus.forEach(clone::setStageStatus);
+        stageError.forEach(clone::setStageError);
         clone.setPipelineError(pipelineError);
-        clone.setOutput(output.orElse(null));
+        clone.setOutput(output);
         return clone;
     }
 }

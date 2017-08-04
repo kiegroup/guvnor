@@ -21,7 +21,8 @@ import org.guvnor.ala.runtime.providers.base.BaseProviderType;
 /**
  * OpenShift provider type implementation.
  */
-public final class OpenShiftProviderType extends BaseProviderType {
+public final class OpenShiftProviderType
+        extends BaseProviderType {
 
     @JsonIgnore
     private static OpenShiftProviderType instance;
@@ -30,7 +31,8 @@ public final class OpenShiftProviderType extends BaseProviderType {
      * No-args constructor for enabling marshalling to work, please do not remove. 
     */
     public OpenShiftProviderType() {
-        super("openshift", "3.5");
+        super("openshift",
+              "3.5");
     }
 
     @JsonIgnore
