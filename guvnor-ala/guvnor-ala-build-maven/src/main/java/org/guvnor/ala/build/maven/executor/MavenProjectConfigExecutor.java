@@ -57,7 +57,7 @@ public class MavenProjectConfigExecutor implements BiFunctionConfigExecutor<Sour
 
         final Collection<PlugIn> buildPlugins = extractPlugins(project);
 
-        final String expectedBinary = project.getArtifact().getArtifactId() + "-" + project.getArtifact().getVersion() + "." + project.getArtifact().getType();
+        final String expectedBinary = project.getArtifact().getArtifactId() + "-" + project.getArtifact().getVersion() + "." + calculateExtension(project.getArtifact().getType());
         final String _tempDir = mavenProjectConfig.getProjectTempDir().trim();
 
         final RepositoryVisitor repositoryVisitor;
@@ -149,5 +149,9 @@ public class MavenProjectConfigExecutor implements BiFunctionConfigExecutor<Sour
     @Override
     public String inputId() {
         return "maven-config";
+    }
+
+    private String calculateExtension(String artifactType) {
+        return "kjar".equals(artifactType) ? "jar" : artifactType;
     }
 }

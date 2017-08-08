@@ -16,6 +16,7 @@
 
 package org.guvnor.ala.ui.model;
 
+import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -32,12 +33,12 @@ public class InternalGitSource
 
     private String branch;
 
-    private String project;
+    private Project project;
 
-    public InternalGitSource(@MapsTo("ou") String ou,
-                             @MapsTo("repository") String repository,
-                             @MapsTo("branch") String branch,
-                             @MapsTo("project") String project) {
+    public InternalGitSource(@MapsTo("ou") final String ou,
+                             @MapsTo("repository") final String repository,
+                             @MapsTo("branch") final String branch,
+                             @MapsTo("project") final Project project) {
         this.ou = ou;
         this.repository = repository;
         this.branch = branch;
@@ -68,11 +69,11 @@ public class InternalGitSource
         this.branch = branch;
     }
 
-    public String getProject() {
+    public Project getProject() {
         return project;
     }
 
-    public void setProject(String project) {
+    public void setProject(Project project) {
         this.project = project;
     }
 }

@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTrace;
+import org.guvnor.ala.pipeline.execution.RegistrableOutput;
+import org.guvnor.ala.runtime.RuntimeId;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,6 +35,8 @@ public class InMemoryPipelineExecutorRegistryTest {
     protected InMemoryPipelineExecutorRegistry pipelineExecutorRegistry;
 
     protected static final String PIPELINE_EXECUTION_ID = "PIPELINE_EXECUTION_ID";
+
+    protected static final String RUNTIME_ID = "RUNTIME_ID";
 
     protected static final int TRACES_COUNT = 10;
 
@@ -88,5 +93,28 @@ public class InMemoryPipelineExecutorRegistryTest {
         for (PipelineExecutorTrace trace : traces) {
             assertTrue(result.contains(trace));
         }
+    }
+
+    @Test
+    public void getExecutorTraceByRuntimeId() {
+        RuntimeIdMock runtimeId = mock(RuntimeIdMock.class);
+        when(runtimeId.getId()).thenReturn(RUNTIME_ID);
+
+        PipelineExecutorTask task = mock(PipelineExecutorTask.class);
+        when(task.getOutput()).thenReturn(runtimeId);
+
+        when(trace.getTask()).thenReturn(task);
+
+        pipelineExecutorRegistry.register(trace);
+
+        PipelineExecutorTrace result = pipelineExecutorRegistry.getExecutorTrace(runtimeId);
+        assertEquals(trace,
+                     result);
+    }
+
+    private interface RuntimeIdMock
+            extends RuntimeId,
+                    RegistrableOutput {
+
     }
 }

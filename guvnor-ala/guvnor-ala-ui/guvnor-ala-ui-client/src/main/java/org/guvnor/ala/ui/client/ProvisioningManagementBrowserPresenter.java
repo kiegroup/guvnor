@@ -36,8 +36,8 @@ import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderType;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProvidersInfo;
-import org.guvnor.ala.ui.service.ProviderService;
 import org.guvnor.ala.ui.service.ProviderTypeService;
+import org.guvnor.ala.ui.service.ProvisioningScreensService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.IsElement;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -83,7 +83,7 @@ public class ProvisioningManagementBrowserPresenter {
 
     private final Caller<ProviderTypeService> providerTypeService;
 
-    private final Caller<ProviderService> providerService;
+    private final Caller<ProvisioningScreensService> provisioningScreensService;
 
     private final Event<ProviderTypeSelectedEvent> providerTypeSelectedEvent;
 
@@ -95,7 +95,7 @@ public class ProvisioningManagementBrowserPresenter {
                                                   final ProviderEmptyPresenter providerEmptyPresenter,
                                                   final ProviderPresenter providerPresenter,
                                                   final Caller<ProviderTypeService> providerTypeService,
-                                                  final Caller<ProviderService> providerService,
+                                                  final Caller<ProvisioningScreensService> provisioningScreensService,
                                                   final Event<ProviderTypeSelectedEvent> providerTypeSelectedEvent) {
         this.view = view;
         this.providerTypeNavigationPresenter = providerTypeNavigationPresenter;
@@ -104,7 +104,7 @@ public class ProvisioningManagementBrowserPresenter {
         this.providerEmptyPresenter = providerEmptyPresenter;
         this.providerPresenter = providerPresenter;
         this.providerTypeService = providerTypeService;
-        this.providerService = providerService;
+        this.provisioningScreensService = provisioningScreensService;
         this.providerTypeSelectedEvent = providerTypeSelectedEvent;
     }
 
@@ -163,11 +163,11 @@ public class ProvisioningManagementBrowserPresenter {
 
     private void selectProviderType(final ProviderTypeKey providerTypeKey,
                                     final String selectedProviderId) {
-        providerService.call((ProvidersInfo providersInfo) ->
-                                     setupProviderType(providersInfo.getProviderType(),
-                                                       providersInfo.getProvidersKey(),
-                                                       selectedProviderId),
-                             new DefaultErrorCallback()
+        provisioningScreensService.call((ProvidersInfo providersInfo) ->
+                                                setupProviderType(providersInfo.getProviderType(),
+                                                                  providersInfo.getProvidersKey(),
+                                                                  selectedProviderId),
+                                        new DefaultErrorCallback()
         ).getProvidersInfo(providerTypeKey);
     }
 

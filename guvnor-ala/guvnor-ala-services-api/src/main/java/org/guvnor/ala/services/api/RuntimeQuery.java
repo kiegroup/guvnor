@@ -37,12 +37,26 @@ public class RuntimeQuery {
      */
     private String pipelineExecutionId;
 
+    /**
+     * Filter the results for a particular runtime. If null, no runtime filtering will be applied.
+     */
+    private String runtimeId;
+
+    /**
+     * Filter the results for a particular runtime name. If null, no runtime name filtering will be applied.
+     */
+    private String runtimeName;
+
     public RuntimeQuery(String providerId,
                         String pipelineId,
-                        String pipelineExecutionId) {
+                        String pipelineExecutionId,
+                        String runtimeId,
+                        String runtimeName) {
         this.providerId = providerId;
         this.pipelineId = pipelineId;
         this.pipelineExecutionId = pipelineExecutionId;
+        this.runtimeId = runtimeId;
+        this.runtimeName = runtimeName;
     }
 
     public String getProviderId() {
@@ -55,5 +69,49 @@ public class RuntimeQuery {
 
     public String getPipelineExecutionId() {
         return pipelineExecutionId;
+    }
+
+    public String getRuntimeId() {
+        return runtimeId;
+    }
+
+    public String getRuntimeName() {
+        return runtimeName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        RuntimeQuery query = (RuntimeQuery) o;
+
+        if (providerId != null ? !providerId.equals(query.providerId) : query.providerId != null) {
+            return false;
+        }
+        if (pipelineId != null ? !pipelineId.equals(query.pipelineId) : query.pipelineId != null) {
+            return false;
+        }
+        if (pipelineExecutionId != null ? !pipelineExecutionId.equals(query.pipelineExecutionId) : query.pipelineExecutionId != null) {
+            return false;
+        }
+        if (runtimeId != null ? !runtimeId.equals(query.runtimeId) : query.runtimeId != null) {
+            return false;
+        }
+        return runtimeName != null ? runtimeName.equals(query.runtimeName) : query.runtimeName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = providerId != null ? providerId.hashCode() : 0;
+        result = 31 * result + (pipelineId != null ? pipelineId.hashCode() : 0);
+        result = 31 * result + (pipelineExecutionId != null ? pipelineExecutionId.hashCode() : 0);
+        result = 31 * result + (runtimeId != null ? runtimeId.hashCode() : 0);
+        result = 31 * result + (runtimeName != null ? runtimeName.hashCode() : 0);
+        return result;
     }
 }

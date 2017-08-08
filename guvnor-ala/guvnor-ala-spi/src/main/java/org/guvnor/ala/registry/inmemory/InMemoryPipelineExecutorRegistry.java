@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTrace;
 import org.guvnor.ala.registry.PipelineExecutorRegistry;
+import org.guvnor.ala.runtime.RuntimeId;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -58,5 +59,17 @@ public class InMemoryPipelineExecutorRegistry
     @Override
     public Collection<PipelineExecutorTrace> getExecutorTraces() {
         return recordsMap.values();
+    }
+
+    @Override
+    public PipelineExecutorTrace getExecutorTrace(final RuntimeId runtimeId) {
+        checkNotNull("runtimeId",
+                     runtimeId);
+        return recordsMap.values()
+                .stream()
+                .filter(trace ->
+                                (trace.getTask().getOutput() instanceof RuntimeId) &&
+                                        runtimeId.getId().equals(((RuntimeId) trace.getTask().getOutput()).getId())
+                ).findFirst().orElse(null);
     }
 }

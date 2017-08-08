@@ -148,10 +148,12 @@ public class PipelineExecutorTaskManagerImplHelper {
 
     public void setTaskInStoppedStatus(final PipelineExecutorTaskImpl task) {
         task.setPipelineStatus(PipelineExecutorTask.Status.STOPPED);
-        task.getTaskDef().getStages().forEach(
-                stage -> task.setStageStatus(stage,
-                                             PipelineExecutorTask.Status.STOPPED)
-        );
+        task.getTaskDef().getStages()
+                .stream()
+                .filter(stage -> PipelineExecutorTask.Status.RUNNING.equals(task.getStageStatus(stage)) ||
+                        PipelineExecutorTask.Status.SCHEDULED.equals(task.getStageStatus(stage)))
+                .forEach(stage -> task.setStageStatus(stage,
+                                                      PipelineExecutorTask.Status.STOPPED));
         task.clearErrors();
         task.setOutput(null);
     }

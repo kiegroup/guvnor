@@ -95,7 +95,7 @@ public interface RuntimeProvisioningService {
      */
     @DELETE
     @Path("providers")
-    void unregisterProvider(@FormParam(value = "name") String name) throws BusinessException;
+    void deregisterProvider(@FormParam(value = "name") String name) throws BusinessException;
 
     /**
      * Create a new Runtime
@@ -109,14 +109,18 @@ public interface RuntimeProvisioningService {
     String newRuntime(@NotNull RuntimeConfig conf) throws BusinessException;
 
     /**
-     * Destroy an existing  Runtime
+     * Destroy an existing Runtime.
      * @param runtimeId the identifier of the runtime to destroy
+     * @param forced indicates if the runtime must be deleted from the guvnor-ala registries independently of the
+     * connectivity with the external provider. e.g. if it was not possible to connect an external WF where the runtime
+     * is running.
      * @throw BusinessException in case of an internal exception
      */
     @DELETE
     @Consumes(value = APPLICATION_JSON)
-    @Path("runtimes/{id}")
-    void destroyRuntime(@PathParam(value = "id") String runtimeId) throws BusinessException;
+    @Path("runtimes/{id}/destroy")
+    void destroyRuntime(@PathParam(value = "id") String runtimeId,
+                        @QueryParam("forced") @DefaultValue("false") boolean forced) throws BusinessException;
 
     /**
      * Get All Runtimes
@@ -137,7 +141,7 @@ public interface RuntimeProvisioningService {
      * @param runtimeId the identifier of the runtime to be started
      * @throw BusinessException in case of an internal exception
      */
-    @POST
+    @PUT
     @Path("runtimes/{id}/start")
     void startRuntime(@PathParam(value = "id") String runtimeId) throws BusinessException;
 
@@ -146,7 +150,7 @@ public interface RuntimeProvisioningService {
      * @param runtimeId the identifier of the runtime to be stopped
      * @throw BusinessException in case of an internal exception
      */
-    @DELETE
+    @PUT
     @Path("runtimes/{id}/stop")
     void stopRuntime(@PathParam(value = "id") String runtimeId) throws BusinessException;
 
