@@ -26,15 +26,13 @@ import javax.inject.Inject;
 import org.guvnor.ala.config.ProviderConfig;
 import org.guvnor.ala.services.api.backend.RuntimeProvisioningServiceBackend;
 import org.guvnor.ala.ui.backend.service.converter.ProviderConverterFactory;
+import org.guvnor.ala.ui.exceptions.ServiceException;
 import org.guvnor.ala.ui.model.AbstractHasKeyObject;
 import org.guvnor.ala.ui.model.Provider;
 import org.guvnor.ala.ui.model.ProviderConfiguration;
 import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderType;
-import org.guvnor.ala.ui.model.ProviderTypeKey;
-import org.guvnor.ala.ui.model.ProvidersInfo;
 import org.guvnor.ala.ui.service.ProviderService;
-import org.guvnor.ala.ui.service.ProviderTypeService;
 import org.jboss.errai.bus.server.annotations.Service;
 
 import static java.util.stream.Collectors.toList;
@@ -47,8 +45,6 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public class ProviderServiceImpl
         implements ProviderService {
 
-    private ProviderTypeService providerTypeService;
-
     private RuntimeProvisioningServiceBackend runtimeProvisioningService;
 
     private ProviderConverterFactory providerConverterFactory;
@@ -58,10 +54,8 @@ public class ProviderServiceImpl
     }
 
     @Inject
-    public ProviderServiceImpl(final ProviderTypeService providerTypeService,
-                               final RuntimeProvisioningServiceBackend runtimeProvisioningService,
+    public ProviderServiceImpl(final RuntimeProvisioningServiceBackend runtimeProvisioningService,
                                final ProviderConverterFactory providerConverterFactory) {
-        this.providerTypeService = providerTypeService;
         this.runtimeProvisioningService = runtimeProvisioningService;
         this.providerConverterFactory = providerConverterFactory;
     }
@@ -70,20 +64,9 @@ public class ProviderServiceImpl
     public Collection<Provider> getProviders(final ProviderType providerType) {
         checkNotNull("providerType",
                      providerType);
-        Collection<Provider> result = new ArrayList<>();
-        List<org.guvnor.ala.runtime.providers.Provider> providers =
-                runtimeProvisioningService.getProviders(0,
-                                                        1000,
-                                                        PROVIDER_TYPE_NAME_SORT,
-                                                        true);
-        if (providers != null) {
-            result = providers.stream()
-                    .filter(provider -> provider.getProviderType().getProviderTypeName().equals(providerType.getKey().getId()) &&
-                            provider.getProviderType().getVersion().equals(providerType.getKey().getVersion()))
-                    .map(this::convert)
-                    .collect(toList());
-        }
-        return result;
+        return getAllProviders().stream()
+                .filter(provider -> provider.getKey().getProviderTypeKey().equals(providerType.getKey()))
+                .collect(toList());
     }
 
     @Override
@@ -105,12 +88,8 @@ public class ProviderServiceImpl
         checkNotEmpty("configuration.values",
                       configuration.getValues());
 
-        if (existsProvider(providerType,
-                           configuration.getId())) {
-            //uncommon case
-            throw new RuntimeException("A provider was already defined for providerType: " + providerType.getName() +
-                                               " and providerId: " + configuration.getId());
-        }
+        validateForCreateProvider(configuration);
+
         @SuppressWarnings("unchecked")
         final ProviderConfig providerConfig =
                 (ProviderConfig) providerConverterFactory.getProviderConfigConverter(providerType.getKey()).toDomain(configuration);
@@ -139,30 +118,30 @@ public class ProviderServiceImpl
         return result.orElse(null);
     }
 
-    @Override
-    public ProvidersInfo getProvidersInfo(ProviderTypeKey providerTypeKey) {
-        checkNotNull("providerTypeKey",
-                     providerTypeKey);
-        final ProviderType providerType = providerTypeService.getProviderType(providerTypeKey);
-        if (providerType == null) {
-            return null;
+    private Collection<Provider> getAllProviders() {
+        Collection<Provider> result = new ArrayList<>();
+        List<org.guvnor.ala.runtime.providers.Provider> providers =
+                runtimeProvisioningService.getProviders(0,
+                                                        1000,
+                                                        PROVIDER_TYPE_NAME_SORT,
+                                                        true);
+        if (providers != null) {
+            result = providers.stream()
+                    .map(this::convert)
+                    .collect(toList());
         }
-        final Collection<ProviderKey> providersKey = getProvidersKey(providerType);
-        return new ProvidersInfo(providerType,
-                                 providersKey);
+        return result;
     }
 
     private Provider convert(org.guvnor.ala.runtime.providers.Provider provider) {
         return providerConverterFactory.getProviderConverter().toModel(provider);
     }
 
-    private boolean existsProvider(final ProviderType providerType,
-                                   final String id) {
-        for (final Provider provider : getProviders(providerType)) {
-            if (id.equals(provider.getKey().getId())) {
-                return true;
+    private void validateForCreateProvider(ProviderConfiguration configuration) {
+        for (final Provider provider : getAllProviders()) {
+            if (configuration.getId().equals(provider.getKey().getId())) {
+                throw new ServiceException("A provider with the given name already exists: " + configuration.getId());
             }
         }
-        return false;
     }
 }

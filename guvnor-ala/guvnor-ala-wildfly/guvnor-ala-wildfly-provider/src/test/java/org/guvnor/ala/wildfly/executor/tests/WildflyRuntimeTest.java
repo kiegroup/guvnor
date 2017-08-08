@@ -51,6 +51,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.java.nio.file.Path;
 
+import static org.guvnor.ala.runtime.RuntimeState.RUNNING;
+import static org.guvnor.ala.runtime.RuntimeState.UNKNOWN;
 import static org.junit.Assert.*;
 
 /**
@@ -155,20 +157,20 @@ public class WildflyRuntimeTest {
 
         assertNotNull(appState);
 
-        assertTrue(appState.getState().equals("Running"));
+        assertTrue(appState.getState().equals(RUNNING));
 
         wildflyClient.undeploy(id);
 
         appState = wildflyClient.getAppState(id);
         assertNotNull(appState);
 
-        assertTrue(appState.getState().equals("NA"));
+        assertTrue(appState.getState().equals(UNKNOWN));
         wildflyClient.deploy(file);
 
         appState = wildflyClient.getAppState(id);
         assertNotNull(appState);
 
-        assertTrue(appState.getState().equals("Running"));
+        assertTrue(appState.getState().equals(RUNNING));
     }
 
     @Test

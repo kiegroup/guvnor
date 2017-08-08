@@ -23,6 +23,8 @@ import org.guvnor.ala.config.ProviderConfig;
 import org.guvnor.ala.runtime.providers.Provider;
 import org.guvnor.ala.runtime.providers.ProviderType;
 
+import static org.mockito.Mockito.mock;
+
 public class AlaSPITestCommons {
 
     public static final String PROVIDER_TYPE_NAME_FIELD = "ProviderType.providerTypeName.";
@@ -90,5 +92,14 @@ public class AlaSPITestCommons {
                                           Integer.toString(i) + suffix));
         }
         return providers;
+    }
+
+    public static <T> List<T> mockList(Class<T> clazz,
+                                       int count) {
+        List<T> result = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            result.add(mock(clazz));
+        }
+        return result;
     }
 }

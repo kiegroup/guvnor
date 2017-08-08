@@ -22,8 +22,8 @@ import org.guvnor.ala.ui.model.PipelineExecutionTraceKey;
 import org.guvnor.ala.ui.model.PipelineKey;
 import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
+import org.guvnor.ala.ui.model.RuntimeKey;
 import org.guvnor.ala.ui.model.RuntimeListItem;
-import org.guvnor.ala.ui.model.RuntimesInfo;
 import org.guvnor.ala.ui.model.Source;
 import org.jboss.errai.bus.server.annotations.Remote;
 
@@ -45,12 +45,11 @@ public interface RuntimeService {
     RuntimeListItem getRuntimeItem(final PipelineExecutionTraceKey pipelineExecutionTraceKey);
 
     /**
-     * Gets the information about the runtimes associates to a given provider and the provider itself.
-     * @param providerKey
-     * @return a RuntimeInfo with the runtimes associated to the providerKey and the Provider information. Null
-     * if no provider exists associated to the providerKey.
+     * Gets the runtime information for a given runtime.
+     * @param runtimeKey the identifier for a runtime.
+     * @return the RuntimeListItem associated to the runtime when exists, false in any other case.
      */
-    RuntimesInfo getRuntimesInfo(final ProviderKey providerKey);
+    RuntimeListItem getRuntimeItem(final RuntimeKey runtimeKey);
 
     /**
      * Gests the pipeline names for the pipelines associated to a given provider type.
@@ -72,4 +71,38 @@ public interface RuntimeService {
                                             final String runtimeName,
                                             final Source source,
                                             final PipelineKey pipelineKey);
+
+    /**
+     * Stops a running pipeline execution.
+     * @param pipelineExecutionTraceKey identifier for the pipeline execution.
+     */
+    void stopPipelineExecution(final PipelineExecutionTraceKey pipelineExecutionTraceKey);
+
+    /**
+     * Deletes a pipeline execution trace from the system.
+     * @param pipelineExecutionTraceKey identifier of the pipeline execution.
+     */
+    void deletePipelineExecution(final PipelineExecutionTraceKey pipelineExecutionTraceKey);
+
+    /**
+     * Stops a runtime.
+     * @param runtimeKey the key of the runtime to stop.
+     */
+    void stopRuntime(final RuntimeKey runtimeKey);
+
+    /**
+     * Starts a runtime.
+     * @param runtimeKey the key of the runtime to start.
+     */
+    void startRuntime(final RuntimeKey runtimeKey);
+
+    /**
+     * Deletes a runtime.
+     * @param runtimeKey the key of the runtime to delete.
+     * @param forced indicates if the runtime must be deleted from the guvnor-ala registries independently of the
+     * connectivity with the external provider. e.g. if it was not possible to connect an external WF where the runtime
+     * is running.
+     */
+    void deleteRuntime(final RuntimeKey runtimeKey,
+                       final boolean forced);
 }

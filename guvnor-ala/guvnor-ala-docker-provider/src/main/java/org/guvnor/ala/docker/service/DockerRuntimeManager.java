@@ -31,6 +31,9 @@ import org.guvnor.ala.runtime.RuntimeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.guvnor.ala.runtime.RuntimeState.RUNNING;
+import static org.guvnor.ala.runtime.RuntimeState.STOPPED;
+
 public class DockerRuntimeManager implements RuntimeManager {
 
     private final RuntimeRegistry runtimeRegistry;
@@ -101,9 +104,9 @@ public class DockerRuntimeManager implements RuntimeManager {
         try {
             ContainerInfo containerInfo = docker.getDockerClient(runtime.getProviderId()).inspectContainer(runtime.getId());
             ContainerState state = containerInfo.state();
-            String stateString = "Stopped";
+            String stateString = STOPPED;
             if (state.running() && !state.paused()) {
-                stateString = "Running";
+                stateString = RUNNING;
             } else if (state.paused()) {
                 stateString = "Paused";
             } else if (state.restarting()) {
