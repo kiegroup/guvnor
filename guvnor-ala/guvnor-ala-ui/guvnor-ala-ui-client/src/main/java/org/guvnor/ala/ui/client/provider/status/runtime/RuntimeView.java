@@ -22,11 +22,12 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Event;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.ListItem;
 import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.common.client.dom.Window;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -35,28 +36,13 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
 @Templated
-public class RuntimeView implements org.jboss.errai.ui.client.local.api.IsElement,
-                                    RuntimePresenter.View {
+public class RuntimeView
+        implements org.jboss.errai.ui.client.local.api.IsElement,
+                   RuntimePresenter.View {
 
     @Inject
-    @DataField("start-item")
-    private ListItem startItem;
-
-    @Inject
-    @DataField
-    private Anchor start;
-
-    @Inject
-    @DataField("stop-item")
-    private ListItem stopItem;
-
-    @Inject
-    @DataField
-    private Anchor stop;
-
-    @Inject
-    @DataField
-    private Anchor rebuild;
+    @DataField("actions-container")
+    private UnorderedList actionsContainer;
 
     @Inject
     @DataField("runtime-status")
@@ -96,24 +82,47 @@ public class RuntimeView implements org.jboss.errai.ui.client.local.api.IsElemen
         this.presenter = presenter;
     }
 
-    @EventHandler("start")
-    public void onStart(@ForEvent("click") final Event event) {
-        presenter.start();
+    @Override
+    public void setup(final String name,
+                      final String date,
+                      final String pipeline) {
+        this.name.setTextContent(name);
+        this.date.setTextContent(date);
+        this.pipeline.setTextContent(pipeline);
     }
 
-    @EventHandler("stop")
-    public void onStop(@ForEvent("click") final Event event) {
-        presenter.stop();
+    @Override
+    public void setEndpoint(final String endpoint) {
+        this.endpoint.setHref(endpoint);
+        this.endpoint.setTextContent(endpoint);
     }
 
-    @EventHandler("rebuild")
-    public void onRebuild(@ForEvent("click") final Event event) {
-        presenter.rebuild();
+    @Override
+    public void setStatus(final Collection<String> styles) {
+        this.status.removeAttribute("class");
+        for (String style : styles) {
+            this.status.getClassList().add(style);
+        }
     }
 
-    @EventHandler("delete")
-    public void onDelete(@ForEvent("click") final Event event) {
-        presenter.delete();
+    @Override
+    public void setStatusTitle(final String title) {
+        status.setTitle(title);
+    }
+
+    @Override
+    public void addExpandedContent(final IsElement element) {
+        expansionContent.appendChild(element.getElement());
+    }
+
+    @Override
+    public void addActionItem(final IsElement element) {
+        actionsContainer.appendChild(element.getElement());
+    }
+
+    @Override
+    public void clearActionItems() {
+        DOMUtil.removeAllChildren(actionsContainer);
     }
 
     @EventHandler("expand-chevron")
@@ -136,53 +145,5 @@ public class RuntimeView implements org.jboss.errai.ui.client.local.api.IsElemen
             chevron.getClassList().remove("fa-chevron-right");
             expansionArea.getStyle().removeProperty("display");
         }
-    }
-
-    @Override
-    public void setup(final String name,
-                      final String date,
-                      final String pipeline) {
-        this.name.setTextContent(name);
-        this.date.setTextContent(date);
-        this.pipeline.setTextContent(pipeline);
-    }
-
-    @Override
-    public void setEndpoint(final String endpoint) {
-        this.endpoint.setHref(endpoint);
-        this.endpoint.setTextContent(endpoint);
-    }
-
-    @Override
-    public void disableStart() {
-        this.startItem.getClassList().add("disabled");
-    }
-
-    @Override
-    public void enableStart() {
-        this.startItem.getClassList().remove("disabled");
-    }
-
-    @Override
-    public void disableStop() {
-        this.stopItem.getClassList().add("disabled");
-    }
-
-    @Override
-    public void enableStop() {
-        this.stopItem.getClassList().remove("disabled");
-    }
-
-    @Override
-    public void setStatus(final Collection<String> styles) {
-        this.status.removeAttribute("class");
-        for (String style : styles) {
-            this.status.getClassList().add(style);
-        }
-    }
-
-    @Override
-    public void addExpandedContent(final IsElement element) {
-        expansionContent.appendChild(element.getElement());
     }
 }

@@ -47,6 +47,7 @@ import org.guvnor.ala.runtime.RuntimeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.guvnor.ala.runtime.RuntimeState.RUNNING;
 import static org.guvnor.ala.util.RuntimeConfigHelper.buildRuntimeName;
 
 public class DockerRuntimeExecExecutor<T extends DockerRuntimeConfig>
@@ -142,7 +143,7 @@ public class DockerRuntimeExecExecutor<T extends DockerRuntimeConfig>
                                              dockerProvider,
                                              dockerRuntimeEndpoint,
                                              new DockerRuntimeInfo(),
-                                             new DockerRuntimeState("Running",
+                                             new DockerRuntimeState(RUNNING,
                                                                     new Date().toString())));
     }
 

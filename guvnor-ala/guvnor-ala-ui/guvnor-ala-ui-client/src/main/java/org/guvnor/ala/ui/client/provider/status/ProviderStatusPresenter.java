@@ -19,11 +19,14 @@ package org.guvnor.ala.ui.client.provider.status;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.guvnor.ala.ui.client.provider.status.runtime.RuntimePresenter;
+import org.guvnor.ala.ui.model.PipelineExecutionTraceKey;
+import org.guvnor.ala.ui.model.RuntimeKey;
 import org.guvnor.ala.ui.model.RuntimeListItem;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -36,6 +39,8 @@ public class ProviderStatusPresenter {
             extends UberElement<ProviderStatusPresenter> {
 
         void addListItem(final IsElement listItem);
+
+        void removeListItem(final IsElement listItem);
 
         void clear();
     }
@@ -68,6 +73,29 @@ public class ProviderStatusPresenter {
         });
     }
 
+    public boolean removeItem(final RuntimeKey runtimeKey) {
+        final Optional<RuntimePresenter> value = currentItems.stream()
+                .filter(presenter -> presenter.getItem().isRuntime()
+                        && runtimeKey.equals(presenter.getItem().getRuntime().getKey()))
+                .findFirst();
+        value.ifPresent(this::removeItem);
+        return value.isPresent();
+    }
+
+    public boolean removeItem(final PipelineExecutionTraceKey pipelineExecutionTraceKey) {
+        final Optional<RuntimePresenter> value = currentItems.stream()
+                .filter(presenter -> !presenter.getItem().isRuntime() &&
+                        presenter.getItem().getPipelineTrace() != null &&
+                        pipelineExecutionTraceKey.equals(presenter.getItem().getPipelineTrace().getKey()))
+                .findFirst();
+        value.ifPresent(this::removeItem);
+        return value.isPresent();
+    }
+
+    public boolean isEmpty() {
+        return currentItems.isEmpty();
+    }
+
     public void clear() {
         view.clear();
         clearItems();
@@ -77,11 +105,18 @@ public class ProviderStatusPresenter {
         return view;
     }
 
+    private void removeItem(final RuntimePresenter item) {
+        view.removeListItem(item.getView());
+        currentItems.remove(item);
+        runtimePresenterInstance.destroy(item);
+    }
+
     protected RuntimePresenter newRuntimePresenter() {
         return runtimePresenterInstance.get();
     }
 
     private void clearItems() {
         currentItems.forEach(runtimePresenterInstance::destroy);
+        currentItems.clear();
     }
 }

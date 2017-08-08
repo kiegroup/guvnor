@@ -35,6 +35,7 @@ import org.uberfire.mvp.Command;
 
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.ProviderView_ConfirmRemovePopupMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.ProviderView_ConfirmRemovePopupTitle;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.ProviderView_ProviderCantBeDeletedMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.ProviderView_RemoveProviderErrorMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.ProviderView_RemoveProviderSuccessMessage;
 import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
@@ -101,6 +102,11 @@ public class ProviderView
                                    command,
                                    () -> {
                                    });
+    }
+
+    @Override
+    public void showProviderCantBeDeleted() {
+        popupHelper.showInformationPopup(translationService.getTranslation(ProviderView_ProviderCantBeDeletedMessage));
     }
 
     @Override

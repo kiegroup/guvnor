@@ -19,5 +19,6 @@ package org.guvnor.ala.ui.client.widget.pipeline.stage;
 public enum State {
     EXECUTING,
     DONE,
-    ERROR
+    ERROR,
+    STOPPED
 }

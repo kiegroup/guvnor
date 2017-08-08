@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.guvnor.ala.pipeline.Input;
@@ -28,13 +29,18 @@ import org.guvnor.ala.services.api.RuntimeQueryBuilder;
 import org.guvnor.ala.services.api.RuntimeQueryResultItem;
 import org.guvnor.ala.services.api.backend.PipelineServiceBackend;
 import org.guvnor.ala.services.api.backend.RuntimeProvisioningServiceBackend;
+import org.guvnor.ala.ui.events.PipelineExecutionChange;
+import org.guvnor.ala.ui.events.PipelineExecutionChangeEvent;
+import org.guvnor.ala.ui.events.RuntimeChange;
+import org.guvnor.ala.ui.events.RuntimeChangeEvent;
+import org.guvnor.ala.ui.exceptions.ServiceException;
 import org.guvnor.ala.ui.model.PipelineExecutionTraceKey;
 import org.guvnor.ala.ui.model.PipelineKey;
 import org.guvnor.ala.ui.model.Provider;
 import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
+import org.guvnor.ala.ui.model.RuntimeKey;
 import org.guvnor.ala.ui.model.RuntimeListItem;
-import org.guvnor.ala.ui.model.RuntimesInfo;
 import org.guvnor.ala.ui.model.Source;
 import org.guvnor.ala.ui.service.ProviderService;
 import org.guvnor.ala.ui.service.RuntimeService;
@@ -58,6 +64,10 @@ public class RuntimeServiceImpl
 
     private ProviderService providerService;
 
+    private Event<RuntimeChangeEvent> runtimeChangeEvent;
+
+    private Event<PipelineExecutionChangeEvent> pipelineExecutionChangeEvent;
+
     public RuntimeServiceImpl() {
         //Empty constructor for Weld proxying
     }
@@ -65,10 +75,14 @@ public class RuntimeServiceImpl
     @Inject
     public RuntimeServiceImpl(final RuntimeProvisioningServiceBackend runtimeProvisioningService,
                               final PipelineServiceBackend pipelineService,
-                              final ProviderService providerService) {
+                              final ProviderService providerService,
+                              final Event<RuntimeChangeEvent> runtimeChangeEvent,
+                              final Event<PipelineExecutionChangeEvent> pipelineExecutionChangeEvent) {
         this.runtimeProvisioningService = runtimeProvisioningService;
         this.pipelineService = pipelineService;
         this.providerService = providerService;
+        this.runtimeChangeEvent = runtimeChangeEvent;
+        this.pipelineExecutionChangeEvent = pipelineExecutionChangeEvent;
     }
 
     @Override
@@ -96,16 +110,16 @@ public class RuntimeServiceImpl
     }
 
     @Override
-    public RuntimesInfo getRuntimesInfo(final ProviderKey providerKey) {
-        checkNotNull("providerKey",
-                     providerKey);
-        final Provider provider = providerService.getProvider(providerKey);
-        if (provider == null) {
-            return null;
-        }
-        final Collection<RuntimeListItem> items = getRuntimeItems(providerKey);
-        return new RuntimesInfo(provider,
-                                items);
+    public RuntimeListItem getRuntimeItem(final RuntimeKey runtimeKey) {
+        checkNotNull("runtimeKey",
+                     runtimeKey);
+
+        final RuntimeQuery query = RuntimeQueryBuilder.newInstance()
+                .withRuntimeId(runtimeKey.getId())
+                .build();
+        return buildRuntimeQueryResult(runtimeProvisioningService.executeQuery(query)).stream()
+                .findFirst()
+                .orElse(null);
     }
 
     private Collection<RuntimeListItem> buildRuntimeQueryResult(List<RuntimeQueryResultItem> resultItems) {
@@ -152,12 +166,8 @@ public class RuntimeServiceImpl
         checkNotNull("pipelineKey",
                      pipelineKey);
 
-        final Provider provider = providerService.getProvider(providerKey);
-        if (provider == null) {
-            //uncommon case
-            logger.error("No provider was found for providerKey: " + providerKey);
-            throw new RuntimeException("No provider was found for providerKey: " + providerKey);
-        }
+        validateForCreateRuntime(providerKey,
+                                 runtimeName);
         try {
             final Input input = PipelineInputBuilder.newInstance()
                     .withRuntimeName(runtimeName)
@@ -171,6 +181,69 @@ public class RuntimeServiceImpl
             logger.error("Runtime creation failed.",
                          e);
             throw ExceptionUtilities.handleException(e);
+        }
+    }
+
+    @Override
+    public void stopPipelineExecution(final PipelineExecutionTraceKey pipelineExecutionTraceKey) {
+        checkNotNull("pipelineExecutionTraceKey",
+                     pipelineExecutionTraceKey);
+        pipelineService.stopPipelineExecution(pipelineExecutionTraceKey.getId());
+        pipelineExecutionChangeEvent.fire(new PipelineExecutionChangeEvent(PipelineExecutionChange.STOPPED,
+                                                                           pipelineExecutionTraceKey));
+    }
+
+    @Override
+    public void deletePipelineExecution(final PipelineExecutionTraceKey pipelineExecutionTraceKey) {
+        checkNotNull("pipelineExecutionTraceKey",
+                     pipelineExecutionTraceKey);
+        pipelineService.deletePipelineExecution(pipelineExecutionTraceKey.getId());
+        pipelineExecutionChangeEvent.fire(new PipelineExecutionChangeEvent(PipelineExecutionChange.DELETED,
+                                                                           pipelineExecutionTraceKey));
+    }
+
+    @Override
+    public void stopRuntime(final RuntimeKey runtimeKey) {
+        checkNotNull("runtimeKey",
+                     runtimeKey);
+        runtimeProvisioningService.stopRuntime(runtimeKey.getId());
+        runtimeChangeEvent.fire(new RuntimeChangeEvent(RuntimeChange.STOPPED,
+                                                       runtimeKey));
+    }
+
+    @Override
+    public void startRuntime(final RuntimeKey runtimeKey) {
+        checkNotNull("runtimeKey",
+                     runtimeKey);
+        runtimeProvisioningService.startRuntime(runtimeKey.getId());
+        runtimeChangeEvent.fire(new RuntimeChangeEvent(RuntimeChange.STARTED,
+                                                       runtimeKey));
+    }
+
+    @Override
+    public void deleteRuntime(final RuntimeKey runtimeKey,
+                              final boolean forced) {
+        checkNotNull("runtimeKey",
+                     runtimeKey);
+        runtimeProvisioningService.destroyRuntime(runtimeKey.getId(),
+                                                  forced);
+        runtimeChangeEvent.fire(new RuntimeChangeEvent(RuntimeChange.DELETED,
+                                                       runtimeKey));
+    }
+
+    private void validateForCreateRuntime(final ProviderKey providerKey,
+                                          final String runtimeName) {
+        final Provider provider = providerService.getProvider(providerKey);
+        if (provider == null) {
+            //uncommon case
+            logger.error("No provider was found for providerKey: " + providerKey);
+            throw new ServiceException("No provider was found for providerKey: " + providerKey);
+        }
+        final Collection<RuntimeQueryResultItem> items = runtimeProvisioningService.executeQuery(RuntimeQueryBuilder.newInstance()
+                                                                                                         .withRuntimeName(runtimeName)
+                                                                                                         .build());
+        if (!items.isEmpty()) {
+            throw new ServiceException("A runtime with the given name already exists: " + runtimeName);
         }
     }
 }

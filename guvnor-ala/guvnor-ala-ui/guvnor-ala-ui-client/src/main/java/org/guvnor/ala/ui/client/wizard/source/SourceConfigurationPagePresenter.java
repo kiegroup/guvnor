@@ -17,6 +17,8 @@
 package org.guvnor.ala.ui.client.wizard.source;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -91,6 +93,7 @@ public class SourceConfigurationPagePresenter
     private final View view;
     private final Caller<SourceService> sourceService;
     private final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
+    private final Map<String, Project> currentProjects = new HashMap<>();
 
     @Inject
     public SourceConfigurationPagePresenter(final View view,
@@ -138,6 +141,7 @@ public class SourceConfigurationPagePresenter
 
     public void clear() {
         view.clear();
+        clearProjects();
     }
 
     public void setup() {
@@ -160,8 +164,8 @@ public class SourceConfigurationPagePresenter
         return view.getOU();
     }
 
-    private String getProject() {
-        return view.getProject();
+    private Project getProject() {
+        return currentProjects.get(view.getProject());
     }
 
     private boolean isValid() {
@@ -169,7 +173,7 @@ public class SourceConfigurationPagePresenter
                 !getOU().isEmpty() &&
                 !getRepository().isEmpty() &&
                 !getBranch().isEmpty() &&
-                !getProject().isEmpty();
+                getProject() != null;
     }
 
     public void disable() {
@@ -190,7 +194,7 @@ public class SourceConfigurationPagePresenter
             view.setOUStatus(FormStatus.VALID);
             view.clearRepositories();
             view.clearBranches();
-            view.clearProjects();
+            clearProjects();
             loadRepositories(getOU());
         } else {
             view.setOUStatus(FormStatus.ERROR);
@@ -202,7 +206,7 @@ public class SourceConfigurationPagePresenter
         if (!view.getRepository().isEmpty()) {
             view.setRepositoryStatus(FormStatus.VALID);
             view.clearBranches();
-            view.clearProjects();
+            clearProjects();
             loadBranches(getRepository());
         } else {
             view.setRepositoryStatus(FormStatus.ERROR);
@@ -213,7 +217,7 @@ public class SourceConfigurationPagePresenter
     protected void onBranchChange() {
         if (!view.getBranch().isEmpty()) {
             view.setBranchStatus(FormStatus.VALID);
-            view.clearProjects();
+            clearProjects();
             loadProjects(getRepository(),
                          getBranch());
         } else {
@@ -237,7 +241,7 @@ public class SourceConfigurationPagePresenter
                                ous.forEach(view::addOrganizationUnit);
                                view.clearRepositories();
                                view.clearBranches();
-                               view.clearProjects();
+                               clearProjects();
                            },
                            new DefaultErrorCallback()
         ).getOrganizationUnits();
@@ -248,7 +252,7 @@ public class SourceConfigurationPagePresenter
                                view.clearRepositories();
                                repos.forEach(view::addRepository);
                                view.clearBranches();
-                               view.clearProjects();
+                               clearProjects();
                            },
                            new DefaultErrorCallback()
         ).getRepositories(ou);
@@ -258,7 +262,7 @@ public class SourceConfigurationPagePresenter
         sourceService.call((Collection<String> branches) -> {
                                view.clearBranches();
                                branches.forEach(view::addBranch);
-                               view.clearProjects();
+                               clearProjects();
                            },
                            new DefaultErrorCallback()
         ).getBranches(repository);
@@ -267,12 +271,21 @@ public class SourceConfigurationPagePresenter
     private void loadProjects(String repository,
                               String branch) {
         sourceService.call((Collection<Project> projects) -> {
-                               view.clearProjects();
-                               projects.forEach(project -> view.addProject(project.getProjectName()));
+                               clearProjects();
+                               projects.forEach(project -> {
+                                   view.addProject(project.getProjectName());
+                                   currentProjects.put(project.getProjectName(),
+                                                       project);
+                               });
                            },
                            new DefaultErrorCallback()
         ).getProjects(repository,
                       branch);
+    }
+
+    private void clearProjects() {
+        view.clearProjects();
+        currentProjects.clear();
     }
 
     private void onContentChange() {

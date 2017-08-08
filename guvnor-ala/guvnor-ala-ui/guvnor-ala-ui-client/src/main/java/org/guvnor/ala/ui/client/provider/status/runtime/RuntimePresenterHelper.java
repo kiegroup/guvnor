@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.guvnor.ala.ui.client.widget.pipeline.stage.State;
 import org.guvnor.ala.ui.model.PipelineStatus;
 import org.guvnor.ala.ui.model.RuntimeStatus;
 
@@ -30,7 +31,7 @@ public class RuntimePresenterHelper {
      * @param status pipeline status for the calculation.
      * @return a list of css classes.
      */
-    public static Collection<String> buildStyle(final PipelineStatus status) {
+    public static Collection<String> buildIconStyle(final PipelineStatus status) {
         if (status == null) {
             return Collections.emptyList();
         }
@@ -51,9 +52,35 @@ public class RuntimePresenterHelper {
                                      "list-view-pf-icon-md",
                                      "pficon-error-circle-o",
                                      "list-view-pf-icon-danger");
+            case STOPPED:
+                return Arrays.asList("fa",
+                                     "list-view-pf-icon-md",
+                                     "fa-ban",
+                                     "list-view-pf-icon-info");
         }
 
         return Collections.emptyList();
+    }
+
+    /**
+     * Transform the runtime status into a runtime value representable in the UI.
+     * @param status the runtime status.
+     * @return the UI representable status.
+     */
+    public static RuntimeStatus buildRuntimeStatus(String status) {
+        if (status == null) {
+            return RuntimeStatus.UNKNOWN;
+        }
+        switch (status) {
+            case "RUNNING":
+                return RuntimeStatus.RUNNING;
+            case "STOPPED":
+                return RuntimeStatus.STOPPED;
+            case "UNKNOWN":
+                return RuntimeStatus.UNKNOWN;
+            default:
+                return RuntimeStatus.UNKNOWN;
+        }
     }
 
     /**
@@ -61,9 +88,9 @@ public class RuntimePresenterHelper {
      * @param status runtime status for the calculation.
      * @return a list of css classes.
      */
-    public static Collection<String> buildStyle(final RuntimeStatus status) {
+    public static Collection<String> buildIconStyle(final RuntimeStatus status) {
         switch (status) {
-            case STARTED:
+            case RUNNING:
                 return Arrays.asList("pficon",
                                      "list-view-pf-icon-md",
                                      "pficon-ok",
@@ -79,17 +106,44 @@ public class RuntimePresenterHelper {
                                      "pficon-warning-triangle-o",
                                      "list-view-pf-icon-warning");
             case STOPPED:
-                return Arrays.asList("pficon",
+                return Arrays.asList("fa",
                                      "list-view-pf-icon-md",
-                                     "pficon-close",
+                                     "fa-ban",
                                      "list-view-pf-icon-info");
             case ERROR:
                 return Arrays.asList("pficon",
                                      "list-view-pf-icon-md",
                                      "pficon-error-circle-o",
                                      "list-view-pf-icon-danger");
+
+            case UNKNOWN:
+                return Arrays.asList("fa",
+                                     "list-view-pf-icon-md",
+                                     "fa-circle-o",
+                                     "list-view-pf-icon-info");
         }
 
         return Collections.emptyList();
+    }
+
+    /**
+     * Gets the stage state to set in the UI given the PipelineStatus.
+     * @param stageStatus the stage status to represent in the UI.
+     * @return a State for configuring the StagePresenter.
+     */
+    public static State buildStageState(final PipelineStatus stageStatus) {
+        if (stageStatus == null) {
+            return State.DONE;
+        }
+        switch (stageStatus) {
+            case RUNNING:
+                return State.EXECUTING;
+            case ERROR:
+                return State.ERROR;
+            case STOPPED:
+                return State.STOPPED;
+            default:
+                return State.DONE;
+        }
     }
 }

@@ -22,33 +22,71 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
+import org.guvnor.ala.ui.client.provider.status.runtime.actions.RuntimeActionItemPresenter;
+import org.guvnor.ala.ui.client.provider.status.runtime.actions.RuntimeActionItemSeparatorPresenter;
+import org.guvnor.ala.ui.client.util.PopupHelper;
 import org.guvnor.ala.ui.client.widget.pipeline.PipelinePresenter;
 import org.guvnor.ala.ui.client.widget.pipeline.stage.StagePresenter;
-import org.guvnor.ala.ui.client.widget.pipeline.stage.State;
 import org.guvnor.ala.ui.client.widget.pipeline.transition.TransitionPresenter;
+import org.guvnor.ala.ui.events.PipelineExecutionChangeEvent;
 import org.guvnor.ala.ui.events.PipelineStatusChangeEvent;
+import org.guvnor.ala.ui.events.RuntimeChangeEvent;
 import org.guvnor.ala.ui.events.StageStatusChangeEvent;
 import org.guvnor.ala.ui.model.Pipeline;
 import org.guvnor.ala.ui.model.PipelineExecutionTrace;
 import org.guvnor.ala.ui.model.PipelineExecutionTraceKey;
 import org.guvnor.ala.ui.model.PipelineStatus;
 import org.guvnor.ala.ui.model.Runtime;
+import org.guvnor.ala.ui.model.RuntimeKey;
 import org.guvnor.ala.ui.model.RuntimeListItem;
+import org.guvnor.ala.ui.model.RuntimeStatus;
 import org.guvnor.ala.ui.model.Stage;
 import org.guvnor.ala.ui.service.RuntimeService;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.guvnor.ala.ui.client.provider.status.runtime.RuntimePresenterHelper.buildStyle;
+import static org.guvnor.ala.ui.client.provider.status.runtime.RuntimePresenterHelper.buildIconStyle;
+import static org.guvnor.ala.ui.client.provider.status.runtime.RuntimePresenterHelper.buildRuntimeStatus;
+import static org.guvnor.ala.ui.client.provider.status.runtime.RuntimePresenterHelper.buildStageState;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionAlreadyStoppedMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionConfirmDeleteMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionConfirmDeleteTitle;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionConfirmStopMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionConfirmStopTitle;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionDeleteAction;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionDeleteSuccessMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionStopAction;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionStopSuccessMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeConfirmDeleteMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeConfirmDeleteTitle;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeConfirmForcedDeleteMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeConfirmForcedDeleteTitle;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeConfirmStopMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeConfirmStopTitle;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeleteAction;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeleteFailedMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeleteFailedTitle;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeleteSuccessMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStartAction;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStartSuccessMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStopAction;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStopSuccessMessage;
+import static org.guvnor.ala.ui.model.RuntimeStatus.RUNNING;
+import static org.guvnor.ala.ui.model.RuntimeStatus.STOPPED;
 
 @Dependent
 public class RuntimePresenter {
@@ -62,17 +100,15 @@ public class RuntimePresenter {
 
         void setEndpoint(String endpoint);
 
-        void disableStart();
-
-        void enableStart();
-
-        void disableStop();
-
-        void enableStop();
-
         void setStatus(final Collection<String> strings);
 
+        void setStatusTitle(final String title);
+
         void addExpandedContent(final IsElement element);
+
+        void addActionItem(final IsElement element);
+
+        void clearActionItems();
     }
 
     private static final String SYSTEM_PIPELINE_NAME = "<system>";
@@ -81,7 +117,12 @@ public class RuntimePresenter {
     private final PipelinePresenter pipelinePresenter;
     private final ManagedInstance<StagePresenter> stagePresenterInstance;
     private final ManagedInstance<TransitionPresenter> transitionPresenterInstance;
+    private final ManagedInstance<RuntimeActionItemPresenter> actionItemPresenterInstance;
+    private final ManagedInstance<RuntimeActionItemSeparatorPresenter> actionItemSeparatorPresenterInstance;
     private final Caller<RuntimeService> runtimeService;
+    protected Event<NotificationEvent> notification;
+    private final PopupHelper popupHelper;
+    private final TranslationService translationService;
 
     private final List<Stage> currentStages = new ArrayList<>();
     private final Map<Stage, StagePresenter> stagePresenters = new HashMap<>();
@@ -89,22 +130,54 @@ public class RuntimePresenter {
 
     private RuntimeListItem item;
 
+    private RuntimeActionItemPresenter startAction;
+    private RuntimeActionItemPresenter stopAction;
+    private RuntimeActionItemPresenter deleteAction;
+    private RuntimeActionItemSeparatorPresenter separator;
+
     @Inject
     public RuntimePresenter(final View view,
                             final PipelinePresenter pipelinePresenter,
                             final ManagedInstance<StagePresenter> stagePresenterInstance,
                             final ManagedInstance<TransitionPresenter> transitionPresenterInstance,
-                            final Caller<RuntimeService> runtimeService) {
+                            final ManagedInstance<RuntimeActionItemPresenter> actionItemPresenterInstance,
+                            final ManagedInstance<RuntimeActionItemSeparatorPresenter> actionItemSeparatorPresenterInstance,
+                            final Caller<RuntimeService> runtimeService,
+                            final Event<NotificationEvent> notification,
+                            final PopupHelper popupHelper,
+                            final TranslationService translationService) {
         this.view = view;
         this.pipelinePresenter = pipelinePresenter;
         this.stagePresenterInstance = stagePresenterInstance;
         this.transitionPresenterInstance = transitionPresenterInstance;
+        this.actionItemPresenterInstance = actionItemPresenterInstance;
+        this.actionItemSeparatorPresenterInstance = actionItemSeparatorPresenterInstance;
         this.runtimeService = runtimeService;
+        this.notification = notification;
+        this.popupHelper = popupHelper;
+        this.translationService = translationService;
     }
 
     @PostConstruct
     public void init() {
         view.init(this);
+        startAction = newActionItemPresenter();
+        stopAction = newActionItemPresenter();
+        deleteAction = newActionItemPresenter();
+        separator = newSeparatorItem();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        clearPipeline();
+        actionItemPresenterInstance.destroy(startAction);
+        actionItemPresenterInstance.destroy(stopAction);
+        actionItemPresenterInstance.destroy(deleteAction);
+        actionItemSeparatorPresenterInstance.destroy(separator);
+    }
+
+    public View getView() {
+        return view;
     }
 
     public void setup(final RuntimeListItem runtimeListItem) {
@@ -118,10 +191,14 @@ public class RuntimePresenter {
         view.addExpandedContent(pipelinePresenter.getView());
     }
 
+    public RuntimeListItem getItem() {
+        return item;
+    }
+
     private void setupRuntime(RuntimeListItem item) {
         String itemLabel = item.getItemLabel();
         String pipelineName = SYSTEM_PIPELINE_NAME;
-        String createdDate = item.getRuntime().createDate();
+        String createdDate = item.getRuntime().getCreatedDate();
         String endpoint = "";
 
         Runtime runtime = item.getRuntime();
@@ -138,10 +215,7 @@ public class RuntimePresenter {
             endpoint = runtime.getEndpoint();
         }
         view.setEndpoint(endpoint);
-        //TODO, when a runtime exists we should ideally set the runtime status instead.
-        if (trace != null) {
-            processPipelineStatus(trace.getPipelineStatus());
-        }
+        processRuntimeStatus(runtime);
     }
 
     private void setupPipelineTrace(RuntimeListItem item) {
@@ -173,7 +247,7 @@ public class RuntimePresenter {
                 }
                 final StagePresenter stagePresenter = newStagePresenter();
                 stagePresenter.setup(stage);
-                stagePresenter.setState(calculateState(stageStatus));
+                stagePresenter.setState(buildStageState(stageStatus));
                 pipelinePresenter.addStage(stagePresenter.getView());
                 currentStages.add(stage);
                 stagePresenters.put(stage,
@@ -185,46 +259,74 @@ public class RuntimePresenter {
     private boolean showStage(final PipelineStatus stageStatus) {
         return stageStatus == PipelineStatus.RUNNING ||
                 stageStatus == PipelineStatus.FINISHED ||
-                stageStatus == PipelineStatus.ERROR;
-    }
-
-    private State calculateState(final PipelineStatus stageStatus) {
-        if (stageStatus == PipelineStatus.RUNNING) {
-            return State.EXECUTING;
-        } else if (stageStatus == PipelineStatus.ERROR) {
-            return State.ERROR;
-        } else {
-            return State.DONE;
-        }
+                stageStatus == PipelineStatus.ERROR ||
+                stageStatus == PipelineStatus.STOPPED;
     }
 
     private void processRuntimeStatus(final Runtime runtime) {
-        //TODO set the proper runtime status.
-        if (runtime.getStatus() != null) {
-            switch (runtime.getStatus()) {
-                case STARTED:
-                case LOADING:
-                case WARN:
-                    view.setEndpoint(runtime.getEndpoint());
-                    view.enableStop();
-                    view.disableStart();
-                    break;
-                case STOPPED:
-                case ERROR:
-                    view.disableStop();
-                    view.enableStart();
-                    break;
-            }
-            view.setStatus(buildStyle(runtime.getStatus()));
+        view.clearActionItems();
+        enableActions(true);
+        view.addActionItem(startAction.getView());
+        view.addActionItem(stopAction.getView());
+        view.addActionItem(separator.getView());
+        view.addActionItem(deleteAction.getView());
+
+        startAction.setup(translationService.getTranslation(RuntimePresenter_RuntimeStartAction),
+                          this::startRuntime);
+        stopAction.setup(translationService.getTranslation(RuntimePresenter_RuntimeStopAction),
+                         this::stopRuntime);
+        deleteAction.setup(translationService.getTranslation(RuntimePresenter_RuntimeDeleteAction),
+                           this::deleteRuntime);
+
+        RuntimeStatus runtimeStatus = buildRuntimeStatus(runtime.getStatus());
+        if (RUNNING == runtimeStatus) {
+            startAction.setEnabled(false);
         }
+        if (STOPPED == runtimeStatus) {
+            stopAction.setEnabled(false);
+        }
+        view.setStatus(buildIconStyle(runtimeStatus));
+        view.setStatusTitle(runtime.getStatus());
     }
 
     private void processPipelineStatus(final PipelineStatus status) {
-        //TODO check if we need additinal processing like enabling the start, stop, buttons.
-        view.setStatus(buildStyle(status));
+        view.clearActionItems();
+        enableActions(false);
+        view.addActionItem(stopAction.getView());
+        view.addActionItem(separator.getView());
+        view.addActionItem(deleteAction.getView());
+
+        stopAction.setup(translationService.getTranslation(RuntimePresenter_PipelineExecutionStopAction),
+                         this::stopPipeline);
+        deleteAction.setup(translationService.getTranslation(RuntimePresenter_PipelineExecutionDeleteAction),
+                           this::deletePipeline);
+
+        switch (status) {
+            case SCHEDULED:
+            case RUNNING:
+                stopAction.setEnabled(true);
+                break;
+            case ERROR:
+            case STOPPED:
+                deleteAction.setEnabled(true);
+                break;
+            case FINISHED:
+                if (item.getRuntime() == null) {
+                    deleteAction.setEnabled(true);
+                }
+                break;
+        }
+        view.setStatus(buildIconStyle(status));
+        view.setStatusTitle(status.name());
     }
 
-    public void onStageStatusChange(@Observes StageStatusChangeEvent event) {
+    private void enableActions(boolean enabled) {
+        startAction.setEnabled(enabled);
+        stopAction.setEnabled(enabled);
+        deleteAction.setEnabled(enabled);
+    }
+
+    public void onStageStatusChange(@Observes final StageStatusChangeEvent event) {
         if (isFromCurrentPipeline(event.getPipelineExecutionTraceKey())) {
             PipelineExecutionTrace trace = item.getPipelineTrace();
             Stage currentStage = currentStages.stream().
@@ -234,14 +336,14 @@ public class RuntimePresenter {
 
             if (currentStage != null) {
                 StagePresenter stagePresenter = stagePresenters.get(currentStage);
-                stagePresenter.setState(calculateState(event.getStatus()));
+                stagePresenter.setState(buildStageState(event.getStatus()));
             } else {
                 Stage stage = new Stage(item.getPipelineTrace().getPipeline().getKey(),
                                         event.getStage());
                 PipelineStatus stageStatus = event.getStatus();
                 StagePresenter stagePresenter = newStagePresenter();
                 stagePresenter.setup(stage);
-                stagePresenter.setState(calculateState(stageStatus));
+                stagePresenter.setState(buildStageState(stageStatus));
                 if (!currentStages.isEmpty()) {
                     TransitionPresenter transitionPresenter = newTransitionPresenter();
                     currentTransitions.add(transitionPresenter);
@@ -268,9 +370,26 @@ public class RuntimePresenter {
         }
     }
 
-    private void refresh(PipelineExecutionTraceKey pipelineExecutionTraceKey) {
+    public void onPipelineExecutionChange(@Observes final PipelineExecutionChangeEvent event) {
+        if (event.isStop() && isFromCurrentPipeline(event.getPipelineExecutionTraceKey())) {
+            refresh(event.getPipelineExecutionTraceKey());
+        }
+    }
+
+    public void onRuntimeChangeEvent(@Observes final RuntimeChangeEvent event) {
+        if ((event.isStart() || event.isStop()) && isFromCurrentRuntime(event.getRuntimeKey())) {
+            refresh(event.getRuntimeKey());
+        }
+    }
+
+    protected void refresh(final PipelineExecutionTraceKey pipelineExecutionTraceKey) {
         runtimeService.call(getLoadItemSuccessCallback(),
-                            new DefaultErrorCallback()).getRuntimeItem(pipelineExecutionTraceKey);
+                            getDefaultErrorCallback()).getRuntimeItem(pipelineExecutionTraceKey);
+    }
+
+    protected void refresh(final RuntimeKey runtimeKey) {
+        runtimeService.call(getLoadItemSuccessCallback(),
+                            getDefaultErrorCallback()).getRuntimeItem(runtimeKey);
     }
 
     private RemoteCallback<RuntimeListItem> getLoadItemSuccessCallback() {
@@ -281,40 +400,125 @@ public class RuntimePresenter {
         };
     }
 
-    public void start() {
-        //runtimeService.start(...)
-        Window.alert("Not yet implemented");
+    protected void startRuntime() {
+        runtimeService.call(getStartRuntimeSuccessCallback(),
+                            getDefaultErrorCallback()).startRuntime(item.getRuntime().getKey());
     }
 
-    public void stop() {
-        //runtimeService.stop(...)
-        Window.alert("Not yet implemented");
+    private RemoteCallback<Void> getStartRuntimeSuccessCallback() {
+        return aVoid -> notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_RuntimeStartSuccessMessage,
+                                                                                          item.getRuntime().getKey().getId()),
+                                                                NotificationEvent.NotificationType.SUCCESS));
     }
 
-    public void rebuild() {
-        //runtimeService.rebuild(...)
-        Window.alert("Not yet implemented");
+    protected void stopRuntime() {
+        confirmAndExecute(translationService.getTranslation(RuntimePresenter_RuntimeConfirmStopTitle),
+                          translationService.getTranslation(RuntimePresenter_RuntimeConfirmStopMessage),
+                          () -> runtimeService.call(getStopRuntimeSuccessCallback(),
+                                                    getDefaultErrorCallback()).stopRuntime(item.getRuntime().getKey()));
     }
 
-    public void delete() {
-        //runtimeService.delete(...)
-        Window.alert("Not yet implemented");
+    protected RemoteCallback<Void> getStopRuntimeSuccessCallback() {
+        return aVoid -> notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_RuntimeStopSuccessMessage,
+                                                                                          item.getRuntime().getKey().getId()),
+                                                                NotificationEvent.NotificationType.SUCCESS));
     }
 
-    public View getView() {
-        return view;
+    protected void deleteRuntime() {
+        confirmAndExecute(translationService.getTranslation(RuntimePresenter_RuntimeConfirmDeleteTitle),
+                          translationService.getTranslation(RuntimePresenter_RuntimeConfirmDeleteMessage),
+                          () -> runtimeService.call(getDeleteRuntimeSuccessCallback(),
+                                                    getDeleteRuntimeErrorCallback()).deleteRuntime(item.getRuntime().getKey(),
+                                                                                                   false));
     }
 
-    private boolean isFromCurrentPipeline(PipelineExecutionTraceKey pipelineExecutionTraceKey) {
+    protected void forceDeleteRuntime() {
+        confirmAndExecute(translationService.getTranslation(RuntimePresenter_RuntimeConfirmForcedDeleteTitle),
+                          translationService.getTranslation(RuntimePresenter_RuntimeConfirmForcedDeleteMessage),
+                          () -> runtimeService.call(getDeleteRuntimeSuccessCallback(),
+                                                    getDefaultErrorCallback()).deleteRuntime(item.getRuntime().getKey(),
+                                                                                             true));
+    }
+
+    private RemoteCallback<Void> getDeleteRuntimeSuccessCallback() {
+        return aVoid -> notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_RuntimeDeleteSuccessMessage,
+                                                                                          item.getRuntime().getKey().getId()),
+                                                                NotificationEvent.NotificationType.SUCCESS));
+    }
+
+    private ErrorCallback<Message> getDeleteRuntimeErrorCallback() {
+        return (message, throwable) -> {
+            confirmAndExecute(translationService.getTranslation(RuntimePresenter_RuntimeDeleteFailedTitle),
+                              translationService.format(RuntimePresenter_RuntimeDeleteFailedMessage,
+                                                        throwable.getMessage()),
+                              this::forceDeleteRuntime);
+            return false;
+        };
+    }
+
+    protected void stopPipeline() {
+        confirmAndExecute(translationService.getTranslation(RuntimePresenter_PipelineExecutionConfirmStopTitle),
+                          translationService.getTranslation(RuntimePresenter_PipelineExecutionConfirmStopMessage),
+                          () -> {
+                              if (item.isRuntime()) {
+                                  popupHelper.showInformationPopup(translationService.getTranslation(RuntimePresenter_PipelineExecutionAlreadyStoppedMessage));
+                              } else {
+                                  runtimeService.call(getStopPipelineSuccessCallback(),
+                                                      getDefaultErrorCallback()).stopPipelineExecution(item.getPipelineTrace().getKey());
+                              }
+                          });
+    }
+
+    private RemoteCallback<Void> getStopPipelineSuccessCallback() {
+        return aVoid -> notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_PipelineExecutionStopSuccessMessage,
+                                                                                          item.getPipelineTrace().getKey().getId()),
+                                                                NotificationEvent.NotificationType.SUCCESS));
+    }
+
+    protected void deletePipeline() {
+        confirmAndExecute(translationService.getTranslation(RuntimePresenter_PipelineExecutionConfirmDeleteTitle),
+                          translationService.getTranslation(RuntimePresenter_PipelineExecutionConfirmDeleteMessage),
+                          () -> runtimeService.call(getDeletePipelineSuccessCallback(),
+                                                    getDefaultErrorCallback()).deletePipelineExecution(item.getPipelineTrace().getKey()));
+    }
+
+    private RemoteCallback<Void> getDeletePipelineSuccessCallback() {
+        return aVoid -> notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_PipelineExecutionDeleteSuccessMessage,
+                                                                                          item.getPipelineTrace().getKey().getId()),
+                                                                NotificationEvent.NotificationType.SUCCESS));
+    }
+
+    private void confirmAndExecute(final String title,
+                                   final String message,
+                                   final Command yesCommand) {
+        popupHelper.showYesNoPopup(title,
+                                   message,
+                                   yesCommand,
+                                   () -> {
+                                   });
+    }
+
+    private ErrorCallback<Message> getDefaultErrorCallback() {
+        return popupHelper.getPopupErrorCallback();
+    }
+
+    private boolean isFromCurrentPipeline(final PipelineExecutionTraceKey pipelineExecutionTraceKey) {
         return item != null &&
                 !item.isRuntime() &&
                 item.getPipelineTrace().getKey().equals(pipelineExecutionTraceKey);
+    }
+
+    private boolean isFromCurrentRuntime(final RuntimeKey runtimeKey) {
+        return item != null &&
+                item.isRuntime() &&
+                item.getRuntime().getKey().equals(runtimeKey);
     }
 
     private void clearPipeline() {
         pipelinePresenter.clearStages();
         currentStages.clear();
         stagePresenters.values().forEach(stagePresenterInstance::destroy);
+        stagePresenters.clear();
         currentTransitions.forEach(transitionPresenterInstance::destroy);
         currentTransitions.clear();
     }
@@ -325,5 +529,13 @@ public class RuntimePresenter {
 
     protected TransitionPresenter newTransitionPresenter() {
         return transitionPresenterInstance.get();
+    }
+
+    protected RuntimeActionItemPresenter newActionItemPresenter() {
+        return actionItemPresenterInstance.get();
+    }
+
+    protected RuntimeActionItemSeparatorPresenter newSeparatorItem() {
+        return actionItemSeparatorPresenterInstance.get();
     }
 }

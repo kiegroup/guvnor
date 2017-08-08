@@ -18,6 +18,8 @@ package org.guvnor.ala.ui.client.util;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
@@ -26,43 +28,67 @@ import org.uberfire.mvp.Command;
 public class PopupHelper {
 
     public void showInformationPopup(final String message) {
-        showOkButtonPopup(CommonConstants.INSTANCE.Information(),
-                          message);
+        showNotificationPopup(CommonConstants.INSTANCE.Information(),
+                              message);
     }
 
     public void showErrorPopup(final String message) {
-        showOkButtonPopup(CommonConstants.INSTANCE.Error(),
-                          message);
+        showNotificationPopup(CommonConstants.INSTANCE.Error(),
+                              message);
     }
 
     public void showYesNoPopup(final String title,
                                final String message,
                                final Command yesCommand,
                                final Command noCommand) {
-        YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup(title,
-                                                                      message,
-                                                                      yesCommand,
-                                                                      noCommand,
-                                                                      null);
+        YesNoCancelPopup popup = newYesNoPopup(title,
+                                               message,
+                                               yesCommand,
+                                               noCommand);
+
         popup.setClosable(false);
         popup.clearScrollHeight();
         popup.show();
     }
 
-    private static void showOkButtonPopup(final String title,
-                                          final String message) {
-        YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup(title,
-                                                                      message,
-                                                                      () -> {
-                                                                      },
-                                                                      CommonConstants.INSTANCE.OK(),
-                                                                      null,
-                                                                      null,
-                                                                      null,
-                                                                      null);
+    public ErrorCallback<Message> getPopupErrorCallback() {
+        return (message, throwable) -> {
+            showErrorPopup(throwable.getMessage());
+            return false;
+        };
+    }
 
+    private void showNotificationPopup(final String title,
+                                       final String message) {
+        YesNoCancelPopup popup = newNotificationPopup(title,
+                                                      message);
         popup.setClosable(false);
         popup.clearScrollHeight();
         popup.show();
+    }
+
+    protected YesNoCancelPopup newYesNoPopup(final String title,
+                                             final String message,
+                                             final Command yesCommand,
+                                             final Command noCommand) {
+        return YesNoCancelPopup.newYesNoCancelPopup(title,
+                                                    message,
+                                                    yesCommand,
+                                                    noCommand,
+                                                    null);
+    }
+
+    protected YesNoCancelPopup newNotificationPopup(final String title,
+                                                    final String message) {
+
+        return YesNoCancelPopup.newYesNoCancelPopup(title,
+                                                    message,
+                                                    () -> {
+                                                    },
+                                                    CommonConstants.INSTANCE.OK(),
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null);
     }
 }

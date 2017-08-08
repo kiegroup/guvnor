@@ -16,7 +16,6 @@
 
 package org.guvnor.ala.registry.vfs;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,6 +34,7 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
+import static org.guvnor.ala.AlaSPITestCommons.mockList;
 import static org.guvnor.ala.registry.vfs.VFSRegistryHelper.PROVISIONING_BRANCH;
 import static org.guvnor.ala.registry.vfs.VFSRegistryHelper.PROVISIONING_PATH;
 import static org.junit.Assert.*;
@@ -301,14 +301,5 @@ public class VFSRegistryHelperTest {
             when(marshallerRegistry.get(any(Class.class))).thenReturn(marshaller);
             when(marshaller.unmarshal(MARSHALLED_VALUE + i)).thenReturn(expectedObjects.get(i));
         }
-    }
-
-    private <T> List<T> mockList(Class<T> clazz,
-                                 int count) {
-        List<T> result = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            result.add(mock(clazz));
-        }
-        return result;
     }
 }
