@@ -122,27 +122,42 @@ public class SourceConfigurationPagePresenterTest {
         when(view.getRuntimeName()).thenReturn(SOME_VALUE);
         presenter.isComplete(Assert::assertFalse);
 
-        when(view.getOU()).thenReturn(SOME_VALUE);
+        when(view.getOU()).thenReturn(OU);
         presenter.isComplete(Assert::assertFalse);
 
-        when(view.getRepository()).thenReturn(SOME_VALUE);
+        when(view.getRepository()).thenReturn(REPOSITORY);
         presenter.isComplete(Assert::assertFalse);
 
-        when(view.getBranch()).thenReturn(SOME_VALUE);
-        presenter.isComplete(Assert::assertFalse);
+        //now the branch is completed and emulate the projects are loaded.
+        when(view.getBranch()).thenReturn(BRANCH);
+        when(sourceService.getProjects(REPOSITORY,
+                                       BRANCH)).thenReturn(projects);
 
-        when(view.getProject()).thenReturn(SOME_VALUE);
+        presenter.onBranchChange();
+
+        //pick an arbitrary project as the selected one
+        int selectedProject = 1;
+        String projectName = projects.get(selectedProject).getProjectName();
+        when(view.getProject()).thenReturn(projectName);
         //completed when al values are in place.
         presenter.isComplete(Assert::assertTrue);
     }
 
     @Test
     public void testBuildSource() {
+        //emulate the page is completed and that there is a selected project.
         when(view.getRuntimeName()).thenReturn(RUNTIME_NAME);
         when(view.getOU()).thenReturn(OU);
         when(view.getRepository()).thenReturn(REPOSITORY);
         when(view.getBranch()).thenReturn(BRANCH);
-        when(view.getProject()).thenReturn(PROJECT);
+        when(sourceService.getProjects(REPOSITORY,
+                                       BRANCH)).thenReturn(projects);
+        presenter.onBranchChange();
+
+        //pick an arbitrary project as the selected one
+        int selectedProject = 2;
+        String projectName = projects.get(selectedProject).getProjectName();
+        when(view.getProject()).thenReturn(projectName);
 
         InternalGitSource source = (InternalGitSource) presenter.buildSource();
         assertEquals(OU,
@@ -151,7 +166,7 @@ public class SourceConfigurationPagePresenterTest {
                      source.getRepository());
         assertEquals(BRANCH,
                      source.getBranch());
-        assertEquals(PROJECT,
+        assertEquals(projects.get(selectedProject),
                      source.getProject());
     }
 
@@ -333,6 +348,7 @@ public class SourceConfigurationPagePresenterTest {
         for (int i = 0; i < ELEMENTS_SIZE; i++) {
             Project project = mock(Project.class);
             when(project.getProjectName()).thenReturn("Project.name." + i);
+            elements.add(project);
         }
         return elements;
     }

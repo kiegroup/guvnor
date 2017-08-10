@@ -27,6 +27,21 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 @JsonTypeInfo(use = CLASS, include = WRAPPER_OBJECT)
 public interface RuntimeState {
 
+    /**
+     * Common state value for indicating that a it's not possible to establish current runtime state.
+     */
+    String UNKNOWN = "UNKNOWN";
+
+    /**
+     * Common state value for indicating that a runtime is running.
+     */
+    String RUNNING = "RUNNING";
+
+    /**
+     * Common state value for indicating that a runtime is stopped.
+     */
+    String STOPPED = "STOPPED";
+
     /*
      * Get the Runtime State
      * @return String with the State

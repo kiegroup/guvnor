@@ -30,14 +30,20 @@ import org.guvnor.ala.ui.client.handler.ProviderConfigurationForm;
 import org.guvnor.ala.ui.client.provider.status.ProviderStatusPresenter;
 import org.guvnor.ala.ui.client.provider.status.empty.ProviderStatusEmptyPresenter;
 import org.guvnor.ala.ui.client.wizard.provider.empty.ProviderConfigEmptyPresenter;
+import org.guvnor.ala.ui.events.PipelineExecutionChange;
+import org.guvnor.ala.ui.events.PipelineExecutionChangeEvent;
+import org.guvnor.ala.ui.events.RuntimeChange;
+import org.guvnor.ala.ui.events.RuntimeChangeEvent;
+import org.guvnor.ala.ui.model.PipelineExecutionTraceKey;
 import org.guvnor.ala.ui.model.Provider;
 import org.guvnor.ala.ui.model.ProviderConfiguration;
 import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
+import org.guvnor.ala.ui.model.RuntimeKey;
 import org.guvnor.ala.ui.model.RuntimeListItem;
 import org.guvnor.ala.ui.model.RuntimesInfo;
 import org.guvnor.ala.ui.service.ProviderService;
-import org.guvnor.ala.ui.service.RuntimeService;
+import org.guvnor.ala.ui.service.ProvisioningScreensService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.IsElement;
 import org.junit.Before;
@@ -68,9 +74,9 @@ public class ProviderPresenterTest {
     private Caller<ProviderService> providerServiceCaller;
 
     @Mock
-    private RuntimeService runtimeService;
+    private ProvisioningScreensService provisioningScreensService;
 
-    private Caller<RuntimeService> runtimeServiceCaller;
+    private Caller<ProvisioningScreensService> provisioningScreensServiceCaller;
 
     @Mock
     private ProviderStatusEmptyPresenter providerStatusEmptyPresenter;
@@ -129,17 +135,17 @@ public class ProviderPresenterTest {
         when(providerStatusEmptyPresenter.getView()).thenReturn(providerStatusEmptyPresenterView);
 
         providerServiceCaller = spy(new CallerMock<>(providerService));
-        runtimeServiceCaller = spy(new CallerMock<>(runtimeService));
-        presenter = new ProviderPresenter(view,
-                                          providerServiceCaller,
-                                          runtimeServiceCaller,
-                                          providerStatusEmptyPresenter,
-                                          providerStatusPresenter,
-                                          providerConfigEmptyPresenter,
-                                          handlerRegistry,
-                                          notification,
-                                          providerTypeSelectedEvent,
-                                          addNewRuntimeEvent);
+        provisioningScreensServiceCaller = spy(new CallerMock<>(provisioningScreensService));
+        presenter = spy(new ProviderPresenter(view,
+                                              providerServiceCaller,
+                                              provisioningScreensServiceCaller,
+                                              providerStatusEmptyPresenter,
+                                              providerStatusPresenter,
+                                              providerConfigEmptyPresenter,
+                                              handlerRegistry,
+                                              notification,
+                                              providerTypeSelectedEvent,
+                                              addNewRuntimeEvent));
         presenter.init();
         verify(view,
                times(1)).init(presenter);
@@ -247,8 +253,29 @@ public class ProviderPresenterTest {
     }
 
     @Test
-    public void testOnRemoveProvider() {
+    public void testOnRemoveProviderWithRuntimes() {
+        //emulate that the provider was previously loaded.
+        prepareRuntimesInfo();
+        presenter.onProviderSelected(new ProviderSelectedEvent(providerKey));
+
+        when(provisioningScreensService.hasRuntimes(providerKey)).thenReturn(true);
         presenter.onRemoveProvider();
+
+        verify(view,
+               times(1)).showProviderCantBeDeleted();
+    }
+
+    @Test
+    public void testOnRemoveProviderWithNoRuntimesSuccessful() {
+        //emulate that the provider was previously loaded.
+        prepareRuntimesInfo();
+        presenter.onProviderSelected(new ProviderSelectedEvent(providerKey));
+
+        when(provisioningScreensService.hasRuntimes(providerKey)).thenReturn(false);
+        presenter.onRemoveProvider();
+
+        verify(view,
+               never()).showProviderCantBeDeleted();
         verify(view,
                times(1)).confirmRemove(any(Command.class));
     }
@@ -309,6 +336,84 @@ public class ProviderPresenterTest {
                times(1)).fire(new AddNewRuntimeEvent(provider));
     }
 
+    @Test
+    public void testOnRuntimeDeleted() {
+        //load the presenter.
+        prepareRuntimesInfo();
+        when(runtimeItems.isEmpty()).thenReturn(true);
+        presenter.onProviderSelected(new ProviderSelectedEvent(providerKey));
+
+        RuntimeKey runtimeKey = mock(RuntimeKey.class);
+        when(runtimeKey.getProviderKey()).thenReturn(providerKey);
+        when(providerStatusPresenter.removeItem(runtimeKey)).thenReturn(true);
+        //the provider status presenter is not empty after the removal.
+        when(providerStatusPresenter.isEmpty()).thenReturn(false);
+
+        presenter.onRuntimeChange(new RuntimeChangeEvent(RuntimeChange.DELETED,
+                                                         runtimeKey));
+        verify(providerStatusPresenter,
+               times(1)).removeItem(runtimeKey);
+    }
+
+    @Test
+    public void testOnRuntimeDeletedRefreshRequired() {
+        //load the presenter.
+        prepareRuntimesInfo();
+        when(runtimeItems.isEmpty()).thenReturn(true);
+        presenter.onProviderSelected(new ProviderSelectedEvent(providerKey));
+
+        RuntimeKey runtimeKey = mock(RuntimeKey.class);
+        when(runtimeKey.getProviderKey()).thenReturn(providerKey);
+        when(providerStatusPresenter.removeItem(runtimeKey)).thenReturn(true);
+        //the provider status presenter is empty after the removal.
+        when(providerStatusPresenter.isEmpty()).thenReturn(true);
+
+        presenter.onRuntimeChange(new RuntimeChangeEvent(RuntimeChange.DELETED,
+                                                         runtimeKey));
+        verify(providerStatusPresenter,
+               times(1)).removeItem(runtimeKey);
+        verify(presenter,
+               times(1)).refresh();
+    }
+
+    @Test
+    public void testPipelineExecutionDeleted() {
+        //load the presenter.
+        prepareRuntimesInfo();
+        when(runtimeItems.isEmpty()).thenReturn(true);
+        presenter.onProviderSelected(new ProviderSelectedEvent(providerKey));
+
+        PipelineExecutionTraceKey pipelineExecutionTraceKey = mock(PipelineExecutionTraceKey.class);
+        when(providerStatusPresenter.removeItem(pipelineExecutionTraceKey)).thenReturn(true);
+        //the provider status presenter is not empty after the removal.
+        when(providerStatusPresenter.isEmpty()).thenReturn(false);
+
+        presenter.onPipelineExecutionChange(new PipelineExecutionChangeEvent(PipelineExecutionChange.DELETED,
+                                                                             pipelineExecutionTraceKey));
+        verify(providerStatusPresenter,
+               times(1)).removeItem(pipelineExecutionTraceKey);
+    }
+
+    @Test
+    public void testPipelineExecutionDeletedRefreshRequired() {
+        //load the presenter.
+        prepareRuntimesInfo();
+        when(runtimeItems.isEmpty()).thenReturn(true);
+        presenter.onProviderSelected(new ProviderSelectedEvent(providerKey));
+
+        PipelineExecutionTraceKey pipelineExecutionTraceKey = mock(PipelineExecutionTraceKey.class);
+        when(providerStatusPresenter.removeItem(pipelineExecutionTraceKey)).thenReturn(true);
+        //the status presenter is empty after the removal.
+        when(providerStatusPresenter.isEmpty()).thenReturn(true);
+
+        presenter.onPipelineExecutionChange(new PipelineExecutionChangeEvent(PipelineExecutionChange.DELETED,
+                                                                             pipelineExecutionTraceKey));
+        verify(providerStatusPresenter,
+               times(1)).removeItem(pipelineExecutionTraceKey);
+        verify(presenter,
+               times(1)).refresh();
+    }
+
     private void prepareRuntimesInfo() {
         ProviderTypeKey providerTypeKey = mockProviderTypeKey("1");
         providerKey = mockProviderKey(providerTypeKey,
@@ -320,7 +425,7 @@ public class ProviderPresenterTest {
         when(runtimesInfo.getProvider()).thenReturn(provider);
         when(runtimesInfo.getRuntimeItems()).thenReturn(runtimeItems);
         when(providerService.getProvider(providerKey)).thenReturn(provider);
-        when(runtimeService.getRuntimesInfo(providerKey)).thenReturn(runtimesInfo);
+        when(provisioningScreensService.getRuntimesInfo(providerKey)).thenReturn(runtimesInfo);
 
         when(handlerRegistry.isProviderEnabled(providerTypeKey)).thenReturn(true);
         when(handlerRegistry.getProviderHandler(providerTypeKey)).thenReturn(handler);
@@ -330,7 +435,7 @@ public class ProviderPresenterTest {
     }
 
     private void verifyRuntimesInfoLoaded(int currentTimes) {
-        verify(runtimeService,
+        verify(provisioningScreensService,
                times(currentTimes)).getRuntimesInfo(providerKey);
 
         verify(providerStatusPresenter,

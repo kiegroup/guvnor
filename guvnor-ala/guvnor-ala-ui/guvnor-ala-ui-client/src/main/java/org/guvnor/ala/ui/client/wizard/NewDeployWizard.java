@@ -23,6 +23,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.guvnor.ala.ui.client.events.RefreshRuntimeEvent;
+import org.guvnor.ala.ui.client.util.PopupHelper;
 import org.guvnor.ala.ui.client.wizard.pipeline.SelectPipelinePagePresenter;
 import org.guvnor.ala.ui.client.wizard.source.SourceConfigurationPagePresenter;
 import org.guvnor.ala.ui.model.PipelineKey;
@@ -33,7 +34,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.NewDeployWizard_PipelineStartErrorMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.NewDeployWizard_PipelineStartSuccessMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.NewDeployWizard_Title;
 
@@ -43,7 +43,7 @@ public class NewDeployWizard
 
     private final SelectPipelinePagePresenter selectPipelinePage;
     private final SourceConfigurationPagePresenter sourceConfigPage;
-
+    private final PopupHelper popupHelper;
     private final Caller<RuntimeService> runtimeService;
 
     private final Event<RefreshRuntimeEvent> refreshRuntimeEvent;
@@ -53,12 +53,14 @@ public class NewDeployWizard
     @Inject
     public NewDeployWizard(final SelectPipelinePagePresenter selectPipelinePage,
                            final SourceConfigurationPagePresenter sourceConfigPage,
+                           final PopupHelper popupHelper,
                            final TranslationService translationService,
                            final Caller<RuntimeService> runtimeService,
                            final Event<NotificationEvent> notification,
                            final Event<RefreshRuntimeEvent> refreshRuntimeEvent) {
         super(translationService,
               notification);
+        this.popupHelper = popupHelper;
         this.selectPipelinePage = selectPipelinePage;
         this.sourceConfigPage = sourceConfigPage;
         this.runtimeService = runtimeService;
@@ -102,10 +104,10 @@ public class NewDeployWizard
         final Source source = sourceConfigPage.buildSource();
 
         runtimeService.call((Void aVoid) -> onPipelineStartSuccess(),
-                            (message, throwable) -> onPipelineStartError()).createRuntime(provider.getKey(),
-                                                                                          runtime,
-                                                                                          source,
-                                                                                          pipeline);
+                            popupHelper.getPopupErrorCallback()).createRuntime(provider.getKey(),
+                                                                               runtime,
+                                                                               source,
+                                                                               pipeline);
     }
 
     private void onPipelineStartSuccess() {
@@ -113,14 +115,6 @@ public class NewDeployWizard
                                                 NotificationEvent.NotificationType.SUCCESS));
         NewDeployWizard.super.complete();
         refreshRuntimeEvent.fire(new RefreshRuntimeEvent(provider.getKey()));
-    }
-
-    private boolean onPipelineStartError() {
-        notification.fire(new NotificationEvent(translationService.getTranslation(NewDeployWizard_PipelineStartErrorMessage),
-                                                NotificationEvent.NotificationType.ERROR));
-        NewDeployWizard.this.pageSelected(0);
-        NewDeployWizard.this.start();
-        return false;
     }
 
     private void clear() {

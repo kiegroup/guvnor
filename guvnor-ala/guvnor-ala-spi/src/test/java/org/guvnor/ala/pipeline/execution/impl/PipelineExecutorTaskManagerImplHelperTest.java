@@ -16,13 +16,17 @@
 
 package org.guvnor.ala.pipeline.execution.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.enterprise.inject.Instance;
 
 import org.guvnor.ala.pipeline.ConfigExecutor;
+import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.events.PipelineEventListener;
+import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
+import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskDef;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +44,8 @@ public class PipelineExecutorTaskManagerImplHelperTest {
     private static final int CONFIG_EXECUTORS_SIZE = 5;
 
     private static final int PIPELINE_EVENT_LISTENERS = 7;
+
+    private static final int STAGES_COUNT = 7;
 
     @Mock
     private Instance<ConfigExecutor> configExecutorsInstance;
@@ -130,7 +136,108 @@ public class PipelineExecutorTaskManagerImplHelperTest {
                      result);
     }
 
+    @Test
+    public void testSetTaskInStoppedStatus() {
+
+        List<String> scheduledStages = mockStages(STAGES_COUNT,
+                                                  "scheduled");
+        List<String> runningStages = mockStages(STAGES_COUNT,
+                                                "running");
+        List<String> finishedStages = mockStages(STAGES_COUNT,
+                                                 "finished");
+        List<String> errorStages = mockStages(STAGES_COUNT,
+                                              "error");
+        List<String> stoppedStages = mockStages(STAGES_COUNT,
+                                                "stopped");
+        List<String> stages = new ArrayList<>();
+        stages.addAll(scheduledStages);
+        stages.addAll(runningStages);
+        stages.addAll(finishedStages);
+        stages.addAll(errorStages);
+        stages.addAll(stoppedStages);
+
+        PipelineExecutorTaskDef taskDef = mock(PipelineExecutorTaskDef.class);
+        Input input = mock(Input.class);
+        when(taskDef.getInput()).thenReturn(input);
+        when(taskDef.getStages()).thenReturn(stages);
+
+        PipelineExecutorTaskImpl task = new PipelineExecutorTaskImpl(taskDef,
+                                                                     "executionId");
+        //set the pipeline e.g. in running status
+        task.setPipelineStatus(PipelineExecutorTask.Status.RUNNING);
+
+        //set the stages in the corresponding status
+        setStagesInStatus(task,
+                          scheduledStages,
+                          PipelineExecutorTask.Status.SCHEDULED);
+        setStagesInStatus(task,
+                          runningStages,
+                          PipelineExecutorTask.Status.RUNNING);
+        setStagesInStatus(task,
+                          finishedStages,
+                          PipelineExecutorTask.Status.FINISHED);
+        setStagesInStatus(task,
+                          errorStages,
+                          PipelineExecutorTask.Status.ERROR);
+        setStagesInStatus(task,
+                          stoppedStages,
+                          PipelineExecutorTask.Status.STOPPED);
+
+        taskManagerHelper.setTaskInStoppedStatus(task);
+
+        //verify all stages were set in the expected status.
+        //the scheduled stages must have been set to STOPPED
+        assertStagesInStatus(task,
+                             scheduledStages,
+                             PipelineExecutorTask.Status.STOPPED);
+        //the running stages must have been set to STOPPED
+        assertStagesInStatus(task,
+                             runningStages,
+                             PipelineExecutorTask.Status.STOPPED);
+        //the finished stages must remain in FINISHED status
+        assertStagesInStatus(task,
+                             finishedStages,
+                             PipelineExecutorTask.Status.FINISHED);
+        //the error stages must remain in ERROR status
+        assertStagesInStatus(task,
+                             errorStages,
+                             PipelineExecutorTask.Status.ERROR);
+
+        //the stopped stages must remain in STOPPED status
+        assertStagesInStatus(task,
+                             stoppedStages,
+                             PipelineExecutorTask.Status.STOPPED);
+
+        //the pipeline must have been stopped
+        assertEquals(PipelineExecutorTask.Status.STOPPED,
+                     task.getPipelineStatus());
+    }
+
     private void clearDefaultProperties() {
         System.getProperties().remove(PipelineExecutorTaskManagerImpl.THREAD_POOL_SIZE_PROPERTY_NAME);
+    }
+
+    private List<String> mockStages(final int count,
+                                    final String suffix) {
+        List<String> stages = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            String stage = "Stage." + suffix + Integer.toString(i);
+            stages.add(stage);
+        }
+        return stages;
+    }
+
+    private void setStagesInStatus(final PipelineExecutorTaskImpl task,
+                                   final List<String> stages,
+                                   final PipelineExecutorTask.Status status) {
+        stages.forEach(stage -> task.setStageStatus(stage,
+                                                    status));
+    }
+
+    private void assertStagesInStatus(final PipelineExecutorTaskImpl task,
+                                      final List<String> stages,
+                                      final PipelineExecutorTask.Status status) {
+        stages.forEach(stage -> assertEquals(status,
+                                             task.getStageStatus(stage)));
     }
 }

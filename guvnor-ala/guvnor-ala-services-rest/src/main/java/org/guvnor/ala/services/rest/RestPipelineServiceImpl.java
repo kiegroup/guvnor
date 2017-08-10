@@ -133,12 +133,12 @@ public class RestPipelineServiceImpl implements PipelineService {
     }
 
     @Override
-    public String runPipeline(final String name,
+    public String runPipeline(final String pipelineId,
                               final Input input,
                               final boolean async) throws BusinessException {
-        final Pipeline pipeline = pipelineRegistry.getPipelineByName(name);
+        final Pipeline pipeline = pipelineRegistry.getPipelineByName(pipelineId);
         if (pipeline == null) {
-            throw new BusinessException("Pipeline: " + name + " was not found.");
+            throw new BusinessException("Pipeline: " + pipelineId + " was not found.");
         }
         String providerName = input.get(ProviderConfig.PROVIDER_NAME);
         Provider provider = null;
@@ -149,7 +149,7 @@ public class RestPipelineServiceImpl implements PipelineService {
             provider = runtimeRegistry.getProvider(providerName);
         }
         if (provider == null) {
-            providerType = pipelineRegistry.getProviderType(name);
+            providerType = pipelineRegistry.getProviderType(pipelineId);
         }
 
         if (provider != null) {
@@ -168,5 +168,25 @@ public class RestPipelineServiceImpl implements PipelineService {
         return executorTaskManager.execute(taskDef,
                                            async ? PipelineExecutorTaskManager.ExecutionMode.ASYNCHRONOUS :
                                                    PipelineExecutorTaskManager.ExecutionMode.SYNCHRONOUS);
+    }
+
+    @Override
+    public void stopPipelineExecution(final String executionId) throws BusinessException {
+        try {
+            executorTaskManager.stop(executionId);
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage(),
+                                        e);
+        }
+    }
+
+    @Override
+    public void deletePipelineExecution(final String executionId) throws BusinessException {
+        try {
+            executorTaskManager.delete(executionId);
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage(),
+                                        e);
+        }
     }
 }

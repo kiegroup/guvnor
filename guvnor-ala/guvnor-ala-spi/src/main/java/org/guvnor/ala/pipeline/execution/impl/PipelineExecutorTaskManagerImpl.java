@@ -44,6 +44,7 @@ import org.guvnor.ala.pipeline.execution.PipelineExecutorException;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskDef;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskManager;
+import org.guvnor.ala.pipeline.execution.PipelineExecutorTrace;
 import org.guvnor.ala.pipeline.execution.RegistrableOutput;
 import org.guvnor.ala.registry.PipelineExecutorRegistry;
 import org.guvnor.ala.registry.PipelineRegistry;
@@ -85,6 +86,17 @@ public class PipelineExecutorTaskManagerImpl
         {
             add(PipelineExecutorTask.Status.RUNNING);
             add(PipelineExecutorTask.Status.SCHEDULED);
+        }
+    };
+
+    /**
+     * Set of pipeline execution status that admits the delete operation.
+     */
+    private static final Set<PipelineExecutorTask.Status> deleteEnabledStatus = new HashSet<PipelineExecutorTask.Status>() {
+        {
+            add(PipelineExecutorTask.Status.STOPPED);
+            add(PipelineExecutorTask.Status.ERROR);
+            add(PipelineExecutorTask.Status.FINISHED);
         }
     };
 
@@ -252,12 +264,19 @@ public class PipelineExecutorTaskManagerImpl
     private synchronized void startAsyncTask(final PipelineExecutorTask task) {
         final Future<?> future = executor.submit(() -> {
             final Pipeline pipeline = pipelineRegistry.getPipelineByName(task.getTaskDef().getPipeline());
-            pipelineExecutor.execute(task.getTaskDef().getInput(),
-                                     pipeline,
-                                     output -> processPipelineOutput(task,
-                                                                     output),
-                                     localListener);
-            removeTaskEntry(task.getId());
+            try {
+                pipelineExecutor.execute(task.getTaskDef().getInput(),
+                                         pipeline,
+                                         output -> processPipelineOutput(task,
+                                                                         output),
+                                         localListener);
+            } catch (Exception e) {
+                logger.error("An error was produced during pipeline execution for PipelineExecutorTask: " + task.getId(),
+                             e);
+            } finally {
+                removeTaskEntry(task.getId());
+                removeFutureTask(task.getId());
+            }
         });
 
         storeFutureTask(task.getId(),
@@ -328,6 +347,27 @@ public class PipelineExecutorTaskManagerImpl
         destroyFutureTask(taskId);
         removeTaskEntry(taskId);
         pipelineExecutorRegistry.deregister(taskId);
+    }
+
+    @Override
+    public void delete(final String taskId) throws PipelineExecutorException {
+        final TaskEntry entry = getTaskEntry(taskId);
+        if (entry != null) {
+            throw new PipelineExecutorException("An active PipelineExecutorTask was found for taskId: " + taskId +
+                                                        " delete operation is only available for the following status set: " + deleteEnabledStatus);
+        }
+        final PipelineExecutorTrace trace = pipelineExecutorRegistry.getExecutorTrace(taskId);
+        if (trace == null) {
+            throw new PipelineExecutorException("No PipelineExecutorTask was found for taskId: " + taskId);
+        } else {
+            if (!deleteEnabledStatus.contains(trace.getTask().getPipelineStatus())) {
+                throw new PipelineExecutorException("A PipelineExecutorTask in status: "
+                                                            + trace.getTask().getPipelineStatus().name() + " can not" +
+                                                            " be deleted. Delete operation is available for the following status set: " + deleteEnabledStatus);
+            } else {
+                pipelineExecutorRegistry.deregister(taskId);
+            }
+        }
     }
 
     private void beforePipelineExecution(final BeforePipelineExecutionEvent bpee,
@@ -405,6 +445,10 @@ public class PipelineExecutorTaskManagerImpl
                                               final Future future) {
         futureTaskMap.put(taskId,
                           future);
+    }
+
+    private synchronized void removeFutureTask(final String taskId) {
+        futureTaskMap.remove(taskId);
     }
 
     /**

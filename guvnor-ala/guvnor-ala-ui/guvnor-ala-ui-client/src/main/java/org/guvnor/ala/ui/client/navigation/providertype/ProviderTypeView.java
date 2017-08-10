@@ -35,8 +35,8 @@ import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.mvp.Command;
 
-import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.ProviderTypeView_ProviderTypeRemovePopupText;
-import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.ProviderTypeView_ProviderTypeRemovePopupTitle;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.ProviderTypeView_ProviderTypeDisablePopupText;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.ProviderTypeView_ProviderTypeDisablePopupTitle;
 import static org.guvnor.ala.ui.client.widget.CustomGroupItem.createAnchor;
 import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
@@ -132,10 +132,10 @@ public class ProviderTypeView
     }
 
     private String getRemoveProviderTypePopupTitle() {
-        return translationService.format(ProviderTypeView_ProviderTypeRemovePopupTitle);
+        return translationService.format(ProviderTypeView_ProviderTypeDisablePopupTitle);
     }
 
     private String getRemoveProviderTypePopupText() {
-        return translationService.format(ProviderTypeView_ProviderTypeRemovePopupText);
+        return translationService.format(ProviderTypeView_ProviderTypeDisablePopupText);
     }
 }

@@ -1,3 +1,4 @@
+
 package org.guvnor.ala.services.rest.tests;
 
 import java.io.File;
@@ -43,6 +44,7 @@ import org.guvnor.ala.pipeline.ConfigExecutor;
 import org.guvnor.ala.pipeline.FunctionConfigExecutor;
 import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.execution.PipelineExecutor;
+import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.impl.PipelineExecutorTaskManagerImpl;
 import org.guvnor.ala.registry.RuntimeRegistry;
 import org.guvnor.ala.registry.inmemory.InMemoryBuildRegistry;
@@ -58,11 +60,13 @@ import org.guvnor.ala.runtime.providers.ProviderBuilder;
 import org.guvnor.ala.runtime.providers.ProviderType;
 import org.guvnor.ala.services.api.PipelineService;
 import org.guvnor.ala.services.api.RuntimeProvisioningService;
+import org.guvnor.ala.services.api.RuntimeQueryBuilder;
 import org.guvnor.ala.services.api.backend.PipelineConfigImpl;
 import org.guvnor.ala.services.api.itemlist.PipelineConfigsList;
 import org.guvnor.ala.services.api.itemlist.ProviderList;
 import org.guvnor.ala.services.api.itemlist.ProviderTypeList;
 import org.guvnor.ala.services.api.itemlist.RuntimeList;
+import org.guvnor.ala.services.api.itemlist.RuntimeQueryResultItemList;
 import org.guvnor.ala.services.rest.RestPipelineServiceImpl;
 import org.guvnor.ala.services.rest.RestRuntimeProvisioningServiceImpl;
 import org.guvnor.ala.services.rest.factories.ProviderFactory;
@@ -235,16 +239,65 @@ public class RestPipelineImplTest {
         String newPipeline = pipelineService.newPipeline(new PipelineConfigImpl("mypipe",
                                                                                 configs));
 
+        pipelineService.newPipeline(new PipelineConfigImpl("wildlfyPipe",
+                                                           configs),
+                                    WildflyProviderType.instance());
+
+        pipelineService.newPipeline(new PipelineConfigImpl("dockerPipe",
+                                                           configs),
+                                    DockerProviderType.instance());
+
         allPipelineConfigs = pipelineService.getPipelineConfigs(0,
                                                                 10,
                                                                 "",
                                                                 true);
 
-        assertEquals(1,
+        assertEquals(3,
                      allPipelineConfigs.getItems().size());
+
+        PipelineConfigsList wildflyConfigs = pipelineService.getPipelineConfigs(WildflyProviderType.instance().getProviderTypeName(),
+                                                                                WildflyProviderType.instance().getVersion(),
+                                                                                0,
+                                                                                10,
+                                                                                "",
+                                                                                true);
+        assertEquals(1,
+                     wildflyConfigs.getItems().size());
+
+        List<String> wildflyPipelineNames = pipelineService.getPipelineNames(WildflyProviderType.instance().getProviderTypeName(),
+                                                                             WildflyProviderType.instance().getVersion(),
+                                                                             0,
+                                                                             10,
+                                                                             "",
+                                                                             true);
+        assertEquals(1,
+                     wildflyPipelineNames.size());
+        assertTrue(wildflyPipelineNames.contains("wildlfyPipe"));
+
+        PipelineConfigsList dockerConfigs = pipelineService.getPipelineConfigs(DockerProviderType.instance().getProviderTypeName(),
+                                                                               DockerProviderType.instance().getVersion(),
+                                                                               0,
+                                                                               10,
+                                                                               "",
+                                                                               true);
+        assertEquals(1,
+                     dockerConfigs.getItems().size());
+
+        List<String> dockerPipelineNames = pipelineService.getPipelineNames(DockerProviderType.instance().getProviderTypeName(),
+                                                                            DockerProviderType.instance().getVersion(),
+                                                                            0,
+                                                                            10,
+                                                                            "",
+                                                                            true);
+
+        assertEquals(1,
+                     dockerPipelineNames.size());
+        assertTrue(dockerPipelineNames.contains("dockerPipe"));
 
         Input input = new Input();
 
+        input.put("provider-name",
+                  "local");
         input.put("repo-name",
                   "drools-workshop");
         input.put("create-repo",
@@ -258,9 +311,25 @@ public class RestPipelineImplTest {
         input.put("project-dir",
                   "drools-webapp-example");
 
-        pipelineService.runPipeline("mypipe",
-                                    input,
-                                    false);
+        String pipelineExecutionId = pipelineService.runPipeline("mypipe",
+                                                                 input,
+                                                                 false);
+
+        RuntimeQueryResultItemList itemList = runtimeService.executeQuery(RuntimeQueryBuilder.newInstance()
+                                                                                  .withPipelineExecutionId(pipelineExecutionId)
+                                                                                  .build());
+        assertEquals(1,
+                     itemList.getItems().size());
+        assertEquals(pipelineExecutionId,
+                     itemList.getItems().get(0).getPipelineExecutionId());
+
+        pipelineService.deletePipelineExecution(pipelineExecutionId);
+        itemList = runtimeService.executeQuery(RuntimeQueryBuilder.newInstance()
+                                                       .withPipelineExecutionId(pipelineExecutionId)
+                                                       .build());
+        assertEquals(1,
+                     itemList.getItems().size());
+        assertNull(itemList.getItems().get(0).getPipelineExecutionId());
 
         RuntimeList allRuntimes = runtimeService.getRuntimes(0,
                                                              10,
@@ -270,7 +339,8 @@ public class RestPipelineImplTest {
         assertEquals(1,
                      allRuntimes.getItems().size());
 
-        runtimeService.destroyRuntime(allRuntimes.getItems().get(0).getId());
+        runtimeService.destroyRuntime(allRuntimes.getItems().get(0).getId(),
+                                      true);
 
         allRuntimes = runtimeService.getRuntimes(0,
                                                  10,
@@ -282,5 +352,20 @@ public class RestPipelineImplTest {
 
         assertEquals(18,
                      listener.getEvents().size()); // 8 Stages x 2 + 2 pipeline events
+
+        pipelineExecutionId = pipelineService.runPipeline("mypipe",
+                                                          input,
+                                                          true);
+        pipelineService.stopPipelineExecution(pipelineExecutionId);
+
+        itemList = runtimeService.executeQuery(RuntimeQueryBuilder.newInstance()
+                                                       .withPipelineExecutionId(pipelineExecutionId)
+                                                       .build());
+        assertEquals(1,
+                     itemList.getItems().size());
+        assertEquals(pipelineExecutionId,
+                     itemList.getItems().get(0).getPipelineExecutionId());
+        assertEquals(PipelineExecutorTask.Status.STOPPED.name(),
+                     itemList.getItems().get(0).getPipelineStatus());
     }
 }

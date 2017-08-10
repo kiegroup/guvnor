@@ -29,17 +29,18 @@ import org.guvnor.ala.pipeline.execution.PipelineExecutorException;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskDef;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskManager;
+import org.guvnor.ala.pipeline.execution.PipelineExecutorTrace;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.internal.matchers.StartsWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.startsWith;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -212,8 +213,8 @@ public class PipelineExecutorTaskManagerImplExecutionTest
                                      taskEntry);
 
         taskManager.init();
-        expectedException.expectMessage(startsWith("A PipelineExecutorTask in status: " + notStopeableStatus.name() +
-                                                           " can not be stopped. Stop operation is available for the following status set:"));
+        expectedException.expectMessage(new StartsWith("A PipelineExecutorTask in status: " + notStopeableStatus.name() +
+                                                               " can not be stopped. Stop operation is available for the following status set:"));
         taskManager.stop(TASK_ID);
     }
 
@@ -261,6 +262,57 @@ public class PipelineExecutorTaskManagerImplExecutionTest
         verify(future,
                times(1)).cancel(true);
         assertFalse(taskManager.currentTasks.containsKey(TASK_ID));
+        verify(pipelineExecutorRegistry,
+               times(1)).deregister(TASK_ID);
+    }
+
+    @Test
+    public void testDeleteActiveTask() throws Exception {
+        PipelineExecutorTaskManagerImpl.TaskEntry taskEntry = mock(PipelineExecutorTaskManagerImpl.TaskEntry.class);
+        taskManager.currentTasks.put(TASK_ID,
+                                     taskEntry);
+        expectedException.expectMessage(new StartsWith("An active PipelineExecutorTask was found for taskId: " + TASK_ID));
+        taskManager.delete(TASK_ID);
+    }
+
+    @Test
+    public void testDeleteTaskInScheduledStatus() throws Exception {
+        testDeleteTaskInNonStopeableState(PipelineExecutorTask.Status.SCHEDULED);
+    }
+
+    @Test
+    public void testDeleteTaskInRunningStatus() throws Exception {
+        testDeleteTaskInNonStopeableState(PipelineExecutorTask.Status.RUNNING);
+    }
+
+    private void testDeleteTaskInNonStopeableState(PipelineExecutorTask.Status nonStopeableStatus) throws Exception {
+        PipelineExecutorTask task = mock(PipelineExecutorTask.class);
+        when(task.getPipelineStatus()).thenReturn(nonStopeableStatus);
+        PipelineExecutorTrace trace = mock(PipelineExecutorTrace.class);
+        when(trace.getTask()).thenReturn(task);
+        when(pipelineExecutorRegistry.getExecutorTrace(TASK_ID)).thenReturn(trace);
+
+        expectedException.expectMessage(new StartsWith("A PipelineExecutorTask in status: "
+                                                               + nonStopeableStatus + " can not" +
+                                                               " be deleted. Delete operation is available for the following status set:"));
+        taskManager.delete(TASK_ID);
+    }
+
+    @Test
+    public void testDeleteNonExistingTask() throws Exception {
+        expectedException.expectMessage("No PipelineExecutorTask was found for taskId: " + TASK_ID);
+        taskManager.delete(TASK_ID);
+    }
+
+    @Test
+    public void testDeleteTask() throws Exception {
+        PipelineExecutorTrace trace = mock(PipelineExecutorTrace.class);
+        PipelineExecutorTask task = mock(PipelineExecutorTask.class);
+        PipelineExecutorTask.Status status = PipelineExecutorTask.Status.STOPPED;
+        when(task.getPipelineStatus()).thenReturn(status);
+        when(trace.getTask()).thenReturn(task);
+        when(pipelineExecutorRegistry.getExecutorTrace(TASK_ID)).thenReturn(trace);
+        taskManager.delete(TASK_ID);
         verify(pipelineExecutorRegistry,
                times(1)).deregister(TASK_ID);
     }

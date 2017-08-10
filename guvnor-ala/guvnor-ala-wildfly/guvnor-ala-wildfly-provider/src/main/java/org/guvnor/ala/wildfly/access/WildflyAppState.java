@@ -18,9 +18,11 @@ package org.guvnor.ala.wildfly.access;
 
 import java.util.Date;
 
+import static org.guvnor.ala.runtime.RuntimeState.UNKNOWN;
+
 public class WildflyAppState {
 
-    private String state = "NA";
+    private String state = UNKNOWN;
     private Date startedAt = new Date();
 
     public WildflyAppState(String state,

@@ -31,8 +31,6 @@ import org.guvnor.ala.ui.model.ProviderConfiguration;
 import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderType;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
-import org.guvnor.ala.ui.model.ProvidersInfo;
-import org.guvnor.ala.ui.service.ProviderTypeService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -55,9 +53,6 @@ import static org.mockito.Mockito.*;
 public class ProviderServiceImplTest {
 
     private static final int PROVIDER_COUNT = 5;
-
-    @Mock
-    private ProviderTypeService providerTypeService;
 
     @Mock
     private RuntimeProvisioningServiceBackend runtimeProvisioningService;
@@ -117,15 +112,18 @@ public class ProviderServiceImplTest {
         providerKeys = new ArrayList<>();
         for (int i = 0; i < PROVIDER_COUNT; i++) {
             Provider provider = mock(Provider.class);
-            ProviderKey providerKey = mock(ProviderKey.class);
+            ProviderTypeKey providerTypeKey = new ProviderTypeKey(providersSpi.get(i).getProviderType().getProviderTypeName(),
+                                                                  providersSpi.get(i).getProviderType().getVersion());
+            ProviderKey providerKey = new ProviderKey(providerTypeKey,
+                                                      providersSpi.get(i).getId());
+
             when(provider.getKey()).thenReturn(providerKey);
             providers.add(provider);
             providerKeys.add(providerKey);
             when(providerConverter.toModel(providersSpi.get(i))).thenReturn(provider);
         }
 
-        service = new ProviderServiceImpl(providerTypeService,
-                                          runtimeProvisioningService,
+        service = new ProviderServiceImpl(runtimeProvisioningService,
                                           providerConverterFactory);
     }
 
@@ -147,6 +145,7 @@ public class ProviderServiceImplTest {
     public void testCreateProvider() {
 
         prepareConfigurationForCreate();
+        //PROVIDER_ID don't exists by construction.
         when(providerConfiguration.getId()).thenReturn(PROVIDER_ID);
 
         service.createProvider(providerType,
@@ -160,13 +159,12 @@ public class ProviderServiceImplTest {
     public void testCreateProviderExisting() {
 
         prepareConfigurationForCreate();
-        when(providerConfiguration.getId()).thenReturn(PROVIDER_ID);
 
-        //emulate that one of the existing providers has the same id.
-        when(providers.get(1).getKey().getId()).thenReturn(PROVIDER_ID);
+        //emulate that one of the existing providers has the same id by picking an arbitrary existing id.
+        String existingId = providers.get(1).getKey().getId();
+        when(providerConfiguration.getId()).thenReturn(existingId);
 
-        expectedException.expectMessage("A provider was already defined for providerType: " + providerType.getName() +
-                                                " and providerId: " + PROVIDER_ID);
+        expectedException.expectMessage("A provider with the given name already exists: " + existingId);
         service.createProvider(providerType,
                                providerConfiguration);
 
@@ -212,31 +210,6 @@ public class ProviderServiceImplTest {
 
         Provider provider = service.getProvider(providerKey);
         assertNull(provider);
-    }
-
-    @Test
-    public void testGetProvidersInfoProviderTypeExisting() {
-        //take the existing provider type key.
-        when(providerTypeService.getProviderType(providerTypeKey)).thenReturn(providerType);
-        ProvidersInfo providersInfo = service.getProvidersInfo(providerTypeKey);
-        assertNotNull(providersInfo);
-        assertEquals(providerType,
-                     providersInfo.getProviderType());
-        assertEquals(providerKeys,
-                     providersInfo.getProvidersKey());
-    }
-
-    @Test
-    public void testGetProvidersInfoProviderTypeNotExisting() {
-        //create an arbitrary provider type key and make the provider type not exist.
-        ProviderTypeKey providerTypeKey = new ProviderTypeKey("not exist",
-                                                              "not exist");
-        when(providerTypeService.getProviderType(providerTypeKey)).thenReturn(null);
-
-        ProvidersInfo providersInfo = service.getProvidersInfo(providerTypeKey);
-        verify(providerTypeService,
-               times(1)).getProviderType(providerTypeKey);
-        assertNull(providersInfo);
     }
 
     private void prepareConfigurationForCreate() {

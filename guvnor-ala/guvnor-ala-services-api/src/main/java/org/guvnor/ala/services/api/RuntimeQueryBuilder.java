@@ -28,6 +28,10 @@ public class RuntimeQueryBuilder {
 
     private String pipelineExecutionId;
 
+    private String runtimeId;
+
+    private String runtimeName;
+
     private RuntimeQueryBuilder() {
     }
 
@@ -50,9 +54,21 @@ public class RuntimeQueryBuilder {
         return this;
     }
 
+    public RuntimeQueryBuilder withRuntimeId(String runtimeId) {
+        this.runtimeId = runtimeId;
+        return this;
+    }
+
+    public RuntimeQueryBuilder withRuntimeName(String runtimeName) {
+        this.runtimeName = runtimeName;
+        return this;
+    }
+
     public RuntimeQuery build() {
         return new RuntimeQuery(providerId,
                                 pipelineId,
-                                pipelineExecutionId);
+                                pipelineExecutionId,
+                                runtimeId,
+                                runtimeName);
     }
 }

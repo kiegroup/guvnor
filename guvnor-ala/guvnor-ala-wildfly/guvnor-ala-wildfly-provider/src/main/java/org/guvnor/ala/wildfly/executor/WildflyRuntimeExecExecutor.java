@@ -1,6 +1,7 @@
 package org.guvnor.ala.wildfly.executor;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Optional;
 import javax.inject.Inject;
 
@@ -25,6 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.guvnor.ala.runtime.RuntimeState.RUNNING;
+import static org.guvnor.ala.runtime.RuntimeState.STOPPED;
+import static org.guvnor.ala.runtime.RuntimeState.UNKNOWN;
 import static org.guvnor.ala.util.RuntimeConfigHelper.buildRuntimeName;
 
 public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration>
@@ -66,18 +70,20 @@ public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration>
         final String id = file.getName();
 
         WildflyAppState appState = wildfly.getWildflyClient(wildflyProvider).getAppState(id);
-        if ("NA".equals(appState.getState())) {
+        if (UNKNOWN.equals(appState.getState())) {
             int result = wildfly.getWildflyClient(wildflyProvider).deploy(file);
             if (result != 200) {
                 throw new ProvisioningException("Deployment to Wildfly Failed with error code: " + result);
             }
-        } else if ("Running".equals(appState.getState()) &&
+        } else if ((RUNNING.equals(appState.getState()) || STOPPED.equals(appState.getState())) &&
                 (isNullOrEmpty(runtimeConfig.getRedeployStrategy()) || "auto".equals(runtimeConfig.getRedeployStrategy()))) {
             wildfly.getWildflyClient(wildflyProvider).undeploy(id);
             int result = wildfly.getWildflyClient(wildflyProvider).deploy(file);
             if (result != 200) {
                 throw new ProvisioningException("Deployment to Wildfly Failed with error code: " + result);
             }
+        } else {
+            throw new ProvisioningException("A runtime with the given identifier: " + id + " is already deployed");
         }
 
         String appContext = id.substring(0,
@@ -93,7 +99,8 @@ public class WildflyRuntimeExecExecutor<T extends WildflyRuntimeConfiguration>
                                               wildflyProvider,
                                               endpoint,
                                               new WildflyRuntimeInfo(),
-                                              new WildflyRuntimeState()));
+                                              new WildflyRuntimeState(RUNNING,
+                                                                      new Date().toString())));
     }
 
     @Override

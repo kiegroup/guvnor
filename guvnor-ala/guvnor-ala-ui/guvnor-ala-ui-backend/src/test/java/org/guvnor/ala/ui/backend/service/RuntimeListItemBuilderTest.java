@@ -51,6 +51,10 @@ public class RuntimeListItemBuilderTest {
 
     private static final String RUNTIME_ENDPOINT = "RUNTIME_ENDPOINT";
 
+    private static final String RUNTIME_STARTED_AT = "RUNTIME_STARTED_AT";
+
+    private static final String RUNTIME_STATUS = "RUNTIME_STATUS";
+
     private static final String PIPELINE_EXECUTION_ID = "PIPELINE_EXECUTION_ID";
 
     private static final String PIPELINE_ID = "PIPELINE_ID";
@@ -128,6 +132,8 @@ public class RuntimeListItemBuilderTest {
         queryResultItem.setProviderVersion(PROVIDER_VERSION);
         queryResultItem.setProviderId(PROVIDER_ID);
         queryResultItem.setRuntimeEndpoint(RUNTIME_ENDPOINT);
+        queryResultItem.setStartedAt(RUNTIME_STARTED_AT);
+        queryResultItem.setRuntimeStatus(RUNTIME_STATUS);
     }
 
     private void assertRuntime(Runtime runtime) {
@@ -143,6 +149,10 @@ public class RuntimeListItemBuilderTest {
                      runtime.getKey().getProviderKey().getId());
         assertEquals(RUNTIME_ENDPOINT,
                      runtime.getEndpoint());
+        assertEquals(RUNTIME_STARTED_AT,
+                     runtime.getCreatedDate());
+        assertEquals(RUNTIME_STATUS,
+                     runtime.getStatus());
     }
 
     private void preparePipelineTrace() {

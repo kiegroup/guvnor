@@ -29,7 +29,7 @@ public class Runtime
     private String name;
     private PipelineExecutionTrace pipelineTrace;
     private Source source;
-    private RuntimeStatus status;
+    private String status;
     private String endpoint;
     private String createdDate;
 
@@ -37,7 +37,7 @@ public class Runtime
                    @MapsTo("name") final String name,
                    @MapsTo("pipelineTrace") final PipelineExecutionTrace pipelineTrace,
                    @MapsTo("source") final Source source,
-                   @MapsTo("status") final RuntimeStatus status,
+                   @MapsTo("status") final String status,
                    @MapsTo("endpoint") final String endpoint,
                    @MapsTo("createdDate") final String createdDate) {
         super(key);
@@ -54,9 +54,9 @@ public class Runtime
     }
 
     public Runtime(final RuntimeKey key,
-                   final RuntimeStatus status,
+                   final String status,
                    final String endpoint,
-                   String createdDate) {
+                   final String createdDate) {
         super(key);
         this.status = status;
         this.endpoint = endpoint;
@@ -75,7 +75,7 @@ public class Runtime
         this.pipelineTrace = pipelineTrace;
     }
 
-    public RuntimeStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -83,7 +83,7 @@ public class Runtime
         return pipelineTrace;
     }
 
-    public String createDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
 
@@ -95,7 +95,7 @@ public class Runtime
         this.endpoint = endpoint;
     }
 
-    public void setStatus(final RuntimeStatus status) {
+    public void setStatus(final String status) {
         this.status = status;
     }
 
@@ -126,7 +126,7 @@ public class Runtime
         if (source != null ? !source.equals(runtime.source) : runtime.source != null) {
             return false;
         }
-        if (status != runtime.status) {
+        if (status != null ? !status.equals(runtime.status) : runtime.status != null) {
             return false;
         }
         if (endpoint != null ? !endpoint.equals(runtime.endpoint) : runtime.endpoint != null) {

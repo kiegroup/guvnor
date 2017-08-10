@@ -31,15 +31,16 @@ public class StagePresenter {
 
         void setName(final String name);
 
-        void setDoneState();
+        void setDoneState(final String stateLabel);
 
-        void setExecutingState();
+        void setExecutingState(final String stateLabel);
 
-        void setErrorState();
+        void setErrorState(final String stateLabel);
+
+        void setStoppedState(final String stateLabel);
     }
 
     private final View view;
-    private Stage stage;
 
     @Inject
     public StagePresenter(final View view) {
@@ -56,18 +57,19 @@ public class StagePresenter {
     }
 
     public void setup(final Stage stage) {
-        this.stage = stage;
         view.setName(stage.getName());
         setState(State.EXECUTING);
     }
 
     public void setState(final State state) {
         if (state.equals(State.EXECUTING)) {
-            view.setExecutingState();
+            view.setExecutingState(State.EXECUTING.name());
         } else if (state.equals(State.DONE)) {
-            view.setDoneState();
+            view.setDoneState(State.DONE.name());
         } else if (state.equals(State.ERROR)) {
-            view.setErrorState();
+            view.setErrorState(State.ERROR.name());
+        } else if (state.equals(State.STOPPED)) {
+            view.setStoppedState(State.STOPPED.name());
         }
     }
 }
