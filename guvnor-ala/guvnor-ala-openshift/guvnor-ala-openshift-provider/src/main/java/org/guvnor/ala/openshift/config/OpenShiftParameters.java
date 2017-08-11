@@ -104,7 +104,6 @@ public class OpenShiftParameters extends LinkedHashMap<String, String> implement
     }
 
     public static OpenShiftParameters fromRuntimeConfig(OpenShiftRuntimeConfig runtimeConfig) {
-        String paramVals = runtimeConfig.getResourceTemplateParamValues();
         String paramDelim = runtimeConfig.getResourceTemplateParamDelimiter();
         if (paramDelim == null || paramDelim.isEmpty()) {
             paramDelim = DEFAULT_PARAM_DELIMITER;
@@ -113,6 +112,7 @@ public class OpenShiftParameters extends LinkedHashMap<String, String> implement
         if (paramAssign == null || paramAssign.isEmpty()) {
             paramAssign = DEFAULT_PARAM_ASSIGNER;
         }
+        String paramVals = runtimeConfig.getResourceTemplateParamValues();
         if (paramVals != null) {
             return fromString(paramVals, paramDelim, paramAssign);
         } else {

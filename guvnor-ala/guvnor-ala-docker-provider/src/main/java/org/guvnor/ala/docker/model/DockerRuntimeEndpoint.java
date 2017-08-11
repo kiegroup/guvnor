@@ -25,10 +25,12 @@ public class DockerRuntimeEndpoint
         //No-args constructor for enabling marshalling to work, please do not remove.
     }
 
-    public DockerRuntimeEndpoint(final String host,
-                                 final int port,
+    public DockerRuntimeEndpoint(final String protocol,
+                                 final String host,
+                                 final Integer port,
                                  final String context) {
-        super(host,
+        super(protocol,
+              host,
               port,
               context);
     }

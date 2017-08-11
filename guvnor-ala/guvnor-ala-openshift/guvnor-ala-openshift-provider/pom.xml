@@ -91,6 +91,10 @@
       <artifactId>gson</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.server</groupId>
+      <artifactId>kie-server-client</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-ala-source-git</artifactId>
       <scope>test</scope>
@@ -108,6 +112,12 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-ala-spi</artifactId>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -150,6 +160,21 @@
               <includes>
                 <include>**/*Test.java</include>
               </includes>
+              <systemPropertyVariables>
+                <!--
+                If running via command line, the properties are already set in the pom.xml file.
+                If running in an IDE, set these properties in your debug configuration VM arguments.
+                On Eclipse, Run / Debug Configurations... / Arguments / VM arguments:
+                -Dsun.net.spi.nameservice.provider.1=dns,OpenShiftNameService
+                -Dsun.net.spi.nameservice.provider.2=default
+                -Dorg.guvnor.ala.openshift.access.OpenShiftClientListener.postCreate=org.guvnor.ala.openshift.dns.OpenShiftNameServiceClientListener
+                -Dorg.guvnor.ala.openshift.dns.OpenShiftNameServiceClientListener.routerHost=10.34.75.115
+                -->
+                <sun.net.spi.nameservice.provider.1>dns,OpenShiftNameService</sun.net.spi.nameservice.provider.1>
+                <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
+                <org.guvnor.ala.openshift.access.OpenShiftClientListener.postCreate>org.guvnor.ala.openshift.dns.OpenShiftNameServiceClientListener</org.guvnor.ala.openshift.access.OpenShiftClientListener.postCreate>
+                <org.guvnor.ala.openshift.dns.OpenShiftNameServiceClientListener.routerHost>10.34.75.115</org.guvnor.ala.openshift.dns.OpenShiftNameServiceClientListener.routerHost>
+              </systemPropertyVariables>
             </configuration>
           </plugin>
         </plugins>

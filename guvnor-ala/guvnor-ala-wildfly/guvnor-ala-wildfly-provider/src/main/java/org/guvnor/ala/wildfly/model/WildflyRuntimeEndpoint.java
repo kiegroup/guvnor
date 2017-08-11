@@ -25,10 +25,12 @@ public class WildflyRuntimeEndpoint
         //no args constructor for marshalling purposes.
     }
 
-    public WildflyRuntimeEndpoint(final String host,
-                                  final int port,
+    public WildflyRuntimeEndpoint(final String protocol,
+                                  final String host,
+                                  final Integer port,
                                   final String context) {
-        super(host,
+        super(protocol,
+              host,
               port,
               context);
     }

@@ -32,10 +32,11 @@ public class DockerRuntimeMarshallerTest
     private static final String RUNTIME_ID = "RUNTIME_ID";
     private static final String RUNTIME_NAME = "RUNTIME_NAME";
     private static final String IMAGE = "IMAGE";
+    private static final String PROTOCOL = "PROTOCOL";
     private static final String HOST = "HOST";
     private static final String PORT = "PORT";
     private static final boolean PULL = true;
-    private static final int PORT_VALUE = 8888;
+    private static final Integer PORT_VALUE = Integer.valueOf(8888);
     private static final String CONTEXT = "CONTEXT";
     private static final String STATE = "STATE";
     private static final String STARTED_AT = "STARTED_AT";
@@ -60,7 +61,8 @@ public class DockerRuntimeMarshallerTest
                                          PORT,
                                          PULL),
                                  createDockerProvider(),
-                                 new DockerRuntimeEndpoint(HOST,
+                                 new DockerRuntimeEndpoint(PROTOCOL,
+                                                           HOST,
                                                            PORT_VALUE,
                                                            CONTEXT),
                                  new DockerRuntimeInfo(new DockerRuntimeConfigImpl(createDockerProvider(),

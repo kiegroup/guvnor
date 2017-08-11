@@ -29,7 +29,7 @@ import com.google.gson.stream.JsonWriter;
 @JsonIgnoreType
 public final class OpenShiftRuntimeId {
 
-    private static final String NAMESPACE = "prj";
+    private static final String PROJECT = "prj";
     private static final String SERVICE = "svc";
     private static final String APPLICATION = "app";
 
@@ -102,7 +102,7 @@ public final class OpenShiftRuntimeId {
             JsonWriter jw = new JsonWriter(sw);
             jw.beginObject();
             if (project != null) {
-                jw.name(NAMESPACE).value(project);
+                jw.name(PROJECT).value(project);
             }
             if (service != null) {
                 jw.name(SERVICE).value(service);
@@ -120,7 +120,7 @@ public final class OpenShiftRuntimeId {
     }
 
     public static OpenShiftRuntimeId fromString(String s) {
-        String namespace = null;
+        String project = null;
         String service = null;
         String application = null;
         try {
@@ -128,8 +128,8 @@ public final class OpenShiftRuntimeId {
             jr.beginObject();
             while (jr.hasNext()) {
                 String n = jr.nextName();
-                if (NAMESPACE.equals(n)) {
-                    namespace = jr.nextString();
+                if (PROJECT.equals(n)) {
+                    project = jr.nextString();
                 } else if (SERVICE.equals(n)) {
                     service = jr.nextString();
                 } else if (APPLICATION.equals(n)) {
@@ -143,7 +143,7 @@ public final class OpenShiftRuntimeId {
         } catch (IOException ex) {
             throw new RuntimeException(ex.getMessage(), ex);
         }
-        return new OpenShiftRuntimeId(namespace, service, application);
+        return new OpenShiftRuntimeId(project, service, application);
     }
 
     private static String trimToNull(String s) {

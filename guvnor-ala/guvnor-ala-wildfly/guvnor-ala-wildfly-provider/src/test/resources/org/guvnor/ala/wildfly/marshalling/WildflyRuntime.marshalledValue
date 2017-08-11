@@ -53,6 +53,7 @@
     },
     "endpoint": {
       "org.guvnor.ala.wildfly.model.WildflyRuntimeEndpoint": {
+        "protocol": "PROTOCOL",
         "host": "HOST",
         "port": 8080,
         "context": "CONTEXT"

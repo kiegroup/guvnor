@@ -29,6 +29,12 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 public interface RuntimeEndpoint {
 
     /*
+     * Get the Runtime Endpoint protocol
+     * @return String with the protocol
+    */
+    String getProtocol();
+
+    /*
      * Get the Runtime Endpoint host
      * @return String with the host
     */
@@ -36,9 +42,10 @@ public interface RuntimeEndpoint {
 
     /*
      * Get the Runtime Endpoint port
-     * @return int with the port number
+     * @return Integer with the port number
+     *   (or null if not defined)
     */
-    int getPort();
+    Integer getPort();
 
     /*
      * Get the Runtime Endpoint context
@@ -46,4 +53,5 @@ public interface RuntimeEndpoint {
      *   (if multiple applications are hosted on the same host:port)
     */
     String getContext();
+
 }

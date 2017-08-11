@@ -19,7 +19,7 @@
                 }
             },
             "spec": {
-                "dockerImageRepository": "ce-os-registry.usersys.redhat.com:5000/qe/bpmsuite70-businesscentral-openshift",
+                "dockerImageRepository": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-businesscentral-openshift",
                 "tags": [
                     {
                         "name": "1.0",
@@ -45,12 +45,64 @@
                 }
             },
             "spec": {
-                "dockerImageRepository": "ce-os-registry.usersys.redhat.com:5000/qe/bpmsuite70-executionserver-openshift",
+                "dockerImageRepository": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-executionserver-openshift",
                 "tags": [
                     {
                         "name": "1.0",
                         "annotations": {
                             "description": "Red Hat JBoss BPM Suite 7.0 Execution Server image.",
+                            "iconClass": "icon-jboss",
+                            "tags": "bpmsuite,xpaas",
+                            "supports":"bpmsuite:7.0,xpaas:1.4",
+                            "version": "1.0"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "jboss-bpmsuite70-smartrouter-openshift",
+                "annotations": {
+                    "openshift.io/image.insecureRepository": "true",
+                    "openshift.io/display-name": "Red Hat JBoss BPM Suite 7.0 Smart Router"
+                }
+            },
+            "spec": {
+                "dockerImageRepository": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-smartrouter-openshift",
+                "tags": [
+                    {
+                        "name": "1.0",
+                        "annotations": {
+                            "description": "Red Hat JBoss BPM Suite 7.0 Smart Router image.",
+                            "iconClass": "icon-jboss",
+                            "tags": "bpmsuite,xpaas",
+                            "supports":"bpmsuite:7.0,xpaas:1.4",
+                            "version": "1.0"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "jboss-bpmsuite70-standalonecontroller-openshift",
+                "annotations": {
+                    "openshift.io/image.insecureRepository": "true",
+                    "openshift.io/display-name": "Red Hat JBoss BPM Suite 7.0 Standalone Controller"
+                }
+            },
+            "spec": {
+                "dockerImageRepository": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-standalonecontroller-openshift",
+                "tags": [
+                    {
+                        "name": "1.0",
+                        "annotations": {
+                            "description": "Red Hat JBoss BPM Suite 7.0 Standalone Controller image.",
                             "iconClass": "icon-jboss",
                             "tags": "bpmsuite,xpaas",
                             "supports":"bpmsuite:7.0,xpaas:1.4",
@@ -76,6 +128,28 @@
                             "iconClass": "icon-jboss",
                             "tags": "mysql",
                             "supports":"xpaas:1.3",
+                            "version": "latest"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "nexus"
+            },
+            "spec": {
+                "dockerImageRepository": "registry.hub.docker.com/sonatype/nexus",
+                "tags": [
+                    {
+                        "name": "latest",
+                        "annotations": {
+                            "description": "Nexus",
+                            "iconClass": "icon-jboss",
+                            "tags": "nexus",
+                            "supports":"xpaas:1.4",
                             "version": "latest"
                         }
                     }
