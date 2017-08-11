@@ -98,7 +98,13 @@ public class GeneratedAttributesView extends AbstractBasicFileAttributeView<Abst
     private boolean extractGenerated() {
         final Map<String, Object> content = path.getAttrStorage().getContent();
 
-        return Boolean.parseBoolean(String.valueOf(content.get(GENERATED_ATTRIBUTE_NAME)));
+        final Object generatedFileAttribute = content.get(GENERATED_ATTRIBUTE_NAME);
+
+        if (generatedFileAttribute instanceof Boolean) {
+            return (Boolean) generatedFileAttribute;
+        }
+
+        return false;
     }
 
     @Override
