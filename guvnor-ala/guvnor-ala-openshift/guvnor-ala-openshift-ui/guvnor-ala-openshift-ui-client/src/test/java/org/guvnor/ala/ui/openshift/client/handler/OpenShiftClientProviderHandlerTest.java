@@ -16,13 +16,13 @@
 
 package org.guvnor.ala.ui.openshift.client.handler;
 
+import static org.mockito.Mockito.mock;
+
 import org.guvnor.ala.ui.client.handler.BaseClientProviderHandlerTest;
 import org.guvnor.ala.ui.client.handler.FormResolver;
 import org.junit.Before;
 
-import static org.mockito.Mockito.*;
-
-public class OpenShiftWildflyClientProviderHandlerTest
+public class OpenShiftClientProviderHandlerTest
         extends BaseClientProviderHandlerTest<OpenShiftClientProviderHandler> {
 
     private static final String PROVIDER_TYPE_NAME = "openshift";

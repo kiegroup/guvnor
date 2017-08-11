@@ -13,27 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.guvnor.ala.openshift.model;
+package org.guvnor.ala.openshift.dns;
 
-import org.guvnor.ala.runtime.base.BaseRuntimeEndpoint;
+import sun.net.spi.nameservice.NameService;
+import sun.net.spi.nameservice.NameServiceDescriptor;
 
 /**
- * OpenShift runtime endpoint.
+ * OpenShiftNameServiceDescriptor.
  */
-public class OpenShiftRuntimeEndpoint
-        extends BaseRuntimeEndpoint {
+@SuppressWarnings("restriction")
+public class OpenShiftNameServiceDescriptor implements NameServiceDescriptor {
 
-    public OpenShiftRuntimeEndpoint() {
-        //no args constructor for marshalling purposes.
+    @Override
+    public NameService createNameService() throws Exception {
+        return new OpenShiftNameService();
     }
 
-    public OpenShiftRuntimeEndpoint(final String protocol,
-                                    final String host,
-                                    final Integer port,
-                                    final String context) {
-        super(protocol,
-              host,
-              port,
-              context);
+    @Override
+    public String getProviderName() {
+        return "OpenShiftNameService";
     }
+
+    @Override
+    public String getType() {
+        return "dns";
+    }
+
 }

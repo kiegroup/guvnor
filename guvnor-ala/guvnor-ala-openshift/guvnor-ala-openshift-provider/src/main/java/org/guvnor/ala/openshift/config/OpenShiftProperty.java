@@ -19,6 +19,7 @@ import io.fabric8.kubernetes.client.Config;
 import io.fabric8.openshift.client.OpenShiftConfig;
 import org.guvnor.ala.config.ProviderConfig;
 import org.guvnor.ala.config.RuntimeConfig;
+import org.kie.server.api.KieServerConstants;
 
 /**
  * All OpenShift provider and runtime configuration parameters.
@@ -73,6 +74,7 @@ public enum OpenShiftProperty {
 
     /* ---------- Runtime properties: Guvnor ALA OpenShift Impl ---------- */
     APPLICATION_NAME("application.name"),
+    KIE_SERVER_CONTAINER_DEPLOYMENT(KieServerConstants.KIE_SERVER_CONTAINER_DEPLOYMENT),
     PROJECT_NAME("project.name"),
     RUNTIME_NAME(RuntimeConfig.RUNTIME_NAME.replaceAll("-", ".")),
     RESOURCE_SECRETS_URI("resource.secrets.uri"),

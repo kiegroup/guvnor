@@ -26,8 +26,9 @@ import org.guvnor.ala.runtime.RuntimeEndpoint;
 public class BaseRuntimeEndpoint
         implements RuntimeEndpoint {
 
+    private String protocol;
     private String host;
-    private int port;
+    private Integer port;
     private String context;
 
     /**
@@ -36,12 +37,23 @@ public class BaseRuntimeEndpoint
     public BaseRuntimeEndpoint() {
     }
 
-    public BaseRuntimeEndpoint(final String host,
-                               final int port,
+    public BaseRuntimeEndpoint(final String protocol,
+                               final String host,
+                               final Integer port,
                                final String context) {
+        this.protocol = protocol;
         this.host = host;
         this.port = port;
         this.context = context;
+    }
+
+    @Override
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(final String protocol) {
+        this.protocol = protocol;
     }
 
     @Override
@@ -54,11 +66,11 @@ public class BaseRuntimeEndpoint
     }
 
     @Override
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(final int port) {
+    public void setPort(final Integer port) {
         this.port = port;
     }
 
@@ -73,9 +85,10 @@ public class BaseRuntimeEndpoint
 
     @Override
     public String toString() {
-        return "BaseRuntimeEndpoint{" +
-                "host='" + host + '\'' +
-                ", port=" + port +
+        return getClass().getSimpleName() + "{" +
+                "protocol='" + protocol + '\'' +
+                ", host='" + host + '\'' +
+                ", port='" + port + '\'' +
                 ", context='" + context + '\'' +
                 '}';
     }
@@ -83,8 +96,9 @@ public class BaseRuntimeEndpoint
     @Override
     public int hashCode() {
         int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.protocol);
         hash = 79 * hash + Objects.hashCode(this.host);
-        hash = 79 * hash + this.port;
+        hash = 79 * hash + Objects.hashCode(this.port);
         hash = 79 * hash + Objects.hashCode(this.context);
         return hash;
     }
@@ -101,11 +115,16 @@ public class BaseRuntimeEndpoint
             return false;
         }
         final BaseRuntimeEndpoint other = (BaseRuntimeEndpoint) obj;
-        if (this.port != other.port) {
+        if (!Objects.equals(this.protocol,
+                            other.protocol)) {
             return false;
         }
         if (!Objects.equals(this.host,
                             other.host)) {
+            return false;
+        }
+        if (!Objects.equals(this.port,
+                            other.port)) {
             return false;
         }
         if (!Objects.equals(this.context,

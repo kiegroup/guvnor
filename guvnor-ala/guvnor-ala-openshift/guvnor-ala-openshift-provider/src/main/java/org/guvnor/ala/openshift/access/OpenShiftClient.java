@@ -17,9 +17,11 @@ package org.guvnor.ala.openshift.access;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +47,7 @@ import io.fabric8.openshift.client.OpenShiftConfig;
 import io.fabric8.openshift.client.dsl.DeployableScalableResource;
 import org.guvnor.ala.openshift.access.exceptions.OpenShiftClientException;
 import org.guvnor.ala.openshift.config.OpenShiftParameters;
+import org.guvnor.ala.openshift.config.OpenShiftProperty;
 import org.guvnor.ala.openshift.config.OpenShiftRuntimeConfig;
 import org.guvnor.ala.openshift.model.OpenShiftRuntimeEndpoint;
 import org.guvnor.ala.openshift.model.OpenShiftRuntimeState;
@@ -63,6 +66,7 @@ public class OpenShiftClient {
 
     private final io.fabric8.openshift.client.OpenShiftClient delegate;
     private final long buildTimeout;
+    private final OpenShiftClientListener postCreateListener;
 
     // Support for OpenShiftAccessInterfaceImpl ------------------------------
 
@@ -73,6 +77,23 @@ public class OpenShiftClient {
             buildTimeout = OpenShiftConfig.DEFAULT_BUILD_TIMEOUT;
         }
         this.buildTimeout = buildTimeout;
+        this.postCreateListener = getPostCreateListener();
+    }
+
+    private OpenShiftClientListener getPostCreateListener() {
+        String pcl = System.getProperty(OpenShiftClientListener.class.getName() + ".postCreate");
+        if (pcl != null) {
+            try {
+                return (OpenShiftClientListener)Class.forName(pcl).newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        }
+        return null;
+    }
+
+    public io.fabric8.openshift.client.OpenShiftClient getDelegate() {
+        return delegate;
     }
 
     public void dispose() {
@@ -92,12 +113,19 @@ public class OpenShiftClient {
                 createProject(prjName);
                 createFromUri(prjName, runtimeConfig.getResourceSecretsUri());
                 createFromUri(prjName, runtimeConfig.getResourceStreamsUri());
-                createFromTemplate(prjName, runtimeConfig);
+                createFromTemplate(runtimeConfig);
                 runtimeState = getRuntimeState(runtimeId);
+            }
+            if (postCreateListener != null) {
+                postCreateListener.trigger(this, runtimeConfig);
             }
             return runtimeState;
         } catch (Throwable t) {
-            throw new OpenShiftClientException(t.getMessage(), t);
+            if (t instanceof OpenShiftClientException) {
+                throw (OpenShiftClientException)t;
+            } else {
+                throw new OpenShiftClientException(t.getMessage(), t);
+            }
         }
     }
 
@@ -184,7 +212,7 @@ public class OpenShiftClient {
             .done();
     }
 
-    private void createFromUri(String prjName, String uri) throws MalformedURLException {
+    private void createFromUri(String prjName, String uri) throws OpenShiftClientException {
         URL url = toUrl(uri);
         if (url != null) {
             KubernetesList kubeList = delegate.lists().load(url).get();
@@ -211,35 +239,27 @@ public class OpenShiftClient {
         }
     }
 
-    private void createFromTemplate(String prjName, OpenShiftRuntimeConfig runtimeConfig) throws MalformedURLException {
-        KubernetesList kubeList = processTemplate(runtimeConfig);
+    private void createFromTemplate(OpenShiftRuntimeConfig runtimeConfig) throws OpenShiftClientException {
+        OpenShiftTemplate template = new OpenShiftTemplate(this, runtimeConfig);
+        Map<String, String> parameters = new LinkedHashMap<String, String>();
+        parameters.putAll(OpenShiftParameters.fromRuntimeConfig(runtimeConfig));
+        String kieServerContainerDeployment = runtimeConfig.getKieServerContainerDeployment();
+        if (kieServerContainerDeployment != null && kieServerContainerDeployment.trim().isEmpty()) {
+            parameters.put(OpenShiftProperty.KIE_SERVER_CONTAINER_DEPLOYMENT.envKey(), kieServerContainerDeployment);
+        }
+        KubernetesList kubeList = template.process(parameters);
         if (kubeList != null && kubeList.getItems().size() > 0) {
             try {
                 DeploymentConfig dc = getDeploymentConfig(kubeList, runtimeConfig.getServiceName());
                 if (dc != null) {
                     dc.getSpec().setReplicas(0);
                 }
+                String prjName = runtimeConfig.getProjectName();
                 delegate.lists().inNamespace(prjName).create(kubeList);
             } catch (Throwable t) {
                 throw new OpenShiftClientException(t.getMessage(), t);
             }
         }
-    }
-
-    private KubernetesList processTemplate(OpenShiftRuntimeConfig runtimeConfig) throws MalformedURLException {
-        String prjName = runtimeConfig.getProjectName();
-        URL url = toUrl(runtimeConfig.getResourceTemplateUri());
-        if (url != null) {
-            Map<String, String> params = OpenShiftParameters.fromRuntimeConfig(runtimeConfig);
-            return delegate.templates().inNamespace(prjName).load(url).process(params);
-        } else {
-            String templateName = runtimeConfig.getResourceTemplateName();
-            if (templateName != null && !templateName.isEmpty()) {
-                Map<String, String> params = OpenShiftParameters.fromRuntimeConfig(runtimeConfig);
-                return delegate.templates().inNamespace(prjName).withName(templateName).process(params);
-            }
-        }
-        return null;
     }
 
     private DeploymentConfig getDeploymentConfig(KubernetesList list, String svcName) {
@@ -263,9 +283,16 @@ public class OpenShiftClient {
         return null;
     }
 
-    private URL toUrl(String uri) throws MalformedURLException {
+    // package-projected for use by OpenShiftTemplate
+    URL toUrl(String uri) throws OpenShiftClientException {
         if (uri != null && !uri.isEmpty()) {
-            return URI.create(uri).toURL();
+            try {
+                return new URI(uri).toURL();
+            } catch (URISyntaxException use) {
+                throw new OpenShiftClientException(use.getMessage(), use);
+            } catch (MalformedURLException mue) {
+                throw new OpenShiftClientException(mue.getMessage(), mue);
+            }
         }
         return null;
     }
@@ -287,9 +314,9 @@ public class OpenShiftClient {
             }
             /*
              * cascading delete of deploymentConfigs means we don't have to also do the following:
-             *     delegate.deploymentConfigs().inNamespace(prjName).withLabel(APP_LABEL, app).delete();
-             *     delegate.replicationControllers().inNamespace(prjName).withLabel(APP_LABEL, app).delete();
-             *     delegate.pods().inNamespace(prjName).withLabel(APP_LABEL, app).delete();
+             *     delegate.deploymentConfigs().inNamespace(prjName).withLabel(APP_LABEL, appName).delete();
+             *     delegate.replicationControllers().inNamespace(prjName).withLabel(APP_LABEL, appName).delete();
+             *     delegate.pods().inNamespace(prjName).withLabel(APP_LABEL, appName).delete();
              * , but deleting services and routes are still necessary:
              */
             delegate.deploymentConfigs().inNamespace(prjName).withName(svcName).cascading(true).delete();
@@ -352,18 +379,16 @@ public class OpenShiftClient {
             Route route = delegate.routes().inNamespace(prjName).withName(svcName).get();
             if (route != null) {
                 RouteSpec routeSpec = route.getSpec();
+                endpoint.setProtocol(routeSpec.getTls() != null ? "https" : "http");
                 endpoint.setHost(routeSpec.getHost());
-                Integer port = null;
                 RoutePort routePort = routeSpec.getPort();
                 if (routePort != null) {
                     IntOrString targetPort = routePort.getTargetPort();
                     if (targetPort != null) {
-                        port = targetPort.getIntVal();
+                        endpoint.setPort(targetPort.getIntVal());
                     }
                 }
-                endpoint.setPort(port != null && port.intValue() > 0 ? port.intValue() : 80);
             }
-            endpoint.setContext("");
             return endpoint;
         } catch (Throwable t) {
             throw new OpenShiftClientException(t.getMessage(), t);

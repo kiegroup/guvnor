@@ -18,8 +18,13 @@ package org.guvnor.ala.openshift.access.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.net.URISyntaxException;
+import java.util.Map;
+
 import io.fabric8.openshift.client.OpenShiftConfig;
 import org.guvnor.ala.openshift.access.OpenShiftRuntimeId;
+import org.guvnor.ala.openshift.access.OpenShiftTemplate;
+import org.guvnor.ala.openshift.access.OpenShiftTemplate.Parameter;
 import org.guvnor.ala.openshift.config.impl.OpenShiftProviderConfigImpl;
 import org.junit.Test;
 
@@ -90,6 +95,54 @@ public class OpenShiftAccessTest {
         OpenShiftConfig clientConfig = OpenShiftAccessInterfaceImpl.buildOpenShiftConfig(providerConfig);
         assertEquals("https://localhost:8443/", clientConfig.getMasterUrl());
         assertEquals("https://localhost:8443/oapi/v2/", clientConfig.getOpenShiftUrl());
+    }
+
+    @Test
+    public void testTemplateParams() throws Exception {
+        String templateUri = getUri("bpmsuite70-execserv.json");
+        OpenShiftTemplate template = new OpenShiftTemplate(templateUri);
+        Map<String,Parameter> params = template.getParameterMap();
+        verifyParameter(params,
+                        "APPLICATION_NAME",
+                        "Application Name",
+                        "The name for the application.",
+                        true,
+                        null,
+                        null,
+                        "myapp");
+        verifyParameter(params,
+                        "KIE_SERVER_PWD",
+                        "KIE Server Password",
+                        "KIE execution server password (Sets the org.kie.server.pwd system property)",
+                        false,
+                        "expression",
+                        "[a-zA-Z]{6}[0-9]{1}!",
+                        null);
+}
+
+    private void verifyParameter(Map<String,Parameter> params,
+                                 String name,
+                                 String displayName,
+                                 String description,
+                                 boolean required,
+                                 String generate,
+                                 String from,
+                                 String value) {
+        Parameter param = params.get(name);
+        assertEquals(name, param.getName());
+        assertEquals(displayName, param.getDisplayName());
+        assertEquals(description, param.getDescription());
+        assertEquals(required, param.isRequired());
+        assertEquals(generate, param.getGenerate());
+        assertEquals(from, param.getFrom());
+        assertEquals(value, param.getValue());
+    }
+
+    private String getUri(String resourcePath) throws URISyntaxException {
+        if (!resourcePath.startsWith("/")) {
+            resourcePath = "/" + resourcePath;
+        }
+        return getClass().getResource(resourcePath).toURI().toString();
     }
 
 }

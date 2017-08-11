@@ -571,6 +571,11 @@ public class OpenShiftProviderConfigImpl implements OpenShiftProviderConfig, Clo
     }
 
     @Override
+    public OpenShiftProviderConfig asNewClone(OpenShiftProviderConfig origin) {
+        return new OpenShiftProviderConfigImpl(origin);
+    }
+
+    @Override
     public String toString() {
         return "OpenShiftClientConfigImpl{name=" + name +
                 ", httpProxy=" + httpProxy +
@@ -615,8 +620,345 @@ public class OpenShiftProviderConfigImpl implements OpenShiftProviderConfig, Clo
     }
 
     @Override
-    public OpenShiftProviderConfig asNewClone(OpenShiftProviderConfig origin) {
-        return new OpenShiftProviderConfigImpl(origin);
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((allProxy == null) ? 0 : allProxy.hashCode());
+        result = prime * result + ((httpProxy == null) ? 0 : httpProxy.hashCode());
+        result = prime * result + ((httpsProxy == null) ? 0 : httpsProxy.hashCode());
+        result = prime * result + ((kubernetesApiVersion == null) ? 0 : kubernetesApiVersion.hashCode());
+        result = prime * result + ((kubernetesAuthBasicPassword == null) ? 0 : kubernetesAuthBasicPassword.hashCode());
+        result = prime * result + ((kubernetesAuthBasicUsername == null) ? 0 : kubernetesAuthBasicUsername.hashCode());
+        result = prime * result + ((kubernetesAuthToken == null) ? 0 : kubernetesAuthToken.hashCode());
+        result = prime * result + ((kubernetesCertsCaData == null) ? 0 : kubernetesCertsCaData.hashCode());
+        result = prime * result + ((kubernetesCertsCaFile == null) ? 0 : kubernetesCertsCaFile.hashCode());
+        result = prime * result + ((kubernetesCertsClientData == null) ? 0 : kubernetesCertsClientData.hashCode());
+        result = prime * result + ((kubernetesCertsClientFile == null) ? 0 : kubernetesCertsClientFile.hashCode());
+        result = prime * result + ((kubernetesCertsClientKeyAlgo == null) ? 0 : kubernetesCertsClientKeyAlgo.hashCode());
+        result = prime * result + ((kubernetesCertsClientKeyData == null) ? 0 : kubernetesCertsClientKeyData.hashCode());
+        result = prime * result + ((kubernetesCertsClientKeyFile == null) ? 0 : kubernetesCertsClientKeyFile.hashCode());
+        result = prime * result + ((kubernetesCertsClientKeyPassphrase == null) ? 0 : kubernetesCertsClientKeyPassphrase.hashCode());
+        result = prime * result + ((kubernetesConnectionTimeout == null) ? 0 : kubernetesConnectionTimeout.hashCode());
+        result = prime * result + ((kubernetesKeystoreFile == null) ? 0 : kubernetesKeystoreFile.hashCode());
+        result = prime * result + ((kubernetesKeystorePassphrase == null) ? 0 : kubernetesKeystorePassphrase.hashCode());
+        result = prime * result + ((kubernetesLoggingInterval == null) ? 0 : kubernetesLoggingInterval.hashCode());
+        result = prime * result + ((kubernetesMaster == null) ? 0 : kubernetesMaster.hashCode());
+        result = prime * result + ((kubernetesNamespace == null) ? 0 : kubernetesNamespace.hashCode());
+        result = prime * result + ((kubernetesOapiVersion == null) ? 0 : kubernetesOapiVersion.hashCode());
+        result = prime * result + ((kubernetesRequestTimeout == null) ? 0 : kubernetesRequestTimeout.hashCode());
+        result = prime * result + ((kubernetesRollingTimeout == null) ? 0 : kubernetesRollingTimeout.hashCode());
+        result = prime * result + ((kubernetesScaleTimeout == null) ? 0 : kubernetesScaleTimeout.hashCode());
+        result = prime * result + ((kubernetesTlsVersions == null) ? 0 : kubernetesTlsVersions.hashCode());
+        result = prime * result + ((kubernetesTrustCertificates == null) ? 0 : kubernetesTrustCertificates.hashCode());
+        result = prime * result + ((kubernetesTruststoreFile == null) ? 0 : kubernetesTruststoreFile.hashCode());
+        result = prime * result + ((kubernetesTruststorePassphrase == null) ? 0 : kubernetesTruststorePassphrase.hashCode());
+        result = prime * result + ((kubernetesUserAgent == null) ? 0 : kubernetesUserAgent.hashCode());
+        result = prime * result + ((kubernetesWatchReconnectInterval == null) ? 0 : kubernetesWatchReconnectInterval.hashCode());
+        result = prime * result + ((kubernetesWatchReconnectLimit == null) ? 0 : kubernetesWatchReconnectLimit.hashCode());
+        result = prime * result + ((kubernetesWebsocketPingInterval == null) ? 0 : kubernetesWebsocketPingInterval.hashCode());
+        result = prime * result + ((kubernetesWebsocketTimeout == null) ? 0 : kubernetesWebsocketTimeout.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((noProxy == null) ? 0 : noProxy.hashCode());
+        result = prime * result + ((openshiftBuildTimeout == null) ? 0 : openshiftBuildTimeout.hashCode());
+        result = prime * result + ((openshiftUrl == null) ? 0 : openshiftUrl.hashCode());
+        result = prime * result + ((proxyPassword == null) ? 0 : proxyPassword.hashCode());
+        result = prime * result + ((proxyUsername == null) ? 0 : proxyUsername.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof OpenShiftProviderConfigImpl)) {
+            return false;
+        }
+        OpenShiftProviderConfigImpl other = (OpenShiftProviderConfigImpl) obj;
+        if (allProxy == null) {
+            if (other.allProxy != null) {
+                return false;
+            }
+        } else if (!allProxy.equals(other.allProxy)) {
+            return false;
+        }
+        if (httpProxy == null) {
+            if (other.httpProxy != null) {
+                return false;
+            }
+        } else if (!httpProxy.equals(other.httpProxy)) {
+            return false;
+        }
+        if (httpsProxy == null) {
+            if (other.httpsProxy != null) {
+                return false;
+            }
+        } else if (!httpsProxy.equals(other.httpsProxy)) {
+            return false;
+        }
+        if (kubernetesApiVersion == null) {
+            if (other.kubernetesApiVersion != null) {
+                return false;
+            }
+        } else if (!kubernetesApiVersion.equals(other.kubernetesApiVersion)) {
+            return false;
+        }
+        if (kubernetesAuthBasicPassword == null) {
+            if (other.kubernetesAuthBasicPassword != null) {
+                return false;
+            }
+        } else if (!kubernetesAuthBasicPassword.equals(other.kubernetesAuthBasicPassword)) {
+            return false;
+        }
+        if (kubernetesAuthBasicUsername == null) {
+            if (other.kubernetesAuthBasicUsername != null) {
+                return false;
+            }
+        } else if (!kubernetesAuthBasicUsername.equals(other.kubernetesAuthBasicUsername)) {
+            return false;
+        }
+        if (kubernetesAuthToken == null) {
+            if (other.kubernetesAuthToken != null) {
+                return false;
+            }
+        } else if (!kubernetesAuthToken.equals(other.kubernetesAuthToken)) {
+            return false;
+        }
+        if (kubernetesCertsCaData == null) {
+            if (other.kubernetesCertsCaData != null) {
+                return false;
+            }
+        } else if (!kubernetesCertsCaData.equals(other.kubernetesCertsCaData)) {
+            return false;
+        }
+        if (kubernetesCertsCaFile == null) {
+            if (other.kubernetesCertsCaFile != null) {
+                return false;
+            }
+        } else if (!kubernetesCertsCaFile.equals(other.kubernetesCertsCaFile)) {
+            return false;
+        }
+        if (kubernetesCertsClientData == null) {
+            if (other.kubernetesCertsClientData != null) {
+                return false;
+            }
+        } else if (!kubernetesCertsClientData.equals(other.kubernetesCertsClientData)) {
+            return false;
+        }
+        if (kubernetesCertsClientFile == null) {
+            if (other.kubernetesCertsClientFile != null) {
+                return false;
+            }
+        } else if (!kubernetesCertsClientFile.equals(other.kubernetesCertsClientFile)) {
+            return false;
+        }
+        if (kubernetesCertsClientKeyAlgo == null) {
+            if (other.kubernetesCertsClientKeyAlgo != null) {
+                return false;
+            }
+        } else if (!kubernetesCertsClientKeyAlgo.equals(other.kubernetesCertsClientKeyAlgo)) {
+            return false;
+        }
+        if (kubernetesCertsClientKeyData == null) {
+            if (other.kubernetesCertsClientKeyData != null) {
+                return false;
+            }
+        } else if (!kubernetesCertsClientKeyData.equals(other.kubernetesCertsClientKeyData)) {
+            return false;
+        }
+        if (kubernetesCertsClientKeyFile == null) {
+            if (other.kubernetesCertsClientKeyFile != null) {
+                return false;
+            }
+        } else if (!kubernetesCertsClientKeyFile.equals(other.kubernetesCertsClientKeyFile)) {
+            return false;
+        }
+        if (kubernetesCertsClientKeyPassphrase == null) {
+            if (other.kubernetesCertsClientKeyPassphrase != null) {
+                return false;
+            }
+        } else if (!kubernetesCertsClientKeyPassphrase.equals(other.kubernetesCertsClientKeyPassphrase)) {
+            return false;
+        }
+        if (kubernetesConnectionTimeout == null) {
+            if (other.kubernetesConnectionTimeout != null) {
+                return false;
+            }
+        } else if (!kubernetesConnectionTimeout.equals(other.kubernetesConnectionTimeout)) {
+            return false;
+        }
+        if (kubernetesKeystoreFile == null) {
+            if (other.kubernetesKeystoreFile != null) {
+                return false;
+            }
+        } else if (!kubernetesKeystoreFile.equals(other.kubernetesKeystoreFile)) {
+            return false;
+        }
+        if (kubernetesKeystorePassphrase == null) {
+            if (other.kubernetesKeystorePassphrase != null) {
+                return false;
+            }
+        } else if (!kubernetesKeystorePassphrase.equals(other.kubernetesKeystorePassphrase)) {
+            return false;
+        }
+        if (kubernetesLoggingInterval == null) {
+            if (other.kubernetesLoggingInterval != null) {
+                return false;
+            }
+        } else if (!kubernetesLoggingInterval.equals(other.kubernetesLoggingInterval)) {
+            return false;
+        }
+        if (kubernetesMaster == null) {
+            if (other.kubernetesMaster != null) {
+                return false;
+            }
+        } else if (!kubernetesMaster.equals(other.kubernetesMaster)) {
+            return false;
+        }
+        if (kubernetesNamespace == null) {
+            if (other.kubernetesNamespace != null) {
+                return false;
+            }
+        } else if (!kubernetesNamespace.equals(other.kubernetesNamespace)) {
+            return false;
+        }
+        if (kubernetesOapiVersion == null) {
+            if (other.kubernetesOapiVersion != null) {
+                return false;
+            }
+        } else if (!kubernetesOapiVersion.equals(other.kubernetesOapiVersion)) {
+            return false;
+        }
+        if (kubernetesRequestTimeout == null) {
+            if (other.kubernetesRequestTimeout != null) {
+                return false;
+            }
+        } else if (!kubernetesRequestTimeout.equals(other.kubernetesRequestTimeout)) {
+            return false;
+        }
+        if (kubernetesRollingTimeout == null) {
+            if (other.kubernetesRollingTimeout != null) {
+                return false;
+            }
+        } else if (!kubernetesRollingTimeout.equals(other.kubernetesRollingTimeout)) {
+            return false;
+        }
+        if (kubernetesScaleTimeout == null) {
+            if (other.kubernetesScaleTimeout != null) {
+                return false;
+            }
+        } else if (!kubernetesScaleTimeout.equals(other.kubernetesScaleTimeout)) {
+            return false;
+        }
+        if (kubernetesTlsVersions == null) {
+            if (other.kubernetesTlsVersions != null) {
+                return false;
+            }
+        } else if (!kubernetesTlsVersions.equals(other.kubernetesTlsVersions)) {
+            return false;
+        }
+        if (kubernetesTrustCertificates == null) {
+            if (other.kubernetesTrustCertificates != null) {
+                return false;
+            }
+        } else if (!kubernetesTrustCertificates.equals(other.kubernetesTrustCertificates)) {
+            return false;
+        }
+        if (kubernetesTruststoreFile == null) {
+            if (other.kubernetesTruststoreFile != null) {
+                return false;
+            }
+        } else if (!kubernetesTruststoreFile.equals(other.kubernetesTruststoreFile)) {
+            return false;
+        }
+        if (kubernetesTruststorePassphrase == null) {
+            if (other.kubernetesTruststorePassphrase != null) {
+                return false;
+            }
+        } else if (!kubernetesTruststorePassphrase.equals(other.kubernetesTruststorePassphrase)) {
+            return false;
+        }
+        if (kubernetesUserAgent == null) {
+            if (other.kubernetesUserAgent != null) {
+                return false;
+            }
+        } else if (!kubernetesUserAgent.equals(other.kubernetesUserAgent)) {
+            return false;
+        }
+        if (kubernetesWatchReconnectInterval == null) {
+            if (other.kubernetesWatchReconnectInterval != null) {
+                return false;
+            }
+        } else if (!kubernetesWatchReconnectInterval.equals(other.kubernetesWatchReconnectInterval)) {
+            return false;
+        }
+        if (kubernetesWatchReconnectLimit == null) {
+            if (other.kubernetesWatchReconnectLimit != null) {
+                return false;
+            }
+        } else if (!kubernetesWatchReconnectLimit.equals(other.kubernetesWatchReconnectLimit)) {
+            return false;
+        }
+        if (kubernetesWebsocketPingInterval == null) {
+            if (other.kubernetesWebsocketPingInterval != null) {
+                return false;
+            }
+        } else if (!kubernetesWebsocketPingInterval.equals(other.kubernetesWebsocketPingInterval)) {
+            return false;
+        }
+        if (kubernetesWebsocketTimeout == null) {
+            if (other.kubernetesWebsocketTimeout != null) {
+                return false;
+            }
+        } else if (!kubernetesWebsocketTimeout.equals(other.kubernetesWebsocketTimeout)) {
+            return false;
+        }
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        if (noProxy == null) {
+            if (other.noProxy != null) {
+                return false;
+            }
+        } else if (!noProxy.equals(other.noProxy)) {
+            return false;
+        }
+        if (openshiftBuildTimeout == null) {
+            if (other.openshiftBuildTimeout != null) {
+                return false;
+            }
+        } else if (!openshiftBuildTimeout.equals(other.openshiftBuildTimeout)) {
+            return false;
+        }
+        if (openshiftUrl == null) {
+            if (other.openshiftUrl != null) {
+                return false;
+            }
+        } else if (!openshiftUrl.equals(other.openshiftUrl)) {
+            return false;
+        }
+        if (proxyPassword == null) {
+            if (other.proxyPassword != null) {
+                return false;
+            }
+        } else if (!proxyPassword.equals(other.proxyPassword)) {
+            return false;
+        }
+        if (proxyUsername == null) {
+            if (other.proxyUsername != null) {
+                return false;
+            }
+        } else if (!proxyUsername.equals(other.proxyUsername)) {
+            return false;
+        }
+        return true;
     }
 
 }
