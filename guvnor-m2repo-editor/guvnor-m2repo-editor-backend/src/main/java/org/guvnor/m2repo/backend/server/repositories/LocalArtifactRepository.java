@@ -46,7 +46,13 @@ public class LocalArtifactRepository implements ArtifactRepository {
 
     @Override
     public String getRootDir() {
-        return this.getRootDir();
+        return Aether.getAether()
+                .getLocalRepository()
+                .getUrl()
+                .replaceAll("^file:",
+                            "")
+                .replaceAll(File.separatorChar + "$",
+                            "");
     }
 
     @Override
