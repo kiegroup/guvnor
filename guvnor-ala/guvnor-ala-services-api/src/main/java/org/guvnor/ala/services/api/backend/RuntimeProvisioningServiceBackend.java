@@ -80,9 +80,13 @@ public interface RuntimeProvisioningServiceBackend {
     /**
      * Destroy an existing  Runtime
      * @param runtimeId the identifier of the runtime to destroy
+     * @param forced indicates if the runtime must be deleted from the guvnor-ala registries independently of the
+     * connectivity with the external provider. e.g. if it was not possible to connect an external WF where the runtime
+     * is running.
      * @throw BusinessException in case of an internal exception
      */
-    void destroyRuntime(final String runtimeId) throws BusinessException;
+    void destroyRuntime(final String runtimeId,
+                        final boolean forced) throws BusinessException;
 
     /**
      * Get All Runtimes

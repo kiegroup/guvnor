@@ -21,6 +21,7 @@ import java.util.Collection;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.ala.ui.client.events.RefreshRuntimeEvent;
+import org.guvnor.ala.ui.client.util.PopupHelper;
 import org.guvnor.ala.ui.client.wizard.pipeline.SelectPipelinePagePresenter;
 import org.guvnor.ala.ui.client.wizard.source.SourceConfigurationPagePresenter;
 import org.guvnor.ala.ui.model.PipelineKey;
@@ -28,7 +29,9 @@ import org.guvnor.ala.ui.model.Provider;
 import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.Source;
 import org.guvnor.ala.ui.service.RuntimeService;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,12 +41,10 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.ERROR_MESSAGE;
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.PIPELINE1_KEY;
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.PIPELINE2_KEY;
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.SUCCESS_MESSAGE;
 import static org.guvnor.ala.ui.ProvisioningManagementTestCommons.prepareServiceCallerError;
-import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.NewDeployWizard_PipelineStartErrorMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.NewDeployWizard_PipelineStartSuccessMessage;
 import static org.mockito.Mockito.*;
 
@@ -58,6 +59,12 @@ public class NewDeployWizardTest
 
     @Mock
     private SourceConfigurationPagePresenter sourceConfigPage;
+
+    @Mock
+    private ErrorCallback<Message> defaultErrorCallback;
+
+    @Mock
+    private PopupHelper popupHelper;
 
     @Mock
     private RuntimeService runtimeService;
@@ -79,6 +86,8 @@ public class NewDeployWizardTest
 
     @Before
     public void setUp() {
+        when(popupHelper.getPopupErrorCallback()).thenReturn(defaultErrorCallback);
+
         pipelines = new ArrayList<>();
         pipelines.add(PIPELINE1_KEY);
         pipelines.add(PIPELINE2_KEY);
@@ -86,11 +95,11 @@ public class NewDeployWizardTest
         when(provider.getKey()).thenReturn(mock(ProviderKey.class));
 
         when(translationService.getTranslation(NewDeployWizard_PipelineStartSuccessMessage)).thenReturn(SUCCESS_MESSAGE);
-        when(translationService.getTranslation(NewDeployWizard_PipelineStartErrorMessage)).thenReturn(ERROR_MESSAGE);
 
         runtimeServiceCaller = spy(new CallerMock<>(runtimeService));
         wizard = new NewDeployWizard(selectPipelinePage,
                                      sourceConfigPage,
+                                     popupHelper,
                                      translationService,
                                      runtimeServiceCaller,
                                      notification,
@@ -149,9 +158,12 @@ public class NewDeployWizardTest
                                        RUNTIME,
                                        source,
                                        PIPELINE1_KEY);
+
+        verify(defaultErrorCallback,
+               times(1)).error(any(Message.class),
+                               any(Throwable.class));
         verify(notification,
-               times(1)).fire(new NotificationEvent(ERROR_MESSAGE,
-                                                    NotificationEvent.NotificationType.ERROR));
+               never()).fire(any(NotificationEvent.class));
     }
 
     private void verifyStart() {

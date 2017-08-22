@@ -66,6 +66,8 @@ import org.junit.runner.RunWith;
 
 import static java.util.Arrays.asList;
 import static org.guvnor.ala.pipeline.StageUtil.config;
+import static org.guvnor.ala.runtime.RuntimeState.RUNNING;
+import static org.guvnor.ala.runtime.RuntimeState.STOPPED;
 import static org.junit.Assert.*;
 
 /**
@@ -213,7 +215,7 @@ public class WildflyExecutorTest {
 
         wildflyRuntime = (WildflyRuntime) runtime;
 
-        assertEquals("Running",
+        assertEquals(RUNNING,
                      wildflyRuntime.getState().getState());
 
         runtimeManager.stop(wildflyRuntime);
@@ -232,7 +234,7 @@ public class WildflyExecutorTest {
 
         wildflyRuntime = (WildflyRuntime) runtime;
 
-        assertEquals("NA",
+        assertEquals(STOPPED,
                      wildflyRuntime.getState().getState());
 
         wildflyRuntimeExecExecutor.destroy(wildflyRuntime);
@@ -344,7 +346,7 @@ public class WildflyExecutorTest {
 
         wildflyRuntime = (WildflyRuntime) runtime;
 
-        assertEquals("Running",
+        assertEquals(RUNNING,
                      wildflyRuntime.getState().getState());
         runtimeManager.stop(wildflyRuntime);
 
@@ -362,7 +364,7 @@ public class WildflyExecutorTest {
 
         wildflyRuntime = (WildflyRuntime) runtime;
 
-        assertEquals("NA",
+        assertEquals(STOPPED,
                      wildflyRuntime.getState().getState());
 
         wildflyRuntimeExecExecutor.destroy(wildflyRuntime);

@@ -51,4 +51,12 @@ public interface PipelineExecutorTaskManager {
      * @throws PipelineExecutorException throws exceptions when a task that fulfil the conditions couldn't be found.
      */
     void stop(final String taskId) throws PipelineExecutorException;
+
+    /**
+     * Deletes a pipeline executor task that is in FINISHED, STOPPED or ERROR status.
+     * All information related to the task is also removed from the PipelineExecutorRegistry.
+     * @param taskId the id of the task to be deleted.
+     * @throws PipelineExecutorException throws exceptions when a task that fulfil the conditions couldn't be found.
+     */
+    void delete(final String taskId) throws PipelineExecutorException;
 }

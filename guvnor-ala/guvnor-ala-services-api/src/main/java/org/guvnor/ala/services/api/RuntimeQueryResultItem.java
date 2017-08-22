@@ -16,6 +16,7 @@
 
 package org.guvnor.ala.services.api;
 
+import org.guvnor.ala.runtime.RuntimeState;
 import org.guvnor.ala.services.api.itemlist.PipelineStageItemList;
 
 public class RuntimeQueryResultItem {
@@ -77,9 +78,14 @@ public class RuntimeQueryResultItem {
     /**
      * When known, it's the runtime status. This value might be un-known if the runtime
      * wasn't yet created, e.g. when the pipeline is still executing.
-     * This status can be on of the following values. STARTED, RUNNING or ERROR.
+     * @see RuntimeState
      */
     private String runtimeStatus;
+
+    /**
+     * When known, it's the runtime initial start date. This value might be un-known if the runtime wasn't yet created.
+     */
+    private String startedAt;
 
     /**
      * When known, it's the end point that can be used for accessing the runtime.
@@ -100,6 +106,7 @@ public class RuntimeQueryResultItem {
                                   String runtimeId,
                                   String runtimeName,
                                   String runtimeStatus,
+                                  String startedAt,
                                   String runtimeEndpoint) {
         this.providerId = providerId;
         this.providerTypeName = providerTypeName;
@@ -112,6 +119,7 @@ public class RuntimeQueryResultItem {
         this.runtimeId = runtimeId;
         this.runtimeName = runtimeName;
         this.runtimeStatus = runtimeStatus;
+        this.startedAt = startedAt;
         this.runtimeEndpoint = runtimeEndpoint;
     }
 
@@ -201,6 +209,14 @@ public class RuntimeQueryResultItem {
 
     public void setRuntimeStatus(String runtimeStatus) {
         this.runtimeStatus = runtimeStatus;
+    }
+
+    public String getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(String startedAt) {
+        this.startedAt = startedAt;
     }
 
     public String getRuntimeEndpoint() {

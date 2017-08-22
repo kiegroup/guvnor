@@ -54,6 +54,9 @@ import static org.apache.http.entity.ContentType.create;
 import static org.apache.http.entity.mime.HttpMultipartMode.BROWSER_COMPATIBLE;
 import static org.apache.http.entity.mime.MultipartEntityBuilder.create;
 import static org.apache.http.impl.client.HttpClients.custom;
+import static org.guvnor.ala.runtime.RuntimeState.RUNNING;
+import static org.guvnor.ala.runtime.RuntimeState.STOPPED;
+import static org.guvnor.ala.runtime.RuntimeState.UNKNOWN;
 
 /**
  * Wildfly 10 Remote client
@@ -355,16 +358,18 @@ public class WildflyClient {
             if (element.isJsonObject()) {
                 JsonObject outcome = element.getAsJsonObject();
                 JsonElement resultElement = outcome.get("result");
-                String enabled = "false";
+                String enabled = null;
                 if (resultElement != null) {
                     JsonObject result = resultElement.getAsJsonObject();
                     enabled = result.get("enabled").getAsString();
                 }
-                String state = "";
-                if (enabled.equals("true")) {
-                    state = "Running";
+                String state;
+                if (Boolean.TRUE.toString().equals(enabled)) {
+                    state = RUNNING;
+                } else if (Boolean.FALSE.toString().equals(enabled)) {
+                    state = STOPPED;
                 } else {
-                    state = "NA";
+                    state = UNKNOWN;
                 }
                 return new WildflyAppState(state,
                                            new Date());
@@ -375,7 +380,7 @@ public class WildflyClient {
             throw new WildflyClientException("Error Getting App State : " + ex.getMessage(),
                                              ex);
         }
-        return new WildflyAppState("NA",
+        return new WildflyAppState(UNKNOWN,
                                    new Date());
     }
 

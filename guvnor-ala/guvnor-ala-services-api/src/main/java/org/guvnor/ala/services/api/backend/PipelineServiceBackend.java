@@ -90,4 +90,20 @@ public interface PipelineServiceBackend {
     String runPipeline(final String id,
                        final Input input,
                        final boolean async) throws BusinessException;
+
+    /**
+     * Stops a running pipeline execution.
+     * @param executionId A pipeline execution id to stop. The pipeline execution id is typically returned by
+     * the runPipeline method.
+     * @throws BusinessException
+     */
+    void stopPipelineExecution(final String executionId) throws BusinessException;
+
+    /**
+     * Deletes a pipeline execution
+     * @param executionId A pipeline execution id to delete. The pipeline execution id is typically returned by
+     * the runPipeline method.
+     * @throws BusinessException
+     */
+    void deletePipelineExecution(final String executionId) throws BusinessException;
 }

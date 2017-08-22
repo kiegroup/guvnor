@@ -32,8 +32,8 @@ import org.guvnor.ala.ui.model.ProviderKey;
 import org.guvnor.ala.ui.model.ProviderType;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProvidersInfo;
-import org.guvnor.ala.ui.service.ProviderService;
 import org.guvnor.ala.ui.service.ProviderTypeService;
+import org.guvnor.ala.ui.service.ProvisioningScreensService;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,9 +90,9 @@ public class ProvisioningManagementBrowserPresenterTest {
     private Caller<ProviderTypeService> providerTypeServiceCaller;
 
     @Mock
-    private ProviderService providerService;
+    private ProvisioningScreensService provisioningScreensService;
 
-    private Caller<ProviderService> providerServiceCaller;
+    private Caller<ProvisioningScreensService> ProvisioningScreensServiceCaller;
 
     @Mock
     private EventSourceMock<ProviderTypeSelectedEvent> providerTypeSelectedEvent;
@@ -104,7 +104,7 @@ public class ProvisioningManagementBrowserPresenterTest {
     @Before
     public void setUp() {
         providerTypeServiceCaller = new CallerMock<>(providerTypeService);
-        providerServiceCaller = new CallerMock<>(providerService);
+        ProvisioningScreensServiceCaller = new CallerMock<>(provisioningScreensService);
 
         providerTypes = mockProviderTypeList(PROVIDER_TYPES_SIZE);
 
@@ -120,7 +120,7 @@ public class ProvisioningManagementBrowserPresenterTest {
                                                                    providerEmptyPresenter,
                                                                    providerPresenter,
                                                                    providerTypeServiceCaller,
-                                                                   providerServiceCaller,
+                                                                   ProvisioningScreensServiceCaller,
                                                                    providerTypeSelectedEvent));
         presenter.init();
         verify(view,
@@ -193,7 +193,7 @@ public class ProvisioningManagementBrowserPresenterTest {
         when(providersInfo.getProvidersKey()).thenReturn(providerKeys);
 
         when(providerTypeService.getProviderType(selectedProviderTypeKey)).thenReturn(selectedProviderType);
-        when(providerService.getProvidersInfo(selectedProviderTypeKey)).thenReturn(providersInfo);
+        when(provisioningScreensService.getProvidersInfo(selectedProviderTypeKey)).thenReturn(providersInfo);
 
         presenter.onProviderTypeSelected(new ProviderTypeSelectedEvent(selectedProviderType.getKey(),
                                                                        selectedProviderKey.getId()));
@@ -217,7 +217,7 @@ public class ProvisioningManagementBrowserPresenterTest {
         when(providersInfo.getProvidersKey()).thenReturn(providerKeys);
 
         when(providerTypeService.getProviderType(selectedProviderTypeKey)).thenReturn(selectedProviderType);
-        when(providerService.getProvidersInfo(selectedProviderTypeKey)).thenReturn(providersInfo);
+        when(provisioningScreensService.getProvidersInfo(selectedProviderTypeKey)).thenReturn(providersInfo);
 
         presenter.onProviderTypeSelected(new ProviderTypeSelectedEvent(selectedProviderType.getKey()));
 

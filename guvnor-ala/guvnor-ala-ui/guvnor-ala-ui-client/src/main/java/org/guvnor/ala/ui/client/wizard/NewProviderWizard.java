@@ -36,7 +36,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.NewProviderWizard_ProviderCreateErrorMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.NewProviderWizard_ProviderCreateSuccessMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.NewProviderWizard_ProviderNotProperlyConfiguredInSystemErrorMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.NewProviderWizard_Title;
@@ -114,8 +113,8 @@ public class NewProviderWizard
     public void complete() {
         final ProviderConfiguration providerConfiguration = providerConfigurationPage.buildProviderConfiguration();
         providerService.call((Void aVoid) -> onCreateProviderSuccess(providerConfiguration),
-                             (message, throwable) -> onCreateProviderError()).createProvider(providerType,
-                                                                                             providerConfiguration);
+                             popupHelper.getPopupErrorCallback()).createProvider(providerType,
+                                                                                 providerConfiguration);
     }
 
     private void onCreateProviderSuccess(final ProviderConfiguration providerConfiguration) {
@@ -124,13 +123,6 @@ public class NewProviderWizard
         NewProviderWizard.super.complete();
         providerTypeSelectedEvent.fire(new ProviderTypeSelectedEvent(providerType.getKey(),
                                                                      providerConfiguration.getId()));
-    }
-
-    private boolean onCreateProviderError() {
-        notification.fire(new NotificationEvent(translationService.getTranslation(NewProviderWizard_ProviderCreateErrorMessage),
-                                                NotificationEvent.NotificationType.ERROR));
-        start();
-        return false;
     }
 
     private void clear() {

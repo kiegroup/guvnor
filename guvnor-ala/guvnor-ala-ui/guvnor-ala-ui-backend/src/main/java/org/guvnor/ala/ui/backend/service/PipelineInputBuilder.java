@@ -74,8 +74,10 @@ public class PipelineInputBuilder {
                       ((InternalGitSource) source).getRepository());
             input.put(GitConfig.BRANCH,
                       ((InternalGitSource) source).getBranch());
-            input.put(MavenProjectConfig.PROJECT_DIR,
-                      ((InternalGitSource) source).getProject());
+            if (((InternalGitSource) source).getProject() != null) {
+                input.put(MavenProjectConfig.PROJECT_DIR,
+                          ((InternalGitSource) source).getProject().getProjectName());
+            }
         }
         return input;
     }

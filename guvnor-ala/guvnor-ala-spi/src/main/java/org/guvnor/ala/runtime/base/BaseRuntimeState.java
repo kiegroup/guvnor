@@ -26,7 +26,7 @@ import org.guvnor.ala.runtime.RuntimeState;
 public class BaseRuntimeState
         implements RuntimeState {
 
-    private String state = "NA";
+    private String state = UNKNOWN;
     private String startedAt;
 
     /**

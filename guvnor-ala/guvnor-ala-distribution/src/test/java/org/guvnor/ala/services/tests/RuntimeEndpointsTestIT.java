@@ -16,14 +16,9 @@
 
 package org.guvnor.ala.services.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -49,6 +44,8 @@ import org.guvnor.ala.services.api.itemlist.ProviderTypeList;
 import org.guvnor.ala.services.api.itemlist.RuntimeList;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Ignore;
+
+import static org.junit.Assert.*;
 
 public class RuntimeEndpointsTestIT {
 
@@ -86,22 +83,34 @@ public class RuntimeEndpointsTestIT {
                      allProviders.getItems().size());
         assertTrue(allProviders.getItems().get(0) instanceof OpenShiftProvider);
         OpenShiftProvider openshiftProvider = (OpenShiftProvider) allProviders.getItems().get(0);
-        OpenShiftRuntimeConfig runtimeConfig = createRuntimeConfig(openshiftProvider, "coss1");
+        OpenShiftRuntimeConfig runtimeConfig = createRuntimeConfig(openshiftProvider,
+                                                                   "coss1");
 
         @SuppressWarnings("unused")
-        OpenShiftRuntime openshiftRuntime = getOpenShiftRuntime(proxy, 0, null);
+        OpenShiftRuntime openshiftRuntime = getOpenShiftRuntime(proxy,
+                                                                0,
+                                                                null);
 
         String runtimeId = proxy.newRuntime(runtimeConfig);
-        openshiftRuntime = getOpenShiftRuntime(proxy, 1, OpenShiftRuntimeState.READY);
+        openshiftRuntime = getOpenShiftRuntime(proxy,
+                                               1,
+                                               OpenShiftRuntimeState.READY);
 
         proxy.startRuntime(runtimeId);
-        openshiftRuntime = getOpenShiftRuntime(proxy, 1, OpenShiftRuntimeState.STARTED);
+        openshiftRuntime = getOpenShiftRuntime(proxy,
+                                               1,
+                                               OpenShiftRuntimeState.STARTED);
 
         proxy.stopRuntime(runtimeId);
-        openshiftRuntime = getOpenShiftRuntime(proxy, 1, OpenShiftRuntimeState.READY);
+        openshiftRuntime = getOpenShiftRuntime(proxy,
+                                               1,
+                                               OpenShiftRuntimeState.READY);
 
-        proxy.destroyRuntime(runtimeId);
-        openshiftRuntime = getOpenShiftRuntime(proxy, 0, null);
+        proxy.destroyRuntime(runtimeId,
+                             true);
+        openshiftRuntime = getOpenShiftRuntime(proxy,
+                                               0,
+                                               null);
     }
 
     private OpenShiftProviderConfigImpl createProviderConfig() {
@@ -113,7 +122,8 @@ public class RuntimeEndpointsTestIT {
         return openshiftProviderConfig;
     }
 
-    private OpenShiftRuntimeConfigImpl createRuntimeConfig(ProviderId providerId, String testName) throws Exception {
+    private OpenShiftRuntimeConfigImpl createRuntimeConfig(ProviderId providerId,
+                                                           String testName) throws Exception {
         final String prjName = createProjectName(testName);
         final String appName = "myapp";
         final String svcName = appName + "-execserv";
@@ -126,17 +136,23 @@ public class RuntimeEndpointsTestIT {
         runtimeConfig.setResourceStreamsUri(getUri("jboss-image-streams.json"));
         runtimeConfig.setResourceTemplateUri(getUri("bpmsuite70-execserv.json"));
         runtimeConfig.setResourceTemplateParamValues(new OpenShiftParameters()
-                .param("APPLICATION_NAME", appName)
-                .param("IMAGE_STREAM_NAMESPACE", prjName)
-                .param("KIE_ADMIN_PWD", "admin1!")
-                .param("KIE_SERVER_PWD", "execution1!")
-                .toString());
+                                                             .param("APPLICATION_NAME",
+                                                                    appName)
+                                                             .param("IMAGE_STREAM_NAMESPACE",
+                                                                    prjName)
+                                                             .param("KIE_ADMIN_PWD",
+                                                                    "admin1!")
+                                                             .param("KIE_SERVER_PWD",
+                                                                    "execution1!")
+                                                             .toString());
         return runtimeConfig;
     }
 
     private String createProjectName(String testName) {
         return new StringBuilder()
-                .append(System.getProperty("user.name", "anon").replaceAll("[^A-Za-z0-9]", "-"))
+                .append(System.getProperty("user.name",
+                                           "anon").replaceAll("[^A-Za-z0-9]",
+                                                              "-"))
                 .append('-')
                 .append(testName != null ? testName : "test")
                 .append('-')
@@ -155,11 +171,11 @@ public class RuntimeEndpointsTestIT {
                                                  int expectedCount,
                                                  String expectedState) {
         RuntimeList allRuntimes = proxy.getRuntimes(0,
-                10,
-                "",
-                true);
+                                                    10,
+                                                    "",
+                                                    true);
         assertEquals(expectedCount,
-                allRuntimes.getItems().size());
+                     allRuntimes.getItems().size());
 
         if (expectedCount == 0) {
             return null;
@@ -170,7 +186,7 @@ public class RuntimeEndpointsTestIT {
         assertTrue(runtime instanceof OpenShiftRuntime);
         OpenShiftRuntime openshiftRuntime = (OpenShiftRuntime) runtime;
         assertEquals(expectedState,
-                openshiftRuntime.getState().getState());
+                     openshiftRuntime.getState().getState());
 
         return openshiftRuntime;
     }
@@ -246,7 +262,8 @@ public class RuntimeEndpointsTestIT {
         assertEquals("Stopped",
                      dockerRuntime.getState().getState());
 
-        proxy.destroyRuntime(newRuntime);
+        proxy.destroyRuntime(newRuntime,
+                             true);
 
         allRuntimes = proxy.getRuntimes(0,
                                         10,
