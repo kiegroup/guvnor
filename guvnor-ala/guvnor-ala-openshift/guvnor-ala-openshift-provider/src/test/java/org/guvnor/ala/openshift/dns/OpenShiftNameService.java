@@ -46,7 +46,7 @@ public class OpenShiftNameService implements NameService {
                 for (Route route : routeList.getItems()) {
                     String host = route.getSpec().getHost();
                     if (routerAddr != null) {
-                        System.out.println(String.format("Adding route (router -> target): %s -> %s", routerHost, host));
+                        System.out.println(String.format("Adding route (router -> host): %s -> %s", routerHost, host));
                         ROUTING.put(host, routerAddr);
                     } else {
                         ROUTING.remove(host);
