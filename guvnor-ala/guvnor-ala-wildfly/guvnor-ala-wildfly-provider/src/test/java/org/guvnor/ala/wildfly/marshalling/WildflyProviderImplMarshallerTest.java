@@ -43,10 +43,10 @@ public class WildflyProviderImplMarshallerTest
 
     @Override
     public WildflyProviderImpl getValue() {
-        return createWildlfyProvider();
+        return createWildflyProvider();
     }
 
-    public static WildflyProviderImpl createWildlfyProvider() {
+    public static WildflyProviderImpl createWildflyProvider() {
         return new WildflyProviderImpl(new WildflyProviderConfigImpl(NAME,
                                                                      HOST,
                                                                      PORT,

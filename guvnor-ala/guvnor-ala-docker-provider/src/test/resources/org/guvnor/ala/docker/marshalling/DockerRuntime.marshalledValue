@@ -46,6 +46,7 @@
     },
     "endpoint": {
       "org.guvnor.ala.docker.model.DockerRuntimeEndpoint": {
+        "protocol": "PROTOCOL",
         "host": "HOST",
         "port": 8888,
         "context": "CONTEXT"

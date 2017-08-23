@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
@@ -36,6 +37,7 @@ import org.guvnor.ala.pipeline.execution.PipelineExecutorTrace;
 import org.guvnor.ala.registry.PipelineExecutorRegistry;
 import org.guvnor.ala.registry.RuntimeRegistry;
 import org.guvnor.ala.runtime.Runtime;
+import org.guvnor.ala.runtime.RuntimeEndpoint;
 import org.guvnor.ala.runtime.RuntimeId;
 import org.guvnor.ala.runtime.providers.Provider;
 import org.guvnor.ala.runtime.providers.ProviderType;
@@ -373,17 +375,38 @@ public class RestRuntimeProvisioningServiceImpl
         }
 
         public String build() {
-            if (runtime.getEndpoint() != null) {
-                StringBuilder endpoint = new StringBuilder();
-                endpoint.append("http://")
-                        .append(runtime.getEndpoint().getHost())
-                        .append(":")
-                        .append(runtime.getEndpoint().getPort());
-                if (runtime.getEndpoint().getContext() != null) {
-                    endpoint.append("/")
-                            .append(runtime.getEndpoint().getContext());
+            RuntimeEndpoint endpoint = runtime.getEndpoint();
+            if (endpoint != null) {
+                StringBuilder ep = new StringBuilder();
+                String protocol = endpoint.getProtocol();
+                if (protocol == null) {
+                    protocol = "http";
                 }
-                return endpoint.toString();
+                ep.append(protocol);
+                ep.append("://");
+                String host = endpoint.getHost();
+                if (host == null) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn( String.format(
+                                 "Host undefined in RuntimeEndpoint: %s. defaulting to \"localhost\".",
+                                 endpoint) );
+                    }
+                    host = "localhost";
+                }
+                ep.append(host);
+                Integer port = endpoint.getPort();
+                if (port != null) {
+                    ep.append(':');
+                    ep.append(port);
+                }
+                String context = endpoint.getContext();
+                if (context != null) {
+                    if (!context.startsWith("/")) {
+                        ep.append('/');
+                    }
+                    ep.append(context);
+                }
+                return ep.toString();
             } else {
                 return null;
             }

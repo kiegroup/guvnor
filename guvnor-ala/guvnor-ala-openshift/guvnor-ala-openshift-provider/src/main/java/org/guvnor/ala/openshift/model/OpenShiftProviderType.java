@@ -31,8 +31,7 @@ public final class OpenShiftProviderType
      * No-args constructor for enabling marshalling to work, please do not remove. 
     */
     public OpenShiftProviderType() {
-        super("openshift",
-              "3.5");
+        super("openshift", "3.6");
     }
 
     @JsonIgnore

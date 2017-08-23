@@ -51,14 +51,14 @@ public class OpenShiftAccessInterfaceImpl implements OpenShiftAccessInterface, D
         if (!clientMap.containsKey(providerId.getId())) {
             checkInstanceOf("providerId", providerId, OpenShiftProvider.class);
             ProviderConfig providerConfig = ((OpenShiftProvider) providerId).getConfig();
-            OpenShiftClient client = buildOpenShiftClient(providerConfig);
+            OpenShiftClient client = newOpenShiftClient(providerConfig);
             clientMap.put(providerId.getId(), client);
         }
         return clientMap.get(providerId.getId());
     }
 
-    // public for junit testing purposes (from outside the package)
-    public static OpenShiftClient buildOpenShiftClient(final ProviderConfig providerConfig) {
+    @Override
+    public OpenShiftClient newOpenShiftClient(final ProviderConfig providerConfig) {
         checkInstanceOf("providerConfig", providerConfig, OpenShiftProviderConfig.class);
         OpenShiftConfig clientConfig = buildOpenShiftConfig((OpenShiftProviderConfig) providerConfig);
         return new OpenShiftClient(new DefaultOpenShiftClient(clientConfig));
