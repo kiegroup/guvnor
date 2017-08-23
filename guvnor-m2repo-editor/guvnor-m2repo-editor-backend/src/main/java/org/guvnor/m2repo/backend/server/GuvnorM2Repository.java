@@ -41,10 +41,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.IOUtil;
-import org.drools.core.io.impl.ReaderInputStream;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.util.artifact.SubArtifact;
@@ -577,8 +577,8 @@ public class GuvnorM2Repository {
         while ((entry = zis.getNextEntry()) != null) {
             final String entryName = entry.getName();
             if (entryName.startsWith(prefix) && entryName.endsWith(suffix)) {
-                return new ReaderInputStream(new InputStreamReader(zis,
-                                                                   "UTF-8"));
+                return new ReaderInputStream( new InputStreamReader( zis,
+                                                                     "UTF-8"));
             }
         }
 

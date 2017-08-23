@@ -21,9 +21,9 @@ import java.io.InputStream;
 import org.apache.maven.project.ProjectBuildingException;
 import org.appformer.maven.integration.embedder.MavenEmbedderException;
 import org.appformer.maven.support.PomModel;
-import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.appformer.maven.support.AFReleaseId;
+import org.appformer.maven.support.AFReleaseIdImpl;
 import org.guvnor.m2repo.backend.server.GuvnorM2Repository;
-import org.kie.api.builder.ReleaseId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +57,7 @@ public class PomModelResolver {
                 jarStream.reset();
                 String pomProperties = GuvnorM2Repository.loadPomPropertiesFromJar(jarStream);
                 if (pomProperties != null) {
-                    final ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString(pomProperties);
+                    final AFReleaseId releaseId = AFReleaseIdImpl.fromPropertiesString(pomProperties);
                     pomModel = new PomModel.InternalModel();
                     ((PomModel.InternalModel) pomModel).setReleaseId(releaseId);
                 }

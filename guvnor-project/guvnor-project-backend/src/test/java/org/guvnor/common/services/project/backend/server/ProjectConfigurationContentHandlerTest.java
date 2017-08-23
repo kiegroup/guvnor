@@ -15,7 +15,7 @@
 
 package org.guvnor.common.services.project.backend.server;
 
-import org.drools.workbench.models.datamodel.imports.Import;
+import org.appformer.project.datamodel.imports.Import;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.junit.Before;
 import org.junit.Test;

@@ -61,12 +61,6 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-builder</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>drools-compiler</artifactId>
-          <groupId>org.drools</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
