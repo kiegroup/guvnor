@@ -331,18 +331,18 @@ public class OpenShiftExecutorTest {
     }
 
     private boolean checkConnection(String url) throws Exception {
-        return checkConnection(new URL(url), 1, 1000);
+        return checkConnection(new URL(url), 401, 1, 1000);
     }
 
     // package-protected since also used by OpenShiftMavenDeployer
-    static boolean checkConnection(URL url, int attempts, long sleep) throws Exception {
+    static boolean checkConnection(URL url, int expectedResponse, int maxAttempts, long sleepMillis) throws Exception {
         boolean reachable = false;
-        for (int i=0; i < attempts; i++) {
+        for (int i=0; i < maxAttempts; i++) {
             try {
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-                int responseCode = conn.getResponseCode();
-                String logMsg = String.format("%s response code: %s", url, responseCode);
-                if (responseCode == 200) {
+                int actualResponse = conn.getResponseCode();
+                String logMsg = String.format("%s response code: %s", url, actualResponse);
+                if (actualResponse == expectedResponse) {
                     LOG.info(logMsg);
                     reachable = true;
                     break;
@@ -350,7 +350,7 @@ public class OpenShiftExecutorTest {
                     LOG.warn(logMsg);
                 }
             } catch (Throwable t) {}
-            Thread.sleep(sleep);
+            Thread.sleep(sleepMillis);
         }
         if (!reachable) {
             LOG.warn(String.format("%s is not reachable.", url));

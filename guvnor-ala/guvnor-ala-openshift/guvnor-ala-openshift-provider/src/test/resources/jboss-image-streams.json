@@ -19,7 +19,7 @@
                 }
             },
             "spec": {
-                "dockerImageRepository": "ce-registry.usersys.redhat.com/jboss-bpmsuite-7/bpmsuite70-businesscentral-openshift",
+                "dockerImageRepository": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-businesscentral-openshift",
                 "tags": [
                     {
                         "name": "1.0",
@@ -45,7 +45,7 @@
                 }
             },
             "spec": {
-                "dockerImageRepository": "ce-registry.usersys.redhat.com/jboss-bpmsuite-7/bpmsuite70-executionserver-openshift",
+                "dockerImageRepository": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-executionserver-openshift",
                 "tags": [
                     {
                         "name": "1.0",
@@ -71,7 +71,7 @@
                 }
             },
             "spec": {
-                "dockerImageRepository": "ce-registry.usersys.redhat.com/jboss-bpmsuite-7/bpmsuite70-smartrouter-openshift",
+                "dockerImageRepository": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-smartrouter-openshift",
                 "tags": [
                     {
                         "name": "1.0",
@@ -97,7 +97,7 @@
                 }
             },
             "spec": {
-                "dockerImageRepository": "ce-registry.usersys.redhat.com/jboss-bpmsuite-7/bpmsuite70-standalonecontroller-openshift",
+                "dockerImageRepository": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-standalonecontroller-openshift",
                 "tags": [
                     {
                         "name": "1.0",

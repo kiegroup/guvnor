@@ -93,7 +93,7 @@ public class OpenShiftMavenDeployer {
         if (nexusContentURL == null) {
             LOG.warn(String.format("Unknown Nexus host with prefix: %s", nexusHostPrefix));
         } else if (checkConnection) {
-            if (!OpenShiftExecutorTest.checkConnection(nexusContentURL, 60, 1000)) {
+            if (!OpenShiftExecutorTest.checkConnection(nexusContentURL, 200, 60, 1000)) {
                 LOG.warn(String.format("%s is not reachable.", nexusContentURL));
                 nexusContentURL = null;
             }
