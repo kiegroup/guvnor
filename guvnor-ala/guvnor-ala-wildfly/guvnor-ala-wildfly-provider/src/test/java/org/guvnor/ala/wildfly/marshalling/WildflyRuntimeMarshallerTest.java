@@ -16,6 +16,8 @@
 
 package org.guvnor.ala.wildfly.marshalling;
 
+import static org.guvnor.ala.wildfly.marshalling.WildflyProviderImplMarshallerTest.createWildflyProvider;
+
 import org.guvnor.ala.marshalling.BaseMarshallerTest;
 import org.guvnor.ala.marshalling.Marshaller;
 import org.guvnor.ala.wildfly.config.impl.ContextAwareWildflyRuntimeExecConfig;
@@ -24,8 +26,6 @@ import org.guvnor.ala.wildfly.model.WildflyRuntimeEndpoint;
 import org.guvnor.ala.wildfly.model.WildflyRuntimeInfo;
 import org.guvnor.ala.wildfly.model.WildflyRuntimeState;
 
-import static org.guvnor.ala.wildfly.marshalling.WildflyProviderImplMarshallerTest.createWildlfyProvider;
-
 public class WildflyRuntimeMarshallerTest
         extends BaseMarshallerTest<WildflyRuntime> {
 
@@ -33,8 +33,9 @@ public class WildflyRuntimeMarshallerTest
     private static final String RUNTIME_NAME = "RUNTIME_NAME";
     private static final String WAR_PATH = "WAR_PATH";
     private static final String REDEPLOY_STRATEGY = "true";
+    private static final String PROTOCOL = "PROTOCOL";
     private static final String HOST = "HOST";
-    private static final int PORT = 8080;
+    private static final Integer PORT = Integer.valueOf(8080);
     private static final String CONTEXT = "CONTEXT";
     private static final String STATE = "STATE";
     private static final String STARTED_AT = "STARTED_AT";
@@ -54,15 +55,16 @@ public class WildflyRuntimeMarshallerTest
         return new WildflyRuntime(RUNTIME_ID,
                                   RUNTIME_NAME,
                                   new ContextAwareWildflyRuntimeExecConfig(RUNTIME_NAME,
-                                                                           createWildlfyProvider(),
+                                                                           createWildflyProvider(),
                                                                            WAR_PATH,
                                                                            REDEPLOY_STRATEGY),
-                                  createWildlfyProvider(),
-                                  new WildflyRuntimeEndpoint(HOST,
+                                  createWildflyProvider(),
+                                  new WildflyRuntimeEndpoint(PROTOCOL,
+                                                             HOST,
                                                              PORT,
                                                              CONTEXT),
                                   new WildflyRuntimeInfo(new ContextAwareWildflyRuntimeExecConfig(RUNTIME_NAME,
-                                                                                                  createWildlfyProvider(),
+                                                                                                  createWildflyProvider(),
                                                                                                   WAR_PATH,
                                                                                                   REDEPLOY_STRATEGY)),
                                   new WildflyRuntimeState(STATE,

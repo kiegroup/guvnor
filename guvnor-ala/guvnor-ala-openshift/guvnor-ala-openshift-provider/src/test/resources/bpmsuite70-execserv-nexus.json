@@ -98,6 +98,13 @@
             "required": true
         },
         {
+            "displayName": "Nexus Custom http Route Hostname",
+            "description": "Custom hostname for http service route.  Leave blank for default hostname, e.g.: <application-name>-nexus-<project>.<default-domain-suffix>",
+            "name": "NEXUS_HOSTNAME_HTTP",
+            "value": "",
+            "required": false
+        },
+        {
             "displayName": "Execution Server Custom http Route Hostname",
             "description": "Custom hostname for http service route.  Leave blank for default hostname, e.g.: <application-name>-execserv-<project>.<default-domain-suffix>",
             "name": "EXECUTION_SERVER_HOSTNAME_HTTP",
@@ -169,28 +176,45 @@
             "required": true
         },
         {
-            "displayName": "Maven repository URL",
-            "description": "Fully qualified URL to a Maven repository.",
-            "name": "MAVEN_REPO_URL",
-            "value": "",
-            "required": false
-        },
-        {
             "displayName": "Maven repository username",
-            "description": "Username to access the Maven repository.",
+            "description": "Username to access the Maven repository. If using Business Central, will have to match KIE_ADMIN_USER. Default is \"admin\".",
             "name": "MAVEN_REPO_USERNAME",
-            "value": "",
+            "value": "admin",
             "required": false
         },
         {
             "displayName": "Maven repository password",
-            "description": "Password to access the Maven repository.",
+            "description": "Password to access the Maven repository. If using Business Central, will have to match KIE_ADMIN_PWD. Default is \"admin123\".",
             "name": "MAVEN_REPO_PASSWORD",
-            "value": "",
+            "value": "admin123",
             "required": false
         }
     ],
     "objects": [
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "spec": {
+                "ports": [
+                    {
+                        "port": 8081,
+                        "targetPort": 8081
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}-nexus"
+                }
+            },
+            "metadata": {
+                "name": "${APPLICATION_NAME}-nexus",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "The nexus server's http port."
+                }
+            }
+        },
         {
             "kind": "Service",
             "apiVersion": "v1",
@@ -242,6 +266,26 @@
         {
             "kind": "Route",
             "apiVersion": "v1",
+            "id": "${APPLICATION_NAME}-nexus-http",
+            "metadata": {
+                "name": "${APPLICATION_NAME}-nexus",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "Route for nexus' http service."
+                }
+            },
+            "spec": {
+                "host": "${NEXUS_HOSTNAME_HTTP}",
+                "to": {
+                    "name": "${APPLICATION_NAME}-nexus"
+                }
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
             "id": "${APPLICATION_NAME}-execserv-http",
             "metadata": {
                 "name": "${APPLICATION_NAME}-execserv",
@@ -279,6 +323,96 @@
                 },
                 "tls": {
                     "termination": "passthrough"
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}-nexus",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "${APPLICATION_NAME}-nexus"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "namespace": "${IMAGE_STREAM_NAMESPACE}",
+                                "name": "nexus:latest"
+                            }
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}-nexus"
+                },
+                "template": {
+                    "metadata": {
+                        "name": "${APPLICATION_NAME}-nexus",
+                        "labels": {
+                            "deploymentConfig": "${APPLICATION_NAME}-nexus",
+                            "application": "${APPLICATION_NAME}"
+                        }
+                    },
+                    "spec": {
+                        "serviceAccountName": "bpmsuite-service-account",
+                        "terminationGracePeriodSeconds": 60,
+                        "containers": [
+                            {
+                                "name": "${APPLICATION_NAME}-nexus",
+                                "image": "nexus",
+                                "imagePullPolicy": "Always",
+                                "volumeMounts": [
+                                    {
+                                        "name": "nexus-data-volume",
+                                        "mountPath": "/nexus-data",
+                                        "readOnly": false
+                                    }
+                                ],
+                                "readinessProbe": {
+                                    "httpGet": {
+                                        "path": "/nexus/content/",
+                                        "port": 8081
+                                    },
+                                    "initialDelaySeconds": 15,
+                                    "timeoutSeconds": 5
+                                },
+                                "ports": [
+                                    {
+                                        "name": "http",
+                                        "containerPort": 8081,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                ]
+                            }
+                        ],
+                        "volumes": [
+                            {
+                                "name": "nexus-data-volume",
+                                "secret": {
+                                    "secretName": "${HTTPS_SECRET}"
+                                }
+                            }
+                        ]
+                    }
                 }
             }
         },
@@ -418,8 +552,12 @@
                                         "value": "${KIE_SERVER_USER}"
                                     },
                                     {
-                                        "name": "MAVEN_REPO_URL",
-                                        "value": "${MAVEN_REPO_URL}"
+                                        "name": "MAVEN_REPO_SERVICE",
+                                        "value": "${APPLICATION_NAME}-nexus"
+                                    },
+                                    {
+                                        "name": "MAVEN_REPO_PATH",
+                                        "value": "/nexus/content/groups/public/"
                                     },
                                     {
                                         "name": "MAVEN_REPO_USERNAME",

@@ -13,27 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.guvnor.ala.openshift.model;
+package org.guvnor.ala.openshift.access;
 
-import org.guvnor.ala.runtime.base.BaseRuntimeEndpoint;
+import org.guvnor.ala.openshift.config.OpenShiftRuntimeConfig;
 
 /**
- * OpenShift runtime endpoint.
+ * Hook for just testing purposes at the moment.
  */
-public class OpenShiftRuntimeEndpoint
-        extends BaseRuntimeEndpoint {
+public interface OpenShiftClientListener {
 
-    public OpenShiftRuntimeEndpoint() {
-        //no args constructor for marshalling purposes.
-    }
+    public void trigger(OpenShiftClient client, OpenShiftRuntimeConfig runtimeConfig);
 
-    public OpenShiftRuntimeEndpoint(final String protocol,
-                                    final String host,
-                                    final Integer port,
-                                    final String context) {
-        super(protocol,
-              host,
-              port,
-              context);
-    }
 }

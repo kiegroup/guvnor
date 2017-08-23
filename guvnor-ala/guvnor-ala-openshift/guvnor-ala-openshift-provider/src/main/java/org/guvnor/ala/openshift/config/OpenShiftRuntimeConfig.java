@@ -30,6 +30,10 @@ public interface OpenShiftRuntimeConfig extends ProvisioningConfig, RuntimeConfi
         return OpenShiftProperty.APPLICATION_NAME.inputExpression();
     }
 
+    default String getKieServerContainerDeployment() {
+        return OpenShiftProperty.KIE_SERVER_CONTAINER_DEPLOYMENT.inputExpression();
+    }
+
     default String getProjectName() {
         return OpenShiftProperty.PROJECT_NAME.inputExpression();
     }
