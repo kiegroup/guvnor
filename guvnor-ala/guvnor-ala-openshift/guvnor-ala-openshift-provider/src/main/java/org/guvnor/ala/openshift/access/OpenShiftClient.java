@@ -244,7 +244,7 @@ public class OpenShiftClient {
         Map<String, String> parameters = new LinkedHashMap<String, String>();
         parameters.putAll(OpenShiftParameters.fromRuntimeConfig(runtimeConfig));
         String kieServerContainerDeployment = runtimeConfig.getKieServerContainerDeployment();
-        if (kieServerContainerDeployment != null && kieServerContainerDeployment.trim().isEmpty()) {
+        if (kieServerContainerDeployment != null && !kieServerContainerDeployment.trim().isEmpty()) {
             parameters.put(OpenShiftProperty.KIE_SERVER_CONTAINER_DEPLOYMENT.envKey(), kieServerContainerDeployment);
         }
         KubernetesList kubeList = template.process(parameters);
