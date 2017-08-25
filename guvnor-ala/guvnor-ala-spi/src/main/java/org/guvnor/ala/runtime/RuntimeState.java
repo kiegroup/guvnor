@@ -33,6 +33,11 @@ public interface RuntimeState {
     String UNKNOWN = "UNKNOWN";
 
     /**
+     * Common state value for indicating that a runtime is ready but not started.
+     */
+    String READY = "READY";
+
+    /**
      * Common state value for indicating that a runtime is running.
      */
     String RUNNING = "RUNNING";

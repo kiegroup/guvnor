@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public enum RuntimeStatus {
     LOADING,
+    READY,
     RUNNING,
     STOPPED,
     ERROR,

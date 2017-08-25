@@ -40,7 +40,7 @@ public class GuvnorAlaUIConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String NewProviderWizard_ProviderCreateSuccessMessage = "NewProviderWizard.ProviderCreateSuccessMessage";
-    
+
     @TranslationKey(defaultValue = "")
     public static final String NewProviderWizard_ProviderNotProperlyConfiguredInSystemErrorMessage = "NewProviderWizard.ProviderNotProperlyConfiguredInSystemErrorMessage";
 
@@ -58,6 +58,15 @@ public class GuvnorAlaUIConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String SourceConfigurationPageView_SelectOption_placeholder = "SourceConfigurationPageView.SelectOption-placeholder";
+
+    @TranslationKey(defaultValue = "")
+    public static final String GAVConfigurationParamsView_Title = "GAVConfigurationParamsView.Title";
+
+    @TranslationKey(defaultValue = "")
+    public static final String GAVConfigurationParamsPresenter_LoadGAVErrorMessage = "GAVConfigurationParamsPresenter.LoadGAVErrorMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ArtifactSelectorView_SelectColumn = "ArtifactSelectorView.SelectColumn";
 
     @TranslationKey(defaultValue = "")
     public static final String ProviderView_RemoveProviderSuccessMessage = "ProviderView.RemoveProviderSuccessMessage";
@@ -99,7 +108,13 @@ public class GuvnorAlaUIConstants {
     public static final String RuntimePresenter_RuntimeDeleteAction = "RuntimePresenter.RuntimeDeleteAction";
 
     @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeStartingMessage = "RuntimePresenter.RuntimeStartingMessage";
+
+    @TranslationKey(defaultValue = "")
     public static final String RuntimePresenter_RuntimeStartSuccessMessage = "RuntimePresenter.RuntimeStartSuccessMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeStoppingMessage = "RuntimePresenter.RuntimeStoppingMessage";
 
     @TranslationKey(defaultValue = "")
     public static final String RuntimePresenter_RuntimeStopSuccessMessage = "RuntimePresenter.RuntimeStopSuccessMessage";
@@ -109,6 +124,12 @@ public class GuvnorAlaUIConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String RuntimePresenter_RuntimeConfirmStopMessage = "RuntimePresenter.RuntimeConfirmStopMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeDeletingMessage = "RuntimePresenter.RuntimeDeletingMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_RuntimeDeletingForcedMessage = "RuntimePresenter.RuntimeDeletingForcedMessage";
 
     @TranslationKey(defaultValue = "")
     public static final String RuntimePresenter_RuntimeDeleteSuccessMessage = "RuntimePresenter.RuntimeDeleteSuccessMessage";
@@ -157,5 +178,4 @@ public class GuvnorAlaUIConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String RuntimePresenter_PipelineExecutionAlreadyStoppedMessage = "RuntimePresenter.PipelineExecutionAlreadyStoppedMessage";
-
 }

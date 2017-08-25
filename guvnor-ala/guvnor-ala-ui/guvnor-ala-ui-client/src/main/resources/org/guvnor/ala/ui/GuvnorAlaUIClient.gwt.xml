@@ -37,6 +37,10 @@
 
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
 
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI" />
+
+  <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
+
   <inherits name="org.guvnor.ala.ui.GuvnorAlaUIAPI" />
 
   <source path="client"/>

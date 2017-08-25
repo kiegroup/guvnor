@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import org.guvnor.ala.ui.client.handler.BaseFormResolver;
 import org.guvnor.ala.ui.client.handler.FormResolver;
-import org.guvnor.ala.ui.openshift.client.provider.OSEProviderConfigPresenter;
+import org.guvnor.ala.ui.openshift.client.provider.OpenShiftProviderConfigPresenter;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 
 /**
@@ -30,10 +30,10 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
  */
 @ApplicationScoped
 public class OpenShiftFormResolver
-        extends BaseFormResolver<OSEProviderConfigPresenter> {
+        extends BaseFormResolver<OpenShiftProviderConfigPresenter> {
 
     @Inject
-    public OpenShiftFormResolver(final ManagedInstance<OSEProviderConfigPresenter> providerConfigPresenters) {
+    public OpenShiftFormResolver(final ManagedInstance<OpenShiftProviderConfigPresenter> providerConfigPresenters) {
         super(providerConfigPresenters);
     }
 }

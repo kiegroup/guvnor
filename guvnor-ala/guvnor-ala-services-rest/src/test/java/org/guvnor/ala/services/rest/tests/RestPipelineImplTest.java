@@ -89,6 +89,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.commons.lifecycle.Disposable;
 
+import static org.guvnor.ala.services.rest.tests.MockSystemPipelines.SYSTEM_PIPELINE1;
 import static org.junit.Assert.*;
 
 /**
@@ -177,6 +178,8 @@ public class RestPipelineImplTest {
         deployment.addClass(PipelineExecutorTaskManagerImpl.class);
         deployment.addClass(InMemoryPipelineExecutorRegistry.class);
 
+        deployment.addClass(MockSystemPipelines.class);
+
         deployment.addAsManifestResource(EmptyAsset.INSTANCE,
                                          "beans.xml");
         return deployment;
@@ -217,13 +220,14 @@ public class RestPipelineImplTest {
         Provider p = allProviders.getItems().get(0);
         assertTrue(p instanceof DockerProvider);
 
+        int systemPipelines = 2; //by construction.
         PipelineConfigsList allPipelineConfigs = pipelineService.getPipelineConfigs(0,
                                                                                     10,
                                                                                     "",
                                                                                     true);
 
         assertNotNull(allPipelineConfigs);
-        assertEquals(0,
+        assertEquals(systemPipelines,
                      allPipelineConfigs.getItems().size());
 
         List<Config> configs = new ArrayList<>();
@@ -236,8 +240,8 @@ public class RestPipelineImplTest {
         configs.add(new ContextAwareDockerProvisioningConfig());
         configs.add(new ContextAwareDockerRuntimeExecConfig());
 
-        String newPipeline = pipelineService.newPipeline(new PipelineConfigImpl("mypipe",
-                                                                                configs));
+        pipelineService.newPipeline(new PipelineConfigImpl("mypipe",
+                                                           configs));
 
         pipelineService.newPipeline(new PipelineConfigImpl("wildlfyPipe",
                                                            configs),
@@ -251,8 +255,9 @@ public class RestPipelineImplTest {
                                                                 10,
                                                                 "",
                                                                 true);
-
-        assertEquals(3,
+        int createdPipelines = 3;
+        int totalPipelines = systemPipelines + createdPipelines;
+        assertEquals(totalPipelines,
                      allPipelineConfigs.getItems().size());
 
         PipelineConfigsList wildflyConfigs = pipelineService.getPipelineConfigs(WildflyProviderType.instance().getProviderTypeName(),
@@ -261,7 +266,7 @@ public class RestPipelineImplTest {
                                                                                 10,
                                                                                 "",
                                                                                 true);
-        assertEquals(1,
+        assertEquals(2,
                      wildflyConfigs.getItems().size());
 
         List<String> wildflyPipelineNames = pipelineService.getPipelineNames(WildflyProviderType.instance().getProviderTypeName(),
@@ -270,9 +275,10 @@ public class RestPipelineImplTest {
                                                                              10,
                                                                              "",
                                                                              true);
-        assertEquals(1,
+        assertEquals(2,
                      wildflyPipelineNames.size());
         assertTrue(wildflyPipelineNames.contains("wildlfyPipe"));
+        assertTrue(wildflyPipelineNames.contains(SYSTEM_PIPELINE1));
 
         PipelineConfigsList dockerConfigs = pipelineService.getPipelineConfigs(DockerProviderType.instance().getProviderTypeName(),
                                                                                DockerProviderType.instance().getVersion(),
