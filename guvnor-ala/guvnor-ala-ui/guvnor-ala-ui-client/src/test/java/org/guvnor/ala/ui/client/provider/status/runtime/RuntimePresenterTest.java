@@ -36,7 +36,6 @@ import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.Runtime;
 import org.guvnor.ala.ui.model.RuntimeKey;
 import org.guvnor.ala.ui.model.RuntimeListItem;
-import org.guvnor.ala.ui.model.Source;
 import org.guvnor.ala.ui.model.Stage;
 import org.guvnor.ala.ui.service.RuntimeService;
 import org.jboss.errai.common.client.api.Caller;
@@ -249,7 +248,6 @@ public class RuntimePresenterTest {
         Runtime runtime = new Runtime(runtimeKey,
                                       RUNTIME_NAME,
                                       null,
-                                      mock(Source.class),
                                       RUNTIME_STATUS,
                                       ENDPOINT,
                                       CREATED_DATE);

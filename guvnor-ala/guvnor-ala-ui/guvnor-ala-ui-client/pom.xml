@@ -106,6 +106,16 @@
 
     <dependency>
       <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-m2repo-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-m2repo-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-ala-ui-api</artifactId>
     </dependency>
 

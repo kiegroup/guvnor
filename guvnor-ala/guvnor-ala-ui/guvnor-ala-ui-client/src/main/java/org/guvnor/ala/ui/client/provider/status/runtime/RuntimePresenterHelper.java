@@ -72,6 +72,8 @@ public class RuntimePresenterHelper {
             return RuntimeStatus.UNKNOWN;
         }
         switch (status) {
+            case "READY":
+                return RuntimeStatus.READY;
             case "RUNNING":
                 return RuntimeStatus.RUNNING;
             case "STOPPED":
@@ -106,6 +108,7 @@ public class RuntimePresenterHelper {
                                      "pficon-warning-triangle-o",
                                      "list-view-pf-icon-warning");
             case STOPPED:
+            case READY:
                 return Arrays.asList("fa",
                                      "list-view-pf-icon-md",
                                      "fa-ban",

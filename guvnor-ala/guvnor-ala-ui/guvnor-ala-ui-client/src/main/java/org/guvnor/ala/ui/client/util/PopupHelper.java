@@ -20,12 +20,15 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 
 @ApplicationScoped
-public class PopupHelper {
+public class PopupHelper
+        implements HasBusyIndicator {
 
     public void showInformationPopup(final String message) {
         showNotificationPopup(CommonConstants.INSTANCE.Information(),
@@ -49,6 +52,16 @@ public class PopupHelper {
         popup.setClosable(false);
         popup.clearScrollHeight();
         popup.show();
+    }
+
+    @Override
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
     }
 
     public ErrorCallback<Message> getPopupErrorCallback() {

@@ -20,6 +20,9 @@
   <inherits name="org.uberfire.commons.UberfireCommons"/>
 
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
+  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient" />
+
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI" />
 
   <inherits name="org.guvnor.ala.ui.GuvnorAlaUIAPI"/>
   <inherits name="org.guvnor.ala.ui.GuvnorAlaUIClient"/>
