@@ -21,6 +21,7 @@
     <module>guvnor-ala-docker-provider</module>
     <module>guvnor-ala-wildfly</module>
     <module>guvnor-ala-openshift</module>
+    <module>guvnor-ala-provisioning-pipelines</module>
     <module>guvnor-ala-distribution</module>
   </modules>
 </project>

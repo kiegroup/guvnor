@@ -23,13 +23,10 @@ import org.guvnor.ala.runtime.base.BaseRuntimeState;
 public class OpenShiftRuntimeState extends BaseRuntimeState {
 
     /** Runtime is not available. */
-    public static final String NA = "NA";
-
-    /** Runtime is ready but not started. */
-    public static final String READY = "Ready";
+    public static final String NA = UNKNOWN;
 
     /** Runtime has been started and can service requests. */
-    public static final String STARTED = "Started";
+    public static final String STARTED = RUNNING;
 
     public OpenShiftRuntimeState() {
     }

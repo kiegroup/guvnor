@@ -49,8 +49,12 @@ import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.Runti
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeleteFailedMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeleteFailedTitle;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeleteSuccessMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeletingForcedMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeletingMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStartSuccessMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStartingMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStopSuccessMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStoppingMessage;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -76,6 +80,10 @@ public class RuntimePresenterActionsTest
     private static final String TITLE_2 = "TITLE_2";
 
     private static final String TITLE_3 = "TITLE_3";
+
+    private static final String BUSY_POPUP_MESSAGE = "BUSY_POPUP_MESSAGE";
+
+    private static final String BUSY_POPUP_MESSAGE_2 = "BUSY_POPUP_MESSAGE_2";
 
     @Mock
     private ErrorCallback<Message> defaultErrorCallback;
@@ -169,7 +177,13 @@ public class RuntimePresenterActionsTest
 
         when(translationService.format(RuntimePresenter_RuntimeStartSuccessMessage,
                                        currentKey.getId())).thenReturn(SUCCESS_MESSAGE);
+        when(translationService.getTranslation(RuntimePresenter_RuntimeStartingMessage)).thenReturn(BUSY_POPUP_MESSAGE);
+
         presenter.startRuntime();
+        verify(popupHelper,
+               times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE);
+        verify(popupHelper,
+               times(1)).hideBusyIndicator();
         verify(notificationEvent,
                times(1)).fire(new NotificationEvent(SUCCESS_MESSAGE,
                                                     NotificationEvent.NotificationType.SUCCESS));
@@ -184,7 +198,13 @@ public class RuntimePresenterActionsTest
                 .when(runtimeService)
                 .startRuntime(currentKey);
 
+        when(translationService.getTranslation(RuntimePresenter_RuntimeStartingMessage)).thenReturn(BUSY_POPUP_MESSAGE);
+
         presenter.startRuntime();
+        verify(popupHelper,
+               times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE);
+        verify(popupHelper,
+               times(1)).hideBusyIndicator();
         verify(notificationEvent,
                times(0)).fire(any(NotificationEvent.class));
         verify(defaultErrorCallback,
@@ -208,10 +228,15 @@ public class RuntimePresenterActionsTest
         RuntimeKey currentKey = runtime.getKey();
         when(translationService.format(RuntimePresenter_RuntimeStopSuccessMessage,
                                        item.getRuntime().getKey().getId())).thenReturn(SUCCESS_MESSAGE);
+        when(translationService.getTranslation(RuntimePresenter_RuntimeStoppingMessage)).thenReturn(BUSY_POPUP_MESSAGE);
 
         yesCommandCaptor.getValue().execute();
         verify(runtimeService,
                times(1)).stopRuntime(currentKey);
+        verify(popupHelper,
+               times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE);
+        verify(popupHelper,
+               times(1)).hideBusyIndicator();
         verify(notificationEvent,
                times(1)).fire(new NotificationEvent(SUCCESS_MESSAGE,
                                                     NotificationEvent.NotificationType.SUCCESS));
@@ -221,6 +246,8 @@ public class RuntimePresenterActionsTest
     public void testStopRuntimeConfirmYesAndFailed() {
         prepareRuntimeStop();
         RuntimeKey currentKey = runtime.getKey();
+
+        when(translationService.getTranslation(RuntimePresenter_RuntimeStoppingMessage)).thenReturn(BUSY_POPUP_MESSAGE);
 
         doThrow(new RuntimeException(ERROR_MESSAGE))
                 .when(runtimeService)
@@ -234,6 +261,10 @@ public class RuntimePresenterActionsTest
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
                      exceptionCaptor.getValue().getCause().getMessage());
+        verify(popupHelper,
+               times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE);
+        verify(popupHelper,
+               times(1)).hideBusyIndicator();
     }
 
     private void prepareRuntimeStop() {
@@ -264,11 +295,16 @@ public class RuntimePresenterActionsTest
         RuntimeKey currentKey = runtime.getKey();
         when(translationService.format(RuntimePresenter_RuntimeDeleteSuccessMessage,
                                        item.getRuntime().getKey().getId())).thenReturn(SUCCESS_MESSAGE);
+        when(translationService.getTranslation(RuntimePresenter_RuntimeDeletingMessage)).thenReturn(BUSY_POPUP_MESSAGE);
 
         yesCommandCaptor.getValue().execute();
         verify(runtimeService,
                times(1)).deleteRuntime(currentKey,
                                        false);
+        verify(popupHelper,
+               times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE);
+        verify(popupHelper,
+               times(1)).hideBusyIndicator();
         verify(notificationEvent,
                times(1)).fire(new NotificationEvent(SUCCESS_MESSAGE,
                                                     NotificationEvent.NotificationType.SUCCESS));
@@ -284,6 +320,7 @@ public class RuntimePresenterActionsTest
         when(translationService.format(RuntimePresenter_RuntimeDeleteFailedMessage,
                                        null)).thenReturn(CONFIRM_MESSAGE_2);
         when(translationService.getTranslation(RuntimePresenter_RuntimeDeleteFailedTitle)).thenReturn(TITLE_2);
+        when(translationService.getTranslation(RuntimePresenter_RuntimeDeletingMessage)).thenReturn(BUSY_POPUP_MESSAGE);
 
         doThrow(deleteException)
                 .when(runtimeService)
@@ -294,6 +331,10 @@ public class RuntimePresenterActionsTest
         verify(runtimeService,
                times(1)).deleteRuntime(currentKey,
                                        false);
+        verify(popupHelper,
+               times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE);
+        verify(popupHelper,
+               times(1)).hideBusyIndicator();
 
         //dialog asking if forced deletion is wanted
         verify(popupHelper,
@@ -322,6 +363,9 @@ public class RuntimePresenterActionsTest
 
         when(translationService.getTranslation(RuntimePresenter_RuntimeConfirmForcedDeleteTitle)).thenReturn(TITLE_3);
         when(translationService.getTranslation(RuntimePresenter_RuntimeConfirmForcedDeleteMessage)).thenReturn(CONFIRM_MESSAGE_3);
+
+        when(translationService.getTranslation(RuntimePresenter_RuntimeDeletingMessage)).thenReturn(BUSY_POPUP_MESSAGE);
+        when(translationService.getTranslation(RuntimePresenter_RuntimeDeletingForcedMessage)).thenReturn(BUSY_POPUP_MESSAGE_2);
 
         doThrow(deleteException)
                 .when(runtimeService)
@@ -354,6 +398,13 @@ public class RuntimePresenterActionsTest
         verify(runtimeService,
                times(1)).deleteRuntime(currentKey,
                                        true);
+
+        verify(popupHelper,
+               times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE);
+        verify(popupHelper,
+               times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE_2);
+        verify(popupHelper,
+               times(2)).hideBusyIndicator();
     }
 
     @Test
@@ -371,6 +422,7 @@ public class RuntimePresenterActionsTest
         RuntimeKey currentKey = runtime.getKey();
         when(translationService.format(RuntimePresenter_RuntimeDeleteSuccessMessage,
                                        item.getRuntime().getKey().getId())).thenReturn(SUCCESS_MESSAGE);
+        when(translationService.getTranslation(RuntimePresenter_RuntimeDeletingForcedMessage)).thenReturn(BUSY_POPUP_MESSAGE);
 
         yesCommandCaptor.getValue().execute();
         verify(runtimeService,
@@ -379,13 +431,19 @@ public class RuntimePresenterActionsTest
         verify(notificationEvent,
                times(1)).fire(new NotificationEvent(SUCCESS_MESSAGE,
                                                     NotificationEvent.NotificationType.SUCCESS));
+        verify(popupHelper,
+               times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE);
+        verify(popupHelper,
+               times(1)).hideBusyIndicator();
     }
 
     @Test
     public void testForceDeleteRuntimeConfirmYesAndFailed() {
         prepareRuntimeForceDelete();
-        ;
+
         RuntimeKey currentKey = runtime.getKey();
+
+        when(translationService.getTranslation(RuntimePresenter_RuntimeDeletingForcedMessage)).thenReturn(BUSY_POPUP_MESSAGE);
 
         doThrow(new RuntimeException(ERROR_MESSAGE))
                 .when(runtimeService)
@@ -401,6 +459,10 @@ public class RuntimePresenterActionsTest
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
                      exceptionCaptor.getValue().getCause().getMessage());
+        verify(popupHelper,
+               times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE);
+        verify(popupHelper,
+               times(1)).hideBusyIndicator();
     }
 
     private void prepareRuntimeDelete() {

@@ -100,24 +100,7 @@
 
     <dependency>
       <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-ala-source-git</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-ala-ui-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-ala-build-maven</artifactId>
-    </dependency>
-
-    <!-- TODO remove this dependency. Currently it's needed by the UIAppSetup class for development purposes,
-    since we wants to have a couple of pipelines for testing. -->
-    <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-ala-wildfly-provider</artifactId>
     </dependency>
 
     <dependency>

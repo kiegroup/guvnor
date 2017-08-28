@@ -16,14 +16,13 @@
 
 package org.guvnor.ala.ui.backend.service;
 
-import org.guvnor.ala.build.maven.config.MavenProjectConfig;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.guvnor.ala.config.ProviderConfig;
 import org.guvnor.ala.config.RuntimeConfig;
 import org.guvnor.ala.pipeline.Input;
-import org.guvnor.ala.source.git.config.GitConfig;
-import org.guvnor.ala.ui.model.InternalGitSource;
 import org.guvnor.ala.ui.model.ProviderKey;
-import org.guvnor.common.services.project.model.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,50 +39,41 @@ public class PipelineInputBuilderTest {
 
     private static final String PROVIDER = "PROVIDER";
 
-    private static final String OU = "OU";
+    private Map<String, String> params;
 
-    private static final String REPO = "REPO";
-
-    private static final String BRANCH = "BRANCH";
-
-    private static final String PROJECT_NAME = "PROJECT_NAME";
-
-    @Mock
-    private Project project;
+    private static final int PARAMS_COUNT = 5;
 
     @Mock
     private ProviderKey providerKey;
 
-    private InternalGitSource gitSource;
-
     @Before
     public void setUp() {
         when(providerKey.getId()).thenReturn(PROVIDER);
-        when(project.getProjectName()).thenReturn(PROJECT_NAME);
-
-        gitSource = new InternalGitSource(OU,
-                                          REPO,
-                                          BRANCH,
-                                          project);
+        params = mockParams(PARAMS_COUNT);
     }
 
     @Test
     public void testBuild() {
         Input result = PipelineInputBuilder.newInstance()
                 .withProvider(providerKey)
-                .withRuntimeName(RUNTIME)
-                .withSource(gitSource).build();
+                .withParams(params)
+                .withRuntimeName(RUNTIME).build();
 
         assertNotNull(result);
         assertEquals(RUNTIME,
                      result.get(RuntimeConfig.RUNTIME_NAME));
         assertEquals(PROVIDER,
                      result.get(ProviderConfig.PROVIDER_NAME));
-        assertEquals(REPO,
-                     result.get(GitConfig.REPO_NAME));
-        assertEquals(BRANCH,
-                     result.get(GitConfig.BRANCH));
-        assertEquals(PROJECT_NAME,
-                     result.get(MavenProjectConfig.PROJECT_DIR));
+        params.forEach((name, value) -> assertEquals(value,
+                                                     result.get(name)));
+    }
+
+    public static Map<String, String> mockParams(int count) {
+        HashMap<String, String> params = new HashMap<>();
+        for (int i = 0; i < count; i++) {
+            params.put("param.name." + i,
+                       "param.value." + i);
+        }
+        return params;
     }
 }

@@ -81,10 +81,15 @@ import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.Runti
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeleteFailedMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeleteFailedTitle;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeleteSuccessMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeletingForcedMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeletingMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStartAction;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStartSuccessMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStartingMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStopAction;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStopSuccessMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStoppingMessage;
+import static org.guvnor.ala.ui.model.RuntimeStatus.READY;
 import static org.guvnor.ala.ui.model.RuntimeStatus.RUNNING;
 import static org.guvnor.ala.ui.model.RuntimeStatus.STOPPED;
 
@@ -282,7 +287,7 @@ public class RuntimePresenter {
         if (RUNNING == runtimeStatus) {
             startAction.setEnabled(false);
         }
-        if (STOPPED == runtimeStatus) {
+        if (STOPPED == runtimeStatus || READY == runtimeStatus) {
             stopAction.setEnabled(false);
         }
         view.setStatus(buildIconStyle(runtimeStatus));
@@ -401,53 +406,75 @@ public class RuntimePresenter {
     }
 
     protected void startRuntime() {
+        popupHelper.showBusyIndicator(translationService.getTranslation(RuntimePresenter_RuntimeStartingMessage));
         runtimeService.call(getStartRuntimeSuccessCallback(),
-                            getDefaultErrorCallback()).startRuntime(item.getRuntime().getKey());
+                            getDefaultErrorCallback(true)).startRuntime(item.getRuntime().getKey());
     }
 
     private RemoteCallback<Void> getStartRuntimeSuccessCallback() {
-        return aVoid -> notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_RuntimeStartSuccessMessage,
-                                                                                          item.getRuntime().getKey().getId()),
-                                                                NotificationEvent.NotificationType.SUCCESS));
+        return aVoid -> {
+            popupHelper.hideBusyIndicator();
+            notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_RuntimeStartSuccessMessage,
+                                                                              item.getRuntime().getKey().getId()),
+                                                    NotificationEvent.NotificationType.SUCCESS));
+        };
     }
 
     protected void stopRuntime() {
         confirmAndExecute(translationService.getTranslation(RuntimePresenter_RuntimeConfirmStopTitle),
                           translationService.getTranslation(RuntimePresenter_RuntimeConfirmStopMessage),
-                          () -> runtimeService.call(getStopRuntimeSuccessCallback(),
-                                                    getDefaultErrorCallback()).stopRuntime(item.getRuntime().getKey()));
+                          () -> {
+                              popupHelper.showBusyIndicator(translationService.getTranslation(RuntimePresenter_RuntimeStoppingMessage));
+                              runtimeService.call(getStopRuntimeSuccessCallback(),
+                                                  getDefaultErrorCallback(true)).stopRuntime(item.getRuntime().getKey());
+                          });
     }
 
     protected RemoteCallback<Void> getStopRuntimeSuccessCallback() {
-        return aVoid -> notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_RuntimeStopSuccessMessage,
-                                                                                          item.getRuntime().getKey().getId()),
-                                                                NotificationEvent.NotificationType.SUCCESS));
+        return aVoid -> {
+            popupHelper.hideBusyIndicator();
+            notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_RuntimeStopSuccessMessage,
+                                                                              item.getRuntime().getKey().getId()),
+                                                    NotificationEvent.NotificationType.SUCCESS));
+        };
     }
 
     protected void deleteRuntime() {
         confirmAndExecute(translationService.getTranslation(RuntimePresenter_RuntimeConfirmDeleteTitle),
                           translationService.getTranslation(RuntimePresenter_RuntimeConfirmDeleteMessage),
-                          () -> runtimeService.call(getDeleteRuntimeSuccessCallback(),
-                                                    getDeleteRuntimeErrorCallback()).deleteRuntime(item.getRuntime().getKey(),
-                                                                                                   false));
+                          () -> {
+                              popupHelper.showBusyIndicator(translationService.getTranslation(RuntimePresenter_RuntimeDeletingMessage));
+                              runtimeService.call(getDeleteRuntimeSuccessCallback(),
+                                                  getDeleteRuntimeErrorCallback()).deleteRuntime(item.getRuntime().getKey(),
+                                                                                                 false);
+                          }
+        );
     }
 
     protected void forceDeleteRuntime() {
         confirmAndExecute(translationService.getTranslation(RuntimePresenter_RuntimeConfirmForcedDeleteTitle),
                           translationService.getTranslation(RuntimePresenter_RuntimeConfirmForcedDeleteMessage),
-                          () -> runtimeService.call(getDeleteRuntimeSuccessCallback(),
-                                                    getDefaultErrorCallback()).deleteRuntime(item.getRuntime().getKey(),
-                                                                                             true));
+                          () -> {
+                              popupHelper.showBusyIndicator(translationService.getTranslation(RuntimePresenter_RuntimeDeletingForcedMessage));
+                              runtimeService.call(getDeleteRuntimeSuccessCallback(),
+                                                  getDefaultErrorCallback(true)).deleteRuntime(item.getRuntime().getKey(),
+                                                                                               true);
+                          }
+        );
     }
 
     private RemoteCallback<Void> getDeleteRuntimeSuccessCallback() {
-        return aVoid -> notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_RuntimeDeleteSuccessMessage,
-                                                                                          item.getRuntime().getKey().getId()),
-                                                                NotificationEvent.NotificationType.SUCCESS));
+        return aVoid -> {
+            popupHelper.hideBusyIndicator();
+            notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_RuntimeDeleteSuccessMessage,
+                                                                              item.getRuntime().getKey().getId()),
+                                                    NotificationEvent.NotificationType.SUCCESS));
+        };
     }
 
     private ErrorCallback<Message> getDeleteRuntimeErrorCallback() {
         return (message, throwable) -> {
+            popupHelper.hideBusyIndicator();
             confirmAndExecute(translationService.getTranslation(RuntimePresenter_RuntimeDeleteFailedTitle),
                               translationService.format(RuntimePresenter_RuntimeDeleteFailedMessage,
                                                         throwable.getMessage()),
@@ -500,6 +527,16 @@ public class RuntimePresenter {
 
     private ErrorCallback<Message> getDefaultErrorCallback() {
         return popupHelper.getPopupErrorCallback();
+    }
+
+    private ErrorCallback<Message> getDefaultErrorCallback(final boolean hideBusyIndicator) {
+        return (message, throwable) -> {
+            if (hideBusyIndicator) {
+                popupHelper.hideBusyIndicator();
+            }
+            return popupHelper.getPopupErrorCallback().error(message,
+                                                             throwable);
+        };
     }
 
     private boolean isFromCurrentPipeline(final PipelineExecutionTraceKey pipelineExecutionTraceKey) {

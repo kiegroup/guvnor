@@ -73,6 +73,8 @@ public abstract class AbstractMultiPageWizard extends AbstractWizard {
 
     @Override
     public Widget getPageWidget(final int pageNumber) {
-        return pages.get(pageNumber).asWidget();
+        WizardPage page = pages.get(pageNumber);
+        page.prepareView();
+        return page.asWidget();
     }
 }

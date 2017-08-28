@@ -17,6 +17,7 @@
 package org.guvnor.ala.ui.openshift.backend.handler;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.guvnor.ala.openshift.model.OpenShiftProviderType;
 import org.guvnor.ala.ui.backend.service.converter.ProviderConfigConverter;
@@ -31,8 +32,15 @@ import org.guvnor.ala.ui.model.ProviderTypeKey;
 public class OpenShiftBackendProviderHandler
         implements BackendProviderHandler {
 
+    private OpenShiftProviderConfigConverter configConverter;
+
     public OpenShiftBackendProviderHandler() {
         //Empty constructor for Weld proxying
+    }
+
+    @Inject
+    public OpenShiftBackendProviderHandler(final OpenShiftProviderConfigConverter configConverter) {
+        this.configConverter = configConverter;
     }
 
     @Override
@@ -47,7 +55,6 @@ public class OpenShiftBackendProviderHandler
 
     @Override
     public ProviderConfigConverter getProviderConfigConverter() {
-        //TODO will be completed when the OpenShift provider coded.
-        throw new RuntimeException("OpenShift provider type is not yet implemented.");
+        return configConverter;
     }
 }
