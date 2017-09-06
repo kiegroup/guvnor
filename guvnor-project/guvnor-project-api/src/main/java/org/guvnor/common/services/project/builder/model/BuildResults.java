@@ -18,7 +18,9 @@ package org.guvnor.common.services.project.builder.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.shared.message.Level;
@@ -29,6 +31,7 @@ public class BuildResults {
 
     private GAV gav;
     private ArrayList<BuildMessage> messages = new ArrayList<BuildMessage>();
+    private Map<String, String> parameters = new HashMap<>();
 
     public BuildResults() {
         //Marshalling
@@ -81,4 +84,16 @@ public class BuildResults {
     public void addAllBuildMessages(List<BuildMessage> buildMessages) {
         messages.addAll(buildMessages);
     }
+
+	public Map<String, String> getParameters() {
+		return parameters;
+	}
+	
+	public void addParameter(String name, String value) {
+		this.parameters.put(name, value);
+	}
+	
+	public String getParameter(String name) {
+		return this.parameters.get(name);
+	}
 }
