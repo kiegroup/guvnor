@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import org.guvnor.ala.ui.client.events.AddNewProviderEvent;
 import org.guvnor.ala.ui.client.events.AddNewProviderTypeEvent;
 import org.guvnor.ala.ui.client.events.AddNewRuntimeEvent;
+import org.guvnor.ala.ui.client.handler.ClientProviderHandlerRegistry;
 import org.guvnor.ala.ui.client.wizard.EnableProviderTypeWizard;
 import org.guvnor.ala.ui.client.wizard.NewDeployWizard;
 import org.guvnor.ala.ui.client.wizard.NewProviderWizard;
@@ -60,18 +61,21 @@ public class ProvisioningManagementPerspective {
     private final EnableProviderTypeWizard enableProviderTypeWizard;
     private final NewProviderWizard newProviderWizard;
     private final NewDeployWizard newDeployWizard;
+    private final ClientProviderHandlerRegistry handlerRegistry;
 
     @Inject
     public ProvisioningManagementPerspective(final Caller<ProviderTypeService> providerTypeService,
                                              final Caller<RuntimeService> runtimeService,
                                              final EnableProviderTypeWizard enableProviderTypeWizard,
                                              final NewProviderWizard newProviderWizard,
-                                             final NewDeployWizard newDeployWizard) {
+                                             final NewDeployWizard newDeployWizard,
+                                             final ClientProviderHandlerRegistry handlerRegistry) {
         this.providerTypeService = providerTypeService;
         this.runtimeService = runtimeService;
         this.enableProviderTypeWizard = enableProviderTypeWizard;
         this.newProviderWizard = newProviderWizard;
         this.newDeployWizard = newDeployWizard;
+        this.handlerRegistry = handlerRegistry;
     }
 
     @Perspective
@@ -105,9 +109,10 @@ public class ProvisioningManagementPerspective {
         }
     }
 
-    protected List<Pair<ProviderType, ProviderTypeStatus>> buildProviderStatusList(final Map<ProviderType, ProviderTypeStatus> statusMap) {
+    private List<Pair<ProviderType, ProviderTypeStatus>> buildProviderStatusList(final Map<ProviderType, ProviderTypeStatus> statusMap) {
         return statusMap.entrySet()
                 .stream()
+                .filter(entry -> handlerRegistry.isProviderInstalled(entry.getKey().getKey()))
                 .map(entry -> new Pair<>(entry.getKey(),
                                          entry.getValue()))
                 .sorted(Comparator.comparing(o -> o.getK1().getName()))
