@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.guvnor.ala.ui.client.wizard.project;
+package org.guvnor.ala.ui.client.wizard.container;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.guvnor.ala.ui.client.widget.FormStatus;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Event;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.common.client.dom.TextInput;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -29,16 +30,35 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.GAVConfigurationParamsView_Title;
 import static org.guvnor.ala.ui.client.util.UIUtil.EMPTY_STRING;
 import static org.guvnor.ala.ui.client.widget.StyleHelper.setFormStatus;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 @Templated
-public class GAVConfigurationParamsView
+public class ContainerConfigView
         implements IsElement,
-                   GAVConfigurationParamsPresenter.View {
+                   ContainerConfigPresenter.View {
+
+    @Inject
+    @DataField("form-error")
+    private Div formError;
+
+    @Inject
+    @DataField("form-error-message")
+    private Span formErrorMessage;
+
+    @Inject
+    @DataField("container-name-form")
+    private Div containerNameForm;
+
+    @Inject
+    @DataField("container-name")
+    private TextInput containerName;
+
+    @Inject
+    @DataField("container-name-help-block")
+    private Span containerNameHelp;
 
     @Inject
     @DataField("group-id-form")
@@ -71,24 +91,30 @@ public class GAVConfigurationParamsView
     @Inject
     private TranslationService translationService;
 
-    private GAVConfigurationParamsPresenter presenter;
+    private ContainerConfigPresenter presenter;
 
     @Override
-    public void init(final GAVConfigurationParamsPresenter presenter) {
+    public void init(final ContainerConfigPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public String getWizardTitle() {
-        return translationService.getTranslation(GAVConfigurationParamsView_Title);
-    }
-
-    @Override
     public void clear() {
+        containerName.setValue(EMPTY_STRING);
         groupId.setValue(EMPTY_STRING);
         artifactId.setValue(EMPTY_STRING);
         version.setValue(EMPTY_STRING);
         resetFormState();
+    }
+
+    @Override
+    public String getContainerName() {
+        return containerName.getValue();
+    }
+
+    @Override
+    public void setContainerName(final String value) {
+        containerName.setValue(value);
     }
 
     @Override
@@ -127,6 +153,14 @@ public class GAVConfigurationParamsView
     }
 
     @Override
+    public void setContainerNameStatus(final FormStatus status) {
+        checkNotNull("status",
+                     status);
+        setFormStatus(containerNameForm,
+                      status);
+    }
+
+    @Override
     public void setGroupIdStatus(final FormStatus status) {
         checkNotNull("status",
                      status);
@@ -150,10 +184,44 @@ public class GAVConfigurationParamsView
                       status);
     }
 
+    @Override
+    public void setContainerNameHelpText(final String containerNameHelpText) {
+        containerNameHelp.getStyle().removeProperty("display");
+        containerNameHelp.setInnerHTML(containerNameHelpText);
+    }
+
+    @Override
+    public void clearContainerNameHelpText() {
+        containerNameHelp.getStyle().setProperty("display",
+                                                 "none");
+        containerNameHelp.setInnerHTML(EMPTY_STRING);
+    }
+
+    @Override
+    public void showFormError(final String error) {
+        formError.getStyle().removeProperty("display");
+        formErrorMessage.setInnerHTML(error);
+    }
+
+    @Override
+    public void clearFormError() {
+        formError.getStyle().setProperty("display",
+                                         "none");
+        formErrorMessage.setInnerHTML(EMPTY_STRING);
+    }
+
     private void resetFormState() {
+        setContainerNameStatus(FormStatus.VALID);
         setGroupIdStatus(FormStatus.VALID);
         setArtifactIdStatus(FormStatus.VALID);
         setVersionStatus(FormStatus.VALID);
+        clearFormError();
+        clearContainerNameHelpText();
+    }
+
+    @EventHandler("container-name")
+    private void onContainerNameChange(@ForEvent("change") final Event event) {
+        presenter.onContainerNameChange();
     }
 
     @EventHandler("group-id")

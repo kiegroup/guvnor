@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package org.guvnor.ala.ui.client.wizard.project;
+package org.guvnor.ala.ui.client.wizard.container;
 
-import org.guvnor.common.services.project.model.GAV;
+import java.util.List;
 
-public class GAVConfigurationChangeEvent {
+public class ContainerConfigParamsChangeEvent {
 
-    private GAV gav;
+    private List<ContainerConfig> containerConfigs;
 
-    public GAVConfigurationChangeEvent() {
+    public ContainerConfigParamsChangeEvent(final List<ContainerConfig> containerConfigs) {
+        this.containerConfigs = containerConfigs;
     }
 
-    public GAVConfigurationChangeEvent(final GAV gav) {
-        this.gav = gav;
-    }
-
-    public GAV getGav() {
-        return gav;
+    public List<ContainerConfig> getContainerConfigs() {
+        return containerConfigs;
     }
 
     @Override
@@ -42,13 +39,15 @@ public class GAVConfigurationChangeEvent {
             return false;
         }
 
-        GAVConfigurationChangeEvent that = (GAVConfigurationChangeEvent) o;
+        ContainerConfigParamsChangeEvent that = (ContainerConfigParamsChangeEvent) o;
 
-        return gav != null ? gav.equals(that.gav) : that.gav == null;
+        return containerConfigs != null ? containerConfigs.equals(that.containerConfigs) : that.containerConfigs == null;
     }
 
     @Override
     public int hashCode() {
-        return gav != null ? gav.hashCode() : 0;
+        int result = containerConfigs != null ? containerConfigs.hashCode() : 0;
+        result = ~~result;
+        return result;
     }
 }

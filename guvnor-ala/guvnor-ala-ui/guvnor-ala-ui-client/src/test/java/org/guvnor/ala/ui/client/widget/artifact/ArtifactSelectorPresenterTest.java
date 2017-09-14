@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.ala.ui.client.wizard.project.artifact;
+package org.guvnor.ala.ui.client.widget.artifact;
 
 import org.guvnor.m2repo.client.widgets.ArtifactListPresenter;
 import org.guvnor.m2repo.client.widgets.ArtifactListView;
@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.guvnor.ala.ui.client.wizard.project.artifact.ArtifactSelectorPresenter.SEARCH_ALL_FILTER;
+import static org.guvnor.ala.ui.client.widget.artifact.ArtifactSelectorPresenter.SEARCH_ALL_FILTER;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 

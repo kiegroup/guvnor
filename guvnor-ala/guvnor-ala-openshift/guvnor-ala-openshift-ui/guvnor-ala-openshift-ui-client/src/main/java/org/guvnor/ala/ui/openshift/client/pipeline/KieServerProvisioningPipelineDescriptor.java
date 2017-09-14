@@ -21,9 +21,9 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.guvnor.ala.ui.client.wizard.container.ContainerConfigParamsPresenter;
 import org.guvnor.ala.ui.client.wizard.pipeline.PipelineDescriptor;
 import org.guvnor.ala.ui.client.wizard.pipeline.params.PipelineParamsForm;
-import org.guvnor.ala.ui.client.wizard.project.GAVConfigurationParamsPresenter;
 import org.guvnor.ala.ui.model.PipelineKey;
 import org.guvnor.ala.ui.openshift.client.pipeline.template.TemplateParamsFormPresenter;
 
@@ -39,9 +39,9 @@ public class KieServerProvisioningPipelineDescriptor
     private List<PipelineParamsForm> paramsForms = new ArrayList<>();
 
     @Inject
-    public KieServerProvisioningPipelineDescriptor(final GAVConfigurationParamsPresenter gavConfigurationParamsPresenter,
+    public KieServerProvisioningPipelineDescriptor(final ContainerConfigParamsPresenter containerConfigParamsPresenter,
                                                    final TemplateParamsFormPresenter templateParamsFormPresenter) {
-        paramsForms.add(gavConfigurationParamsPresenter);
+        paramsForms.add(containerConfigParamsPresenter);
         paramsForms.add(templateParamsFormPresenter);
     }
 
