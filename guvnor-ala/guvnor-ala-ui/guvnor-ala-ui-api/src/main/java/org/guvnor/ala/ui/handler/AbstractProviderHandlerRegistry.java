@@ -37,7 +37,7 @@ public abstract class AbstractProviderHandlerRegistry<T extends ProviderHandler>
         handlerInstance.iterator().forEachRemaining(handlers::add);
     }
 
-    public boolean isProviderEnabled(ProviderTypeKey providerTypeKey) {
+    public boolean isProviderInstalled(ProviderTypeKey providerTypeKey) {
         return getProviderHandler(providerTypeKey) != null;
     }
 
