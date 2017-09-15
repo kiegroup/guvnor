@@ -132,7 +132,7 @@ public class NewProviderWizard
     private ProviderConfigurationForm getProviderConfigurationForm(ProviderTypeKey providerTypeKey) {
         ProviderConfigurationForm form = providerConfigurationFormMap.get(providerTypeKey);
         if (form == null &&
-                handlerRegistry.isProviderEnabled(providerTypeKey) &&
+                handlerRegistry.isProviderInstalled(providerTypeKey) &&
                 handlerRegistry.getProviderHandler(providerTypeKey).getFormResolver() != null) {
             form = handlerRegistry.getProviderHandler(providerTypeKey).getFormResolver().newProviderConfigurationForm();
             providerConfigurationFormMap.put(providerTypeKey,

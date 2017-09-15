@@ -58,21 +58,21 @@ public abstract class AbstractProviderHandlerRegistryTest<T extends ProviderHand
     }
 
     @Test
-    public void testProvidersEnabled() {
-        expectedKeys.forEach(key -> assertTrue(handlerRegistry.isProviderEnabled(key)));
+    public void testProvidersInstalled() {
+        expectedKeys.forEach(key -> assertTrue(handlerRegistry.isProviderInstalled(key)));
     }
 
     @Test
-    public void testProviderNoEnabled() {
+    public void testProviderNotInstalled() {
         ProviderTypeKey providerTypeKey = mock(ProviderTypeKey.class);
-        assertFalse(handlerRegistry.isProviderEnabled(providerTypeKey));
+        assertFalse(handlerRegistry.isProviderInstalled(providerTypeKey));
     }
 
     @Test
     public void testGetProvidersHandler() {
         for (int i = 0; i < expectedKeys.size(); i++) {
             ProviderTypeKey key = expectedKeys.get(i);
-            assertNotNull(handlerRegistry.isProviderEnabled(key));
+            assertNotNull(handlerRegistry.isProviderInstalled(key));
             ProviderHandler handler = handlerRegistry.getProviderHandler(key);
             assertEquals(expectedHandlers.get(i),
                          handler);

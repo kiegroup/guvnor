@@ -427,7 +427,7 @@ public class ProviderPresenterTest {
         when(providerService.getProvider(providerKey)).thenReturn(provider);
         when(provisioningScreensService.getRuntimesInfo(providerKey)).thenReturn(runtimesInfo);
 
-        when(handlerRegistry.isProviderEnabled(providerTypeKey)).thenReturn(true);
+        when(handlerRegistry.isProviderInstalled(providerTypeKey)).thenReturn(true);
         when(handlerRegistry.getProviderHandler(providerTypeKey)).thenReturn(handler);
         when(handler.getFormResolver()).thenReturn(formResolver);
         when(formResolver.newProviderConfigurationForm()).thenReturn(configurationForm);
