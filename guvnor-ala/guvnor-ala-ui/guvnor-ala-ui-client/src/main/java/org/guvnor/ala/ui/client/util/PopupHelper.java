@@ -17,18 +17,29 @@
 package org.guvnor.ala.ui.client.util;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
+import org.uberfire.client.views.pfly.widgets.ErrorPopup;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 
+import static org.uberfire.client.views.pfly.widgets.ErrorPopup.DisplayMode.STANDARD;
+
 @ApplicationScoped
 public class PopupHelper
         implements HasBusyIndicator {
+
+    private final ErrorPopup errorPopup;
+
+    @Inject
+    public PopupHelper(final ErrorPopup errorPopup) {
+        this.errorPopup = errorPopup;
+    }
 
     public void showInformationPopup(final String message) {
         showNotificationPopup(CommonConstants.INSTANCE.Information(),
@@ -36,8 +47,15 @@ public class PopupHelper
     }
 
     public void showErrorPopup(final String message) {
-        showNotificationPopup(CommonConstants.INSTANCE.Error(),
-                              message);
+        errorPopup.showError(message,
+                             STANDARD);
+    }
+
+    public void showErrorPopup(final String message,
+                               final String detail) {
+        errorPopup.showError(message,
+                             detail,
+                             STANDARD);
     }
 
     public void showYesNoPopup(final String title,

@@ -18,6 +18,7 @@ package org.guvnor.ala.ui.backend.service;
 
 import org.guvnor.ala.services.api.RuntimeQueryResultItem;
 import org.guvnor.ala.ui.model.Pipeline;
+import org.guvnor.ala.ui.model.PipelineError;
 import org.guvnor.ala.ui.model.PipelineExecutionTrace;
 import org.guvnor.ala.ui.model.PipelineExecutionTraceKey;
 import org.guvnor.ala.ui.model.PipelineKey;
@@ -74,7 +75,8 @@ public class RuntimeListItemBuilder {
             final Pipeline pipeline = new Pipeline(new PipelineKey(item.getPipelineId()));
             pipelineTrace = new PipelineExecutionTrace(new PipelineExecutionTraceKey(item.getPipelineExecutionId()));
             pipelineTrace.setPipelineStatus(transformToPipelineStatus(item.getPipelineStatus()));
-            pipelineTrace.setPipelineError(item.getPipelineError());
+            pipelineTrace.setPipelineError(new PipelineError(item.getPipelineError(),
+                                                             item.getPipelineErrorDetail()));
             item.getPipelineStageItems().getItems()
                     .forEach(stage -> {
                                  pipeline.addStage(new Stage(pipeline.getKey(),
@@ -82,7 +84,8 @@ public class RuntimeListItemBuilder {
                                  pipelineTrace.setStageStatus(stage.getName(),
                                                               transformToPipelineStatus(stage.getStatus()));
                                  pipelineTrace.setStageError(stage.getName(),
-                                                             stage.getErrorMessage());
+                                                             new PipelineError(stage.getStageError(),
+                                                                               stage.getStageErrorDetail()));
                              }
                     );
             pipelineTrace.setPipeline(pipeline);

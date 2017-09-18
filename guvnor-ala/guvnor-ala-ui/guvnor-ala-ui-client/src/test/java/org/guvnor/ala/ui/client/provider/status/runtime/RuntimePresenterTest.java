@@ -118,13 +118,19 @@ public class RuntimePresenterTest {
 
     protected List<RuntimeActionItemPresenter> actionItemPresenters = new ArrayList<>();
 
+    protected List<RuntimeActionItemSeparatorPresenter> separatorItemPresenters = new ArrayList<>();
+
     protected RuntimeActionItemPresenter startActionPresenter;
 
     protected RuntimeActionItemPresenter stopActionPresenter;
 
     protected RuntimeActionItemPresenter deleteActionPresenter;
 
+    protected RuntimeActionItemPresenter showErrorActionPresenter;
+
     protected RuntimeActionItemSeparatorPresenter separatorPresenter;
+
+    protected RuntimeActionItemSeparatorPresenter secondarySeparatorPresenter;
 
     protected Runtime runtime;
 
@@ -177,10 +183,11 @@ public class RuntimePresenterTest {
 
             @Override
             protected RuntimeActionItemSeparatorPresenter newSeparatorItem() {
-                separatorPresenter = mock(RuntimeActionItemSeparatorPresenter.class);
+                RuntimeActionItemSeparatorPresenter separatorItemPresenter = mock(RuntimeActionItemSeparatorPresenter.class);
                 RuntimeActionItemSeparatorPresenter.View view = mock(RuntimeActionItemSeparatorPresenter.View.class);
-                when(separatorPresenter.getView()).thenReturn(view);
-                when(actionItemSeparatorPresenterInstance.get()).thenReturn(separatorPresenter);
+                when(separatorItemPresenter.getView()).thenReturn(view);
+                when(actionItemSeparatorPresenterInstance.get()).thenReturn(separatorItemPresenter);
+                separatorItemPresenters.add(separatorItemPresenter);
                 return super.newSeparatorItem();
             }
         });
@@ -188,13 +195,16 @@ public class RuntimePresenterTest {
         verify(view,
                times(1)).init(presenter);
         verify(actionItemPresenterInstance,
-               times(3)).get();
+               times(4)).get();
         verify(actionItemSeparatorPresenterInstance,
-               times(1)).get();
+               times(2)).get();
 
         startActionPresenter = actionItemPresenters.get(0);
         stopActionPresenter = actionItemPresenters.get(1);
         deleteActionPresenter = actionItemPresenters.get(2);
+        showErrorActionPresenter = actionItemPresenters.get(3);
+        separatorPresenter = separatorItemPresenters.get(0);
+        secondarySeparatorPresenter = separatorItemPresenters.get(1);
     }
 
     @Test
@@ -208,6 +218,8 @@ public class RuntimePresenterTest {
                times(1)).destroy(deleteActionPresenter);
         verify(actionItemSeparatorPresenterInstance,
                times(1)).destroy(separatorPresenter);
+        verify(actionItemSeparatorPresenterInstance,
+               times(1)).destroy(secondarySeparatorPresenter);
     }
 
     @Test
