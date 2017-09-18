@@ -105,7 +105,7 @@ public class NewProviderWizardTest
         wizard.init();
 
         providerType = mockProviderType("NewProviderWizardTest");
-        when(handlerRegistry.isProviderEnabled(providerType.getKey())).thenReturn(true);
+        when(handlerRegistry.isProviderInstalled(providerType.getKey())).thenReturn(true);
         when(handlerRegistry.getProviderHandler(providerType.getKey())).thenReturn(providerHandler);
         when(providerHandler.getFormResolver()).thenReturn(formResolver);
         when(formResolver.newProviderConfigurationForm()).thenReturn(configurationForm);
@@ -132,7 +132,7 @@ public class NewProviderWizardTest
     @Test
     public void testStartProviderNotConfigured() {
         //the provider is not configured
-        when(handlerRegistry.isProviderEnabled(providerType.getKey())).thenReturn(false);
+        when(handlerRegistry.isProviderInstalled(providerType.getKey())).thenReturn(false);
 
         wizard.start(providerType);
 

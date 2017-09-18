@@ -211,7 +211,7 @@ public class ProviderPresenter {
     }
 
     private ProviderConfigurationForm newProviderConfigurationForm(ProviderTypeKey providerTypeKey) {
-        if (providerHandlerRegistry.isProviderEnabled(providerTypeKey)) {
+        if (providerHandlerRegistry.isProviderInstalled(providerTypeKey)) {
             final FormResolver formResolver = providerHandlerRegistry.getProviderHandler(providerTypeKey).getFormResolver();
             final ProviderConfigurationForm providerConfigurationForm = formResolver.newProviderConfigurationForm();
             formToResolverMap.put(providerConfigurationForm,
