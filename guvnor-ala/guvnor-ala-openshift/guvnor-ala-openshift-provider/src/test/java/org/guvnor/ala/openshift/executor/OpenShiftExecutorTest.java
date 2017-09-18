@@ -129,7 +129,7 @@ public class OpenShiftExecutorTest {
         runtimeConfig.setServiceName(svcName);
         runtimeConfig.setApplicationName(appName);
         runtimeConfig.setResourceSecretsUri(getUri("bpmsuite-app-secret.json"));
-        runtimeConfig.setResourceStreamsUri(getUri("jboss-image-streams.json"));
+        runtimeConfig.setResourceStreamsUri(getUri("bpmsuite-image-streams.json"));
         runtimeConfig.setResourceTemplateUri(getUri("bpmsuite70-execserv.json"));
         runtimeConfig.setResourceTemplateParamValues(new OpenShiftParameters()
                 .param("APPLICATION_NAME", appName)
@@ -240,7 +240,7 @@ public class OpenShiftExecutorTest {
             //put(KIE_SERVER_CONTAINER_DEPLOYMENT.inputKey(), "decisionserver-hellorules=org.openshift.quickstarts:decisionserver-hellorules:1.4.0.Final");
             put(PROJECT_NAME.inputKey(), prjName);
             put(RESOURCE_SECRETS_URI.inputKey(), getUri("bpmsuite-app-secret.json"));
-            put(RESOURCE_STREAMS_URI.inputKey(), getUri("jboss-image-streams.json"));
+            put(RESOURCE_STREAMS_URI.inputKey(), getUri("bpmsuite-image-streams.json"));
             put(RESOURCE_TEMPLATE_PARAM_VALUES.inputKey(), templateParams);
             put(RESOURCE_TEMPLATE_URI.inputKey(), getUri("bpmsuite70-execserv.json"));
             put(SERVICE_NAME.inputKey(), svcName);
@@ -257,7 +257,7 @@ public class OpenShiftExecutorTest {
 
         runtimeManager.start( openshiftRuntime );
         openshiftRuntime = getRuntime(runtimeRegistry, runtimeManager, openshiftRuntime, true);
-        assertEquals( OpenShiftRuntimeState.STARTED, openshiftRuntime.getState().getState() );
+        assertEquals( OpenShiftRuntimeState.RUNNING, openshiftRuntime.getState().getState() );
 
         RuntimeEndpoint runtimeEndpoint = openshiftRuntime.getEndpoint();
         assertTrue( runtimeEndpoint instanceof OpenShiftRuntimeEndpoint );
