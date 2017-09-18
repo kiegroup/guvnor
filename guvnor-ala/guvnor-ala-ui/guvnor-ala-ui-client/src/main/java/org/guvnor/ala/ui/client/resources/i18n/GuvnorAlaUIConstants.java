@@ -189,6 +189,9 @@ public class GuvnorAlaUIConstants {
     public static final String RuntimePresenter_PipelineExecutionDeleteAction = "RuntimePresenter.PipelineExecutionDeleteAction";
 
     @TranslationKey(defaultValue = "")
+    public static final String RuntimePresenter_PipelineExecutionShowErrorAction = "RuntimePresenter.PipelineExecutionShowErrorAction";
+
+    @TranslationKey(defaultValue = "")
     public static final String RuntimePresenter_PipelineExecutionStopSuccessMessage = "RuntimePresenter.PipelineExecutionStopSuccessMessage";
 
     @TranslationKey(defaultValue = "")

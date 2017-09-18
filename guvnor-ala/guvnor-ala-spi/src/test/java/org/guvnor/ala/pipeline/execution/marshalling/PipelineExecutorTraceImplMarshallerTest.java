@@ -25,7 +25,7 @@ import org.guvnor.ala.pipeline.BasePipeline;
 import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.Stage;
-import org.guvnor.ala.pipeline.execution.PipelineExecutorException;
+import org.guvnor.ala.pipeline.execution.PipelineExecutorError;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.RegistrableOutput;
 import org.guvnor.ala.pipeline.execution.impl.PipelineExecutorTaskDefImpl;
@@ -43,7 +43,9 @@ public class PipelineExecutorTraceImplMarshallerTest
     private static final String PIPELINE_NAME = "PIPELINE_NAME";
     private static final String PIPELINE_EXECUTION_ID = "PIPELINE_EXECUTION_ID";
     private static final String PIPELINE_ERROR = "PIPELINE_ERROR";
+    private static final String PIPELINE_ERROR_DETAIL = "PIPELINE_ERROR_DETAIL";
     private static final String STAGE_ERROR = "STAGE_ERROR";
+    private static final String STAGE_ERROR_DETAIL = "STAGE_ERROR_DETAIL";
     private static final String PIPELINE_OUTPUT = "PIPELINE_OUTPUT";
 
     @Override
@@ -70,7 +72,8 @@ public class PipelineExecutorTraceImplMarshallerTest
         PipelineExecutorTaskImpl taskImpl = new PipelineExecutorTaskImpl(taskDef,
                                                                          PIPELINE_EXECUTION_ID);
         taskImpl.setPipelineStatus(PipelineExecutorTask.Status.SCHEDULED);
-        taskImpl.setPipelineError(mockError(PIPELINE_ERROR));
+        taskImpl.setPipelineError(mockError(PIPELINE_ERROR,
+                                            PIPELINE_ERROR_DETAIL));
         taskImpl.getTaskDef().getStages().forEach(stage -> taskImpl.setStageError(stage,
                                                                                   mockStageError(stage)));
         taskImpl.setOutput(new MockPipelineOutput(PIPELINE_OUTPUT));
@@ -95,28 +98,16 @@ public class PipelineExecutorTraceImplMarshallerTest
                      value.getTask().getTaskDef());
         assertEquals(expectedValue.getTask().getPipelineStatus(),
                      value.getTask().getPipelineStatus());
-        assertEqualsPipelineExecutorException(expectedValue.getTask().getPipelineError(),
-                                              value.getTask().getPipelineError());
+        assertEquals(expectedValue.getTask().getPipelineError(),
+                     value.getTask().getPipelineError());
         for (String stage : expectedValue.getTask().getTaskDef().getStages()) {
             assertEquals(expectedValue.getTask().getStageStatus(stage),
                          value.getTask().getStageStatus(stage));
-            assertEqualsPipelineExecutorException(expectedValue.getTask().getStageError(stage),
-                                                  value.getTask().getStageError(stage));
+            assertEquals(expectedValue.getTask().getStageError(stage),
+                         value.getTask().getStageError(stage));
         }
         assertEquals(expectedValue.getTask().getOutput(),
                      value.getTask().getOutput());
-    }
-
-    private void assertEqualsPipelineExecutorException(PipelineExecutorException expectedValue,
-                                                       PipelineExecutorException value) {
-        assertEquals(expectedValue.getMessage(),
-                     value.getMessage());
-        assertArrayEquals(expectedValue.getStackTrace(),
-                          value.getStackTrace());
-        assertEquals(expectedValue.getCause().getMessage(),
-                     value.getCause().getMessage());
-        assertArrayEquals(expectedValue.getCause().getStackTrace(),
-                          value.getCause().getStackTrace());
     }
 
     private List<Stage> mockStages(int count) {
@@ -138,26 +129,23 @@ public class PipelineExecutorTraceImplMarshallerTest
         return input;
     }
 
-    private PipelineExecutorException mockStageError(String stage) {
-        return mockError(buildStageErrorMessage(stage));
+    private PipelineExecutorError mockStageError(String stage) {
+        return mockError(buildStageErrorMessage(stage),
+                         buildStageErrorDetail(stage));
     }
 
-    private PipelineExecutorException mockError(String error) {
-        //mock an exception and set a reduced stacktrace for testing purposes.
-        Throwable throwable = new Throwable(error);
-        StackTraceElement[] stackTrace = {new StackTraceElement(PipelineExecutorException.class.getName(),
-                                                                "methodName",
-                                                                "fileName",
-                                                                0)};
-        throwable.setStackTrace(stackTrace);
-        PipelineExecutorException result = new PipelineExecutorException(error,
-                                                                         throwable);
-        result.setStackTrace(stackTrace);
-        return result;
+    private PipelineExecutorError mockError(String error,
+                                            String detail) {
+        return new PipelineExecutorError(error,
+                                         detail);
     }
 
     private String buildStageErrorMessage(String stage) {
         return stage + "." + STAGE_ERROR;
+    }
+
+    private String buildStageErrorDetail(String stage) {
+        return stage + "." + STAGE_ERROR_DETAIL;
     }
 
     public static class MockPipelineOutput

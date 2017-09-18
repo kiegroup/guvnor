@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.uberfire.mvp.Command;
 
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionDeleteAction;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionShowErrorAction;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionStopAction;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeDeleteAction;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeStartAction;
@@ -46,12 +47,15 @@ public class RuntimePresenterActionsSetupTest
 
     private static final String DELETE_RUNTIME_ACTION = "DELETE_RUNTIME_ACTION";
 
+    private static final String SHOW_PIPELINE_ERROR_ACTION = "SHOW_PIPELINE_ERROR_ACTION";
+
     @Before
     public void setUp() {
         super.setUp();
 
         when(translationService.getTranslation(RuntimePresenter_PipelineExecutionStopAction)).thenReturn(STOP_PIPELINE_ACTION);
         when(translationService.getTranslation(RuntimePresenter_PipelineExecutionDeleteAction)).thenReturn(DELETE_PIPELINE_ACTION);
+        when(translationService.getTranslation(RuntimePresenter_PipelineExecutionShowErrorAction)).thenReturn(SHOW_PIPELINE_ERROR_ACTION);
         when(translationService.getTranslation(RuntimePresenter_RuntimeStartAction)).thenReturn(START_RUNTIME_ACTION);
         when(translationService.getTranslation(RuntimePresenter_RuntimeStopAction)).thenReturn(STOP_RUNTIME_ACTION);
         when(translationService.getTranslation(RuntimePresenter_RuntimeDeleteAction)).thenReturn(DELETE_RUNTIME_ACTION);
@@ -66,6 +70,8 @@ public class RuntimePresenterActionsSetupTest
                times(1)).setEnabled(true);
         verify(deleteActionPresenter,
                never()).setEnabled(true);
+        verify(showErrorActionPresenter,
+               never()).setEnabled(true);
     }
 
     @Test
@@ -76,6 +82,8 @@ public class RuntimePresenterActionsSetupTest
         verify(stopActionPresenter,
                times(1)).setEnabled(true);
         verify(deleteActionPresenter,
+               never()).setEnabled(true);
+        verify(showErrorActionPresenter,
                never()).setEnabled(true);
     }
 
@@ -88,6 +96,8 @@ public class RuntimePresenterActionsSetupTest
                never()).setEnabled(true);
         verify(deleteActionPresenter,
                times(1)).setEnabled(true);
+        verify(showErrorActionPresenter,
+               times(1)).setEnabled(true);
     }
 
     @Test
@@ -99,6 +109,8 @@ public class RuntimePresenterActionsSetupTest
                never()).setEnabled(true);
         verify(deleteActionPresenter,
                times(1)).setEnabled(true);
+        verify(showErrorActionPresenter,
+               never()).setEnabled(true);
     }
 
     private void preparePipelineActionsSetupTest(final PipelineStatus status) {
@@ -117,6 +129,9 @@ public class RuntimePresenterActionsSetupTest
                                any(Command.class));
         verify(deleteActionPresenter,
                times(1)).setup(eq(DELETE_PIPELINE_ACTION),
+                               any(Command.class));
+        verify(showErrorActionPresenter,
+               times(1)).setup(eq(SHOW_PIPELINE_ERROR_ACTION),
                                any(Command.class));
         verify(view,
                times(1)).addActionItem(stopActionPresenter.getView());
@@ -145,6 +160,8 @@ public class RuntimePresenterActionsSetupTest
                never()).setEnabled(false);
         verify(deleteActionPresenter,
                never()).setEnabled(false);
+        verify(showErrorActionPresenter,
+               never()).setEnabled(true);
     }
 
     @Test
@@ -158,6 +175,8 @@ public class RuntimePresenterActionsSetupTest
                times(1)).setEnabled(false);
         verify(deleteActionPresenter,
                never()).setEnabled(false);
+        verify(showErrorActionPresenter,
+               never()).setEnabled(true);
     }
 
     @Test
@@ -171,6 +190,8 @@ public class RuntimePresenterActionsSetupTest
                never()).setEnabled(false);
         verify(deleteActionPresenter,
                never()).setEnabled(false);
+        verify(showErrorActionPresenter,
+               never()).setEnabled(true);
     }
 
     @Test
@@ -184,6 +205,8 @@ public class RuntimePresenterActionsSetupTest
                never()).setEnabled(false);
         verify(deleteActionPresenter,
                never()).setEnabled(false);
+        verify(showErrorActionPresenter,
+               never()).setEnabled(true);
     }
 
     private void prepareRuntimeActionsSetupTest(final String status) {

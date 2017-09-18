@@ -21,7 +21,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.guvnor.ala.pipeline.execution.PipelineExecutorException;
+import org.guvnor.ala.pipeline.execution.PipelineExecutorError;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskDef;
 import org.guvnor.ala.pipeline.execution.RegistrableOutput;
@@ -49,12 +49,12 @@ public class PipelineExecutorTaskImpl
      * Holds the execution error for the stages in case there were errors.
      */
     @JsonInclude
-    private Map<String, PipelineExecutorException> stageError = new HashMap<>();
+    private Map<String, PipelineExecutorError> stageError = new HashMap<>();
 
     /**
      * Holds the pipeline error in case the pipeline failed.
      */
-    private PipelineExecutorException pipelineError;
+    private PipelineExecutorError pipelineError;
 
     private RegistrableOutput output;
 
@@ -105,20 +105,20 @@ public class PipelineExecutorTaskImpl
     }
 
     public void setStageError(final String stage,
-                              final PipelineExecutorException error) {
+                              final PipelineExecutorError error) {
         stageError.put(stage,
                        error);
     }
 
-    public PipelineExecutorException getStageError(final String stage) {
+    public PipelineExecutorError getStageError(final String stage) {
         return stageError.get(stage);
     }
 
-    public void setPipelineError(final PipelineExecutorException error) {
+    public void setPipelineError(final PipelineExecutorError error) {
         this.pipelineError = error;
     }
 
-    public PipelineExecutorException getPipelineError() {
+    public PipelineExecutorError getPipelineError() {
         return pipelineError;
     }
 
