@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.guvnor.ala.ui.client.wizard.project.artifact;
+package org.guvnor.ala.ui.client.widget.artifact;
 
 import java.util.Arrays;
 import java.util.List;
