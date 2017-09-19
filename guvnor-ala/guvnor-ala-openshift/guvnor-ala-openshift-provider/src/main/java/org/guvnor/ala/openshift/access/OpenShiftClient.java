@@ -109,7 +109,7 @@ public class OpenShiftClient {
             String appName = runtimeConfig.getApplicationName();
             OpenShiftRuntimeId runtimeId = new OpenShiftRuntimeId(prjName, svcName, appName);
             OpenShiftRuntimeState runtimeState = getRuntimeState(runtimeId);
-            if (OpenShiftRuntimeState.NA.equals(runtimeState.getState())) {
+            if (OpenShiftRuntimeState.UNKNOWN.equals(runtimeState.getState())) {
                 createProject(prjName);
                 createFromUri(prjName, runtimeConfig.getResourceSecretsUri());
                 createFromUri(prjName, runtimeConfig.getResourceStreamsUri());
@@ -131,7 +131,19 @@ public class OpenShiftClient {
 
     private void createProject(String prjName) {
         if (delegate.projects().withName(prjName).get() == null) {
-            delegate.projects().createNew().editOrNewMetadata().withName(prjName).addToAnnotations(GUVNOR_ALA_GENERATED, Boolean.TRUE.toString()).endMetadata().done();
+            delegate.projectrequests()
+                .createNew()
+                .editOrNewMetadata()
+                .withName(prjName)
+                .endMetadata()
+                .done();
+            delegate.namespaces()
+                .withName(prjName)
+                .edit()
+                .editOrNewMetadata()
+                .addToAnnotations(GUVNOR_ALA_GENERATED, Boolean.TRUE.toString())
+                .endMetadata()
+                .done();
         }
         addServiceAccountRole(prjName, "builder", "system:image-builder");
         addServiceAccountRole(prjName, "default", "admin");
@@ -268,7 +280,11 @@ public class OpenShiftClient {
             String dcName = null;
             for (HasMetadata item : items) {
                 if (item instanceof Service && item.getMetadata().getName().equals(svcName)) {
-                    dcName = ((Service) item).getSpec().getSelector().get("deploymentConfig");
+                    Map<String, String> selector = ((Service) item).getSpec().getSelector();
+                    dcName = selector.get("deploymentconfig");
+                    if (dcName == null) {
+                        dcName = selector.get("deploymentConfig");
+                    }
                     break;
                 }
             }
@@ -320,8 +336,13 @@ public class OpenShiftClient {
              * , but deleting services and routes are still necessary:
              */
             delegate.deploymentConfigs().inNamespace(prjName).withName(svcName).cascading(true).delete();
-            delegate.services().inNamespace(prjName).withLabel(APP_LABEL, appName).delete();
-            delegate.routes().inNamespace(prjName).withLabel(APP_LABEL, appName).delete();
+            if (appName != null) {
+                delegate.services().inNamespace(prjName).withLabel(APP_LABEL, appName).delete();
+                delegate.routes().inNamespace(prjName).withLabel(APP_LABEL, appName).delete();
+            } else {
+                delegate.services().inNamespace(prjName).delete();
+                delegate.routes().inNamespace(prjName).delete();
+            }
             // clean up any generated image streams, secrets, and service accounts
             for (ImageStream item : delegate.imageStreams().inNamespace(prjName).list().getItems()) {
                 if (isGuvnorAlaGenerated(item)) {
@@ -414,13 +435,13 @@ public class OpenShiftClient {
         if (service != null) {
             Integer replicas = getReplicas(service);
             if (replicas != null && replicas.intValue() > 0) {
-                state = OpenShiftRuntimeState.STARTED;
+                state = OpenShiftRuntimeState.RUNNING;
             } else {
                 state = OpenShiftRuntimeState.READY;
             }
             startedAt = service.getMetadata().getCreationTimestamp();
         } else {
-            state = OpenShiftRuntimeState.NA;
+            state = OpenShiftRuntimeState.UNKNOWN;
             startedAt = new Date().toString();
         }
         return new OpenShiftRuntimeState(state, startedAt);
@@ -475,7 +496,11 @@ public class OpenShiftClient {
     private DeployableScalableResource<DeploymentConfig, DoneableDeploymentConfig> getDeploymentConfigResource(Service service) {
         if (service != null) {
             String prjName = service.getMetadata().getNamespace();
-            String dcName = service.getSpec().getSelector().get("deploymentConfig");
+            Map<String, String> selector = service.getSpec().getSelector();
+            String dcName = selector.get("deploymentconfig");
+            if (dcName == null) {
+                dcName = selector.get("deploymentConfig");
+            }
             if (dcName != null) {
                 return delegate.deploymentConfigs().inNamespace(prjName).withName(dcName);
             }
