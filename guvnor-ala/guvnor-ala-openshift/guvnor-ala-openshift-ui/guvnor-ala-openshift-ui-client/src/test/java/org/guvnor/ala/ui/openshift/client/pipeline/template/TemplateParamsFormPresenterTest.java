@@ -24,14 +24,14 @@ import java.util.Map;
 import org.guvnor.ala.ui.client.util.PopupHelper;
 import org.guvnor.ala.ui.client.widget.FormStatus;
 import org.guvnor.ala.ui.client.wizard.NewDeployWizard;
-import org.guvnor.ala.ui.client.wizard.project.GAVConfigurationChangeEvent;
+import org.guvnor.ala.ui.client.wizard.container.ContainerConfig;
+import org.guvnor.ala.ui.client.wizard.container.ContainerConfigParamsChangeEvent;
 import org.guvnor.ala.ui.openshift.client.pipeline.template.table.TemplateParamsTablePresenter;
 import org.guvnor.ala.ui.openshift.client.validation.OpenShiftClientValidationService;
 import org.guvnor.ala.ui.openshift.model.DefaultSettings;
 import org.guvnor.ala.ui.openshift.model.TemplateDescriptorModel;
 import org.guvnor.ala.ui.openshift.model.TemplateParam;
 import org.guvnor.ala.ui.openshift.service.OpenShiftClientService;
-import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -89,11 +89,7 @@ public class TemplateParamsFormPresenterTest {
 
     private static final String RUNTIME_NAME_ERROR_MESSAGE = "RUNTIME_NAME_ERROR_MESSAGE";
 
-    private static final String GROUP_ID = "GROUP_ID";
-
-    private static final String ARTIFACT_ID = "ARTIFACT_ID";
-
-    private static final String VERSION = "VERSION";
+    private static final int CONTAINER_CONFIG_COUNT = 10;
 
     @Mock
     private TemplateParamsFormPresenter.View view;
@@ -263,6 +259,8 @@ public class TemplateParamsFormPresenterTest {
 
         //the runtime name is completed.
         when(view.getRuntimeName()).thenReturn(RUNTIME_NAME_VALUE);
+        when(openShiftClientService.isValidProjectName(RUNTIME_NAME_VALUE)).thenReturn(true);
+        presenter.onRuntimeNameChange();
         presenter.isComplete(Assert::assertFalse);
 
         //image streams url is completed
@@ -422,28 +420,20 @@ public class TemplateParamsFormPresenterTest {
     }
 
     @Test
-    public void testGAVConfigurationChangeGAVSelected() {
-        GAV gav = new GAV(GROUP_ID,
-                          ARTIFACT_ID,
-                          VERSION);
-        when(view.getRuntimeName()).thenReturn(RUNTIME_NAME_VALUE);
-        presenter.onRuntimeNameChange();
-        presenter.onGAVConfigurationChange(new GAVConfigurationChangeEvent(gav));
+    public void testOnContainerConfigurationsChangeWithConfigs() {
+        List<ContainerConfig> containerConfigs = mockContainerConfigList(CONTAINER_CONFIG_COUNT);
+        presenter.onContainerConfigurationsChange(new ContainerConfigParamsChangeEvent(containerConfigs));
 
         Map<String, String> params = presenter.buildParams();
         String containerParam = params.get(KIE_SERVER_CONTAINER_DEPLOYMENT);
-        String expectedContainerParam = buildExpectedContainerParamValue(RUNTIME_NAME_VALUE,
-                                                                         gav);
+        String expectedContainerParam = buildExpectedContainerDeploymentParamValue(containerConfigs);
         assertEquals(expectedContainerParam,
                      containerParam);
     }
 
     @Test
-    public void testGAVConfigurationChangeGAVNotSelected() {
-        when(view.getRuntimeName()).thenReturn(RUNTIME_NAME_VALUE);
-        presenter.onRuntimeNameChange();
-        presenter.onGAVConfigurationChange(new GAVConfigurationChangeEvent());
-
+    public void testOnContainerConfigurationsChangeWithNoConfigs() {
+        presenter.onContainerConfigurationsChange(new ContainerConfigParamsChangeEvent(new ArrayList<>()));
         Map<String, String> params = presenter.buildParams();
         String containerParam = params.get(KIE_SERVER_CONTAINER_DEPLOYMENT);
         assertNull(containerParam);
@@ -456,16 +446,18 @@ public class TemplateParamsFormPresenterTest {
         when(view.getImageStreamsURL()).thenReturn(DEFAULT_OPEN_SHIFT_IMAGE_STREAMS_VALUE);
         when(view.getSecretsFileURL()).thenReturn(DEFAULT_OPEN_SHIFT_SECRETS_VALUE);
 
+        when(openShiftClientService.isValidProjectName(RUNTIME_NAME_VALUE)).thenReturn(true);
+        //valid runtime name was completed
+        presenter.onRuntimeNameChange();
+
         when(view.getTemplateURL()).thenReturn(DEFAULT_OPEN_SHIFT_TEMPLATE_VALUE);
         when(openShiftClientService.getTemplateModel(DEFAULT_OPEN_SHIFT_TEMPLATE_VALUE)).thenReturn(templateDescriptorModel);
         //template was loaded
         presenter.onTemplateURLChange();
 
-        //gav was loaded
-        GAV gav = new GAV(GROUP_ID,
-                          ARTIFACT_ID,
-                          VERSION);
-        presenter.onGAVConfigurationChange(new GAVConfigurationChangeEvent(gav));
+        //config configurations were loaded
+        List<ContainerConfig> containerConfigs = mockContainerConfigList(CONTAINER_CONFIG_COUNT);
+        presenter.onContainerConfigurationsChange(new ContainerConfigParamsChangeEvent(containerConfigs));
 
         //template params was completed
         for (int i = 0; i < allTemplateParams.size(); i++) {
@@ -501,8 +493,7 @@ public class TemplateParamsFormPresenterTest {
         expectedParams.put(RESOURCE_SECRETS_URI,
                            DEFAULT_OPEN_SHIFT_SECRETS_VALUE);
         expectedParams.put(KIE_SERVER_CONTAINER_DEPLOYMENT,
-                           buildExpectedContainerParamValue(RUNTIME_NAME_VALUE,
-                                                            gav));
+                           buildExpectedContainerDeploymentParamValue(containerConfigs));
         expectedParams.put(RESOURCE_TEMPLATE_PARAM_VALUES,
                            templateParamsValueBuilder.toString());
 
@@ -525,11 +516,22 @@ public class TemplateParamsFormPresenterTest {
         return params;
     }
 
-    private String buildExpectedContainerParamValue(String container,
-                                                    GAV gav) {
-        return container + "=" +
-                gav.getGroupId() +
-                ":" + gav.getArtifactId() +
-                ":" + gav.getVersion();
+    private String buildExpectedContainerDeploymentParamValue(List<ContainerConfig> containerConfigs) {
+        return presenter.buildContainerDeploymentParamValue(containerConfigs);
+    }
+
+    private List<ContainerConfig> mockContainerConfigList(int count) {
+        List<ContainerConfig> result = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            result.add(mockContainerConfig(String.valueOf(i)));
+        }
+        return result;
+    }
+
+    private ContainerConfig mockContainerConfig(String suffix) {
+        return new ContainerConfig("ContainerConfig.name." + suffix,
+                                   "ContainerConfig.groupId." + suffix,
+                                   "ContainerConfig.artifactId." + suffix,
+                                   "ContainerConfig.version." + suffix);
     }
 }
