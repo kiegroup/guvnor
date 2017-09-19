@@ -99,7 +99,7 @@ public class RuntimeEndpointsTestIT {
         proxy.startRuntime(runtimeId);
         openshiftRuntime = getOpenShiftRuntime(proxy,
                                                1,
-                                               OpenShiftRuntimeState.STARTED);
+                                               OpenShiftRuntimeState.RUNNING);
 
         proxy.stopRuntime(runtimeId);
         openshiftRuntime = getOpenShiftRuntime(proxy,
@@ -133,7 +133,7 @@ public class RuntimeEndpointsTestIT {
         runtimeConfig.setServiceName(svcName);
         runtimeConfig.setApplicationName(appName);
         runtimeConfig.setResourceSecretsUri(getUri("bpmsuite-app-secret.json"));
-        runtimeConfig.setResourceStreamsUri(getUri("jboss-image-streams.json"));
+        runtimeConfig.setResourceStreamsUri(getUri("bpmsuite-image-streams.json"));
         runtimeConfig.setResourceTemplateUri(getUri("bpmsuite70-execserv.json"));
         runtimeConfig.setResourceTemplateParamValues(new OpenShiftParameters()
                                                              .param("APPLICATION_NAME",

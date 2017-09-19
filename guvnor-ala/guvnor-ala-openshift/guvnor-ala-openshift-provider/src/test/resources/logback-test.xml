@@ -13,6 +13,7 @@
   <logger name="org.drools" level="INFO"/>
   <logger name="org.guvnor" level="INFO"/>
   <logger name="org.guvnor.ala" level="INFO"/>
+  <logger name="okhttp3" level="ERROR"/>
 
   <root level="WARN">
     <appender-ref ref="consoleAppender" />
