@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
+
 import javax.inject.Inject;
 
 import org.guvnor.ala.config.Config;
@@ -30,7 +31,7 @@ import org.guvnor.ala.source.git.UFLocal;
 import org.guvnor.ala.source.git.config.GitConfig;
 import org.uberfire.java.nio.file.FileSystems;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
 
 public class GitConfigExecutor implements FunctionConfigExecutor<GitConfig, Source> {
 

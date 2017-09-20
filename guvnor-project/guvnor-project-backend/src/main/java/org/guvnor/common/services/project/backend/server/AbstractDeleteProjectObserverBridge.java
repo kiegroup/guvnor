@@ -18,11 +18,12 @@ package org.guvnor.common.services.project.backend.server;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Map;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.model.Project;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;

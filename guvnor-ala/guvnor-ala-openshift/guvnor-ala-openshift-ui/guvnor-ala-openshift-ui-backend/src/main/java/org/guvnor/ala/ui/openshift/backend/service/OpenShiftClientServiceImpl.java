@@ -19,6 +19,7 @@ package org.guvnor.ala.ui.openshift.backend.service;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.guvnor.ala.openshift.access.OpenShiftTemplate;
@@ -30,7 +31,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped

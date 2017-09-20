@@ -16,6 +16,7 @@
 package org.guvnor.structure.backend.repositories;
 
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -33,7 +34,7 @@ import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactoryHelper;
 
 import static org.guvnor.structure.backend.repositories.SystemRepository.SYSTEM_REPO;
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 @ApplicationScoped
 public class RepositoryFactoryImpl implements RepositoryFactory {

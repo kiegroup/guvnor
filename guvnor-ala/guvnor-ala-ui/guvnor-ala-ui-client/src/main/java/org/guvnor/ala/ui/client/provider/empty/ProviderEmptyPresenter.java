@@ -26,7 +26,7 @@ import org.jboss.errai.common.client.api.IsElement;
 import org.uberfire.client.mvp.UberElement;
 
 import static org.guvnor.ala.ui.client.util.UIUtil.getDisplayableProviderTypeName;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class ProviderEmptyPresenter {
 

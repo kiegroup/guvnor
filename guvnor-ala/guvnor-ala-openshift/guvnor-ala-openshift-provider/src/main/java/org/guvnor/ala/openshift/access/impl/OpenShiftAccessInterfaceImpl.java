@@ -15,7 +15,7 @@
  */
 package org.guvnor.ala.openshift.access.impl;
 
-import static org.uberfire.commons.validation.Preconditions.checkInstanceOf;
+import static org.kie.soup.commons.validation.Preconditions.checkInstanceOf;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,7 +41,8 @@ import org.uberfire.commons.lifecycle.Disposable;
 /**
  * Configures, builds, and caches the openshift client, per provider id.
  */
-public class OpenShiftAccessInterfaceImpl implements OpenShiftAccessInterface, Disposable {
+public class OpenShiftAccessInterfaceImpl implements OpenShiftAccessInterface,
+                                                     Disposable {
 
     protected static final Logger LOG = LoggerFactory.getLogger(OpenShiftAccessInterfaceImpl.class);
     private final Map<String, OpenShiftClient> clientMap = new ConcurrentHashMap<>();

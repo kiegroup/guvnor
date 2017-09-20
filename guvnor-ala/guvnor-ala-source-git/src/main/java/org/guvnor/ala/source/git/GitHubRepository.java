@@ -22,7 +22,7 @@ import java.util.Map;
 import org.guvnor.ala.source.Host;
 import org.uberfire.commons.config.ConfigProperties;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
 
 public class GitHubRepository extends GitRepository {
 

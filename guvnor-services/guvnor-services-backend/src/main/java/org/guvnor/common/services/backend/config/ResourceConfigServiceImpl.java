@@ -17,6 +17,7 @@
 package org.guvnor.common.services.backend.config;
 
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.guvnor.common.services.backend.config.attribute.ConfigAttributes;
@@ -25,7 +26,7 @@ import org.guvnor.common.services.shared.config.ResourceConfigService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 @Service
 @ApplicationScoped

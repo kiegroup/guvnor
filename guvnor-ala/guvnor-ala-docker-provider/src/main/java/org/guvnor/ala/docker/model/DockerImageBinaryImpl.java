@@ -20,7 +20,7 @@ import org.guvnor.ala.build.Project;
 import org.guvnor.ala.config.CloneableConfig;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class DockerImageBinaryImpl implements DockerImageBinary,
                                               CloneableConfig<DockerImageBinary> {

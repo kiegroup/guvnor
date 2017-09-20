@@ -17,6 +17,7 @@
 package org.guvnor.ala.ui.backend.service;
 
 import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -33,7 +34,7 @@ import org.guvnor.ala.ui.service.ProvisioningScreensService;
 import org.guvnor.ala.ui.service.RuntimeService;
 import org.jboss.errai.bus.server.annotations.Service;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped

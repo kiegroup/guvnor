@@ -19,7 +19,7 @@ package org.guvnor.common.services.backend.metadata.attribute;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.uberfire.commons.validation.Preconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.Preconditions.checkNotEmpty;
 
 /**
  *

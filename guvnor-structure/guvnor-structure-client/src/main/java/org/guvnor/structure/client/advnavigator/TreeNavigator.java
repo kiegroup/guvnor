@@ -37,7 +37,7 @@ import org.uberfire.ext.widgets.core.client.tree.Tree;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.type.DotResourceTypeDefinition;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 @Named("TreeNav")

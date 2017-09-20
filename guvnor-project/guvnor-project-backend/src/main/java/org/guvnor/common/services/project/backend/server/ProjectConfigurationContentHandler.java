@@ -18,8 +18,8 @@ package org.guvnor.common.services.project.backend.server;
 import javax.enterprise.context.Dependent;
 
 import com.thoughtworks.xstream.XStream;
-import org.appformer.project.datamodel.imports.Import;
 import org.guvnor.common.services.project.model.ProjectImports;
+import org.kie.soup.project.datamodel.imports.Import;
 
 @Dependent
 public class ProjectConfigurationContentHandler {

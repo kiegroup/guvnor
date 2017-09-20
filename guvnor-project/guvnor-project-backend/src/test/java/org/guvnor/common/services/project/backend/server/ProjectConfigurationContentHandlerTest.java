@@ -15,10 +15,10 @@
 
 package org.guvnor.common.services.project.backend.server;
 
-import org.appformer.project.datamodel.imports.Import;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.imports.Import;
 
 import static org.junit.Assert.*;
 

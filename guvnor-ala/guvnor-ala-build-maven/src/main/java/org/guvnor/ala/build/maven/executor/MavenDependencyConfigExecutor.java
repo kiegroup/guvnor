@@ -17,6 +17,7 @@ package org.guvnor.ala.build.maven.executor;
 
 import java.net.URI;
 import java.util.Optional;
+
 import javax.inject.Inject;
 
 import org.appformer.maven.integration.MavenRepository;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
 
 public class MavenDependencyConfigExecutor implements FunctionConfigExecutor<MavenDependencyConfig, MavenBinary> {
 

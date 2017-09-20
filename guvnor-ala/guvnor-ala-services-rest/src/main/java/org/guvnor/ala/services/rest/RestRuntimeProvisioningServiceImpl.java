@@ -54,9 +54,9 @@ import org.guvnor.ala.services.exceptions.BusinessException;
 import org.guvnor.ala.services.rest.factories.ProviderFactory;
 import org.guvnor.ala.services.rest.factories.RuntimeFactory;
 import org.guvnor.ala.services.rest.factories.RuntimeManagerFactory;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @ApplicationScoped
 public class RestRuntimeProvisioningServiceImpl
@@ -393,9 +393,9 @@ public class RestRuntimeProvisioningServiceImpl
                 String host = endpoint.getHost();
                 if (host == null) {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn( String.format(
-                                 "Host undefined in RuntimeEndpoint: %s. defaulting to \"localhost\".",
-                                 endpoint) );
+                        LOG.warn(String.format(
+                                "Host undefined in RuntimeEndpoint: %s. defaulting to \"localhost\".",
+                                endpoint));
                     }
                     host = "localhost";
                 }

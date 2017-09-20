@@ -19,6 +19,7 @@ package org.guvnor.ala.ui.client.navigation;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -34,7 +35,7 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
 
 import static org.guvnor.ala.ui.client.util.UIUtil.getDisplayableProviderTypeName;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class ProviderTypeNavigationPresenter {

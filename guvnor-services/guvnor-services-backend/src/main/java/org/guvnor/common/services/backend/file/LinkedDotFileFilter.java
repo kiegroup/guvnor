@@ -15,7 +15,7 @@
 
 package org.guvnor.common.services.backend.file;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.file.Path;
 
 /**
@@ -30,6 +30,7 @@ public class LinkedDotFileFilter implements LinkedFilter {
 
     /**
      * Constructor that automatically chains the next filter
+     *
      * @param filter
      */
     public LinkedDotFileFilter(final LinkedFilter filter) {

@@ -16,7 +16,7 @@
 package org.guvnor.structure.events;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * An event signalling an Organizational Unit has been edited

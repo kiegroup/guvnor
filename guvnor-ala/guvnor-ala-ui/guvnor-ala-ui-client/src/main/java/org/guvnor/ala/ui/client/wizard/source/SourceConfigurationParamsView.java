@@ -38,7 +38,7 @@ import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.Sourc
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.SourceConfigurationPageView_Title;
 import static org.guvnor.ala.ui.client.util.UIUtil.EMPTY_STRING;
 import static org.guvnor.ala.ui.client.widget.StyleHelper.setFormStatus;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 @Templated

@@ -17,6 +17,7 @@
 package org.guvnor.ala.registry.vfs;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Specializes;
@@ -31,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.Path;
 
 import static org.guvnor.ala.registry.vfs.VFSRegistryHelper.BySuffixFilter.newFilter;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Stores the registered elements in the VFS.

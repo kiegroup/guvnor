@@ -20,9 +20,9 @@ import java.util.Collection;
 
 import org.guvnor.common.services.project.security.ProjectResourceType;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Cacheable;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.security.ResourceType;
 import org.uberfire.security.authz.RuntimeContentResource;
 import org.uberfire.util.URIUtil;

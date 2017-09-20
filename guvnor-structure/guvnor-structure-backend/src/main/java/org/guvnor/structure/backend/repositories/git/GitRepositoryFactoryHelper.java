@@ -28,7 +28,7 @@ import org.guvnor.structure.server.repositories.RepositoryFactoryHelper;
 import org.uberfire.io.IOService;
 
 import static org.guvnor.structure.repositories.impl.git.GitRepository.SCHEME;
-import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 
 @ApplicationScoped
 public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {

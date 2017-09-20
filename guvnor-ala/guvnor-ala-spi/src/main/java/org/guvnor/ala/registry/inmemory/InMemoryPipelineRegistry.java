@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.guvnor.ala.pipeline.Pipeline;
@@ -28,7 +29,7 @@ import org.guvnor.ala.registry.PipelineRegistry;
 import org.guvnor.ala.registry.inmemory.util.PageSortUtil;
 import org.guvnor.ala.runtime.providers.ProviderType;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class InMemoryPipelineRegistry

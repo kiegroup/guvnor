@@ -21,7 +21,7 @@ import org.guvnor.ala.build.maven.model.MavenBinary;
 import org.guvnor.ala.config.CloneableConfig;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class MavenProjectBinaryImpl implements MavenBinary,
                                                CloneableConfig<MavenBinary> {

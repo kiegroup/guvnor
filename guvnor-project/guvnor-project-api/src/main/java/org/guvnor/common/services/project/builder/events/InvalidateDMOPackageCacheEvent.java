@@ -16,8 +16,8 @@
 package org.guvnor.common.services.project.builder.events;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Event to invalidate an entry in a DataModelOracleCache. The resource path is used within the Event
