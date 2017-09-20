@@ -60,10 +60,40 @@ public class GuvnorAlaUIConstants {
     public static final String SourceConfigurationPageView_SelectOption_placeholder = "SourceConfigurationPageView.SelectOption-placeholder";
 
     @TranslationKey(defaultValue = "")
-    public static final String GAVConfigurationParamsView_Title = "GAVConfigurationParamsView.Title";
+    public static final String ContainerConfigPresenter_LoadGAVErrorMessage = "ContainerConfigPresenter.LoadGAVErrorMessage";
 
     @TranslationKey(defaultValue = "")
-    public static final String GAVConfigurationParamsPresenter_LoadGAVErrorMessage = "GAVConfigurationParamsPresenter.LoadGAVErrorMessage";
+    public static final String ContainerConfigPresenter_ContainerNameAlreadyInUseErrorMessage= "ContainerConfigPresenter.ContainerNameAlreadyInUseErrorMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerConfigPresenter_InvalidContainerNameErrorMessage = "ContainerConfigPresenter.InvalidContainerNameErrorMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerConfigPresenter_AllFieldsMustBeCompletedErrorMessage = "ContainerConfigPresenter.AllFieldsMustBeCompletedErrorMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerConfigParamsPresenter_AddContainerPopupTitle = "ContainerConfigParamsPresenter.AddContainerPopupTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerConfigParamsView_Title = "ContainerConfigParamsView.Title";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerConfigParamsView_ContainerNameColumn = "ContainerConfigParamsView.ContainerNameColumn";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerConfigParamsView_GroupIdColumn = "ContainerConfigParamsView.GroupIdColumn";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerConfigParamsView_ArtifactIdColumn = "ContainerConfigParamsView.ArtifactIdColumn";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerConfigParamsView_VersionColumn= "ContainerConfigParamsView.VersionColumn";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerConfigParamsView_Delete = "ContainerConfigParamsView.Delete";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerConfigParamsView_ContainersEmptyTableCaption = "ContainerConfigParamsView.ContainersEmptyTableCaption";
 
     @TranslationKey(defaultValue = "")
     public static final String ArtifactSelectorView_SelectColumn = "ArtifactSelectorView.SelectColumn";

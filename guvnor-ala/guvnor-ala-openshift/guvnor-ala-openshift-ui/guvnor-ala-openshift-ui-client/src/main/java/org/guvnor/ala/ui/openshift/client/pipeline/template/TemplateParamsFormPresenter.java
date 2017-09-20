@@ -32,15 +32,15 @@ import org.guvnor.ala.ui.client.util.AbstractHasContentChangeHandlers;
 import org.guvnor.ala.ui.client.util.PopupHelper;
 import org.guvnor.ala.ui.client.widget.FormStatus;
 import org.guvnor.ala.ui.client.wizard.NewDeployWizard;
+import org.guvnor.ala.ui.client.wizard.container.ContainerConfig;
+import org.guvnor.ala.ui.client.wizard.container.ContainerConfigParamsChangeEvent;
 import org.guvnor.ala.ui.client.wizard.pipeline.params.PipelineParamsForm;
-import org.guvnor.ala.ui.client.wizard.project.GAVConfigurationChangeEvent;
 import org.guvnor.ala.ui.openshift.client.pipeline.template.table.TemplateParamsTablePresenter;
 import org.guvnor.ala.ui.openshift.client.validation.OpenShiftClientValidationService;
 import org.guvnor.ala.ui.openshift.model.DefaultSettings;
 import org.guvnor.ala.ui.openshift.model.TemplateDescriptorModel;
 import org.guvnor.ala.ui.openshift.model.TemplateParam;
 import org.guvnor.ala.ui.openshift.service.OpenShiftClientService;
-import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -51,6 +51,7 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 
+import static java.util.stream.Collectors.joining;
 import static org.guvnor.ala.ui.client.util.UIUtil.trimOrGetEmpty;
 import static org.guvnor.ala.ui.openshift.client.resources.i18n.GuvnorAlaOpenShiftUIConstants.TemplateParamsFormPresenter_GetTemplateFileConfigError;
 import static org.guvnor.ala.ui.openshift.client.resources.i18n.GuvnorAlaOpenShiftUIConstants.TemplateParamsFormPresenter_InvalidProjectNameError;
@@ -65,6 +66,8 @@ public class TemplateParamsFormPresenter
     public static final String PARAM_DELIMITER = ",";
 
     public static final String PARAM_ASSIGNER = "=";
+
+    public static final String CONTAINER_DELIMITER = "|";
 
     public static final String RESOURCE_TEMPLATE_PARAM_VALUES = "resource-template-param-values";
 
@@ -164,9 +167,11 @@ public class TemplateParamsFormPresenter
 
     private List<TemplateParam> params = new ArrayList<>();
 
+    private boolean runtimeNameValid = false;
+
     private boolean templateLoaded = false;
 
-    private GAV selectedGAV = null;
+    private List<ContainerConfig> configuredContainers;
 
     @Inject
     public TemplateParamsFormPresenter(final View view,
@@ -209,7 +214,6 @@ public class TemplateParamsFormPresenter
         String applicationName = runtimeName;
         String serviceName = runtimeName + SERVICE_NAME_SUFFIX;
         String imageStreamNamespace = projectName;
-        String container = runtimeName.trim();
 
         pipelineParams.put(NewDeployWizard.RUNTIME_NAME,
                            runtimeName);
@@ -227,11 +231,10 @@ public class TemplateParamsFormPresenter
         pipelineParams.put(RESOURCE_SECRETS_URI,
                            getSecretsFileURL());
 
-        //if the GAV is selected, add it to the template params.
-        if (selectedGAV != null) {
+        //if there are container configurations, add them to the template params.
+        if (configuredContainers != null && !configuredContainers.isEmpty()) {
             pipelineParams.put(KIE_SERVER_CONTAINER_DEPLOYMENT,
-                               buildContainerParamValue(container,
-                                                        selectedGAV));
+                               buildContainerDeploymentParamValue(configuredContainers));
         }
 
         StringBuilder builder = new StringBuilder();
@@ -280,6 +283,7 @@ public class TemplateParamsFormPresenter
 
     @Override
     public void clear() {
+        runtimeNameValid = false;
         clearParams();
         view.clear();
     }
@@ -336,6 +340,7 @@ public class TemplateParamsFormPresenter
                                                                 public void onSuccess() {
                                                                     view.setRuntimeNameStatus(FormStatus.VALID);
                                                                     view.clearRuntimeNameHelpText();
+                                                                    runtimeNameValid = true;
                                                                     onContentChange();
                                                                 }
 
@@ -343,6 +348,7 @@ public class TemplateParamsFormPresenter
                                                                 public void onFailure() {
                                                                     view.setRuntimeNameStatus(FormStatus.ERROR);
                                                                     view.setRuntimeNameHelpText(translationService.getTranslation(TemplateParamsFormPresenter_InvalidProjectNameError));
+                                                                    runtimeNameValid = false;
                                                                     onContentChange();
                                                                 }
                                                             });
@@ -377,8 +383,8 @@ public class TemplateParamsFormPresenter
         onContentChange();
     }
 
-    protected void onGAVConfigurationChange(@Observes final GAVConfigurationChangeEvent event) {
-        selectedGAV = event.getGav();
+    protected void onContainerConfigurationsChange(@Observes final ContainerConfigParamsChangeEvent event) {
+        configuredContainers = event.getContainerConfigs();
     }
 
     protected void onParamChange() {
@@ -397,7 +403,7 @@ public class TemplateParamsFormPresenter
     }
 
     private String getRuntimeName() {
-        return trimOrGetEmpty(view.getRuntimeName());
+        return view.getRuntimeName();
     }
 
     private String getTemplateURL() {
@@ -417,7 +423,7 @@ public class TemplateParamsFormPresenter
     }
 
     private boolean isRuntimeValid() {
-        return !getRuntimeName().isEmpty();
+        return runtimeNameValid;
     }
 
     private boolean isTemplateValid() {
@@ -461,10 +467,15 @@ public class TemplateParamsFormPresenter
         builder.append(paramValue);
     }
 
-    private String buildContainerParamValue(final String container,
-                                            final GAV gav) {
-        return container + "=" + gav.getGroupId() +
-                ":" + gav.getArtifactId() +
-                ":" + gav.getVersion();
+    protected String buildContainerDeploymentParamValue(final List<ContainerConfig> containerConfigs) {
+        return containerConfigs.stream()
+                .map(this::buildContainerParamValue)
+                .collect(joining(CONTAINER_DELIMITER));
+    }
+
+    protected String buildContainerParamValue(final ContainerConfig containerConfig) {
+        return containerConfig.getName() + "=" + containerConfig.getGroupId() +
+                ":" + containerConfig.getArtifactId() +
+                ":" + containerConfig.getVersion();
     }
 }
