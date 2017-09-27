@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -89,7 +90,7 @@ public class GuvnorM2Repository {
     }
 
     public String getM2RepositoryDir(String repositoryName) {
-        return this.getM2RepositoryRootDir(repositoryName).replaceAll("/$",
+        return this.getM2RepositoryRootDir(repositoryName).replaceAll(Matcher.quoteReplacement(File.separator)+"$",
                                                                       "");
     }
 
@@ -450,9 +451,7 @@ public class GuvnorM2Repository {
     }
 
     private static String loadPomFromJar(final File file) {
-        try {
-            ZipFile zip = new ZipFile(file);
-
+        try (ZipFile zip = new ZipFile(file)) {
             for (Enumeration e = zip.entries(); e.hasMoreElements(); ) {
                 ZipEntry entry = (ZipEntry) e.nextElement();
 

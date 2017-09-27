@@ -19,7 +19,9 @@ package org.guvnor.ala.marshalling;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,8 +82,14 @@ public abstract class BaseMarshallerTest<T> {
     @Test
     public void testMarshall() throws Exception {
         String marshalledValue = marshaller.marshal(getValue());
-        assertEquals(getMarshallerOutput(),
-                     marshalledValue);
+        String marshallerOutput = getMarshallerOutput();
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> marshalledValueMap =
+                (Map<String, Object>)(objectMapper.readValue(marshalledValue, Map.class));
+        Map<String, Object> marshallerOutputMap =
+                (Map<String, Object>)(objectMapper.readValue(marshallerOutput, Map.class));
+        assertEquals(marshallerOutputMap,
+                marshalledValueMap);
     }
 
     @Test
