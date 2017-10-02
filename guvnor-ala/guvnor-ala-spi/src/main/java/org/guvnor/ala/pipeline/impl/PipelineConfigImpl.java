@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package org.guvnor.ala.services.api.backend;
+package org.guvnor.ala.pipeline.impl;
 
 import java.util.List;
 
-import org.guvnor.ala.config.Config;
 import org.guvnor.ala.pipeline.PipelineConfig;
+import org.guvnor.ala.pipeline.PipelineConfigStage;
 
-public class PipelineConfigImpl implements PipelineConfig {
+public class PipelineConfigImpl
+        implements PipelineConfig {
 
     private String name;
-    private List<Config> configStages;
+    private List<PipelineConfigStage> configStages;
 
     public PipelineConfigImpl() {
     }
 
     public PipelineConfigImpl(String name,
-                              List<Config> configStages) {
+                              List<PipelineConfigStage> configStages) {
         this.name = name;
         this.configStages = configStages;
     }
@@ -41,7 +42,7 @@ public class PipelineConfigImpl implements PipelineConfig {
     }
 
     @Override
-    public List<Config> getConfigStages() {
+    public List<PipelineConfigStage> getConfigStages() {
         return configStages;
     }
 
@@ -49,12 +50,15 @@ public class PipelineConfigImpl implements PipelineConfig {
         this.name = name;
     }
 
-    public void setConfigStages(List<Config> configStages) {
+    public void setConfigStages(List<PipelineConfigStage> configStages) {
         this.configStages = configStages;
     }
 
     @Override
     public String toString() {
-        return "PipelineConfigImpl{" + "configs=" + configStages + '}';
+        return "PipelineConfigImpl{" +
+                "name='" + name + '\'' +
+                ", configStages=" + configStages +
+                '}';
     }
 }

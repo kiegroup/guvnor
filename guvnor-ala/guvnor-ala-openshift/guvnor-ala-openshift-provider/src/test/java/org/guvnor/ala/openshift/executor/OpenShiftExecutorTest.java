@@ -15,23 +15,6 @@
  */
 package org.guvnor.ala.openshift.executor;
 
-import static java.util.Arrays.asList;
-import static org.guvnor.ala.openshift.config.OpenShiftProperty.APPLICATION_NAME;
-import static org.guvnor.ala.openshift.config.OpenShiftProperty.KUBERNETES_AUTH_BASIC_PASSWORD;
-import static org.guvnor.ala.openshift.config.OpenShiftProperty.KUBERNETES_AUTH_BASIC_USERNAME;
-import static org.guvnor.ala.openshift.config.OpenShiftProperty.KUBERNETES_MASTER;
-import static org.guvnor.ala.openshift.config.OpenShiftProperty.PROJECT_NAME;
-import static org.guvnor.ala.openshift.config.OpenShiftProperty.PROVIDER_NAME;
-import static org.guvnor.ala.openshift.config.OpenShiftProperty.RESOURCE_SECRETS_URI;
-import static org.guvnor.ala.openshift.config.OpenShiftProperty.RESOURCE_STREAMS_URI;
-import static org.guvnor.ala.openshift.config.OpenShiftProperty.RESOURCE_TEMPLATE_PARAM_VALUES;
-import static org.guvnor.ala.openshift.config.OpenShiftProperty.RESOURCE_TEMPLATE_URI;
-import static org.guvnor.ala.openshift.config.OpenShiftProperty.SERVICE_NAME;
-import static org.guvnor.ala.pipeline.StageUtil.config;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
@@ -42,8 +25,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.guvnor.ala.config.ProviderConfig;
-import org.guvnor.ala.config.RuntimeConfig;
 import org.guvnor.ala.openshift.access.OpenShiftAccessInterface;
 import org.guvnor.ala.openshift.access.OpenShiftClient;
 import org.guvnor.ala.openshift.access.impl.OpenShiftAccessInterfaceImpl;
@@ -61,7 +42,6 @@ import org.guvnor.ala.openshift.service.OpenShiftRuntimeManager;
 import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.PipelineFactory;
-import org.guvnor.ala.pipeline.Stage;
 import org.guvnor.ala.pipeline.execution.PipelineExecutor;
 import org.guvnor.ala.registry.RuntimeRegistry;
 import org.guvnor.ala.registry.inmemory.InMemoryRuntimeRegistry;
@@ -77,6 +57,20 @@ import org.kie.server.client.KieServicesConfiguration;
 import org.kie.server.client.KieServicesFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Arrays.asList;
+import static org.guvnor.ala.openshift.config.OpenShiftProperty.APPLICATION_NAME;
+import static org.guvnor.ala.openshift.config.OpenShiftProperty.KUBERNETES_AUTH_BASIC_PASSWORD;
+import static org.guvnor.ala.openshift.config.OpenShiftProperty.KUBERNETES_AUTH_BASIC_USERNAME;
+import static org.guvnor.ala.openshift.config.OpenShiftProperty.KUBERNETES_MASTER;
+import static org.guvnor.ala.openshift.config.OpenShiftProperty.PROJECT_NAME;
+import static org.guvnor.ala.openshift.config.OpenShiftProperty.PROVIDER_NAME;
+import static org.guvnor.ala.openshift.config.OpenShiftProperty.RESOURCE_SECRETS_URI;
+import static org.guvnor.ala.openshift.config.OpenShiftProperty.RESOURCE_STREAMS_URI;
+import static org.guvnor.ala.openshift.config.OpenShiftProperty.RESOURCE_TEMPLATE_PARAM_VALUES;
+import static org.guvnor.ala.openshift.config.OpenShiftProperty.RESOURCE_TEMPLATE_URI;
+import static org.guvnor.ala.openshift.config.OpenShiftProperty.SERVICE_NAME;
+import static org.junit.Assert.*;
 
 /**
  * Simple test using the Pipeline API and the openshift Provider & Executors
@@ -132,17 +126,21 @@ public class OpenShiftExecutorTest {
         runtimeConfig.setResourceStreamsUri(getUri("bpmsuite-image-streams.json"));
         runtimeConfig.setResourceTemplateUri(getUri("bpmsuite70-execserv.json"));
         runtimeConfig.setResourceTemplateParamValues(new OpenShiftParameters()
-                .param("APPLICATION_NAME", appName)
-                .param("IMAGE_STREAM_NAMESPACE", prjName)
-                .param("KIE_ADMIN_PWD", "admin1!")
-                .param("KIE_SERVER_PWD", "execution1!")
-                .toString());
+                                                             .param("APPLICATION_NAME",
+                                                                    appName)
+                                                             .param("IMAGE_STREAM_NAMESPACE",
+                                                                    prjName)
+                                                             .param("KIE_ADMIN_PWD",
+                                                                    "admin1!")
+                                                             .param("KIE_SERVER_PWD",
+                                                                    "execution1!")
+                                                             .toString());
         return runtimeConfig;
     }
 
     /**
      * Tests the ALA pipeline and runtime lifecycle.
-     * 
+     *
      * If running via command line, the properties are already set in the pom.xml file.
      * If running in an IDE, set these properties in your debug configuration VM arguments.
      * On Eclipse, Run / Debug Configurations... / Arguments / VM arguments:
@@ -150,59 +148,30 @@ public class OpenShiftExecutorTest {
      * -Dsun.net.spi.nameservice.provider.2=default
      * -Dorg.guvnor.ala.openshift.access.OpenShiftClientListener.postCreate=org.guvnor.ala.openshift.dns.OpenShiftNameServiceClientListener
      * -Dorg.guvnor.ala.openshift.dns.OpenShiftNameServiceClientListener.routerHost=10.34.75.115
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testPipelineAndLifecycle() throws Exception {
-        /*
-        final SourceRegistry sourceRegistry = new InMemorySourceRegistry();
-        final BuildRegistry buildRegistry = new InMemoryBuildRegistry();
-        */
         final RuntimeRegistry runtimeRegistry = new InMemoryRuntimeRegistry();
         final OpenShiftAccessInterface openshiftAccessInterface = new OpenShiftAccessInterfaceImpl();
 
-        /*
-        final Stage<Input, SourceConfig> sourceConfig =
-                config( "Git Source", (s) -> new GitConfig() {} );
-        final Stage<SourceConfig, ProjectConfig> projectConfig =
-                config( "Maven Project", (s) -> new MavenProjectConfig() {} );
-        final Stage<ProjectConfig, BuildConfig> buildConfig =
-                config( "Maven Build Config", (s) -> new MavenBuildConfig() {} );
-        final Stage<BuildConfig, BinaryConfig> buildExec =
-                config( "Maven Build",  (s) -> new MavenBuildExecConfig() {} );
-        final Stage<BinaryConfig, ProviderConfig> providerConfig =
-                config( "OpenShift Provider Config", (s) -> new OpenShiftProviderConfig() {} );
-        */
-        final Stage<Input, ProviderConfig> providerConfig =
-                config( "OpenShift Provider Config", (s) -> new OpenShiftProviderConfig() {} );
-        final Stage<ProviderConfig, RuntimeConfig> runtimeExec =
-                config( "OpenShift Runtime Config", (s) -> new ContextAwareOpenShiftRuntimeExecConfig() );
-
         final Pipeline pipe = PipelineFactory
-                /*
-                .startFrom( sourceConfig )
-                .andThen( projectConfig )
-                .andThen( buildConfig )
-                .andThen( buildExec )
-                .andThen( providerConfig )
-                */
-                .startFrom( providerConfig )
-                .andThen( runtimeExec )
-                .buildAs( "my pipe" );
+                .newBuilder()
+                .addConfigStage("OpenShift Provider Config",
+                                new OpenShiftProviderConfig() {
+                                })
+                .addConfigStage("OpenShift Runtime Config",
+                                new ContextAwareOpenShiftRuntimeExecConfig())
+                .buildAs("my pipe");
 
         final OpenShiftRuntimeExecExecutor<OpenShiftRuntimeExecConfig> openshiftRuntimeExecExecutor =
-                new OpenShiftRuntimeExecExecutor<>( runtimeRegistry, openshiftAccessInterface );
+                new OpenShiftRuntimeExecExecutor<>(runtimeRegistry,
+                                                   openshiftAccessInterface);
 
-        final PipelineExecutor executor = new PipelineExecutor( asList(
-                /*
-                new GitConfigExecutor(sourceRegistry),
-                new MavenProjectConfigExecutor(sourceRegistry),
-                new MavenBuildConfigExecutor(),
-                new MavenBuildExecConfigExecutor(buildRegistry),
-                */
+        final PipelineExecutor executor = new PipelineExecutor(asList(
                 new OpenShiftProviderConfigExecutor(runtimeRegistry),
-                openshiftRuntimeExecExecutor ) );
+                openshiftRuntimeExecExecutor));
 
         final String pvrName = getClass().getSimpleName();
         final String prjName = createProjectName("tpal1");
@@ -212,12 +181,18 @@ public class OpenShiftExecutorTest {
         final String kieServerPwd = "execution1!";
 
         String templateParams = new OpenShiftParameters()
-                .param("APPLICATION_NAME", appName)
-                .param("IMAGE_STREAM_NAMESPACE", prjName)
-                .param("KIE_ADMIN_PWD", "admin1!")
-                .param("KIE_SERVER_USER", kieServerUser)
-                .param("KIE_SERVER_PWD", kieServerPwd)
-                .param("MAVEN_REPO_URL", "http://repository.jboss.org/nexus/content/groups/public/")
+                .param("APPLICATION_NAME",
+                       appName)
+                .param("IMAGE_STREAM_NAMESPACE",
+                       prjName)
+                .param("KIE_ADMIN_PWD",
+                       "admin1!")
+                .param("KIE_SERVER_USER",
+                       kieServerUser)
+                .param("KIE_SERVER_PWD",
+                       kieServerPwd)
+                .param("MAVEN_REPO_URL",
+                       "http://repository.jboss.org/nexus/content/groups/public/")
                 .toString();
 
         Input input = new Input() {{
@@ -231,37 +206,59 @@ public class OpenShiftExecutorTest {
             put(MavenProjectConfig.PROJECT_DIR, "decisionserver/hellorules");
             */
             // provider properties
-            put(KUBERNETES_MASTER.inputKey(), "https://ce-os-rhel-master.usersys.redhat.com:8443");
-            put(KUBERNETES_AUTH_BASIC_USERNAME.inputKey(), "admin");
-            put(KUBERNETES_AUTH_BASIC_PASSWORD.inputKey(), "admin");
-            put(PROVIDER_NAME.inputKey(), pvrName);
+            put(KUBERNETES_MASTER.inputKey(),
+                "https://ce-os-rhel-master.usersys.redhat.com:8443");
+            put(KUBERNETES_AUTH_BASIC_USERNAME.inputKey(),
+                "admin");
+            put(KUBERNETES_AUTH_BASIC_PASSWORD.inputKey(),
+                "admin");
+            put(PROVIDER_NAME.inputKey(),
+                pvrName);
             // runtime properties
-            put(APPLICATION_NAME.inputKey(), appName);
+            put(APPLICATION_NAME.inputKey(),
+                appName);
             //put(KIE_SERVER_CONTAINER_DEPLOYMENT.inputKey(), "decisionserver-hellorules=org.openshift.quickstarts:decisionserver-hellorules:1.4.0.Final");
-            put(PROJECT_NAME.inputKey(), prjName);
-            put(RESOURCE_SECRETS_URI.inputKey(), getUri("bpmsuite-app-secret.json"));
-            put(RESOURCE_STREAMS_URI.inputKey(), getUri("bpmsuite-image-streams.json"));
-            put(RESOURCE_TEMPLATE_PARAM_VALUES.inputKey(), templateParams);
-            put(RESOURCE_TEMPLATE_URI.inputKey(), getUri("bpmsuite70-execserv.json"));
-            put(SERVICE_NAME.inputKey(), svcName);
+            put(PROJECT_NAME.inputKey(),
+                prjName);
+            put(RESOURCE_SECRETS_URI.inputKey(),
+                getUri("bpmsuite-app-secret.json"));
+            put(RESOURCE_STREAMS_URI.inputKey(),
+                getUri("bpmsuite-image-streams.json"));
+            put(RESOURCE_TEMPLATE_PARAM_VALUES.inputKey(),
+                templateParams);
+            put(RESOURCE_TEMPLATE_URI.inputKey(),
+                getUri("bpmsuite70-execserv.json"));
+            put(SERVICE_NAME.inputKey(),
+                svcName);
         }};
-        executor.execute( input, pipe, (Runtime b) -> System.out.println( b ) );
+        executor.execute(input,
+                         pipe,
+                         (Runtime b) -> System.out.println(b));
 
-        OpenShiftRuntimeManager runtimeManager = new OpenShiftRuntimeManager( runtimeRegistry, openshiftAccessInterface );
-        OpenShiftRuntime openshiftRuntime = getRuntime(runtimeRegistry, runtimeManager, null, true);
-        assertEquals( OpenShiftRuntimeState.READY, openshiftRuntime.getState().getState() );
+        OpenShiftRuntimeManager runtimeManager = new OpenShiftRuntimeManager(runtimeRegistry,
+                                                                             openshiftAccessInterface);
+        OpenShiftRuntime openshiftRuntime = getRuntime(runtimeRegistry,
+                                                       runtimeManager,
+                                                       null,
+                                                       true);
+        assertEquals(OpenShiftRuntimeState.READY,
+                     openshiftRuntime.getState().getState());
 
         // This step would normally be done by guvnor, but since we don't have guvnor in this test, we
         // include a standalone Nexus repo in the json configuration and deploy the binary to it here.
         //new OpenShiftMavenDeployer(workDir, appName, prjName).deploy(buildRegistry);
 
-        runtimeManager.start( openshiftRuntime );
-        openshiftRuntime = getRuntime(runtimeRegistry, runtimeManager, openshiftRuntime, true);
-        assertEquals( OpenShiftRuntimeState.RUNNING, openshiftRuntime.getState().getState() );
+        runtimeManager.start(openshiftRuntime);
+        openshiftRuntime = getRuntime(runtimeRegistry,
+                                      runtimeManager,
+                                      openshiftRuntime,
+                                      true);
+        assertEquals(OpenShiftRuntimeState.RUNNING,
+                     openshiftRuntime.getState().getState());
 
         RuntimeEndpoint runtimeEndpoint = openshiftRuntime.getEndpoint();
-        assertTrue( runtimeEndpoint instanceof OpenShiftRuntimeEndpoint );
-        OpenShiftRuntimeEndpoint openshiftRuntimeEndpoint = (OpenShiftRuntimeEndpoint)runtimeEndpoint;
+        assertTrue(runtimeEndpoint instanceof OpenShiftRuntimeEndpoint);
+        OpenShiftRuntimeEndpoint openshiftRuntimeEndpoint = (OpenShiftRuntimeEndpoint) runtimeEndpoint;
 
         String kieServerHost = openshiftRuntimeEndpoint.getHost();
         if (OpenShiftNameService.isHostRegistered(kieServerHost)) {
@@ -272,20 +269,30 @@ public class OpenShiftExecutorTest {
                     .append("/services/rest/server")
                     .toString();
             if (checkConnection(kieServerUrl)) {
-                KieServicesConfiguration kieServicesConfig = KieServicesFactory.newRestConfiguration(kieServerUrl, kieServerUser, kieServerPwd);
+                KieServicesConfiguration kieServicesConfig = KieServicesFactory.newRestConfiguration(kieServerUrl,
+                                                                                                     kieServerUser,
+                                                                                                     kieServerPwd);
                 KieServicesClient kieServicesClient = KieServicesFactory.newKieServicesClient(kieServicesConfig);
                 ServiceResponse<KieServerInfo> serverInfoResponse = kieServicesClient.getServerInfo();
-                assertEquals(ServiceResponse.ResponseType.SUCCESS, serverInfoResponse.getType());
+                assertEquals(ServiceResponse.ResponseType.SUCCESS,
+                             serverInfoResponse.getType());
             }
         }
 
-        runtimeManager.stop( openshiftRuntime );
-        openshiftRuntime = getRuntime(runtimeRegistry, runtimeManager, openshiftRuntime, true);
-        assertEquals( OpenShiftRuntimeState.READY, openshiftRuntime.getState().getState() );
+        runtimeManager.stop(openshiftRuntime);
+        openshiftRuntime = getRuntime(runtimeRegistry,
+                                      runtimeManager,
+                                      openshiftRuntime,
+                                      true);
+        assertEquals(OpenShiftRuntimeState.READY,
+                     openshiftRuntime.getState().getState());
 
-        openshiftRuntimeExecExecutor.destroy( openshiftRuntime );
-        openshiftRuntime = getRuntime(runtimeRegistry, runtimeManager, openshiftRuntime, false);
-        assertNull( openshiftRuntime );
+        openshiftRuntimeExecExecutor.destroy(openshiftRuntime);
+        openshiftRuntime = getRuntime(runtimeRegistry,
+                                      runtimeManager,
+                                      openshiftRuntime,
+                                      false);
+        assertNull(openshiftRuntime);
 
         openshiftAccessInterface.dispose();
     }
@@ -294,20 +301,24 @@ public class OpenShiftExecutorTest {
             RuntimeRegistry runtimeRegistry,
             OpenShiftRuntimeManager runtimeManager,
             OpenShiftRuntime openshiftRuntime,
-            boolean expected ) {
+            boolean expected) {
 
         if (openshiftRuntime != null) {
             runtimeManager.refresh(openshiftRuntime);
         }
 
         if (expected) {
-            List<Runtime> allRuntimes = runtimeRegistry.getRuntimes(0, 10, "", true);
-            assertEquals( 1, allRuntimes.size() );
+            List<Runtime> allRuntimes = runtimeRegistry.getRuntimes(0,
+                                                                    10,
+                                                                    "",
+                                                                    true);
+            assertEquals(1,
+                         allRuntimes.size());
 
-            Runtime runtime = allRuntimes.get( 0 );
-            assertTrue( runtime instanceof OpenShiftRuntime );
+            Runtime runtime = allRuntimes.get(0);
+            assertTrue(runtime instanceof OpenShiftRuntime);
 
-            return ( OpenShiftRuntime ) runtime;
+            return (OpenShiftRuntime) runtime;
         } else {
             return null;
         }
@@ -322,7 +333,9 @@ public class OpenShiftExecutorTest {
 
     private String createProjectName(String testName) {
         return new StringBuilder()
-                .append(System.getProperty("user.name", "anon").replaceAll("[^A-Za-z0-9]", "-"))
+                .append(System.getProperty("user.name",
+                                           "anon").replaceAll("[^A-Za-z0-9]",
+                                                              "-"))
                 .append('-')
                 .append(testName != null ? testName : "test")
                 .append('-')
@@ -331,17 +344,25 @@ public class OpenShiftExecutorTest {
     }
 
     private boolean checkConnection(String url) throws Exception {
-        return checkConnection(new URL(url), 401, 1, 1000);
+        return checkConnection(new URL(url),
+                               401,
+                               1,
+                               1000);
     }
 
     // package-protected since also used by OpenShiftMavenDeployer
-    static boolean checkConnection(URL url, int expectedResponse, int maxAttempts, long sleepMillis) throws Exception {
+    static boolean checkConnection(URL url,
+                                   int expectedResponse,
+                                   int maxAttempts,
+                                   long sleepMillis) throws Exception {
         boolean reachable = false;
-        for (int i=0; i < maxAttempts; i++) {
+        for (int i = 0; i < maxAttempts; i++) {
             try {
-                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 int actualResponse = conn.getResponseCode();
-                String logMsg = String.format("%s response code: %s", url, actualResponse);
+                String logMsg = String.format("%s response code: %s",
+                                              url,
+                                              actualResponse);
                 if (actualResponse == expectedResponse) {
                     LOG.info(logMsg);
                     reachable = true;
@@ -349,13 +370,14 @@ public class OpenShiftExecutorTest {
                 } else {
                     LOG.warn(logMsg);
                 }
-            } catch (Throwable t) {}
+            } catch (Throwable t) {
+            }
             Thread.sleep(sleepMillis);
         }
         if (!reachable) {
-            LOG.warn(String.format("%s is not reachable.", url));
+            LOG.warn(String.format("%s is not reachable.",
+                                   url));
         }
         return reachable;
     }
-
 }

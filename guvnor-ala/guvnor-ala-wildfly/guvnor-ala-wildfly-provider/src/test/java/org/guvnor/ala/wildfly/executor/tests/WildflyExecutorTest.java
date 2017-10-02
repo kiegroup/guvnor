@@ -30,16 +30,9 @@ import org.guvnor.ala.build.maven.config.MavenProjectConfig;
 import org.guvnor.ala.build.maven.executor.MavenBuildConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenBuildExecConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenProjectConfigExecutor;
-import org.guvnor.ala.config.BinaryConfig;
-import org.guvnor.ala.config.BuildConfig;
-import org.guvnor.ala.config.ProjectConfig;
-import org.guvnor.ala.config.ProviderConfig;
-import org.guvnor.ala.config.RuntimeConfig;
-import org.guvnor.ala.config.SourceConfig;
 import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.PipelineFactory;
-import org.guvnor.ala.pipeline.Stage;
 import org.guvnor.ala.pipeline.execution.PipelineExecutor;
 import org.guvnor.ala.registry.BuildRegistry;
 import org.guvnor.ala.registry.SourceRegistry;
@@ -65,7 +58,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static java.util.Arrays.asList;
-import static org.guvnor.ala.pipeline.StageUtil.config;
 import static org.guvnor.ala.runtime.RuntimeState.RUNNING;
 import static org.guvnor.ala.runtime.RuntimeState.STOPPED;
 import static org.junit.Assert.*;
@@ -115,33 +107,27 @@ public class WildflyExecutorTest {
         final InMemoryRuntimeRegistry runtimeRegistry = new InMemoryRuntimeRegistry();
         final WildflyAccessInterface wildflyAccessInterface = new WildflyAccessInterfaceImpl();
 
-        final Stage<Input, SourceConfig> sourceConfig = config("Git Source",
-                                                               (s) -> new GitConfig() {
-                                                               });
-        final Stage<SourceConfig, ProjectConfig> projectConfig = config("Maven Project",
-                                                                        (s) -> new MavenProjectConfig() {
-                                                                        });
-        final Stage<ProjectConfig, BuildConfig> buildConfig = config("Maven Build Config",
-                                                                     (s) -> new MavenBuildConfig() {
-                                                                     });
-
-        final Stage<BuildConfig, BinaryConfig> buildExec = config("Maven Build",
-                                                                  (s) -> new MavenBuildExecConfig() {
-                                                                  });
-        final Stage<BinaryConfig, ProviderConfig> providerConfig = config("Wildfly Provider Config",
-                                                                          (s) -> new WildflyProviderConfig() {
-                                                                          });
-
-        final Stage<ProviderConfig, RuntimeConfig> runtimeExec = config("Wildfly Runtime Exec",
-                                                                        (s) -> new ContextAwareWildflyRuntimeExecConfig());
-
         final Pipeline pipe = PipelineFactory
-                .startFrom(sourceConfig)
-                .andThen(projectConfig)
-                .andThen(buildConfig)
-                .andThen(buildExec)
-                .andThen(providerConfig)
-                .andThen(runtimeExec).buildAs("my pipe");
+                .newBuilder()
+                .addConfigStage("Git Source",
+                                new GitConfig() {
+                                })
+                .addConfigStage("Maven Project",
+                                new MavenProjectConfig() {
+                                })
+                .addConfigStage("Maven Build Config",
+                                new MavenBuildConfig() {
+                                })
+                .addConfigStage("Maven Build",
+                                new MavenBuildExecConfig() {
+                                })
+                .addConfigStage("Wildfly Provider Config",
+                                new WildflyProviderConfig() {
+                                })
+                .addConfigStage("Wildfly Runtime Exec",
+                                new ContextAwareWildflyRuntimeExecConfig())
+                .buildAs("my pipe");
+
         WildflyRuntimeExecExecutor wildflyRuntimeExecExecutor = new WildflyRuntimeExecExecutor(runtimeRegistry,
                                                                                                wildflyAccessInterface);
         final PipelineExecutor executor = new PipelineExecutor(asList(new GitConfigExecutor(sourceRegistry),
@@ -250,33 +236,27 @@ public class WildflyExecutorTest {
         final InMemoryRuntimeRegistry runtimeRegistry = new InMemoryRuntimeRegistry();
         final WildflyAccessInterface wildflyAccessInterface = new WildflyAccessInterfaceImpl();
 
-        final Stage<Input, SourceConfig> sourceConfig = config("Git Source",
-                                                               (s) -> new GitConfig() {
-                                                               });
-        final Stage<SourceConfig, ProjectConfig> projectConfig = config("Maven Project",
-                                                                        (s) -> new MavenProjectConfig() {
-                                                                        });
-        final Stage<ProjectConfig, BuildConfig> buildConfig = config("Maven Build Config",
-                                                                     (s) -> new MavenBuildConfig() {
-                                                                     });
-
-        final Stage<BuildConfig, BinaryConfig> buildExec = config("Maven Build",
-                                                                  (s) -> new MavenBuildExecConfig() {
-                                                                  });
-        final Stage<BinaryConfig, ProviderConfig> providerConfig = config("Wildfly Provider Config",
-                                                                          (s) -> new WildflyProviderConfig() {
-                                                                          });
-
-        final Stage<ProviderConfig, RuntimeConfig> runtimeExec = config("Wildfly Runtime Exec",
-                                                                        (s) -> new ContextAwareWildflyRuntimeExecConfig());
-
         final Pipeline pipe = PipelineFactory
-                .startFrom(sourceConfig)
-                .andThen(projectConfig)
-                .andThen(buildConfig)
-                .andThen(buildExec)
-                .andThen(providerConfig)
-                .andThen(runtimeExec).buildAs("my pipe");
+                .newBuilder()
+                .addConfigStage("Git Source",
+                                new GitConfig() {
+                                })
+                .addConfigStage("Maven Project",
+                                new MavenProjectConfig() {
+                                })
+                .addConfigStage("Maven Build Config",
+                                new MavenBuildConfig() {
+                                })
+                .addConfigStage("Maven Build",
+                                new MavenBuildExecConfig() {
+                                })
+                .addConfigStage("Wildfly Provider Config",
+                                new WildflyProviderConfig() {
+                                })
+                .addConfigStage("Wildfly Runtime Exec",
+                                new ContextAwareWildflyRuntimeExecConfig())
+                .buildAs("my pipe");
+
         WildflyRuntimeExecExecutor wildflyRuntimeExecExecutor = new WildflyRuntimeExecExecutor(runtimeRegistry,
                                                                                                wildflyAccessInterface);
         final PipelineExecutor executor = new PipelineExecutor(asList(new GitConfigExecutor(sourceRegistry),
