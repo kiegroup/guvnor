@@ -28,13 +28,6 @@ import org.guvnor.ala.build.maven.config.impl.MavenProjectConfigImpl;
 import org.guvnor.ala.build.maven.executor.MavenBuildConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenBuildExecConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenProjectConfigExecutor;
-import org.guvnor.ala.config.BinaryConfig;
-import org.guvnor.ala.config.BuildConfig;
-import org.guvnor.ala.config.ProjectConfig;
-import org.guvnor.ala.config.ProviderConfig;
-import org.guvnor.ala.config.ProvisioningConfig;
-import org.guvnor.ala.config.RuntimeConfig;
-import org.guvnor.ala.config.SourceConfig;
 import org.guvnor.ala.docker.access.DockerAccessInterface;
 import org.guvnor.ala.docker.access.impl.DockerAccessInterfaceImpl;
 import org.guvnor.ala.docker.config.DockerProviderConfig;
@@ -47,7 +40,6 @@ import org.guvnor.ala.docker.service.DockerRuntimeManager;
 import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.PipelineFactory;
-import org.guvnor.ala.pipeline.Stage;
 import org.guvnor.ala.pipeline.execution.PipelineExecutor;
 import org.guvnor.ala.registry.BuildRegistry;
 import org.guvnor.ala.registry.SourceRegistry;
@@ -62,7 +54,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
-import static org.guvnor.ala.pipeline.StageUtil.config;
 import static org.guvnor.ala.runtime.RuntimeState.RUNNING;
 import static org.guvnor.ala.runtime.RuntimeState.STOPPED;
 import static org.junit.Assert.*;
@@ -91,34 +82,25 @@ public class DockerExecutorTest {
         final InMemoryRuntimeRegistry runtimeRegistry = new InMemoryRuntimeRegistry();
         final DockerAccessInterface dockerAccessInterface = new DockerAccessInterfaceImpl();
 
-        final Stage<Input, SourceConfig> sourceConfig = config("Git Source",
-                                                               (s) -> new GitConfigImpl());
-        final Stage<SourceConfig, ProjectConfig> projectConfig = config("Maven Project",
-                                                                        (s) -> new MavenProjectConfigImpl());
-        final Stage<ProjectConfig, BuildConfig> buildConfig = config("Maven Build Config",
-                                                                     (s) -> new MavenBuildConfigImpl());
-        final Stage<BuildConfig, BuildConfig> dockerBuildConfig = config("Docker Build Config",
-                                                                         (s) -> new DockerBuildConfigImpl());
-        final Stage<BuildConfig, BinaryConfig> buildExec = config("Maven Build",
-                                                                  (s) -> new MavenBuildExecConfigImpl());
-        final Stage<BinaryConfig, ProviderConfig> providerConfig = config("Docker Provider Config",
-                                                                          (s) -> new DockerProviderConfigImpl());
-
-        final Stage<ProviderConfig, ProvisioningConfig> runtimeConfig = config("Docker Runtime Config",
-                                                                               (s) -> new ContextAwareDockerProvisioningConfig());
-
-        final Stage<ProvisioningConfig, RuntimeConfig> runtimeExec = config("Docker Runtime Exec",
-                                                                            (s) -> new ContextAwareDockerRuntimeExecConfig());
-
         final Pipeline pipe = PipelineFactory
-                .startFrom(sourceConfig)
-                .andThen(projectConfig)
-                .andThen(buildConfig)
-                .andThen(dockerBuildConfig)
-                .andThen(buildExec)
-                .andThen(providerConfig)
-                .andThen(runtimeConfig)
-                .andThen(runtimeExec).buildAs("my pipe");
+                .newBuilder()
+                .addConfigStage("Git Source",
+                                new GitConfigImpl())
+                .addConfigStage("Maven Project",
+                                new MavenProjectConfigImpl())
+                .addConfigStage("Maven Build Config",
+                                new MavenBuildConfigImpl())
+                .addConfigStage("Docker Build Config",
+                                new DockerBuildConfigImpl())
+                .addConfigStage("Maven Build",
+                                new MavenBuildExecConfigImpl())
+                .addConfigStage("Docker Provider Config",
+                                new DockerProviderConfigImpl())
+                .addConfigStage("Docker Runtime Config",
+                                new ContextAwareDockerProvisioningConfig())
+                .addConfigStage("Docker Runtime Exec",
+                                new ContextAwareDockerRuntimeExecConfig())
+                .buildAs("my pipe");
 
         DockerRuntimeExecExecutor dockerRuntimeExecExecutor = new DockerRuntimeExecExecutor(runtimeRegistry,
                                                                                             dockerAccessInterface);
@@ -210,21 +192,17 @@ public class DockerExecutorTest {
         final InMemoryRuntimeRegistry runtimeRegistry = new InMemoryRuntimeRegistry();
         final DockerAccessInterface dockerAccessInterface = new DockerAccessInterfaceImpl();
 
-        final Stage<Input, ProviderConfig> providerConfig = config("Docker Provider Config",
-                                                                   (s) -> new DockerProviderConfig() {
-                                                                   });
-
-        final Stage<ProviderConfig, ProvisioningConfig> runtimeConfig = config("Docker Runtime Config",
-                                                                               (s) -> new ContextAwareDockerProvisioningConfig() {
-                                                                               });
-
-        final Stage<ProvisioningConfig, RuntimeConfig> runtimeExec = config("Docker Runtime Exec",
-                                                                            (s) -> new ContextAwareDockerRuntimeExecConfig());
-
         final Pipeline pipe = PipelineFactory
-                .startFrom(providerConfig)
-                .andThen(runtimeConfig)
-                .andThen(runtimeExec).buildAs("my pipe");
+                .newBuilder()
+                .addConfigStage("Docker Provider Config",
+                                new DockerProviderConfig() {
+                                })
+                .addConfigStage("Docker Runtime Config",
+                                new ContextAwareDockerProvisioningConfig() {
+                                })
+                .addConfigStage("Docker Runtime Exec",
+                                new ContextAwareDockerRuntimeExecConfig())
+                .buildAs("my pipe");
 
         DockerRuntimeExecExecutor dockerRuntimeExecExecutor = new DockerRuntimeExecExecutor(runtimeRegistry,
                                                                                             dockerAccessInterface);

@@ -20,47 +20,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.guvnor.ala.config.Config;
+import org.guvnor.ala.pipeline.impl.ConfigBasedPipelineImpl;
+import org.guvnor.ala.pipeline.impl.PipelineConfigImpl;
 
-/*
- * Base implementation for the Fluent PipelineBuilder Factory. 
+/**
+ * Base implementation for the pipeline builders and pipelines instantiation.
  */
 public final class PipelineFactory {
 
     private PipelineFactory() {
-
     }
 
-    public static <INPUT extends Config, OUTPUT extends Config> PipelineBuilder<INPUT, OUTPUT> startFrom(final Stage<INPUT, OUTPUT> stage) {
-        return new PipelineBuilder<INPUT, OUTPUT>() {
-            private final List<Stage> stages = new ArrayList<>();
+    public static ConfigBasedPipelineBuilder newBuilder() {
 
-            {
-                stages.add(stage);
+        return new ConfigBasedPipelineBuilder() {
+
+            private final List<PipelineConfigStage> configStages = new ArrayList<>();
+
+            @Override
+            public ConfigBasedPipelineBuilder addConfigStage(final String name,
+                                                             final Config config) {
+                configStages.add(new PipelineConfigStage(name,
+                                                         config));
+                return this;
             }
 
             @Override
-            public <T extends Config> PipelineBuilder<INPUT, T> andThen(final Stage<? super OUTPUT, T> nextStep) {
-                stages.add(nextStep);
-                return (PipelineBuilder<INPUT, T>) this;
+            public ConfigBasedPipelineBuilder addConfigStage(final PipelineConfigStage configStage) {
+                configStages.add(configStage);
+                return this;
             }
 
             @Override
-            public Pipeline buildAs(final String name) {
-                return new BasePipeline(name,
-                                        stages);
-            }
-
-            @Override
-            public Pipeline build(final PipelineConfig config) {
-                stages.clear();
-                for (final Config c : config.getConfigStages()) {
-                    stages.add(StageUtil.config(c.toString(),
-                                                f -> c));
-                }
-                return new BasePipeline(config.getName(),
-                                        stages,
-                                        config);
+            public ConfigBasedPipeline buildAs(String name) {
+                return new ConfigBasedPipelineImpl(new PipelineConfigImpl(name,
+                                                                          configStages));
             }
         };
+    }
+
+    public static ConfigBasedPipeline newPipeline(final PipelineConfig pipelineConfig) {
+        return new ConfigBasedPipelineImpl(pipelineConfig);
     }
 }
