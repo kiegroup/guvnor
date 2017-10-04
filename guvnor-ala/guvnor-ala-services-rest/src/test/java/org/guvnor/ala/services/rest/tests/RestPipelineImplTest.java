@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import com.spotify.docker.client.DockerException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.guvnor.ala.build.Project;
 import org.guvnor.ala.build.maven.config.MavenBuildConfig;
 import org.guvnor.ala.build.maven.config.MavenProjectConfig;
@@ -84,7 +85,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.commons.lifecycle.Disposable;
@@ -183,6 +186,11 @@ public class RestPipelineImplTest {
         deployment.addAsManifestResource(EmptyAsset.INSTANCE,
                                          "beans.xml");
         return deployment;
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
     }
 
     @Before

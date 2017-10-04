@@ -43,6 +43,7 @@ import org.guvnor.ala.source.git.config.impl.GitConfigImpl;
 import org.guvnor.ala.source.git.executor.GitConfigExecutor;
 import org.guvnor.ala.wildfly.access.WildflyAppState;
 import org.guvnor.ala.wildfly.access.WildflyClient;
+import org.guvnor.ala.wildfly.executor.tests.requirement.RequiresNotWindows;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.AfterClass;
@@ -60,6 +61,7 @@ import static org.junit.Assert.*;
  * an application there.
  */
 @RunWith(ArquillianConditionalRunner.class)
+@RequiresNotWindows
 public class WildflyRuntimeTest {
 
     private static final String CONTAINER = "swarm";

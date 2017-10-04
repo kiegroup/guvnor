@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.guvnor.ala.build.maven.config.impl.MavenBuildConfigImpl;
 import org.guvnor.ala.build.maven.config.impl.MavenBuildExecConfigImpl;
 import org.guvnor.ala.build.maven.config.impl.MavenProjectConfigImpl;
@@ -58,7 +59,9 @@ import org.guvnor.ala.runtime.Runtime;
 import org.guvnor.ala.source.git.config.impl.GitConfigImpl;
 import org.guvnor.ala.source.git.executor.GitConfigExecutor;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
@@ -73,6 +76,11 @@ import static org.junit.Assert.*;
 public class DockerExecutorTest {
 
     private File tempPath;
+
+    @BeforeClass
+    public static void beforeClass() {
+        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+    }
 
     @Before
     public void setUp() throws IOException {
