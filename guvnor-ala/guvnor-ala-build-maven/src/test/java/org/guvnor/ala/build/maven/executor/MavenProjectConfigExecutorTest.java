@@ -30,15 +30,10 @@ import org.guvnor.ala.build.maven.config.impl.MavenBuildConfigImpl;
 import org.guvnor.ala.build.maven.config.impl.MavenBuildExecConfigImpl;
 import org.guvnor.ala.build.maven.config.impl.MavenProjectConfigImpl;
 import org.guvnor.ala.build.maven.model.MavenBinary;
-import org.guvnor.ala.config.BinaryConfig;
-import org.guvnor.ala.config.BuildConfig;
-import org.guvnor.ala.config.ProjectConfig;
-import org.guvnor.ala.config.SourceConfig;
 import org.guvnor.ala.pipeline.ContextAware;
 import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.PipelineFactory;
-import org.guvnor.ala.pipeline.Stage;
 import org.guvnor.ala.pipeline.execution.PipelineExecutor;
 import org.guvnor.ala.registry.BuildRegistry;
 import org.guvnor.ala.registry.SourceRegistry;
@@ -52,7 +47,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
-import static org.guvnor.ala.pipeline.StageUtil.config;
 import static org.junit.Assert.*;
 
 public class MavenProjectConfigExecutorTest {
@@ -74,19 +68,17 @@ public class MavenProjectConfigExecutorTest {
         final SourceRegistry sourceRegistry = new InMemorySourceRegistry();
         final BuildRegistry buildRegistry = new InMemoryBuildRegistry();
 
-        final Stage<Input, SourceConfig> sourceConfig = config("Git Source",
-                                                               (s) -> new MyGitConfig());
-        final Stage<SourceConfig, ProjectConfig> projectConfig = config("Maven Project",
-                                                                        (s) -> new MavenProjectConfigImpl());
-        final Stage<ProjectConfig, BuildConfig> buildConfig = config("Maven Build Config",
-                                                                     (s) -> new MavenBuildConfigImpl());
-        final Stage<BuildConfig, BinaryConfig> buildExec = config("Maven Build",
-                                                                  (s) -> new MavenBuildExecConfigImpl());
         final Pipeline pipe = PipelineFactory
-                .startFrom(sourceConfig)
-                .andThen(projectConfig)
-                .andThen(buildConfig)
-                .andThen(buildExec).buildAs("my pipe");
+                .newBuilder()
+                .addConfigStage("Git Source",
+                                new MyGitConfig())
+                .addConfigStage("Maven Project",
+                                new MavenProjectConfigImpl())
+                .addConfigStage("Maven Build Config",
+                                new MavenBuildConfigImpl())
+                .addConfigStage("Maven Build",
+                                new MavenBuildExecConfigImpl())
+                .buildAs("my pipe");
 
         final PipelineExecutor executor = new PipelineExecutor(asList(new GitConfigExecutor(sourceRegistry),
                                                                       new MavenProjectConfigExecutor(sourceRegistry),
@@ -160,19 +152,17 @@ public class MavenProjectConfigExecutorTest {
         final SourceRegistry sourceRegistry = new InMemorySourceRegistry();
         final BuildRegistry buildRegistry = new InMemoryBuildRegistry();
 
-        final Stage<Input, SourceConfig> sourceConfig = config("Git Source",
-                                                               (s) -> new MyGitConfig());
-        final Stage<SourceConfig, ProjectConfig> projectConfig = config("Maven Project",
-                                                                        (s) -> new MavenProjectConfigImpl());
-        final Stage<ProjectConfig, BuildConfig> buildConfig = config("Maven Build Config",
-                                                                     (s) -> new MavenBuildConfigImpl());
-        final Stage<BuildConfig, BinaryConfig> buildExec = config("Maven Build",
-                                                                  (s) -> new MavenBuildExecConfigImpl());
         final Pipeline pipe = PipelineFactory
-                .startFrom(sourceConfig)
-                .andThen(projectConfig)
-                .andThen(buildConfig)
-                .andThen(buildExec).buildAs("my pipe");
+                .newBuilder()
+                .addConfigStage("Git Source",
+                                new MyGitConfig())
+                .addConfigStage("Maven Project",
+                                new MavenProjectConfigImpl())
+                .addConfigStage("Maven Build Config",
+                                new MavenBuildConfigImpl())
+                .addConfigStage("Maven Build",
+                                new MavenBuildExecConfigImpl())
+                .buildAs("my pipe");
 
         final PipelineExecutor executor = new PipelineExecutor(asList(new GitConfigExecutor(sourceRegistry),
                                                                       new MavenProjectConfigExecutor(sourceRegistry),

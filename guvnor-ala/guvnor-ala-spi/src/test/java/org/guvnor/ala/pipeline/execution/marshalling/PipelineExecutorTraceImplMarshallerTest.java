@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.guvnor.ala.marshalling.BaseMarshallerTest;
 import org.guvnor.ala.marshalling.Marshaller;
-import org.guvnor.ala.pipeline.BasePipeline;
+import org.guvnor.ala.pipeline.impl.BasePipeline;
 import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.Stage;
@@ -61,7 +61,8 @@ public class PipelineExecutorTraceImplMarshallerTest
         //only the stage names are used by the taskDef, so the pipeline can be mocked.
         List<Stage> stages = mockStages(STAGE_COUNT);
         Pipeline pipeline = new BasePipeline(PIPELINE_NAME,
-                                             stages);
+                                             stages) {
+        };
         Input input = mockInput(PIPELINE_INPUT_SIZE);
 
         PipelineExecutorTaskDefImpl taskDef = new PipelineExecutorTaskDefImpl(pipeline,

@@ -33,6 +33,8 @@ import org.guvnor.ala.ui.model.PipelineKey;
 public class WildflyProvisioningPipelineDescriptor
         implements PipelineDescriptor {
 
+    public static final String SOURCE_TO_WILDFLY_PROVISIONING = "source-to-wildlfy-provisioning";
+
     private List<PipelineParamsForm> paramsForms = new ArrayList<>();
 
     @Inject
@@ -42,8 +44,7 @@ public class WildflyProvisioningPipelineDescriptor
 
     @Override
     public boolean accept(PipelineKey pipelineKey) {
-        return pipelineKey != null &&
-                ("pipeline from configs".equals(pipelineKey.getId()) || "pipeline from stages".equals(pipelineKey.getId()));
+        return pipelineKey != null && SOURCE_TO_WILDFLY_PROVISIONING.equals(pipelineKey.getId());
     }
 
     @Override
