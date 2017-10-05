@@ -59,6 +59,10 @@ public class RuntimeListItemBuilderTest {
 
     private static final String PIPELINE_ID = "PIPELINE_ID";
 
+    private static final String PIPELINE_ERROR = "PIPELINE_ERROR";
+
+    private static final String PIPELINE_ERROR_DETAIL = "PIPELINE_ERROR_DETAIL";
+
     private RuntimeQueryResultItem queryResultItem;
 
     private PipelineStageItemList stageItemList;
@@ -159,6 +163,8 @@ public class RuntimeListItemBuilderTest {
         queryResultItem.setPipelineId(PIPELINE_ID);
         queryResultItem.setPipelineExecutionId(PIPELINE_EXECUTION_ID);
         queryResultItem.setPipelineStatus(PipelineStatus.RUNNING.name());
+        queryResultItem.setPipelineError(PIPELINE_ERROR);
+        queryResultItem.setPipelineErrorDetail(PIPELINE_ERROR_DETAIL);
         stageItemList = mockPipelineStageItemList(STAGE_ITEMS_COUNT);
         queryResultItem.setPipelineStageItems(stageItemList);
     }
@@ -170,6 +176,10 @@ public class RuntimeListItemBuilderTest {
                      trace.getKey().getId());
         assertEquals(PipelineStatus.RUNNING,
                      trace.getPipelineStatus());
+        assertEquals(PIPELINE_ERROR,
+                     trace.getPipelineError().getError());
+        assertEquals(PIPELINE_ERROR_DETAIL,
+                     trace.getPipelineError().getErrorDetail());
 
         assertEquals(stageItemList.getItems().size(),
                      trace.getPipeline().getStages().size());
@@ -180,8 +190,10 @@ public class RuntimeListItemBuilderTest {
                          stage.getName());
             assertEquals(stageItem.getStatus(),
                          trace.getStageStatus(stage.getName()).name());
-            assertEquals(stageItem.getErrorMessage(),
-                         trace.getStageError(stage.getName()));
+            assertEquals(stageItem.getStageError(),
+                         trace.getStageError(stage.getName()).getError());
+            assertEquals(stageItem.getStageErrorDetail(),
+                         trace.getStageError(stage.getName()).getErrorDetail());
         }
     }
 
@@ -196,6 +208,7 @@ public class RuntimeListItemBuilderTest {
     public static PipelineStageItem mockStageItem(String suffix) {
         return new PipelineStageItem("PipelineStageItem.name." + suffix,
                                      "RUNNING",
-                                     "PipelineStageItem.errorMessage." + suffix);
+                                     "PipelineStageItem.stageError." + suffix,
+                                     "PipelineStageItem.stageErrorDetail." + suffix);
     }
 }

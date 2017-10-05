@@ -57,6 +57,11 @@ public class RuntimeQueryResultItem {
     private String pipelineError;
 
     /**
+     * Holds the pipeline execution error message when pipelineStatus == ERROR.
+     */
+    private String pipelineErrorDetail;
+
+    /**
      * When a pipeline is involved, holds the information related to the stages of current pipeline. See that there might
      * be cases where the runtime was created directly by using the RuntimeProvisioningService and not by a pipeline.
      */
@@ -102,6 +107,7 @@ public class RuntimeQueryResultItem {
                                   String pipelineExecutionId,
                                   String pipelineStatus,
                                   String pipelineError,
+                                  String pipelineErrorDetail,
                                   PipelineStageItemList pipelineStageItems,
                                   String runtimeId,
                                   String runtimeName,
@@ -115,6 +121,7 @@ public class RuntimeQueryResultItem {
         this.pipelineExecutionId = pipelineExecutionId;
         this.pipelineStatus = pipelineStatus;
         this.pipelineError = pipelineError;
+        this.pipelineError = pipelineErrorDetail;
         this.pipelineStageItems = pipelineStageItems;
         this.runtimeId = runtimeId;
         this.runtimeName = runtimeName;
@@ -177,6 +184,14 @@ public class RuntimeQueryResultItem {
 
     public void setPipelineError(String pipelineError) {
         this.pipelineError = pipelineError;
+    }
+
+    public String getPipelineErrorDetail() {
+        return pipelineErrorDetail;
+    }
+
+    public void setPipelineErrorDetail(String pipelineErrorDetail) {
+        this.pipelineErrorDetail = pipelineErrorDetail;
     }
 
     public PipelineStageItemList getPipelineStageItems() {

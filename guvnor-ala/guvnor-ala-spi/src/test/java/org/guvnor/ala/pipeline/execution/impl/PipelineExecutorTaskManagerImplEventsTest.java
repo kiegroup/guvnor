@@ -26,7 +26,7 @@ import org.guvnor.ala.pipeline.events.BeforeStageExecutionEvent;
 import org.guvnor.ala.pipeline.events.OnErrorPipelineExecutionEvent;
 import org.guvnor.ala.pipeline.events.OnErrorStageExecutionEvent;
 import org.guvnor.ala.pipeline.events.PipelineEvent;
-import org.guvnor.ala.pipeline.execution.PipelineExecutorException;
+import org.guvnor.ala.pipeline.execution.PipelineExecutorError;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskDef;
 import org.junit.Before;
@@ -51,7 +51,7 @@ public class PipelineExecutorTaskManagerImplEventsTest
 
     private Throwable error;
 
-    protected ArgumentCaptor<PipelineExecutorException> pipelineExecutorExceptionCaptor;
+    protected ArgumentCaptor<PipelineExecutorError> pipelineExecutorErrorCaptor;
 
     @Before
     public void setUp() {
@@ -59,7 +59,7 @@ public class PipelineExecutorTaskManagerImplEventsTest
 
         error = mock(Throwable.class);
         when(error.getMessage()).thenReturn(ERROR_MESSAGE);
-        pipelineExecutorExceptionCaptor = ArgumentCaptor.forClass(PipelineExecutorException.class);
+        pipelineExecutorErrorCaptor = ArgumentCaptor.forClass(PipelineExecutorError.class);
 
         pipeline = mock(Pipeline.class);
         stages = mockStages(PIPELINE_STAGES_SIZE);
@@ -191,11 +191,11 @@ public class PipelineExecutorTaskManagerImplEventsTest
                                         PipelineExecutorTask.Status.ERROR);
         verify(task,
                times(1)).setStageError(eq(stage.getName()),
-                                       pipelineExecutorExceptionCaptor.capture());
+                                       pipelineExecutorErrorCaptor.capture());
 
-        assertEqualsException(new PipelineExecutorException(ERROR_MESSAGE,
-                                                            error),
-                              pipelineExecutorExceptionCaptor.getValue());
+        assertEquals(new PipelineExecutorError(ERROR_MESSAGE,
+                                               error),
+                     pipelineExecutorErrorCaptor.getValue());
 
         verifyExecutorRegistryUpdated(async);
 
@@ -251,12 +251,11 @@ public class PipelineExecutorTaskManagerImplEventsTest
         verify(task,
                times(1)).setPipelineStatus(PipelineExecutorTask.Status.ERROR);
         verify(task,
-               times(1)).setPipelineError(pipelineExecutorExceptionCaptor.capture());
+               times(1)).setPipelineError(pipelineExecutorErrorCaptor.capture());
 
-        assertEqualsException(new PipelineExecutorException(ERROR_MESSAGE,
-                                                            error),
-                              pipelineExecutorExceptionCaptor.getValue());
-
+        assertEquals(new PipelineExecutorError(ERROR_MESSAGE,
+                                               error),
+                     pipelineExecutorErrorCaptor.getValue());
         verifyExecutorRegistryUpdated(async);
 
         verifyExternalListenersNotified(event);
@@ -295,13 +294,5 @@ public class PipelineExecutorTaskManagerImplEventsTest
             externalListeners.forEach(listener -> verify(listener,
                                                          times(1)).onStageError((OnErrorStageExecutionEvent) event));
         }
-    }
-
-    private void assertEqualsException(PipelineExecutorException expectedValue,
-                                       PipelineExecutorException value) {
-        assertEquals(expectedValue.getMessage(),
-                     value.getMessage());
-        assertEquals(expectedValue.getCause(),
-                     value.getCause());
     }
 }

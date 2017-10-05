@@ -34,18 +34,18 @@ public class PipelineExecutionTrace
 
     private PipelineStatus pipelineStatus;
 
-    private String pipelineError;
+    private PipelineError pipelineError;
 
     private Map<String, PipelineStatus> stageStatusMap = new HashMap<>();
 
-    private Map<String, String> stageErrorMap = new HashMap<>();
+    private Map<String, PipelineError> stageErrorMap = new HashMap<>();
 
     public PipelineExecutionTrace(@MapsTo("key") final PipelineExecutionTraceKey key,
                                   @MapsTo("pipeline") final Pipeline pipeline,
                                   @MapsTo("pipelineStatus") final PipelineStatus pipelineStatus,
-                                  @MapsTo("pipelineError") final String pipelineError,
+                                  @MapsTo("pipelineError") final PipelineError pipelineError,
                                   @MapsTo("stageStatusMap") final Map<String, PipelineStatus> stageStatusMap,
-                                  @MapsTo("stageErrorMap") final Map<String, String> stageErrorMap) {
+                                  @MapsTo("stageErrorMap") final Map<String, PipelineError> stageErrorMap) {
         super(key);
         this.pipeline = pipeline;
         this.pipelineStatus = pipelineStatus;
@@ -74,11 +74,11 @@ public class PipelineExecutionTrace
         this.pipelineStatus = pipelineStatus;
     }
 
-    public String getPipelineError() {
+    public PipelineError getPipelineError() {
         return pipelineError;
     }
 
-    public void setPipelineError(String pipelineError) {
+    public void setPipelineError(PipelineError pipelineError) {
         this.pipelineError = pipelineError;
     }
 
@@ -92,12 +92,12 @@ public class PipelineExecutionTrace
                            stageStatus);
     }
 
-    public String getStageError(String stage) {
+    public PipelineError getStageError(String stage) {
         return stageErrorMap.get(stage);
     }
 
     public void setStageError(String stage,
-                              String error) {
+                              PipelineError error) {
         stageErrorMap.put(stage,
                           error);
     }

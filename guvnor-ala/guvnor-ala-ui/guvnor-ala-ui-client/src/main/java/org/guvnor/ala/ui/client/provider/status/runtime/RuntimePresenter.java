@@ -17,6 +17,7 @@
 package org.guvnor.ala.ui.client.provider.status.runtime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import org.guvnor.ala.ui.events.PipelineStatusChangeEvent;
 import org.guvnor.ala.ui.events.RuntimeChangeEvent;
 import org.guvnor.ala.ui.events.StageStatusChangeEvent;
 import org.guvnor.ala.ui.model.Pipeline;
+import org.guvnor.ala.ui.model.PipelineError;
 import org.guvnor.ala.ui.model.PipelineExecutionTrace;
 import org.guvnor.ala.ui.model.PipelineExecutionTraceKey;
 import org.guvnor.ala.ui.model.PipelineStatus;
@@ -69,6 +71,7 @@ import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.Runti
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionConfirmStopTitle;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionDeleteAction;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionDeleteSuccessMessage;
+import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionShowErrorAction;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionStopAction;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_PipelineExecutionStopSuccessMessage;
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.RuntimePresenter_RuntimeConfirmDeleteMessage;
@@ -139,6 +142,8 @@ public class RuntimePresenter {
     private RuntimeActionItemPresenter stopAction;
     private RuntimeActionItemPresenter deleteAction;
     private RuntimeActionItemSeparatorPresenter separator;
+    private RuntimeActionItemSeparatorPresenter secondarySeparator;
+    private RuntimeActionItemPresenter showErrorAction;
 
     @Inject
     public RuntimePresenter(final View view,
@@ -170,6 +175,8 @@ public class RuntimePresenter {
         stopAction = newActionItemPresenter();
         deleteAction = newActionItemPresenter();
         separator = newSeparatorItem();
+        secondarySeparator = newSeparatorItem();
+        showErrorAction = newActionItemPresenter();
     }
 
     @PreDestroy
@@ -179,6 +186,8 @@ public class RuntimePresenter {
         actionItemPresenterInstance.destroy(stopAction);
         actionItemPresenterInstance.destroy(deleteAction);
         actionItemSeparatorPresenterInstance.destroy(separator);
+        actionItemSeparatorPresenterInstance.destroy(secondarySeparator);
+        actionItemPresenterInstance.destroy(showErrorAction);
     }
 
     public View getView() {
@@ -270,7 +279,10 @@ public class RuntimePresenter {
 
     private void processRuntimeStatus(final Runtime runtime) {
         view.clearActionItems();
-        enableActions(true);
+        enableActions(true,
+                      startAction,
+                      stopAction,
+                      deleteAction);
         view.addActionItem(startAction.getView());
         view.addActionItem(stopAction.getView());
         view.addActionItem(separator.getView());
@@ -296,7 +308,11 @@ public class RuntimePresenter {
 
     private void processPipelineStatus(final PipelineStatus status) {
         view.clearActionItems();
-        enableActions(false);
+        enableActions(false,
+                      startAction,
+                      stopAction,
+                      deleteAction,
+                      showErrorAction);
         view.addActionItem(stopAction.getView());
         view.addActionItem(separator.getView());
         view.addActionItem(deleteAction.getView());
@@ -305,15 +321,22 @@ public class RuntimePresenter {
                          this::stopPipeline);
         deleteAction.setup(translationService.getTranslation(RuntimePresenter_PipelineExecutionDeleteAction),
                            this::deletePipeline);
+        showErrorAction.setup(translationService.getTranslation(RuntimePresenter_PipelineExecutionShowErrorAction),
+                              this::showPipelineError);
 
         switch (status) {
             case SCHEDULED:
             case RUNNING:
                 stopAction.setEnabled(true);
                 break;
-            case ERROR:
             case STOPPED:
                 deleteAction.setEnabled(true);
+                break;
+            case ERROR:
+                deleteAction.setEnabled(true);
+                view.addActionItem(secondarySeparator.getView());
+                view.addActionItem(showErrorAction.getView());
+                showErrorAction.setEnabled(true);
                 break;
             case FINISHED:
                 if (item.getRuntime() == null) {
@@ -325,10 +348,9 @@ public class RuntimePresenter {
         view.setStatusTitle(status.name());
     }
 
-    private void enableActions(boolean enabled) {
-        startAction.setEnabled(enabled);
-        stopAction.setEnabled(enabled);
-        deleteAction.setEnabled(enabled);
+    private void enableActions(boolean enabled,
+                               RuntimeActionItemPresenter... actions) {
+        Arrays.stream(actions).forEach(action -> action.setEnabled(enabled));
     }
 
     public void onStageStatusChange(@Observes final StageStatusChangeEvent event) {
@@ -368,8 +390,9 @@ public class RuntimePresenter {
     public void onPipelineStatusChange(@Observes final PipelineStatusChangeEvent event) {
         if (isFromCurrentPipeline(event.getPipelineExecutionTraceKey())) {
             processPipelineStatus(event.getStatus());
-            if (PipelineStatus.FINISHED.equals(event.getStatus()) &&
-                    !PipelineStatus.FINISHED.equals(item.getPipelineTrace().getPipelineStatus())) {
+            if ((PipelineStatus.FINISHED.equals(event.getStatus()) &&
+                    !PipelineStatus.FINISHED.equals(item.getPipelineTrace().getPipelineStatus()))
+                    || PipelineStatus.ERROR.equals(event.getStatus())) {
                 refresh(event.getPipelineExecutionTraceKey());
             }
         }
@@ -513,6 +536,12 @@ public class RuntimePresenter {
         return aVoid -> notification.fire(new NotificationEvent(translationService.format(RuntimePresenter_PipelineExecutionDeleteSuccessMessage,
                                                                                           item.getPipelineTrace().getKey().getId()),
                                                                 NotificationEvent.NotificationType.SUCCESS));
+    }
+
+    protected void showPipelineError() {
+        PipelineError error = item.getPipelineTrace().getPipelineError();
+        popupHelper.showErrorPopup(error.getError(),
+                                   error.getErrorDetail());
     }
 
     private void confirmAndExecute(final String title,

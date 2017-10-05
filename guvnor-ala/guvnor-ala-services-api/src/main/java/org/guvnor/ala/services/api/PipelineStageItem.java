@@ -35,14 +35,21 @@ public class PipelineStageItem {
     /**
      * Holds the stage execution error message when status == ERROR.
      */
-    private String errorMessage;
+    private String stageError;
+
+    /**
+     * Holds the stage execution error detail message when status == ERROR.
+     */
+    private String stageErrorDetail;
 
     public PipelineStageItem(String name,
                              String status,
-                             String errorMessage) {
+                             String stageError,
+                             String stageErrorDetail) {
         this.name = name;
         this.status = status;
-        this.errorMessage = errorMessage;
+        this.stageError = stageError;
+        this.stageErrorDetail = stageErrorDetail;
     }
 
     public PipelineStageItem(String name,
@@ -59,7 +66,11 @@ public class PipelineStageItem {
         return status;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getStageError() {
+        return stageError;
+    }
+
+    public String getStageErrorDetail() {
+        return stageErrorDetail;
     }
 }
