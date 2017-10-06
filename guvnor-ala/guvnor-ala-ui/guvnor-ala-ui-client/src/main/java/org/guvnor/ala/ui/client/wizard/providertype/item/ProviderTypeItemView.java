@@ -20,11 +20,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.ala.ui.client.widget.item.SelectableCardItemBase;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Event;
 import org.jboss.errai.common.client.dom.Heading;
 import org.jboss.errai.common.client.dom.Image;
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.ForEvent;
@@ -33,10 +33,14 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Dependent
 @Templated
 public class ProviderTypeItemView
-        implements IsElement,
-                   ProviderTypeItemPresenter.View {
+        extends SelectableCardItemBase
+        implements ProviderTypeItemPresenter.View {
 
     private ProviderTypeItemPresenter presenter;
+
+    @Inject
+    @DataField("card-main-div")
+    private Div cardMainDiv;
 
     @Inject
     @DataField("accented-area")
@@ -70,35 +74,20 @@ public class ProviderTypeItemView
         this.image.setSrc(imageURL);
     }
 
-    @Override
-    public void disable() {
-        accentedArea.getClassList().add("remove-option");
-    }
-
-    @EventHandler("image")
+    @EventHandler("card-main-div")
     public void onClick(@ForEvent("click") final Event event) {
-        if (!accentedArea.getClassList().contains("remove-option")) {
-            accentedArea.getClassList().toggle("card-pf-accented");
-            if (accentedArea.getClassList().contains("card-pf-accented")) {
-                removeOpacity();
-            } else {
-                addOpacity();
-            }
-            presenter.onContentChange();
+        if (!isDisabled()) {
+            presenter.onItemClick();
         }
     }
 
     @Override
-    public boolean isSelected() {
-        return accentedArea.getClassList().contains("card-pf-accented");
+    public Div getAccentedArea() {
+        return accentedArea;
     }
 
-    private void addOpacity() {
-        body.getStyle().setProperty("opacity",
-                                    "0.3");
-    }
-
-    private void removeOpacity() {
-        body.getStyle().removeProperty("opacity");
+    @Override
+    public Div getBody() {
+        return body;
     }
 }
