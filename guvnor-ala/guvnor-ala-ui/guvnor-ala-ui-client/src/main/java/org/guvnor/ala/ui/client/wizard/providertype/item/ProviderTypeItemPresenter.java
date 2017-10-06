@@ -43,6 +43,8 @@ public class ProviderTypeItemPresenter
 
         boolean isSelected();
 
+        void setSelected(boolean selected);
+
         void setProviderTypeName(String name);
 
         void setImage(String imageURL);
@@ -87,7 +89,8 @@ public class ProviderTypeItemPresenter
         return view;
     }
 
-    public void onContentChange() {
+    protected void onItemClick() {
+        view.setSelected(!isSelected());
         fireChangeHandlers();
     }
 

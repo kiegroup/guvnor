@@ -20,12 +20,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.ala.ui.client.widget.item.SelectableCardItemBase;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Event;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Heading;
 import org.jboss.errai.common.client.dom.Window;
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.ForEvent;
@@ -34,8 +34,12 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Dependent
 @Templated
 public class PipelineItemView
-        implements IsElement,
-                   PipelineItemPresenter.View {
+        extends SelectableCardItemBase
+        implements PipelineItemPresenter.View {
+
+    @Inject
+    @DataField("card-main-div")
+    private Div cardMainDiv;
 
     @Inject
     @DataField("accented-area")
@@ -65,36 +69,18 @@ public class PipelineItemView
         this.typeName.setTextContent(name);
     }
 
-    @EventHandler("image")
+    @Override
+    protected Div getAccentedArea() {
+        return accentedArea;
+    }
+
+    @Override
+    protected Div getBody() {
+        return body;
+    }
+
+    @EventHandler("card-main-div")
     public void onClick(@ForEvent("click") final Event event) {
-        if (!accentedArea.getClassList().contains("remove-option")) {
-            accentedArea.getClassList().toggle("card-pf-accented");
-            if (accentedArea.getClassList().contains("card-pf-accented")) {
-                removeOpacity();
-            } else {
-                addOpacity();
-            }
-            presenter.onContentChange();
-        }
-    }
-
-    @Override
-    public boolean isSelected() {
-        return accentedArea.getClassList().contains("card-pf-accented");
-    }
-
-    @Override
-    public void unSelect() {
-        accentedArea.getClassList().remove("card-pf-accented");
-        addOpacity();
-    }
-
-    private void addOpacity() {
-        body.getStyle().setProperty("opacity",
-                                    "0.3");
-    }
-
-    private void removeOpacity() {
-        body.getStyle().removeProperty("opacity");
+        presenter.onItemClick();
     }
 }

@@ -101,19 +101,19 @@ public class PipelineItemPresenterTest {
 
         //this item was selected or unselected form the UI
         when(view.isSelected()).thenReturn(selected);
-        presenter.onContentChange();
+        presenter.onItemClick();
 
         //all the other elements must have been properly updated.
         others.forEach(other -> {
             if (selected) {
                 verify((PipelineItemPresenter.View) other.getView(),
-                       times(1)).unSelect();
+                       times(1)).setSelected(false);
             } else {
                 verify((PipelineItemPresenter.View) other.getView(),
-                       never()).unSelect();
+                       never()).setSelected(anyBoolean());
             }
         });
         verify((PipelineItemPresenter.View) presenter.getView(),
-               never()).unSelect();
+               never()).setSelected(selected);
     }
 }
