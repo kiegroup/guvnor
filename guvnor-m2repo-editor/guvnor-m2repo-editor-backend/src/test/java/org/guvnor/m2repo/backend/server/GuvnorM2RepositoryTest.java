@@ -290,4 +290,13 @@ public class GuvnorM2RepositoryTest {
         exception.expect(RuntimeException.class);
         repo.getPomText("dir/name.foo");
     }
+
+    @Test
+    public void testGetM2RepositoryDirRemovesLastFileSeparator() {
+        String rootDir = repo.getM2RepositoryRootDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME);
+        assertTrue(rootDir.endsWith(File.separator));
+
+        String repodir = repo.getM2RepositoryDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME);
+        assertFalse(repodir.endsWith(File.separator));
+    }
 }
