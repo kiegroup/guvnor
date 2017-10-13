@@ -89,8 +89,8 @@ public class GuvnorM2Repository {
     }
 
     public String getM2RepositoryDir(String repositoryName) {
-        return this.getM2RepositoryRootDir(repositoryName).replaceAll("/$",
-                                                                      "");
+        String rootDir = this.getM2RepositoryRootDir(repositoryName);
+        return rootDir.substring(0,rootDir.lastIndexOf(File.separator));
     }
 
     public String getM2RepositoryRootDir(String repositoryName) {
