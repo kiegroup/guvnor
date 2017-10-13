@@ -37,7 +37,7 @@ public class PipelineItemPresenter
 
         boolean isSelected();
 
-        void unSelect();
+        void setSelected(boolean selected);
 
         void setPipelineName(String name);
     }
@@ -81,7 +81,8 @@ public class PipelineItemPresenter
         return view;
     }
 
-    public void onContentChange() {
+    protected void onItemClick() {
+        view.setSelected(!view.isSelected());
         if (view.isSelected()) {
             unSelectOthers();
         }
@@ -93,6 +94,6 @@ public class PipelineItemPresenter
     }
 
     private void unSelect() {
-        view.unSelect();
+        view.setSelected(false);
     }
 }

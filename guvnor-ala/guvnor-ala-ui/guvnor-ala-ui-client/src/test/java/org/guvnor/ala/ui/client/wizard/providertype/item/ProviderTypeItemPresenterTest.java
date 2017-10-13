@@ -118,6 +118,30 @@ public class ProviderTypeItemPresenterTest {
                times(1)).onContentChange();
     }
 
+    @Test
+    public void testOnItemClickWhenSelected() {
+        ContentChangeHandler changeHandler = mock(ContentChangeHandler.class);
+        presenter.addContentChangeHandler(changeHandler);
+        when(view.isSelected()).thenReturn(true);
+        presenter.onItemClick();
+        verify(view,
+               times(1)).setSelected(false);
+        verify(changeHandler,
+               times(1)).onContentChange();
+    }
+
+    @Test
+    public void testOnItemClickWhenNotSelected() {
+        ContentChangeHandler changeHandler = mock(ContentChangeHandler.class);
+        presenter.addContentChangeHandler(changeHandler);
+        when(view.isSelected()).thenReturn(false);
+        presenter.onItemClick();
+        verify(view,
+               times(1)).setSelected(true);
+        verify(changeHandler,
+               times(1)).onContentChange();
+    }
+
     private void verifyCommons() {
         verify(view,
                times(1)).setProviderTypeName(PROVIDER_NAME + " " + PROVIDER_VERSION);
