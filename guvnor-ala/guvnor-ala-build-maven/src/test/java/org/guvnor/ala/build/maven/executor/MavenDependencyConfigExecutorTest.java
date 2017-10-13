@@ -35,11 +35,9 @@ import org.eclipse.aether.repository.LocalRepository;
 import org.guvnor.ala.build.Binary;
 import org.guvnor.ala.build.maven.config.impl.MavenDependencyConfigImpl;
 import org.guvnor.ala.build.maven.model.MavenBinary;
-import org.guvnor.ala.config.BinaryConfig;
 import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.PipelineFactory;
-import org.guvnor.ala.pipeline.Stage;
 import org.guvnor.ala.pipeline.execution.PipelineExecutor;
 import org.guvnor.ala.registry.BuildRegistry;
 import org.guvnor.ala.registry.inmemory.InMemoryBuildRegistry;
@@ -49,7 +47,6 @@ import org.junit.Test;
 
 import static java.util.Collections.singletonList;
 import static org.appformer.maven.integration.embedder.MavenSettings.CUSTOM_SETTINGS_PROPERTY;
-import static org.guvnor.ala.pipeline.StageUtil.config;
 import static org.junit.Assert.*;
 
 public class MavenDependencyConfigExecutorTest {
@@ -86,10 +83,11 @@ public class MavenDependencyConfigExecutorTest {
 
             final BuildRegistry buildRegistry = new InMemoryBuildRegistry();
 
-            final Stage<Input, BinaryConfig> sourceConfig = config("Maven Artifact",
-                                                                   (s) -> new MavenDependencyConfigImpl());
-
-            final Pipeline pipe = PipelineFactory.startFrom(sourceConfig).buildAs("my pipe");
+            final Pipeline pipe = PipelineFactory
+                    .newBuilder()
+                    .addConfigStage("Maven Artifact",
+                                    new MavenDependencyConfigImpl())
+                    .buildAs("my pipe");
 
             final PipelineExecutor executor = new PipelineExecutor(singletonList(new MavenDependencyConfigExecutor(buildRegistry)));
 

@@ -16,18 +16,14 @@
 
 package org.guvnor.ala.services.rest.tests;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
-import org.guvnor.ala.config.Config;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.PipelineFactory;
 import org.guvnor.ala.pipeline.SystemPipelineDescriptor;
 import org.guvnor.ala.runtime.providers.ProviderType;
-import org.guvnor.ala.services.api.backend.PipelineConfigImpl;
 import org.guvnor.ala.source.git.config.GitConfig;
 import org.guvnor.ala.source.git.config.impl.GitConfigImpl;
 import org.guvnor.ala.wildfly.model.WildflyProviderType;
@@ -88,12 +84,11 @@ public class MockSystemPipelines {
 
     private Pipeline createDummyPipeline(String pipelineName) {
         final GitConfig gitConfig = new GitConfigImpl();
-        final List<Config> configs = new ArrayList<>();
-        configs.add(gitConfig);
-
-        final PipelineConfigImpl pipelineConfig = new PipelineConfigImpl(pipelineName,
-                                                                         configs);
-        final Pipeline pipeline = PipelineFactory.startFrom(null).build(pipelineConfig);
+        final Pipeline pipeline = PipelineFactory
+                .newBuilder()
+                .addConfigStage("GigConfig",
+                           gitConfig)
+                .buildAs(pipelineName);
 
         return pipeline;
     }
