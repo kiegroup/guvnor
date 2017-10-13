@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.client.views.pfly.widgets.ErrorPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
@@ -35,14 +36,19 @@ public class PopupHelperTest {
 
     private static final String MESSAGE = "MESSAGE";
 
+    private static final String DETAIL = "DETAIL";
+
     private PopupHelper popupHelper;
 
     @Mock
     private YesNoCancelPopup yesNoCancelPopup;
 
+    @Mock
+    private ErrorPopup errorPopup;
+
     @Before
     public void setup() {
-        popupHelper = spy(new PopupHelper() {
+        popupHelper = spy(new PopupHelper(errorPopup) {
             @Override
             protected YesNoCancelPopup newYesNoPopup(String title,
                                                      String message,
@@ -71,10 +77,15 @@ public class PopupHelperTest {
     @Test
     public void testShowErrorPopup() {
         popupHelper.showErrorPopup(MESSAGE);
-        verify(popupHelper,
-               times(1)).newNotificationPopup(CommonConstants.INSTANCE.Error(),
-                                              MESSAGE);
-        verifyPopupWasShown(yesNoCancelPopup);
+        errorPopup.showError(MESSAGE);
+    }
+
+    @Test
+    public void testShowErrorPopupWithDetail() {
+        popupHelper.showErrorPopup(MESSAGE,
+                                   DETAIL);
+        errorPopup.showError(MESSAGE,
+                             DETAIL);
     }
 
     @Test
@@ -100,7 +111,6 @@ public class PopupHelperTest {
                                                   new Exception(MESSAGE));
         verify(popupHelper,
                times(1)).showErrorPopup(MESSAGE);
-        verifyPopupWasShown(yesNoCancelPopup);
     }
 
     private void verifyPopupWasShown(YesNoCancelPopup popup) {

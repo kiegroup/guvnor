@@ -315,14 +315,19 @@ public class RestRuntimeProvisioningServiceImpl
                 item.setPipelineExecutionId(pipelineExecutorTrace.getTaskId());
                 item.setPipelineStatus(pipelineExecutorTrace.getTask().getPipelineStatus().name());
                 if (pipelineExecutorTrace.getTask().getPipelineError() != null) {
-                    item.setPipelineError(pipelineExecutorTrace.getTask().getPipelineError().toString());
+                    item.setPipelineError(pipelineExecutorTrace.getTask().getPipelineError().getError());
+                    item.setPipelineErrorDetail(pipelineExecutorTrace.getTask().getPipelineError().getErrorDetail());
+
+
                 }
 
                 List<PipelineStageItem> stageItems = pipelineExecutorTrace.getTask().getTaskDef().getStages().stream()
                         .map(stage -> {
                             String stageError = null;
+                            String stageErrorDetail = null;
                             if (pipelineExecutorTrace.getTask().getStageError(stage) != null) {
-                                stageError = pipelineExecutorTrace.getTask().getStageError(stage).getMessage();
+                                stageError = pipelineExecutorTrace.getTask().getStageError(stage).getError();
+                                stageErrorDetail = pipelineExecutorTrace.getTask().getStageError(stage).getErrorDetail();
                             }
                             String stageStatus = null;
                             if (pipelineExecutorTrace.getTask().getStageStatus(stage) != null) {
@@ -330,7 +335,8 @@ public class RestRuntimeProvisioningServiceImpl
                             }
                             return new PipelineStageItem(stage,
                                                          stageStatus,
-                                                         stageError);
+                                                         stageError,
+                                                         stageErrorDetail);
                         }).collect(Collectors.toList());
                 item.setPipelineStageItems(new PipelineStageItemList(stageItems));
 

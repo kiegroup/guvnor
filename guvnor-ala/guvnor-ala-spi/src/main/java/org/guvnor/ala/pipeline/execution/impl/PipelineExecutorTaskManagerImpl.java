@@ -40,6 +40,7 @@ import org.guvnor.ala.pipeline.events.OnErrorStageExecutionEvent;
 import org.guvnor.ala.pipeline.events.PipelineEvent;
 import org.guvnor.ala.pipeline.events.PipelineEventListener;
 import org.guvnor.ala.pipeline.execution.PipelineExecutor;
+import org.guvnor.ala.pipeline.execution.PipelineExecutorError;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorException;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskDef;
@@ -401,7 +402,7 @@ public class PipelineExecutorTaskManagerImpl
         taskEntry.getTask().setStageStatus(oesee.getStage().getName(),
                                            PipelineExecutorTask.Status.ERROR);
         taskEntry.getTask().setStageError(oesee.getStage().getName(),
-                                          new PipelineExecutorException(oesee.getError().getMessage(),
+                                          new PipelineExecutorError(oesee.getError().getMessage(),
                                                                         oesee.getError()));
         if (taskEntry.isAsync()) {
             updateExecutorRegistry(taskEntry.getTask());
@@ -421,8 +422,8 @@ public class PipelineExecutorTaskManagerImpl
                                  final TaskEntry taskEntry) {
 
         taskEntry.getTask().setPipelineStatus(PipelineExecutorTask.Status.ERROR);
-        taskEntry.getTask().setPipelineError(new PipelineExecutorException(oepee.getError().getMessage(),
-                                                                           oepee.getError()));
+        taskEntry.getTask().setPipelineError(new PipelineExecutorError(oepee.getError().getMessage(),
+                                                       oepee.getError()));
         if (taskEntry.isAsync()) {
             updateExecutorRegistry(taskEntry.getTask());
         }

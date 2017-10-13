@@ -47,324 +47,49 @@
         },
         "stageError": {
           "Stage.name.1": {
-            "cause": {
-              "cause": null,
-              "stackTrace": [
-                {
-                  "methodName": "methodName",
-                  "fileName": "fileName",
-                  "lineNumber": 0,
-                  "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                  "nativeMethod": false
-                }
-              ],
-              "message": "Stage.name.1.STAGE_ERROR",
-              "localizedMessage": "Stage.name.1.STAGE_ERROR",
-              "suppressed": []
-            },
-            "stackTrace": [
-              {
-                "methodName": "methodName",
-                "fileName": "fileName",
-                "lineNumber": 0,
-                "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                "nativeMethod": false
-              }
-            ],
-            "message": "Stage.name.1.STAGE_ERROR",
-            "localizedMessage": "Stage.name.1.STAGE_ERROR",
-            "suppressed": []
+            "error": "Stage.name.1.STAGE_ERROR",
+            "errorDetail": "Stage.name.1.STAGE_ERROR_DETAIL"
           },
           "Stage.name.2": {
-            "cause": {
-              "cause": null,
-              "stackTrace": [
-                {
-                  "methodName": "methodName",
-                  "fileName": "fileName",
-                  "lineNumber": 0,
-                  "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                  "nativeMethod": false
-                }
-              ],
-              "message": "Stage.name.2.STAGE_ERROR",
-              "localizedMessage": "Stage.name.2.STAGE_ERROR",
-              "suppressed": []
-            },
-            "stackTrace": [
-              {
-                "methodName": "methodName",
-                "fileName": "fileName",
-                "lineNumber": 0,
-                "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                "nativeMethod": false
-              }
-            ],
-            "message": "Stage.name.2.STAGE_ERROR",
-            "localizedMessage": "Stage.name.2.STAGE_ERROR",
-            "suppressed": []
+            "error": "Stage.name.2.STAGE_ERROR",
+            "errorDetail": "Stage.name.2.STAGE_ERROR_DETAIL"
           },
           "Stage.name.0": {
-            "cause": {
-              "cause": null,
-              "stackTrace": [
-                {
-                  "methodName": "methodName",
-                  "fileName": "fileName",
-                  "lineNumber": 0,
-                  "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                  "nativeMethod": false
-                }
-              ],
-              "message": "Stage.name.0.STAGE_ERROR",
-              "localizedMessage": "Stage.name.0.STAGE_ERROR",
-              "suppressed": []
-            },
-            "stackTrace": [
-              {
-                "methodName": "methodName",
-                "fileName": "fileName",
-                "lineNumber": 0,
-                "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                "nativeMethod": false
-              }
-            ],
-            "message": "Stage.name.0.STAGE_ERROR",
-            "localizedMessage": "Stage.name.0.STAGE_ERROR",
-            "suppressed": []
+            "error": "Stage.name.0.STAGE_ERROR",
+            "errorDetail": "Stage.name.0.STAGE_ERROR_DETAIL"
           },
           "Stage.name.5": {
-            "cause": {
-              "cause": null,
-              "stackTrace": [
-                {
-                  "methodName": "methodName",
-                  "fileName": "fileName",
-                  "lineNumber": 0,
-                  "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                  "nativeMethod": false
-                }
-              ],
-              "message": "Stage.name.5.STAGE_ERROR",
-              "localizedMessage": "Stage.name.5.STAGE_ERROR",
-              "suppressed": []
-            },
-            "stackTrace": [
-              {
-                "methodName": "methodName",
-                "fileName": "fileName",
-                "lineNumber": 0,
-                "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                "nativeMethod": false
-              }
-            ],
-            "message": "Stage.name.5.STAGE_ERROR",
-            "localizedMessage": "Stage.name.5.STAGE_ERROR",
-            "suppressed": []
+            "error": "Stage.name.5.STAGE_ERROR",
+            "errorDetail": "Stage.name.5.STAGE_ERROR_DETAIL"
           },
           "Stage.name.6": {
-            "cause": {
-              "cause": null,
-              "stackTrace": [
-                {
-                  "methodName": "methodName",
-                  "fileName": "fileName",
-                  "lineNumber": 0,
-                  "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                  "nativeMethod": false
-                }
-              ],
-              "message": "Stage.name.6.STAGE_ERROR",
-              "localizedMessage": "Stage.name.6.STAGE_ERROR",
-              "suppressed": []
-            },
-            "stackTrace": [
-              {
-                "methodName": "methodName",
-                "fileName": "fileName",
-                "lineNumber": 0,
-                "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                "nativeMethod": false
-              }
-            ],
-            "message": "Stage.name.6.STAGE_ERROR",
-            "localizedMessage": "Stage.name.6.STAGE_ERROR",
-            "suppressed": []
+            "error": "Stage.name.6.STAGE_ERROR",
+            "errorDetail": "Stage.name.6.STAGE_ERROR_DETAIL"
           },
           "Stage.name.3": {
-            "cause": {
-              "cause": null,
-              "stackTrace": [
-                {
-                  "methodName": "methodName",
-                  "fileName": "fileName",
-                  "lineNumber": 0,
-                  "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                  "nativeMethod": false
-                }
-              ],
-              "message": "Stage.name.3.STAGE_ERROR",
-              "localizedMessage": "Stage.name.3.STAGE_ERROR",
-              "suppressed": []
-            },
-            "stackTrace": [
-              {
-                "methodName": "methodName",
-                "fileName": "fileName",
-                "lineNumber": 0,
-                "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                "nativeMethod": false
-              }
-            ],
-            "message": "Stage.name.3.STAGE_ERROR",
-            "localizedMessage": "Stage.name.3.STAGE_ERROR",
-            "suppressed": []
+            "error": "Stage.name.3.STAGE_ERROR",
+            "errorDetail": "Stage.name.3.STAGE_ERROR_DETAIL"
           },
           "Stage.name.4": {
-            "cause": {
-              "cause": null,
-              "stackTrace": [
-                {
-                  "methodName": "methodName",
-                  "fileName": "fileName",
-                  "lineNumber": 0,
-                  "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                  "nativeMethod": false
-                }
-              ],
-              "message": "Stage.name.4.STAGE_ERROR",
-              "localizedMessage": "Stage.name.4.STAGE_ERROR",
-              "suppressed": []
-            },
-            "stackTrace": [
-              {
-                "methodName": "methodName",
-                "fileName": "fileName",
-                "lineNumber": 0,
-                "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                "nativeMethod": false
-              }
-            ],
-            "message": "Stage.name.4.STAGE_ERROR",
-            "localizedMessage": "Stage.name.4.STAGE_ERROR",
-            "suppressed": []
+            "error": "Stage.name.4.STAGE_ERROR",
+            "errorDetail": "Stage.name.4.STAGE_ERROR_DETAIL"
           },
           "Stage.name.9": {
-            "cause": {
-              "cause": null,
-              "stackTrace": [
-                {
-                  "methodName": "methodName",
-                  "fileName": "fileName",
-                  "lineNumber": 0,
-                  "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                  "nativeMethod": false
-                }
-              ],
-              "message": "Stage.name.9.STAGE_ERROR",
-              "localizedMessage": "Stage.name.9.STAGE_ERROR",
-              "suppressed": []
-            },
-            "stackTrace": [
-              {
-                "methodName": "methodName",
-                "fileName": "fileName",
-                "lineNumber": 0,
-                "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                "nativeMethod": false
-              }
-            ],
-            "message": "Stage.name.9.STAGE_ERROR",
-            "localizedMessage": "Stage.name.9.STAGE_ERROR",
-            "suppressed": []
+            "error": "Stage.name.9.STAGE_ERROR",
+            "errorDetail": "Stage.name.9.STAGE_ERROR_DETAIL"
           },
           "Stage.name.7": {
-            "cause": {
-              "cause": null,
-              "stackTrace": [
-                {
-                  "methodName": "methodName",
-                  "fileName": "fileName",
-                  "lineNumber": 0,
-                  "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                  "nativeMethod": false
-                }
-              ],
-              "message": "Stage.name.7.STAGE_ERROR",
-              "localizedMessage": "Stage.name.7.STAGE_ERROR",
-              "suppressed": []
-            },
-            "stackTrace": [
-              {
-                "methodName": "methodName",
-                "fileName": "fileName",
-                "lineNumber": 0,
-                "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                "nativeMethod": false
-              }
-            ],
-            "message": "Stage.name.7.STAGE_ERROR",
-            "localizedMessage": "Stage.name.7.STAGE_ERROR",
-            "suppressed": []
+            "error": "Stage.name.7.STAGE_ERROR",
+            "errorDetail": "Stage.name.7.STAGE_ERROR_DETAIL"
           },
           "Stage.name.8": {
-            "cause": {
-              "cause": null,
-              "stackTrace": [
-                {
-                  "methodName": "methodName",
-                  "fileName": "fileName",
-                  "lineNumber": 0,
-                  "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                  "nativeMethod": false
-                }
-              ],
-              "message": "Stage.name.8.STAGE_ERROR",
-              "localizedMessage": "Stage.name.8.STAGE_ERROR",
-              "suppressed": []
-            },
-            "stackTrace": [
-              {
-                "methodName": "methodName",
-                "fileName": "fileName",
-                "lineNumber": 0,
-                "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                "nativeMethod": false
-              }
-            ],
-            "message": "Stage.name.8.STAGE_ERROR",
-            "localizedMessage": "Stage.name.8.STAGE_ERROR",
-            "suppressed": []
+            "error": "Stage.name.8.STAGE_ERROR",
+            "errorDetail": "Stage.name.8.STAGE_ERROR_DETAIL"
           }
         },
         "pipelineError": {
-          "cause": {
-            "cause": null,
-            "stackTrace": [
-              {
-                "methodName": "methodName",
-                "fileName": "fileName",
-                "lineNumber": 0,
-                "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-                "nativeMethod": false
-              }
-            ],
-            "message": "PIPELINE_ERROR",
-            "localizedMessage": "PIPELINE_ERROR",
-            "suppressed": []
-          },
-          "stackTrace": [
-            {
-              "methodName": "methodName",
-              "fileName": "fileName",
-              "lineNumber": 0,
-              "className": "org.guvnor.ala.pipeline.execution.PipelineExecutorException",
-              "nativeMethod": false
-            }
-          ],
-          "message": "PIPELINE_ERROR",
-          "localizedMessage": "PIPELINE_ERROR",
-          "suppressed": []
+          "error": "PIPELINE_ERROR",
+          "errorDetail": "PIPELINE_ERROR_DETAIL"
         },
         "output": {
           "org.guvnor.ala.pipeline.execution.marshalling.PipelineExecutorTraceImplMarshallerTest$MockPipelineOutput": {

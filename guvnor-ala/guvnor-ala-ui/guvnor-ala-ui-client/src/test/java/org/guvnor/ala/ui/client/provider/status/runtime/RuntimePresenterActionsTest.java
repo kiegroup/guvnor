@@ -20,6 +20,7 @@ import org.guvnor.ala.ui.events.PipelineExecutionChange;
 import org.guvnor.ala.ui.events.PipelineExecutionChangeEvent;
 import org.guvnor.ala.ui.events.RuntimeChange;
 import org.guvnor.ala.ui.events.RuntimeChangeEvent;
+import org.guvnor.ala.ui.model.PipelineError;
 import org.guvnor.ala.ui.model.PipelineExecutionTraceKey;
 import org.guvnor.ala.ui.model.PipelineStatus;
 import org.guvnor.ala.ui.model.RuntimeKey;
@@ -84,6 +85,10 @@ public class RuntimePresenterActionsTest
     private static final String BUSY_POPUP_MESSAGE = "BUSY_POPUP_MESSAGE";
 
     private static final String BUSY_POPUP_MESSAGE_2 = "BUSY_POPUP_MESSAGE_2";
+
+    private static final String PIPELINE_ERROR = "PIPELINE_ERROR";
+
+    private static final String PIPELINE_ERROR_DETAIL = "PIPELINE_ERROR_DETAIL";
 
     @Mock
     private ErrorCallback<Message> defaultErrorCallback;
@@ -624,6 +629,25 @@ public class RuntimePresenterActionsTest
                                         eq(CONFIRM_MESSAGE),
                                         yesCommandCaptor.capture(),
                                         noCommandCaptor.capture());
+    }
+
+    @Test
+    public void testShowPipelineExecutionError() {
+        trace = mockPipelineExecutionTrace(EXECUTION_ID,
+                                           mockPipeline(PIPELINE_NAME,
+                                                        STAGE_NUMBER),
+                                           mock(PipelineStatus.class),
+                                           mock(PipelineStatus.class));
+        trace.setPipelineStatus(PipelineStatus.ERROR);
+        trace.setPipelineError(new PipelineError(PIPELINE_ERROR,
+                                                 PIPELINE_ERROR_DETAIL));
+        item = new RuntimeListItem(RUNTIME_NAME,
+                                   trace);
+        presenter.setup(item);
+        presenter.showPipelineError();
+        verify(popupHelper,
+               times(1)).showErrorPopup(PIPELINE_ERROR,
+                                        PIPELINE_ERROR_DETAIL);
     }
 
     private void prepareRuntime() {
