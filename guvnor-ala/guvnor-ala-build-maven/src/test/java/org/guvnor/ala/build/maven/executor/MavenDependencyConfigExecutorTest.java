@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -70,6 +71,7 @@ public class MavenDependencyConfigExecutorTest {
         final String groupId = "org.guvnor.ala";
         final String artifactId = "maven-ala-artifact-test";
         final String version = "1";
+        final String artifactPath = "/org/guvnor/ala/maven-ala-artifact-test/1/maven-ala-artifact-test-1.pom";
 
         final String oldSettingsXmlPath = System.getProperty(CUSTOM_SETTINGS_PROPERTY);
         try {
@@ -116,14 +118,14 @@ public class MavenDependencyConfigExecutorTest {
                          binary.getArtifactId());
             assertEquals(version,
                          binary.getVersion());
-            assertEquals(m2Folder + "/org/guvnor/ala/maven-ala-artifact-test/1/maven-ala-artifact-test-1.pom",
+            assertEquals(Paths.get(m2Folder.getPath(), artifactPath).toString(),
                          binary.getPath().toString());
         } finally {
             if (oldSettingsXmlPath == null) {
                 System.clearProperty(CUSTOM_SETTINGS_PROPERTY);
             } else {
                 System.setProperty(CUSTOM_SETTINGS_PROPERTY,
-                                   oldSettingsXmlPath);
+                        oldSettingsXmlPath);
             }
             MavenSettings.reinitSettings();
         }

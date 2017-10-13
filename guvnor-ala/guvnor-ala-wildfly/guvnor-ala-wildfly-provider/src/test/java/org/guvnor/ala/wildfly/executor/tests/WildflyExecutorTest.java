@@ -55,6 +55,7 @@ import org.guvnor.ala.wildfly.config.WildflyProviderConfig;
 import org.guvnor.ala.wildfly.config.impl.ContextAwareWildflyRuntimeExecConfig;
 import org.guvnor.ala.wildfly.executor.WildflyProviderConfigExecutor;
 import org.guvnor.ala.wildfly.executor.WildflyRuntimeExecExecutor;
+import org.guvnor.ala.wildfly.executor.tests.requirement.RequiresNotWindows;
 import org.guvnor.ala.wildfly.model.WildflyRuntime;
 import org.guvnor.ala.wildfly.service.WildflyRuntimeManager;
 import org.jboss.arquillian.junit.InSequence;
@@ -75,6 +76,7 @@ import static org.junit.Assert.*;
  * an application there.
  */
 @RunWith(ArquillianConditionalRunner.class)
+@RequiresNotWindows
 public class WildflyExecutorTest {
 
     private static final String CONTAINER = "swarm";
