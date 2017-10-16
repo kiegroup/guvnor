@@ -18,6 +18,7 @@ package org.guvnor.ala.ui.client.navigation.providertype;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -39,7 +40,7 @@ import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.Provi
 import static org.guvnor.ala.ui.client.resources.i18n.GuvnorAlaUIConstants.ProviderTypeView_ProviderTypeDisablePopupTitle;
 import static org.guvnor.ala.ui.client.widget.CustomGroupItem.createAnchor;
 import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 @Templated

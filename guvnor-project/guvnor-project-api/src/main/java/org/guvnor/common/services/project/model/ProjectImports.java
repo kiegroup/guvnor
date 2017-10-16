@@ -15,8 +15,8 @@
 
 package org.guvnor.common.services.project.model;
 
-import org.appformer.project.datamodel.imports.Imports;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.project.datamodel.imports.Imports;
 
 @Portable
 public class ProjectImports {

@@ -31,8 +31,8 @@ import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class GitRepository implements Repository {
 

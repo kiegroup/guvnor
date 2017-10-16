@@ -18,7 +18,7 @@ package org.guvnor.ala.ui.client.util;
 
 import java.util.HashSet;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public abstract class AbstractHasContentChangeHandlers
         implements HasContentChangeHandlers {

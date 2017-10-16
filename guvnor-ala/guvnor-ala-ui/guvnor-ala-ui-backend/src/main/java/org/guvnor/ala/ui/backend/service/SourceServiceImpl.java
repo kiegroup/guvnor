@@ -19,6 +19,7 @@ package org.guvnor.ala.ui.backend.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -33,7 +34,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped

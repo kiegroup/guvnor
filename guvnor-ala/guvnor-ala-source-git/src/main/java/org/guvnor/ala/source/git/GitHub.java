@@ -25,9 +25,9 @@ import org.guvnor.ala.source.Host;
 import org.guvnor.ala.source.Repository;
 import org.uberfire.commons.config.ConfigProperties;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkCondition;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkCondition;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class GitHub implements Host<GitCredentials> {
 

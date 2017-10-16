@@ -15,7 +15,7 @@
  */
 package org.guvnor.common.services.backend.file;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 
@@ -31,6 +31,7 @@ public class LinkedDirectoryFilter implements LinkedFilter {
 
     /**
      * Constructor that automatically chains the next filter
+     *
      * @param filter
      */
     public LinkedDirectoryFilter(final LinkedFilter filter) {

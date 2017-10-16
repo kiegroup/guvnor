@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -35,8 +36,8 @@ import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScop
 import org.jboss.errai.bus.server.annotations.Service;
 
 import static org.guvnor.ala.registry.RuntimeRegistry.PROVIDER_TYPE_NAME_SORT;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped

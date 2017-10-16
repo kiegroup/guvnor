@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -46,8 +47,8 @@ import org.uberfire.java.nio.file.Path;
 import static java.lang.Integer.min;
 import static java.util.stream.Collectors.toMap;
 import static org.uberfire.backend.server.util.Paths.convert;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class PullRequestServiceImpl implements PullRequestService {
 

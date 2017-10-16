@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 @Portable
 public class MavenRepositoryMetadata implements Serializable {

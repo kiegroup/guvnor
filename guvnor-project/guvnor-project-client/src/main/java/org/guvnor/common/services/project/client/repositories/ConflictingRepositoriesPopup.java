@@ -17,6 +17,7 @@
 package org.guvnor.common.services.project.client.repositories;
 
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -28,7 +29,7 @@ import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class ConflictingRepositoriesPopup

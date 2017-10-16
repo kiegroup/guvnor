@@ -19,13 +19,14 @@ package org.guvnor.ala.registry.inmemory;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTrace;
 import org.guvnor.ala.registry.PipelineExecutorRegistry;
 import org.guvnor.ala.runtime.RuntimeId;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class InMemoryPipelineExecutorRegistry

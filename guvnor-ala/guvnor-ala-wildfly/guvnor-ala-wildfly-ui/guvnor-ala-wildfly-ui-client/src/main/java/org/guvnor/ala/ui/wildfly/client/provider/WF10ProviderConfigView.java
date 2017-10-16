@@ -40,7 +40,7 @@ import static org.guvnor.ala.ui.wildfly.client.resources.i18n.GuvnorAlaWildflyUI
 import static org.guvnor.ala.ui.wildfly.client.resources.i18n.GuvnorAlaWildflyUIConstants.WF10ProviderConfigView_TestConnectionFailMessage;
 import static org.guvnor.ala.ui.wildfly.client.resources.i18n.GuvnorAlaWildflyUIConstants.WF10ProviderConfigView_TestConnectionSuccessfulMessage;
 import static org.guvnor.ala.ui.wildfly.client.resources.i18n.GuvnorAlaWildflyUIConstants.WF10ProviderConfigView_TestConnectionUnExpectedErrorMessage;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 @Templated

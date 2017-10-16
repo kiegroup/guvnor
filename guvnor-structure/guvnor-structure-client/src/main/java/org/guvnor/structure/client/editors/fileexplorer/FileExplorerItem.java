@@ -20,7 +20,7 @@ import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.core.client.tree.FSTreeItem;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 class FileExplorerItem {
 
