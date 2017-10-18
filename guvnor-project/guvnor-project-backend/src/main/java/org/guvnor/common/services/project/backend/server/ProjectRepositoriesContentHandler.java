@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 
 import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.project.model.ProjectRepositories;
+import org.kie.internal.xstream.XStreamUtils;
 
 @Dependent
 public class ProjectRepositoriesContentHandler {
@@ -47,9 +48,7 @@ public class ProjectRepositoriesContentHandler {
     }
 
     private XStream createXStream() {
-        XStream xStream = new XStream();
-        String[] voidDeny = {"void.class", "Void.class"};
-        xStream.denyTypes(voidDeny);
+        XStream xStream = XStreamUtils.createTrustingXStream();
         xStream.alias("project-repositories",
                       ProjectRepositories.class);
         xStream.alias("repository",
