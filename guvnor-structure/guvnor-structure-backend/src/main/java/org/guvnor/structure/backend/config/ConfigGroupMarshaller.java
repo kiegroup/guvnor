@@ -20,14 +20,15 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.SecureConfigItem;
+import org.kie.internal.xstream.XStreamUtils;
 
 /**
  * Marshall a ConfigGroup to and from XML
  */
 public class ConfigGroupMarshaller {
 
-    private final XStream backwardCompatibleXstream = new XStream();
-    private final XStream xstream = new XStream();
+    private final XStream backwardCompatibleXstream = XStreamUtils.createTrustingXStream();
+    private final XStream xstream = XStreamUtils.createTrustingXStream();
 
     public ConfigGroupMarshaller() {
 

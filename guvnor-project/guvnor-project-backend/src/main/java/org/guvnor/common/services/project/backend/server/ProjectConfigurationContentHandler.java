@@ -19,6 +19,7 @@ import javax.enterprise.context.Dependent;
 
 import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.project.model.ProjectImports;
+import org.kie.internal.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Import;
 
 @Dependent
@@ -43,9 +44,7 @@ public class ProjectConfigurationContentHandler {
     }
 
     private XStream createXStream() {
-        XStream xStream = new XStream();
-        String[] voidDeny = {"void.class", "Void.class"};
-        xStream.denyTypes(voidDeny);
+        XStream xStream = XStreamUtils.createTrustingXStream();
         xStream.alias("configuration",
                       ProjectImports.class);
         xStream.alias("import",
