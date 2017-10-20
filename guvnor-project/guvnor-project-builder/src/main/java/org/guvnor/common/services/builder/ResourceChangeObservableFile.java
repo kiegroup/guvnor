@@ -15,10 +15,12 @@
  */
 package org.guvnor.common.services.builder;
 
+import org.uberfire.backend.vfs.Path;
+
 /**
  * This represents a File that, when changed, should invalidate the DMO cache
  */
 public interface ResourceChangeObservableFile {
 
-    boolean accept(final String fileName);
+    boolean accept(final Path path);
 }

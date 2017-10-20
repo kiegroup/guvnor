@@ -18,6 +18,7 @@ package org.guvnor.common.services.builder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -174,7 +175,7 @@ public class ResourceChangeObserver {
             return false;
         }
         for (ResourceChangeObservableFile observableFile : observableFiles) {
-            if (observableFile.accept(path.getFileName())) {
+            if (observableFile.accept(path)) {
                 return true;
             }
         }
@@ -185,6 +186,6 @@ public class ResourceChangeObserver {
         if (path == null) {
             return false;
         }
-        return observablePomFile.accept(path.getFileName());
+        return observablePomFile.accept(path);
     }
 }

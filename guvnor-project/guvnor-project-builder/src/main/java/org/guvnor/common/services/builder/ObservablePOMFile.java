@@ -15,12 +15,16 @@
  */
 package org.guvnor.common.services.builder;
 
+import org.uberfire.backend.vfs.Path;
+
 /**
  * Changes to pom.xml invalidates the DMO cache
  */
 public class ObservablePOMFile implements ResourceChangeObservableFile {
 
-    public boolean accept(final String fileName) {
+    @Override
+    public boolean accept(final Path path) {
+        final String fileName = path.getFileName();
         return fileName.equals("pom.xml");
     }
 }

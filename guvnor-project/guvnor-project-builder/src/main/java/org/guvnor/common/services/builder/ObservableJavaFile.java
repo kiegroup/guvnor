@@ -15,12 +15,16 @@
  */
 package org.guvnor.common.services.builder;
 
+import org.uberfire.backend.vfs.Path;
+
 /**
  * Changes to Java files invalidate the DMO cache
  */
 public class ObservableJavaFile implements ResourceChangeObservableFile {
 
-    public boolean accept(final String fileName) {
+    @Override
+    public boolean accept(final Path path) {
+        final String fileName = path.getFileName();
         return fileName.endsWith(".java");
     }
 }
