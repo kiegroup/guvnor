@@ -34,6 +34,8 @@ public interface BuilderCache {
 
     void clearBuilderCache();
 
+    void cleanInternalCache(String uri);
+
     /**
      * UTILS
      **/
