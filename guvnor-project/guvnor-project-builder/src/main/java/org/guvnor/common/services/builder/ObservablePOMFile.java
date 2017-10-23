@@ -22,9 +22,11 @@ import org.uberfire.backend.vfs.Path;
  */
 public class ObservablePOMFile implements ResourceChangeObservableFile {
 
+    static final String FILENAME = "pom.xml";
+
     @Override
     public boolean accept(final Path path) {
         final String fileName = path.getFileName();
-        return fileName.equals("pom.xml");
+        return fileName.equals(FILENAME);
     }
 }

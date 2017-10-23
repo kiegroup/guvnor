@@ -22,9 +22,11 @@ import org.uberfire.backend.vfs.Path;
  */
 public class ObservableJavaFile implements ResourceChangeObservableFile {
 
+    static final String EXTENSION = "java";
+
     @Override
     public boolean accept(final Path path) {
         final String fileName = path.getFileName();
-        return fileName.endsWith(".java");
+        return fileName.endsWith("." + EXTENSION);
     }
 }
