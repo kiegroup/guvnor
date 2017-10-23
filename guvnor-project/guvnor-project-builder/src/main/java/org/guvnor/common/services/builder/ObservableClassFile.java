@@ -15,12 +15,18 @@
  */
 package org.guvnor.common.services.builder;
 
+import org.uberfire.backend.vfs.Path;
+
 /**
  * Changes to Class files invalidate the DMO cache
  */
 public class ObservableClassFile implements ResourceChangeObservableFile {
 
-    public boolean accept(final String fileName) {
-        return fileName.endsWith(".class");
+    static final String EXTENSION = "class";
+
+    @Override
+    public boolean accept(final Path path) {
+        final String fileName = path.getFileName();
+        return fileName.endsWith("." + EXTENSION);
     }
 }
