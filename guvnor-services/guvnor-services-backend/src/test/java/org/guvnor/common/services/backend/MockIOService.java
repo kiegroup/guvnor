@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -48,6 +48,7 @@ import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 
 public class MockIOService
         implements IOService {
@@ -70,20 +71,10 @@ public class MockIOService
 
     }
 
-    @Override
-    public void startBatch(FileSystem[] fileSystems,
-                           Option... options) throws InterruptedException {
-
-    }
 
     @Override
     public void startBatch(FileSystem fileSystem,
                            Option... options) throws InterruptedException {
-
-    }
-
-    @Override
-    public void startBatch(FileSystem... fileSystems) throws InterruptedException {
 
     }
 
@@ -109,7 +100,7 @@ public class MockIOService
     }
 
     @Override
-    public Iterable<FileSystem> getFileSystems() {
+    public Iterable<FileSystemMetadata> getFileSystemMetadata() {
         return null;
     }
 
