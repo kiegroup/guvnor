@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.guvnor</groupId>
     <artifactId>guvnor-m2repo-editor</artifactId>
-    <version>7.4.0.Final</version>
+    <version>7.4.1.Final</version>
   </parent>
 
   <artifactId>guvnor-m2repo-editor-backend</artifactId>
