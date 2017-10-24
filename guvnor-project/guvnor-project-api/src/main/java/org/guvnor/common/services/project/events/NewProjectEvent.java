@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,19 @@
 package org.guvnor.common.services.project.events;
 
 import org.guvnor.common.services.project.model.Project;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
-/**
- * An event representing creation of a new Project
- */
-@Portable
 public class NewProjectEvent {
 
     private Project project;
-    private String sessionId;
-    private String identity;
 
     public NewProjectEvent() {
     }
 
-    public NewProjectEvent(final Project project,
-                           final String sessionId,
-                           final String identity) {
+    public NewProjectEvent(final Project project) {
         this.project = project;
-        this.sessionId = sessionId;
-        this.identity = identity;
     }
 
     public Project getProject() {
         return project;
-    }
-
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public String getIdentity() {
-        return identity;
     }
 }

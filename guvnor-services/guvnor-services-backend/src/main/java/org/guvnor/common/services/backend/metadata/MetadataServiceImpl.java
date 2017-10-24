@@ -102,19 +102,19 @@ public class MetadataServiceImpl
     }
 
     @Override
-    public List<String> getTags(final Path resource) {
-        checkNotNull("resource",
-                     resource);
-        return getTags(Paths.convert(resource));
+    public List<String> getTags( final Path resource ) {
+        checkNotNull( "MetadataServiceImpl.resource",
+                      resource );
+        return getTags( Paths.convert( resource ) );
     }
 
     @Override
-    public List<String> getTags(final org.uberfire.java.nio.file.Path resource) {
-        checkNotNull("resource",
-                     resource);
-        final OtherMetaView otherMetaView = ioService.getFileAttributeView(resource,
-                                                                           OtherMetaView.class);
-        if (otherMetaView != null) {
+    public List<String> getTags( final org.uberfire.java.nio.file.Path resource ) {
+        checkNotNull( "MetadataServiceImpl.resource",
+                      resource );
+        final OtherMetaView otherMetaView = ioService.getFileAttributeView( resource,
+                                                                            OtherMetaView.class );
+        if ( otherMetaView != null ) {
             return otherMetaView.readAttributes().tags();
         } else {
             return Collections.emptyList();

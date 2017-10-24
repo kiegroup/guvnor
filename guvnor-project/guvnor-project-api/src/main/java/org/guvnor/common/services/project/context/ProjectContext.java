@@ -22,24 +22,26 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
-import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.uberfire.backend.vfs.Path;
 
 /**
- * A specialized implementation that also has Project and Package scope
+ * Project context contains the active organizational unit, project, module and package.
+ * Each field can be null, then there is nothing active.
+ * <p>
+ * Only the ProjectContextChangeEvent can change this and after each change we need to alert the change handlers.
  */
 @ApplicationScoped
 public class ProjectContext {
 
     private OrganizationalUnit activeOrganizationalUnit;
-    private Repository activeRepository;
-    private String activeBranch;
     private Project activeProject;
+    private Module activeModule;
     private Package activePackage;
 
     private Map<ProjectContextChangeHandle, ProjectContextChangeHandler> changeHandlers = new HashMap<ProjectContextChangeHandle, ProjectContextChangeHandler>();
@@ -55,20 +57,20 @@ public class ProjectContext {
     }
 
     public void onRepositoryRemoved(final @Observes RepositoryRemovedEvent event) {
-        if (event.getRepository().equals(activeRepository)) {
-            contextChangeEvent.fire(new ProjectContextChangeEvent(activeOrganizationalUnit));
+
+            if ( activeProject != null && event.getRepository().getAlias().equals(activeProject.getRepository().getAlias())) {
+                contextChangeEvent.fire(new ProjectContextChangeEvent(activeOrganizationalUnit));
         }
     }
 
     public void onOrganizationalUnitUpdated(@Observes final UpdatedOrganizationalUnitEvent event) {
-        this.setActiveOrganizationalUnit(event.getOrganizationalUnit());
+        contextChangeEvent.fire(new ProjectContextChangeEvent(event.getOrganizationalUnit()));
     }
 
     public void onProjectContextChanged(@Observes final ProjectContextChangeEvent event) {
         this.setActiveOrganizationalUnit(event.getOrganizationalUnit());
-        this.setActiveRepository(event.getRepository());
-        this.setActiveBranch(event.getBranch());
         this.setActiveProject(event.getProject());
+        this.setActiveModule(event.getModule());
         this.setActivePackage(event.getPackage());
 
         for (ProjectContextChangeHandler handler : changeHandlers.values()) {
@@ -77,10 +79,10 @@ public class ProjectContext {
     }
 
     public Path getActiveRepositoryRoot() {
-        return getActiveRepository().getBranchRoot(getActiveBranch());
+        return activeProject.getBranch().getPath();
     }
 
-    public void setActiveOrganizationalUnit(final OrganizationalUnit activeOrganizationalUnit) {
+    protected void setActiveOrganizationalUnit(final OrganizationalUnit activeOrganizationalUnit) {
         this.activeOrganizationalUnit = activeOrganizationalUnit;
     }
 
@@ -88,35 +90,27 @@ public class ProjectContext {
         return this.activeOrganizationalUnit;
     }
 
-    public void setActiveRepository(final Repository activeRepository) {
-        this.activeRepository = activeRepository;
-    }
-
-    public String getActiveBranch() {
-        return activeBranch;
-    }
-
-    public void setActiveBranch(final String activeBranch) {
-        this.activeBranch = activeBranch;
-    }
-
-    public Repository getActiveRepository() {
-        return this.activeRepository;
+    protected void setActiveProject(final Project activeProject) {
+        this.activeProject = activeProject;
     }
 
     public Project getActiveProject() {
         return this.activeProject;
     }
 
-    public void setActiveProject(final Project activeProject) {
-        this.activeProject = activeProject;
+    public Module getActiveModule() {
+        return this.activeModule;
+    }
+
+    protected void setActiveModule(final Module activeModule) {
+        this.activeModule = activeModule;
     }
 
     public Package getActivePackage() {
         return this.activePackage;
     }
 
-    public void setActivePackage(final Package activePackage) {
+    protected void setActivePackage(final Package activePackage) {
         this.activePackage = activePackage;
     }
 

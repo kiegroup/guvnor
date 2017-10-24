@@ -193,7 +193,7 @@ public class FileExplorerPresenter
             view.removeRepository(repository);
         }
         view.addNewRepository(repository,
-                              repository.getDefaultBranch());
+                              repository.getDefaultBranch().get().getName());
         repositories.put(repository.getAlias(),
                          repository);
     }

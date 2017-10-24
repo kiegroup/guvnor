@@ -60,11 +60,6 @@ public class RepositoriesViewImpl
     }
 
     @Override
-    public boolean confirmDeleteRepository(final Repository repository) {
-        return Window.confirm(CoreConstants.INSTANCE.ConfirmDeleteRepository0(repository.getAlias()));
-    }
-
-    @Override
     public void removeIfExists(final RepositoryItemPresenter repositoryItem) {
         panel.remove(repositoryItem);
     }

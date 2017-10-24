@@ -20,7 +20,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.security.ProjectAction;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.security.RepositoryAction;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationManager;
 
@@ -31,51 +32,51 @@ public class ProjectController {
     private User user;
 
     @Inject
-    public ProjectController(AuthorizationManager authorizationManager,
-                             User user) {
+    public ProjectController(final AuthorizationManager authorizationManager,
+                             final User user) {
         this.authorizationManager = authorizationManager;
         this.user = user;
     }
 
     public boolean canCreateProjects() {
-        return authorizationManager.authorize(Project.RESOURCE_TYPE,
-                                              ProjectAction.CREATE,
+        return authorizationManager.authorize(Repository.RESOURCE_TYPE,
+                                              RepositoryAction.CREATE,
                                               user);
     }
 
     public boolean canReadProjects() {
-        return authorizationManager.authorize(Project.RESOURCE_TYPE,
-                                              ProjectAction.READ,
+        return authorizationManager.authorize(Repository.RESOURCE_TYPE,
+                                              RepositoryAction.READ,
                                               user);
     }
 
     public boolean canBuildProjects() {
-        return authorizationManager.authorize(Project.RESOURCE_TYPE,
-                                              ProjectAction.BUILD,
+        return authorizationManager.authorize(Repository.RESOURCE_TYPE,
+                                              RepositoryAction.BUILD,
                                               user);
     }
 
-    public boolean canReadProject(Project repository) {
-        return authorizationManager.authorize(repository,
-                                              ProjectAction.READ,
+    public boolean canReadProject(final Project project) {
+        return authorizationManager.authorize(project.getRepository(),
+                                              RepositoryAction.READ,
                                               user);
     }
 
-    public boolean canUpdateProject(Project repository) {
-        return authorizationManager.authorize(repository,
-                                              ProjectAction.UPDATE,
+    public boolean canUpdateProject(final Project project) {
+        return authorizationManager.authorize(project.getRepository(),
+                                              RepositoryAction.UPDATE,
                                               user);
     }
 
-    public boolean canDeleteProject(Project repository) {
-        return authorizationManager.authorize(repository,
-                                              ProjectAction.DELETE,
+    public boolean canDeleteProject(final Project project) {
+        return authorizationManager.authorize(project.getRepository(),
+                                              RepositoryAction.DELETE,
                                               user);
     }
 
-    public boolean canBuildProject(Project repository) {
-        return authorizationManager.authorize(repository,
-                                              ProjectAction.BUILD,
+    public boolean canBuildProject(final Project project) {
+        return authorizationManager.authorize(project.getRepository(),
+                                              RepositoryAction.BUILD,
                                               user);
     }
 }
