@@ -82,7 +82,7 @@ public class ProjectRepositoryResolverImpl
 
     private IOService ioService;
 
-    private POMContentHandler pomContentHandler = new POMContentHandler();
+    private POMContentHandler pomContentHandler ;
 
     private Instance<GAVPreferences> gavPreferencesProvider;
 
@@ -94,10 +94,12 @@ public class ProjectRepositoryResolverImpl
     @Inject
     public ProjectRepositoryResolverImpl(final @Named("ioStrategy") IOService ioService,
                                          final Instance<GAVPreferences> gavPreferencesProvider,
-                                         @Customizable final WorkbenchPreferenceScopeResolutionStrategies scopeResolutionStrategies) {
+                                         @Customizable final WorkbenchPreferenceScopeResolutionStrategies scopeResolutionStrategies,
+                                         final POMContentHandler pomContentHandler) {
         this.ioService = ioService;
         this.gavPreferencesProvider = gavPreferencesProvider;
         this.scopeResolutionStrategies = scopeResolutionStrategies;
+        this.pomContentHandler = pomContentHandler;
     }
 
     @Override

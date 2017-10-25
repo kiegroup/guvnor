@@ -17,13 +17,14 @@
 package org.guvnor.common.services.project.builder.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import org.guvnor.common.services.shared.message.Level;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
-public class BuildMessage implements Serializable {
+public class BuildMessage implements Serializable, Comparable {
 
     private long id;
     private Level level;
@@ -134,4 +135,12 @@ public class BuildMessage implements Serializable {
         result = ~~result;
         return result;
     }
+
+    @Override
+    public int compareTo(Object other) {
+        return Comparator.comparing((BuildMessage p)->p.getText())
+                .thenComparing(p->p.getPath().toURI().toString()).compare(this,(BuildMessage)other);
+    }
+
+
 }
