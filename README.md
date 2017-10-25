@@ -1,9 +1,8 @@
-Developing Drools and jBPM
-==========================
+Starting from version 7.5.x this code has been moved
+====================================================
 
-**If you want to build or contribute to a kiegroup project, [read this document](https://github.com/kiegroup/droolsjbpm-build-bootstrap/blob/master/README.md).**
+Most code moved to uberfire (https://github.com/AppFormer/uberfire)
 
-**It will save you and us a lot of time by setting up your development environment correctly.**
-It solves all known pitfalls that can disrupt your development.
-It also describes all guidelines, tips and tricks.
-If you want your pull requests (or patches) to be merged into master, please respect those guidelines.
+The former Guvnor ALA modules have moved to kie-wb-common (https://github.com/kiegroup/kie-wb-common)
+
+Older branches (i.e. 7.4.x, 6.x) are still kept in this repository.
