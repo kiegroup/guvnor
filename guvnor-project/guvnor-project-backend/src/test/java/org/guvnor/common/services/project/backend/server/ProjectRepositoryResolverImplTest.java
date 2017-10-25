@@ -21,13 +21,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import javax.enterprise.inject.Instance;
 
 import org.apache.maven.project.MavenProject;
 import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.appformer.maven.integration.embedder.MavenSettings;
+import org.guvnor.common.services.project.backend.server.utils.ConfigurationStaticStrategy;
+import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
@@ -74,6 +78,8 @@ public class ProjectRepositoryResolverImplTest {
     private static java.nio.file.Path m2Folder = null;
     private static java.nio.file.Path settingsXmlPath = null;
 
+    private POMContentHandler pomContentHandler;
+
     @BeforeClass
     public static void setupSystemProperties() {
         //These are not needed for the tests
@@ -98,9 +104,11 @@ public class ProjectRepositoryResolverImplTest {
 
     @Before
     public void setup() {
+        List list = new ArrayList() {{add(new ConfigurationStaticStrategy());}};
+        pomContentHandler = new POMContentHandler(list.iterator());
         service = new ProjectRepositoryResolverImpl(ioService,
                                                     gavPreferencesProvider,
-                                                    scopeResolutionStrategies);
+                                                    scopeResolutionStrategies, pomContentHandler);
         doReturn(gavPreferences).when(gavPreferencesProvider).get();
     }
 
@@ -1256,9 +1264,11 @@ public class ProjectRepositoryResolverImplTest {
             doReturn(true).when(gavPreferences).isConflictingGAVCheckDisabled();
 
             //Re-instantiate service to pick-up System Property
+            List list = new ArrayList() {{add(new ConfigurationStaticStrategy());}};
+            final POMContentHandler handler = new POMContentHandler(list.iterator());
             service = new ProjectRepositoryResolverImpl(ioService,
                                                         gavPreferencesProvider,
-                                                        scopeResolutionStrategies);
+                                                        scopeResolutionStrategies, handler);
 
             final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
             final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
@@ -1307,9 +1317,11 @@ public class ProjectRepositoryResolverImplTest {
             doReturn(true).when(gavPreferences).isConflictingGAVCheckDisabled();
 
             //Re-instantiate service to pick-up System Property
+            List list = new ArrayList() {{add(new ConfigurationStaticStrategy());}};
+            final POMContentHandler handler = new POMContentHandler(list.iterator());
             service = new ProjectRepositoryResolverImpl(ioService,
                                                         gavPreferencesProvider,
-                                                        scopeResolutionStrategies);
+                                                        scopeResolutionStrategies, handler);
 
             final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
             final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
@@ -1353,9 +1365,11 @@ public class ProjectRepositoryResolverImplTest {
             doReturn(true).when(gavPreferences).isConflictingGAVCheckDisabled();
 
             //Re-instantiate service to pick-up System Property
+            List list = new ArrayList() {{add(new ConfigurationStaticStrategy());}};
+            final POMContentHandler handler = new POMContentHandler(list.iterator());
             service = new ProjectRepositoryResolverImpl(ioService,
                                                         gavPreferencesProvider,
-                                                        scopeResolutionStrategies);
+                                                        scopeResolutionStrategies, handler);
 
             final InputStream pomStream = new ByteArrayInputStream(pomXml.getBytes(StandardCharsets.UTF_8));
             final MavenProject mavenProject = MavenProjectLoader.parseMavenPom(pomStream);
