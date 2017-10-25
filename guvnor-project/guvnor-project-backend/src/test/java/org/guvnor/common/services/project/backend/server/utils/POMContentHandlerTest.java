@@ -34,7 +34,7 @@ public class POMContentHandlerTest {
     private static final String EXISTING_PLUGIN_XML = "<plugin>"
             + "<groupId>org.kie</groupId>"
             + "<artifactId>kie-maven-plugin</artifactId>"
-            + "<version>another-version</version>"
+            + "<version>7.5.0-SNAPSHOT</version>"
             + "<extensions>true</extensions>"
             + "</plugin>";
 
