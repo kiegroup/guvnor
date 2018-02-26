@@ -108,7 +108,7 @@ public class MavenRepositoryPagedJarTable
     private String getGuvnorM2RepoBaseURL() {
         final String baseUrl = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/",
                                                               "");
-        return baseUrl + "maven2wb/";
+        return baseUrl + "maven2/";
     }
 
     public void search(String filter) {
